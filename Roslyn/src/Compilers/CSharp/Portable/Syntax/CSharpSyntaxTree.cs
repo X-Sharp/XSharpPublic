@@ -395,6 +395,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 throw new ArgumentNullException(nameof(path));
             }
 
+#if XSHARPPRE
+            {
+                string s = text.ToString();
+                s = s.Replace("Microsoft.CodeAnalysis.CSharp", "LanguageService.CodeAnalysis.XSharp");
+                s = s.Replace("Microsoft.CodeAnalysis", "LanguageService.CodeAnalysis");
+                s = s.Replace("Microsoft.Cci", "LanguageService.Cci");
+                var r = new System.Text.RegularExpressions.Regex(@"(?<!Microsoft\.(\w+\.)*)CSharp");
+                s = r.Replace(s, "XSharp");
+                text = SourceText.From(s, text.Encoding);
+            }
+#endif
+
             options = options ?? CSharpParseOptions.Default;
 
             using (var lexer = new InternalSyntax.Lexer(text, options))

@@ -60,6 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _lexedTokens = new ArrayElement<SyntaxToken>[32];
             }
 
+#if !XSHARP
             // PreLex is not cancellable. 
             //      If we may cancel why would we aggressively lex ahead?
             //      Cancellations in a constructor make disposing complicated
@@ -69,6 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 this.PreLex();
             }
+#endif
         }
 
         public void Dispose()

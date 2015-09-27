@@ -9477,7 +9477,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XSharp X# Compiler.
+        ///   Looks up a localized string similar to X# Compiler.
         /// </summary>
         internal static string IDS_ToolName {
             get {

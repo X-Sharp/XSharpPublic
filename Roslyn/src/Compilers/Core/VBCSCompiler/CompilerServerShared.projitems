@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>8b70ae9e-1054-4b80-ac8d-fe20c5041631</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CompilerServerShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AnalyzerConsistencyChecker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BuildProtocol.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompilerRequestHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompilerServerLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharpCompilerServer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DiagnosticListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IClientConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MetadataCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NamedPipeClientConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServerDispatcher.Connection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServerDispatcher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServerDispatcher.MemoryHelper.cs" />
+  </ItemGroup>
+</Project>

@@ -20,7 +20,13 @@ namespace Microsoft.CodeAnalysis.CompilerServer
         public static readonly Func<string, MetadataReferenceProperties, PortableExecutableReference> AssemblyReferenceProvider =
             (path, properties) => new CachingMetadataReference(path, properties);
 
+#if XSHARP
+        public static readonly IAnalyzerAssemblyLoader AnalyzerLoader = new ShadowCopyAnalyzerAssemblyLoader(Path.Combine(Path.GetTempPath(), "XSCompiler", "AnalyzerAssemblyLoader"));
+#elif XSHARPPRE
+        public static readonly IAnalyzerAssemblyLoader AnalyzerLoader = new ShadowCopyAnalyzerAssemblyLoader(Path.Combine(Path.GetTempPath(), "CSCompiler", "AnalyzerAssemblyLoader"));
+#else
         public static readonly IAnalyzerAssemblyLoader AnalyzerLoader = new ShadowCopyAnalyzerAssemblyLoader(Path.Combine(Path.GetTempPath(), "VBCSCompiler", "AnalyzerAssemblyLoader"));
+#endif
 
         private static void LogAbnormalExit(string msg)
         {
@@ -57,8 +63,10 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                     return CSharpCompile(req, cancellationToken);
 
                 case BuildProtocolConstants.RequestLanguage.VisualBasicCompile:
+#if !XSHARP && !XSHARPPRE
                     CompilerServerLogger.Log("Request to compile VB");
                     return BasicCompile(req, cancellationToken);
+#endif
 
                 default:
                     CompilerServerLogger.Log("Got request with id '{0}'", req.Language);
@@ -160,6 +168,7 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                 cancellationToken);
         }
 
+#if !XSHARP && !XSHARPPRE
         /// <summary>
         /// A request to compile VB files. Unpack the arguments and current directory and invoke
         /// the compiler, then create a response with the result of compilation.
@@ -213,5 +222,6 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                 AnalyzerLoader,
                 cancellationToken);
         }
+#endif
     }
 }

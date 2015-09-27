@@ -56,6 +56,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>COMPILERCORE;XSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -69,6 +70,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARP</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutDir>$(BaseOutputPath)\$(Configuration)\amd64\</OutDir>
@@ -79,6 +81,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>COMPILERCORE;XSHARP</DefineConstants>
   </PropertyGroup>
   <!--  <ItemGroup>
     <BoundTreeDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">

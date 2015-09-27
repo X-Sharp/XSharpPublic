@@ -26,7 +26,13 @@ namespace Microsoft.CodeAnalysis.BuildTasks
     /// </summary>
     internal static class BuildClient
     {
+#if XSHARP
+        private const string s_serverName = "XSCompiler.exe";
+#elif XSHARPPRE
         private const string s_serverName = "CSCompiler.exe";
+#else
+        private const string s_serverName = "VBCSCompiler.exe";
+#endif
         // Spend up to 1s connecting to existing process (existing processes should be always responsive).
         private const int TimeOutMsExistingProcess = 1000;
         // Spend up to 20s connecting to a new process, to allow time for it to start.

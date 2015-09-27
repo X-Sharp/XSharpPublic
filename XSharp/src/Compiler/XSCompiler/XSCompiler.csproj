@@ -9,10 +9,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9508F118-F62E-4C16-A6F4-7C3B56E166AD}</ProjectGuid>
+    <ProjectGuid>{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Microsoft.CodeAnalysis.CompilerServer</RootNamespace>
-    <AssemblyName>CSCompiler</AssemblyName>
+    <RootNamespace>LanguageService.CodeAnalysis.CompilerServer</RootNamespace>
+    <AssemblyName>XSCompiler</AssemblyName>
     <LargeAddressAware>true</LargeAddressAware>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -20,24 +20,23 @@
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
+    <CscToolPath>$(BaseOutputPath)\$(Configuration)\</CscToolPath>
   </PropertyGroup>
-  <ItemGroup Label="Project References">
-    <ProjectReference Include="..\CSharpCodeAnalysis\CSharpCodeAnalysis.csproj">
-      <Project>{7b774abc-83a0-4fd8-91fb-1dbe8829765b}</Project>
-      <Name>CSharpCodeAnalysis</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>TRACE;DEBUG;XSHARPPRE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
+    <NoWarn>1591, CS8032</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>TRACE;XSHARPPRE</DefineConstants>
+    <DefineConstants>XSHARP</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>LanguageService.CodeAnalysis.CompilerServer.ServerDispatcher</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -51,6 +50,7 @@
       <HintPath>..\..\..\Binaries\Packages\System.Reflection.Metadata.1.1.0-alpha-00012\lib\dotnet\System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AbstractAnalyzerAssemblyLoader.cs">
@@ -67,8 +67,17 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
+      <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
+      <Name>XSharpCodeAnalysis</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems" Label="Shared" />
   <ImportGroup Label="Targets">
     <Import Project="..\..\..\..\Roslyn\build\Targets\VSL.Imports.targets" />
   </ImportGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
 </Project>

@@ -35,12 +35,6 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Microsoft.DiaSymReader", ".
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CSharpCodeAnalysisShared", "..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.shproj", "{A8C219D6-3055-46EE-BA3E-6F07AF0F7806}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C41FAB9A-D1D7-4253-B639-D72395B6BA37}"
-	ProjectSection(SolutionItems) = preProject
-		NuGet.Config = NuGet.Config
-		nuget.exe = nuget.exe
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compiler", "Compiler", "{0881BB9F-A799-47B2-9D39-1F218C037DE5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{D2E017BC-986A-4D64-A8B9-D9068F19A257}"
@@ -51,24 +45,31 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csc", "src\Tools\csc\csc.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSCompiler", "src\Tools\CSCompiler\CSCompiler.csproj", "{9508F118-F62E-4C16-A6F4-7C3B56E166AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSCompiler", "src\Compiler\XSCompiler\XSCompiler.csproj", "{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CompilerServerShared", "..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.shproj", "{8B70AE9E-1054-4B80-AC8D-FE20C5041631}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{54e08bf5-f819-404f-a18d-0ab9ea81ea04}*SharedItemsImports = 13
-		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{a8c219d6-3055-46ee-ba3e-6f07af0f7806}*SharedItemsImports = 13
 		..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems*{f9127f0f-95c8-4576-8081-96e004c1652f}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{d0bc9be7-24f6-40ca-8dc6-fcb93bd44b34}*SharedItemsImports = 13
-		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{9508f118-f62e-4c16-a6f4-7c3b56e166ad}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{8b70ae9e-1054-4b80-ac8d-fe20c5041631}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{10993c9b-80cc-4df7-9b32-e6ccd920d64b}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems*{c1930979-c824-496b-a630-70f5369a636f}*SharedItemsImports = 13
 	EndGlobalSection
@@ -240,6 +241,26 @@ Global
 		{9508F118-F62E-4C16-A6F4-7C3B56E166AD}.Release|x64.Build.0 = Release|Any CPU
 		{9508F118-F62E-4C16-A6F4-7C3B56E166AD}.Release|x86.ActiveCfg = Release|Any CPU
 		{9508F118-F62E-4C16-A6F4-7C3B56E166AD}.Release|x86.Build.0 = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|ARM.Build.0 = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|x64.Build.0 = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Debug|x86.Build.0 = Debug|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|ARM.ActiveCfg = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|ARM.Build.0 = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|x64.ActiveCfg = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|x64.Build.0 = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|x86.ActiveCfg = Release|Any CPU
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -264,5 +285,7 @@ Global
 		{7B774ABC-83A0-4FD8-91FB-1DBE8829765B} = {D2E017BC-986A-4D64-A8B9-D9068F19A257}
 		{4B45CA0C-03A0-400F-B454-3D4BCB16AF38} = {D2E017BC-986A-4D64-A8B9-D9068F19A257}
 		{9508F118-F62E-4C16-A6F4-7C3B56E166AD} = {D2E017BC-986A-4D64-A8B9-D9068F19A257}
+		{9D02E3F9-7157-46B7-9E97-F62010E4B3F2} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
+		{8B70AE9E-1054-4B80-AC8D-FE20C5041631} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
 	EndGlobalSection
 EndGlobal

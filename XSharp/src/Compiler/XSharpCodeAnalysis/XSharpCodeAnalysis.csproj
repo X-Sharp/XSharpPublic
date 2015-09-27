@@ -9,8 +9,8 @@
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <ProjectGuid>{A472BFB0-1BC4-4F9A-B610-9E83F6292D57}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>XSharp.CodeAnalysis</RootNamespace>
-    <AssemblyName>LanguageService.CodeAnalysis.XSharp</AssemblyName>
+    <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
+    <AssemblyName>XSharp.CodeAnalysis</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
@@ -57,6 +57,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>COMPILERCORE;XSHARP</DefineConstants>
+    <NoWarn>1591, CS0649, CS8032</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -65,7 +66,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutDir>$(BaseOutputPath)\$(Configuration)\amd64\</OutDir>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591, CS0649, CS8032</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -76,14 +77,26 @@
     <OutDir>$(BaseOutputPath)\$(Configuration)\amd64\</OutDir>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591, CS0649, CS8032</NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>COMPILERCORE;XSHARP</DefineConstants>
   </PropertyGroup>
-  <!--  <ItemGroup>
+  <ItemGroup>
+    <Compile Include="CodeAnalysisResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="XSharpResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>XSharpResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <BoundTreeDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
       <SubType>Designer</SubType>
     </BoundTreeDefinition>
@@ -91,16 +104,22 @@
     <Compile Include="$(IntermediateOutputPath)ErrorFacts.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)Syntax.xml.Generated.cs" />
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
-    <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpResources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CSharpResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <ErrorCode Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
     <SyntaxDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml">
       <SubType>Designer</SubType>
     </SyntaxDefinition>
-  </ItemGroup> -->
+    <EmbeddedResource Include="XSharpResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>XSharpResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeAnalysisResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\Resources\default.win32manifest" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\Binaries\Packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>

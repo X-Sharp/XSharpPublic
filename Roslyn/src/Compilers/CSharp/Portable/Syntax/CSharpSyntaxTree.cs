@@ -401,8 +401,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 s = s.Replace("Microsoft.CodeAnalysis.CSharp", "LanguageService.CodeAnalysis.XSharp");
                 s = s.Replace("Microsoft.CodeAnalysis", "LanguageService.CodeAnalysis");
                 s = s.Replace("Microsoft.Cci", "LanguageService.Cci");
+                s = (new System.Text.RegularExpressions.Regex(@"(?<!\.)CSharpResources")).Replace(s, "LanguageService.CodeAnalysis.XSharpResources");
                 var r = new System.Text.RegularExpressions.Regex(@"(?<!Microsoft\.(\w+\.)*)CSharp");
                 s = r.Replace(s, "XSharp");
+                s = s.Replace("XSharp.XSharpResources", "XSharpResources");
+                s = s.Replace("XSHARP_RUNTIME", "true");
                 text = SourceText.From(s, text.Encoding);
             }
 #endif

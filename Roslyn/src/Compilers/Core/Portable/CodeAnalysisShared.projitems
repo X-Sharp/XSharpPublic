@@ -18,12 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\SuppressMessageInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InternalUtilities\StreamExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UnicodeCharacterUtilities.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysisResources.Designer.cs" />
-    <!--<Compile Include="$(MSBuildThisFileDirectory)CodeAnalysisResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>$(MSBuildThisFileDirectory)CodeAnalysisResources.resx</DependentUpon>
-    </Compile>-->
     <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysisResourcesLocalizableErrorArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\ArrayMembers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\BasicBlock.cs" />
@@ -633,14 +627,19 @@
     <Compile Include="$(MSBuildThisFileDirectory)XmlFileResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Xml\XmlCharType.cs" />
   </ItemGroup>
-  <ItemGroup>
+  <!-- <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysisResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>$(MSBuildThisFileDirectory)CodeAnalysisResources.resx</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)CodeAnalysisResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>$(MSBuildThisFileDirectory)CodeAnalysisResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\default.win32manifest" />
-  </ItemGroup>
+  </ItemGroup> -->
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\CodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>

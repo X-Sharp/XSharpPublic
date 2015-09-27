@@ -202,12 +202,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CSharpExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CSharpFileSystemExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CSharpParseOptions.cs" />
-	<Compile Include="$(MSBuildThisFileDirectory)CSharpResources.Designer.cs" />
-    <!--<Compile Include="$(MSBuildThisFileDirectory)CSharpResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>$(MSBuildThisFileDirectory)CSharpResources.resx</DependentUpon>
-    </Compile>-->
     <Compile Include="$(MSBuildThisFileDirectory)Declarations\Declaration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Declarations\DeclarationKind.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Declarations\DeclarationModifiers.cs" />
@@ -248,7 +242,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\NamedTypeReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\NamedTypeSymbolAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\NamespaceSymbolAdapter.cs" />
-	<Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\ParameterSymbolAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\ParameterSymbolAdapter.cs" />
     <!--<Compile Include="$(MSBuildThisFileDirectory)Emitter\Model\ParameterSymbolAdapter.cs">
       <SubType>Code</SubType>
     </Compile>-->
@@ -781,13 +775,15 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
+  <!-- <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CSharpResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>$(MSBuildThisFileDirectory)CSharpResources.resx</DependentUpon>
+    </Compile>
     <BoundTreeDefinition Include="$(MSBuildThisFileDirectory)BoundTree\BoundNodes.xml">
       <SubType>Designer</SubType>
     </BoundTreeDefinition>
-    <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)ErrorFacts.Generated.cs" />
-    <Compile Include="$(IntermediateOutputPath)Syntax.xml.Generated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Errors\ErrorCode.cs" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)CSharpResources.resx">
       <SubType>Designer</SubType>
@@ -798,5 +794,5 @@
     <SyntaxDefinition Include="$(MSBuildThisFileDirectory)Syntax\Syntax.xml">
       <SubType>Designer</SubType>
     </SyntaxDefinition>
-  </ItemGroup>
+  </ItemGroup> -->
 </Project>

@@ -41,6 +41,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DefineConstants>XSHARP</DefineConstants>
+    <NoWarn>1591, CS8032</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

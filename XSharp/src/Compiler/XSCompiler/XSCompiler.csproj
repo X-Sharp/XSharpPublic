@@ -34,6 +34,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <DefineConstants>XSHARP</DefineConstants>
+    <NoWarn>1591, CS8032</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>LanguageService.CodeAnalysis.CompilerServer.ServerDispatcher</StartupObject>

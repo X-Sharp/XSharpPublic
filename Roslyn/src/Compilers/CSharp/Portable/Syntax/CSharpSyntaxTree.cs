@@ -405,6 +405,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var r = new System.Text.RegularExpressions.Regex(@"(?<!Microsoft\.(\w+\.)*)CSharp");
                 s = r.Replace(s, "XSharp");
                 s = s.Replace("XSharp.XSharpResources", "XSharpResources");
+                s = s.Replace("Antlr4.Runtime", "LanguageService.SyntaxTree");
                 s = s.Replace("XSHARP_RUNTIME", "true");
                 text = SourceText.From(s, text.Encoding);
             }
@@ -412,6 +413,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             options = options ?? CSharpParseOptions.Default;
 
+#if XSHARP
+            using (var parser = new InternalSyntax.XSharpLanguageParser(text, oldTree: null, changes: null, cancellationToken: cancellationToken))
+            {
+                var compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
+                var tree = new ParsedSyntaxTree(text, text.Encoding, text.ChecksumAlgorithm, path, options, compilationUnit, default(InternalSyntax.DirectiveStack));
+                //tree.VerifySource();
+                return tree;
+            }
+#else
             using (var lexer = new InternalSyntax.Lexer(text, options))
             {
                 using (var parser = new InternalSyntax.LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: cancellationToken))
@@ -422,6 +432,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return tree;
                 }
             }
+#endif
         }
 
         #endregion
@@ -514,9 +525,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return SyntaxDiffer.GetTextChanges(oldTree, this);
         }
 
-        #endregion
+#endregion
 
-        #region LinePositions and Locations
+#region LinePositions and Locations
 
         /// <summary>
         /// Gets the location in terms of path, line and column for a given span.
@@ -636,9 +647,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SourceLocation(this, span);
         }
 
-        #endregion
+#endregion
 
-        #region Diagnostics
+#region Diagnostics
 
         /// <summary>
         /// Gets a list of all the diagnostics in the sub tree that has the specified node as its root.
@@ -730,9 +741,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetDiagnostics(this.GetRoot(cancellationToken));
         }
 
-        #endregion
+#endregion
 
-        #region SyntaxTree
+#region SyntaxTree
 
         protected override SyntaxNode GetRootCore(CancellationToken cancellationToken)
         {
@@ -767,6 +778,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion
+#endregion
     }
 }

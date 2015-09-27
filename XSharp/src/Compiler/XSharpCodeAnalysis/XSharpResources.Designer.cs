@@ -9279,7 +9279,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copyright (C) Microsoft Corporation. All rights reserved..
+        ///   Looks up a localized string similar to Copyright (C) XSharp BV.
         /// </summary>
         internal static string IDS_LogoLine2 {
             get {
@@ -9477,7 +9477,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Microsoft (R) Visual C# Compiler.
+        ///   Looks up a localized string similar to XSharp X# Compiler.
         /// </summary>
         internal static string IDS_ToolName {
             get {

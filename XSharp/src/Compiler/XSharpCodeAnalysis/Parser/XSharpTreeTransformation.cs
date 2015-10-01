@@ -18,7 +18,7 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    internal class XSharpParserListener : XSharpBaseListener
+    internal class XSharpTreeTransformation : XSharpBaseListener
     {
         public SyntaxListBuilder<ExternAliasDirectiveSyntax> Externs;
         public SyntaxListBuilder<UsingDirectiveSyntax> Usings;
@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         private ParseTreeTypedProperty Tree = new ParseTreeTypedProperty();
 
-        public XSharpParserListener(SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
+        public XSharpTreeTransformation(SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
         {
             Externs = pool.Allocate<ExternAliasDirectiveSyntax>();
             Usings = pool.Allocate<UsingDirectiveSyntax>();
@@ -189,12 +189,83 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        protected static SyntaxDiagnosticInfo MakeError(int offset, int width, ErrorCode code)
+        {
+            return new SyntaxDiagnosticInfo(offset, width, code);
+        }
+
+        protected static SyntaxDiagnosticInfo MakeError(int offset, int width, ErrorCode code, params object[] args)
+        {
+            return new SyntaxDiagnosticInfo(offset, width, code, args);
+        }
+
+        protected static SyntaxDiagnosticInfo MakeError(CSharpSyntaxNode node, ErrorCode code, params object[] args)
+        {
+            return new SyntaxDiagnosticInfo(node.GetLeadingTriviaWidth(), node.Width, code, args);
+        }
+
+        protected static SyntaxDiagnosticInfo MakeError(ErrorCode code, params object[] args)
+        {
+            return new SyntaxDiagnosticInfo(code, args);
+        }
+
+        protected virtual TNode WithAdditionalDiagnostics<TNode>(TNode node, params DiagnosticInfo[] diagnostics) where TNode : CSharpSyntaxNode
+        {
+            DiagnosticInfo[] existingDiags = node.GetDiagnostics();
+            int existingLength = existingDiags.Length;
+            if (existingLength == 0)
+            {
+                return node.WithDiagnosticsGreen(diagnostics);
+            }
+            else
+            {
+                DiagnosticInfo[] result = new DiagnosticInfo[existingDiags.Length + diagnostics.Length];
+                existingDiags.CopyTo(result, 0);
+                diagnostics.CopyTo(result, existingLength);
+                return node.WithDiagnosticsGreen(result);
+            }
+        }
+
+        private void Put<T>([NotNull] ParserRuleContext context, T node) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            Tree.Put(context, node);
+        }
+
+        private T Get<T>([NotNull] ParserRuleContext context) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            return Tree.Get<T>(context);
+        }
+
+        List<IErrorNode> errors = new List<IErrorNode>();
+
+        public override void VisitErrorNode([NotNull] IErrorNode node)
+        {
+            errors.Add(node);
+        }
+
         public override void VisitTerminal(ITerminalNode node)
         {
         }
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
+            if (errors.Count > 0)
+            {
+                var node = Tree.Get<object>(context);
+                if (node != null && node is CSharpSyntaxNode)
+                {
+                    foreach (var e in errors) {
+                        Tree.Put(context, WithAdditionalDiagnostics((CSharpSyntaxNode)node,
+                            MakeError((CSharpSyntaxNode)node, ErrorCode.ERR_UnexpectedGenericName)));
+                    }
+                    errors.Clear();
+                }
+            }
+            /*if (context.exception != null)
+            {
+                //RecognitionException e = context.exception;
+                node = WithAdditionalDiagnostics(node, MakeError(node, ErrorCode.ERR_UnexpectedGenericName));
+            }*/
         }
 
         public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
@@ -229,13 +300,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 globalClassMembers.Add(_syntaxFactory.MethodDeclaration(
                     attributeLists: attributeLists,
                     modifiers: modifiers.ToTokenList(),
-                    returnType: Tree.Get<TypeSyntax>(context.Type),
+                    returnType: Get<TypeSyntax>(context.Type),
                     explicitInterfaceSpecifier: null,
-                    identifier: Tree.Get<SyntaxToken>(context.Id),
+                    identifier: Get<SyntaxToken>(context.Id),
                     typeParameterList: null,
-                    parameterList: Tree.Get<ParameterListSyntax>(context.ParamList),
+                    parameterList: Get<ParameterListSyntax>(context.ParamList),
                     constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
-                    body: Tree.Get<BlockSyntax>(context.statementBlock()),
+                    body: Get<BlockSyntax>(context.statementBlock()),
                     expressionBody: null,
                     semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
                 _pool.Free(modifiers);
@@ -259,11 +330,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: modifiers.ToTokenList(),
                     returnType: _syntaxFactory.PredefinedType(SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword)),
                     explicitInterfaceSpecifier: null,
-                    identifier: Tree.Get<SyntaxToken>(context.Id),
+                    identifier: Get<SyntaxToken>(context.Id),
                     typeParameterList: null,
-                    parameterList: Tree.Get<ParameterListSyntax>(context.ParamList),
+                    parameterList: Get<ParameterListSyntax>(context.ParamList),
                     constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
-                    body: Tree.Get<BlockSyntax>(context.statementBlock()),
+                    body: Get<BlockSyntax>(context.statementBlock()),
                     expressionBody: null,
                     semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
                 _pool.Free(modifiers);
@@ -278,9 +349,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @params = _pool.AllocateSeparated<ParameterSyntax>();
             foreach (var paramCtx in context._Params)
             {
-                @params.Add(Tree.Get<ParameterSyntax>(paramCtx));
+                @params.Add(Get<ParameterSyntax>(paramCtx));
             }
-            Tree.Put(context, _syntaxFactory.ParameterList(
+            Put(context, _syntaxFactory.ParameterList(
                 SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
                 @params,
                 SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
@@ -296,14 +367,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (m.Type != XSharpParser.AS && m.Type != XSharpParser.IS)
                     modifiers.Add(m.Syntax());
             }
-            Tree.Put(context, _syntaxFactory.Parameter(
+            Put(context, _syntaxFactory.Parameter(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
-                type: Tree.Get<TypeSyntax>(context.Type),
-                identifier: Tree.Get<SyntaxToken>(context.Id),
+                type: Get<TypeSyntax>(context.Type),
+                identifier: Get<SyntaxToken>(context.Id),
                 @default: _syntaxFactory.EqualsValueClause(
                     SyntaxFactory.MissingToken(SyntaxKind.EqualsToken),
-                    Tree.Get<ExpressionSyntax>(context.Default))));
+                    Get<ExpressionSyntax>(context.Default))));
             _pool.Free(attributeLists);
             _pool.Free(modifiers);
         }
@@ -315,9 +386,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var statements = _pool.Allocate<StatementSyntax>();
             foreach (var stmtCtx in context._Stmts)
             {
-                statements.Add(Tree.Get<StatementSyntax>(stmtCtx));
+                statements.Add(Get<StatementSyntax>(stmtCtx));
             }
-            Tree.Put(context, _syntaxFactory.Block(openBrace, statements, closeBrace));
+            Put(context, _syntaxFactory.Block(openBrace, statements, closeBrace));
             _pool.Free(statements);
         }
 
@@ -326,7 +397,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @return = SyntaxFactory.MissingToken(SyntaxKind.ReturnKeyword);
             ExpressionSyntax arg = null;
             var _semicolon = SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken);
-            Tree.Put(context, _syntaxFactory.ReturnStatement(@return, arg, _semicolon));
+            Put(context, _syntaxFactory.ReturnStatement(@return, arg, _semicolon));
         }
 
         public override void ExitExpressionStmt([NotNull] XSharpParser.ExpressionStmtContext context)
@@ -335,11 +406,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var statements = _pool.Allocate<StatementSyntax>();
             foreach (var exprCtx in context._Exprs)
             {
-                statements.Add(_syntaxFactory.ExpressionStatement(Tree.Get<ExpressionSyntax>(exprCtx), _semicolon));
+                statements.Add(_syntaxFactory.ExpressionStatement(Get<ExpressionSyntax>(exprCtx), _semicolon));
             }
             var openBrace = SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken);
             var closeBrace = SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken);
-            Tree.Put(context, _syntaxFactory.Block(openBrace, statements, closeBrace));
+            Put(context, _syntaxFactory.Block(openBrace, statements, closeBrace));
             _pool.Free(statements);
         }
 
@@ -349,11 +420,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
          {
-            Tree.Put(context, 
+            Put(context, 
                     _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            Tree.Get<ExpressionSyntax>(context.Left),
+                            Get<ExpressionSyntax>(context.Left),
                             SyntaxFactory.MissingToken(SyntaxKind.DotToken),
-                            Tree.Get<IdentifierNameSyntax>(context.Right)));
+                            Get<IdentifierNameSyntax>(context.Right)));
         }
 
         public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)
@@ -370,9 +441,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 default:
                     throw new InvalidOperationException();
             }
-            Tree.Put(context, _syntaxFactory.PostfixUnaryExpression(
+            Put(context, _syntaxFactory.PostfixUnaryExpression(
                 kind,
-                Tree.Get<ExpressionSyntax>(context.Expr),
+                Get<ExpressionSyntax>(context.Expr),
                 context.Op.Syntax()));
         }
 
@@ -411,36 +482,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 default:
                     throw new InvalidOperationException();
             }
-            Tree.Put(context, _syntaxFactory.PrefixUnaryExpression(
+            Put(context, _syntaxFactory.PrefixUnaryExpression(
                 kind,
                 context.Op.Syntax(),
-                Tree.Get<ExpressionSyntax>(context.Expr)));
+                Get<ExpressionSyntax>(context.Expr)));
         }
 
         public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
         {
-            Tree.Put(context, _syntaxFactory.BinaryExpression(
+            Put(context, _syntaxFactory.BinaryExpression(
                 context.Op.ExpressionKind(),
-                Tree.Get<ExpressionSyntax>(context.Left),
+                Get<ExpressionSyntax>(context.Left),
                 context.Op.Syntax(),
-                Tree.Get<ExpressionSyntax>(context.Right)));
+                Get<ExpressionSyntax>(context.Right)));
         }
 
         public override void ExitAssignmentExpression([NotNull] XSharpParser.AssignmentExpressionContext context)
         {
-            Tree.Put(context, _syntaxFactory.AssignmentExpression(
+            Put(context, _syntaxFactory.AssignmentExpression(
                 context.Op.ExpressionKind(),
-                Tree.Get<ExpressionSyntax>(context.Left),
+                Get<ExpressionSyntax>(context.Left),
                 context.Op.Syntax(),
-                Tree.Get<ExpressionSyntax>(context.Right)));
+                Get<ExpressionSyntax>(context.Right)));
         }
 
         public override void ExitMethodCall([NotNull] XSharpParser.MethodCallContext context)
         {
-            var expr = Tree.Get<ExpressionSyntax>(context.Expr);
+            var expr = Get<ExpressionSyntax>(context.Expr);
             ArgumentListSyntax argList;
             if (context.ArgList != null)
-                argList = Tree.Get<ArgumentListSyntax>(context.ArgList);
+                argList = Get<ArgumentListSyntax>(context.ArgList);
             else
             {
                 var openParen = SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken);
@@ -448,15 +519,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                 argList = _syntaxFactory.ArgumentList(openParen, args, closeParen);
             }
-            Tree.Put(context, _syntaxFactory.InvocationExpression(expr, argList));
+            Put(context, _syntaxFactory.InvocationExpression(expr, argList));
         }
 
         public override void ExitCtorCall([NotNull] XSharpParser.CtorCallContext context)
         {
-            var type = Tree.Get<TypeSyntax>(context.Type);
+            var type = Get<TypeSyntax>(context.Type);
             ArgumentListSyntax argList;
             if (context.ArgList != null)
-                argList = Tree.Get<ArgumentListSyntax>(context.ArgList);
+                argList = Get<ArgumentListSyntax>(context.ArgList);
             else
             {
                 var openParen = SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken);
@@ -464,7 +535,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                 argList = _syntaxFactory.ArgumentList(openParen, args, closeParen);
             }
-            Tree.Put(context, _syntaxFactory.ObjectCreationExpression(
+            Put(context, _syntaxFactory.ObjectCreationExpression(
                 SyntaxFactory.MissingToken(SyntaxKind.NewKeyword),
                 type, 
                 argList,
@@ -473,7 +544,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitArrayAccess([NotNull] XSharpParser.ArrayAccessContext context)
         {
-            var expr = Tree.Get<ExpressionSyntax>(context.Expr);
+            var expr = Get<ExpressionSyntax>(context.Expr);
             var openBracket = SyntaxFactory.MissingToken(SyntaxKind.OpenBracketToken);
             var closeBracket = SyntaxFactory.MissingToken(SyntaxKind.CloseBracketToken);
             BracketedArgumentListSyntax argList;
@@ -484,7 +555,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (args.Count != 0)
                         args.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                    args.Add(_syntaxFactory.Argument(null, null, Tree.Get<ExpressionSyntax>(e)));
+                    args.Add(_syntaxFactory.Argument(null, null, Get<ExpressionSyntax>(e)));
                 }
                 argList = _syntaxFactory.BracketedArgumentList(openBracket, args, closeBracket);
                 _pool.Free(args);
@@ -494,58 +565,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                 argList = _syntaxFactory.BracketedArgumentList(openBracket, args, closeBracket);
             }
-            Tree.Put(context, _syntaxFactory.ElementAccessExpression(
+            Put(context, _syntaxFactory.ElementAccessExpression(
                 expr,
                 argList));
         }
 
         public override void ExitNameExpression([NotNull] XSharpParser.NameExpressionContext context)
         {
-            Tree.Put(context, Tree.Get<NameSyntax>(context.Name));
+            Put(context, Get<NameSyntax>(context.Name));
         }
 
         public override void ExitTypeExpression([NotNull] XSharpParser.TypeExpressionContext context)
         {
-            Tree.Put(context, Tree.Get<TypeSyntax>(context.Type));
+            Put(context, Get<TypeSyntax>(context.Type));
         }
 
         public override void ExitIifExpression([NotNull] XSharpParser.IifExpressionContext context)
         {
-            Tree.Put(context, Tree.Get<ExpressionSyntax>(context.Expr));
+            Put(context, Get<ExpressionSyntax>(context.Expr));
         }
 
         public override void ExitParenExpression([NotNull] XSharpParser.ParenExpressionContext context)
         {
-            Tree.Put(context, _syntaxFactory.ParenthesizedExpression(
+            Put(context, _syntaxFactory.ParenthesizedExpression(
                 SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
-                Tree.Get<ExpressionSyntax>(context.Expr),
+                Get<ExpressionSyntax>(context.Expr),
                 SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
         }
 
         public override void ExitTypeCast([NotNull] XSharpParser.TypeCastContext context)
         {
-            Tree.Put(context, _syntaxFactory.CastExpression(
+            Put(context, _syntaxFactory.CastExpression(
                 SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
-                Tree.Get<TypeSyntax>(context.Type),
+                Get<TypeSyntax>(context.Type),
                 SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken),
-                Tree.Get<TypeSyntax>(context.Expr)));
+                Get<TypeSyntax>(context.Expr)));
         }
 
         public override void ExitSizeOfExpression([NotNull] XSharpParser.SizeOfExpressionContext context)
         {
-            Tree.Put(context, _syntaxFactory.SizeOfExpression(
+            Put(context, _syntaxFactory.SizeOfExpression(
                 SyntaxFactory.MissingToken(SyntaxKind.SizeOfKeyword),
                 SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
-                Tree.Get<TypeSyntax>(context.Type),
+                Get<TypeSyntax>(context.Type),
                 SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
         }
 
         public override void ExitTypeOfExpression([NotNull] XSharpParser.TypeOfExpressionContext context)
         {
-            Tree.Put(context, _syntaxFactory.TypeOfExpression(
+            Put(context, _syntaxFactory.TypeOfExpression(
                 SyntaxFactory.MissingToken(SyntaxKind.TypeOfKeyword),
                 SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
-                Tree.Get<TypeSyntax>(context.Type),
+                Get<TypeSyntax>(context.Type),
                 SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
         }
 
@@ -556,33 +627,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken);
             foreach (var argCtx in context._Args)
             {
-                args.Add(Tree.Get<ArgumentSyntax>(argCtx));
+                args.Add(Get<ArgumentSyntax>(argCtx));
             }
-            Tree.Put(context, _syntaxFactory.ArgumentList(openParen, args, closeParen));
+            Put(context, _syntaxFactory.ArgumentList(openParen, args, closeParen));
             _pool.Free(args);
         }
 
         public override void ExitArgument([NotNull] XSharpParser.ArgumentContext context)
         {
-            Tree.Put(context, _syntaxFactory.Argument(null, null, Tree.Get<ExpressionSyntax>(context.Expr)));
+            Put(context, _syntaxFactory.Argument(null, null, Get<ExpressionSyntax>(context.Expr)));
         }
 
         public override void ExitQualifiedName([NotNull] XSharpParser.QualifiedNameContext context)
         {
-            Tree.Put(context,
-                _syntaxFactory.QualifiedName(Tree.Get<NameSyntax>(context.Left),
+            Put(context,
+                _syntaxFactory.QualifiedName(Get<NameSyntax>(context.Left),
                 SyntaxFactory.MissingToken(SyntaxKind.DotToken),
-                _syntaxFactory.IdentifierName(Tree.Get<SyntaxToken>(context.Right))));
+                _syntaxFactory.IdentifierName(Get<SyntaxToken>(context.Right))));
         }
 
         public override void ExitSimpleName([NotNull] XSharpParser.SimpleNameContext context)
         {
-            Tree.Put(context, _syntaxFactory.IdentifierName(Tree.Get<SyntaxToken>(context.Id)));
+            Put(context, _syntaxFactory.IdentifierName(Get<SyntaxToken>(context.Id)));
         }
 
         public override void ExitGenericName([NotNull] XSharpParser.GenericNameContext context)
         {
-            Tree.Put(context, _syntaxFactory.GenericName(Tree.Get<SyntaxToken>(context.Id), Tree.Get<TypeArgumentListSyntax>(context.GenericArgList)));
+            Put(context, _syntaxFactory.GenericName(Get<SyntaxToken>(context.Id), Get<TypeArgumentListSyntax>(context.GenericArgList)));
         }
 
         public override void ExitGenericArgumentList([NotNull] XSharpParser.GenericArgumentListContext context)
@@ -592,9 +663,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (types.Count != 0)
                     types.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                types.Add(Tree.Get<TypeSyntax>(context));
+                types.Add(Get<TypeSyntax>(context));
             }
-            Tree.Put(context, _syntaxFactory.TypeArgumentList(
+            Put(context, _syntaxFactory.TypeArgumentList(
                 SyntaxFactory.MissingToken(SyntaxKind.LessThanToken),
                 types.ToList(),
                 SyntaxFactory.MissingToken(SyntaxKind.GreaterThanToken)
@@ -604,13 +675,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIdentifierName([NotNull] XSharpParser.IdentifierNameContext context)
         {
-            Tree.Put(context, _syntaxFactory.IdentifierName(Tree.Get<SyntaxToken>(context.Id)));
+            Put(context, _syntaxFactory.IdentifierName(Get<SyntaxToken>(context.Id)));
         }
 
         public override void ExitPtrDatatype([NotNull] XSharpParser.PtrDatatypeContext context)
         {
-            Tree.Put(context, 
-                _syntaxFactory.PointerType(Tree.Get<TypeSyntax>(context.TypeName),
+            Put(context, 
+                _syntaxFactory.PointerType(Get<TypeSyntax>(context.TypeName),
                 SyntaxFactory.MissingToken(SyntaxKind.AsteriskToken)));
         }
 
@@ -619,9 +690,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var ranks = _pool.Allocate<ArrayRankSpecifierSyntax>();
             foreach (var rankCtx in context._Ranks)
             {
-                ranks.Add(Tree.Get<ArrayRankSpecifierSyntax>(rankCtx));
+                ranks.Add(Get<ArrayRankSpecifierSyntax>(rankCtx));
             }
-            Tree.Put(context, _syntaxFactory.ArrayType(Tree.Get<TypeSyntax>(context.TypeName), ranks));
+            Put(context, _syntaxFactory.ArrayType(Get<TypeSyntax>(context.TypeName), ranks));
             _pool.Free(ranks);
         }
 
@@ -635,7 +706,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 sizes.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
             }
             sizes.Add(omittedArraySizeExpressionInstance);
-            Tree.Put(context, _syntaxFactory.ArrayRankSpecifier(
+            Put(context, _syntaxFactory.ArrayRankSpecifier(
                 SyntaxFactory.MissingToken(SyntaxKind.OpenBracketToken),
                 sizes,
                 SyntaxFactory.MissingToken(SyntaxKind.CloseBracketToken)));
@@ -644,35 +715,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitSimpleDatatype([NotNull] XSharpParser.SimpleDatatypeContext context)
         {
-            Tree.Put(context, Tree.Get<TypeSyntax>(context.TypeName));
+            Put(context, Get<TypeSyntax>(context.TypeName));
         }
 
         public override void ExitTypeName([NotNull] XSharpParser.TypeNameContext context)
         {
             if (context.NativeType != null)
-                Tree.Put(context, Tree.Get<PredefinedTypeSyntax>(context.NativeType));
+                Put(context, Get<PredefinedTypeSyntax>(context.NativeType));
             else if (context.Name != null)
-                Tree.Put(context, Tree.Get<NameSyntax>(context.Name));
+                Put(context, Get<NameSyntax>(context.Name));
         }
 
         public override void ExitLiteralExpression([NotNull] XSharpParser.LiteralExpressionContext context)
         {
-            Tree.Put(context, Tree.Get<LiteralExpressionSyntax>(context.Literal));
+            Put(context, Get<LiteralExpressionSyntax>(context.Literal));
         }
 
         public override void ExitLiteralArrayExpression([NotNull] XSharpParser.LiteralArrayExpressionContext context)
         {
-            Tree.Put(context, Tree.Get<InitializerExpressionSyntax>(context.LiteralArray));
+            Put(context, Get<InitializerExpressionSyntax>(context.LiteralArray));
         }
 
         public override void ExitIif([NotNull] XSharpParser.IifContext context)
         {
-            Tree.Put(context, _syntaxFactory.ConditionalExpression(
-                Tree.Get<ExpressionSyntax>(context.Cond),
+            Put(context, _syntaxFactory.ConditionalExpression(
+                Get<ExpressionSyntax>(context.Cond),
                 SyntaxFactory.MissingToken(SyntaxKind.QuestionToken),
-                Tree.Get<ExpressionSyntax>(context.TrueExpr),
+                Get<ExpressionSyntax>(context.TrueExpr),
                 SyntaxFactory.MissingToken(SyntaxKind.ColonToken),
-                Tree.Get<ExpressionSyntax>(context.FalseExpr)));
+                Get<ExpressionSyntax>(context.FalseExpr)));
         }
 
         public override void ExitLiteralArray([NotNull] XSharpParser.LiteralArrayContext context)
@@ -686,30 +757,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (exprs.Count != 0)
                         exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                    exprs.Add(Tree.Get<ExpressionSyntax>(e));
+                    exprs.Add(Get<ExpressionSyntax>(e));
                 }
-                Tree.Put(context, _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, openBrace, exprs, closeBrace));
+                Put(context, _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, openBrace, exprs, closeBrace));
                 _pool.Free(exprs);
             }
             else
             {
                 var exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
-                Tree.Put(context, _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, openBrace, exprs, closeBrace));
+                Put(context, _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, openBrace, exprs, closeBrace));
             }
         }
 
         public override void ExitCodeblockExpression([NotNull] XSharpParser.CodeblockExpressionContext context)
         {
-            Tree.Put(context, Tree.Get<LambdaExpressionSyntax>(context.CbExpr));
+            Put(context, Get<LambdaExpressionSyntax>(context.CbExpr));
         }
 
         public override void ExitCodeblock([NotNull] XSharpParser.CodeblockContext context)
         {
-            Tree.Put(context, _syntaxFactory.ParenthesizedLambdaExpression(
+            Put(context, _syntaxFactory.ParenthesizedLambdaExpression(
                 asyncKeyword: null,
-                parameterList: Tree.Get<ParameterListSyntax>(context.CbParamList),
+                parameterList: Get<ParameterListSyntax>(context.CbParamList),
                 arrowToken: SyntaxFactory.MissingToken(SyntaxKind.EqualsGreaterThanToken), 
-                body: Tree.Get<ExpressionSyntax>(context.Expr)));
+                body: Get<ExpressionSyntax>(context.Expr)));
         }
 
         public override void ExitCodeblockParamList([NotNull] XSharpParser.CodeblockParamListContext context)
@@ -723,12 +794,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributeLists: attributeLists,
                     modifiers: modifiers.ToTokenList(),
                     type: null,
-                    identifier: Tree.Get<SyntaxToken>(idCtx),
+                    identifier: Get<SyntaxToken>(idCtx),
                     @default: null));
                 _pool.Free(attributeLists);
                 _pool.Free(modifiers);
             }
-            Tree.Put(context, _syntaxFactory.ParameterList(
+            Put(context, _syntaxFactory.ParameterList(
                 SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
                 @params,
                 SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
@@ -737,22 +808,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
-            Tree.Put(context, _syntaxFactory.LiteralExpression(context.Token.ExpressionKind(), context.Token.Syntax()));
+            Put(context, _syntaxFactory.LiteralExpression(context.Token.ExpressionKind(), context.Token.Syntax()));
         }
 
         public override void ExitIdentifier([NotNull] XSharpParser.IdentifierContext context)
         {
-            Tree.Put(context, context.Token.Syntax());
+            Put(context, context.Token.Syntax());
         }
 
         public override void ExitNativeType([NotNull] XSharpParser.NativeTypeContext context)
         {
-            Tree.Put(context, _syntaxFactory.PredefinedType(context.Token.Syntax()));
+            Put(context, _syntaxFactory.PredefinedType(context.Token.Syntax()));
         }
 
         public override void ExitAccessModifier([NotNull] XSharpParser.AccessModifierContext context)
         {
-            Tree.Put(context, _syntaxFactory.PredefinedType(context.Token.Syntax()));
+            Put(context, _syntaxFactory.PredefinedType(context.Token.Syntax()));
         }
     }
 }

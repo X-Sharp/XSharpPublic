@@ -24,38 +24,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
-        private List<RecognitionException> _errors = new List<RecognitionException>();
 
-        internal class XSharpParserErrorListener : IAntlrErrorListener<IToken>
+        internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
-            XSharpLanguageParser _parser;
+            public int TotalErrors { get; private set; }
 
-            internal XSharpParserErrorListener(XSharpLanguageParser Parser)
+            internal XSharpErrorListener()
             {
-                _parser = Parser;
+                TotalErrors = 0;
             }
 
-            public virtual void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+            public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
             {
-                _parser._errors.Add(e);
-                //_errors.Add("line :" + offendingSymbol.Line + " column: " + offendingSymbol.Column + " " + msg);
-                //_parser.WithAdditionalDiagnostics(node, MakeError(node, code, args));
-            }
-
-        }
-
-        internal class XSharpLexerErrorListener : IAntlrErrorListener<int>
-        {
-            XSharpLanguageParser _parser;
-
-            internal XSharpLexerErrorListener(XSharpLanguageParser Parser)
-            {
-                _parser = Parser;
-            }
-
-            public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
-            {
-                _parser._errors.Add(e);
+                TotalErrors += 1;
                 /*if (e.OffendingToken != null)
                 {
                     _errors.Add("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
@@ -64,7 +45,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     _errors.Add("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
                 }*/
-
             }
 
         }
@@ -128,8 +108,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var lexer = new XSharpLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new XSharpParser(tokens);
-            lexer.AddErrorListener(new XSharpLexerErrorListener(this));
-            parser.AddErrorListener(new XSharpParserErrorListener(this));
+            var errorListener = new XSharpErrorListener();
+            parser.AddErrorListener(errorListener);
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             try
             {
@@ -143,19 +123,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 tree = parser.source();
             }
 
-            var listener = new XSharpParserListener(_pool, _syntaxFactory);
+            var walker = new ParseTreeWalker();
+
+            if (errorListener.TotalErrors != 0)
+            {
+                var errorAnalyzer = new XSharpParseErrorAnalysis();
+                walker.Walk(errorAnalyzer, tree);
+            }
+
+            var treeTransform = new XSharpTreeTransformation(_pool, _syntaxFactory);
             try
             {
-                var walker = new ParseTreeWalker();
-                walker.Walk(listener, tree);
+                walker.Walk(treeTransform, tree);
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                var result = _syntaxFactory.CompilationUnit(listener.Externs, listener.Usings, listener.Attributes, listener.Members, eof);
-                // CSharpSyntaxNode
+                var result = _syntaxFactory.CompilationUnit(treeTransform.Externs, treeTransform.Usings, treeTransform.Attributes, treeTransform.Members, eof);
+                result.XNode = (XSharpParser.SourceContext)tree;
                 return result;
             }
             finally
             {
-                listener.Free();
+                treeTransform.Free();
             }
         }
 

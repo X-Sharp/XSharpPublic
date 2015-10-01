@@ -17,7 +17,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal abstract class CSharpCompiler : CommonCompiler
     {
+#if XSHARP
+        internal const string ResponseFileName = "xsc.rsp";
+#else
         internal const string ResponseFileName = "csc.rsp";
+#endif
 
         private readonly CommandLineDiagnosticFormatter _diagnosticFormatter;
 

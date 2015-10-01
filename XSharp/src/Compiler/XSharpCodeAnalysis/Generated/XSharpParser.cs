@@ -61,7 +61,7 @@ public partial class XSharpParser : Parser {
 		LBRKT=175, RBRKT=176, COLON=177, COMMA=178, PIPE=179, AMP=180, ADDROF=181, 
 		ALIAS=182, DOT=183, HEX_CONST=184, BIN_CONST=185, INT_CONST=186, DATE_CONST=187, 
 		REAL_CONST=188, SYMBOL_CONST=189, STRING_CONST=190, WS=191, SL_COMMENT=192, 
-		NL=193, ID=194;
+		NL=193, ID=194, UNRECOGNIZED=195;
 	public const int
 		RULE_source = 0, RULE_entity = 1, RULE_function = 2, RULE_procedure = 3, 
 		RULE_parameterList = 4, RULE_parameter = 5, RULE_statementBlock = 6, RULE_statement = 7, 
@@ -127,7 +127,7 @@ public partial class XSharpParser : Parser {
 		"LPAREN", "RPAREN", "LCURLY", "RCURLY", "LBRKT", "RBRKT", "COLON", "COMMA", 
 		"PIPE", "AMP", "ADDROF", "ALIAS", "DOT", "HEX_CONST", "BIN_CONST", "INT_CONST", 
 		"DATE_CONST", "REAL_CONST", "SYMBOL_CONST", "STRING_CONST", "WS", "SL_COMMENT", 
-		"NL", "ID"
+		"NL", "ID", "UNRECOGNIZED"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -3710,7 +3710,7 @@ public partial class XSharpParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3\xC4\x21C\x4\x2\t"+
+		"\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3\xC5\x21C\x4\x2\t"+
 		"\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x4\x6\t\x6\x4\a\t\a\x4\b\t\b\x4\t"+
 		"\t\t\x4\n\t\n\x4\v\t\v\x4\f\t\f\x4\r\t\r\x4\xE\t\xE\x4\xF\t\xF\x4\x10"+
 		"\t\x10\x4\x11\t\x11\x4\x12\t\x12\x4\x13\t\x13\x4\x14\t\x14\x4\x15\t\x15"+

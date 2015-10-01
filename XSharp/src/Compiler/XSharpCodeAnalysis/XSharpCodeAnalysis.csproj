@@ -278,7 +278,9 @@
     <Compile Include="Generated\XSharpListener.cs" />
     <Compile Include="Generated\XSharpParser.cs" />
     <Compile Include="Parser\ParseTreeTypedProperty.cs" />
+    <Compile Include="Parser\XSharpParseErrorAnalysis.cs" />
     <Compile Include="Parser\XSharpLanguageParser.cs" />
+    <Compile Include="Parser\XSharpSyntaxTree.cs" />
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />
     <Compile Include="XSharpResources.Designer.cs">

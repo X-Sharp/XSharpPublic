@@ -14,7 +14,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\clr-core\</OutDir>
     <CSharpSyntaxGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpSyntaxGenerator.exe</CSharpSyntaxGeneratorToolPath>
     <BoundTreeGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\BoundTreeGenerator.exe</BoundTreeGeneratorToolPath>
@@ -278,6 +278,7 @@
     <Compile Include="Generated\XSharpListener.cs" />
     <Compile Include="Generated\XSharpParser.cs" />
     <Compile Include="Parser\ParseTreeTypedProperty.cs" />
+    <Compile Include="Parser\XSharpErrorStrategy.cs" />
     <Compile Include="Parser\XSharpParseErrorAnalysis.cs" />
     <Compile Include="Parser\XSharpLanguageParser.cs" />
     <Compile Include="Parser\XSharpSyntaxTree.cs" />
@@ -296,8 +297,8 @@
     <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)ErrorFacts.Generated.cs" />
     <Compile Include="$(IntermediateOutputPath)Syntax.xml.Generated.cs" />
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
-    <ErrorCode Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Errors\ErrorCode.cs" />
+    <Compile Include="ErrorCode.cs" />
+    <ErrorCode Include="ErrorCode.cs" />
     <SyntaxDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml">
       <SubType>Designer</SubType>
     </SyntaxDefinition>

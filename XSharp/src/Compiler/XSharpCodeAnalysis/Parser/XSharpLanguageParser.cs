@@ -25,29 +25,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
 
-        internal class XSharpErrorListener : IAntlrErrorListener<IToken>
-        {
-            public int TotalErrors { get; private set; }
-
-            internal XSharpErrorListener()
-            {
-                TotalErrors = 0;
-            }
-
-            public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
-            {
-                TotalErrors += 1;
-                /*if (e.OffendingToken != null)
-                {
-                    _errors.Add("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
-                }
-                else
-                {
-                    _errors.Add("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
-                }*/
-            }
-
-        }
+        //internal class XSharpErrorListener : IAntlrErrorListener<IToken>
+        //{
+        //    public int TotalErrors { get; private set; }
+        //    internal XSharpErrorListener()
+        //    {
+        //        TotalErrors = 0;
+        //    }
+        //    public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+        //    {
+        //        TotalErrors += 1;
+        //        /*if (e.OffendingToken != null)
+        //        {
+        //            _errors.Add("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
+        //        }
+        //        else
+        //        {
+        //            _errors.Add("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
+        //        }*/
+        //    }
+        //}
 
         internal XSharpLanguageParser(
             //Lexer lexer,
@@ -108,8 +105,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var lexer = new XSharpLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new XSharpParser(tokens);
-            var errorListener = new XSharpErrorListener();
-            parser.AddErrorListener(errorListener);
+            //var errorListener = new XSharpErrorListener();
+            //parser.AddErrorListener(errorListener);
+            parser.ErrorHandler = new XSharpErrorStrategy();
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             try
             {
@@ -125,13 +123,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var walker = new ParseTreeWalker();
 
-            if (errorListener.TotalErrors != 0)
+            //if (errorListener.TotalErrors != 0)
+            if (parser.NumberOfSyntaxErrors != 0)
             {
-                var errorAnalyzer = new XSharpParseErrorAnalysis();
+                var errorAnalyzer = new XSharpParseErrorAnalysis(parser);
                 walker.Walk(errorAnalyzer, tree);
             }
 
-            var treeTransform = new XSharpTreeTransformation(_pool, _syntaxFactory);
+            var treeTransform = new XSharpTreeTransformation(parser, _pool, _syntaxFactory);
             try
             {
                 walker.Walk(treeTransform, tree);

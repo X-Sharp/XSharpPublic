@@ -26,9 +26,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public SyntaxListBuilder<MemberDeclarationSyntax> Members;
         internal SyntaxListPool _pool;
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
-        private ParseTreeTypedProperty Tree = new ParseTreeTypedProperty();
+        private XSharpParser _parser;
 
-        public XSharpTreeTransformation(SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
+        public XSharpTreeTransformation(XSharpParser parser, SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
         {
             Externs = pool.Allocate<ExternAliasDirectiveSyntax>();
             Usings = pool.Allocate<UsingDirectiveSyntax>();
@@ -36,6 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             Members = pool.Allocate<MemberDeclarationSyntax>();
             _pool = pool;
             _syntaxFactory = syntaxFactory;
+            _parser = parser;
         }
 
         internal void Free()
@@ -189,26 +190,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected static SyntaxDiagnosticInfo MakeError(int offset, int width, ErrorCode code)
-        {
-            return new SyntaxDiagnosticInfo(offset, width, code);
-        }
-
-        protected static SyntaxDiagnosticInfo MakeError(int offset, int width, ErrorCode code, params object[] args)
-        {
-            return new SyntaxDiagnosticInfo(offset, width, code, args);
-        }
-
-        protected static SyntaxDiagnosticInfo MakeError(CSharpSyntaxNode node, ErrorCode code, params object[] args)
-        {
-            return new SyntaxDiagnosticInfo(node.GetLeadingTriviaWidth(), node.Width, code, args);
-        }
-
-        protected static SyntaxDiagnosticInfo MakeError(ErrorCode code, params object[] args)
-        {
-            return new SyntaxDiagnosticInfo(code, args);
-        }
-
         protected virtual TNode WithAdditionalDiagnostics<TNode>(TNode node, params DiagnosticInfo[] diagnostics) where TNode : CSharpSyntaxNode
         {
             DiagnosticInfo[] existingDiags = node.GetDiagnostics();
@@ -228,19 +209,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private void Put<T>([NotNull] ParserRuleContext context, T node) where T : InternalSyntax.CSharpSyntaxNode
         {
-            Tree.Put(context, node);
+            node.XNode = context;
+            context.CsNode = node;
         }
 
         private T Get<T>([NotNull] ParserRuleContext context) where T : InternalSyntax.CSharpSyntaxNode
         {
-            return Tree.Get<T>(context);
-        }
+            if (context.CsNode == null)
+                return default(T);
 
-        List<IErrorNode> errors = new List<IErrorNode>();
+            return (T)context.CsNode;
+        }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
-            errors.Add(node);
         }
 
         public override void VisitTerminal(ITerminalNode node)
@@ -249,23 +231,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
-            if (errors.Count > 0)
+            var ed = _parser.Errors.Get<ParseErrorData>(context);
+            if (ed != null)
             {
-                var node = Tree.Get<object>(context);
-                if (node != null && node is CSharpSyntaxNode)
+                if (context.CsNode != null && context.CsNode is CSharpSyntaxNode)
                 {
-                    foreach (var e in errors) {
-                        Tree.Put(context, WithAdditionalDiagnostics((CSharpSyntaxNode)node,
-                            MakeError((CSharpSyntaxNode)node, ErrorCode.ERR_UnexpectedGenericName)));
-                    }
-                    errors.Clear();
+                    var csNode = (CSharpSyntaxNode)context.CsNode;
+                    Put(context, WithAdditionalDiagnostics(csNode,
+                        new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, ed.Code, ed.Args)));
                 }
             }
-            /*if (context.exception != null)
-            {
-                //RecognitionException e = context.exception;
-                node = WithAdditionalDiagnostics(node, MakeError(node, ErrorCode.ERR_UnexpectedGenericName));
-            }*/
         }
 
         public override void ExitEntity([NotNull] XSharpParser.EntityContext context)

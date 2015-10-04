@@ -231,14 +231,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
-            var ed = _parser.Errors.Get<ParseErrorData>(context);
-            if (ed != null)
+            if (context.HasErrors() && context.CsNode != null && context.CsNode is CSharpSyntaxNode)
             {
-                if (context.CsNode != null && context.CsNode is CSharpSyntaxNode)
+                foreach (var e in context.ErrorData)
                 {
                     var csNode = (CSharpSyntaxNode)context.CsNode;
                     Put(context, WithAdditionalDiagnostics(csNode,
-                        new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, ed.Code, ed.Args)));
+                        new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, e.Code, e.Args)));
                 }
             }
         }

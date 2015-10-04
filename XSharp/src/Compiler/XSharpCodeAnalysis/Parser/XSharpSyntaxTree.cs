@@ -19,7 +19,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
     {
-        internal ParseTreeTypedProperty Errors = new ParseTreeTypedProperty();
+        //internal ParseTreeTypedProperty Errors = new ParseTreeTypedProperty();
 
         //internal ParseTreeTypedProperty CsNodes = new ParseTreeTypedProperty();
     }
@@ -64,6 +64,20 @@ namespace Antlr4.Runtime
     public partial class RuleContext
     {
         public object CsNode { get; set; }
+
+        internal List<ParseErrorData> ErrorData;
+
+        internal bool HasErrors()
+        {
+            return (ErrorData != null) && ErrorData.Count > 0;
+        }
+
+        internal void AddError(ParseErrorData e)
+        {
+            if (ErrorData == null)
+                ErrorData = new List<ParseErrorData>();
+            ErrorData.Add(e);
+        }
     }
 
 }

@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
-            _parser.Errors.Put(node, new ParseErrorData(node, ErrorCode.ERR_UnexpectedGenericName));
+            node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_UnexpectedGenericName));
         }
 
         public override void VisitTerminal(ITerminalNode node)
@@ -38,7 +38,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
-            _parser.Errors.Put(context, new ParseErrorData(context, ErrorCode.ERR_UnexpectedGenericName));
+            if (context.exception != null)
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedGenericName));
         }
 
         public override void ExitEntity([NotNull] XSharpParser.EntityContext context)

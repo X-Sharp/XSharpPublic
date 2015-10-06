@@ -27,9 +27,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _parser = parser;
         }
 
+        internal void CheckMissingToken(ref IToken t, int tId, string tText = "")
+        {
+            if (t == null)
+            {
+                t = _parser.TokenFactory.Create(XSharpParser.ID, "");
+            }
+        }
+
         public override void VisitErrorNode([NotNull] IErrorNode node)
         {
-            node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_UnexpectedGenericName));
+            if (node.Symbol.TokenIndex == -1)
+            {
+                node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_UnexpectedGenericName));
+            }
+            else
+            {
+                node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_UnexpectedGenericName));
+            }
         }
 
         public override void VisitTerminal(ITerminalNode node)
@@ -60,6 +75,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
         {
+            if (context.Type == null)
+            {
+/*                var t = new XSharpParser.SimpleDatatypeContext(new XSharpParser.DatatypeContext(context, 0));
+                t.TypeName = new XSharpParser.TypeNameContext(t, 0);
+                t.AddChild(t.TypeName);
+                t.TypeName.NativeType = new XSharpParser.NativeTypeContext(t, 0);
+                t.TypeName.AddChild(t.TypeName.NativeType);
+                t.TypeName.NativeType.Token = _parser.TokenFactory.Create(XSharpParser.VOID, "");
+                t.TypeName.NativeType.AddChild(t.TypeName.NativeType.Token);
+                context.Type = t;
+                context.AddChild(t);*/
+                context.Type = new XSharpParser.DatatypeContext(context, 0);
+                context.Type.CsNode = SyntaxFactory.PredefinedType(SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword));
+//                context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedGenericName));
+            }
+            if (context.StmtBlk == null)
+            {
+                context.StmtBlk = new XSharpParser.StatementBlockContext(context, 0);
+                context.AddChild(context.StmtBlk);
+            }
         }
 
         public override void ExitProcedure([NotNull] XSharpParser.ProcedureContext context)
@@ -232,6 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIdentifier([NotNull] XSharpParser.IdentifierContext context)
         {
+            CheckMissingToken(ref context.Token, XSharpParser.ID, "");
         }
 
         public override void ExitNativeType([NotNull] XSharpParser.NativeTypeContext context)

@@ -193,6 +193,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static GreenNode TryGetNode(int kind, GreenNode child1, GreenNode.NodeFlags flags, out int hash)
         {
+#if !XSHARP
             if (CanBeCached(child1))
             {
                 GreenStats.ItemCacheable();
@@ -207,6 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             else
+#endif
             {
                 hash = -1;
             }
@@ -226,6 +228,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static GreenNode TryGetNode(int kind, GreenNode child1, GreenNode child2, GreenNode.NodeFlags flags, out int hash)
         {
+#if !XSHARP
             if (CanBeCached(child1, child2))
             {
                 GreenStats.ItemCacheable();
@@ -240,6 +243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             else
+#endif
             {
                 hash = -1;
             }
@@ -259,6 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static GreenNode TryGetNode(int kind, GreenNode child1, GreenNode child2, GreenNode child3, GreenNode.NodeFlags flags, out int hash)
         {
+#if !XSHARP
             if (CanBeCached(child1, child2, child3))
             {
                 GreenStats.ItemCacheable();
@@ -273,6 +278,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             else
+#endif
             {
                 hash = -1;
             }

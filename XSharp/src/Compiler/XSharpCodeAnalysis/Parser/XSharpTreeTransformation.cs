@@ -207,18 +207,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private void Put<T>([NotNull] ParserRuleContext context, T node) where T : InternalSyntax.CSharpSyntaxNode
+        private void Put<T>([NotNull] IParseTree t, T node) where T : InternalSyntax.CSharpSyntaxNode
         {
-            node.XNode = context;
-            context.CsNode = node;
+            node.XNode = t;
+            t.CsNode = node;
         }
 
-        private T Get<T>([NotNull] ParserRuleContext context) where T : InternalSyntax.CSharpSyntaxNode
+        private T Get<T>([NotNull] IParseTree t) where T : InternalSyntax.CSharpSyntaxNode
         {
-            if (context.CsNode == null)
+            if (t.CsNode == null)
                 return default(T);
 
-            return (T)context.CsNode;
+            return (T)t.CsNode;
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
@@ -280,7 +280,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     typeParameterList: null,
                     parameterList: Get<ParameterListSyntax>(context.ParamList),
                     constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
-                    body: Get<BlockSyntax>(context.statementBlock()),
+                    body: Get<BlockSyntax>(context.StmtBlk),
                     expressionBody: null,
                     semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
                 _pool.Free(modifiers);

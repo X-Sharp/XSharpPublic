@@ -1,2 +1,2 @@
 # XSharp/build/
-Build scripts, msbuild-related files, antlr parser.
+Build scripts, msbuild-related files, antlr parser generator binaries.

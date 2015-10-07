@@ -46,7 +46,11 @@ namespace Antlr4.Runtime.Tree
     /// <see cref="Antlr4.Runtime.RuleContext"/>
     /// object.</p>
     /// </summary>
+#if XSHARP
+    public partial interface IParseTree : ISyntaxTree
+#else
     public interface IParseTree : ISyntaxTree
+#endif
     {
         new IParseTree Parent
         {

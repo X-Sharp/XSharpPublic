@@ -55,7 +55,11 @@ namespace Antlr4.Runtime
     /// ParserRuleContext.
     /// </remarks>
     /// <seealso cref="ParserRuleContext"/>
+#if XSHARP
+    public partial class RuleContext : IRuleNode
+#else
     public class RuleContext : IRuleNode
+#endif
     {
         /// <summary>What context invoked this rule?</summary>
         private Antlr4.Runtime.RuleContext _parent;

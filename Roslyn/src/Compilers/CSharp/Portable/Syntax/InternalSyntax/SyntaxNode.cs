@@ -10,7 +10,11 @@ using System.Diagnostics;
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
+#if XSHARP
+    internal abstract partial class CSharpSyntaxNode : GreenNode
+#else
     internal abstract class CSharpSyntaxNode : GreenNode
+#endif
     {
         internal CSharpSyntaxNode(SyntaxKind kind)
             : base((ushort)kind)

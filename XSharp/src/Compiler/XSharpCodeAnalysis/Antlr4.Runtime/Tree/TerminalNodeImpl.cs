@@ -34,7 +34,11 @@ using Antlr4.Runtime.Tree;
 
 namespace Antlr4.Runtime.Tree
 {
+#if XSHARP
+    public partial class TerminalNodeImpl : ITerminalNode
+#else
     public class TerminalNodeImpl : ITerminalNode
+#endif
     {
         private IToken _symbol;
 

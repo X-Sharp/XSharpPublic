@@ -557,7 +557,9 @@ NL         : '\n' ;
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 
-ID			:  ID_PART ;
+ID			: ID_PART ;
+
+UNRECOGNIZED	: . ;
 
 // Lexer fragments
 

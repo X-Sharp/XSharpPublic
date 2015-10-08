@@ -11,13 +11,19 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
     public class Program
     {
         public static int Main(string[] args)
-            => BuildClient.RunWithConsoleOutput(
-                args,
-                clientDir: AppDomain.CurrentDomain.BaseDirectory,
-                workingDir: Directory.GetCurrentDirectory(),
-                sdkDir: RuntimeEnvironment.GetRuntimeDirectory(),
-                analyzerLoader: new SimpleAnalyzerAssemblyLoader(),
-                language: RequestLanguage.CSharpCompile,
-                fallbackCompiler: Xsc.Run);
+        {
+#if (DEBUG)
+            System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
+            System.Diagnostics.Trace.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
+#endif
+            return BuildClient.RunWithConsoleOutput(
+                    args,
+                    clientDir: AppDomain.CurrentDomain.BaseDirectory,
+                    workingDir: Directory.GetCurrentDirectory(),
+                    sdkDir: RuntimeEnvironment.GetRuntimeDirectory(),
+                    analyzerLoader: new SimpleAnalyzerAssemblyLoader(),
+                    language: RequestLanguage.CSharpCompile,
+                    fallbackCompiler: Xsc.Run);
+        }
     }
 }

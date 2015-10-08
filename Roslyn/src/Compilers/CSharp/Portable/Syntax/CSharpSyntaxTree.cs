@@ -636,11 +636,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private LinePosition GetLinePosition(int position)
         {
-#if XSHARP
-            return new LinePosition();
-#else
             return this.GetText().Lines.GetLinePosition(position);
-#endif
         }
 
         /// <summary>

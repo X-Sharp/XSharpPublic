@@ -57,7 +57,7 @@ namespace Antlr4.Runtime
     /// group values such as this aggregate.  The getters/setters are there to
     /// satisfy the superclass interface.
     /// </remarks>
-    public class ParserRuleContext : RuleContext
+    public partial class ParserRuleContext : RuleContext
     {
         private static readonly Antlr4.Runtime.ParserRuleContext Empty = new Antlr4.Runtime.ParserRuleContext();
 

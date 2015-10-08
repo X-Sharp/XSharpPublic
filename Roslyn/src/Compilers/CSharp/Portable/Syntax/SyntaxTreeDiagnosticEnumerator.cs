@@ -20,12 +20,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         private Diagnostic _current;
         private int _position;
         private const int DefaultStackCapacity = 8;
+#if XSHARP
+        private GreenNode _node;
+#endif
 
         internal SyntaxTreeDiagnosticEnumerator(SyntaxTree syntaxTree, GreenNode node, int position)
         {
             _syntaxTree = null;
             _current = null;
             _position = position;
+#if XSHARP
+            _node = node;
+#endif
             if (node != null && node.ContainsDiagnostics)
             {
                 _syntaxTree = syntaxTree;
@@ -55,6 +61,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     diagIndex++;
                     var sdi = (SyntaxDiagnosticInfo)diags[diagIndex];
 
+#if XSHARP
+                    var length = ((CSharpSyntaxTree)_syntaxTree).GetRoot().XNode?.FullWidth ?? 0;
+                    int spanStart = Math.Min(((CSharp.Syntax.InternalSyntax.CSharpSyntaxNode)node).XNode?.Position + sdi.Offset ?? 0, length);
+                    var spanWidth = Math.Min(spanStart + sdi.Width, length) - spanStart;
+#else
                     //for tokens, we've already seen leading trivia on the stack, so we have to roll back
                     //for nodes, we have yet to see the leading trivia
                     int leadingWidthAlreadyCounted = node.IsToken ? node.GetLeadingTriviaWidth() : 0;
@@ -63,6 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var length = _syntaxTree.GetRoot().FullSpan.Length;
                     var spanStart = Math.Min(_position - leadingWidthAlreadyCounted + sdi.Offset, length);
                     var spanWidth = Math.Min(spanStart + sdi.Width, length) - spanStart;
+#endif
 
                     _current = new CSDiagnostic(sdi, new SourceLocation(_syntaxTree, new TextSpan(spanStart, spanWidth)));
 

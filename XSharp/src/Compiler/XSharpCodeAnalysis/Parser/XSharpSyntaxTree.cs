@@ -54,16 +54,23 @@ namespace Antlr4.Runtime
         public partial interface IParseTree
         {
             object CsNode { get; set;  }
+            int Position { get; }
+            int FullWidth { get; }
         }
-        public partial class TerminalNodeImpl
+        public partial class TerminalNodeImpl: Microsoft.CodeAnalysis.IMessageSerializable
         {
             public object CsNode { get; set; }
+            public int Position { get { return Symbol.StartIndex; } }
+            public int FullWidth {  get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
+            public override string ToString() { return this.GetText(); }
         }
     }
 
     public partial class RuleContext
     {
         public object CsNode { get; set; }
+        public virtual int Position { get; }
+        public virtual int FullWidth { get; }
 
         internal List<ParseErrorData> ErrorData;
 
@@ -80,21 +87,48 @@ namespace Antlr4.Runtime
         }
     }
 
-}
-
-/*namespace Microsoft.CodeAnalysis.CSharp
-{
-    public abstract partial class CSharpSyntaxNode
+    public partial class ParserRuleContext: Microsoft.CodeAnalysis.IMessageSerializable
     {
-        public ParserRuleContext XNode { get { return (ParserRuleContext)(((InternalSyntax.CSharpSyntaxNode)(this.Green)).XNode); } }
+        public override int Position { get { return Start.StartIndex; } }
+        public override int FullWidth { get { return Stop.StopIndex - Start.StartIndex + 1; } }
+        public override string ToString() {
+            /*return this.GetText();*/
+            var s = this.GetType().ToString();
+            return s.Substring(s.LastIndexOfAny(".+".ToCharArray()) + 1).Replace("Context", "");
+        }
     }
-}*/
+
+    internal static class RuleExtensions
+    {
+        internal static void Put<T>([NotNull] this IParseTree t, T node) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            node.XNode = t;
+            t.CsNode = node;
+        }
+
+        internal static T Get<T>([NotNull] this IParseTree t) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            if (t.CsNode == null)
+                return default(T);
+
+            return (T)t.CsNode;
+        }
+    }
+}
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal abstract partial class CSharpSyntaxNode
     {
         public IParseTree XNode { get; internal set; }
+    }
+}
+
+namespace Microsoft.CodeAnalysis.CSharp
+{
+    public abstract partial class CSharpSyntaxNode
+    {
+        internal IParseTree XNode { get { return (((InternalSyntax.CSharpSyntaxNode)(Green)).XNode) ?? Parent?.XNode; } }
     }
 }
 

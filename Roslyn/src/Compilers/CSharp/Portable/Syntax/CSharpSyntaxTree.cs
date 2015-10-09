@@ -525,9 +525,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return SyntaxDiffer.GetTextChanges(oldTree, this);
         }
 
-#endregion
+        #endregion
 
-#region LinePositions and Locations
+        #region LinePositions and Locations
 
         /// <summary>
         /// Gets the location in terms of path, line and column for a given span.
@@ -647,9 +647,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SourceLocation(this, span);
         }
 
-#endregion
+        #endregion
 
-#region Diagnostics
+        #region Diagnostics
 
         /// <summary>
         /// Gets a list of all the diagnostics in the sub tree that has the specified node as its root.
@@ -741,9 +741,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetDiagnostics(this.GetRoot(cancellationToken));
         }
 
-#endregion
+        #endregion
 
-#region SyntaxTree
+        #region SyntaxTree
 
         protected override SyntaxNode GetRootCore(CancellationToken cancellationToken)
         {
@@ -778,6 +778,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-#endregion
+        #endregion
     }
 }

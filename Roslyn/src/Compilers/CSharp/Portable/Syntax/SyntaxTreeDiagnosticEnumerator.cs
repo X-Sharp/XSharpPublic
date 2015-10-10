@@ -61,10 +61,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     diagIndex++;
                     var sdi = (SyntaxDiagnosticInfo)diags[diagIndex];
 
-#if XSHARP
+#if XSHARP && false
                     var length = ((CSharpSyntaxTree)_syntaxTree).GetRoot().XNode?.FullWidth ?? 0;
                     int spanStart = Math.Min(((CSharp.Syntax.InternalSyntax.CSharpSyntaxNode)node).XNode?.Position + sdi.Offset ?? 0, length);
                     var spanWidth = Math.Min(spanStart + sdi.Width, length) - spanStart;
+                    Debug.WriteLine("Diag span {0} .. {1}", spanStart, spanWidth);
 #else
                     //for tokens, we've already seen leading trivia on the stack, so we have to roll back
                     //for nodes, we have yet to see the leading trivia

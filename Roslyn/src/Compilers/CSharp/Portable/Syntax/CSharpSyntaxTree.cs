@@ -540,6 +540,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <remarks>The values are not affected by line mapping directives (<c>#line</c>).</remarks>
         public override FileLinePositionSpan GetLineSpan(TextSpan span, CancellationToken cancellationToken = default(CancellationToken))
         {
+#if XSHARP
+            if (span.Length > 0) span = new TextSpan(span.Start,span.Length-1);
+#endif
             return new FileLinePositionSpan(this.FilePath, GetLinePosition(span.Start), GetLinePosition(span.End));
         }
 
@@ -567,6 +570,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
+#if XSHARP
+            span = GetXNodeSpan(span);
+#endif
             return _lazyLineDirectiveMap.TranslateSpan(this.GetText(cancellationToken), this.FilePath, span);
         }
 
@@ -578,6 +584,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
+#if XSHARP
+            position = GetXNodePosition(position);
+#endif
             return _lazyLineDirectiveMap.GetLineVisibility(this.GetText(cancellationToken), position);
         }
 
@@ -596,6 +605,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
+#if XSHARP
+            span = GetXNodeSpan(span);
+#endif
             return _lazyLineDirectiveMap.TranslateSpanAndVisibility(this.GetText(), this.FilePath, span, out isHiddenPosition);
         }
 
@@ -636,8 +648,45 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private LinePosition GetLinePosition(int position)
         {
+#if XSHARP
+            position = GetXNodePosition(position);
+#endif
             return this.GetText().Lines.GetLinePosition(position);
         }
+
+#if XSHARP
+        private int GetXNodePosition(int position)
+        {
+            if (position != 0) {
+                var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
+                while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth))) {
+                    var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
+                    if (n == null || n == node)
+                        break;
+                    node = n;
+                }
+                position = (position < node.Position + node.FullWidth) ? node.XNode?.Position ?? 0 : node.XNode?.Position + node.XNode?.FullWidth ?? 0;
+            }
+            return position;
+        }
+
+        private TextSpan GetXNodeSpan(TextSpan span)
+        {
+            if (span.Start != 0 && span.End != 0) {
+                var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
+                while (!node.Green.IsToken && (span.Start > node.Position || span.Length < node.FullWidth)) {
+                    var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(span.Start);
+                    if (n == null || n == node)
+                        break;
+                    node = n;
+                }
+                var start = node.XNode?.Position ?? 0;
+                var length = node.XNode?.FullWidth ?? 0;
+                return new TextSpan(start,length);
+            }
+            return span;
+        }
+#endif
 
         /// <summary>
         /// Gets a <see cref="Location"/> for the specified text <paramref name="span"/>.

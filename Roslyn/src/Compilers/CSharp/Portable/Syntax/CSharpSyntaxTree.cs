@@ -541,9 +541,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override FileLinePositionSpan GetLineSpan(TextSpan span, CancellationToken cancellationToken = default(CancellationToken))
         {
 #if XSHARP
-            if (span.Length > 0) span = new TextSpan(span.Start,span.Length-1);
-#endif
+            span = GetXNodeSpan(span);
+            var s = this.GetText().Lines.GetLinePosition(span.Start);
+            var e = this.GetText().Lines.GetLinePosition(span.End);
+            return new FileLinePositionSpan(this.FilePath, s, e);
+#else
             return new FileLinePositionSpan(this.FilePath, GetLinePosition(span.Start), GetLinePosition(span.End));
+#endif
         }
 
         /// <summary>
@@ -673,15 +677,25 @@ namespace Microsoft.CodeAnalysis.CSharp
         private TextSpan GetXNodeSpan(TextSpan span)
         {
             if (span.Start != 0 && span.End != 0) {
-                var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
-                while (!node.Green.IsToken && (span.Start > node.Position || span.Length < node.FullWidth)) {
-                    var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(span.Start);
-                    if (n == null || n == node)
+                var snode = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
+                var enode = snode;
+                while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth)) {
+                    var sn = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.Start);
+                    if (sn == null || sn == snode)
                         break;
-                    node = n;
+                    if (span.Start == sn.Position && span.Length > sn.FullWidth) {
+                        var en = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.End-1);
+                        if (en != null) {
+                            snode = sn;
+                            enode = en;
+                            break;
+                        }
+                    }
+                    snode = sn;
+                    enode = sn;
                 }
-                var start = node.XNode?.Position ?? 0;
-                var length = node.XNode?.FullWidth ?? 0;
+                var start = snode.XNode?.Position ?? 0;
+                var length = enode.XNode?.FullWidth ?? 0;
                 return new TextSpan(start,length);
             }
             return span;

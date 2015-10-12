@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
         {
 #if (DEBUG)
             System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
-            System.Diagnostics.Trace.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
+            //System.Diagnostics.Trace.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
 #endif
             return BuildClient.RunWithConsoleOutput(
                     args,

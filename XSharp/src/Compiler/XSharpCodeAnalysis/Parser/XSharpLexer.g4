@@ -118,6 +118,9 @@ IIF					: I I F;
 INHERIT				: I N H E R I T
 					| { _Four}? I N H E (R(I)?)?
 					;
+INIT1				: '_' I N I T '1';
+INIT2				: '_' I N I T '2';
+INIT3				: '_' I N I T '3';
 INSTANCE			: I N S T A N C E
 					| { _Four}? I N S T (A(N(C)?)?)?
 					;
@@ -131,7 +134,7 @@ MEMBER				: M E M B E R
 					| {_Four}?  M E M B (E)?
 					;
 MEMVAR              : M E M V A R 
-                    | {_Four}?  M E M V (A)?
+					| {_Four}?  M E M V (A)?
 					; 
 METHOD				: M E T H O D
 					| {_Four}?  M E T H (O)?
@@ -139,7 +142,7 @@ METHOD				: M E T H O D
 NEXT				: N E X T ;
 OTHERWISE			: O T H E R W I S E
 					| {_Four}?  O T H E (R(W(I(S)?)?)?)?
-                    ;
+					;
 PARAMETERS			: P A R A M E T E R S
 					| {_Four}?  P A R A (M(E(T(E(R)?)?)?)?)?
 					;

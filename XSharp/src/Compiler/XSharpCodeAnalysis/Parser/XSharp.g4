@@ -36,11 +36,34 @@ entity              : function
 					| globalattributes
 					;
 
-function            : (Modifiers+=funcprocmodifier)* FUNCTION Id=identifier ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
+function            : (Modifiers+=funcprocmodifier)* FUNCTION Id=identifier ParamList=parameterList 
+					   (AS Type=datatype)? 
+					   (CallingConvention=callingconvention)? eos 
+					   StmtBlk=statementBlock
 					;
 
-procedure           : (Modifiers+=funcprocmodifier)* PROCEDURE Id=identifier ParamList=parameterList eos StmtBlk=statementBlock
+procedure           : (Modifiers+=funcprocmodifier)* PROCEDURE Id=identifier ParamList=parameterList
+					   (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? eos 
+					   StmtBlk=statementBlock
 					;
+
+callingconvention	: Convention=(CLIPPER | STRICT | PASCAL) 
+					;
+
+
+dllfunc				: (Modifiers+=funcprocmodifier)* DLL FUNCTION Id=identifier ParamList=parameterList 
+					   (AS Type=datatype)? (CallingConvention=dllcallconv)? COLON Dll=identifier DOT (Entrypoint=identifier | EntrypointString=STRING_CONST) (NEQ Ordinal=INT_CONST)? 
+                    ;
+
+dllproc				: (Modifiers+=funcprocmodifier)* DLL PROCEDURE Id=identifier ParamList=parameterList 
+					   (CallingConvention=dllcallconv)? COLON Dll=identifier DOT (Entrypoint=identifier | EntrypointString=STRING_CONST)  (NEQ Ordinal=INT_CONST)? 
+					;
+
+dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)
+                    ;
+
+
+
 
 parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 					;
@@ -64,11 +87,12 @@ global				: (Modifiers+=funcprocmodifier)*  GLOBAL Id=identifier Var += classvar
 // Separate method/access/assign with Class name -> convert to partial class with just one method
 // And when Class is outside of assembly, convert to Extension Method?
 method				: (Attributes=attributes)? (Modifiers+= membermodifier)*
-					  METHOD Id=identifier ParamList=parameterList (AS Type=datatype)? (CLASS ClassId=identifier)? eos StmtBlk=statementBlock			#method_
-					| (Attributes=attributes)? (Modifiers+= membermodifier)*
-					  ACCESS Id=identifier (ParamList=parameterList)? (AS Type=datatype)? (CLASS ClassId=identifier)? eos StmtBlk=statementBlock		#access_
-					| (Attributes=attributes)? (Modifiers+= membermodifier)*
-					  ASSIGN Id=identifier ParamList=parameterList (AS Type=datatype)? (CLASS ClassId=identifier)? eos StmtBlk=statementBlock		#assign_
+					  T=methodtype Id=identifier (ParamList=parameterList)? (AS Type=datatype)? 
+ 					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? eos 
+					  StmtBlk=statementBlock		
+					;
+
+methodtype			: METHOD | ACCESS | ASSIGN
 					;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
@@ -110,11 +134,11 @@ interfaceparents	: INHERIT Interfaces+= datatype (COMMA Interfaces+= datatype)* 
 
 class_				: (Attributes=attributes)? (Modifiers += classmodifier)*
 					  CLASS Id=identifier TypeParameters=typeparameters?                        // TypeParameters indicate Generic Class
-                      Parents=classparents? Interfaces=interfacetypelist? 
-                      (ConstraintsClauses +=typeparameterconstraintsclause)* eos                 // Optional typeparameterconstraints for Generic Class
+					  Parents=classparents? Interfaces=interfacetypelist? 
+					  (ConstraintsClauses +=typeparameterconstraintsclause)* eos                 // Optional typeparameterconstraints for Generic Class
 					  (Members +=classmember)*
 					  END CLASS  eos
-                    ;
+					;
 
 classmodifier		: Token=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL)
 					;
@@ -127,26 +151,26 @@ interfacetypelist	: (IMPLEMENTS (Interfaces+= datatype) (COMMA Interfaces+= data
 
 // Start Extensions for Generic Classes
 typeparameters      : LT TypeParams+=typeparameter (COMMA attributes? TypeParams+=typeparameter)* GT 
-                    ;
+					;
 
 typeparameter       : Attributes=attributes?  Id=identifier
-                    ;
+					;
 
 typeparameterconstraintsclause
-                    : WHERE identifier IS typeparameterconstraints
+					: WHERE identifier IS typeparameterconstraints
 					;
-                              
+							  
 typeparameterconstraints
-                      : Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
-                      ;
+					  : Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
+					  ;
 
 typeparameterconstraint:  typeName                          //  Class Foo<t> WHERE T IS Customer
-                       | typeparameter                      //  Class Foo<T,U> WHERE U IS T
-                       | CLASS                              //  Class Foo<t> WHERE T IS CLASS
-                       | STRUCTURE                          //  Class Foo<t> WHERE T IS STRUCTURE
-                       | NEW LPAREN RPAREN                  //  Class Foo<t> WHERE T IS NEW()
-                       ; 
-                              
+					   | typeparameter                      //  Class Foo<T,U> WHERE U IS T
+					   | CLASS                              //  Class Foo<t> WHERE T IS CLASS
+					   | STRUCTURE                          //  Class Foo<t> WHERE T IS STRUCTURE
+					   | NEW LPAREN RPAREN                  //  Class Foo<t> WHERE T IS NEW()
+					   ; 
+							  
 // End of Extensions for Generic Classes
 
 structure_			: (Attributes=attributes)? (Modifiers += structuremodifier)*
@@ -211,34 +235,34 @@ vartype				: (AS | IS) DataType = datatype
 
 
 property			: (Attributes=attributes)? (Modifiers+= membermodifier)* 
-                      PROPERTY Id=identifier (ParamList=parameterList)? AS Type=datatype 
-                      ( Auto=propertyauto													// Auto
-                      | SingleLine=propertysingleline                                       // Single Line
-                      | eos (Get=propertyget) (Set=propertyset)?  END PROPERTY? eos         // Multi Line GET SET?
-                      | eos (Set=propertyset) (Get=propertyget)?  END PROPERTY? eos         // Multi Line SET GET?
-                      )
+					  PROPERTY Id=identifier (ParamList=parameterList)? AS Type=datatype 
+					  ( Auto=propertyauto													// Auto
+					  | SingleLine=propertysingleline                                       // Single Line
+					  | eos (Get=propertyget) (Set=propertyset)?  END PROPERTY? eos         // Multi Line GET SET?
+					  | eos (Set=propertyset) (Get=propertyget)?  END PROPERTY? eos         // Multi Line SET GET?
+					  )
 					;
 
 propertyauto        : AUTO ((GetModifiers+= membermodifier)* GET) ((SetModifiers+= membermodifier)* SET)? (ASSIGN_OP Initializer = expression)? eos  // AUTO GET SET? Initializer? eos
-                    | AUTO ((SetModifiers+= membermodifier)* SET) ((GetModifiers+= membermodifier)* GET)? (ASSIGN_OP Initializer = expression)? eos  // AUTO SET GET? Initializer? eos
-                    | AUTO (ASSIGN_OP Initializer = expression)? eos																				 // AUTO Initializer? eos
-                    ;
+					| AUTO ((SetModifiers+= membermodifier)* SET) ((GetModifiers+= membermodifier)* GET)? (ASSIGN_OP Initializer = expression)? eos  // AUTO SET GET? Initializer? eos
+					| AUTO (ASSIGN_OP Initializer = expression)? eos																				 // AUTO Initializer? eos
+					;
 
 propertysingleline  : (GetModifiers+= membermodifier)* GET GetExpression=expression     ((SetModifiers+= membermodifier)* SET SetExpression=expressionList)? eos  // GET SET? eos
-                    | (SetModifiers+= membermodifier)* SET SetExpression=expressionList ((GetModifiers+= membermodifier)* GET GetExpression=expression)?     eos  // SET GET? eos
-                    ;
+					| (SetModifiers+= membermodifier)* SET SetExpression=expressionList ((GetModifiers+= membermodifier)* GET GetExpression=expression)?     eos  // SET GET? eos
+					;
 
 propertyget         : (GetModifiers+= membermodifier)* GET eos GetStmtBlk=statementBlock END GET? eos // GET Stmts END GET?
-                    ;
+					;
 
 propertyset         : (SetModifiers+= membermodifier)* SET eos SetStmtBlk=statementBlock END SET? eos	// SET Stmts END SET?
-                    ;
+					;
 
 classmember			: method															#clsmethod
 					| (Attributes=attributes)? (Modifiers+= constructormodifier)* 
-                      CONSTRUCTOR (ParamList=parameterList)? eos StmtBlk=statementBlock	#clsctor
+					  CONSTRUCTOR (ParamList=parameterList)? eos StmtBlk=statementBlock	#clsctor
 					| (Attributes=attributes)? (Modifiers+= EXTERN )*       
-                      DESTRUCTOR (LPAREN RPAREN)?  eos StmtBlk=statementBlock           #clsdtor
+					  DESTRUCTOR (LPAREN RPAREN)?  eos StmtBlk=statementBlock           #clsdtor
 					| classvars									#clsvars
 					| property									#clsproperty
 					| operator_									#clsoperator
@@ -255,7 +279,7 @@ classmember			: method															#clsmethod
 
 
 constructormodifier : Token=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC )
-                    ;
+					;
 
 
 
@@ -281,7 +305,7 @@ attributeblock		: LBRKT attributetarget? Attributes+=attribute (COMMA Attributes
 					;
 
 attributetarget		: Id=identifier COLON
-                    | Kw=keyword COLON
+					| Kw=keyword COLON
 					;
 
 attribute			: Id=identifier (LPAREN (Params +=attributeParam (COMMA Params+=attributeParam)* )? RPAREN ) ?
@@ -292,11 +316,11 @@ attributeParam		: Expr=expression
 
 
 globalattributes    : LBRKT globallattributetarget Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
-                    ;
+					;
 
 globallattributetarget : ASSEMBLY COLON
-                       | MODULE COLON
-                       ;
+					   | MODULE COLON
+					   ;
 
 /*
 : localdecl
@@ -320,8 +344,8 @@ globallattributetarget : ASSEMBLY COLON
 | fieldstmt */
 
 statement           : localdecl                                                 #declarationStmt
-                    | xbasedecl                                                 #xbasedeclStmt
-                    | DO WHILE Expr=expression eos
+					| xbasedecl                                                 #xbasedeclStmt
+					| DO WHILE Expr=expression eos
 					  StmtBlk=statementBlock END DO eos							#whileStmt
 					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
@@ -361,7 +385,7 @@ statement           : localdecl                                                 
 					  END SCOPE? eos											#scopeStmt
 					| RETURN (VOID | Expr=expression)? eos						#returnStmt
 					// New XSharp Statements
-                    | YIELD RETURN (VOID | Expr=expression)? eos				#yieldStmt
+					| YIELD RETURN (VOID | Expr=expression)? eos				#yieldStmt
 					| SWITCH Expr=expression eos
 					  (CASE SwitchBlock+=switchBlock)+
 					  ((OTHERWISE|DEFAULT) eos ElseBlock+=statementBlock)?
@@ -388,7 +412,7 @@ conditionalBlock	: Cond=expression eos StmtBlk=statementBlock
 
 // Note that literalValue is not enough. We also need to support members of enums
 switchBlock         : Const=expression eos StmtBlk=statementBlock			 
-                    ;
+					;
 
 catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
 					;
@@ -408,25 +432,25 @@ catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
 // then the type of the following element propagates forward until for all elements without type
 
 localdecl          : LOCAL                 LocalVars +=localvar (COMMA LocalVars+=localvar)*              // LOCAL
-                   | Static=STATIC LOCAL?  LocalVars +=localvar (COMMA LocalVars+=localvar)*              // STATIC LOCAL or LOCAL
-                   | (LOCAL)? IMPLIED      ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*       // LOCAL IMPLIED or simply IMPLIED
-                   | VAR                   ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*       // VAR special for Robert !
-                   ;
+				   | Static=STATIC LOCAL?  LocalVars +=localvar (COMMA LocalVars+=localvar)*              // STATIC LOCAL or LOCAL
+				   | (LOCAL)? IMPLIED      ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*       // LOCAL IMPLIED or simply IMPLIED
+				   | VAR                   ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*       // VAR special for Robert !
+				   ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT Arraysub=arraysub RBRKT)? (ASSIGN_OP Expression=expression)? (Datatype=vartype)?
-                   ;
-                      
+				   ;
+					  
 impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression 
-                   ;
+				   ;
 
 
 // Old Style xBase declarations
 
-xbasedecl        : T=PRIVATE      Vars+=identifier (COMMA Vars+=identifier) eos       // PRIVATE Foo, Bar
-                 | T=PUBLIC       Vars+=identifier (COMMA Vars+=identifier) eos       // PUBLIC Foo, Bar
-                 | T=MEMVAR       Vars+=identifier (COMMA Vars+=identifier) eos       // MEMVAR Foo, Bar
-                 | T=PARAMETERS   Vars+=identifier (COMMA Vars+=identifier) eos       // PARAMETERS Foo, Bar
-                 ;
+xbasedecl        : T=PRIVATE      Vars+=identifier (COMMA Vars+=identifier)* eos       // PRIVATE Foo, Bar
+				 | T=PUBLIC       Vars+=identifier (COMMA Vars+=identifier)* eos       // PUBLIC Foo, Bar
+				 | T=MEMVAR       Vars+=identifier (COMMA Vars+=identifier)* eos       // MEMVAR Foo, Bar
+				 | T=PARAMETERS   Vars+=identifier (COMMA Vars+=identifier)* eos       // PARAMETERS Foo, Bar
+				 ;
  
 // The operators in VO have the following precedence level:
 //    lowest (13)  assignment           := *= /= %= ^= += -= <<= >>=
@@ -506,7 +530,7 @@ argument			: Expr=expression
 					;
 
 iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
-                    | IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
+					| IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
 name				: Left=name Op=DOT Right=identifier							#qualifiedName
@@ -622,17 +646,17 @@ eof                 : EOF
 keyword             : (keywordvo | keywordvn | keywordxs) ;
 
 keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
-                    | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
-                    | HIDDEN | IF | IIF | INHERIT | IN | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
-                    | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
-                    | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE )
-                    ;
+					| ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
+					| HIDDEN | IF | IIF | INHERIT | IN | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
+					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
+					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE )
+					;
 
 keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DELEGATE | DESTRUCTOR	| ENUM | EVENT
-                    | EXPLICIT | FINALLY | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERFACE | INTERNAL 
-                    | LOCK | NAMESPACE | NEW | OPERATOR	| OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
-                    | THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT)
-                    ;
+					| EXPLICIT | FINALLY | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERFACE | INTERNAL 
+					| LOCK | NAMESPACE | NEW | OPERATOR	| OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
+					| THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT)
+					;
 
 keywordxs           : Token=(ASSEMBLY | ASYNC | AWAIT | CHECKED |	DEFAULT | EXTERN | MODULE | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD)
-                    ;
+					;

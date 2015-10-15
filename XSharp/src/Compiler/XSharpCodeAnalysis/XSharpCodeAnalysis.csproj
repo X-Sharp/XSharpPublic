@@ -328,6 +328,7 @@
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.tokens" />
     <None Include="packages.config" />
+    <None Include="Parser\XSharpLexer.g4" />
     <None Include="Parser\XSharp.g4" />
   </ItemGroup>
   <ItemGroup>
@@ -347,6 +348,8 @@
     <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>java -jar $(SolutionDir).\build\antlr-4.5.1-complete.jar  -long-messages -package "LanguageService.CodeAnalysis.XSharp.SyntaxParser" -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated</PreBuildEvent>
+    <PreBuildEvent>java -jar $(SolutionDir).\build\antlr-4.5.1-complete.jar -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharpLexer.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated
+java -jar $(SolutionDir).\build\antlr-4.5.1-complete.jar -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated
+</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -784,9 +784,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.PredefinedType(context.Token.Syntax()));
         }
 
-        public override void ExitAccessModifier([NotNull] XSharpParser.AccessModifierContext context)
-        {
-            context.Put(_syntaxFactory.PredefinedType(context.Token.Syntax()));
-        }
     }
 }

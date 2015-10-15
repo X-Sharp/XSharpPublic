@@ -4,72 +4,329 @@ grammar XSharp;
  * Parser Rules
 */
 
-options	{ language=CSharp; }
+// Known issues:
+// - ALIAS (->) operator
+// - Global attributes
+// - preprocessor , #region, #using etc
+
+
+
+
+options	{ 
+		language=CSharp; 
+		tokenVocab=XSharpLexer;
+		}
 
 
 source				: (eos)? (entity)* eof
 					;
 
 entity              : function
+					| procedure
+					| global
+					| method
+					| vodefine
+					| vostruct
+					| vounion
+					| namespace_
+					| class_
+					| structure_
+					| delegate_
+					| enum_
+					| event_
+					| interface_
 					;
 
-function            : FUNCTION Id=identifier ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
+function            : (Modifiers+=funcprocmodifier)* FUNCTION Id=identifier ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
 					;
 
-procedure           : PROCEDURE Id=identifier ParamList=parameterList eos StmtBlk=statementBlock
+procedure           : (Modifiers+=funcprocmodifier)* PROCEDURE Id=identifier ParamList=parameterList eos StmtBlk=statementBlock
 					;
 
 parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 					;
 
-parameter			: Id=identifier (ASSIGN_OP Default=expression)? Modifiers+=(AS | REF | OUT) Modifiers+=CONST? Type=datatype
+parameter			: (Attributes=attributes)? Id=identifier (ASSIGN_OP Default=expression)? Modifiers+=(AS | REF | OUT| PARAMS) Modifiers+=CONST? Type=datatype
 					;
 
 statementBlock      : (Stmts+=statement)*
 					;
 
+
+funcprocmodifier	: Token = (STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE)
+					;
+
+
+global				: (Modifiers+=funcprocmodifier)*  GLOBAL Id=identifier Var += classvar (COMMA Var += classvar) VarType = vartype
+					;
+
+
+// Separate method/access/assign with Class name -> convert to partial class with just one method
+// And when Class is outside of assembly, convert to Extension Method?
+method				: (Attributes=attributes)? (Modifiers+= membermodifier)*
+					  METHOD Id=identifier ParamList=parameterList (AS Type=datatype)? (CLASS ClassId=identifier)? eos StmtBlk=statementBlock			#method_
+					| (Attributes=attributes)? (Modifiers+= membermodifier)*
+					  ACCESS Id=identifier (ParamList=parameterList)? (AS Type=datatype)? (CLASS ClassId=identifier)? eos StmtBlk=statementBlock		#access_
+					| (Attributes=attributes)? (Modifiers+= membermodifier)*
+					  ASSIGN Id=identifier ParamList=parameterList (AS Type=datatype)? (CLASS ClassId=identifier)? eos StmtBlk=statementBlock		#assign_
+					;
+
+// Convert to constant on Globals class. Expression must be resolvable at compile time
+vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
+					;
+
+vostruct			: VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? eos
+					  (Members += vostructmember)+
+					;
+
+vounion				: UNION  Id=identifier  eos
+					  (Members += vostructmember)+
+					;
+
+
+vostructmember		: MEMBER DIM Id=identifier LBRKT ArraySub=arraysub RBRKT  MemberType = vartype eos
+					| MEMBER Id=identifier MemberType = vartype eos
+					;
+
+namespace_			: BEGIN NAMESPACE Id=identifier eos
+					  (entity)*
+					  END NAMESPACE eos
+					;
+
+interface_			: (Attributes=attributes)? (Modifiers+= interfacemodifier)*
+					  INTERFACE Id=identifier
+					  Parents=interfaceparents
+					  (Members+=classmember)+
+					  END INTERFACE eos
+					;
+
+interfacemodifier	: Token=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL)
+					;
+
+interfaceparents	: INHERIT Interfaces+= datatype (COMMA Interfaces+= datatype)* eos
+					| COLON   Interfaces+= datatype (COMMA Interfaces+= datatype)* eos
+					| eos
+					;
+
+class_				: (Attributes=attributes)? (Modifiers += classmodifier)*
+					  CLASS Id=identifier TypeParameters=typeparameters?                        // TypeParameters indicate Generic Class
+                      Parents=classparents? Interfaces=interfacetypelist? 
+                      (ConstraintsClauses +=typeparameterconstraintsclause)* eos                 // Optional typeparameterconstraints for Generic Class
+					  (Members +=classmember)*
+					  END CLASS  eos
+                    ;
+
+classmodifier		: Token=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL)
+					;
+
+classparents        : INHERIT ParentClass=datatype
+					;
+
+interfacetypelist	: (IMPLEMENTS (Interfaces+= datatype) (COMMA Interfaces+= datatype)*)
+					;
+
+// Start Extensions for Generic Classes
+typeparameters      : LT TypeParams+=typeparameter (COMMA attributes? TypeParams+=typeparameter)* GT 
+                    ;
+
+typeparameter       : Attributes=attributes?  Id=identifier
+                    ;
+
+typeparameterconstraintsclause
+                    : WHERE identifier IS typeparameterconstraints
+					;
+                              
+typeparameterconstraints
+                      : Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
+                      ;
+
+typeparameterconstraint:  typeName                          //  Class Foo<t> WHERE T IS Customer
+                       | typeparameter                      //  Class Foo<T,U> WHERE U IS T
+                       | CLASS                              //  Class Foo<t> WHERE T IS CLASS
+                       | STRUCTURE                          //  Class Foo<t> WHERE T IS STRUCTURE
+                       | NEW LPAREN RPAREN                  //  Class Foo<t> WHERE T IS NEW()
+                       ; 
+                              
+// End of Extensions for Generic Classes
+
+structure_			: (Attributes=attributes)? (Modifiers += structuremodifier)*
+					  STRUCTURE Id=identifier
+					  Interfaces=interfacetypelist? eos
+					  (Members +=classmember)+
+					  END STRUCTURE eos
+					;
+
+structuremodifier	: Token=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL)
+					;
+
+
+delegate_			: (Attributes=attributes)? (Modifiers += delegatemodifier)*
+					  DELEGATE Id=identifier
+					  ParamList=parameterList AS Type=datatype eos
+					;
+
+delegatemodifier	: Token= (NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE)
+					;
+
+
+enum_				: (Attributes=attributes)? (Modifiers += enummodifier)*
+					  ENUM Id=identifier (AS Type=datatype)? eos
+					  (Members += enummember)+
+					  END (ENUM)? eos
+					;
+
+enummodifier		: Token= (NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN)
+					;
+
+enummember			: MEMBER? Id=identifier (ASSIGN_OP expression)? eos
+					;
+
+event_				:  (Attributes=attributes)? (Modifiers += eventmodifier)*
+					   EVENT Id=identifier AS Type=datatype eos
+					;
+
+eventmodifier		: Token=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE)
+					;
+
+
+
+classvars			: (Attributes=attributes)? (Modifiers += classvarmodifiers)*
+					  Var += classvar (COMMA Var += classvar) VarType = vartype
+					;
+
+classvarmodifiers	: Token=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE)
+					;
+
+
+classvar			: (DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+					;
+
+arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y
+					| ArrayIndex+=expression (COMMA ArrayIndex+=expression)+			// x,y
+					| ArrayIndex+=expression
+					;
+
+vartype				: (AS | IS) DataType = datatype
+					;
+
+
+property			: (Attributes=attributes)? (Modifiers+= membermodifier)*
+					  PROPERTY Id=identifier ParamList=parameterList AS Type=datatype AUTO eos	#propertyauto
+					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
+					  ParamList=parameterList AS Type=datatype
+					  (GetModifiers+= membermodifier)* GET GetExpression=expression eos		#propertyget
+					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
+					  ParamList=parameterList AS Type=datatype
+					  (SetModifiers+= membermodifier)* SET expression eos						#propertyset
+					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
+					  ParamList=parameterList AS Type=datatype
+					  (GetModifiers+= membermodifier)* GET GetExpression=expression
+					  (SetModifiers+= membermodifier)* SET SetExpression=expression	eos		#propertygetset
+					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
+					  ParamList=parameterList AS Type=datatype
+					  ((GetModifiers+= membermodifier)* GET eos GetStmtBlk=statementBlock END (GET)? eos)?
+					  ((SetModifiers+= membermodifier)* SET eos SetStmtBlk=statementBlock END (SET)? eos)?
+					  END PROPERTY eos															#propertymulti
+					;
+
+
+classmember			: method															#clsmethod
+					| (Attributes=attributes)? (Modifiers+= membermodifier)* 
+                      CONSTRUCTOR (ParamList=parameterList)? eos StmtBlk=statementBlock	#clsctor
+					| (Attributes=attributes)? (Modifiers+= membermodifier)*            // Actually only modifier Extern is allowed
+                      DESTRUCTOR (LPAREN RPAREN)?  eos StmtBlk=statementBlock           #clsdtor
+					| classvars									#clsvars
+					| property									#clsproperty
+					| operator_									#clsoperator
+					| function									#clsfunction		// Equivalent to method
+					| procedure									#clsprocedure		// Equivalent to method
+					| global									#clsglobal			// Equivalent to static field
+					| structure_								#nestedStructure
+					| class_									#nestedClass
+					| delegate_									#nestedDelegate
+					| enum_										#nestedEnum
+					| event_									#nestedEvent
+					| interface_								#nestedInterface
+					;
+
+
+
+overloadedOps		: Token=(INC | DEC | NOT | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
+					| GT  | LT | NEQ | GTE| LTE | IMPLICIT | EXPLICIT | TRUE_CONST | FALSE_CONST
+					| TILDE | AMP   | PIPE )
+					;
+
+
+operator_			: OPERATOR Operation=overloadedOps
+					  ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
+					;
+
+
+membermodifier		: Token = (NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN)
+					;
+
+
+attributes			: ( attributeblock )+
+					;
+
+attributeblock		: LBRKT attributetarget? Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+					;
+
+attributetarget		: Id=identifier COLON
+                    | Kw=keyword COLON
+					;
+
+attribute			: Id=identifier (LPAREN (Params +=attributeParam (COMMA Params+=attributeParam)* )? RPAREN ) ?
+					;
+
+attributeParam		: Expr=expression
+					;
+
+
 /*
 : localdecl
-| casestmt 
-| whilestmt 
+| casestmt
+| whilestmt
 | repeatstmt
 | forstmt
 | foreachstmt
-| ifstmt 
-| retstmt 
-| seqstmt 
-| breakstmt 
+| ifstmt
+| retstmt
+| seqstmt
+| breakstmt
 | throwstmt
-| exprstmt 
-| exitstmt 
-| loopstmt 
+| exprstmt
+| exitstmt
+| loopstmt
 | qoutstmt
 | tryblock
 | { LA(1) == BEGIN && LA(2) == LOCK }? lockstmt
 | { LA(1) == BEGIN && LA(2) == SCOPE }? scopestmt
 | fieldstmt */
 
-statement           : DO WHILE Expr=expression eos 
+statement           : localdecl                                                 #declarationStmt
+                    | xbasedecl                                                 #xbasedeclStmt
+                    | DO WHILE Expr=expression eos
 					  StmtBlk=statementBlock END DO eos							#whileStmt
-					| WHILE Expr=expression eos 
+					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
-					| REPEAT eos 
-					  StmtBlk=statementBlock 
+					| REPEAT eos
+					  StmtBlk=statementBlock
 					  UNTIL Expr=expression eos									#repeatStmt
-					| FOR Iter=expression ASSIGN_OP InitExpr=expression 
-					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression 
-					  (STEP Step=expression)? eos 
+					| FOR Iter=expression ASSIGN_OP InitExpr=expression
+					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
+					  (STEP Step=expression)? eos
 					  StmtBlk=statementBlock NEXT eos							#forStmt
-					| FOREACH 
+					| FOREACH
 					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype)
-					  IN Container=expression eos 
+					  IN Container=expression eos
 					  StmtBlk=statementBlock NEXT eos							#foreachStmt
 					| IF CondBlock+=conditionalBlock
 					  (ELSEIF CondBlock+=conditionalBlock)*
 					  (ELSE eos ElseBlock+=statementBlock)?
 					  (END IF? | ENDIF) eos										#condStmt
 					| DO CASE eos
-					  (CASE CondBlock+=conditionalBlock)*
+					  (CASE CondBlock+=conditionalBlock)+
 					  (OTHERWISE eos ElseBlock+=statementBlock)?
 					  (END CASE? | ENDCASE) eos									#condStmt
 					| EXIT eos													#exitStmt
@@ -81,27 +338,87 @@ statement           : DO WHILE Expr=expression eos
 					  (CATCH CatchBlock+=catchBlock)*
 					  (FINALLY eos FinBlock=statementBlock)?
 					  END TRY? eos												#tryStmt
-					| RETURN (VOID | Expr=expression)? eos						#returnStmt
 					| BEGIN LOCK Expr=expression eos
 					  StmtBlk=statementBlock
 					  END LOCK? eos												#lockStmt
 					| BEGIN SCOPE eos
 					  StmtBlk=statementBlock
 					  END SCOPE? eos											#scopeStmt
+					| RETURN (VOID | Expr=expression)? eos						#returnStmt
+					// New XSharp Statements
+                    | YIELD RETURN (VOID | Expr=expression)? eos				#yieldStmt
+					| SWITCH Expr=expression eos
+					  (CASE SwitchBlock+=switchBlock)+
+					  ((OTHERWISE|DEFAULT) eos ElseBlock+=statementBlock)?
+					  END SWITCH?  eos											#switchStmt
+					| BEGIN USING Expr=expression eos
+						Stmtblk=statementBlock
+					  END USING? eos											#usingStmt
+					| Q1=QMARK (Q2=QMARK)? Exprs+=expression (COMMA Exprs+=expression)* eos	#qoutStmt
+					| BEGIN UNSAFE eof
+					  StmtBlk=statementBlock
+					  END UNSAFE? eos											#unsafeStmt
+					| BEGIN Ch=CHECKED eof
+					  StmtBlk=statementBlock
+					  END CHECKED? eos											#checkedStmt
+					| BEGIN Ch=UNCHECKED eof
+					  StmtBlk=statementBlock
+					  END UNCHECKED? eos										#checkedStmt
+
 					;
+
 
 conditionalBlock	: Cond=expression eos StmtBlk=statementBlock
 					;
 
+// Note that literalValue is not enough. We also need to support members of enums
+switchBlock         : Const=expression eos StmtBlk=statementBlock			 
+                    ;
+
 catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
 					;
 
+// Variable declarations
+// There are many variations in the declarations
+// LOCAL a,b                        // USUAL in most languages
+// LOCAL a as STRING
+// LOCAL a,b as STRING
+// LOCAL a,b as STRING, c as INT
+// LOCAL a AS STRING, c as INT
+// LOCAL a := "Foo" as STRING
+// LOCAL a := "Foo" as STRING, c := 123 as INT
+
+// Each Var may have a assignment and/or type
+// When the type is missing and the following element has a type
+// then the type of the following element propagates forward until for all elements without type
+
+localdecl          : LOCAL                 LocalVars +=localvar (COMMA LocalVars+=localvar)*              // LOCAL
+                   | Static=STATIC LOCAL?  LocalVars +=localvar (COMMA LocalVars+=localvar)*              // STATIC LOCAL or LOCAL
+                   | (LOCAL)? IMPLIED      ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*       // LOCAL IMPLIED or simply IMPLIED
+                   | VAR                   ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*       // VAR special for Robert !
+                   ;
+
+localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT Arraysub=arraysub RBRKT)? (ASSIGN_OP Expression=expression)? (Datatype=vartype)?
+                   ;
+                      
+impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression 
+                   ;
+
+
+// Old Style xBase declarations
+
+xbasedecl        : T=PRIVATE      Vars+=identifier (COMMA Vars+=identifier) eos       // PRIVATE Foo, Bar
+                 | T=PUBLIC       Vars+=identifier (COMMA Vars+=identifier) eos       // PUBLIC Foo, Bar
+                 | T=MEMVAR       Vars+=identifier (COMMA Vars+=identifier) eos       // MEMVAR Foo, Bar
+                 | T=PARAMETERS   Vars+=identifier (COMMA Vars+=identifier) eos       // PARAMETERS Foo, Bar
+                 ;
+ 
 // The operators in VO have the following precedence level:
 //    lowest (13)  assignment           := *= /= %= ^= += -= <<= >>=
 //           (12)  logical or           .OR.
 //           (11)  logical and          .AND.
 //           (10)  logical negation     .NOT. !
-//           ( 9)  bitwise or           | 
+//           ( 9)  bitwise or           |
 //           ( 8)  bitwise xor          ~
 //           ( 7)  bitwise and          &
 //           ( 6)  relational           < <= > >= = == <> # != $
@@ -111,16 +428,17 @@ catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
 
-expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember           // member access
+expression			: Left=expression Q=QMARK Op=(DOT | COLON) Right=identifierName		#accessMember           // member access
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
-					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC) 
+					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
+					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
 					  Expr=expression											#prefixExpression		// +/-/~/&/++/-- expr
 					| Left=expression Op=EXP Right=expression					#binaryExpression		// expr ^ expr
 					| Left=expression Op=(MULT | DIV | MOD) Right=expression	#binaryExpression		// expr * expr
 					| Left=expression Op=(PLUS | MINUS) Right=expression		#binaryExpression		// expr +/- expr
 					| Left=expression Op=(LSHIFT| RSHIFT) Right=expression		#binaryExpression		// expr >> expr (shift)
-					| Left=expression 
-					  Op=( LT | LTE | GT | GTE | EQ | EEQ 
+					| Left=expression
+					  Op=( LT | LTE | GT | GTE | EQ | EEQ
 							| SUBSTR | NEQ )
 					  Right=expression											#binaryExpression		// expr >= expr (relational)
 					| Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
@@ -130,10 +448,11 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Left=expression Op=LOGIC_AND Right=expression				#binaryExpression		// expr .and. expr (logical and)
 					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
 					| Left=expression Op=LOGIC_OR  Right=expression				#binaryExpression		// expr .or. expr (logical or)
-					| Left=expression 
-					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_EXP 
-							| ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD 
-							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT 
+					| Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr 
+					| Left=expression
+					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_EXP
+							| ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
+							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
@@ -142,6 +461,8 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
+					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
+					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
@@ -170,6 +491,7 @@ argument			: Expr=expression
 					;
 
 iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
+                    | IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
 name				: Left=name Op=DOT Right=identifier							#qualifiedName
@@ -206,7 +528,7 @@ literalArray		: (LT Type=datatype GT)? LCURLY (ExprList=expressionList)? RCURLY
 //aliasedExpr			:	Id=identifierName ALIAS LPAREN Expr=expression RPAREN
 //					;
 
-//aliasedFuncCall		:	i=identifierName a=ALIAS m=staticMethodCall 
+//aliasedFuncCall		:	i=identifierName a=ALIAS m=staticMethodCall
 //					;
 
 //extendedaliasExpr	:	l1=LPAREN e1=expression r1=RPAREN a=ALIAS
@@ -222,32 +544,35 @@ codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE) Expr=expre
 codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 					;
 
-identifier			: Token=ID
+// All New Vulcan and X# keywords can also be recognized as Identifier
+identifier			: Token=ID 
+					| VnToken=keywordvn 
+					| XsToken=keywordxs
 					;
 
 nativeType			: Token=
-					( ARRAY    
-					| BYTE    
+					( ARRAY
+					| BYTE
 					| CODEBLOCK
-					| DATE     
-					| DWORD   
-					| FLOAT    
-					| SHORTINT 
-					| INT      
+					| DATE
+					| DWORD
+					| FLOAT
+					| SHORTINT
+					| INT
 					| INT64
-					| LOGIC   
+					| LOGIC
 					| LONGINT
-					| OBJECT   
-					| PSZ     
-					| PTR      
-					| REAL4    
-					| REAL8    
-					| STRING   
-					| SYMBOL   
+					| OBJECT
+					| PSZ
+					| PTR
+					| REAL4
+					| REAL8
+					| STRING
+					| SYMBOL
 					| USUAL
-					| UINT64    
-					| WORD    
-					| VOID )   
+					| UINT64
+					| WORD
+					| VOID )
 					;
 
 literalValue		: Token=
@@ -255,40 +580,32 @@ literalValue		: Token=
 					| FALSE_CONST
 					| STRING_CONST
 					| SYMBOL_CONST
-					| HEX_CONST 
-					| BIN_CONST 
-					| REAL_CONST 
-					| INT_CONST 
+					| HEX_CONST
+					| BIN_CONST
+					| REAL_CONST
+					| INT_CONST
 					| DATE_CONST
 					| NIL
-					| NULL   
+					| NULL
 					| NULL_ARRAY
 					| NULL_CODEBLOCK
 					| NULL_DATE
 					| NULL_OBJECT
-					| NULL_PSZ 
-					| NULL_PTR 
+					| NULL_PSZ
+					| NULL_PTR
 					| NULL_STRING
 					| NULL_SYMBOL )
 					;
 
-accessModifier		: Token=
-					( PUBLIC
-					| PRIVATE
-					| INTERNAL
-					| PROTECTED
-					| EXPORT
-					| HIDDEN )
-					;
 
 /*assignOperator		: Token=
-					( ASSIGN_OP 
-					| ASSIGN_ADD 
-					| ASSIGN_EXP 
-					| ASSIGN_MUL 
-					| ASSIGN_DIV 
-					| ASSIGN_MOD 
-					| ASSIGN_BITAND 
+					( ASSIGN_OP
+					| ASSIGN_ADD
+					| ASSIGN_EXP
+					| ASSIGN_MUL
+					| ASSIGN_DIV
+					| ASSIGN_MOD
+					| ASSIGN_BITAND
 					| ASSIGN_BITOR
 					| ASSIGN_LSHIFT
 					| ASSIGN_RSHIFT
@@ -312,302 +629,21 @@ eos                 : (NL)* (NL|EOF)
 eof                 : EOF
 					;
 
-/*
- * Lexer Rules
- */
 
-// Keywords
-ABSTRACT			: A B S T R A C T ;
-ACCESS				: A C C E S S ;
-ALIGN				: A L I G N ;
-AS					: A S ;
-ASSIGN				: A S S I G N ;
-AUTO				: A U T O ;
-BEGIN				: B E G I N ;
-BREAK				: B R E A K ;
-CASE				: C A S E;
-CAST				: '_' C A S T ;
-CATCH				: C A T C H ;
-CLASS				: C L A S S ;
-CLIPPER				: C L I P P E R;
-CONSTRUCTOR			: C O N S T R U C T O R ;
-CONST				: C O N S T ;
-DELEGATE			: D E L E G A T E ;           // only after EOS, INTERNAL or EXPORT 
-DESTRUCTOR			: D E S T R U C T O R ;					// only after EOS
-DIM					: D I M ;
-DLL					: '_' D L L ;
-DO					: D O ;
-DOWNTO				: D O W N T O ;
-ELSE				: E L S E;
-ELSEIF				: E L S E I F ;
-END					: E N D ;
-ENDCASE				: E N D C A S E ;
-ENDDO				: E N D D O ;
-ENDIF				: E N D I F ;
-ENUM				: E N U M ;
-EVENT				: E V E N T ;              // only after EOS
-EXIT				: E X I T ;
-EXPLICIT			: E X P L I C I T ;
-EXPORT				: E X P O R T ;
-FASTCALL			: F A S T C A L L ;
-FIELD				: '_'? F I E L D ;
-FINALLY				: F I N A L L Y ;
-FOR					: F O R ;
-FOREACH				: F O R E A C H ;            // only after EOS
-FUNCTION			: F U N C T I O N ;
-GET					: G E T ;                // only inside PROPERTY after EOS or END
-GLOBAL				: G L O B A L ;
-HIDDEN				: H I D D E N ;
-IF					: I F ;
-IIF					: I I F;
-IMPLEMENTS			: I M P L E M E N T S ;
-IMPLICIT			: I M P L I C I T ;
-IMPLIED				: I M P L I E D ;
-INHERIT				: I N H E R I T ;
-INITONLY			: I N I T O N L Y ;
-INSTANCE			: I N S T A N C E ;
-INTERFACE			: I N T E R F A C E ;
-INTERNAL			: I N T E R N A L ;
-IN					: I N ;
-IS					: I S ;
-LOCAL				: L O C A L ;
-LOCK				: L O C K ;               // only after BEGIN or END
-LOOP				: L O O P ;
-MEMBER				: M E M B E R ;
-METHOD				: M E T H O D ;
-NAMESPACE			: N A M E S P A C E ;          // only after BEGIN or END
-NEW					: N E W ;                // only **before** METHOD
-NEXT				: N E X T ;
-OPERATOR			: O P E R A T O R ;
-OTHERWISE			: O T H E R W I S E ;
-OUT					: O U T ;
-PARTIAL				: P A R T I A L ;
-PASCAL				: P A S C A L ;
-PRIVATE				: P R I V A T E ;
-PROCEDURE			: P R O C (E D U R E)? ;
-PROTECTED			: P R O T E C T (E D)? ;
-PROPERTY			: P R O P E R T Y ;           // only after EOS or END
-PUBLIC				: P U B L I C ;
-RECOVER				: R E C O V E R ;
-REPEAT				: R E P E A T ;              // only after EOS
-RETURN				: R E T U R N ;
-SCOPE				: S C O P E ;              // only after BEGIN or END
-SEALED				: S E A L E D ;
-SELF				: S E L F ;
-SEQUENCE			: S E Q U E N C E ;
-SET					: S E T ;                // only inside PROPERTY after EOS or END
-SIZEOF				: '_'? S I Z E O F ;
-STATIC				: S T A T I C ;
-STEP				: S T E P ;
-STRICT				: S T R I C T ;
-STRUCTURE			: S T R U C T (U R E)? ;
-SUPER				: S U P E R ;
-THISCALL			: T H I S C A L L ;
-THROW				: T H R O W ;
-TO					: T O ;
-TRY					: T R Y ;                // only after EOS or END
-TYPEOF				: '_'? T Y P E O F ;
-UNION				: U N I O N ;
-UNTIL				: U N T I L ;              // only after EOS
-UPTO				: U P T O ;
-USING				: U S I N G ;
-VIRTUAL				: V I R T U A L ;
-WHILE				: W H I L E ;
+keyword             : (keywordvo | keywordvn | keywordxs) ;
 
-// Predefined types
-ARRAY				: A R R A Y ;
-BYTE				: B Y T E ;
-CHAR				: C H A R ;
-CODEBLOCK			: C O D E B L O C K ;
-DATE				: D A T E ;
-DWORD				: D W O R D ;
-FLOAT				: F L O A T ;
-INT					: I N T ;
-INT64				: I N T '6' '4' ;
-LOGIC				: L O G I C ;
-LONGINT				: L O N G I N T ;
-OBJECT				: O B J E C T ;
-PSZ					: P S Z ;
-PTR					: P T R ;
-REAL4				: R E A L '4' ;
-REAL8				: R E A L '8' ;
-REF					: R E F ;
-SHORTINT			: S H O R T (I N T)? ;
-STRING				: S T R I N G ;
-SYMBOL				: S Y M B O L ;
-USUAL				: U S U A L ;
-UINT64				: U I N T '6' '4' ;
-VOID				: V O I D ;
-WORD				: W O R D ;
- 
-// Null values
-NIL					: N I L ;
-NULL				: N U L L ;
-NULL_ARRAY			: N U L L '_' A R R A Y ;
-NULL_CODEBLOCK		: N U L L '_' C O D E B L O C K ;
-NULL_DATE			: N U L L '_' D A T E ;
-NULL_OBJECT			: N U L L '_' O B J E C T ;
-NULL_PSZ			: N U L L '_' P S Z ;
-NULL_PTR			: N U L L '_' P T R  ;
-NULL_STRING			: N U L L '_' S T R I N G ;
-NULL_SYMBOL			: N U L L '_' S Y M B O L ;
- 
-// Logics
-FALSE_CONST			: F A L S E 
-					| '.' F '.' 
-					| '.' N '.' 
-					;
-			
-TRUE_CONST			: T R U E 
-					| '.' T '.' 
-					| '.' Y '.' 
-					;
+keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
+                    | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
+                    | HIDDEN | IF | IIF | INHERIT | IN | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
+                    | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
+                    | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE )
+                    ;
 
-// Operators
-LOGIC_AND			: '.' A N D '.' ;
-LOGIC_OR			: '.' O R '.'   ;
-LOGIC_NOT			: '.' N O T '.' ;
-LOGIC_XOR			: '.' X O R '.' ;
+keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DELEGATE | DESTRUCTOR	| ENUM | EVENT
+                    | EXPLICIT | FINALLY | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERFACE | INTERNAL 
+                    | LOCK | NAMESPACE | NEW | OPERATOR	| OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
+                    | THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT)
+                    ;
 
-// Prefix and postfix Operators
-INC					: '++' ;
-DEC					: '--' ;
-
-// Boolean operators
-NOT					: '!'  ;
-AND					: '&&' ;
-OR					: '||' ;
-
-// Unary & binary operators
-PLUS				: '+';
-MINUS				: '-' ;
-DIV					: '/' ;
-MOD					: '%';
-EXP					: '^';
-LSHIFT				: '<<' ;
-RSHIFT				: '>>' ;
-TILDE				: '~';
-MULT				: '*' ;
-
-// Assignments
-ASSIGN_OP     : ':=' ;
-ASSIGN_ADD    : '+=' ;
-ASSIGN_SUB    : '-=' ;
-ASSIGN_EXP    : '^=' ;
-ASSIGN_MUL    : '*=' ;
-ASSIGN_DIV    : '/=' ;
-ASSIGN_MOD    : '%=' ;
-ASSIGN_BITAND : '&=';
-ASSIGN_BITOR  : '|=';
-ASSIGN_LSHIFT : '<<=';
-ASSIGN_RSHIFT : '>>=';
-ASSIGN_XOR    : '~=';
-
-// Relational operators
-LT			: '<' ;      
-LTE			: '<=' ;
-GT			: '>' ;
-GTE			: '>=' ;
-EQ			: '=' ;
-EEQ			: '==' ;
-SUBSTR		 : '$'	;
-NEQ			: '<>'  
-			| '!='  
-			;
-
-// Misc Lexical Elements
-LPAREN      : '(' ;
-RPAREN		: ')' ;
-LCURLY		: '{' ;
-RCURLY		: '}' ;
-LBRKT		: '[' ;
-RBRKT		: ']' ;
-COLON		: ':' ;
-COMMA		: ',' ;
-PIPE		: '|' ;
-AMP			: '&' ;
-ADDROF		: '@' ;
-ALIAS		: '->';
-DOT			: '.' ;
-
-// Numeric & date constants
-HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
-BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
-INT_CONST	:  ( DIGIT )+ ( U | L )? ;
-DATE_CONST  : ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? DOT DIGIT ( DIGIT )? DOT DIGIT ( DIGIT )?;			// 2015.07.15
-REAL_CONST  : ( ( DIGIT )+ )? DOT ( DIGIT )* ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
-
-//DECIMAL_CONST;                         // a literal floating point number followed by 'm'
-
-SYMBOL_CONST: '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
-
-
-STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
-			| '\'' ( ~( '\'' | '\n' | '\r' ) )* '\''		// Single quoted string
-			;
-
-WS			:	(' ' |  '\t' |	'\r') -> channel(HIDDEN)
-			;
-
-
-SL_COMMENT	: '/' '/' ( ~(  '\n' | '\r' ) )*  -> channel(HIDDEN)
-			;
-
-NL         : '\n' ;
-
-// The ID rule must be last to make sure that it does not 'eat' the keywords
-
-ID			: ID_PART ;
-
-UNRECOGNIZED	: . ;
-
-// Lexer fragments
-
-fragment DIGIT			: [0-9];
-fragment HEX_DIGIT		: [0-9a-fA-F];
-fragment ID_PART		: IDStartChar IDChar*
-						;
-
-fragment IDChar			: IDStartChar
-						| '0'..'9'
-						| '\u00B7'
-						| '\u0300'..'\u036F'
-						| '\u203F'..'\u2040'
-						;
-
-fragment IDStartChar	: 'A'..'Z' | 'a'..'z'
-						| '_'
-						| '\u00C0'..'\u00D6'
-						| '\u00D8'..'\u00F6'
-						| '\u00F8'..'\u02FF'
-						| '\u0370'..'\u037D'
-						| '\u037F'..'\u1FFF'
-						| '\u200C'..'\u200D'
-						;
-
-fragment A: 'a' | 'A';
-fragment B: 'b' | 'B';
-fragment C: 'c' | 'C';
-fragment D: 'd' | 'D';
-fragment E: 'e' | 'E';
-fragment F: 'f' | 'F';
-fragment G: 'g' | 'G';
-fragment H: 'h' | 'H';
-fragment I: 'i' | 'I';
-fragment J: 'j' | 'J';
-fragment K: 'k' | 'K';
-fragment L: 'l' | 'L';
-fragment M: 'm' | 'M';
-fragment N: 'n' | 'N';
-fragment O: 'o' | 'O';
-fragment P: 'p' | 'P';
-fragment Q: 'q' | 'Q';
-fragment R: 'r' | 'R';
-fragment S: 's' | 'S';
-fragment T: 't' | 'T';
-fragment U: 'u' | 'U';
-fragment V: 'v' | 'V';
-fragment W: 'w' | 'W';
-fragment X: 'x' | 'X';
-fragment Y: 'y' | 'Y';
-fragment Z: 'z' | 'Z';
+keywordxs           : Token=(ASYNC | AWAIT | CHECKED |	DEFAULT | EXTERN | PARAMS | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD)
+                    ;

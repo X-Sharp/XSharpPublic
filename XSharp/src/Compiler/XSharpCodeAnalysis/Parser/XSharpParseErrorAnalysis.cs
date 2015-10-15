@@ -274,8 +274,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitAccessModifier([NotNull] XSharpParser.AccessModifierContext context)
-        {
-        }
     }
 }

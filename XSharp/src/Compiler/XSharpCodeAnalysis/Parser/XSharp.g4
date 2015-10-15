@@ -6,9 +6,7 @@ grammar XSharp;
 
 // Known issues:
 // - ALIAS (->) operator
-// - Global attributes
 // - preprocessor , #region, #using etc
-
 
 
 
@@ -35,6 +33,7 @@ entity              : function
 					| enum_
 					| event_
 					| interface_
+					| globalattributes
 					;
 
 function            : (Modifiers+=funcprocmodifier)* FUNCTION Id=identifier ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
@@ -46,7 +45,8 @@ procedure           : (Modifiers+=funcprocmodifier)* PROCEDURE Id=identifier Par
 parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 					;
 
-parameter			: (Attributes=attributes)? Id=identifier (ASSIGN_OP Default=expression)? Modifiers+=(AS | REF | OUT| PARAMS) Modifiers+=CONST? Type=datatype
+// Compared with C# PARAMS is not supported. This can be achived by setting [ParamArrayAttribute] on the parameter: [ParamArrayAttribute] args as OBJECT[] 
+parameter			: (Attributes=attributes)? Id=identifier (ASSIGN_OP Default=expression)? Modifiers+=(AS | REF | OUT| IS ) Modifiers+=CONST? Type=datatype
 					;
 
 statementBlock      : (Stmts+=statement)*
@@ -210,30 +210,34 @@ vartype				: (AS | IS) DataType = datatype
 					;
 
 
-property			: (Attributes=attributes)? (Modifiers+= membermodifier)*
-					  PROPERTY Id=identifier ParamList=parameterList AS Type=datatype AUTO eos	#propertyauto
-					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
-					  ParamList=parameterList AS Type=datatype
-					  (GetModifiers+= membermodifier)* GET GetExpression=expression eos		#propertyget
-					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
-					  ParamList=parameterList AS Type=datatype
-					  (SetModifiers+= membermodifier)* SET expression eos						#propertyset
-					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
-					  ParamList=parameterList AS Type=datatype
-					  (GetModifiers+= membermodifier)* GET GetExpression=expression
-					  (SetModifiers+= membermodifier)* SET SetExpression=expression	eos		#propertygetset
-					| (Attributes=attributes)? (Modifiers+= membermodifier)* PROPERTY Id=identifier
-					  ParamList=parameterList AS Type=datatype
-					  ((GetModifiers+= membermodifier)* GET eos GetStmtBlk=statementBlock END (GET)? eos)?
-					  ((SetModifiers+= membermodifier)* SET eos SetStmtBlk=statementBlock END (SET)? eos)?
-					  END PROPERTY eos															#propertymulti
+property			: (Attributes=attributes)? (Modifiers+= membermodifier)* 
+                      PROPERTY Id=identifier (ParamList=parameterList)? AS Type=datatype 
+                      ( Auto=propertyauto													// Auto
+                      | SingleLine=propertysingleline                                       // Single Line
+                      | eos (Get=propertyget) (Set=propertyset)?  END PROPERTY? eos         // Multi Line GET SET?
+                      | eos (Set=propertyset) (Get=propertyget)?  END PROPERTY? eos         // Multi Line SET GET?
+                      )
 					;
 
+propertyauto        : AUTO ((GetModifiers+= membermodifier)* GET) ((SetModifiers+= membermodifier)* SET)? (ASSIGN_OP Initializer = expression)? eos  // AUTO GET SET? Initializer? eos
+                    | AUTO ((SetModifiers+= membermodifier)* SET) ((GetModifiers+= membermodifier)* GET)? (ASSIGN_OP Initializer = expression)? eos  // AUTO SET GET? Initializer? eos
+                    | AUTO (ASSIGN_OP Initializer = expression)? eos																				 // AUTO Initializer? eos
+                    ;
+
+propertysingleline  : (GetModifiers+= membermodifier)* GET GetExpression=expression     ((SetModifiers+= membermodifier)* SET SetExpression=expressionList)? eos  // GET SET? eos
+                    | (SetModifiers+= membermodifier)* SET SetExpression=expressionList ((GetModifiers+= membermodifier)* GET GetExpression=expression)?     eos  // SET GET? eos
+                    ;
+
+propertyget         : (GetModifiers+= membermodifier)* GET eos GetStmtBlk=statementBlock END GET? eos // GET Stmts END GET?
+                    ;
+
+propertyset         : (SetModifiers+= membermodifier)* SET eos SetStmtBlk=statementBlock END SET? eos	// SET Stmts END SET?
+                    ;
 
 classmember			: method															#clsmethod
-					| (Attributes=attributes)? (Modifiers+= membermodifier)* 
+					| (Attributes=attributes)? (Modifiers+= constructormodifier)* 
                       CONSTRUCTOR (ParamList=parameterList)? eos StmtBlk=statementBlock	#clsctor
-					| (Attributes=attributes)? (Modifiers+= membermodifier)*            // Actually only modifier Extern is allowed
+					| (Attributes=attributes)? (Modifiers+= EXTERN )*       
                       DESTRUCTOR (LPAREN RPAREN)?  eos StmtBlk=statementBlock           #clsdtor
 					| classvars									#clsvars
 					| property									#clsproperty
@@ -250,14 +254,18 @@ classmember			: method															#clsmethod
 					;
 
 
+constructormodifier : Token=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC )
+                    ;
 
-overloadedOps		: Token=(INC | DEC | NOT | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
+
+
+overloadedops		: Token=(INC | DEC | NOT | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
 					| GT  | LT | NEQ | GTE| LTE | IMPLICIT | EXPLICIT | TRUE_CONST | FALSE_CONST
 					| TILDE | AMP   | PIPE )
 					;
 
 
-operator_			: OPERATOR Operation=overloadedOps
+operator_			: OPERATOR Operation=overloadedops
 					  ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
 					;
 
@@ -282,6 +290,13 @@ attribute			: Id=identifier (LPAREN (Params +=attributeParam (COMMA Params+=attr
 attributeParam		: Expr=expression
 					;
 
+
+globalattributes    : LBRKT globallattributetarget Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+                    ;
+
+globallattributetarget : ASSEMBLY COLON
+                       | MODULE COLON
+                       ;
 
 /*
 : localdecl
@@ -545,7 +560,7 @@ codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 					;
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier			: Token=ID 
+identifier			: Token=ID  
 					| VnToken=keywordvn 
 					| XsToken=keywordxs
 					;
@@ -597,32 +612,6 @@ literalValue		: Token=
 					| NULL_SYMBOL )
 					;
 
-
-/*assignOperator		: Token=
-					( ASSIGN_OP
-					| ASSIGN_ADD
-					| ASSIGN_EXP
-					| ASSIGN_MUL
-					| ASSIGN_DIV
-					| ASSIGN_MOD
-					| ASSIGN_BITAND
-					| ASSIGN_BITOR
-					| ASSIGN_LSHIFT
-					| ASSIGN_RSHIFT
-					| ASSIGN_XOR )
-					;*/
-
-/*relationOperator	: Token=
-					( LT
-					| LTE
-					| GT
-					| GTE
-					| EQ
-					| EEQ
-					| SUBSTR
-					| NEQ )
-					;*/
-
 eos                 : (NL)* (NL|EOF)
 					;
 
@@ -645,5 +634,5 @@ keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DEL
                     | THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT)
                     ;
 
-keywordxs           : Token=(ASYNC | AWAIT | CHECKED |	DEFAULT | EXTERN | PARAMS | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD)
+keywordxs           : Token=(ASSEMBLY | ASYNC | AWAIT | CHECKED |	DEFAULT | EXTERN | MODULE | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD)
                     ;

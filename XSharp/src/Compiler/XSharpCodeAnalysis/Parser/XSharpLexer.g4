@@ -2,7 +2,7 @@ lexer grammar XSharpLexer;
 
 /*
  * Lexer Rules
-*/
+*/ 
 
 @lexer::members
 {
@@ -240,12 +240,13 @@ VOSTRUCT			: V O S T R U C T ;
 // New XSharp Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
 
+ASSEMBLY            : A S S E M B L Y;
 ASYNC				: A S Y N C;
 AWAIT				: A W A I T ;
 CHECKED				: C H E C K E D;
 DEFAULT				: D E F A U L T;
 EXTERN				: E X T E R N ;
-PARAMS				: P A R A M S ;
+MODULE              : M O D U L E ;
 SWITCH				: S W I T C H ;
 UNCHECKED			: U N C H E C K E D;
 UNSAFE				: U N S A F E;

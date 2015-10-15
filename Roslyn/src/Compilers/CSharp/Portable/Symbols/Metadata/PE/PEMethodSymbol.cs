@@ -676,7 +676,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         && this.ContainingType.MightContainExtensionMethods)
                     {
                         var moduleSymbol = _containingType.ContainingPEModule;
+#if XSHARP
+                        isExtensionMethod = moduleSymbol.Module.HasExtensionAttribute(_handle, ignoreCase: true);
+#else
                         isExtensionMethod = moduleSymbol.Module.HasExtensionAttribute(_handle, ignoreCase: false);
+#endif
                     }
                     _packedFlags.InitializeIsExtensionMethod(isExtensionMethod);
                 }

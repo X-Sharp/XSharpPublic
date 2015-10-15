@@ -319,11 +319,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 var other = t2 as TopLevel;
 
+#if XSHARP
+                return (object)other != null &&
+                    string.Equals(MetadataName, other.MetadataName, StringComparison.OrdinalIgnoreCase) &&
+                    arity == other.arity &&
+                    string.Equals(_namespaceName, other.NamespaceName, StringComparison.OrdinalIgnoreCase) &&
+                    _containingModule.Equals(other._containingModule);
+#else
                 return (object)other != null &&
                     string.Equals(MetadataName, other.MetadataName, StringComparison.Ordinal) &&
                     arity == other.arity &&
                     string.Equals(_namespaceName, other.NamespaceName, StringComparison.Ordinal) &&
                     _containingModule.Equals(other._containingModule);
+#endif
             }
         }
 
@@ -412,9 +420,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 var other = t2 as Nested;
+#if XSHARP
+                return (object)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.OrdinalIgnoreCase) &&
+                    arity == other.arity &&
+                    _containingType.Equals(other._containingType, ignoreCustomModifiersAndArraySizesAndLowerBounds, ignoreDynamic);
+#else
                 return (object)other != null && string.Equals(MetadataName, other.MetadataName, StringComparison.Ordinal) &&
                     arity == other.arity &&
                     _containingType.Equals(other._containingType, ignoreCustomModifiersAndArraySizesAndLowerBounds, ignoreDynamic);
+#endif
             }
         }
     }

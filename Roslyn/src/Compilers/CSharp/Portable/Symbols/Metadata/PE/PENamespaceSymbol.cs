@@ -199,7 +199,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 var children = from child in childNamespaces
                                select new PENestedNamespaceSymbol(child.Key, this, child.Value);
 
+#if XSHARP
+                var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(CaseInsensitiveComparison.Comparer);
+#else
                 var namespaces = new Dictionary<string, PENestedNamespaceSymbol>();
+#endif
 
                 foreach (var c in children)
                 {
@@ -239,7 +243,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
                                 if (noPiaLocalTypes == null)
                                 {
+#if XSHARP
+                                    noPiaLocalTypes = new Dictionary<string, TypeDefinitionHandle>(CaseInsensitiveComparison.Comparer);
+#else
                                     noPiaLocalTypes = new Dictionary<string, TypeDefinitionHandle>();
+#endif
                                 }
 
                                 noPiaLocalTypes[typeDefName] = t;
@@ -250,7 +258,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                     }
                 }
 
+#if XSHARP
+                var typesDict = children.ToDictionary(c => c.Name, CaseInsensitiveComparison.Comparer);
+#else
                 var typesDict = children.ToDictionary(c => c.Name);
+#endif
                 children.Free();
 
                 if (noPiaLocalTypes != null)

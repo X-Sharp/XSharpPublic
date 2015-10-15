@@ -123,7 +123,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             get
             {
+#if XSHARP
+                return false;
+#else
                 return true;
+#endif
             }
         }
 

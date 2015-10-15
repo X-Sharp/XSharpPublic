@@ -98,7 +98,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var select = state.selectOrGroup as SelectClauseSyntax;
             if (select == null) return false;
             var name = select.Expression as IdentifierNameSyntax;
+#if XSHARP
+            return name != null && CaseInsensitiveComparison.Equals(state.rangeVariable.Name, name.Identifier.ValueText);
+#else
             return name != null && state.rangeVariable.Name == name.Identifier.ValueText;
+#endif
         }
 
         private BoundExpression BindQueryInternal2(QueryTranslationState state, DiagnosticBag diagnostics)
@@ -625,7 +629,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression MakePair(CSharpSyntaxNode node, string field1Name, BoundExpression field1Value, string field2Name, BoundExpression field2Value, QueryTranslationState state, DiagnosticBag diagnostics)
         {
+#if XSHARP
+            if (CaseInsensitiveComparison.Equals(field1Name, field2Name))
+#else
             if (field1Name == field2Name)
+#endif
             {
                 // we will generate a diagnostic elsewhere
                 field2Name = state.TransparentRangeVariableName();

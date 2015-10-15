@@ -38,11 +38,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (call != null && (object)call.Method != null)
             {
                 var arguments = call.Arguments;
+#if XSHARP
+                if (CaseInsensitiveComparison.Equals(call.Method.Name, "Select"))
+#else
                 if (call.Method.Name == "Select")
+#endif
                 {
                     this.Visit(arguments[arguments.Length - 1]);
                 }
+#if XSHARP
+                else if (CaseInsensitiveComparison.Equals(call.Method.Name, "GroupBy"))
+#else
                 else if (call.Method.Name == "GroupBy")
+#endif
                 {
                     this.Visit(arguments[arguments.Length - 2]);
                 }

@@ -74,7 +74,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private bool ImplementsStandardQueryInterface(TypeSymbol instanceType, string name, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
+#if XSHARP
+            if (instanceType.TypeKind == TypeKind.Array || CaseInsensitiveComparison.Equals(name, "Cast") && HasCastToQueryProvider(instanceType, ref useSiteDiagnostics))
+#else
             if (instanceType.TypeKind == TypeKind.Array || name == "Cast" && HasCastToQueryProvider(instanceType, ref useSiteDiagnostics))
+#endif
             {
                 return true;
             }
@@ -207,7 +211,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static bool ReportQueryInferenceFailedSelectMany(FromClauseSyntax fromClause, string methodName, BoundExpression receiver, AnalyzedArguments arguments, ImmutableArray<Symbol> symbols, DiagnosticBag diagnostics)
         {
+#if XSHARP
+            Debug.Assert(CaseInsensitiveComparison.Equals(methodName, "SelectMany"));
+#else
             Debug.Assert(methodName == "SelectMany");
+#endif
 
             // Estimate the return type of Select's lambda argument
             BoundExpression arg = arguments.Argument(arguments.IsExtensionMethodInvocation ? 1 : 0);

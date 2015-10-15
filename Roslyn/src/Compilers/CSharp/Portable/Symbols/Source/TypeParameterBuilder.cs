@@ -37,7 +37,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 ToLocations(builders),
                 ToSyntaxRefs(builders));
 
+#if XSHARP
+            if (CaseInsensitiveComparison.Equals(result.Name, result.ContainingSymbol.Name))
+#else
             if (result.Name == result.ContainingSymbol.Name)
+#endif
             {
                 diagnostics.Add(ErrorCode.ERR_TypeVariableSameAsParent, result.Locations[0], result.Name);
             }

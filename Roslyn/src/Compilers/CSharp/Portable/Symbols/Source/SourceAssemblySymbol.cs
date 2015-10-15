@@ -991,7 +991,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     NamedTypeSymbol x = topLevelTypesFromModules[i];
                     NamedTypeSymbol y = topLevelTypesFromModules[i + 1];
 
+#if XSHARP
+                    if (x.Arity == y.Arity && CaseInsensitiveComparison.Equals(x.Name, y.Name))
+#else
                     if (x.Arity == y.Arity && x.Name == y.Name)
+#endif
                     {
                         if (!reportedAnError)
                         {
@@ -2469,7 +2473,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (wellKnownAttributeData != null && wellKnownAttributeData.ForwardedTypes != null)
                 {
+#if XSHARP
+                    forwardedTypesFromSource = new Dictionary<string, NamedTypeSymbol>(CaseInsensitiveComparison.Comparer);
+#else
                     forwardedTypesFromSource = new Dictionary<string, NamedTypeSymbol>();
+#endif
 
                     foreach (NamedTypeSymbol forwardedType in wellKnownAttributeData.ForwardedTypes)
                     {

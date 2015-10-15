@@ -147,7 +147,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var field = new SourceEventFieldSymbol(this, declaratorSyntax, discardedDiagnostics);
             discardedDiagnostics.Free();
 
+#if XSHARP
+            Debug.Assert(CaseInsensitiveComparison.Equals(field.Name, _name));
+#else
             Debug.Assert(field.Name == _name);
+#endif
             return field;
         }
 

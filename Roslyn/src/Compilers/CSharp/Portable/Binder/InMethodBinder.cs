@@ -48,7 +48,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!parameters.IsEmpty)
             {
                 RecordDefinition(parameters);
+#if XSHARP
+                _parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, CaseInsensitiveComparison.Comparer);
+#else
                 _parameterMap = new MultiDictionary<string, ParameterSymbol>(parameters.Length, EqualityComparer<string>.Default);
+#endif
                 foreach (var parameter in parameters)
                 {
                     _parameterMap.Add(parameter.Name, parameter);
@@ -65,7 +69,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void RecordDefinition<T>(ImmutableArray<T> definitions) where T : Symbol
         {
+#if XSHARP
+            var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer));
+#else
             var declarationMap = _definitionMap ?? (_definitionMap = new SmallDictionary<string, Symbol>());
+#endif
             foreach (Symbol s in definitions)
             {
                 if (!declarationMap.ContainsKey(s.Name))

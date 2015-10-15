@@ -820,14 +820,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 var location = identifier.GetLocation();
                 var name = identifier.ValueText;
 
+#if XSHARP
+                if (CaseInsensitiveComparison.Equals(name, this.Name))
+#else
                 if (name == this.Name)
+#endif
                 {
                     diagnostics.Add(ErrorCode.ERR_TypeVariableSameAsParent, location, name);
                 }
 
                 for (int i = 0; i < result.Count; i++)
                 {
+#if XSHARP
+                    if (CaseInsensitiveComparison.Equals(name, result[i].Name))
+#else
                     if (name == result[i].Name)
+#endif
                     {
                         diagnostics.Add(ErrorCode.ERR_DuplicateTypeParameter, location, name);
                         break;

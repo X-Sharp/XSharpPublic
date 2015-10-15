@@ -22,7 +22,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
     /// </summary>
     internal abstract class PENamedTypeSymbol : NamedTypeSymbol
     {
+#if XSHARP
+        private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>(CaseInsensitiveComparison.Comparer);
+#else
         private static readonly Dictionary<string, ImmutableArray<PENamedTypeSymbol>> s_emptyNestedTypes = new Dictionary<string, ImmutableArray<PENamedTypeSymbol>>();
+#endif
 
         private readonly NamespaceOrTypeSymbol _container;
         private readonly TypeDefinitionHandle _handle;
@@ -295,7 +299,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             {
                 // Unmangle name for a generic type.
                 _name = MetadataHelpers.UnmangleMetadataNameForArity(metadataName, arity);
+#if XSHARP
+                Debug.Assert(ReferenceEquals(_name, metadataName) == CaseInsensitiveComparison.Equals(_name, metadataName));
+#else
                 Debug.Assert(ReferenceEquals(_name, metadataName) == (_name == metadataName));
+#endif
                 mangleName = !ReferenceEquals(_name, metadataName);
             }
 
@@ -607,7 +615,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 var moduleSymbol = ContainingPEModule;
                 var module = moduleSymbol.Module;
 
+#if XSHARP
+                var names = new HashSet<string>(CaseInsensitiveComparison.Comparer);
+#else
                 var names = new HashSet<string>();
+#endif
 
                 try
                 {
@@ -1559,7 +1571,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                         case TypeKind.Delegate:
                             var moduleSymbol = this.ContainingPEModule;
                             var module = moduleSymbol.Module;
+#if XSHARP
+                            bool moduleHasExtension = module.HasExtensionAttribute(_handle, ignoreCase: true);
+#else
                             bool moduleHasExtension = module.HasExtensionAttribute(_handle, ignoreCase: false);
+#endif
 
                             var containingAssembly = this.ContainingAssembly as PEAssemblySymbol;
                             if ((object)containingAssembly != null)
@@ -1708,7 +1724,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
         private MultiDictionary<string, PEFieldSymbol> CreateFields(ArrayBuilder<PEFieldSymbol> fieldMembers)
         {
+#if XSHARP
+            var privateFieldNameToSymbols = new MultiDictionary<string, PEFieldSymbol>(CaseInsensitiveComparison.Comparer);
+#else
             var privateFieldNameToSymbols = new MultiDictionary<string, PEFieldSymbol>();
+#endif
 
             var moduleSymbol = this.ContainingPEModule;
             var module = moduleSymbol.Module;
@@ -1873,7 +1893,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
         private static Dictionary<string, ImmutableArray<Symbol>> GroupByName(ArrayBuilder<Symbol> symbols)
         {
+#if XSHARP
+            return symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+#else
             return symbols.ToDictionary(s => s.Name);
+#endif
         }
 
         private static Dictionary<string, ImmutableArray<PENamedTypeSymbol>> GroupByName(ArrayBuilder<PENamedTypeSymbol> symbols)
@@ -1883,7 +1907,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 return s_emptyNestedTypes;
             }
 
+#if XSHARP
+            return symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+#else
             return symbols.ToDictionary(s => s.Name);
+#endif
         }
 
 

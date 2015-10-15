@@ -49,7 +49,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (ParameterSymbol parameter in _parameters)
             {
+#if XSHARP
+                if (CaseInsensitiveComparison.Equals(parameter.Name, name))
+#else
                 if (parameter.Name == name)
+#endif
                 {
                     result.MergeEqual(originalBinder.CheckViability(parameter, arity, options, null, diagnose, ref useSiteDiagnostics));
                 }

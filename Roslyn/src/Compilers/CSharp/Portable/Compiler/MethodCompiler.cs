@@ -1262,7 +1262,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 // We need to save additional debugging information for MoveNext of an async state machine.
                 var stateMachineMethod = method as SynthesizedStateMachineMethod;
+#if XSHARP
+                bool isStateMachineMoveNextMethod = stateMachineMethod != null && CaseInsensitiveComparison.Equals(method.Name, WellKnownMemberNames.MoveNextMethodName);
+#else
                 bool isStateMachineMoveNextMethod = stateMachineMethod != null && method.Name == WellKnownMemberNames.MoveNextMethodName;
+#endif
 
                 if (isStateMachineMoveNextMethod && stateMachineMethod.StateMachineType.KickoffMethod.IsAsync)
                 {

@@ -128,7 +128,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // an O(m*n) algorithm here but n (number of extern aliases) will likely be very small.
                             foreach (var externAlias in externAliases)
                             {
+#if XSHARP
+                                if (CaseInsensitiveComparison.Equals(externAlias.Alias.Name, identifierValueText))
+#else
                                 if (externAlias.Alias.Name == identifierValueText)
+#endif
                                 {
                                     // The using alias '{0}' appeared previously in this namespace
                                     diagnostics.Add(ErrorCode.ERR_DuplicateAlias, usingDirective.Location, identifierValueText);
@@ -138,7 +142,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             if (usingAliases == null)
                             {
+#if XSHARP
+                                usingAliases = new Dictionary<string, AliasAndUsingDirective>(CaseInsensitiveComparison.Comparer);
+#else
                                 usingAliases = new Dictionary<string, AliasAndUsingDirective>();
+#endif
                             }
 
                             // construct the alias sym with the binder for which we are building imports. That
@@ -280,7 +288,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // some n^2 action, but n should be very small.
                 foreach (var existingAlias in builder)
                 {
+#if XSHARP
+                    if (CaseInsensitiveComparison.Equals(existingAlias.Alias.Name, aliasSyntax.Identifier.ValueText))
+#else
                     if (existingAlias.Alias.Name == aliasSyntax.Identifier.ValueText)
+#endif
                     {
                         diagnostics.Add(ErrorCode.ERR_DuplicateAlias, existingAlias.Alias.Locations[0], existingAlias.Alias.Name);
                         break;
@@ -440,7 +452,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (var a in this.ExternAliases)
             {
+#if XSHARP
+                if (CaseInsensitiveComparison.Equals(a.Alias.Name, name))
+#else
                 if (a.Alias.Name == name)
+#endif
                 {
                     // Found a match in our list of extern aliases.  Mark the extern alias as being
                     // seen so that it won't be reported to the user as something that can be

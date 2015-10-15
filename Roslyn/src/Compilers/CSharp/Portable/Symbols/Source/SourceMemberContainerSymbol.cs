@@ -1093,7 +1093,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
 
                 Debug.Assert(s_emptyTypeMembers.Count == 0);
+#if XSHARP
+                return symbols.Count > 0 ? symbols.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer) : s_emptyTypeMembers;
+#else
                 return symbols.Count > 0 ? symbols.ToDictionary(s => s.Name) : s_emptyTypeMembers;
+#endif
             }
             finally
             {
@@ -1107,7 +1111,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 case TypeKind.Class:
                 case TypeKind.Struct:
+#if XSHARP
+                    if (CaseInsensitiveComparison.Equals(member.Name, this.Name))
+#else
                     if (member.Name == this.Name)
+#endif
                     {
                         diagnostics.Add(ErrorCode.ERR_MemberNameSameAsType, member.Locations[0], this.Name);
                     }
@@ -1243,7 +1251,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // TODO: Can we move ToDictionary() off ArrayBuilder<T> so that we don't need a temp here?
                 var temp = ArrayBuilder<Symbol>.GetInstance();
                 temp.AddRange(membersAndInitializers.NonTypeNonIndexerMembers);
+#if XSHARP
+                var membersByName = temp.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+#else
                 var membersByName = temp.ToDictionary(s => s.Name);
+#endif
                 temp.Free();
 
                 AddNestedTypesToDictionary(membersByName, GetTypeMembersDictionary());
@@ -2181,7 +2193,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 merged.Add(indexerMembers[indexerPos]);
             }
 
+#if XSHARP
+            var membersByName = merged.ToDictionary(s => s.Name, CaseInsensitiveComparison.Comparer);
+#else
             var membersByName = merged.ToDictionary(s => s.Name);
+#endif
             merged.Free();
 
             return membersByName;
@@ -3139,9 +3155,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region Extension Methods
+#region Extension Methods
 
         internal bool ContainsExtensionMethods
         {
@@ -3179,7 +3195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
         public sealed override NamedTypeSymbol ConstructedFrom
         {

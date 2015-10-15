@@ -1857,7 +1857,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool hasNameCollision = false;
                 for (int i = 0; i < result.Names.Count; ++i)
                 {
+#if XSHARP
+                    if (CaseInsensitiveComparison.Equals(result.Name(i), name))
+#else
                     if (result.Name(i) == name)
+#endif
                     {
                         hasNameCollision = true;
                         break;
@@ -3029,7 +3033,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var initializerBuilder = ArrayBuilder<BoundExpression>.GetInstance();
 
             // Member name map to report duplicate assignments to a field/property.
+#if XSHARP
+            var memberNameMap = new HashSet<string>(CaseInsensitiveComparison.Comparer);
+#else
             var memberNameMap = new HashSet<string>();
+#endif
 
             // We use a location specific binder for binding object initializer field/property access to generate object initializer specific diagnostics:
             //  1) CS1914 (ERR_StaticMemberInObjectInitializer)
@@ -4349,7 +4357,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             Debug.Assert((object)leftType != null);
 
                             var leftName = node.Identifier.ValueText;
+#if XSHARP
+                            if (CaseInsensitiveComparison.Equals(leftType.Name, leftName) || IsUsingAliasInScope(leftName))
+#else
                             if (leftType.Name == leftName || IsUsingAliasInScope(leftName))
+#endif
                             {
                                 var typeDiagnostics = new DiagnosticBag();
                                 var boundType = BindNamespaceOrType(node, typeDiagnostics);
@@ -4805,7 +4817,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (boundLeft.Kind == BoundKind.TypeExpression ||
                     boundLeft.Kind == BoundKind.BaseReference ||
+#if XSHARP
+                    node.Kind() == SyntaxKind.AwaitExpression && CaseInsensitiveComparison.Equals(plainName, WellKnownMemberNames.GetResult))
+#else
                     node.Kind() == SyntaxKind.AwaitExpression && plainName == WellKnownMemberNames.GetResult)
+#endif
                 {
                     Error(diagnostics, ErrorCode.ERR_NoSuchMember, name, boundLeft.Type, plainName);
                 }
@@ -4826,7 +4842,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // if the receiver type is a windows RT async interface and the method name is GetAwaiter,
             // then we would suggest a using directive for "System".
             // TODO: we should check if such a using directive would actually help, or if there is already one in scope.
+#if XSHARP
+            return CaseInsensitiveComparison.Equals(methodName, WellKnownMemberNames.GetAwaiter) && ImplementsWinRTAsyncInterface(receiver);
+#else
             return methodName == WellKnownMemberNames.GetAwaiter && ImplementsWinRTAsyncInterface(receiver);
+#endif
         }
 
         /// <summary>

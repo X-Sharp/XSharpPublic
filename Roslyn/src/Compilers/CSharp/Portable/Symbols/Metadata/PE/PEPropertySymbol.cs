@@ -399,9 +399,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 if (this.ParameterCount > 0)
                 {
                     string defaultMemberName = _containingType.DefaultMemberName;
+#if XSHARP
+                    return CaseInsensitiveComparison.Equals(_name, defaultMemberName) || //NB: not Name property (break mutual recursion)
+                        ((object)this.GetMethod != null && CaseInsensitiveComparison.Equals(this.GetMethod.Name, defaultMemberName)) ||
+                        ((object)this.SetMethod != null && CaseInsensitiveComparison.Equals(this.SetMethod.Name, defaultMemberName));
+#else
                     return _name == defaultMemberName || //NB: not Name property (break mutual recursion)
                         ((object)this.GetMethod != null && this.GetMethod.Name == defaultMemberName) ||
                         ((object)this.SetMethod != null && this.SetMethod.Name == defaultMemberName);
+#endif
                 }
                 return false;
             }

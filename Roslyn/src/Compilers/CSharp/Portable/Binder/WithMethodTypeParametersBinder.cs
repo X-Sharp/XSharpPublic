@@ -34,7 +34,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (_lazyTypeParameterMap == null)
                 {
+#if XSHARP
+                    var result = new MultiDictionary<string, TypeParameterSymbol>(CaseInsensitiveComparison.Comparer);
+#else
                     var result = new MultiDictionary<string, TypeParameterSymbol>();
+#endif
                     foreach (var typeParameter in _methodSymbol.TypeParameters)
                     {
                         result.Add(typeParameter.Name, typeParameter);

@@ -250,8 +250,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                         // Compare name and containing symbol name. Uses HasNameQualifier
                         // extension method to avoid string allocations.
+#if XSHARP
+                        if (!string.Equals(namedType.MetadataName, targetInfo.Name, System.StringComparison.OrdinalIgnoreCase) ||
+                            !namedType.HasNameQualifier(targetInfo.Namespace))
+#else
                         if (!string.Equals(namedType.MetadataName, targetInfo.Name, System.StringComparison.Ordinal) ||
                             !namedType.HasNameQualifier(targetInfo.Namespace))
+#endif
                         {
                             foundMatch = false;
                             break;

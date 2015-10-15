@@ -834,13 +834,21 @@ namespace Microsoft.CodeAnalysis.CSharp
         private void CheckSymbolDistinctness(Symbol symbol, string symbolName, MultiDictionary<string, Symbol>.ValueSet sameNameSymbols)
         {
             Debug.Assert(sameNameSymbols.Count > 0);
+#if XSHARP
+            Debug.Assert(CaseInsensitiveComparison.Equals(symbol.Name, symbolName));
+#else
             Debug.Assert(symbol.Name == symbolName);
+#endif
 
             bool isMethodOrProperty = symbol.Kind == SymbolKind.Method || symbol.Kind == SymbolKind.Property;
 
             foreach (Symbol other in sameNameSymbols)
             {
+#if XSHARP
+                if (!CaseInsensitiveComparison.Equals(other.Name, symbolName) && !(isMethodOrProperty && other.Kind == symbol.Kind))
+#else
                 if (other.Name != symbolName && !(isMethodOrProperty && other.Kind == symbol.Kind))
+#endif
                 {
                     // TODO: Shouldn't we somehow reference the conflicting member?  Dev11 doesn't.
                     this.AddDiagnostic(ErrorCode.WRN_CLS_BadIdentifierCase, symbol.Locations[0], symbol);

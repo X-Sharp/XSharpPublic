@@ -161,6 +161,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return CreateForGlobalFailure(lexer.TextWindow.Position, createEmptyNodeFunc());
             }
+            catch (Exception)
+            {
+                return CreateForGlobalFailure(lexer.TextWindow.Position, createEmptyNodeFunc());
+            }
         }
 
         private TNode CreateForGlobalFailure<TNode>(int position, TNode node) where TNode : CSharpSyntaxNode

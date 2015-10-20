@@ -139,6 +139,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                    concurrentBuild, extendedCustomDebugInformation, debugPlusMode, xmlReferenceResolver, sourceReferenceResolver, metadataReferenceResolver, assemblyIdentityComparer,
                    strongNameProvider, metadataImportOptions)
         {
+#if XSHARP
+            if (this.MainTypeName == null || this.MainTypeName == "")
+                    this.MainTypeName = "Xs$Globals";
+#endif
             this.Usings = usings.AsImmutableOrEmpty();
             this.AllowUnsafe = allowUnsafe;
         }

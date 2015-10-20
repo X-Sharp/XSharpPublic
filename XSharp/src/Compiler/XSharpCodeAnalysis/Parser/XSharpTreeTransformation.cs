@@ -848,7 +848,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCheckedStmt([NotNull] XSharpParser.CheckedStmtContext context)
         {
-            context.Put(_syntaxFactory.CheckedStatement(context.Ch.SyntaxKindKeyword(),
+            context.Put(_syntaxFactory.CheckedStatement(context.Ch.StatementKind(),
                 context.Ch.SyntaxKeyword(),
                 context.StmtBlk.Get<BlockSyntax>()));
         }
@@ -893,6 +893,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Left.Get<ExpressionSyntax>(),
                 context.Op.SyntaxOp(),
                 context.Right.Get<ExpressionSyntax>()));
+        }
+
+        public override void ExitCheckedExpression([NotNull] XSharpParser.CheckedExpressionContext context)
+        {
+            context.Put(_syntaxFactory.CheckedExpression(context.ch.ExpressionKind(),
+                context.ch.SyntaxKeyword(),
+                SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
+                context.Expr.Get<ExpressionSyntax>(),
+                SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
         }
 
         public override void ExitMethodCall([NotNull] XSharpParser.MethodCallContext context)

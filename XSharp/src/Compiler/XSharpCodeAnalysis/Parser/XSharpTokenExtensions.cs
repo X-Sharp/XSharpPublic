@@ -418,7 +418,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        public static SyntaxKind SyntaxKindKeyword(this IToken token)
+        public static SyntaxKind StatementKind(this IToken token)
         {
             SyntaxKind r;
             switch (token.Type)
@@ -431,6 +431,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.UNCHECKED:
                     r = SyntaxKind.UncheckedStatement;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            return r;
+        }
+
+        public static SyntaxKind ExpressionKind(this IToken token)
+        {
+            SyntaxKind r;
+            switch (token.Type)
+            {
+                case XSharpParser.CHECKED:
+                    r = SyntaxKind.CheckedExpression;
+                    break;
+                case XSharpParser.UNCHECKED:
+                    r = SyntaxKind.UncheckedExpression;
                     break;
                 default:
                     throw new InvalidOperationException();

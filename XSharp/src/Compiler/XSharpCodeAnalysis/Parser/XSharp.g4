@@ -495,14 +495,14 @@ expression			: Left=expression Q=QMARK Op=(DOT | COLON) Right=identifierName		#a
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
+					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
+					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=expressionList? RBRKT		#arrayAccess			// Array element access
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
-					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
-					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )

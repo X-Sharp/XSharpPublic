@@ -6,6 +6,8 @@ lexer grammar XSharpLexer;
 
 @lexer::members
 {
+	public const int COMMENT = 1;
+
 	int _lastToken = NL;
 	public override IToken NextToken()
 	{
@@ -17,7 +19,7 @@ lexer grammar XSharpLexer;
 	{
 		get {return _lastToken;}
 	}
-	bool _Four = true;
+	bool _Four = false;
 	public bool AllowFourLetterAbbreviations
 	{
 		get {return _Four;}
@@ -37,6 +39,7 @@ options	{
 
 
 
+
 /*
  * Lexer Rules
  */
@@ -53,7 +56,7 @@ ACCESS				: A C C E S S
 ALIGN				: A L I G N
 					| {_Four}?  A L I G
 					;
-AS					: A S ;
+AS					: A S ; 
 ASSIGN				: A S S I G N
 					| {_Four}?  A S S I (G)?
 					;
@@ -105,7 +108,8 @@ FASTCALL			: F A S T C A L L
 FIELD				: '_'? F I E L D ;
 FOR					: F O R ;
 FUNCTION			: F U N C T I O N
-					| {_Four}?  F U N C (T(I(O)?)?)?
+                    | F U N C 
+					| {_Four}?  F U N C T(I(O)?)?
 					;
 GLOBAL				: G L O B A L
 					| {_Four}?  G L O B (A)?
@@ -133,7 +137,7 @@ LOOP				: L O O P ;
 MEMBER				: M E M B E R
 					| {_Four}?  M E M B (E)?
 					;
-MEMVAR              : M E M V A R 
+MEMVAR				: M E M V A R 
 					| {_Four}?  M E M V (A)?
 					; 
 METHOD				: M E T H O D
@@ -153,7 +157,8 @@ PRIVATE				: P R I V A T E
 					| {_Four}?  P R I V (A ( T)?)?
 					;
 PROCEDURE			: P R O C E D U R E
-					| { _Four}? P R O C (E(D(U(R)?)?)?)?
+                    | P R O C
+					| { _Four}? P R O C E(D(U(R)?)?)?
 					;
 PROTECTED			: P R O T E C T E D
 					| { _Four}? P R O T (E(C(T(E)?)?)?)?
@@ -206,6 +211,7 @@ AUTO				: A U T O ;
 CATCH				: C A T C H ;
 CONSTRUCTOR			: C O N S T R U C T O R ;
 CONST				: C O N S T ;
+DEFAULT				: D E F A U L T;            // Pragma switch
 DELEGATE			: D E L E G A T E ;
 DESTRUCTOR			: D E S T R U C T O R ;
 ENUM				: E N U M ;
@@ -223,7 +229,10 @@ INTERNAL			: I N T E R N A L ;
 LOCK				: L O C K ;
 NAMESPACE			: N A M E S P A C E ;
 NEW					: N E W ;
-OPERATOR			: O P E R A T O R ;
+OFF                 : O F F ;                   // Pragma switch
+ON                  : O N ;                     // Pragma switch
+OPERATOR 			: O P E R A T O R ;
+OPTIONS             : O P T I O N S ;           // Pragma Options
 OUT					: O U T ;
 PARTIAL				: P A R T I A L ;
 PROPERTY			: P R O P E R T Y ;
@@ -238,25 +247,25 @@ UNTIL				: U N T I L ;
 VALUE				: V A L U E ;
 VIRTUAL				: V I R T U A L ;
 VOSTRUCT			: V O S T R U C T ;
+WARNINGS            : W A R N I N G S;          // Pragma Warnings
 
 
 // New XSharp Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
 
-ASSEMBLY            : A S S E M B L Y;
+ASSEMBLY			: A S S E M B L Y;
 ASYNC				: A S Y N C;
 AWAIT				: A W A I T ;
 CHECKED				: C H E C K E D;
-DEFAULT				: D E F A U L T;
 EXTERN				: E X T E R N ;
-MODULE              : M O D U L E ;
+MODULE				: M O D U L E ;
 SWITCH				: S W I T C H ;
 UNCHECKED			: U N C H E C K E D;
 UNSAFE				: U N S A F E;
-VAR                 : V A R ;
+VAR					: V A R ;
 VOLATILE			: V O L A T I L E ;
 WHERE				: W H E R E ;
-YIELD               : Y I E L D ;
+YIELD				: Y I E L D ;
 
 
 
@@ -282,7 +291,8 @@ LOGIC				: L O G I C
 					;
 
 LONGINT				: L O N G I N T
-					| { _Four}? L O N G (I(N)?)?
+                    | L O N G
+					| { _Four}? L O N G I(N)?
 					;
 
 OBJECT				: O B J E C T
@@ -311,6 +321,10 @@ WORD				: W O R D ;
 // Vulcan Types
 INT64				: I N T '6' '4' ;
 UINT64				: U I N T '6' '4' ;
+
+
+// XSharp Types
+DYNAMIC				: D Y N A M I C ;
 
 
 // Null values
@@ -364,18 +378,18 @@ MULT				: '*' ;
 QMARK				: '?' ;
 
 // Assignments
-ASSIGN_OP     : ':=' ;
-ASSIGN_ADD    : '+=' ;
-ASSIGN_SUB    : '-=' ;
-ASSIGN_EXP    : '^=' ;
-ASSIGN_MUL    : '*=' ;
-ASSIGN_DIV    : '/=' ;
-ASSIGN_MOD    : '%=' ;
-ASSIGN_BITAND : '&=';
-ASSIGN_BITOR  : '|=';
-ASSIGN_LSHIFT : '<<=';
-ASSIGN_RSHIFT : '>>=';
-ASSIGN_XOR    : '~=';
+ASSIGN_OP			: ':=' ;
+ASSIGN_ADD			: '+=' ;
+ASSIGN_SUB			: '-=' ;
+ASSIGN_EXP			: '^=' ;
+ASSIGN_MUL			: '*=' ;
+ASSIGN_DIV			: '/=' ;
+ASSIGN_MOD			: '%=' ;
+ASSIGN_BITAND		: '&=';
+ASSIGN_BITOR		: '|=';
+ASSIGN_LSHIFT		: '<<=';
+ASSIGN_RSHIFT		: '>>=';
+ASSIGN_XOR			: '~=';
 
 // Relational operators
 LT			: '<' ;
@@ -408,22 +422,47 @@ DOT			: '.' ;
 HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
 BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
 INT_CONST	:  ( DIGIT )+ ( U | L )? ;
-DATE_CONST  : ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? DOT DIGIT ( DIGIT )? DOT DIGIT ( DIGIT )?;			// 2015.07.15
-REAL_CONST  : ( ( DIGIT )+ )? DOT ( DIGIT )* ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
+DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? DOT DIGIT ( DIGIT )? DOT DIGIT ( DIGIT )?;			// 2015.07.15
+REAL_CONST	: ( ( DIGIT )+ )? DOT ( DIGIT )* ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
 
 //DECIMAL_CONST;                         // a literal floating point number followed by 'm'
 
 
-PPINCLUDE		: {LastToken == NL }? '#' I N C L U D E		(~(  '\n' | '\r' ) )* -> channel(HIDDEN) ;
-PPREGION		: {LastToken == NL }? '#' R E G I O N		(~(  '\n' | '\r' ) )* -> channel(HIDDEN) ;
-PPENDREGION		: {LastToken == NL }? '#' E N D R E G I O N (~(  '\n' | '\r' ) )* -> channel(HIDDEN) ;
-PPIFDEF			: {LastToken == NL }? '#' I F D E F			(~(  '\n' | '\r' ) )* -> channel(HIDDEN) ;
-PPIF			: {LastToken == NL }? '#' I F				(~(  '\n' | '\r' ) )* -> channel(HIDDEN) ;
-PPELSEIF		: {LastToken == NL }? '#' E L S E I F		(~(  '\n' | '\r' ) )* -> channel(HIDDEN) ;
-PPENDIF			: {LastToken == NL }? '#' E N D I F			(~(  '\n' | '\r' ) )* -> channel(HIDDEN) ;
-			
+// Preprocessopr symbols handled by the compiler
+// Must precede the SYMBOL rule
+PRAGMA           :  {LastToken == NL }? '#' P R A G M A 
+                 ;
 
-SYMBOL_CONST: '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
+HASHUSING        :  {LastToken == NL }? '#' U S I N G
+                 ;
+
+// Preprocessor symbols handled by the Lexer
+// Must precede the SYMBOL rule
+// These symbols are IGNORED for now.
+// In the future there should probably be a preprocessor lexer that searches and replaces defines in the source and 
+// optionally includes/excludes source lines based on define values
+
+PP_SYMBOLS      : {LastToken == NL }? '#' 
+                  ( C O M M A N D               // #command   <matchPattern> => <resultPattern>  
+                  | D E F I N E                 // #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
+                  | E L S E                     // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+                  | E N D I F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+                  | E N D R E G I O N           // #region [description]sourceCode#endregion
+                  | E R R O R                   // #error [errorMessage]
+                  | I F D E F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+                  | I F N D E F                 // #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
+                  | I N C L U D E               // #include "<headerfilename>"
+                  | L I N E                     // #line <number> [FileName] or #line default
+				  //| P R A G M A					// Ignored for now. Should be handled by the parser
+                  | R E G I O N                 // #region [description]sourceCode#endregion
+                  | T R A N S L A T E           // #translate <matchPattern> => <resultPattern> 
+                  | U N D E F                   // #undef <identifier>
+				  //| U S I N G					// Ignored for now. Should be handled by the parser
+                  | W A R N I N G               // #warning [warningMessage]
+                  ) (~(  '\n' | '\r' ) )* -> channel(HIDDEN) 
+                ;
+
+SYMBOL_CONST     : '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
 
 
 STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
@@ -436,6 +475,9 @@ WS			:	(' ' |  '\t' |	'\r') -> channel(HIDDEN)
 
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
 // the Lexer Property AllowOldStyleComments
+
+DOC_COMMENT :  '/' '/' '/' ( ~(  '\n' | '\r' ) )*	-> channel(1)
+			;
 
 SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 			| {_OldComment}? '&' '&' ( ~(  '\n' | '\r' ) )*
@@ -450,7 +492,9 @@ NL						: '\n' ;
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 
-ID						: ID_PART ;
+ID						: ID_PART 
+						| '@' '@' ID_PART
+						;
 
 UNRECOGNIZED			: . ;
 
@@ -478,29 +522,29 @@ fragment IDStartChar	: 'A'..'Z' | 'a'..'z'
 						| '\u200C'..'\u200D'
 						;
 
-fragment A: 'a' | 'A';
-fragment B: 'b' | 'B';
-fragment C: 'c' | 'C';
-fragment D: 'd' | 'D';
-fragment E: 'e' | 'E';
-fragment F: 'f' | 'F';
-fragment G: 'g' | 'G';
-fragment H: 'h' | 'H';
-fragment I: 'i' | 'I';
-fragment J: 'j' | 'J';
-fragment K: 'k' | 'K';
-fragment L: 'l' | 'L';
-fragment M: 'm' | 'M';
-fragment N: 'n' | 'N';
-fragment O: 'o' | 'O';
-fragment P: 'p' | 'P';
-fragment Q: 'q' | 'Q';
-fragment R: 'r' | 'R';
-fragment S: 's' | 'S';
-fragment T: 't' | 'T';
-fragment U: 'u' | 'U';
-fragment V: 'v' | 'V';
-fragment W: 'w' | 'W';
-fragment X: 'x' | 'X';
-fragment Y: 'y' | 'Y';
-fragment Z: 'z' | 'Z';
+fragment A	: 'a' | 'A';
+fragment B	: 'b' | 'B';
+fragment C	: 'c' | 'C';
+fragment D	: 'd' | 'D';
+fragment E	: 'e' | 'E';
+fragment F	: 'f' | 'F';
+fragment G	: 'g' | 'G';
+fragment H	: 'h' | 'H';
+fragment I	: 'i' | 'I';
+fragment J	: 'j' | 'J';
+fragment K	: 'k' | 'K';
+fragment L	: 'l' | 'L';
+fragment M	: 'm' | 'M';
+fragment N	: 'n' | 'N';
+fragment O	: 'o' | 'O';
+fragment P	: 'p' | 'P';
+fragment Q	: 'q' | 'Q';
+fragment R	: 'r' | 'R';
+fragment S	: 's' | 'S';
+fragment T	: 't' | 'T';
+fragment U	: 'u' | 'U';
+fragment V	: 'v' | 'V';
+fragment W	: 'w' | 'W';
+fragment X	: 'x' | 'X';
+fragment Y	: 'y' | 'Y';
+fragment Z	: 'z' | 'Z';

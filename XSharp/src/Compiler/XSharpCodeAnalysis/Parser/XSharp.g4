@@ -8,6 +8,27 @@ grammar XSharp;
 // - ALIAS (->) operator
 // - preprocessor , #region, #using etc
 
+@parser::members
+{
+	bool _VOSyntax = true;
+	public bool VOSyntax
+	{
+		get {return _VOSyntax;}
+		set {_VOSyntax = value;}
+	}
+	bool _ClsFunc = true;
+	public bool AllowFunctionInsideClass
+	{
+		get {return _ClsFunc;}
+		set {_ClsFunc = value;}
+	}
+	bool _xBaseVars = true;
+	public bool AllowXBaseVariables
+	{
+		get {return _xBaseVars;}
+		set {_xBaseVars = value;}
+	}
+}
 
 
 options	{ 
@@ -19,30 +40,36 @@ options	{
 source				: (eos)? (entity)* eof
 					;
 
-entity              : function
-					| procedure
-					| global
-					| method
-					| vodefine
-					| vostruct
-					| vounion
-					| namespace_
-					| class_
+entity              : namespace_
+                    | class_
 					| structure_
-					| delegate_
-					| enum_
-					| event_
 					| interface_
-					| globalattributes
+					| delegate_                 
+					| event_
+					| enum_
+                    | function                  // This will become part of the 'Globals' class
+					| procedure                 // This will become part of the 'Globals' class
+					| method                    // Method xxx Class xxx syntax
+					| globalattributes          // Assembly attributes, Module attributes etc.
+                    | using_                    // Using Namespace
+                    | pragma                    // Compiler pragma
+					| {_VOSyntax}? voglobal     // This will become part of the 'Globals' class
+					| {_VOSyntax}? vodefine     // This will become part of the 'Globals' class
+					| {_VOSyntax}? vostruct     // Compatibility (unsafe) structure
+					| {_VOSyntax}? vounion      // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+					| {_VOSyntax}? vodllproc    // External method of the Globals class
+					| {_VOSyntax}? vodllfunc    // External method of the Globals class
 					;
 
-function            : (Modifiers+=funcprocmodifier)* FUNCTION Id=identifier ParamList=parameterList 
+function            : (Attributes=attributes)? (Modifiers+=funcprocmodifier)* 
+                       FUNCTION Id=identifier (ParamList=parameterList )?
 					   (AS Type=datatype)? 
 					   (CallingConvention=callingconvention)? eos 
 					   StmtBlk=statementBlock
 					;
 
-procedure           : (Modifiers+=funcprocmodifier)* PROCEDURE Id=identifier ParamList=parameterList
+procedure           : (Attributes=attributes)? (Modifiers+=funcprocmodifier)* 
+                      PROCEDURE Id=identifier (ParamList=parameterList)?
 					   (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? eos 
 					   StmtBlk=statementBlock
 					;
@@ -51,18 +78,23 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL)
 					;
 
 
-dllfunc				: (Modifiers+=funcprocmodifier)* DLL FUNCTION Id=identifier ParamList=parameterList 
-					   (AS Type=datatype)? (CallingConvention=dllcallconv)? COLON Dll=identifier DOT (Entrypoint=identifier | EntrypointString=STRING_CONST) (NEQ Ordinal=INT_CONST)? 
-                    ;
+vodllfunc			: (Modifiers+=funcprocmodifier)* DLL FUNCTION Id=identifier ParamList=parameterList 
+					   (AS Type=datatype)? (CallingConvention=dllcallconv)? COLON 
+					   ( Dll=identifier DOT Entrypoint=identifier //(NEQ Ordinal=INT_CONST)? 
+					   | Dll=identifier DOT EntrypointString=STRING_CONST //(NEQ Ordinal=INT_CONST)? 
+						) 
+					;
 
-dllproc				: (Modifiers+=funcprocmodifier)* DLL PROCEDURE Id=identifier ParamList=parameterList 
-					   (CallingConvention=dllcallconv)? COLON Dll=identifier DOT (Entrypoint=identifier | EntrypointString=STRING_CONST)  (NEQ Ordinal=INT_CONST)? 
+vodllproc			:  (Modifiers+=funcprocmodifier)* DLL PROCEDURE Id=identifier ParamList=parameterList 
+					   (CallingConvention=dllcallconv)? COLON 
+					   ( EntryPoint=name   (NEQ Ordinal=INT_CONST)? 
+						| Dll=identifier DOT EntrypointString=STRING_CONST (NEQ Ordinal=INT_CONST)? 
+						) 
+
 					;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)
-                    ;
-
-
+					;
 
 
 parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
@@ -80,7 +112,20 @@ funcprocmodifier	: Token = (STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE)
 					;
 
 
-global				: (Modifiers+=funcprocmodifier)*  GLOBAL Id=identifier Var += classvar (COMMA Var += classvar) VarType = vartype
+using_              : HASHUSING (Alias=identifier ASSIGN_OP)? Namespace=name     
+                    ;
+
+pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST Switch=pragmaswitch RPAREN eos         #pragmaOptions
+                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     Switch=pragmaswitch RPAREN eos         #pragmaWarnings
+                    ;
+
+pragmaswitch        : ON | OFF | DEFAULT
+                    ;
+
+voglobal			: (Modifiers+=funcprocmodifier)*  GLOBAL Vars += globalvar (COMMA Vars += globalvar)* (VarType = vartype)? eos
+					;
+
+globalvar			: (DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
 					;
 
 
@@ -88,7 +133,7 @@ global				: (Modifiers+=funcprocmodifier)*  GLOBAL Id=identifier Var += classvar
 // And when Class is outside of assembly, convert to Extension Method?
 method				: (Attributes=attributes)? (Modifiers+= membermodifier)*
 					  T=methodtype Id=identifier (ParamList=parameterList)? (AS Type=datatype)? 
- 					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? eos 
+					  (CallingConvention=callingconvention)? (CLASS ClassId=name)? eos 
 					  StmtBlk=statementBlock		
 					;
 
@@ -112,13 +157,13 @@ vostructmember		: MEMBER DIM Id=identifier LBRKT ArraySub=arraysub RBRKT  Member
 					| MEMBER Id=identifier MemberType = vartype eos
 					;
 
-namespace_			: BEGIN NAMESPACE Id=identifier eos
+namespace_			: BEGIN NAMESPACE Id=name eos
 					  (entity)*
 					  END NAMESPACE eos
 					;
 
 interface_			: (Attributes=attributes)? (Modifiers+= interfacemodifier)*
-					  INTERFACE Id=identifier
+					  INTERFACE Id=name
 					  Parents=interfaceparents
 					  (Members+=classmember)+
 					  END INTERFACE eos
@@ -133,7 +178,7 @@ interfaceparents	: INHERIT Interfaces+= datatype (COMMA Interfaces+= datatype)* 
 					;
 
 class_				: (Attributes=attributes)? (Modifiers += classmodifier)*
-					  CLASS Id=identifier TypeParameters=typeparameters?                        // TypeParameters indicate Generic Class
+					  CLASS Id=name TypeParameters=typeparameters?                        // TypeParameters indicate Generic Class
 					  Parents=classparents? Interfaces=interfacetypelist? 
 					  (ConstraintsClauses +=typeparameterconstraintsclause)* eos                 // Optional typeparameterconstraints for Generic Class
 					  (Members +=classmember)*
@@ -166,15 +211,19 @@ typeparameterconstraints
 
 typeparameterconstraint:  typeName                          //  Class Foo<t> WHERE T IS Customer
 					   | typeparameter                      //  Class Foo<T,U> WHERE U IS T
-					   | CLASS                              //  Class Foo<t> WHERE T IS CLASS
-					   | STRUCTURE                          //  Class Foo<t> WHERE T IS STRUCTURE
-					   | NEW LPAREN RPAREN                  //  Class Foo<t> WHERE T IS NEW()
+					   | typeparameterconstrainttypes       //  Class Foo<t> WHERE T IS CLASS
+                                                            //  Class Foo<t> WHERE T IS STRUCTURE
+                                                            //  Class Foo<t> WHERE T IS NEW()
 					   ; 
-							  
+typeparameterconstrainttypes: CLASS
+                            | STRUCTURE
+                            | NEW LPAREN RPAREN
+                            ;
+
 // End of Extensions for Generic Classes
 
 structure_			: (Attributes=attributes)? (Modifiers += structuremodifier)*
-					  STRUCTURE Id=identifier
+					  STRUCTURE Id=name
 					  Interfaces=interfacetypelist? eos
 					  (Members +=classmember)+
 					  END STRUCTURE eos
@@ -266,15 +315,16 @@ classmember			: method															#clsmethod
 					| classvars									#clsvars
 					| property									#clsproperty
 					| operator_									#clsoperator
-					| function									#clsfunction		// Equivalent to method
-					| procedure									#clsprocedure		// Equivalent to method
-					| global									#clsglobal			// Equivalent to static field
 					| structure_								#nestedStructure
 					| class_									#nestedClass
 					| delegate_									#nestedDelegate
 					| enum_										#nestedEnum
 					| event_									#nestedEvent
 					| interface_								#nestedInterface
+                    | using_                                    #nestedUsing
+                    | pragma                                    #nestedPragma
+					| {_ClsFunc}? function						#clsfunction		// Equivalent to method
+					| {_ClsFunc}? procedure						#clsprocedure		// Equivalent to method
 					;
 
 
@@ -344,7 +394,7 @@ globallattributetarget : ASSEMBLY COLON
 | fieldstmt */
 
 statement           : localdecl                                                 #declarationStmt
-					| xbasedecl                                                 #xbasedeclStmt
+					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO WHILE Expr=expression eos
 					  StmtBlk=statementBlock END DO eos							#whileStmt
 					| WHILE Expr=expression eos
@@ -357,7 +407,7 @@ statement           : localdecl                                                 
 					  (STEP Step=expression)? eos
 					  StmtBlk=statementBlock NEXT eos							#forStmt
 					| FOREACH
-					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype)
+					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
 					  IN Container=expression eos
 					  StmtBlk=statementBlock NEXT eos							#foreachStmt
 					| IF CondBlock+=conditionalBlock
@@ -437,7 +487,7 @@ localdecl          : LOCAL                 LocalVars +=localvar (COMMA LocalVars
 				   | VAR                   ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*       // VAR special for Robert !
 				   ;
 
-localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT Arraysub=arraysub RBRKT)? (ASSIGN_OP Expression=expression)? (Datatype=vartype)?
+localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT Arraysub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)? ( AsIs=(AS | IS) Datatype=datatype)?
 				   ;
 					  
 impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression 
@@ -502,6 +552,7 @@ expression			: Left=expression Q=QMARK Op=(DOT | COLON) Right=identifierName		#a
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
 					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
 					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
+					| Expr=expression  IS Type=datatype							#typeCheckExpression	// expr IS typeORid
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
@@ -533,7 +584,7 @@ iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=e
 					| IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
-name				: Left=name Op=DOT Right=identifier							#qualifiedName
+name				: Left=identifier Op=DOT Right=name							#qualifiedName
 					| Id=identifier	GenericArgList=genericArgumentList			#genericName
 					| Id=identifier												#simpleName
 					;
@@ -544,16 +595,16 @@ genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
 identifierName		: Id=identifier
 					;
 
-datatype			: TypeName=typeName PTR											#ptrDatatype
+datatype			: TypeName=typeName 											#simpleDatatype
 					| TypeName=typeName (Ranks+=arrayRank)*							#arrayDatatype
-					| TypeName=typeName												#simpleDatatype
+					| TypeName=typeName PTR											#ptrDatatype
 					;
 
 arrayRank			: LBRKT (COMMA)* RBRKT
 					;
 
-typeName			: Name=name
-					| NativeType=nativeType
+typeName			: NativeType=nativeType
+					| Name=name
 					;
 
 literalArray		: (LT Type=datatype GT)? LCURLY (ExprList=expressionList)? RCURLY
@@ -595,6 +646,7 @@ nativeType			: Token=
 					| CODEBLOCK
 					| DATE
 					| DWORD
+					| DYNAMIC
 					| FLOAT
 					| SHORTINT
 					| INT
@@ -652,11 +704,11 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
 					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE )
 					;
 
-keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DELEGATE | DESTRUCTOR	| ENUM | EVENT
+keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR	| ENUM | EVENT
 					| EXPLICIT | FINALLY | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERFACE | INTERNAL 
-					| LOCK | NAMESPACE | NEW | OPERATOR	| OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
-					| THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT)
+					| LOCK | NAMESPACE | NEW | OPERATOR	| OPTIONS | OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
+					| THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
 					;
 
-keywordxs           : Token=(ASSEMBLY | ASYNC | AWAIT | CHECKED |	DEFAULT | EXTERN | MODULE | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD)
+keywordxs           : Token=(ASSEMBLY | ASYNC | AWAIT | CHECKED | DYNAMIC | EXTERN | MODULE | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD)
 					;

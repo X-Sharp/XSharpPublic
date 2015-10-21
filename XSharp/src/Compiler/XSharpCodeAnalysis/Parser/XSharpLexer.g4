@@ -493,7 +493,7 @@ NL						: '\n' ;
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 
 ID						: ID_PART 
-						| '@' '@' ID_PART
+						| '@' '@' ID_PART {Text = Text.Substring(2, Text.Length-2);}
 						;
 
 UNRECOGNIZED			: . ;

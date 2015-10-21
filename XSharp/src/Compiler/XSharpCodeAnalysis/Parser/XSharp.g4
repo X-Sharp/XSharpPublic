@@ -62,14 +62,14 @@ entity              : namespace_
 					;
 
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
-						FUNCTION Id=identifier ParamList=parameterList 
+						FUNCTION Id=identifier (ParamList=parameterList)?
 					   (AS Type=datatype)? 
 					   (CallingConvention=callingconvention)? eos 
 					   StmtBlk=statementBlock
 					;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
-					   PROCEDURE Id=identifier ParamList=parameterList
+					   PROCEDURE Id=identifier (ParamList=parameterList)?
 					   (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? eos 
 					   StmtBlk=statementBlock
 					;
@@ -115,20 +115,17 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
-using_              : HASHUSING (Alias=identifier ASSIGN_OP)? Namespace=name     
+using_              : HASHUSING (Alias=identifier ASSIGN_OP)? Namespace=name     eos
                     ;
 
-pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST Switch=pragmaswitch RPAREN eos         #pragmaOptions
-                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     Switch=pragmaswitch RPAREN eos         #pragmaWarnings
+pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN eos         #pragmaOptions
+                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN eos         #pragmaWarnings
                     ;
 
 pragmaswitch        : ON | OFF | DEFAULT
                     ;
 
-voglobal			: (Modifiers=funcprocModifiers)?  GLOBAL Id=identifier Var+=classvar (COMMA Var+=classvar) (AS | IS) DataType=datatype
-					;
-
-globalvar			: (DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+voglobal			: (Modifiers=funcprocModifiers)?  GLOBAL Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)? eos
 					;
 
 
@@ -267,8 +264,8 @@ eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
 
 
 classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)?
-					  Var+=classvar (COMMA Var+=classvar) (AS | IS) DataType=datatype
-					;
+					  Var+=classvar (COMMA Var+=classvar) ((AS | IS) DataType=datatype)?
+					; 
 
 classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE) )+
 					;
@@ -480,10 +477,10 @@ catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
 // When the type is missing and the following element has a type
 // then the type of the following element propagates forward until for all elements without type
 
-localdecl          : LOCAL                 LocalVars+=localvar (COMMA LocalVars+=localvar)*   #commonLocalDecl // LOCAL
-				   | Static=STATIC LOCAL?  LocalVars+=localvar (COMMA LocalVars+=localvar)*   #staticLocalDecl // STATIC LOCAL or LOCAL
+localdecl          : LOCAL                 LocalVars+=localvar (COMMA LocalVars+=localvar)* eos   #commonLocalDecl // LOCAL
+				   | Static=STATIC LOCAL?  LocalVars+=localvar (COMMA LocalVars+=localvar)* eos   #staticLocalDecl // STATIC LOCAL or LOCAL
 				   | ((LOCAL)? IMPLIED | VAR)                                                                  // LOCAL IMPLIED or simply IMPLIED
-				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*                 #varLocalDecl    // VAR special for Robert !
+				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               eos   #varLocalDecl    // VAR special for Robert !
 				   ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT Arraysub=arraysub RBRKT)? 

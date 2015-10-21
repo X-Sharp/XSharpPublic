@@ -56,7 +56,11 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// The name of an entry point method.
         /// </summary>
+#if XSHARP
+        public const string EntryPointMethodName = "Start";
+#else
         public const string EntryPointMethodName = "Main";
+#endif
 
         /// <summary>
         /// The default fully qualified name of a <c>Script</c> class.

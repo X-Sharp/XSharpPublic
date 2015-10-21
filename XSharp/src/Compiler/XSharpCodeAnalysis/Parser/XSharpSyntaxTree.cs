@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
@@ -98,6 +99,10 @@ namespace Antlr4.Runtime
         }
     }
 
+    public partial class CommonToken : Microsoft.CodeAnalysis.IMessageSerializable
+    {
+    }
+
     internal static class RuleExtensions
     {
         internal static void Put<T>([NotNull] this IParseTree t, T node) where T : InternalSyntax.CSharpSyntaxNode
@@ -113,6 +118,38 @@ namespace Antlr4.Runtime
 
             return (T)t.CsNode;
         }
+
+        internal static void PutList<T>([NotNull] this IParseTree t, InternalSyntax.SyntaxList<T> node) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            //node.XNode = t;
+            t.CsNode = node;
+        }
+
+        internal static InternalSyntax.SyntaxList<T> GetList<T>([NotNull] this IParseTree t) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            if (t.CsNode == null)
+                return default(InternalSyntax.SyntaxList<T>);
+
+            return (InternalSyntax.SyntaxList<T>)t.CsNode;
+        }
+
+        internal static TNode WithAdditionalDiagnostics<TNode>([NotNull] this TNode node, params DiagnosticInfo[] diagnostics) where TNode : InternalSyntax.CSharpSyntaxNode
+        {
+            DiagnosticInfo[] existingDiags = node.GetDiagnostics();
+            int existingLength = existingDiags.Length;
+            if (existingLength == 0)
+            {
+                return node.WithDiagnosticsGreen(diagnostics);
+            }
+            else
+            {
+                DiagnosticInfo[] result = new DiagnosticInfo[existingDiags.Length + diagnostics.Length];
+                existingDiags.CopyTo(result, 0);
+                diagnostics.CopyTo(result, existingLength);
+                return node.WithDiagnosticsGreen(result);
+            }
+        }
+
     }
 }
 

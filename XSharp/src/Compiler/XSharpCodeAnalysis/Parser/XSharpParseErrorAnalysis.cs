@@ -39,11 +39,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (node.Symbol.TokenIndex == -1)
             {
-                node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_UnexpectedGenericName));
+                node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
             }
             else
             {
-                node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_UnexpectedGenericName));
+                //node.Parent.RuleContext.AddError(new ParseErrorData(node, ErrorCode.ERR_SyntaxError, node));
             }
         }
 
@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
             if (context.exception != null)
-                context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedGenericName));
+                context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, context));
         }
 
         public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
@@ -87,8 +87,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Type = t;
                 context.AddChild(t);*/
                 context.Type = new XSharpParser.DatatypeContext(context, 0);
-                context.Type.CsNode = SyntaxFactory.PredefinedType(SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword));
-//                context.AddError(new ParseErrorData(context, ErrorCode.ERR_UnexpectedGenericName));
+                context.Type.Put(SyntaxFactory.PredefinedType(SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword)));
+                //context.AddError(new ParseErrorData(context, ErrorCode.ERR_SyntaxError, context));
             }
             if (context.StmtBlk == null)
             {
@@ -274,8 +274,5 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitAccessModifier([NotNull] XSharpParser.AccessModifierContext context)
-        {
-        }
     }
 }

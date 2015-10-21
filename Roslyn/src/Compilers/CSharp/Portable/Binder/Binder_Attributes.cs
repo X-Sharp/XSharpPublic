@@ -290,7 +290,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (boundNamedArgumentsBuilder == null)
                         {
                             boundNamedArgumentsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+#if XSHARP
+                            boundNamedArgumentsSet = new HashSet<string>(CaseInsensitiveComparison.Comparer);
+#else
                             boundNamedArgumentsSet = new HashSet<string>();
+#endif
                         }
                         else if (boundNamedArgumentsSet.Contains(argumentName))
                         {
@@ -671,7 +675,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var name = argumentNamesOpt[argIndex];
 
+#if XSHARP
+                if (string.Equals(name, parameterName, StringComparison.OrdinalIgnoreCase))
+#else
                 if (string.Equals(name, parameterName, StringComparison.Ordinal))
+#endif
                 {
                     break;
                 }
@@ -828,9 +836,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new TypedConstant(parameter.Type, values.AsImmutableOrNull());
         }
 
-        #endregion
+#endregion
 
-        #region AttributeExpressionVisitor
+#region AttributeExpressionVisitor
 
         /// <summary>
         /// Walk a custom attribute argument bound node and return a TypedConstant.  Verify that the expression is a constant expression.
@@ -1120,9 +1128,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion
+#endregion
 
-        #region AnalyzedAttributeArguments
+#region AnalyzedAttributeArguments
 
         private struct AnalyzedAttributeArguments
         {
@@ -1136,6 +1144,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion
+#endregion
     }
 }

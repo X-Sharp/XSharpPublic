@@ -46,7 +46,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         protected SourceEnumConstantSymbol(SourceMemberContainerTypeSymbol containingEnum, EnumMemberDeclarationSyntax syntax, DiagnosticBag diagnostics)
             : base(containingEnum, syntax.Identifier.ValueText, syntax.GetReference(), syntax.Identifier.GetLocation())
         {
+#if XSHARP
+            if (CaseInsensitiveComparison.Equals(this.Name, WellKnownMemberNames.EnumBackingFieldName))
+#else
             if (this.Name == WellKnownMemberNames.EnumBackingFieldName)
+#endif
             {
                 diagnostics.Add(ErrorCode.ERR_ReservedEnumerator, this.ErrorLocation, WellKnownMemberNames.EnumBackingFieldName);
             }

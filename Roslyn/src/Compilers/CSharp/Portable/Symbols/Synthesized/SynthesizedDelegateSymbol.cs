@@ -57,10 +57,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         public override ImmutableArray<Symbol> GetMembers(string name)
         {
+#if XSHARP
+            return
+                CaseInsensitiveComparison.Equals(name, _constructor.Name) ? ImmutableArray.Create<Symbol>(_constructor) :
+                CaseInsensitiveComparison.Equals(name, _invoke.Name) ? ImmutableArray.Create<Symbol>(_invoke) :
+                ImmutableArray<Symbol>.Empty;
+#else
             return
                 (name == _constructor.Name) ? ImmutableArray.Create<Symbol>(_constructor) :
                 (name == _invoke.Name) ? ImmutableArray.Create<Symbol>(_invoke) :
                 ImmutableArray<Symbol>.Empty;
+#endif
         }
 
         public override Accessibility DeclaredAccessibility

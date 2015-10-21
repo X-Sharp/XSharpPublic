@@ -259,7 +259,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // NOTE: This method depends on MakeNameToMembersMap() on creating a proper 
                 // NOTE: type of the array, see comments in MakeNameToMembersMap() for details
 
+#if XSHARP
+                var dictionary = new Dictionary<String, ImmutableArray<NamedTypeSymbol>>(CaseInsensitiveComparison.Comparer);
+#else
                 var dictionary = new Dictionary<String, ImmutableArray<NamedTypeSymbol>>();
+#endif
 
                 Dictionary<String, ImmutableArray<NamespaceOrTypeSymbol>> map = this.GetNameToMembersMap();
                 foreach (var kvp in map)
@@ -495,7 +499,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             public NameToSymbolMapBuilder(int capacity)
             {
+#if XSHARP
+                _dictionary = new Dictionary<string, object>(capacity, CaseInsensitiveComparison.Comparer);
+#else
                 _dictionary = new Dictionary<string, object>(capacity);
+#endif
             }
 
             public void Add(NamespaceOrTypeSymbol symbol)
@@ -521,7 +529,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             public Dictionary<String, ImmutableArray<NamespaceOrTypeSymbol>> CreateMap()
             {
+#if XSHARP
+                var result = new Dictionary<String, ImmutableArray<NamespaceOrTypeSymbol>>(_dictionary.Count, CaseInsensitiveComparison.Comparer);
+#else
                 var result = new Dictionary<String, ImmutableArray<NamespaceOrTypeSymbol>>(_dictionary.Count);
+#endif
 
                 foreach (var kvp in _dictionary)
                 {

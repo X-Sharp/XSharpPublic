@@ -43,12 +43,8 @@ namespace Microsoft.CodeAnalysis.Text
         /// </summary>
         public virtual LinePosition GetLinePosition(int position)
         {
-#if XSHARP
-            return new LinePosition();
-#else
             var line = GetLineFromPosition(position);
             return new LinePosition(line.LineNumber, position - line.Start);
-#endif
         }
 
         /// <summary>

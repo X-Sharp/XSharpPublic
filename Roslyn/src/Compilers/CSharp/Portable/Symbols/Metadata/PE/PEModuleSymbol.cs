@@ -405,7 +405,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             CustomAttributeHandle ignore;
             var result = GetCustomAttributesForToken(token,
                 out extensionAttribute,
+#if XSHARP
+                AttributeDescription.CaseInsensitiveExtensionAttribute,
+#else
                 AttributeDescription.CaseSensitiveExtensionAttribute,
+#endif
                 out ignore,
                 default(AttributeDescription));
 
@@ -442,7 +446,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             {
                 if (_lazyTypeNames == null)
                 {
+#if XSHARP
+                    Interlocked.CompareExchange(ref _lazyTypeNames, _module.TypeNames.AsCaseInsensitiveCollection(), null);
+#else
                     Interlocked.CompareExchange(ref _lazyTypeNames, _module.TypeNames.AsCaseSensitiveCollection(), null);
+#endif
                 }
 
                 return _lazyTypeNames;
@@ -455,7 +463,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             {
                 if (_lazyNamespaceNames == null)
                 {
+#if XSHARP
+                    Interlocked.CompareExchange(ref _lazyNamespaceNames, _module.NamespaceNames.AsCaseInsensitiveCollection(), null);
+#else
                     Interlocked.CompareExchange(ref _lazyNamespaceNames, _module.NamespaceNames.AsCaseSensitiveCollection(), null);
+#endif
                 }
 
                 return _lazyNamespaceNames;
@@ -654,7 +666,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             try
             {
                 string matchedName;
+#if XSHARP
+                AssemblyReferenceHandle assemblyRef = Module.GetAssemblyForForwardedType(fullName.FullName, ignoreCase: true, matchedName: out matchedName);
+#else
                 AssemblyReferenceHandle assemblyRef = Module.GetAssemblyForForwardedType(fullName.FullName, ignoreCase: false, matchedName: out matchedName);
+#endif
                 return assemblyRef.IsNil ? null : this.GetReferencedAssemblySymbols()[Module.GetAssemblyReferenceIndexOrThrow(assemblyRef)];
             }
             catch (BadImageFormatException)

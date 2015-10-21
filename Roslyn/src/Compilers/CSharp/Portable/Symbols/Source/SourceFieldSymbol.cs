@@ -480,7 +480,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get
             {
+#if XSHARP
+                return CaseInsensitiveComparison.Equals(this.Name, WellKnownMemberNames.EnumBackingFieldName);
+#else
                 return this.Name == WellKnownMemberNames.EnumBackingFieldName;
+#endif
             }
         }
 

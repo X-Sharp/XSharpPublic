@@ -381,7 +381,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // constructor (unless the type is generic, the cref is on/in the type (but not 
                             // on/in a nested type), and there were no parens after the member name).
 
+#if XSHARP
+                            if (CaseInsensitiveComparison.Equals(containerType.Name, memberName) && (hasParameterList || containerType.Arity == 0 || this.ContainingType != containerType.OriginalDefinition))
+#else
                             if (containerType.Name == memberName && (hasParameterList || containerType.Arity == 0 || this.ContainingType != containerType.OriginalDefinition))
+#endif
                             {
                                 constructorType = containerType;
                             }
@@ -393,7 +397,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // as long as there were parens after the member name.
 
                             NamedTypeSymbol binderContainingType = this.ContainingType;
+#if XSHARP
+                            if ((object)binderContainingType != null && CaseInsensitiveComparison.Equals(memberName, binderContainingType.Name))
+#else
                             if ((object)binderContainingType != null && memberName == binderContainingType.Name)
+#endif
                             {
                                 constructorType = binderContainingType;
                             }
@@ -769,8 +777,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (MemberSignatureComparer.CrefComparer.Equals(signatureMember, candidate))
                 {
+#if XSHARP
+                    Debug.Assert(candidate.GetMemberArity() != 0 || CaseInsensitiveComparison.Equals(candidate.Name, WellKnownMemberNames.InstanceConstructorName) || arity == 0,
+                        "Can only have a 0-arity, non-constructor candidate if the desired arity is 0.");
+#else
                     Debug.Assert(candidate.GetMemberArity() != 0 || candidate.Name == WellKnownMemberNames.InstanceConstructorName || arity == 0,
                         "Can only have a 0-arity, non-constructor candidate if the desired arity is 0.");
+#endif
 
                     if (viable == null)
                     {

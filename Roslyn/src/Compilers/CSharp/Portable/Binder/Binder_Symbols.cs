@@ -1463,7 +1463,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     // Cannot reference System.Void directly.
                     var singleType = singleResult as TypeSymbol;
+#if XSHARP
+                    if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && CaseInsensitiveComparison.Equals(simpleName, "Void"))
+#else
                     if ((object)singleType != null && singleType.PrimitiveTypeCode == Cci.PrimitiveTypeCode.Void && simpleName == "Void")
+#endif
                     {
                         wasError = true;
                         var errorInfo = new CSDiagnosticInfo(ErrorCode.ERR_SystemVoid);
@@ -1813,7 +1817,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return diagnostics.Add(ErrorCode.ERR_AliasNotFound, location, whereText);
             }
 
+#if XSHARP
+            if (whereText == "Xs$var" && !options.IsAttributeTypeLookup())
+#else
             if (whereText == "var" && !options.IsAttributeTypeLookup())
+#endif
             {
                 var code = (where.Parent is QueryClauseSyntax) ? ErrorCode.ERR_TypeVarNotFoundRangeVariable : ErrorCode.ERR_TypeVarNotFound;
                 return diagnostics.Add(code, location);

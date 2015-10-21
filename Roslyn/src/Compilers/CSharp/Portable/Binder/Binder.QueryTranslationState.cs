@@ -64,7 +64,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 foreach (var existingRangeVariable in allRangeVariables.Keys)
                 {
+#if XSHARP
+                    if (CaseInsensitiveComparison.Equals(existingRangeVariable.Name, name))
+#else
                     if (existingRangeVariable.Name == name)
+#endif
                     {
                         diagnostics.Add(ErrorCode.ERR_QueryDuplicateRangeVariable, identifier.GetLocation(), name);
                         error = true;

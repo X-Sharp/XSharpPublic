@@ -159,7 +159,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                     return false;
                 }
 
+#if XSHARP
+                builder.Add(new AnonymousTypeKeyField(fieldName, isKey: false, ignoreCase: true));
+#else
                 builder.Add(new AnonymousTypeKeyField(fieldName, isKey: false, ignoreCase: false));
+#endif
             }
             return true;
         }

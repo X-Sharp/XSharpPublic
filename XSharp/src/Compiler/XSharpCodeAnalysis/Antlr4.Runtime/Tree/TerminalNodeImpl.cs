@@ -148,10 +148,10 @@ namespace Antlr4.Runtime.Tree
 
         public virtual string ToStringTree(Parser parser)
         {
-            return ToString();
+            return _ToString();
         }
 
-        public override string ToString()
+        public string _ToString()
         {
             if (Symbol != null)
             {
@@ -169,7 +169,7 @@ namespace Antlr4.Runtime.Tree
 
         public virtual string ToStringTree()
         {
-            return ToString();
+            return _ToString();
         }
     }
 }

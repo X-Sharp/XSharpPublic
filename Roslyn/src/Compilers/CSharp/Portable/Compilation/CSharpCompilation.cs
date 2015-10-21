@@ -123,7 +123,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             get
             {
+#if XSHARP
+                return false;
+#else
                 return true;
+#endif
             }
         }
 
@@ -671,6 +675,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 i++;
             }
+#if XSHARP
+            if (!externalSyntaxTrees.Contains(Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree))
+            {
+                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree });
+            }
+#endif
             externalSyntaxTrees.Free();
 
             if (this.IsSubmission && i > 1)
@@ -820,9 +830,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _syntaxAndDeclarations.GetLazyState().OrdinalMap[tree];
         }
 
-        #endregion
+#endregion
 
-        #region References
+#region References
 
         internal override CommonReferenceManager CommonGetBoundReferenceManager()
         {
@@ -1015,9 +1025,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetBoundReferenceManager().ReferencedAssembliesMap.Where(kvp => object.ReferenceEquals(kvp.Value.Symbol, assemblySymbol)).Select(kvp => kvp.Key).FirstOrDefault();
         }
 
-        #endregion
+#endregion
 
-        #region Symbols
+#region Symbols
 
         /// <summary>
         /// The AssemblySymbol that represents the assembly being created.
@@ -1549,9 +1559,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new PointerTypeSymbol(elementType);
         }
 
-        #endregion
+#endregion
 
-        #region Binding
+#region Binding
 
         /// <summary>
         /// Gets a new SyntaxTreeSemanticModel for the specified syntax tree.
@@ -1788,9 +1798,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion
+#endregion
 
-        #region Diagnostics
+#region Diagnostics
 
         internal override CommonMessageProvider MessageProvider
         {
@@ -2190,9 +2200,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result.ToReadOnlyAndFree<Diagnostic>();
         }
 
-        #endregion
+#endregion
 
-        #region Resources
+#region Resources
 
         protected override void AppendDefaultVersionResource(Stream resourceStream)
         {
@@ -2214,9 +2224,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 companyName: sourceAssembly.Company);
         }
 
-        #endregion
+#endregion
 
-        #region Emit
+#region Emit
 
         internal override byte LinkerMajorVersion => 0x30;
 
@@ -2649,9 +2659,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
-        #endregion
+#endregion
 
-        #region Common Members
+#region Common Members
 
         protected override Compilation CommonWithReferences(IEnumerable<MetadataReference> newReferences)
         {
@@ -2859,7 +2869,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SymbolSearcher(this).GetSymbolsWithName(predicate, filter, cancellationToken);
         }
 
-        #endregion
+#endregion
 
         internal override AnalyzerDriver AnalyzerForLanguage(ImmutableArray<DiagnosticAnalyzer> analyzers, AnalyzerManager analyzerManager)
         {

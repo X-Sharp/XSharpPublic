@@ -23,7 +23,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 : base(lambdaSymbol, next)
             {
                 _rangeVariableMap = rangeVariableMap;
+#if XSHARP
+                _parameterMap = new MultiDictionary<string, RangeVariableSymbol>(CaseInsensitiveComparison.Comparer);
+#else
                 _parameterMap = new MultiDictionary<string, RangeVariableSymbol>();
+#endif
                 foreach (var qv in rangeVariableMap.Keys)
                 {
                     _parameterMap.Add(qv.Name, qv);
@@ -49,7 +53,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // if the query variable map for this variable is non empty, we always start with the current
                         // lambda's first parameter, which is a transparent identifier.
+#if XSHARP
+                        Debug.Assert(base.lambdaSymbol.Parameters[0].Name.StartsWith(transparentIdentifierPrefix, StringComparison.OrdinalIgnoreCase));
+#else
                         Debug.Assert(base.lambdaSymbol.Parameters[0].Name.StartsWith(transparentIdentifierPrefix, StringComparison.Ordinal));
+#endif
                         translation = new BoundParameter(node, base.lambdaSymbol.Parameters[0]) { WasCompilerGenerated = true };
                         for (int i = path.Length - 1; i >= 0; i--)
                         {

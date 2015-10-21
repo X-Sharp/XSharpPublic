@@ -300,7 +300,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return
                 ((object)this.ContainingType != null ? this.ContainingType.Equals(other.ContainingType, ignoreCustomModifiersAndArraySizesAndLowerBounds, ignoreDynamic) :
                  (object)this.ContainingSymbol == null ? (object)other.ContainingSymbol == null : this.ContainingSymbol.Equals(other.ContainingSymbol)) &&
+#if XSHARP
+                CaseInsensitiveComparison.Equals(this.Name, other.Name) && this.Arity == other.Arity;
+#else
                 this.Name == other.Name && this.Arity == other.Arity;
+#endif
         }
 
         public override int GetHashCode()

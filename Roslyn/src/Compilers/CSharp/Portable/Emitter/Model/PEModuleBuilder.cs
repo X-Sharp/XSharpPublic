@@ -471,7 +471,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
 
                 if (_lazyExportedTypes.Length > 0)
                 {
+#if XSHARP
+                    var exportedNamesMap = new Dictionary<string, NamedTypeSymbol>(CaseInsensitiveComparison.Comparer);
+#else
                     var exportedNamesMap = new Dictionary<string, NamedTypeSymbol>();
+#endif
 
                     // Report name collisions.
                     foreach (var exportedType in _lazyExportedTypes)
@@ -1307,7 +1311,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
             return result;
         }
 
-        #region Test Hooks
+#region Test Hooks
 
         internal bool SaveTestData
         {
@@ -1430,6 +1434,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Emit
                 _testDataKeyFormat.MiscellaneousOptions);
         }
 
-        #endregion
+#endregion
     }
 }

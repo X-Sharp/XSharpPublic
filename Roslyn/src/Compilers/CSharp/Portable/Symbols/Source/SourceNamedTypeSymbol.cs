@@ -164,7 +164,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         varianceKind = typeParameterVarianceKeywords[i] = tp.VarianceKeyword.ValueText;
                         for (int j = 0; j < i; j++)
                         {
+#if XSHARP
+                            if (CaseInsensitiveComparison.Equals(name, typeParameterNames[j]))
+#else
                             if (name == typeParameterNames[j])
+#endif
                             {
                                 typeParameterMismatchReported = true;
                                 diagnostics.Add(ErrorCode.ERR_DuplicateTypeParameter, location, name);
@@ -397,9 +401,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region Attributes
+#region Attributes
 
         internal ImmutableArray<SyntaxList<AttributeListSyntax>> GetAttributeDeclarations()
         {
@@ -1084,6 +1088,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
     }
 }

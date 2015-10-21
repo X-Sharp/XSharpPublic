@@ -37,6 +37,10 @@ namespace Microsoft.CodeAnalysis
         protected GreenNode(ushort kind)
         {
             _kind = kind;
+#if XSHARP
+            if (CSharp.SyntaxFacts.IsAnyToken((CSharp.SyntaxKind)kind) || CSharp.SyntaxFacts.IsTrivia((CSharp.SyntaxKind)kind))
+                _fullWidth = 1;
+#endif
         }
 
         protected GreenNode(ushort kind, int fullWidth)
@@ -59,6 +63,10 @@ namespace Microsoft.CodeAnalysis
         protected GreenNode(ushort kind, DiagnosticInfo[] diagnostics)
         {
             _kind = kind;
+#if XSHARP
+            if (CSharp.SyntaxFacts.IsAnyToken((CSharp.SyntaxKind)kind) || CSharp.SyntaxFacts.IsTrivia((CSharp.SyntaxKind)kind))
+                _fullWidth = 1;
+#endif
             if (diagnostics?.Length > 0)
             {
                 this.flags |= NodeFlags.ContainsDiagnostics;

@@ -46,7 +46,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             internal readonly ImmutableArray<AnonymousTypePropertySymbol> Properties;
 
             /// <summary> Maps member names to symbol(s) </summary>
+#if XSHARP
+            private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer);
+#else
             private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>();
+#endif
 
             /// <summary> Anonymous type manager owning this template </summary>
             internal readonly AnonymousTypeManager Manager;
@@ -133,7 +137,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal AnonymousTypeKey GetAnonymousTypeKey()
             {
+#if XSHARP
+                var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: true));
+#else
                 var properties = this.Properties.SelectAsArray(p => new AnonymousTypeKeyField(p.Name, isKey: false, ignoreCase: false));
+#endif
                 return new AnonymousTypeKey(properties);
             }
 
@@ -161,8 +169,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 set
                 {
                     var oldValue = Interlocked.CompareExchange(ref _nameAndIndex, value, null);
+#if XSHARP
+                    Debug.Assert(oldValue == null ||
+                        (CaseInsensitiveComparison.Equals(oldValue.Name, value.Name) && (oldValue.Index == value.Index)));
+#else
                     Debug.Assert(oldValue == null ||
                         ((oldValue.Name == value.Name) && (oldValue.Index == value.Index)));
+#endif
                 }
             }
 

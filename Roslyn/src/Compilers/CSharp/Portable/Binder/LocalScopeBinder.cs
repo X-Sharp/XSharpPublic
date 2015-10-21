@@ -93,7 +93,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             Debug.Assert(array.Length > 0);
 
+#if XSHARP
+            var map = new SmallDictionary<string, TSymbol>(CaseInsensitiveComparison.Comparer);
+#else
             var map = new SmallDictionary<string, TSymbol>();
+#endif
 
             // NOTE: in a rare case of having two symbols with same name the one closer to the array's start wins.
             for (int i = array.Length - 1; i >= 0; i--)

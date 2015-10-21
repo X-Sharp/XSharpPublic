@@ -3890,7 +3890,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             foreach (ParameterSymbol param in parameters)
             {
+#if XSHARP
+                if (CaseInsensitiveComparison.Equals(param.Name, argumentName))
+#else
                 if (param.Name == argumentName)
+#endif
                     return param;
             }
 
@@ -4212,7 +4216,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return binder == null ? null : binder.ContainingMemberOrLambda;
         }
 
-        #region SemanticModel Members
+#region SemanticModel Members
 
         public sealed override string Language
         {
@@ -4690,6 +4694,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.IsEventUsableAsField(position, symbol.EnsureCSharpSymbolOrNull<IEventSymbol, EventSymbol>("symbol"));
         }
 
-        #endregion
+#endregion
     }
 }

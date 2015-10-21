@@ -565,7 +565,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// </summary>
         internal bool IsEntryPointCandidate
         {
+#if XSHARP
+            get { return IsStatic && CaseInsensitiveComparison.Equals(Name, WellKnownMemberNames.EntryPointMethodName); }
+#else
             get { return IsStatic && Name == WellKnownMemberNames.EntryPointMethodName; }
+#endif
         }
 
         /// <summary>
@@ -829,7 +833,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return null; }
         }
 
-        #region Use-Site Diagnostics
+#region Use-Site Diagnostics
 
         internal override DiagnosticInfo GetUseSiteDiagnostic()
         {
@@ -893,7 +897,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
         internal bool IsIterator
         {
@@ -953,7 +957,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// </remarks>
         internal abstract int CalculateLocalSyntaxOffset(int localPosition, SyntaxTree localTree);
 
-        #region IMethodSymbol Members
+#region IMethodSymbol Members
 
         MethodKind IMethodSymbol.MethodKind
         {
@@ -1173,18 +1177,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region IMethodSymbolInternal
+#region IMethodSymbolInternal
 
         int IMethodSymbolInternal.CalculateLocalSyntaxOffset(int localPosition, SyntaxTree localTree)
         {
             return CalculateLocalSyntaxOffset(localPosition, localTree);
         }
 
-        #endregion
+#endregion
 
-        #region ISymbol Members
+#region ISymbol Members
 
         public override void Accept(SymbolVisitor visitor)
         {
@@ -1196,6 +1200,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return visitor.VisitMethod(this);
         }
 
-        #endregion
+#endregion
     }
 }

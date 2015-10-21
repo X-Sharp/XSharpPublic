@@ -234,7 +234,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     // TODO: p is initialized to zero; is it ok for a named argument to "correspond" to
                     // _any_ parameter, or just the parameters past the point of positional arguments?
+#if XSHARP
+                    if (CaseInsensitiveComparison.Equals(memberParameters[p].Name, name.Identifier.ValueText))
+#else
                     if (memberParameters[p].Name == name.Identifier.ValueText)
+#endif
                     {
                         return p;
                     }

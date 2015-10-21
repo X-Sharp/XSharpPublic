@@ -525,9 +525,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return SyntaxDiffer.GetTextChanges(oldTree, this);
         }
 
-#endregion
+        #endregion
 
-#region LinePositions and Locations
+        #region LinePositions and Locations
 
         /// <summary>
         /// Gets the location in terms of path, line and column for a given span.
@@ -540,7 +540,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <remarks>The values are not affected by line mapping directives (<c>#line</c>).</remarks>
         public override FileLinePositionSpan GetLineSpan(TextSpan span, CancellationToken cancellationToken = default(CancellationToken))
         {
+#if XSHARP
+            span = GetXNodeSpan(span);
+            var s = this.GetText().Lines.GetLinePosition(span.Start);
+            var e = this.GetText().Lines.GetLinePosition(span.End);
+            return new FileLinePositionSpan(this.FilePath, s, e);
+#else
             return new FileLinePositionSpan(this.FilePath, GetLinePosition(span.Start), GetLinePosition(span.End));
+#endif
         }
 
         /// <summary>
@@ -567,6 +574,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
+#if XSHARP
+            span = GetXNodeSpan(span);
+#endif
             return _lazyLineDirectiveMap.TranslateSpan(this.GetText(cancellationToken), this.FilePath, span);
         }
 
@@ -578,6 +588,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
+#if XSHARP
+            position = GetXNodePosition(position);
+#endif
             return _lazyLineDirectiveMap.GetLineVisibility(this.GetText(cancellationToken), position);
         }
 
@@ -596,6 +609,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
+#if XSHARP
+            span = GetXNodeSpan(span);
+#endif
             return _lazyLineDirectiveMap.TranslateSpanAndVisibility(this.GetText(), this.FilePath, span, out isHiddenPosition);
         }
 
@@ -637,11 +653,54 @@ namespace Microsoft.CodeAnalysis.CSharp
         private LinePosition GetLinePosition(int position)
         {
 #if XSHARP
-            return new LinePosition();
-#else
-            return this.GetText().Lines.GetLinePosition(position);
+            position = GetXNodePosition(position);
 #endif
+            return this.GetText().Lines.GetLinePosition(position);
         }
+
+#if XSHARP
+        private int GetXNodePosition(int position)
+        {
+            if (position != 0) {
+                var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
+                while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth))) {
+                    var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
+                    if (n == null || n == node)
+                        break;
+                    node = n;
+                }
+                position = (position < node.Position + node.FullWidth) ? node.XNode?.Position ?? 0 : node.XNode?.Position + node.XNode?.FullWidth ?? 0;
+            }
+            return position;
+        }
+
+        private TextSpan GetXNodeSpan(TextSpan span)
+        {
+            if (span.Start != 0 && span.End != 0) {
+                var snode = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
+                var enode = snode;
+                while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth)) {
+                    var sn = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.Start);
+                    if (sn == null || sn == snode)
+                        break;
+                    if (span.Start == sn.Position && span.Length > sn.FullWidth) {
+                        var en = (CSharpSyntaxNode)snode.ChildThatContainsPosition(span.End-1);
+                        if (en != null) {
+                            snode = sn;
+                            enode = en;
+                            break;
+                        }
+                    }
+                    snode = sn;
+                    enode = sn;
+                }
+                var start = snode.XNode?.Position ?? 0;
+                var length = enode.XNode?.FullWidth ?? 0;
+                return new TextSpan(start,length);
+            }
+            return span;
+        }
+#endif
 
         /// <summary>
         /// Gets a <see cref="Location"/> for the specified text <paramref name="span"/>.
@@ -651,9 +710,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SourceLocation(this, span);
         }
 
-#endregion
+        #endregion
 
-#region Diagnostics
+        #region Diagnostics
 
         /// <summary>
         /// Gets a list of all the diagnostics in the sub tree that has the specified node as its root.
@@ -745,9 +804,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetDiagnostics(this.GetRoot(cancellationToken));
         }
 
-#endregion
+        #endregion
 
-#region SyntaxTree
+        #region SyntaxTree
 
         protected override SyntaxNode GetRootCore(CancellationToken cancellationToken)
         {
@@ -782,6 +841,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-#endregion
+        #endregion
     }
 }

@@ -253,6 +253,71 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
+        public override void ExitAttributes([NotNull] XSharpParser.AttributesContext context)
+        {
+            var attributeLists = _pool.Allocate<AttributeListSyntax>();
+            foreach(var attrBlkCtx in context._AttrBlk) {
+                attributeLists.Add(attrBlkCtx.Get<AttributeListSyntax>());
+            }
+            context.PutList(attributeLists.ToList());
+            _pool.Free(attributeLists);
+        }
+
+        public override void ExitAttributeblock([NotNull] XSharpParser.AttributeblockContext context)
+        {
+            var attributes = _pool.AllocateSeparated<AttributeSyntax>();
+            foreach(var attrCtx in context._Attributes) {
+                if (attributes.Count > 0)
+                {
+                    attributes.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                }
+                attributes.Add(attrCtx.Get<AttributeSyntax>());
+            }
+            context.Put(_syntaxFactory.AttributeList(
+                SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                context.Target.Get<AttributeTargetSpecifierSyntax>(),
+                attributes,
+                SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)));
+            _pool.Free(attributes);
+        }
+
+        public override void ExitAttributeTarget([NotNull] XSharpParser.AttributeTargetContext context)
+        {
+            context.Put(_syntaxFactory.AttributeTargetSpecifier(
+                context.Id?.Get<SyntaxToken>() ?? context.Kw.Get<SyntaxToken>(),
+                SyntaxFactory.MissingToken(SyntaxKind.ColonToken)));
+        }
+
+        public override void ExitAttribute([NotNull] XSharpParser.AttributeContext context)
+        {
+            var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
+            foreach(var paramCtx in context._Params) {
+                if (arguments.Count != 0) {
+                    arguments.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                }
+                arguments.Add(paramCtx.Get<AttributeArgumentSyntax>());
+            }
+            context.Put(_syntaxFactory.Attribute(
+                name: context.Name.Get<NameSyntax>(),
+                argumentList: _syntaxFactory.AttributeArgumentList(SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
+                    arguments,
+                    SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken))));
+            _pool.Free(arguments);
+        }
+
+        public override void ExitPropertyAttributeParam([NotNull] XSharpParser.PropertyAttributeParamContext context)
+        {
+            context.Put(_syntaxFactory.AttributeArgument(
+                _syntaxFactory.NameEquals(context.Name.Get<IdentifierNameSyntax>(), 
+                    SyntaxFactory.MissingToken(SyntaxKind.EqualsToken)), 
+                null, context.Expr.Get<ExpressionSyntax>()));
+        }
+
+        public override void ExitExprAttributeParam([NotNull] XSharpParser.ExprAttributeParamContext context)
+        {
+            context.Put(_syntaxFactory.AttributeArgument(null, null, context.Expr.Get<ExpressionSyntax>()));
+        }
+
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
         {
             SyntaxListBuilder<MemberDeclarationSyntax> globalClassMembers = _pool.Allocate<MemberDeclarationSyntax>();
@@ -1213,6 +1278,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.Token?.SyntaxIdentifier()
                 ?? context.XsToken?.Token.SyntaxIdentifier()
                 ?? context.VnToken?.Token.SyntaxIdentifier());
+        }
+
+        public override void ExitKeyword([NotNull] XSharpParser.KeywordContext context)
+        {
+            context.Put(context.KwXs?.Token.SyntaxKeywordIdentifier()
+                ?? context.KwVn?.Token.SyntaxKeywordIdentifier()
+                ?? context.KwVo?.Token.SyntaxKeywordIdentifier());
+        }
+
+        public override void ExitKeywordxs([NotNull] XSharpParser.KeywordxsContext context)
+        {
+        }
+
+        public override void ExitKeywordvn([NotNull] XSharpParser.KeywordvnContext context)
+        {
+        }
+
+        public override void ExitKeywordvo([NotNull] XSharpParser.KeywordvoContext context)
+        {
         }
 
         public override void ExitNativeType([NotNull] XSharpParser.NativeTypeContext context)

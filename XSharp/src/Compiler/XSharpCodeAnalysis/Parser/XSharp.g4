@@ -342,20 +342,21 @@ operator_			: OPERATOR Operation=overloadedops
 memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN) )+
 					;
 
-attributes			: ( attributeblock )+
+attributes			: ( AttrBlk+=attributeblock )+
 					;
 
-attributeblock		: LBRKT attributetarget? Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+attributeblock		: LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
 					;
 
-attributetarget		: Id=identifier COLON
+attributeTarget		: Id=identifier COLON
 					| Kw=keyword COLON
 					;
 
-attribute			: Id=identifier (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN ) ?
+attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN ) ?
 					;
 
-attributeParam		: Expr=expression
+attributeParam		: (Name=identifierName ASSIGN_OP)? Expr=expression					#propertyAttributeParam
+					| Expr=expression													#exprAttributeParam
 					;
 
 globalattributes    : LBRKT globallattributetarget Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
@@ -705,7 +706,7 @@ eof                 : EOF
 					;
 
 
-keyword             : (keywordvo | keywordvn | keywordxs) ;
+keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs) ;
 
 keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
 					| ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL

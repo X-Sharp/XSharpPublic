@@ -77,6 +77,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        public static SyntaxToken SyntaxKeywordIdentifier(this IToken token)
+        {
+            var r = SyntaxFactory.Identifier(token.Text);
+            r.XNode = new TerminalNodeImpl(token);
+            return r;
+        }
+
         public static SyntaxToken SyntaxNativeType(this IToken token)
         {
             SyntaxToken r;
@@ -388,6 +395,120 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.CONST:
                     r = SyntaxFactory.MissingToken(SyntaxKind.ConstKeyword);
+                    break;
+                case XSharpParser.ACCESS:
+                case XSharpParser.ALIGN:
+                case XSharpParser.AS:
+                case XSharpParser.ASSIGN:
+                case XSharpParser.BEGIN:
+                case XSharpParser.BREAK:
+                //case XSharpParser.CASE:
+                case XSharpParser.CAST:
+                case XSharpParser.CLASS:
+                case XSharpParser.CLIPPER:
+                case XSharpParser.DEFINE:
+                case XSharpParser.DIM:
+                case XSharpParser.DLL:
+                case XSharpParser.DO:
+                case XSharpParser.DOWNTO:
+                case XSharpParser.ELSE:
+                case XSharpParser.ELSEIF:
+                case XSharpParser.END:
+                case XSharpParser.ENDCASE:
+                case XSharpParser.ENDDO:
+                case XSharpParser.ENDIF:
+                case XSharpParser.EXIT:
+                //case XSharpParser.EXPORT:
+                case XSharpParser.FASTCALL:
+                case XSharpParser.FIELD:
+                case XSharpParser.FOR:
+                case XSharpParser.FUNCTION:
+                case XSharpParser.GLOBAL:
+                //case XSharpParser.HIDDEN:
+                case XSharpParser.IF:
+                case XSharpParser.IIF:
+                case XSharpParser.INHERIT:
+                case XSharpParser.IN:
+                case XSharpParser.INSTANCE:
+                case XSharpParser.IS:
+                case XSharpParser.LOCAL:
+                case XSharpParser.LOOP:
+                case XSharpParser.MEMBER:
+                case XSharpParser.METHOD:
+                case XSharpParser.NEXT:
+                //case XSharpParser.OTHERWISE:
+                case XSharpParser.PASCAL:
+                //case XSharpParser.PRIVATE:
+                case XSharpParser.PROCEDURE:
+                //case XSharpParser.PROTECTED:
+                //case XSharpParser.PUBLIC:
+                case XSharpParser.RECOVER:
+                case XSharpParser.RETURN:
+                case XSharpParser.SELF:
+                case XSharpParser.SEQUENCE:
+                case XSharpParser.SIZEOF:
+                case XSharpParser.STEP:
+                case XSharpParser.STRICT:
+                case XSharpParser.SUPER:
+                case XSharpParser.THISCALL:
+                case XSharpParser.TO:
+                case XSharpParser.TYPEOF:
+                case XSharpParser.UNION:
+                case XSharpParser.UPTO:
+                case XSharpParser.USING:
+                case XSharpParser.WHILE:
+                case XSharpParser.ABSTRACT:
+                case XSharpParser.AUTO:
+                case XSharpParser.CATCH:
+                case XSharpParser.CONSTRUCTOR:
+                //case XSharpParser.CONST:
+                case XSharpParser.DELEGATE:
+                case XSharpParser.DESTRUCTOR:
+                case XSharpParser.ENUM:
+                case XSharpParser.EVENT:
+                case XSharpParser.EXPLICIT:
+                case XSharpParser.FINALLY:
+                case XSharpParser.FOREACH:
+                case XSharpParser.GET:
+                case XSharpParser.IMPLEMENTS:
+                case XSharpParser.IMPLICIT:
+                case XSharpParser.IMPLIED:
+                case XSharpParser.INITONLY:
+                case XSharpParser.INTERFACE:
+                //case XSharpParser.INTERNAL:
+                case XSharpParser.LOCK:
+                case XSharpParser.NAMESPACE:
+                //case XSharpParser.NEW:
+                case XSharpParser.OPERATOR:
+                //case XSharpParser.OUT:
+                //case XSharpParser.PARTIAL:
+                case XSharpParser.PROPERTY:
+                case XSharpParser.REPEAT:
+                case XSharpParser.SCOPE:
+                case XSharpParser.SEALED:
+                case XSharpParser.SET:
+                case XSharpParser.STRUCTURE:
+                case XSharpParser.THROW:
+                case XSharpParser.TRY:
+                case XSharpParser.UNTIL:
+                case XSharpParser.VALUE:
+                case XSharpParser.VIRTUAL:
+                case XSharpParser.VOSTRUCT:
+                case XSharpParser.ASSEMBLY:
+                //case XSharpParser.ASYNC:
+                //case XSharpParser.AWAIT:
+                //case XSharpParser.CHECKED:
+                //case XSharpParser.DEFAULT:
+                //case XSharpParser.EXTERN:
+                case XSharpParser.MODULE:
+                case XSharpParser.SWITCH:
+                //case XSharpParser.UNCHECKED:
+                //case XSharpParser.UNSAFE:
+                case XSharpParser.VAR:
+                case XSharpParser.VOLATILE:
+                case XSharpParser.WHERE:
+                case XSharpParser.YIELD:
+                    r = SyntaxFactory.Identifier(token.Text);
                     break;
                 default:
                     r = SyntaxFactory.MissingToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(

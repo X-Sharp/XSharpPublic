@@ -392,19 +392,12 @@ statement           : localdecl                                                 
 					  StmtBlk=statementBlock END DO eos							#whileStmt
 					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
-					| REPEAT eos
-					  StmtBlk=statementBlock
-					  UNTIL Expr=expression eos									#repeatStmt
 					| FOR Iter=expression ASSIGN_OP InitExpr=expression
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
 					  (STEP Step=expression)? eos
 					  StmtBlk=statementBlock NEXT eos							#forStmt
-					| FOREACH
-					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
-					  IN Container=expression eos
-					  StmtBlk=statementBlock NEXT eos							#foreachStmt
 					| IF IfStmt=ifElseBlock
-					  (END IF? | ENDIF) eos										#ifStmt
+					  (END IF? | ENDIF)  eos									#ifStmt	
 					| DO CASE eos
 					  CaseStmt=caseBlock?
 					  (END CASE? | ENDCASE) eos									#caseStmt
@@ -412,6 +405,24 @@ statement           : localdecl                                                 
 					| LOOP eos													#loopStmt
 					| Exprs+=expression (COMMA Exprs+=expression)* eos			#expressionStmt
 					| BREAK Expr=expression? eos								#breakStmt
+					| RETURN (VOID | Expr=expression)? eos						#returnStmt
+					| Q1=QMARK (Q2=QMARK)? 
+					   Exprs+=expression (COMMA Exprs+=expression)* eos			#qoutStmt
+					| BEGIN SEQUENCE eos
+					  StmtBlk=statementBlock
+					  (RECOVER RecoverBlock=recoverBlock)?
+					  (FINALLY eos FinBlock=statementBlock)?
+					  END (SEQUENCE)? eos										#seqStmt
+					//
+					// New in Vulcan
+					//
+					| REPEAT eos
+					  StmtBlk=statementBlock
+					  UNTIL Expr=expression eos									#repeatStmt
+					| FOREACH
+					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
+					  IN Container=expression eos
+					  StmtBlk=statementBlock NEXT eos							#foreachStmt
 					| THROW Expr=expression? eos								#throwStmt
 					| TRY eos StmtBlk=statementBlock
 					  (CATCH CatchBlock+=catchBlock)*
@@ -423,9 +434,6 @@ statement           : localdecl                                                 
 					| BEGIN SCOPE eos
 					  StmtBlk=statementBlock
 					  END SCOPE? eos											#scopeStmt
-					| RETURN (VOID | Expr=expression)? eos						#returnStmt
-					| Q1=QMARK (Q2=QMARK)? 
-					   Exprs+=expression (COMMA Exprs+=expression)* eos			#qoutStmt
 					//
 					// New XSharp Statements
 					//
@@ -461,6 +469,9 @@ switchBlock         : (Key=CASE Const=expression | Key=(OTHERWISE|DEFAULT)) eos 
 					;
 
 catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
+					;
+
+recoverBlock		: (USING Id=identifier)? eos StmtBlock=statementBlock
 					;
 
 // Variable declarations

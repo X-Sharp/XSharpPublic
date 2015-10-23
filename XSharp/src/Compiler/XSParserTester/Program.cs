@@ -68,6 +68,14 @@ namespace ParserTester
 			,"CLASS Foo <T> WHERE T IS Class  \n END CLASS\n"					// Generic Class
 			,"CLASS Foo <T> WHERE T IS Structure  \n END CLASS\n"					// Generic Class
 			,"CLASS Foo <T> WHERE T IS @@UNION  \n END CLASS\n"					// Generic Class
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER\nConsole.WriteLine('Recover')\nEND SEQUENCE\nRETURN x\n"				// Recover without param
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER USING Bar\nConsole.WriteLine('Recover')\nEND SEQUENCE\nRETURN x\n"	// Recover with param
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER USING Bar\nConsole.WriteLine('Recover')\nEND \nRETURN x\n"		// Missing Sequence at END
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nEND \nRETURN x\n"							// No recover at all
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nFINALLY\nConsole.WriteLine('Finally')\nEND \nRETURN x\n"		// No recover at all
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER\nConsole.WriteLine('Recover')\nFINALLY\nConsole.WriteLine('Finally')\nRETURN \nEND \n"		// Missing End
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER\nConsole.WriteLine('Recover')\nFINALLY\nConsole.WriteLine('Finally')\nRETURN \nEND \n"		// Missing End
+
 			};
 			//
 			// These are strings that are supposed to fail !
@@ -92,6 +100,8 @@ namespace ParserTester
 			, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.MessageBoxA"
 			, "Function Foo()\nConsole.WriteLine(e\"\\c\\d\\e\\g\\h\\i\\j\")\n"
 			, "Function Foo()\nConsole.WriteLine(e\"\\uGGGG\")\n"
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER\nConsole.WriteLine('Recover')\nFINALLY\nConsole.WriteLine('Finally')\nRETURN \n"		// Missing End
+			,"FUNCTION Foo\n IF Foo \nX := y\nEND IF Foo\nRETURN Bar\n"		// Comment after END
 			};
 
 			foreach (String s in noerrors)

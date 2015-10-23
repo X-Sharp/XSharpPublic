@@ -50,7 +50,7 @@ entity              : namespace_
                     | function                  // This will become part of the 'Globals' class
 					| procedure                 // This will become part of the 'Globals' class
 					| method                    // Method xxx Class xxx syntax
-					| globalattributes          // Assembly attributes, Module attributes etc.
+					| globalAttributes          // Assembly attributes, Module attributes etc.
                     | using_                    // Using Namespace
                     | pragma                    // Compiler pragma
 					| {_VOSyntax}? voglobal     // This will become part of the 'Globals' class
@@ -342,10 +342,10 @@ operator_			: OPERATOR Operation=overloadedops
 memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN) )+
 					;
 
-attributes			: ( AttrBlk+=attributeblock )+
+attributes			: ( AttrBlk+=attributeBlock )+
 					;
 
-attributeblock		: LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+attributeBlock		: LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
 					;
 
 attributeTarget		: Id=identifier COLON
@@ -359,12 +359,11 @@ attributeParam		: (Name=identifierName ASSIGN_OP)? Expr=expression					#property
 					| Expr=expression													#exprAttributeParam
 					;
 
-globalattributes    : LBRKT globallattributetarget Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
 					;
 
-globallattributetarget : ASSEMBLY COLON
-					   | MODULE COLON
-					   ;
+globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
+					;
 
 /*
 : localdecl

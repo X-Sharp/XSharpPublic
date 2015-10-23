@@ -263,7 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(attributeLists);
         }
 
-        public override void ExitAttributeblock([NotNull] XSharpParser.AttributeblockContext context)
+        public override void ExitAttributeBlock([NotNull] XSharpParser.AttributeBlockContext context)
         {
             var attributes = _pool.AllocateSeparated<AttributeSyntax>();
             foreach(var attrCtx in context._Attributes) {
@@ -316,6 +316,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitExprAttributeParam([NotNull] XSharpParser.ExprAttributeParamContext context)
         {
             context.Put(_syntaxFactory.AttributeArgument(null, null, context.Expr.Get<ExpressionSyntax>()));
+        }
+
+        public override void ExitGlobalAttributes([NotNull] XSharpParser.GlobalAttributesContext context)
+        {
+            var attributes = _pool.AllocateSeparated<AttributeSyntax>();
+            foreach(var attrCtx in context._Attributes) {
+                if (attributes.Count > 0)
+                {
+                    attributes.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                }
+                attributes.Add(attrCtx.Get<AttributeSyntax>());
+            }
+            context.Put(_syntaxFactory.AttributeList(
+                SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                context.Target.Get<AttributeTargetSpecifierSyntax>(),
+                attributes,
+                SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)));
+            _pool.Free(attributes);
+        }
+
+        public override void ExitGlobalAttributeTarget([NotNull] XSharpParser.GlobalAttributeTargetContext context)
+        {
+            context.Put(_syntaxFactory.AttributeTargetSpecifier(
+                context.Token.SyntaxKeywordIdentifier(),
+                SyntaxFactory.MissingToken(SyntaxKind.ColonToken)));
         }
 
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)

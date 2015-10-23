@@ -264,7 +264,7 @@ eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
 
 
 classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)?
-					  Var+=classvar (COMMA Var+=classvar) ((AS | IS) DataType=datatype)?
+					  Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)? eos
 					; 
 
 classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE) )+
@@ -593,9 +593,9 @@ genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
 identifierName		: Id=identifier
 					;
 
-datatype			: TypeName=typeName 											#simpleDatatype
+datatype			: TypeName=typeName PTR											#ptrDatatype
 					| TypeName=typeName (Ranks+=arrayRank)*							#arrayDatatype
-					| TypeName=typeName PTR											#ptrDatatype
+					| TypeName=typeName 											#simpleDatatype
 					;
 
 arrayRank			: LBRKT (COMMA)* RBRKT

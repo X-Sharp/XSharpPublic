@@ -22,8 +22,9 @@ namespace ParserTester
 		{
 			//var rdr = new System.IO.StreamReader(@"d:\Vewa6\DevU\SDK\VOSDK\RDD_Classes_SDK\DbServer.prg");
 			//var source = rdr.ReadToEnd();
-			string[] source = new string[]{
+			string[] noerrors = new string[]{
              "Function Main()\nRETURN 1\nPROCEDURE Foo()\nRETURN\n"
+			,"CLASS Foo \nEXPORT Foo:= '123', Bar AS STRING\nEND CLASS\n"					// 
 			, "#using System\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x\n"
 			, "#pragma options(\"az\",on)\r\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x\n#pragma options (\"az\",default)\n"
 			//, "#pragma options(1,on)\r\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x\n#pragma options (1,default)\n" // failure
@@ -58,28 +59,47 @@ namespace ParserTester
 			, "STATIC GLOBAL Foo AS STRING\n"
 			, "INTERNAL GLOBAL Foo := '123' AS STRING"
 			, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.'MessageBoxA'"
-			//, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.MessageBoxA" // User32.M is not recognized...
 			,"CLASS Foo\n CLASS BAR\n END CLASS \nEND CLASS\n"			// Nested class
 			,"CLASS Foo <T> WHERE T IS Customer, New() \n END CLASS\n"					// Generic Class
 			,"CLASS Foo <T> WHERE T IS Class  \n END CLASS\n"					// Generic Class
 			,"CLASS Foo <T> WHERE T IS Structure  \n END CLASS\n"					// Generic Class
-//			,"CLASS Foo <T> WHERE T IS UNION  \n END CLASS\n"					// Generic Class, failure keyword UNION
 			,"CLASS Foo <T> WHERE T IS @@UNION  \n END CLASS\n"					// Generic Class
 			};
-			foreach (String s in source)
-			{
-				var stream = new AntlrInputStream(s.ToString());
-				var lexer = new XSharpLexer(stream);
-				lexer.AllowFourLetterAbbreviations = true;
-				var tokens = new CommonTokenStream(lexer);
-				var parser = new XSharpParser(tokens);
-				parser.AllowXBaseVariables = true;
-				parser.VOSyntax = true;
-				var errorListener = new XSharpErrorListener();
-				parser.AddErrorListener(errorListener);
-				var tree = parser.source();
+			//
+			// These are strings that are supposed to fail !
+			// Some of them are unsuported stuff, others are simply not working yet
+			// 
+			string[] errors = new string[]{
+			// #pragma Options with INT and not STRING
+			 "#pragma options(1,on)\r\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x\n" // failure
+			 // #pragma warnings with STRING and not INT
+			, "#pragma warnings(\"az\",on)\r\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x"		
+			 // #pragma warnings with missing ON
+			, "#pragma warnings(12345)\r\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x"		
+			 // #pragma warnings with missing ON
+			, "#pragma warnings(12345,)\r\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x"		
+			 // missing Endif
+			, "function Foo(bars as ICollection) AS LOGIC\nFOREACH IMPLIED bar in bars\n if bar IS Foo\nRETURN TRUE\nNEXT\nRETURN False\n" 
+			 // missing NEXT
+			, "function Foo(bars as ICollection) AS LOGIC\nFOREACH IMPLIED bar in bars\n if bar IS Foo\nRETURN TRUE\nendif\nRETURN False\n" 
+			 // Generic Class, failure keyword UNION
+			,"CLASS Foo <T> WHERE T IS UNION  \n END CLASS\n"					
+			 // User32.M is not recognized yet.
+			, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.MessageBoxA" 
+			};
 
-				if (errorListener.TotalErrors != 0)
+			foreach (String s in noerrors)
+			{
+
+				if (AnalyzeCode(s, true) != 0)
+				{
+					Console.WriteLine(s);
+				}
+			}
+			foreach (String s in errors)
+			{
+				// Only report when no errors found
+				if (AnalyzeCode(s, false) == 0)
 				{
 					Console.WriteLine(s);
 				}
@@ -87,27 +107,45 @@ namespace ParserTester
 			Console.WriteLine("Press Enter");
 			Console.ReadLine();
 		}
+		static int AnalyzeCode(string code, bool showErrors)
+		{
+			var stream = new AntlrInputStream(code.ToString());
+			var lexer = new XSharpLexer(stream);
+			lexer.AllowFourLetterAbbreviations = true;
+			var tokens = new CommonTokenStream(lexer);
+			var parser = new XSharpParser(tokens);
+			parser.AllowXBaseVariables = true;
+			parser.VOSyntax = true;
+			var errorListener = new XSharpErrorListener(showErrors);
+			parser.AddErrorListener(errorListener);
+			var tree = parser.source();
+			return errorListener.TotalErrors;
+		}
 	}
 	internal class XSharpErrorListener : IAntlrErrorListener<IToken>
 	{
 		public int TotalErrors { get; private set; }
-		internal XSharpErrorListener()
+		private bool _showErrors;
+		internal XSharpErrorListener(bool ShowErrors)
 		{
 			TotalErrors = 0;
+			_showErrors = ShowErrors;
 		}
 		public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
 		{
 
 			TotalErrors += 1;
-			
-			if (e?.OffendingToken != null)
-	        {
-				Console.WriteLine("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
-	        }
-	        else
-	        {
-				Console.WriteLine("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
-	        }
+			if (_showErrors)
+			{
+				if (e?.OffendingToken != null)
+				{
+					Console.WriteLine("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
+				}
+				else
+				{
+					Console.WriteLine("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
+				}
+			}
 		}
 	}
 

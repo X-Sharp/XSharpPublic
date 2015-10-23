@@ -37,7 +37,7 @@ options	{
 		}
 
 
-source				: (eos)? (entity)* eof
+source				: (eos)? (Entities+=entity)* eof
 					;
 
 entity              : namespace_
@@ -157,7 +157,7 @@ vostructmember		: MEMBER DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | I
 					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
 					;
 
-namespace_			: BEGIN NAMESPACE Id=name eos
+namespace_			: BEGIN NAMESPACE Name=name eos
 					  (entity)*
 					  END NAMESPACE eos
 					;

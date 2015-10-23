@@ -137,7 +137,7 @@ method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					  StmtBlk=statementBlock		
 					;
 
-methodtype			: METHOD | ACCESS | ASSIGN
+methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 					;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time

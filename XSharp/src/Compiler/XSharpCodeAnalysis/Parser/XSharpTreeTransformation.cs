@@ -277,6 +277,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
+        public override void EnterEveryRule([NotNull] ParserRuleContext context)
+        {
+#if DEBUG
+            var s = context.GetType().ToString();
+            Debug.WriteLine("{0}Enter: {1}",new string(' ',context.Depth()),s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1));
+#endif
+        }
+
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
             if (context.HasErrors() && context.CsNode != null && context.CsNode is CSharpSyntaxNode)
@@ -288,6 +296,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, e.Code, e.Args)));
                 }
             }
+#if DEBUG
+            var s = context.GetType().ToString();
+            Debug.WriteLine("{0}Exit: {1}",new string(' ',context.Depth()),s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1));
+#endif
         }
 
         public override void ExitSource([NotNull] XSharpParser.SourceContext context)

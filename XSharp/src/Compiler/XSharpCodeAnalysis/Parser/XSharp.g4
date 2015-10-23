@@ -593,7 +593,7 @@ iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=e
 					| IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
-name				: Left=identifier Op=DOT Right=name							#qualifiedName
+name				: Left=name Op=DOT Right=identifier							#qualifiedName
 					| Id=identifier	GenericArgList=genericArgumentList			#genericName
 					| Id=identifier												#simpleName
 					;

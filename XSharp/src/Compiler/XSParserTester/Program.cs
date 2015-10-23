@@ -22,8 +22,12 @@ namespace ParserTester
 		{
 			//var rdr = new System.IO.StreamReader(@"d:\Vewa6\DevU\SDK\VOSDK\RDD_Classes_SDK\DbServer.prg");
 			//var source = rdr.ReadToEnd();
-			string[] noerrors = new string[]{
-             "Function Main()\nRETURN 1\nPROCEDURE Foo()\nRETURN\n"
+			string[] noerrors = new string[]{""
+            , "Function Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			, "Function Foo()\nConsole.WriteLine(e\"\\xABCD\")\n"
+			, "Function Foo()\nConsole.WriteLine(e\"\\u0066\")\n"
+			, "Function Foo()\nConsole.WriteLine(e\"\\a\\b\\f\\n\\r\\t\\v\")\n"
+			, "Function Main()\nRETURN 1\nPROCEDURE Foo()\nRETURN\n"
 			,"CLASS Foo \nEXPORT Foo:= '123', Bar AS STRING\nEND CLASS\n"					// 
 			, "#using System\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x\n"
 			, "#pragma options(\"az\",on)\r\nFunction Main()\nLOCAL x as STRING\n x := 'aaa'\nRETURN x\n#pragma options (\"az\",default)\n"
@@ -85,7 +89,9 @@ namespace ParserTester
 			 // Generic Class, failure keyword UNION
 			,"CLASS Foo <T> WHERE T IS UNION  \n END CLASS\n"					
 			 // User32.M is not recognized yet.
-			, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.MessageBoxA" 
+			, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.MessageBoxA"
+			, "Function Foo()\nConsole.WriteLine(e\"\\c\\d\\e\\g\\h\\i\\j\")\n"
+			, "Function Foo()\nConsole.WriteLine(e\"\\uGGGG\")\n"
 			};
 
 			foreach (String s in noerrors)

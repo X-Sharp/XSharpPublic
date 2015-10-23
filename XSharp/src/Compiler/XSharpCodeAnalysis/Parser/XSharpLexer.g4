@@ -469,6 +469,42 @@ STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 			| '\'' ( ~( '\'' | '\n' | '\r' ) )* '\''		// Single quoted string
 			;
 
+ESCAPED_STRING_CONST
+			: 'e' '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
+			;
+
+fragment
+ESCAPED_STRING_CHARACTER: SIMPLE_ESCAPE_CHARACTER
+						| SIMPLE_ESCAPE_SEQUENCE
+						| HEX_ESCAPE_SEQUENCE
+						| UNICODE_ESCAPE_SEQUENCE
+						;
+
+fragment 
+SIMPLE_ESCAPE_CHARACTER	: ~( '\"' | '\\' | '\r' | '\n' )
+						;
+fragment
+SIMPLE_ESCAPE_SEQUENCE	: '\\\''	// Single quote
+						| '\\"'		// Double quote
+						| '\\\\'	// \\
+						| '\\0'		// Null
+						| '\\' A	// Alert
+						| '\\' B	// backspace
+						| '\\' F	// formfeed
+						| '\\' N	// newline
+						| '\\' R	// linefeed
+						| '\\' T	// tab
+						| '\\' V	// vertical tab
+						;
+
+fragment
+HEX_ESCAPE_SEQUENCE		: '\\' X  HEX_DIGIT (HEX_DIGIT (HEX_DIGIT (HEX_DIGIT)?)?)?		// \x+ 1 -4 digits
+						;
+
+fragment
+UNICODE_ESCAPE_SEQUENCE : '\\' U HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT (HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT)?	// \u 4 hex or \u 8 hex
+						;
+
 WS			:	(' ' |  '\t' |	'\r') -> channel(HIDDEN)
 			;
 

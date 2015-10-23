@@ -668,6 +668,7 @@ literalValue		: Token=
 					( TRUE_CONST
 					| FALSE_CONST
 					| STRING_CONST
+					| ESCAPED_STRING_CONST
 					| SYMBOL_CONST
 					| HEX_CONST
 					| BIN_CONST

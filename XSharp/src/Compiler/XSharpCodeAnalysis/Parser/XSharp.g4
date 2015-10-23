@@ -115,7 +115,7 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
-using_              : HASHUSING (Alias=identifier ASSIGN_OP)? Namespace=name     eos
+using_              : HASHUSING (Alias=identifier ASSIGN_OP)? Name=name     eos
                     ;
 
 pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN eos         #pragmaOptions
@@ -158,7 +158,7 @@ vostructmember		: MEMBER DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | I
 					;
 
 namespace_			: BEGIN NAMESPACE Name=name eos
-					  (entity)*
+					  (Entities+=entity)*
 					  END NAMESPACE eos
 					;
 

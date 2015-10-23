@@ -306,7 +306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             foreach(var entityCtx in context._Entities)
             {
-                var s = entityCtx.Get<CSharpSyntaxNode>();
+                var s = entityCtx.CsNode;
                 if (s is MemberDeclarationSyntax)
                     Members.Add(s as MemberDeclarationSyntax);
                 else if (s is UsingDirectiveSyntax)
@@ -323,9 +323,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
+        public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)
+        {
+            var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
+            var usings = _pool.Allocate<UsingDirectiveSyntax>();
+            var members = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach(var entityCtx in context._Entities)
+            {
+                var s = entityCtx.CsNode;
+                if (s is MemberDeclarationSyntax)
+                    members.Add(s as MemberDeclarationSyntax);
+                else if (s is UsingDirectiveSyntax)
+                    usings.Add(s as UsingDirectiveSyntax);
+                else if (s is ExternAliasDirectiveSyntax)
+                    externs.Add(s as ExternAliasDirectiveSyntax);
+            }
+            context.Put(_syntaxFactory.NamespaceDeclaration(SyntaxFactory.MissingToken(SyntaxKind.NamespaceKeyword),
+                name: context.Name.Get<NameSyntax>(),
+                openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                externs: externs,
+                usings: usings,
+                members: members,
+                closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+            _pool.Free(externs);
+            _pool.Free(usings);
+            _pool.Free(members);
+        }
+
         public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
         {
-            context.Put(context.children[0].Get<CSharpSyntaxNode>());
+            var ch = context.children[0];
+            if (ch is XSharpParser.FunctionContext || ch is XSharpParser.ProcedureContext)
+                Members.Add(GenerateGlobalClass("Xs$Globals", ch.Get<MemberDeclarationSyntax>()));
+            else
+                context.Put(ch.Get<CSharpSyntaxNode>());
         }
 
         public override void ExitEof([NotNull] XSharpParser.EofContext context)
@@ -334,6 +366,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitEos([NotNull] XSharpParser.EosContext context)
         {
+        }
+
+        public override void ExitUsing_([NotNull] XSharpParser.Using_Context context)
+        {
+            context.Put(_syntaxFactory.UsingDirective(SyntaxFactory.MissingToken(SyntaxKind.UsingKeyword),
+                staticKeyword: null,
+                alias: null,
+                name: context.Name.Get<NameSyntax>(),
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
@@ -484,7 +525,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
         {
-            context.Put(GenerateGlobalClass("Xs$Globals", _syntaxFactory.MethodDeclaration(
+            context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenList(SyntaxKind.StaticKeyword),
                 returnType: context.Type?.Get<TypeSyntax>() ?? EmptyType(),
@@ -495,12 +536,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
                 body: context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
-                semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))));
+                semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitProcedure([NotNull] XSharpParser.ProcedureContext context)
         {
-            context.Put(GenerateGlobalClass("Xs$Globals", _syntaxFactory.MethodDeclaration(
+            context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenList(SyntaxKind.StaticKeyword),
                 returnType: VoidType(),
@@ -511,7 +552,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
                 body: context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
-                semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))));
+                semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitParameterList([NotNull] XSharpParser.ParameterListContext context)

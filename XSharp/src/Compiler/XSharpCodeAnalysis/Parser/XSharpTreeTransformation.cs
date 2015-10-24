@@ -403,6 +403,82 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(variables);
         }
 
+        public override void ExitInterface_([NotNull] XSharpParser.Interface_Context context)
+        {
+            var members = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach(var mCtx in context._Members) {
+                members.Add(mCtx.Get<MemberDeclarationSyntax>());
+            }
+            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
+            foreach(var pCtx in context._Parents) {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(pCtx.Get<TypeSyntax>()));
+            }
+            context.Put(_syntaxFactory.InterfaceDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                keyword: SyntaxFactory.MissingToken(SyntaxKind.InterfaceKeyword),
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: null,
+                baseList: _syntaxFactory.BaseList(SyntaxFactory.MissingToken(SyntaxKind.ColonToken), baseTypes),
+                constraintClauses: null,
+                openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                members: members,
+                closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null));
+            _pool.Free(members);
+            _pool.Free(baseTypes);
+        }
+
+        public override void ExitInterfaceModifiers([NotNull] XSharpParser.InterfaceModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitClass_([NotNull] XSharpParser.Class_Context context)
+        {
+            var members = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach(var mCtx in context._Members) {
+                members.Add(mCtx.Get<MemberDeclarationSyntax>());
+            }
+            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
+            baseTypes.Add(_syntaxFactory.SimpleBaseType(context.BaseType?.Get<TypeSyntax>() 
+                ?? _syntaxFactory.PredefinedType(SyntaxFactory.MissingToken(SyntaxKind.ObjectKeyword))));
+            foreach(var iCtx in context._Implements) {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
+            }
+            context.Put(_syntaxFactory.ClassDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                keyword: SyntaxFactory.MissingToken(SyntaxKind.ClassKeyword),
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: null,
+                baseList: _syntaxFactory.BaseList(SyntaxFactory.MissingToken(SyntaxKind.ColonToken), baseTypes),
+                constraintClauses: null,
+                openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                members: members,
+                closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null));
+            _pool.Free(members);
+            _pool.Free(baseTypes);
+        }
+
+        public override void ExitClassModifiers([NotNull] XSharpParser.ClassModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
             context.Put(_syntaxFactory.MethodDeclaration(

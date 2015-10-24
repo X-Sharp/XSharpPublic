@@ -163,8 +163,8 @@ namespace_			: BEGIN NAMESPACE Name=name eos
 					;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
-					  INTERFACE Id=name
-					  Parents=interfaceparents
+					  INTERFACE Id=identifier
+					  ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)* eos
 					  (Members+=classmember)*
 					  END INTERFACE eos
 					;
@@ -172,14 +172,10 @@ interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
 					;
 
-interfaceparents	: INHERIT Interfaces+=datatype (COMMA Interfaces+=datatype)* eos
-					| COLON   Interfaces+=datatype (COMMA Interfaces+=datatype)* eos
-					| eos
-					;
-
 class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
 					  CLASS Id=name TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
-					  Parents=classparents? Interfaces=interfacetypelist? 
+					  (INHERIT BaseType=datatype)?
+					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos         // Optional typeparameterconstraints for Generic Class
 					  (Members+=classmember)*
 					  END CLASS  eos
@@ -189,9 +185,6 @@ classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
 					;
 
 classparents        : INHERIT ParentClass=datatype
-					;
-
-interfacetypelist	: (IMPLEMENTS (Interfaces+=datatype) (COMMA Interfaces+=datatype)*)
 					;
 
 // Start Extensions for Generic Classes
@@ -224,7 +217,7 @@ typeparameterconstrainttypes: CLASS
 
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
 					  STRUCTURE Id=name
-					  Interfaces=interfacetypelist? eos
+					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? eos
 					  (Members+=classmember)+
 					  END STRUCTURE eos
 					;

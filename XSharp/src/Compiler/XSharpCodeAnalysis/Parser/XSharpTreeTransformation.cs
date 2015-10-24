@@ -661,26 +661,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
-            context.Put(_syntaxFactory.PropertyDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
-                type: context.Type.Get<TypeSyntax>(),
-                explicitInterfaceSpecifier: null,
-                identifier: context.Id.Get<SyntaxToken>(),
-                accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
-                    (context.Auto != null) ? 
-                        ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
-                        MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
-                                SyntaxFactory.MissingToken(SyntaxKind.GetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)),
-                            _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
-                                SyntaxFactory.MissingToken(SyntaxKind.SetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))) :
-                    ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
-                    MakeList<AccessorDeclarationSyntax>(context._Accessors),
-                    SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)),
-                expressionBody: null,
-                initializer: context.Initializer != null ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MissingToken(SyntaxKind.EqualsToken),
-                    context.Initializer.Get<ExpressionSyntax>()) : null,
-                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+            if (context.ParamList == null)
+                context.Put(_syntaxFactory.PropertyDeclaration(
+                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                    type: context.Type.Get<TypeSyntax>(),
+                    explicitInterfaceSpecifier: null,
+                    identifier: context.Id.Get<SyntaxToken>(),
+                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                        (context.Auto != null) ? 
+                            ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
+                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                    SyntaxFactory.MissingToken(SyntaxKind.GetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)),
+                                _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                    SyntaxFactory.MissingToken(SyntaxKind.SetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))) :
+                        ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
+                        MakeList<AccessorDeclarationSyntax>(context._Accessors),
+                        SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)),
+                    expressionBody: null,
+                    initializer: context.Initializer != null ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MissingToken(SyntaxKind.EqualsToken),
+                        context.Initializer.Get<ExpressionSyntax>()) : null,
+                    semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+            else {
+                if (context.Auto != null)
+                    context.AddError(new ParseErrorData(context.AUTO(),ErrorCode.ERR_SyntaxError,SyntaxFactory.MissingToken(SyntaxKind.GetKeyword)));
+                context.Put(_syntaxFactory.IndexerDeclaration(
+                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                    type: context.Type.Get<TypeSyntax>(),
+                    explicitInterfaceSpecifier: null,
+                    thisKeyword: SyntaxFactory.MissingToken(SyntaxKind.ThisKeyword),
+                    parameterList: context.ParamList.Get<BracketedParameterListSyntax>(),
+                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                        (context.Auto != null) ? 
+                            ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
+                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                    SyntaxFactory.MissingToken(SyntaxKind.GetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)),
+                                _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                    SyntaxFactory.MissingToken(SyntaxKind.SetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))) :
+                        ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
+                        MakeList<AccessorDeclarationSyntax>(context._Accessors),
+                        SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)),
+                    expressionBody: null,
+                    semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+            }
+        }
+
+        public override void ExitPropertyParameterList([NotNull] XSharpParser.PropertyParameterListContext context)
+        {
+            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            foreach (var paramCtx in context._Params)
+            {
+                @params.Add(paramCtx.Get<ParameterSyntax>());
+            }
+            context.Put(_syntaxFactory.BracketedParameterList(
+                SyntaxFactory.MissingToken(SyntaxKind.OpenBracketToken),
+                @params,
+                SyntaxFactory.MissingToken(SyntaxKind.CloseBracketToken)));
+            _pool.Free(@params);
         }
 
         public override void ExitPropertyAutoAccessor([NotNull] XSharpParser.PropertyAutoAccessorContext context)

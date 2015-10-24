@@ -283,7 +283,6 @@
     <Compile Include="Parser\XSharpLanguageParser.cs" />
     <Compile Include="Parser\XSharpSyntaxTree.cs" />
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
-    <Compile Include="Parser\XSharpTreeClasses.cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />
     <Compile Include="XSharpResources.Designer.cs">
       <AutoGen>True</AutoGen>

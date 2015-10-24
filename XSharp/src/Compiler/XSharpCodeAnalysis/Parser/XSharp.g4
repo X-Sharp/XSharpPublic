@@ -125,7 +125,7 @@ pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA
 pragmaswitch        : ON | OFF | DEFAULT
                     ;
 
-voglobal			: (Modifiers=funcprocModifiers)?  GLOBAL Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)? eos
+voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)? eos
 					;
 
 
@@ -162,10 +162,10 @@ namespace_			: BEGIN NAMESPACE Name=name eos
 					  END NAMESPACE eos
 					;
 
-interface_			: (Attributes=attributes)? (Modifiers= interfaceModifiers)?
+interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
 					  INTERFACE Id=name
 					  Parents=interfaceparents
-					  (Members+=classmember)+
+					  (Members+=classmember)*
 					  END INTERFACE eos
 					;
 

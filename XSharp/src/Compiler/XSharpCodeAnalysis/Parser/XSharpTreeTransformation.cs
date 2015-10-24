@@ -97,6 +97,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
+        SyntaxList<T> MakeList<T>(params T[] items) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            var l = _pool.Allocate<T>();
+            foreach (var item in items) {
+                l.Add(item);
+            }
+            var list = l.ToList();
+            _pool.Free(l);
+            return list;
+        }
+
         SeparatedSyntaxList<T> MakeSeparatedList<T>([NotNull] IList<RuleContext> t) where T : InternalSyntax.CSharpSyntaxNode
         {
             var l = _pool.AllocateSeparated<T>();
@@ -505,11 +516,76 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
         }
 
+        public override void ExitStructure_([NotNull] XSharpParser.Structure_Context context)
+        {
+            var members = _pool.Allocate<MemberDeclarationSyntax>();
+            foreach(var mCtx in context._Members) {
+                members.Add(mCtx.Get<MemberDeclarationSyntax>());
+            }
+            var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
+            foreach(var iCtx in context._Implements) {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
+            }
+            context.Put(_syntaxFactory.StructDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                keyword: SyntaxFactory.MissingToken(SyntaxKind.StructKeyword),
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                baseList: _syntaxFactory.BaseList(SyntaxFactory.MissingToken(SyntaxKind.ColonToken), baseTypes),
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                members: members,
+                closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null));
+            _pool.Free(members);
+            _pool.Free(baseTypes);
+        }
+
+        public override void ExitStructureModifiers([NotNull] XSharpParser.StructureModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitDelegate_([NotNull] XSharpParser.Delegate_Context context)
+        {
+            context.Put(_syntaxFactory.DelegateDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                delegateKeyword: SyntaxFactory.MissingToken(SyntaxKind.DelegateKeyword),
+                returnType: context.Type.Get<TypeSyntax>(),
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void ExitDelegateModifiers([NotNull] XSharpParser.DelegateModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
-            var isInterface = context.Parent is XSharpParser.Class_Context;
-            if (isInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
+            var isInInterface = context.Parent is XSharpParser.Class_Context;
+            if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
+            }
+            if (isInInterface && context.ClassId != null) {
+                context.AddError(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
             }
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
@@ -520,9 +596,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
-                body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
+                body: isInInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
-                semicolonToken: (!isInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+            if (context.ClassId != null) {
+                context.Put(_syntaxFactory.ClassDeclaration(
+                    attributeLists: EmptyList<AttributeListSyntax>(),
+                    modifiers: TokenList(SyntaxKind.PartialKeyword),
+                    keyword: SyntaxFactory.MissingToken(SyntaxKind.ClassKeyword),
+                    identifier: context.ClassId.Get<SyntaxToken>(),
+                    typeParameterList: default(TypeParameterListSyntax),
+                    baseList: default(BaseListSyntax),
+                    constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                    openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                    members: MakeList<MemberDeclarationSyntax>(context.Get<MethodDeclarationSyntax>()),
+                    closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
+                    semicolonToken: null));
+            }
         }
 
         public override void ExitTypeparameters([NotNull] XSharpParser.TypeparametersContext context)
@@ -739,8 +829,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
         {
-            var isInterface = context.Parent is XSharpParser.Class_Context;
-            if (isInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
+            var isInInterface = context.Parent is XSharpParser.Class_Context;
+            if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -752,15 +842,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
-                body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
+                body: isInInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
-                semicolonToken: (!isInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitProcedure([NotNull] XSharpParser.ProcedureContext context)
         {
-            var isInterface = context.Parent is XSharpParser.Class_Context;
-            if (isInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
+            var isInInterface = context.Parent is XSharpParser.Class_Context;
+            if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -772,9 +862,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
-                body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
+                body: isInInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
-                semicolonToken: (!isInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitParameterList([NotNull] XSharpParser.ParameterListContext context)

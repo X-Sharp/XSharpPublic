@@ -136,7 +136,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					  T=methodtype Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (ConstraintsClauses+=typeparameterconstraintsclause)*
-					  (CallingConvention=callingconvention)? (CLASS ClassId=name)? eos 
+					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? eos 
 					  StmtBlk=statementBlock		
 					;
 
@@ -177,7 +177,7 @@ interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 					;
 
 class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
-					  CLASS Id=name TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
+					  CLASS Id=identifier TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
 					  (INHERIT BaseType=datatype)?
 					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos         // Optional typeparameterconstraints for Generic Class
@@ -207,8 +207,9 @@ typeparameterconstraint: Type=typeName						#typeConstraint				//  Class Foo<t> 
 // End of Extensions for Generic Classes
 
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
-					  STRUCTURE Id=name
-					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)? eos
+					  STRUCTURE Id=identifier TypeParameters=typeparameters?
+					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
+					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos
 					  (Members+=classmember)+
 					  END STRUCTURE eos
 					;
@@ -218,8 +219,9 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 
 
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
-					  DELEGATE Id=identifier
-					  ParamList=parameterList AS Type=datatype eos
+					  DELEGATE Id=identifier TypeParameters=typeparameters?
+					  ParamList=parameterList? AS Type=datatype
+					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos
 					;
 
 delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+

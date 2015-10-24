@@ -418,7 +418,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 keyword: SyntaxFactory.MissingToken(SyntaxKind.InterfaceKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MissingToken(SyntaxKind.ColonToken), baseTypes),
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
@@ -457,7 +457,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 keyword: SyntaxFactory.MissingToken(SyntaxKind.ClassKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MissingToken(SyntaxKind.ColonToken), baseTypes),
                 constraintClauses: null,
                 openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
@@ -491,12 +491,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 returnType: context.Type?.Get<TypeSyntax>() ?? EmptyType(),
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
                 body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
                 semicolonToken: (!isInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void ExitTypeparameters([NotNull] XSharpParser.TypeparametersContext context)
+        {
+            var parameters = _pool.AllocateSeparated<TypeParameterSyntax>();
+            foreach(var tpCtx in context._TypeParams) {
+                parameters.Add(tpCtx.Get<TypeParameterSyntax>());
+            }
+            context.Put(_syntaxFactory.TypeParameterList(SyntaxFactory.MissingToken(SyntaxKind.LessThanToken),
+                parameters,
+                SyntaxFactory.MissingToken(SyntaxKind.GreaterThanToken)));
+            _pool.Free(parameters);
+        }
+
+        public override void ExitTypeparameter([NotNull] XSharpParser.TypeparameterContext context)
+        {
+            context.Put(_syntaxFactory.TypeParameter(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                varianceKeyword: context.VarianceKeyword.SyntaxKeyword(),
+                identifier: context.Id.Get<SyntaxToken>()));
         }
 
         public override void ExitMethodtype([NotNull] XSharpParser.MethodtypeContext context)
@@ -667,7 +687,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 returnType: context.Type?.Get<TypeSyntax>() ?? EmptyType(),
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
                 body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
@@ -687,7 +707,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 returnType: VoidType(),
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: null,
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
                 body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),

@@ -62,14 +62,14 @@ entity              : namespace_
 					;
 
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
-						FUNCTION Id=identifier (ParamList=parameterList)?
+						FUNCTION Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
 					   (AS Type=datatype)? 
 					   (CallingConvention=callingconvention)? eos 
 					   StmtBlk=statementBlock
 					;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
-					   PROCEDURE Id=identifier (ParamList=parameterList)?
+					   PROCEDURE Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
 					   (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? eos 
 					   StmtBlk=statementBlock
 					;
@@ -132,7 +132,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 // Separate method/access/assign with Class name -> convert to partial class with just one method
 // And when Class is outside of assembly, convert to Extension Method?
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
-					  T=methodtype Id=identifier (ParamList=parameterList)? (AS Type=datatype)? 
+					  T=methodtype Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (CallingConvention=callingconvention)? (CLASS ClassId=name)? eos 
 					  StmtBlk=statementBlock		
 					;
@@ -163,8 +163,9 @@ namespace_			: BEGIN NAMESPACE Name=name eos
 					;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
-					  INTERFACE Id=identifier
-					  ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)* eos
+					  INTERFACE Id=identifier TypeParameters=typeparameters?
+					  ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
+					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos         // Optional typeparameterconstraints for Generic Class
 					  (Members+=classmember)*
 					  END INTERFACE eos
 					;
@@ -184,18 +185,15 @@ class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
 					;
 
-classparents        : INHERIT ParentClass=datatype
-					;
-
 // Start Extensions for Generic Classes
 typeparameters      : LT TypeParams+=typeparameter (COMMA attributes? TypeParams+=typeparameter)* GT 
 					;
 
-typeparameter       : Attributes=attributes?  Id=identifier
+typeparameter       : Attributes=attributes? VarianceKeyword=(IN | OUT) Id=identifier
 					;
 
 typeparameterconstraintsclause
-					: WHERE identifier IS typeparameterconstraints
+					: WHERE Id=identifier IS ConstraintList=typeparameterconstraints
 					;
 							  
 typeparameterconstraints

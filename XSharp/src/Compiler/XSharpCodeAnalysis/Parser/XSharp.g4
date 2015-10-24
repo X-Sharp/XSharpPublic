@@ -64,12 +64,14 @@ entity              : namespace_
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
 						FUNCTION Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
 					   (AS Type=datatype)? 
+					   (ConstraintsClauses+=typeparameterconstraintsclause)*
 					   (CallingConvention=callingconvention)? eos 
 					   StmtBlk=statementBlock
 					;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
 					   PROCEDURE Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
+					   (ConstraintsClauses+=typeparameterconstraintsclause)*
 					   (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? eos 
 					   StmtBlk=statementBlock
 					;
@@ -133,6 +135,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 // And when Class is outside of assembly, convert to Extension Method?
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					  T=methodtype Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
+					  (ConstraintsClauses+=typeparameterconstraintsclause)*
 					  (CallingConvention=callingconvention)? (CLASS ClassId=name)? eos 
 					  StmtBlk=statementBlock		
 					;
@@ -193,23 +196,13 @@ typeparameter       : Attributes=attributes? VarianceKeyword=(IN | OUT) Id=ident
 					;
 
 typeparameterconstraintsclause
-					: WHERE Id=identifier IS ConstraintList=typeparameterconstraints
+					: WHERE Name=identifierName IS Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
 					;
 							  
-typeparameterconstraints
-					  : Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
-					  ;
-
-typeparameterconstraint:  typeName                          //  Class Foo<t> WHERE T IS Customer
-					   | typeparameter                      //  Class Foo<T,U> WHERE U IS T
-					   | typeparameterconstrainttypes       //  Class Foo<t> WHERE T IS CLASS
-                                                            //  Class Foo<t> WHERE T IS STRUCTURE
-                                                            //  Class Foo<t> WHERE T IS NEW()
+typeparameterconstraint: Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer
+					   | Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
+                       | NEW LPAREN RPAREN					#constructorConstraint		//  Class Foo<t> WHERE T IS NEW()
 					   ; 
-typeparameterconstrainttypes: CLASS
-                            | STRUCTURE
-                            | NEW LPAREN RPAREN
-                            ;
 							  
 // End of Extensions for Generic Classes
 

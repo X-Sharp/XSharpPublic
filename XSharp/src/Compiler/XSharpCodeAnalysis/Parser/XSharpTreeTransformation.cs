@@ -84,6 +84,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        SyntaxList<T> MakeList<T>(System.Collections.IEnumerable t) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            if (t == null)
+                return default(SyntaxList<T>);
+            var l = _pool.Allocate<T>();
+            foreach (var item in t) {
+                l.Add(((IParseTree)item).Get<T>());
+            }
+            var list = l.ToList();
+            _pool.Free(l);
+            return list;
+        }
+
+        SeparatedSyntaxList<T> MakeSeparatedList<T>([NotNull] IList<RuleContext> t) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            var l = _pool.AllocateSeparated<T>();
+            foreach (var item in t) {
+                if (l.Count>0)
+                    l.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                l.Add(item.Get<T>());
+            }
+            var list = l.ToList();
+            _pool.Free(l);
+            return list;
+        }
+
         TypeSyntax VoidType()
         {
             return _syntaxFactory.PredefinedType(SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword));
@@ -420,7 +446,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MissingToken(SyntaxKind.ColonToken), baseTypes),
-                constraintClauses: null,
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
@@ -459,7 +485,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 baseList: _syntaxFactory.BaseList(SyntaxFactory.MissingToken(SyntaxKind.ColonToken), baseTypes),
-                constraintClauses: null,
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
                 openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
@@ -493,7 +519,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
                 body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
                 semicolonToken: (!isInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
@@ -517,6 +543,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 varianceKeyword: context.VarianceKeyword.SyntaxKeyword(),
                 identifier: context.Id.Get<SyntaxToken>()));
+        }
+
+        public override void ExitTypeparameterconstraintsclause([NotNull] XSharpParser.TypeparameterconstraintsclauseContext context)
+        {
+            var constraints = _pool.AllocateSeparated<TypeParameterConstraintSyntax>();
+            foreach(var cCtx in context._Constraints) {
+                if (constraints.Count > 0)
+                    constraints.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                constraints.Add(cCtx.Get<TypeParameterConstraintSyntax>());
+            }
+            context.Put(_syntaxFactory.TypeParameterConstraintClause(
+                SyntaxFactory.MissingToken(SyntaxKind.WhereKeyword),
+                context.Name.Get<IdentifierNameSyntax>(),
+                SyntaxFactory.MissingToken(SyntaxKind.ColonToken),
+                constraints));
+            _pool.Free(constraints);
+        }
+
+        public override void ExitTypeConstraint([NotNull] XSharpParser.TypeConstraintContext context)
+        {
+            context.Put(_syntaxFactory.TypeConstraint(context.Type.Get<TypeSyntax>()));
+        }
+
+        public override void ExitClassOrStructConstraint([NotNull] XSharpParser.ClassOrStructConstraintContext context)
+        {
+            context.Put(_syntaxFactory.ClassOrStructConstraint(
+                context.Key.ConstraintKind(),
+                context.Key.SyntaxKeyword()));
+        }
+
+        public override void ExitConstructorConstraint([NotNull] XSharpParser.ConstructorConstraintContext context)
+        {
+            context.Put(_syntaxFactory.ConstructorConstraint(
+                SyntaxFactory.MissingToken(SyntaxKind.NewKeyword),
+                SyntaxFactory.MissingToken(SyntaxKind.OpenParenToken),
+                SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
         }
 
         public override void ExitMethodtype([NotNull] XSharpParser.MethodtypeContext context)
@@ -689,7 +751,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
                 body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
                 semicolonToken: (!isInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
@@ -709,7 +771,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
                 body: isInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
                 expressionBody: null,
                 semicolonToken: (!isInterface && context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));

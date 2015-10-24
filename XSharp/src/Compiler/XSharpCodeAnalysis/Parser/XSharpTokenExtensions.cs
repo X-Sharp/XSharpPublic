@@ -396,6 +396,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CONST:
                     r = SyntaxFactory.MissingToken(SyntaxKind.ConstKeyword);
                     break;
+                case XSharpParser.CLASS:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.ClassKeyword);
+                    break;
+                case XSharpParser.STRUCTURE:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.StructKeyword);
+                    break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:
@@ -404,7 +410,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.BREAK:
                 //case XSharpParser.CASE:
                 case XSharpParser.CAST:
-                case XSharpParser.CLASS:
                 case XSharpParser.CLIPPER:
                 case XSharpParser.DEFINE:
                 case XSharpParser.DIM:
@@ -487,7 +492,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.SCOPE:
                 case XSharpParser.SEALED:
                 case XSharpParser.SET:
-                case XSharpParser.STRUCTURE:
                 case XSharpParser.THROW:
                 case XSharpParser.TRY:
                 case XSharpParser.UNTIL:
@@ -532,6 +536,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.OTHERWISE:
                     r = SyntaxKind.DefaultSwitchLabel;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            return r;
+        }
+
+        public static SyntaxKind ConstraintKind(this IToken token)
+        {
+            SyntaxKind r;
+            switch (token.Type)
+            {
+                case XSharpParser.CLASS:
+                    r = SyntaxKind.ClassConstraint;
+                    break;
+                case XSharpParser.STRUCTURE:
+                    r = SyntaxKind.StructConstraint;
                     break;
                 default:
                     throw new InvalidOperationException();

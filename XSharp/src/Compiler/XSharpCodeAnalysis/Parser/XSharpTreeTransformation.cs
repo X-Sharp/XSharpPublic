@@ -108,13 +108,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
-        SeparatedSyntaxList<T> MakeSeparatedList<T>([NotNull] IList<RuleContext> t) where T : InternalSyntax.CSharpSyntaxNode
+        SeparatedSyntaxList<T> MakeSeparatedList<T>(System.Collections.IEnumerable t) where T : InternalSyntax.CSharpSyntaxNode
         {
+            if (t == null)
+                return default(SeparatedSyntaxList<T>);
             var l = _pool.AllocateSeparated<T>();
             foreach (var item in t) {
                 if (l.Count>0)
                     l.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                l.Add(item.Get<T>());
+                l.Add(((IParseTree)item).Get<T>());
             }
             var list = l.ToList();
             _pool.Free(l);
@@ -417,14 +419,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
-        public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
-        {
-            context.Put(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(),
-                null,
-                (context.Initializer != null) ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MissingToken(SyntaxKind.EqualsToken),
-                    context.Initializer.Get<ExpressionSyntax>()) : null));
-        }
-
         public override void ExitVodefine([NotNull] XSharpParser.VodefineContext context)
         {
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
@@ -576,6 +570,165 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
+        }
+
+        public override void ExitEnum_([NotNull] XSharpParser.Enum_Context context)
+        {
+            context.Put(_syntaxFactory.EnumDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                enumKeyword: SyntaxFactory.MissingToken(SyntaxKind.EnumKeyword),
+                identifier: context.Id.Get<SyntaxToken>(),
+                baseList: default(BaseListSyntax),
+                openBraceToken: SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                members: MakeSeparatedList<EnumMemberDeclarationSyntax>(context._Members),
+                closeBraceToken: SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null));
+        }
+
+        public override void ExitEnumModifiers([NotNull] XSharpParser.EnumModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitEnummember([NotNull] XSharpParser.EnummemberContext context)
+        {
+            context.Put(_syntaxFactory.EnumMemberDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                identifier: context.Id.Get<SyntaxToken>(),
+                equalsValue: _syntaxFactory.EqualsValueClause(SyntaxFactory.MissingToken(SyntaxKind.EqualsToken),
+                    context.Expr.Get<ExpressionSyntax>())));
+        }
+
+        public override void ExitEvent_([NotNull] XSharpParser.Event_Context context)
+        {
+            context.Put(_syntaxFactory.EventDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                eventKeyword: SyntaxFactory.MissingToken(SyntaxKind.EventKeyword),
+                type: context.Type.Get<TypeSyntax>(),
+                explicitInterfaceSpecifier: null,
+                identifier: context.Id.Get<SyntaxToken>(),
+                accessorList: null));
+        }
+
+        public override void ExitEventModifiers([NotNull] XSharpParser.EventModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitClassvars([NotNull] XSharpParser.ClassvarsContext context)
+        {
+            context.Put(_syntaxFactory.FieldDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                declaration: _syntaxFactory.VariableDeclaration(
+                    type: context.DataType.Get<TypeSyntax>(),
+                    variables: MakeSeparatedList<VariableDeclaratorSyntax>(context._Var)),
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void ExitClassvarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
+        {
+            context.Put(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(),
+                null,
+                (context.Initializer != null) ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MissingToken(SyntaxKind.EqualsToken),
+                    context.Initializer.Get<ExpressionSyntax>()) : null));
+        }
+
+        public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
+        {
+            context.Put(_syntaxFactory.PropertyDeclaration(
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                type: context.Type.Get<TypeSyntax>(),
+                explicitInterfaceSpecifier: null,
+                identifier: context.Id.Get<SyntaxToken>(),
+                accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                    (context.Auto != null) ? 
+                        ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
+                        MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                SyntaxFactory.MissingToken(SyntaxKind.GetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)),
+                            _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                SyntaxFactory.MissingToken(SyntaxKind.SetKeyword),null,SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))) :
+                    ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
+                    MakeList<AccessorDeclarationSyntax>(context._Accessors),
+                    SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)),
+                expressionBody: null,
+                initializer: context.Initializer != null ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MissingToken(SyntaxKind.EqualsToken),
+                    context.Initializer.Get<ExpressionSyntax>()) : null,
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void ExitPropertyAutoAccessor([NotNull] XSharpParser.PropertyAutoAccessorContext context)
+        {
+            context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                keyword: context.Key.SyntaxKeyword(),
+                body: null,
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void ExitPropertyLineAccessor([NotNull] XSharpParser.PropertyLineAccessorContext context)
+        {
+            context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                keyword: context.Key.SyntaxKeyword(),
+                body: context.Key.Type == XSharpParser.GET ? 
+                    _syntaxFactory.Block(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                        MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MissingToken(SyntaxKind.ReturnKeyword),
+                            context.Expr.Get<ExpressionSyntax>(),SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))),
+                        SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)) :
+                    _syntaxFactory.Block(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                        context.ExprList.GetList<StatementSyntax>(),
+                        SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken))
+                    ,
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void ExitExpressionListStmt([NotNull] XSharpParser.ExpressionListStmtContext context)
+        {
+            var stmts = _pool.Allocate<StatementSyntax>();
+            foreach(var eCtx in context._Exprs) {
+                stmts.Add(_syntaxFactory.ExpressionStatement(eCtx.Get<ExpressionSyntax>(),SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+            }
+            context.PutList(stmts.ToList());
+            _pool.Free(stmts);
+        }
+
+        public override void ExitPropertyAccessor([NotNull] XSharpParser.PropertyAccessorContext context)
+        {
+            context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                keyword: context.Key.SyntaxKeyword(),
+                body: context.StmtBlk.Get<BlockSyntax>(),
+                semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
@@ -941,10 +1094,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(_syntaxFactory.Block(openBrace, statements, closeBrace));
             _pool.Free(statements);
-        }
-
-        public override void ExitExpressionList([NotNull] XSharpParser.ExpressionListContext context)
-        {
         }
 
         public override void ExitDeclarationStmt([NotNull] XSharpParser.DeclarationStmtContext context)
@@ -1510,23 +1659,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitArrayAccess([NotNull] XSharpParser.ArrayAccessContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
-            var openBracket = SyntaxFactory.MissingToken(SyntaxKind.OpenBracketToken);
-            var closeBracket = SyntaxFactory.MissingToken(SyntaxKind.CloseBracketToken);
             BracketedArgumentListSyntax argList;
             if (context.ArgList != null)
-            {
-                var args = _pool.AllocateSeparated<ArgumentSyntax>();
-                foreach(var e in context.ArgList._Exprs)
-                {
-                    if (args.Count != 0)
-                        args.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                    args.Add(_syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>()));
-                }
-                argList = _syntaxFactory.BracketedArgumentList(openBracket, args, closeBracket);
-                _pool.Free(args);
-            }
+                argList = context.ArgList.Get<BracketedArgumentListSyntax>();
             else
             {
+                var openBracket = SyntaxFactory.MissingToken(SyntaxKind.OpenBracketToken);
+                var closeBracket = SyntaxFactory.MissingToken(SyntaxKind.CloseBracketToken);
                 var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                 argList = _syntaxFactory.BracketedArgumentList(openBracket, args, closeBracket);
             }
@@ -1585,6 +1724,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken)));
         }
 
+        public override void ExitBracketedArgumentList([NotNull] XSharpParser.BracketedArgumentListContext context)
+        {
+            var args = _pool.AllocateSeparated<ArgumentSyntax>();
+            foreach (var argCtx in context._Args)
+            {
+                if (args.Count != 0)
+                    args.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                args.Add(argCtx.Get<ArgumentSyntax>());
+            }
+            context.Put(_syntaxFactory.BracketedArgumentList(
+                SyntaxFactory.MissingToken(SyntaxKind.OpenBracketToken), 
+                args, 
+                SyntaxFactory.MissingToken(SyntaxKind.CloseBracketToken)));
+            _pool.Free(args);
+        }
+
         public override void ExitArgumentList([NotNull] XSharpParser.ArgumentListContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();
@@ -1592,6 +1747,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var closeParen = SyntaxFactory.MissingToken(SyntaxKind.CloseParenToken);
             foreach (var argCtx in context._Args)
             {
+                if (args.Count != 0)
+                    args.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
                 args.Add(argCtx.Get<ArgumentSyntax>());
             }
             context.Put(_syntaxFactory.ArgumentList(openParen, args, closeParen));
@@ -1714,10 +1871,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var openBrace = SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken);
             var closeBrace = SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken);
-            if (context.ExprList != null)
+            if ((context._Exprs?.Count ?? 0) > 0 )
             {
                 var exprs = _pool.AllocateSeparated<ExpressionSyntax>();
-                foreach (var e in context.ExprList._Exprs)
+                foreach (var e in context._Exprs)
                 {
                     if (exprs.Count != 0)
                         exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));

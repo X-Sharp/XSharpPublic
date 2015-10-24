@@ -333,6 +333,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxToken r;
             switch (token.Type)
             {
+                case XSharpParser.ABSTRACT:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.AbstractKeyword);
+                    break;
                 case XSharpParser.STATIC:
                     r = SyntaxFactory.MissingToken(SyntaxKind.StaticKeyword);
                     break;
@@ -402,6 +405,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.STRUCTURE:
                     r = SyntaxFactory.MissingToken(SyntaxKind.StructKeyword);
                     break;
+                case XSharpParser.SEALED:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.SealedKeyword);
+                    break;
+                case XSharpParser.VIRTUAL:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword);
+                    break;
+                case XSharpParser.SELF:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.ThisKeyword);
+                    break;
+                case XSharpParser.USING:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.UsingKeyword);
+                    break;
+                case XSharpParser.SUPER:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.BaseKeyword);
+                    break;
+                case XSharpParser.VAR:
+                    r = SyntaxFactory.Identifier("Xs$var");
+                    break;
+                case XSharpParser.THROW:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.ThrowKeyword);
+                    break;
+                case XSharpParser.TRY:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.TryKeyword);
+                    break;
+                case XSharpParser.CATCH:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.CatchKeyword);
+                    break;
+                case XSharpParser.FINALLY:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.FinallyKeyword);
+                    break;
+                case XSharpParser.YIELD:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.YieldKeyword);
+                    break;
+                case XSharpParser.VOLATILE:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.VolatileKeyword);
+                    break;
+                case XSharpParser.INITONLY:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.ReadOnlyKeyword);
+                    break;
+                case XSharpParser.INSTANCE:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.None);
+                    break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:
@@ -434,7 +479,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.IIF:
                 case XSharpParser.INHERIT:
                 case XSharpParser.IN:
-                case XSharpParser.INSTANCE:
                 case XSharpParser.IS:
                 case XSharpParser.LOCAL:
                 case XSharpParser.LOOP:
@@ -449,22 +493,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //case XSharpParser.PUBLIC:
                 case XSharpParser.RECOVER:
                 case XSharpParser.RETURN:
-                case XSharpParser.SELF:
                 case XSharpParser.SEQUENCE:
                 case XSharpParser.SIZEOF:
                 case XSharpParser.STEP:
                 case XSharpParser.STRICT:
-                case XSharpParser.SUPER:
                 case XSharpParser.THISCALL:
                 case XSharpParser.TO:
                 case XSharpParser.TYPEOF:
                 case XSharpParser.UNION:
                 case XSharpParser.UPTO:
-                case XSharpParser.USING:
                 case XSharpParser.WHILE:
-                case XSharpParser.ABSTRACT:
                 case XSharpParser.AUTO:
-                case XSharpParser.CATCH:
                 case XSharpParser.CONSTRUCTOR:
                 //case XSharpParser.CONST:
                 case XSharpParser.DELEGATE:
@@ -472,13 +511,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ENUM:
                 case XSharpParser.EVENT:
                 case XSharpParser.EXPLICIT:
-                case XSharpParser.FINALLY:
                 case XSharpParser.FOREACH:
                 case XSharpParser.GET:
                 case XSharpParser.IMPLEMENTS:
                 case XSharpParser.IMPLICIT:
                 case XSharpParser.IMPLIED:
-                case XSharpParser.INITONLY:
                 case XSharpParser.INTERFACE:
                 //case XSharpParser.INTERNAL:
                 case XSharpParser.LOCK:
@@ -490,13 +527,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.PROPERTY:
                 case XSharpParser.REPEAT:
                 case XSharpParser.SCOPE:
-                case XSharpParser.SEALED:
                 case XSharpParser.SET:
-                case XSharpParser.THROW:
-                case XSharpParser.TRY:
                 case XSharpParser.UNTIL:
                 case XSharpParser.VALUE:
-                case XSharpParser.VIRTUAL:
                 case XSharpParser.VOSTRUCT:
                 case XSharpParser.ASSEMBLY:
                 //case XSharpParser.ASYNC:
@@ -508,10 +541,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.SWITCH:
                 //case XSharpParser.UNCHECKED:
                 //case XSharpParser.UNSAFE:
-                case XSharpParser.VAR:
-                case XSharpParser.VOLATILE:
                 case XSharpParser.WHERE:
-                case XSharpParser.YIELD:
                     r = SyntaxFactory.Identifier(token.Text);
                     break;
                 default:
@@ -553,6 +583,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.STRUCTURE:
                     r = SyntaxKind.StructConstraint;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            return r;
+        }
+
+        public static SyntaxKind AccessorKind(this IToken token)
+        {
+            SyntaxKind r;
+            switch (token.Type)
+            {
+                case XSharpParser.GET:
+                    r = SyntaxKind.GetAccessorDeclaration;
+                    break;
+                case XSharpParser.SET:
+                    r = SyntaxKind.SetAccessorDeclaration;
                     break;
                 default:
                     throw new InvalidOperationException();
@@ -812,11 +859,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static void AddCheckUnique(this SyntaxListBuilder list, SyntaxToken t)
         {
-            if(list.Any(t.Kind)) {
-                t = t.WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(t.GetLeadingTriviaWidth(), t.Width, ErrorCode.ERR_DuplicateModifier, t));
+            if (t.Kind != SyntaxKind.None) {
+                if(list.Any(t.Kind)) {
+                    t = t.WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(t.GetLeadingTriviaWidth(), t.Width, ErrorCode.ERR_DuplicateModifier, t));
+                }
+                list.Add(t);
             }
-            list.Add(t);
         }
     }
 }

@@ -121,10 +121,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitExpressionList([NotNull] XSharpParser.ExpressionListContext context)
-        {
-        }
-
         public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
         {
         }

@@ -237,7 +237,7 @@ enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
 enumModifiers		: ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
 					;
 
-enummember			: MEMBER? Id=identifier (ASSIGN_OP expression)? eos
+enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? eos
 					;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
@@ -266,26 +266,27 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
 					  PROPERTY Id=identifier (ParamList=parameterList)? AS Type=datatype 
-					  ( Auto=propertyauto													// Auto
-					  | SingleLine=propertysingleline                                       // Single Line
-					  | eos (Get=propertyget) (Set=propertyset)?  END PROPERTY? eos         // Multi Line GET SET?
-					  | eos (Set=propertyset) (Get=propertyget)?  END PROPERTY? eos         // Multi Line SET GET?
+					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)+ (ASSIGN_OP Initializer=expression)? eos	// Auto
+					  | (LineAccessors+=propertyLineAccessor)+ eos													// Single Line
+					  | eos (Accessors+=propertyAccessor)+  END PROPERTY? eos										// Multi Line
 					  )
 					;
 
-propertyauto        : AUTO ((GetModifiers=memberModifiers)? GET) ((SetModifiers=memberModifiers)? SET)? (ASSIGN_OP Initializer=expression)? eos  // AUTO GET SET? Initializer? eos
-					| AUTO ((SetModifiers=memberModifiers)? SET) ((GetModifiers=memberModifiers)? GET)? (ASSIGN_OP Initializer=expression)? eos  // AUTO SET GET? Initializer? eos
-					| AUTO (ASSIGN_OP Initializer=expression)? eos																				 // AUTO Initializer? eos
+propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET|SET)
 					;
 
-propertysingleline  : (GetModifiers=memberModifiers)? GET GetExpression=expression     ((SetModifiers=memberModifiers)? SET SetExpression=expressionList)? eos  // GET SET? eos
-					| (SetModifiers=memberModifiers)? SET SetExpression=expressionList ((GetModifiers=memberModifiers)? GET GetExpression=expression)?     eos  // SET GET? eos
+propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
+					  ( Key=GET Expr=expression
+					  | Key=SET ExprList=expressionListStmt )
 					;
 
-propertyget         : (GetModifiers=memberModifiers)? GET eos GetStmtBlk=statementBlock END GET? eos // GET Stmts END GET?
+expressionListStmt	: Exprs+=expression (COMMA Exprs+=expression)*
 					;
 
-propertyset         : (SetModifiers=memberModifiers)? SET eos SetStmtBlk=statementBlock END SET? eos	// SET Stmts END SET?
+propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers? 
+					  ( Key=GET eos StmtBlk=statementBlock END GET?
+					  | Key=SET eos StmtBlk=statementBlock END SET? )
+					  eos
 					;
 
 classmember			: method															#clsmethod
@@ -542,7 +543,7 @@ expression			: Left=expression Q=QMARK Op=(DOT | COLON) Right=identifierName #ac
 					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
 					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
-					| Expr=expression LBRKT ArgList=expressionList? RBRKT		#arrayAccess			// Array element access
+					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
@@ -566,7 +567,8 @@ expression			: Left=expression Q=QMARK Op=(DOT | COLON) Right=identifierName #ac
 //					| AMP identifierName										#macrovar				// &id
 					;
 
-expressionList		: Exprs+=expression (COMMA Exprs+=expression)*
+bracketedArgumentList
+					: Args+=argument (COMMA Args+=argument?)*
 					;
 
 argumentList		: Args+=argument (COMMA Args+=argument?)*
@@ -602,7 +604,7 @@ typeName			: NativeType=nativeType
 					| Name=name
 					;
 
-literalArray		: (LT Type=datatype GT)? LCURLY (ExprList=expressionList)? RCURLY
+literalArray		: (LT Type=datatype GT)? LCURLY (Exprs+=expression (COMMA Exprs+=expression)*)? RCURLY
 					;
 
 //aliasedField		:	FIELD ALIAS Id=identifierName									// _FIELD->NAME

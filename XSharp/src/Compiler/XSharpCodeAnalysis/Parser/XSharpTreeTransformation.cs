@@ -1963,7 +1963,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitArgument([NotNull] XSharpParser.ArgumentContext context)
         {
-            context.Put(_syntaxFactory.Argument(null, null, context.Expr.Get<ExpressionSyntax>()));
+            context.Put(_syntaxFactory.Argument(
+                context.Name == null ? null : _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.MissingToken(SyntaxKind.ColonToken)), 
+                context.RefOut?.SyntaxKeyword(), context.Expr.Get<ExpressionSyntax>()));
         }
 
         public override void ExitQualifiedName([NotNull] XSharpParser.QualifiedNameContext context)

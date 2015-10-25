@@ -120,6 +120,7 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 using_              : HASHUSING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     eos
                     ;
 
+// nvk: roslyn treats #pragma directives as trivia attached to parse nodes. The parser does not handle them directly.
 pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN eos         #pragmaOptions
                     | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN eos         #pragmaWarnings
                     ;
@@ -133,6 +134,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 
 // Separate method/access/assign with Class name -> convert to partial class with just one method
 // And when Class is outside of assembly, convert to Extension Method?
+// nvk: we have no knowledge of whether a class is outside of the assembly at the parser stage!
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					  T=methodtype Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (ConstraintsClauses+=typeparameterconstraintsclause)*
@@ -307,7 +309,7 @@ classmember			: Member=method														#clsmethod
 					| Member=enum_										#nestedEnum
 					| Member=event_										#nestedEvent
 					| Member=interface_									#nestedInterface
-//                    | using_										#nestedUsing	// C# does not allow using within a class!
+//                    | using_										#nestedUsing	// nvk: C# does not allow using directives within a class!
                     | Pragma=pragma										#nestedPragma
 					| {_ClsFunc}? Member=function						#clsfunction		// Equivalent to method
 					| {_ClsFunc}? Member=procedure						#clsprocedure		// Equivalent to method
@@ -585,7 +587,7 @@ bracketedArgumentList
 argumentList		: Args+=argument (COMMA Args+=argument?)*
 					;
 
-argument			: Expr=expression
+argument			: (COLON Name=identifierName ASSIGN_OP)? RefOut=(REF | OUT)? Expr=expression
 					;
 
 iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN

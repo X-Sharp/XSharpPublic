@@ -533,12 +533,13 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 1)  unary                + - ++ -- ~
 
 expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #accessMember       // member access The ? is new
+					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
 					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
-					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
+					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
 					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
 					  Expr=expression											#prefixExpression		// +/-/~/&/++/-- expr
@@ -570,7 +571,6 @@ expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #a
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
 					| Expr=expression IS Type=datatype							#typeCheckExpression	// expr IS typeORid
-					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
 					| Name=name													#nameExpression			// generic name

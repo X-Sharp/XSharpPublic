@@ -25,6 +25,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return token.Text.Substring(1, token.Text.Length - 2);
         }
 
+        private static bool IsChar(IToken token)
+        {
+            return token.Text.StartsWith("'") && token.Text.EndsWith("'") && token.Text.Length == 3;
+        }
+
+        private static char CharValue(IToken token)
+        {
+            return token.Text[1];
+        }
+
         private static int HexValue(IToken token)
         {
             int r = 0;
@@ -176,7 +186,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
                 case XSharpParser.STRING_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, StringValue(token), null);
+                    if (IsChar(token))
+                        r = SyntaxFactory.Literal(null, token.Text, CharValue(token), null);
+                    else
+                        r = SyntaxFactory.Literal(null, token.Text, StringValue(token), null);
                     break;
                 case XSharpParser.SYMBOL_CONST:
                     r = SyntaxFactory.Literal(null, token.Text, token.Text, null);

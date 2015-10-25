@@ -989,7 +989,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.CONSTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
             }
             else {
-Debug.WriteLine("ctor: {0}", (context.Parent as XSharpParser.Class_Context).Id.Get<SyntaxToken>().ValueText);
                 context.Put(_syntaxFactory.ConstructorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
@@ -1962,7 +1961,7 @@ Debug.WriteLine("ctor: {0}", (context.Parent as XSharpParser.Class_Context).Id.G
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Type.Get<TypeSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.Expr.Get<TypeSyntax>()));
+                context.Expr.Get<ExpressionSyntax>()));
         }
 
         public override void ExitSizeOfExpression([NotNull] XSharpParser.SizeOfExpressionContext context)

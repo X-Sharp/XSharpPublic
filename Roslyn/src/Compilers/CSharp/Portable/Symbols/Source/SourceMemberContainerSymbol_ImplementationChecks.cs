@@ -588,7 +588,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     diagnostics.Add(errorCode, overridingMemberLocation, overridingMember, hiddenMembers[0]);
                 }
+#if XSHARP
+                else if (!overridingMember.IsVirtual)
+#else
                 else
+#endif
                 {
                     Symbol associatedPropertyOrEvent = null;
                     if (overridingMemberIsMethod)

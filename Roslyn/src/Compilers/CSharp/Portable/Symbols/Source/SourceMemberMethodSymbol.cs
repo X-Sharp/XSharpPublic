@@ -331,6 +331,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType, out _lazyReturnTypeCustomModifiers, out _lazyParameters, alsoCopyParamsModifier: true);
                     }
+#if XSHARP
+                    else if (this.IsVirtual) {
+                        flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                    }
+#endif
                 }
             }
             else if ((object)_explicitInterfaceType != null)
@@ -898,7 +903,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // A static member '{0}' cannot be marked as override, virtual, or abstract
                 diagnostics.Add(ErrorCode.ERR_StaticNotVirtual, location, this);
             }
+#if XSHARP
+            else if (IsOverride && IsNew)
+#else
             else if (IsOverride && (IsNew || IsVirtual))
+#endif
             {
                 // A member '{0}' marked as override cannot be marked as new or virtual
                 diagnostics.Add(ErrorCode.ERR_OverrideNotNew, location, this);

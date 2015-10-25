@@ -25,26 +25,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
 
-        //internal class XSharpErrorListener : IAntlrErrorListener<IToken>
-        //{
-        //    public int TotalErrors { get; private set; }
-        //    internal XSharpErrorListener()
-        //    {
-        //        TotalErrors = 0;
-        //    }
-        //    public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
-        //    {
-        //        TotalErrors += 1;
-        //        /*if (e.OffendingToken != null)
-        //        {
-        //            _errors.Add("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
-        //        }
-        //        else
-        //        {
-        //            _errors.Add("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
-        //        }*/
-        //    }
-        //}
+#if DEBUG
+        internal class XSharpErrorListener : IAntlrErrorListener<IToken>
+        {
+            public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+            {
+                if (e.OffendingToken != null)
+                {
+                    Debug.WriteLine("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
+                }
+                else
+                {
+                    Debug.WriteLine("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
+                }
+            }
+        }
+#endif
 
         internal XSharpLanguageParser(
             //Lexer lexer,
@@ -105,8 +101,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var lexer = new XSharpLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new XSharpParser(tokens);
-            //var errorListener = new XSharpErrorListener();
-            //parser.AddErrorListener(errorListener);
+#if DEBUG
+            var errorListener = new XSharpErrorListener();
+            parser.AddErrorListener(errorListener);
+#endif
             parser.ErrorHandler = new XSharpErrorStrategy();
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             try

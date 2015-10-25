@@ -161,6 +161,19 @@ namespace Antlr4.Runtime
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    internal static partial class SyntaxFactory
+    {
+        internal static SyntaxToken MakeToken(SyntaxKind kind)
+        {
+            return Token(Whitespace(" "), kind, Whitespace(" "));
+        }
+
+        internal static SyntaxToken MakeIdentifier(string text)
+        {
+            return Identifier(Whitespace(" "), text, Whitespace(" "));
+        }
+    }
+
     internal abstract partial class CSharpSyntaxNode
     {
         public IParseTree XNode { get; internal set; }

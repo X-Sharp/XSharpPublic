@@ -106,7 +106,7 @@ parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 parameter			: (Attributes=attributes)? Id=identifier (ASSIGN_OP Default=expression)? Modifiers=parameterDeclMods Type=datatype
 					;
 
-parameterDeclMods   : Tokens+=(AS | REF | OUT | IS ) Tokens+=CONST?
+parameterDeclMods   : Tokens+=(AS | REF | OUT | IS ) Tokens+=SELF? Tokens+=CONST?
 					;
 
 statementBlock      : (Stmts+=statement)*
@@ -295,11 +295,17 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 					  eos
 					;
 
-classmember			: Member=method														#clsmethod
-					| (Attributes=attributes)? (Modifiers=constructorModifiers)? 
-					  CONSTRUCTOR (ParamList=parameterList)? eos StmtBlk=statementBlock	#clsctor
-					| (Attributes=attributes)? (Modifiers=destructorModifiers)?
-					  DESTRUCTOR (LPAREN RPAREN)?  eos StmtBlk=statementBlock           #clsdtor
+classmember			: Member=method										#clsmethod
+					| (Attributes=attributes)?
+					  (Modifiers=constructorModifiers)? 
+					  CONSTRUCTOR (ParamList=parameterList)? eos 
+					  (Chain=(SELF | SUPER) 
+						LPAREN ArgList=argumentList? RPAREN  eos)?
+					  StmtBlk=statementBlock							#clsctor
+					| (Attributes=attributes)? 
+					  (Modifiers=destructorModifiers)?
+					  DESTRUCTOR (LPAREN RPAREN)?  eos 
+					  StmtBlk=statementBlock							#clsdtor
 					| Member=classvars									#clsvars
 					| Member=property									#clsproperty
 					| Member=operator_									#clsoperator
@@ -526,7 +532,12 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
 
-expression			: Left=expression Q=QMARK Op=(DOT | COLON) Right=identifierName #accessMember       // member access The ? is new
+expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #accessMember       // member access The ? is new
+					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
+					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
+					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
+					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
+					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
 					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
@@ -553,11 +564,8 @@ expression			: Left=expression Q=QMARK Op=(DOT | COLON) Right=identifierName #ac
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
-					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
-					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
-					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
-					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
-					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
+					| Key=SELF													#selfExpression
+					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
@@ -587,7 +595,7 @@ bracketedArgumentList
 argumentList		: Args+=argument (COMMA Args+=argument?)*
 					;
 
-argument			: (COLON Name=identifierName ASSIGN_OP)? RefOut=(REF | OUT)? Expr=expression
+argument			: ( COLON Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression
 					;
 
 iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
@@ -606,7 +614,7 @@ identifierName		: Id=identifier
 					;
 
 datatype			: TypeName=typeName PTR											#ptrDatatype
-					| TypeName=typeName (Ranks+=arrayRank)*							#arrayDatatype
+					| TypeName=typeName (Ranks+=arrayRank)+							#arrayDatatype
 					| TypeName=typeName 											#simpleDatatype
 					;
 
@@ -648,6 +656,7 @@ codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 identifier			: Token=ID  
 					| VnToken=keywordvn 
 					| XsToken=keywordxs
+					| KWID VoToken=keywordvo
 					;
 
 nativeType			: Token=

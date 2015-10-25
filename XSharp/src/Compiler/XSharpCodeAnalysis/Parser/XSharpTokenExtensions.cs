@@ -90,73 +90,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (token.Type)
             {
                 case XSharpParser.BYTE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ByteKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword);
                     break;
                 //case XSharpParser.CODEBLOCK:
-                //    r = SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword);
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
                 //    break;
                 //case XSharpParser.DATE:
-                //    r = SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword);
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
                 //    break;
                 case XSharpParser.DWORD:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.UIntKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword);
                     break;
                 case XSharpParser.FLOAT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.DoubleKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword);
                     break;
                 case XSharpParser.SHORTINT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ShortKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ShortKeyword);
                     break;
                 case XSharpParser.INT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.IntKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.IntKeyword);
                     break;
                 case XSharpParser.INT64:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.LongKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LongKeyword);
                     break;
                 case XSharpParser.LOGIC:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BoolKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BoolKeyword);
                     break;
                 case XSharpParser.LONGINT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.IntKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.IntKeyword);
                     break;
                 case XSharpParser.OBJECT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ObjectKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword);
                     break;
                 //case XSharpParser.PSZ:
-                //    r = SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword);
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
                 //    break;
                 //case XSharpParser.PTR:
-                //    r = SyntaxFactory.MissingToken(SyntaxKind.);
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.);
                 //    break;
                 case XSharpParser.REAL4:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.FloatKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword);
                     break;
                 case XSharpParser.REAL8:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.DoubleKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword);
                     break;
                 case XSharpParser.STRING:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.StringKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
                     break;
                 case XSharpParser.SYMBOL:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.StringKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
                     break;
                 //case XSharpParser.USUAL:
-                //    r = SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword);
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
                 //    break;
                 case XSharpParser.UINT64:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ULongKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword);
                     break;
                 case XSharpParser.WORD:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.UShortKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UShortKeyword);
                     break;
                 case XSharpParser.VOID:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
                     break;
                 //case XSharpParser.ARRAY:
-                //    r = SyntaxFactory.MissingToken(SyntaxKind.);
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.);
                 //    break;
                 default:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
                     break;
             }
@@ -170,10 +170,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (token.Type)
             {
                 case XSharpParser.TRUE_CONST:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.TrueKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TrueKeyword);
                     break;
                 case XSharpParser.FALSE_CONST:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.FalseKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
                 case XSharpParser.STRING_CONST:
                     r = SyntaxFactory.Literal(null, token.Text, StringValue(token), null);
@@ -206,10 +206,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.NULL_PTR:
                 case XSharpParser.NULL_STRING:
                 case XSharpParser.NULL_SYMBOL:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.NullKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
                     break;
                 default:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
                     break;
             }
@@ -226,101 +226,101 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //    r = SyntaxKind.None;
                 //    break;
                 case XSharpParser.PLUS:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PlusToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken);
                     break;
                 case XSharpParser.MINUS:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.MinusToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.MinusToken);
                     break;
                 case XSharpParser.MULT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AsteriskToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken);
                     break;
                 case XSharpParser.DIV:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.SlashToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SlashToken);
                     break;
                 case XSharpParser.MOD:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PercentToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PercentToken);
                     break;
                 case XSharpParser.LSHIFT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.LessThanLessThanToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LessThanLessThanToken);
                     break;
                 case XSharpParser.RSHIFT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.GreaterThanGreaterThanToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GreaterThanGreaterThanToken);
                     break;
                 case XSharpParser.LT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.LessThanToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LessThanToken);
                     break;
                 case XSharpParser.LTE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.LessThanEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken);
                     break;
                 case XSharpParser.GT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.GreaterThanToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken);
                     break;
                 case XSharpParser.GTE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.GreaterThanEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken);
                     break;
                 case XSharpParser.EQ:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.EqualsEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken);
                     break;
                 case XSharpParser.EEQ:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.EqualsEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken);
                     break;
                 case XSharpParser.NEQ:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ExclamationEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken);
                     break;
                 //case XSharpParser.SUBSTR:
                 //    r = SyntaxKind.None;
                 //    break;
                 case XSharpParser.AMP:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
                 case XSharpParser.TILDE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.CaretToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
                 case XSharpParser.PIPE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BarToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
                     break;
                 case XSharpParser.LOGIC_AND:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AmpersandAmpersandToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken);
                     break;
                 case XSharpParser.LOGIC_OR:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BarBarToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BarBarToken);
                     break;
 
                 case XSharpParser.ASSIGN_OP:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.EqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.EqualsToken);
                     break;
                 case XSharpParser.ASSIGN_ADD:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PlusEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken);
                     break;
                 //case XSharpParser.ASSIGN_EXP:
                 //    kind = SyntaxKind.None;
                 //    break;
                 case XSharpParser.ASSIGN_MUL:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AsteriskEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AsteriskEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_DIV:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.SlashEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SlashEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_MOD:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PercentEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PercentEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_BITAND:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
                 case XSharpParser.ASSIGN_BITOR:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BarEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BarEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_LSHIFT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.LessThanLessThanEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LessThanLessThanEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_RSHIFT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.GreaterThanGreaterThanEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GreaterThanGreaterThanEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_XOR:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.CaretEqualsToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretEqualsToken);
                     break;
                 default:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
                     break;
             }
@@ -334,124 +334,124 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (token.Type)
             {
                 case XSharpParser.ABSTRACT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AbstractKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword);
                     break;
                 case XSharpParser.STATIC:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.StaticKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
                     break;
                 case XSharpParser.INTERNAL:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.InternalKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword);
                     break;
                 case XSharpParser.PUBLIC:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PublicKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword);
                     break;
                 case XSharpParser.EXPORT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PublicKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword);
                     break;
                 case XSharpParser.PRIVATE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PrivateKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword);
                     break;
                 case XSharpParser.HIDDEN:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PrivateKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword);
                     break;
                 case XSharpParser.NEW:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.NewKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NewKeyword);
                     break;
                 case XSharpParser.PROTECTED:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ProtectedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword);
                     break;
                 case XSharpParser.PARTIAL:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.PartialKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword);
                     break;
                 case XSharpParser.EXTERN:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ExternKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword);
                     break;
                 case XSharpParser.UNSAFE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.UnsafeKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword);
                     break;
                 case XSharpParser.CHECKED:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.CheckedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword);
                     break;
                 case XSharpParser.UNCHECKED:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.UncheckedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword);
                     break;
                 case XSharpParser.ASYNC:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AsyncKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword);
                     break;
                 case XSharpParser.AWAIT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.AwaitKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AwaitKeyword);
                     break;
                 case XSharpParser.CASE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.CaseKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaseKeyword);
                     break;
                 case XSharpParser.DEFAULT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.DefaultKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword);
                     break;
                 case XSharpParser.OTHERWISE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.DefaultKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword);
                     break;
                 case XSharpParser.REF:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.RefKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.RefKeyword);
                     break;
                 case XSharpParser.OUT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.OutKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.OutKeyword);
                     break;
                 case XSharpParser.CONST:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ConstKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword);
                     break;
                 case XSharpParser.CLASS:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ClassKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword);
                     break;
                 case XSharpParser.STRUCTURE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.StructKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.StructKeyword);
                     break;
                 case XSharpParser.SEALED:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.SealedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword);
                     break;
                 case XSharpParser.VIRTUAL:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.VoidKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword);
                     break;
                 case XSharpParser.SELF:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ThisKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword);
                     break;
                 case XSharpParser.USING:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.UsingKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword);
                     break;
                 case XSharpParser.SUPER:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BaseKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword);
                     break;
                 case XSharpParser.VAR:
                     r = SyntaxFactory.Identifier("Xs$var");
                     break;
                 case XSharpParser.THROW:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ThrowKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword);
                     break;
                 case XSharpParser.TRY:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.TryKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TryKeyword);
                     break;
                 case XSharpParser.CATCH:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.CatchKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword);
                     break;
                 case XSharpParser.FINALLY:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.FinallyKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword);
                     break;
                 case XSharpParser.YIELD:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.YieldKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword);
                     break;
                 case XSharpParser.VOLATILE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.VolatileKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.VolatileKeyword);
                     break;
                 case XSharpParser.INITONLY:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ReadOnlyKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ReadOnlyKeyword);
                     break;
                 case XSharpParser.IMPLICIT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ImplicitKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ImplicitKeyword);
                     break;
                 case XSharpParser.EXPLICIT:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.ExplicitKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ExplicitKeyword);
                     break;
                 case XSharpParser.INSTANCE:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.None);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.None);
                     break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
@@ -549,7 +549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.Identifier(token.Text);
                     break;
                 default:
-                    r = SyntaxFactory.MissingToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
                     break;
             }
@@ -587,6 +587,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.STRUCTURE:
                     r = SyntaxKind.StructConstraint;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            return r;
+        }
+
+        public static SyntaxKind CtorInitializerKind(this IToken token)
+        {
+            SyntaxKind r;
+            switch (token.Type)
+            {
+                case XSharpParser.SELF:
+                    r = SyntaxKind.ThisConstructorInitializer;
+                    break;
+                case XSharpParser.SUPER:
+                    r = SyntaxKind.BaseConstructorInitializer;
                     break;
                 default:
                     throw new InvalidOperationException();

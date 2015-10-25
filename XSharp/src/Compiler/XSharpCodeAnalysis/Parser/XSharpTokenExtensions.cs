@@ -444,6 +444,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.INITONLY:
                     r = SyntaxFactory.MissingToken(SyntaxKind.ReadOnlyKeyword);
                     break;
+                case XSharpParser.IMPLICIT:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.ImplicitKeyword);
+                    break;
+                case XSharpParser.EXPLICIT:
+                    r = SyntaxFactory.MissingToken(SyntaxKind.ExplicitKeyword);
+                    break;
                 case XSharpParser.INSTANCE:
                     r = SyntaxFactory.MissingToken(SyntaxKind.None);
                     break;
@@ -510,11 +516,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DESTRUCTOR:
                 case XSharpParser.ENUM:
                 case XSharpParser.EVENT:
-                case XSharpParser.EXPLICIT:
                 case XSharpParser.FOREACH:
                 case XSharpParser.GET:
                 case XSharpParser.IMPLEMENTS:
-                case XSharpParser.IMPLICIT:
                 case XSharpParser.IMPLIED:
                 case XSharpParser.INTERFACE:
                 //case XSharpParser.INTERNAL:

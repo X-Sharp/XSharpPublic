@@ -117,7 +117,7 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
-using_              : HASHUSING (Alias=identifier ASSIGN_OP)? Name=name     eos
+using_              : HASHUSING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     eos
                     ;
 
 pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN eos         #pragmaOptions
@@ -268,7 +268,7 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					  PROPERTY (SELF ParamList=propertyParameterList | Id=identifier) AS Type=datatype 
 					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)+ (ASSIGN_OP Initializer=expression)? eos	// Auto
 					  | (LineAccessors+=propertyLineAccessor)+ eos													// Single Line
-					  | eos (Accessors+=propertyAccessor)+  END PROPERTY? eos										// Multi Line
+					  | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? eos									// Multi Line
 					  )
 					;
 
@@ -280,8 +280,8 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET
 					;
 
 propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
-					  ( Key=GET Expr=expression
-					  | Key=SET ExprList=expressionListStmt )
+					  ( Key=GET Expr=expression?
+					  | Key=SET ExprList=expressionListStmt? )
 					;
 
 expressionListStmt	: Exprs+=expression (COMMA Exprs+=expression)*
@@ -293,24 +293,24 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 					  eos
 					;
 
-classmember			: method															#clsmethod
+classmember			: Member=method														#clsmethod
 					| (Attributes=attributes)? (Modifiers=constructorModifiers)? 
 					  CONSTRUCTOR (ParamList=parameterList)? eos StmtBlk=statementBlock	#clsctor
 					| (Attributes=attributes)? (Modifiers=destructorModifiers)?
 					  DESTRUCTOR (LPAREN RPAREN)?  eos StmtBlk=statementBlock           #clsdtor
-					| classvars									#clsvars
-					| property									#clsproperty
-					| operator_									#clsoperator
-					| structure_								#nestedStructure
-					| class_									#nestedClass
-					| delegate_									#nestedDelegate
-					| enum_										#nestedEnum
-					| event_									#nestedEvent
-					| interface_								#nestedInterface
-                    | using_                                    #nestedUsing
-                    | pragma                                    #nestedPragma
-					| {_ClsFunc}? function						#clsfunction		// Equivalent to method
-					| {_ClsFunc}? procedure						#clsprocedure		// Equivalent to method
+					| Member=classvars									#clsvars
+					| Member=property									#clsproperty
+					| Member=operator_									#clsoperator
+					| Member=structure_									#nestedStructure
+					| Member=class_										#nestedClass
+					| Member=delegate_									#nestedDelegate
+					| Member=enum_										#nestedEnum
+					| Member=event_										#nestedEvent
+					| Member=interface_									#nestedInterface
+//                    | using_										#nestedUsing	// C# does not allow using within a class!
+                    | Pragma=pragma										#nestedPragma
+					| {_ClsFunc}? Member=function						#clsfunction		// Equivalent to method
+					| {_ClsFunc}? Member=procedure						#clsprocedure		// Equivalent to method
 					;
 
 
@@ -321,13 +321,20 @@ destructorModifiers : ( Tokens+=EXTERN )+
 					;
 
 
-overloadedops		: Token=(INC | DEC | NOT | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
-					| GT  | LT | NEQ | GTE| LTE | IMPLICIT | EXPLICIT | TRUE_CONST | FALSE_CONST
+overloadedOps		: Token=(INC | DEC | NOT | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
+					| GT  | LT | NEQ | GTE| LTE | TRUE_CONST | FALSE_CONST
 					| TILDE | AMP   | PIPE )
 					;
 
-operator_			: OPERATOR Operation=overloadedops
+conversionOps		: Token=( IMPLICIT | EXPLICIT )
+					;
+
+operator_			: Attributes=attributes? Modifiers=operatorModifiers? 
+					  OPERATOR (Operation=overloadedOps | Conversion=conversionOps)
 					  ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
+					;
+
+operatorModifiers	: ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
 					;
 
 memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN) )+

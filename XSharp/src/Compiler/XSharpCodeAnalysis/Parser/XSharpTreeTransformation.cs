@@ -413,8 +413,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitUsing_([NotNull] XSharpParser.Using_Context context)
         {
             context.Put(_syntaxFactory.UsingDirective(SyntaxFactory.MissingToken(SyntaxKind.UsingKeyword),
-                staticKeyword: null,
-                alias: null,
+                staticKeyword: context.Static == null ? null : context.Static.SyntaxKeyword(),
+                alias: context.Alias == null ? null : _syntaxFactory.NameEquals(context.Alias.Get<IdentifierNameSyntax>(),SyntaxFactory.MissingToken(SyntaxKind.EqualsToken)),
                 name: context.Name.Get<NameSyntax>(),
                 semicolonToken: SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
         }
@@ -661,6 +661,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
         {
+            var isInInterface = context.isInInterface();
+            if (isInInterface) {
+                if (context.Auto != null) {
+                    context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_InterfaceMemberHasBody));
+                }
+                else if (context.Multi != null) {
+                    context.AddError(new ParseErrorData(context.Multi, ErrorCode.ERR_InterfaceMemberHasBody));
+                }
+                else {
+                    foreach(var aCtx in context._LineAccessors) {
+                        if (aCtx.Expr != null && aCtx.ExprList != null) {
+                            if (aCtx.Expr != null)
+                                context.AddError(new ParseErrorData(aCtx.Expr, ErrorCode.ERR_InterfaceMemberHasBody));
+                            else
+                                context.AddError(new ParseErrorData(aCtx.ExprList, ErrorCode.ERR_InterfaceMemberHasBody));
+                        }
+                    }
+                }
+            }
             if (context.ParamList == null)
                 context.Put(_syntaxFactory.PropertyDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
@@ -738,11 +757,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: context.Key.Type == XSharpParser.GET ? 
-                    _syntaxFactory.Block(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                    context.Expr == null ? null : _syntaxFactory.Block(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
                         MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MissingToken(SyntaxKind.ReturnKeyword),
                             context.Expr.Get<ExpressionSyntax>(),SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken))),
                         SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken)) :
-                    _syntaxFactory.Block(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
+                    context.ExprList == null ? null : _syntaxFactory.Block(SyntaxFactory.MissingToken(SyntaxKind.OpenBraceToken),
                         context.ExprList.GetList<StatementSyntax>(),
                         SyntaxFactory.MissingToken(SyntaxKind.CloseBraceToken))
                     ,
@@ -771,7 +790,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
-            var isInInterface = context.Parent is XSharpParser.Class_Context;
+            var isInInterface = context.isInInterface();
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
@@ -902,6 +921,155 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
         }
 
+        public override void ExitOperator_([NotNull] XSharpParser.Operator_Context context)
+        {
+            if (context.Conversion != null)
+                context.Put(_syntaxFactory.ConversionOperatorDeclaration(
+                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                    implicitOrExplicitKeyword: context.Conversion.Get<SyntaxToken>(),
+                    operatorKeyword: SyntaxFactory.MissingToken(SyntaxKind.OperatorKeyword),
+                    type: context.Type?.Get<TypeSyntax>() ?? EmptyType(),
+                    parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                    body: context.StmtBlk.Get<BlockSyntax>(),
+                    expressionBody: null,
+                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+            else
+                context.Put(_syntaxFactory.OperatorDeclaration(
+                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                    returnType: context.Type?.Get<TypeSyntax>() ?? EmptyType(),
+                    operatorKeyword: SyntaxFactory.MissingToken(SyntaxKind.OperatorKeyword),
+                    operatorToken: context.Operation.Get<SyntaxToken>(),
+                    parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                    body: context.StmtBlk.Get<BlockSyntax>(),
+                    expressionBody: null,
+                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MissingToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void ExitOperatorModifiers([NotNull] XSharpParser.OperatorModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
+        public override void ExitOverloadedOps([NotNull] XSharpParser.OverloadedOpsContext context)
+        {
+            context.Put(context.Token.SyntaxOp());
+        }
+
+        public override void ExitConversionOps([NotNull] XSharpParser.ConversionOpsContext context)
+        {
+            context.Put(context.Token.SyntaxKeyword());
+        }
+
+        public override void ExitClsmethod([NotNull] XSharpParser.ClsmethodContext context)
+        {
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitClsctor([NotNull] XSharpParser.ClsctorContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.CONSTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
+            }
+        }
+
+        public override void ExitClsdtor([NotNull] XSharpParser.ClsdtorContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.DESTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
+            }
+        }
+
+        public override void ExitClsvars([NotNull] XSharpParser.ClsvarsContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCantContainFields));
+            }
+            else
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitClsproperty([NotNull] XSharpParser.ClspropertyContext context)
+        {
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitClsoperator([NotNull] XSharpParser.ClsoperatorContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCantContainOperators));
+            }
+            else
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitNestedStructure([NotNull] XSharpParser.NestedStructureContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCannotContainTypes));
+            }
+            else
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitNestedClass([NotNull] XSharpParser.NestedClassContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCannotContainTypes));
+            }
+            else
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitNestedDelegate([NotNull] XSharpParser.NestedDelegateContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCannotContainTypes));
+            }
+            else
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitNestedEnum([NotNull] XSharpParser.NestedEnumContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCannotContainTypes));
+            }
+            else
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitNestedEvent([NotNull] XSharpParser.NestedEventContext context)
+        {
+            
+        }
+
+        public override void ExitNestedInterface([NotNull] XSharpParser.NestedInterfaceContext context)
+        {
+            if (context.isInInterface()) {
+                context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCannotContainTypes));
+            }
+            else
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitClsfunction([NotNull] XSharpParser.ClsfunctionContext context)
+        {
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
+        public override void ExitClsprocedure([NotNull] XSharpParser.ClsprocedureContext context)
+        {
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+        }
+
         public override void ExitAttributes([NotNull] XSharpParser.AttributesContext context)
         {
             var attributeLists = _pool.Allocate<AttributeListSyntax>();
@@ -1020,7 +1188,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
         {
-            var isInInterface = context.Parent is XSharpParser.Class_Context;
+            var isInInterface = context.isInInterface();
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
@@ -1040,7 +1208,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitProcedure([NotNull] XSharpParser.ProcedureContext context)
         {
-            var isInInterface = context.Parent is XSharpParser.Class_Context;
+            var isInInterface = context.isInInterface();
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }

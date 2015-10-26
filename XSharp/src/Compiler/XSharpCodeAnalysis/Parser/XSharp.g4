@@ -534,12 +534,8 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 
 expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #accessMember       // member access The ? is new
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
-					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
-					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
-					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
-					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
 					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
 					  Expr=expression											#prefixExpression		// +/-/~/&/++/-- expr
@@ -559,18 +555,22 @@ expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #a
 					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
 					| Left=expression Op=LOGIC_OR  Right=expression				#binaryExpression		// expr .or. expr (logical or)
 					| Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr 
-					| Left=expression
+					| <assoc=right> Left=expression
 					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_EXP
 							| ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
+					| Expr=expression IS Type=datatype							#typeCheckExpression	// expr IS typeORid
 					| Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
-					| Expr=expression IS Type=datatype							#typeCheckExpression	// expr IS typeORid
+					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
+					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
+					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
+					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
 					| Name=name													#nameExpression			// generic name

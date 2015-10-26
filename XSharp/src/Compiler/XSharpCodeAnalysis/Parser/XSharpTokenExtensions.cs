@@ -332,6 +332,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.ASSIGN_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretEqualsToken);
                     break;
+                case XSharpParser.DEFAULT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken);
+                    break;
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
@@ -829,6 +832,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.ASSIGN_XOR:
                     r = SyntaxKind.ExclusiveOrAssignmentExpression;
+                    break;
+                case XSharpParser.DEFAULT:
+                    r = SyntaxKind.CoalesceExpression;
                     break;
                 default:
                     throw new InvalidOperationException();

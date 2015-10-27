@@ -162,6 +162,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.VOID:
                     r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
                     break;
+                case XSharpParser.CHAR:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CharKeyword);
+                    break;
                 //case XSharpParser.ARRAY:
                 //    r = SyntaxFactory.MakeToken(SyntaxKind.);
                 //    break;

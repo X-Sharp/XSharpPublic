@@ -524,9 +524,18 @@ namespace Microsoft.CodeAnalysis
                     typeIdName = typeId.ToString().Replace("__", "+").Replace('_', '.');
                 }
 
+#if XSHARP
+                typeIdName = (new System.Text.RegularExpressions.Regex(@".T(\d+)$")).Replace(typeIdName, "`$1");
+                typeIdName = (new System.Text.RegularExpressions.Regex(@".T$")).Replace(typeIdName, "`1");
+                typeIdName = (new System.Text.RegularExpressions.Regex(@".KV$")).Replace(typeIdName, "`2");
+                Debug.Assert(name == "Microsoft.VisualBasic.CompilerServices.ObjectFlowControl+ForLoopControl"
+                          //|| name.IndexOf('`') > 0 // a generic type
+                          || name == typeIdName,"'" + name + "' != '" + typeIdName + "'");
+#else
                 Debug.Assert(name == "Microsoft.VisualBasic.CompilerServices.ObjectFlowControl+ForLoopControl"
                           || name.IndexOf('`') > 0 // a generic type
                           || name == typeIdName);
+#endif
             }
         }
 

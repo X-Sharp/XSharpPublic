@@ -536,9 +536,11 @@ expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #a
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
+					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
 					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
 					  Expr=expression											#prefixExpression		// +/-/~/&/++/-- expr
+					| Expr=expression IS Type=datatype							#typeCheckExpression	// expr IS typeORid
 					| Left=expression Op=EXP Right=expression					#binaryExpression		// expr ^ expr
 					| Left=expression Op=(MULT | DIV | MOD) Right=expression	#binaryExpression		// expr * expr
 					| Left=expression Op=(PLUS | MINUS) Right=expression		#binaryExpression		// expr +/- expr
@@ -561,22 +563,20 @@ expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #a
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
-					| Expr=expression IS Type=datatype							#typeCheckExpression	// expr IS typeORid
 					| Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
-					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
-					| ch=CHECKED LPAREN Expr=expression RPAREN					#checkedExpression		// checked( expression )
-					| ch=UNCHECKED LPAREN Expr=expression RPAREN				#checkedExpression		// unchecked( expression )
+					| ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
+					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
 					| Name=name													#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
-					| LPAREN Expr=expression RPAREN								#parenExpression		// ( expr )
+					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 //					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )
 //					| nativeType LPAREN CAST COMMA expression RPAREN			#oldcast2				// typename(_CAST, expr )
 //					| nativeType LPAREN expression RPAREN						#conversion				// nativetype( expr )
@@ -682,7 +682,8 @@ nativeType			: Token=
 					| USUAL
 					| UINT64
 					| WORD
-					| VOID )
+					| VOID 
+					| CHAR )
 					;
 
 literalValue		: Token=
@@ -730,5 +731,5 @@ keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DEF
 					| THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
 					;
 
-keywordxs           : Token=(ASSEMBLY | ASYNC | AWAIT | CHECKED | DYNAMIC | EXTERN | MODULE | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD)
+keywordxs           : Token=(ASSEMBLY | ASYNC | AWAIT | CHECKED | DYNAMIC | EXTERN | MODULE | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR)
 					;

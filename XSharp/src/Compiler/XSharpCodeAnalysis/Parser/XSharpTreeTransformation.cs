@@ -286,7 +286,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var r = _syntaxFactory.MethodDeclaration(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
-                returnType: _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword)),
+                returnType: VoidType(),
                 explicitInterfaceSpecifier: null,
                 identifier: SyntaxFactory.Identifier("Main"),
                 typeParameterList: null,

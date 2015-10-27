@@ -450,6 +450,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             foreach(var pCtx in context._Parents) {
+                if (baseTypes.Count>0)
+                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(pCtx.Get<TypeSyntax>()));
             }
             context.Put(_syntaxFactory.InterfaceDeclaration(
@@ -489,6 +491,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             baseTypes.Add(_syntaxFactory.SimpleBaseType(context.BaseType?.Get<TypeSyntax>() 
                 ?? _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))));
             foreach(var iCtx in context._Implements) {
+                baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
             context.Put(_syntaxFactory.ClassDeclaration(
@@ -526,6 +529,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             foreach(var iCtx in context._Implements) {
+                if (baseTypes.Count>0)
+                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
             context.Put(_syntaxFactory.StructDeclaration(
@@ -739,6 +744,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @params = _pool.AllocateSeparated<ParameterSyntax>();
             foreach (var paramCtx in context._Params)
             {
+                if (@params.Count>0)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 @params.Add(paramCtx.Get<ParameterSyntax>());
             }
             context.Put(_syntaxFactory.BracketedParameterList(
@@ -837,6 +844,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var parameters = _pool.AllocateSeparated<TypeParameterSyntax>();
             foreach(var tpCtx in context._TypeParams) {
+                if (parameters.Count>0)
+                    parameters.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 parameters.Add(tpCtx.Get<TypeParameterSyntax>());
             }
             context.Put(_syntaxFactory.TypeParameterList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
@@ -1210,6 +1219,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             foreach(var varCtx in context._Var) {
+                if (variables.Count>0)
+                    variables.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 variables.Add(varCtx.Get<VariableDeclaratorSyntax>());
             }
             context.Put(_syntaxFactory.FieldDeclaration(
@@ -1265,6 +1276,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @params = _pool.AllocateSeparated<ParameterSyntax>();
             foreach (var paramCtx in context._Params)
             {
+                if (@params.Count>0)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 @params.Add(paramCtx.Get<ParameterSyntax>());
             }
             context.Put(_syntaxFactory.ParameterList(
@@ -1276,16 +1289,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitParameter([NotNull] XSharpParser.ParameterContext context)
         {
-            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             context.Put(_syntaxFactory.Parameter(
-                attributeLists: attributeLists,
-                modifiers: context.Modifiers.GetList<SyntaxToken>(),
+                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 type: context.Type.Get<TypeSyntax>(),
                 identifier: context.Id.Get<SyntaxToken>(),
-                @default: _syntaxFactory.EqualsValueClause(
+                @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                     context.Default.Get<ExpressionSyntax>())));
-            _pool.Free(attributeLists);
         }
 
         public override void ExitParameterDeclMods([NotNull] XSharpParser.ParameterDeclModsContext context)
@@ -2179,6 +2190,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var @params = _pool.AllocateSeparated<ParameterSyntax>();
             foreach (var idCtx in context._Ids)
             {
+                if (@params.Count>0)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
                 SyntaxListBuilder modifiers = _pool.Allocate();
                 @params.Add(_syntaxFactory.Parameter(

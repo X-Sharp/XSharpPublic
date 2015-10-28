@@ -25,7 +25,7 @@ lexer grammar XSharpLexer;
 		get {return _Four;}
 		set {_Four = value;}
 	}
-	bool _OldComment = true;
+	bool _OldComment = false;
 	public bool AllowOldStyleComments
 	{
 		get {return _OldComment;}
@@ -424,7 +424,7 @@ HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
 BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
 INT_CONST	:  ( DIGIT )+ ( U | L )? ;
 DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? DOT DIGIT ( DIGIT )? DOT DIGIT ( DIGIT )?;			// 2015.07.15
-REAL_CONST	: ( ( DIGIT )+ )? DOT ( DIGIT )* ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
+REAL_CONST	: ( ( DIGIT )+ DOT ( DIGIT )* | DOT ( DIGIT )+ ) ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
 
 //DECIMAL_CONST;                         // a literal floating point number followed by 'm'
 

@@ -553,12 +553,12 @@ expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #a
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
 					| Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
 					| Op=(LOGIC_NOT | LOGIC_XOR | NOT) Expr=expression			#prefixExpression		// .not. expr (logical not)
-					| Left=expression Op=LOGIC_AND Right=expression				#binaryExpression		// expr .and. expr (logical and)
+					| Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and)
 					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
-					| Left=expression Op=LOGIC_OR  Right=expression				#binaryExpression		// expr .or. expr (logical or)
+					| Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)
 					| Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr 
 					| <assoc=right> Left=expression
-					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_EXP
+					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
 							| ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
@@ -573,7 +573,7 @@ expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #a
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
-					| Name=name													#nameExpression			// generic name
+					| Name=identifierName										#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )

@@ -328,7 +328,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 #if DEBUG && false
             var s = context.GetType().ToString();
-            Debug.WriteLine("{0}Enter: {1}",new string(' ',context.Depth()),s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1));
+            s = s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1);
+            s = s.Replace("Context","");
+            Debug.WriteLine("{0}=> ({1},{2}) {3} '{4}'",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text);
 #endif
         }
 
@@ -345,7 +347,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #if DEBUG && false
             var s = context.GetType().ToString();
-            Debug.WriteLine("{0}Exit: {1}",new string(' ',context.Depth()),s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1));
+            s = s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1);
+            s = s.Replace("Context","");
+            Debug.WriteLine("{0}<= ({1},{2}) {3} '{4}'",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text);
 #endif
         }
 

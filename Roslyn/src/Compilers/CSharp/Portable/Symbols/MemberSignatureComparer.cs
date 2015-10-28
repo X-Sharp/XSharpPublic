@@ -308,10 +308,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 string name1 = ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member1.Name);
                 string name2 = ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member2.Name);
 
+#if XSHARP
+                sawInterfaceInName1 = !CaseInsensitiveComparison.Equals(name1, member1.Name);
+                sawInterfaceInName2 = !CaseInsensitiveComparison.Equals(name2, member2.Name);
+
+                if (!CaseInsensitiveComparison.Equals(name1, name2))
+#else
                 sawInterfaceInName1 = name1 != member1.Name;
                 sawInterfaceInName2 = name2 != member2.Name;
 
                 if (name1 != name2)
+#endif
                 {
                     return false;
                 }
@@ -405,7 +412,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 if (_considerName)
                 {
+#if XSHARP
+                    hash = Hash.Combine(ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member.Name).ToUpper(), hash); // CaseInsensitive
+#else
                     hash = Hash.Combine(ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member.Name), hash);
+#endif
                     // CONSIDER: could use interface type, but that might be quite expensive
                 }
 
@@ -422,7 +433,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return hash;
         }
 
-        #endregion
+#endregion
 
         public static bool HaveSameReturnTypes(MethodSymbol member1, MethodSymbol member2, bool considerCustomModifiers)
         {

@@ -15,7 +15,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     {
         private readonly ImmutableArray<TypeParameterSymbol> _typeParameters;
         private readonly TypeSymbol _explicitInterfaceType;
+#if XSHARP
+        private string _name;
+#else
         private readonly string _name;
+#endif
         private readonly bool _isExpressionBodied;
 
         private ImmutableArray<MethodSymbol> _lazyExplicitInterfaceImplementations;
@@ -332,8 +336,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType, out _lazyReturnTypeCustomModifiers, out _lazyParameters, alsoCopyParamsModifier: true);
                     }
 #if XSHARP
-                    else if (this.IsVirtual) {
-                        flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                    if (this.IsVirtual) {
+                        if ((object)overriddenMethod != null) {
+                            if (this.Name != overriddenMethod.Name)
+                                this._name = overriddenMethod.Name;
+                            flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Virtual, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                        }
+                        else
+                            flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
                     }
 #endif
                 }

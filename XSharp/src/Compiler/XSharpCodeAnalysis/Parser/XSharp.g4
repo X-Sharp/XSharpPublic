@@ -57,8 +57,7 @@ entity              : namespace_
 					| {_VOSyntax}? vodefine     // This will become part of the 'Globals' class
 					| {_VOSyntax}? vostruct     // Compatibility (unsafe) structure
 					| {_VOSyntax}? vounion      // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
-					| {_VOSyntax}? vodllproc    // External method of the Globals class
-					| {_VOSyntax}? vodllfunc    // External method of the Globals class
+					| {_VOSyntax}? vodll        // External method of the Globals class
 					;
 
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
@@ -80,20 +79,12 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL)
 					;
 
 
-vodllfunc			: (Modifiers=funcprocModifiers)? DLL FUNCTION Id=identifier ParamList=parameterList 
-					   (AS Type=datatype)? (CallingConvention=dllcallconv)? COLON 
-					   ( Dll=identifier DOT Entrypoint=identifier //(NEQ Ordinal=INT_CONST)? 
-					   | Dll=identifier DOT EntrypointString=STRING_CONST //(NEQ Ordinal=INT_CONST)? 
-						) 
+vodll				: (Modifiers=funcprocModifiers)? DLL 
+					  ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
+					  | T=PROCEDURE Id=identifier ParamList=parameterList )
+					  (CallingConvention=dllcallconv)? COLON 
+					  Dll=identifierString DOT Entrypoint=identifierString //(NEQ Ordinal=INT_CONST)? 
                     ;
-
-vodllproc			:  (Modifiers=funcprocModifiers)? DLL PROCEDURE Id=identifier ParamList=parameterList 
-					   (CallingConvention=dllcallconv)? COLON 
-					   ( EntryPoint=name   (NEQ Ordinal=INT_CONST)? 
-						| Dll=identifier DOT EntrypointString=STRING_CONST (NEQ Ordinal=INT_CONST)? 
-						) 
-
-					;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)
                     ;
@@ -654,6 +645,12 @@ codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
 identifier			: Token=ID  
+					| VnToken=keywordvn 
+					| XsToken=keywordxs
+					| KWID VoToken=keywordvo
+					;
+
+identifierString	: Token=(ID | STRING_CONST)
 					| VnToken=keywordvn 
 					| XsToken=keywordxs
 					| KWID VoToken=keywordvo

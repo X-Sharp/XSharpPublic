@@ -190,27 +190,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.STRING_CONST:
                     if (IsChar(token))
-                        r = SyntaxFactory.Literal(null, token.Text, CharValue(token), null);
+                        r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, CharValue(token), SyntaxFactory.WS);
                     else
-                        r = SyntaxFactory.Literal(null, token.Text, StringValue(token), null);
+                        r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, StringValue(token), SyntaxFactory.WS);
                     break;
                 case XSharpParser.SYMBOL_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, token.Text, null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS);
                     break;
                 case XSharpParser.HEX_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, HexValue(token), null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token), SyntaxFactory.WS);
                     break;
                 case XSharpParser.BIN_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, BinValue(token), null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token), SyntaxFactory.WS);
                     break;
                 case XSharpParser.REAL_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, RealValue(token), null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, RealValue(token), SyntaxFactory.WS);
                     break;
                 case XSharpParser.INT_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, IntValue(token), null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, IntValue(token), SyntaxFactory.WS);
                     break;
                 case XSharpParser.DATE_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, token.Text, null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS);
                     break;
                 case XSharpParser.NIL:
                 case XSharpParser.NULL:
@@ -225,8 +225,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
                     break;
                 default:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS);
+                    //r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
                     break;
             }
             r.XNode = new TerminalNodeImpl(token);

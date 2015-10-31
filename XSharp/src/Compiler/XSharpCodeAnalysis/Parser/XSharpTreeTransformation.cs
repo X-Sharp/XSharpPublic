@@ -1559,8 +1559,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var ld = ((XSharpParser.DeclarationStmtContext)stmtCtx).localdecl();
                     if (ld is XSharpParser.CommonLocalDeclContext)
                         foreach (var decl in (ld as XSharpParser.CommonLocalDeclContext)._LocalVars) statements.Add(decl.Get<StatementSyntax>());
-                    else if (ld is XSharpParser.StaticLocalDeclContext)
-                        foreach (var decl in (ld as XSharpParser.StaticLocalDeclContext)._LocalVars) statements.Add(decl.Get<StatementSyntax>());
                     else if (ld is XSharpParser.VarLocalDeclContext)
                         foreach (var decl in (ld as XSharpParser.VarLocalDeclContext)._ImpliedVars) statements.Add(decl.Get<StatementSyntax>());
                 }
@@ -1593,32 +1591,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void EnterStaticLocalDecl([NotNull] XSharpParser.StaticLocalDeclContext context)
-        {
-            XSharpParser.DatatypeContext t = null;
-            for(var i = context._LocalVars.Count-1; i >= 0; i--) {
-                var locCtx = context._LocalVars[i];
-                if (locCtx.DataType != null)
-                    t = locCtx.DataType;
-                else if (t != null)
-                    locCtx.DataType = t;
-                else {
-                    locCtx.DataType = new XSharpParser.DatatypeContext(context,0);
-                    locCtx.DataType.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)));
-                    context.AddError(new ParseErrorData(locCtx.DataType, ErrorCode.ERR_SyntaxError, locCtx.DataType));
-                }
-            }
-        }
-
         public override void ExitCommonLocalDecl([NotNull] XSharpParser.CommonLocalDeclContext context)
         {
             context.Put(context._localvar?.Get<StatementSyntax>());
-        }
-
-        public override void ExitStaticLocalDecl([NotNull] XSharpParser.StaticLocalDeclContext context)
-        {
-            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
 
         public override void ExitVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context)
@@ -1636,6 +1611,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var modifiers = _pool.Allocate();
             if (context.Const != null)
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword));
+            /*if ((context.Parent as XSharpParser.CommonLocalDeclContext).Static != null)
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));*/
             context.Put(_syntaxFactory.LocalDeclarationStatement(
                 modifiers.ToTokenList(),
                 _syntaxFactory.VariableDeclaration(context.DataType.Get<TypeSyntax>(), variables),
@@ -1651,8 +1628,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (context.Expression != null) ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                     context.Expression.Get<ExpressionSyntax>()) : null));
             var modifiers = _pool.Allocate();
-            if (context.Const != null)
-                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword));
+            if (context.Const != null) {
+                /*modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword));*/
+                context.AddError(new ParseErrorData(ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
+            }
+            /*if ((context.Parent as XSharpParser.CommonLocalDeclContext).Static != null)
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));*/
             context.Put(_syntaxFactory.LocalDeclarationStatement(
                 modifiers.ToTokenList(),
                 _syntaxFactory.VariableDeclaration(_syntaxFactory.IdentifierName(SyntaxFactory.Identifier("Xs$var")), variables),

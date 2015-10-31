@@ -485,10 +485,10 @@ recoverBlock		: (USING Id=identifier)? eos StmtBlock=statementBlock
 // When the type is missing and the following element has a type
 // then the type of the following element propagates forward until for all elements without type
 
-localdecl          : LOCAL                 LocalVars+=localvar (COMMA LocalVars+=localvar)* eos   #commonLocalDecl // LOCAL
-				   | Static=STATIC LOCAL?  LocalVars+=localvar (COMMA LocalVars+=localvar)* eos   #staticLocalDecl // STATIC LOCAL or LOCAL
-				   | ((LOCAL)? IMPLIED | VAR)                                                                  // LOCAL IMPLIED or simply IMPLIED
-				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               eos   #varLocalDecl    // VAR special for Robert !
+localdecl          : (Static=STATIC LOCAL? | LOCAL)
+					 LocalVars+=localvar (COMMA LocalVars+=localvar)*						eos   #commonLocalDecl	// STATIC LOCAL or LOCAL
+				   | (Static=STATIC LOCAL? IMPLIED | LOCAL IMPLIED | Static=STATIC? VAR)							// LOCAL IMPLIED
+				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               eos   #varLocalDecl		// VAR special for Robert !
 				   ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT Arraysub=arraysub RBRKT)? 

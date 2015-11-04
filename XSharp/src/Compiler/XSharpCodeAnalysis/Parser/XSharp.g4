@@ -127,7 +127,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 // And when Class is outside of assembly, convert to Extension Method?
 // nvk: we have no knowledge of whether a class is outside of the assembly at the parser stage!
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
-					  T=methodtype Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
+					  T=methodtype (ExplicitIface=name DOT)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (ConstraintsClauses+=typeparameterconstraintsclause)*
 					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? eos 
 					  StmtBlk=statementBlock		
@@ -234,7 +234,7 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
 					;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-					   EVENT Id=identifier AS Type=datatype eos
+					   EVENT (ExplicitIface=name DOT)? Id=identifier AS Type=datatype eos
 					;
 
 eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
@@ -258,7 +258,7 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 					;
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
-					  PROPERTY (SELF ParamList=propertyParameterList | Id=identifier) AS Type=datatype 
+					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=name DOT)? Id=identifier) AS Type=datatype 
 					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)+ (ASSIGN_OP Initializer=expression)? eos	// Auto
 					  | (LineAccessors+=propertyLineAccessor)+ eos													// Single Line
 					  | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? eos									// Multi Line

@@ -20,6 +20,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// </summary>
         RegularVariable,
 
+#if XSHARP
+        /// <summary>
+        /// User defined local ref variable declared by <see cref="LocalDeclarationStatementSyntax"/>.
+        /// </summary>
+        RefVariable,
+
+#endif
         /// <summary>
         /// User defined local constant declared by <see cref="LocalDeclarationStatementSyntax"/>.
         /// </summary>

@@ -271,6 +271,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     case LocalDeclarationKind.FixedVariable:
                     case LocalDeclarationKind.UsingVariable:
                     case LocalDeclarationKind.ForInitializerVariable:
+#if XSHARP
+                    case LocalDeclarationKind.RefVariable:
+#endif
                         Debug.Assert(node is VariableDeclaratorSyntax);
                         break;
 
@@ -307,7 +310,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         internal override RefKind RefKind
         {
+#if XSHARP
+            get { return _declarationKind == LocalDeclarationKind.RefVariable ? RefKind.Ref : RefKind.None; }
+#else
             get { return RefKind.None; }
+#endif
         }
 
         public sealed override bool Equals(object obj)

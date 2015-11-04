@@ -1328,7 +1328,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (LocalSymbol local in localsOpt)
             {
+#if XSHARP
+                if (local.DeclarationKind == LocalDeclarationKind.RegularVariable || local.DeclarationKind == LocalDeclarationKind.RefVariable)
+#else
                 if (local.DeclarationKind == LocalDeclarationKind.RegularVariable)
+#endif
                 {
                     DeclareVariable(local);
                 }
@@ -1352,7 +1356,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (LocalSymbol local in localsOpt)
             {
+#if XSHARP
+                if (local.DeclarationKind == LocalDeclarationKind.RegularVariable || local.DeclarationKind == LocalDeclarationKind.RefVariable)
+#else
                 if (local.DeclarationKind == LocalDeclarationKind.RegularVariable)
+#endif
                 {
                     ReportIfUnused(local, assigned: true);
                 }
@@ -1370,7 +1378,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             foreach (LocalSymbol local in node.Locals)
             {
+#if XSHARP
+                if (local.DeclarationKind == LocalDeclarationKind.RegularVariable || local.DeclarationKind == LocalDeclarationKind.RefVariable)
+#else
                 if (local.DeclarationKind == LocalDeclarationKind.RegularVariable)
+#endif
                 {
                     DeclareVariable(local);
                 }
@@ -1385,7 +1397,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             foreach (LocalSymbol local in node.Locals)
             {
+#if XSHARP
+                if (local.DeclarationKind == LocalDeclarationKind.RegularVariable || local.DeclarationKind == LocalDeclarationKind.RefVariable)
+#else
                 if (local.DeclarationKind == LocalDeclarationKind.RegularVariable)
+#endif
                 {
                     ReportIfUnused(local, assigned: true);
                 }
@@ -1414,6 +1430,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var initiallyAssigned =
                 symbol.IsConst ||
+#if XSHARP
+                symbol.RefKind != RefKind.None ||
+#endif
                 // When data flow analysis determines that the variable is sometimes used without being assigned
                 // first, we want to treat that variable, during region analysis, as assigned where it is introduced.
                 initiallyAssignedVariables != null && initiallyAssignedVariables.Contains(symbol);
@@ -1691,7 +1710,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        #region TryStatements
+#region TryStatements
 
         private LocalState? _tryState;
 
@@ -1786,7 +1805,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion TryStatements
+#endregion TryStatements
 
         public override BoundNode VisitFieldAccess(BoundFieldAccess node)
         {
@@ -1883,7 +1902,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        #endregion Visitors
+#endregion Visitors
 
         protected override string Dump(LocalState state)
         {

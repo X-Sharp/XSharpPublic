@@ -1171,6 +1171,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMethodtype([NotNull] XSharpParser.MethodtypeContext context)
         {
             if (context.Token.Type != XSharpParser.METHOD) {
+                // TODO: access/assign accessors
                 context.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1, context.Token));
             }
         }
@@ -1604,6 +1605,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVostruct([NotNull] XSharpParser.VostructContext context)
         {
             // TODO
+            context.Put(GenerateGlobalClass(GlobalClassName).
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
 
         public override void ExitVostructmember([NotNull] XSharpParser.VostructmemberContext context)
@@ -1614,6 +1617,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
         {
             // TODO
+            context.Put(GenerateGlobalClass(GlobalClassName).
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
 
         public override void ExitArraysub([NotNull] XSharpParser.ArraysubContext context)
@@ -1663,7 +1668,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCallingconvention([NotNull] XSharpParser.CallingconventionContext context)
         {
-            // TODO nvk (calling convention is ignored for now)
+            // TODO nvk (calling convention is silently ignored for now)
         }
 
         public override void ExitParameterList([NotNull] XSharpParser.ParameterListContext context)
@@ -1839,6 +1844,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXbasedecl([NotNull] XSharpParser.XbasedeclContext context)
         {
+            // TODO
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
                 WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
@@ -2084,6 +2090,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBreakStmt([NotNull] XSharpParser.BreakStmtContext context)
         {
+            // TODO
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
                 WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
@@ -2125,11 +2132,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitSeqStmt([NotNull] XSharpParser.SeqStmtContext context)
         {
             // TODO
+            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
 
         public override void ExitRecoverBlock([NotNull] XSharpParser.RecoverBlockContext context)
         {
             // TODO
+            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
 
         public override void ExitLockStmt([NotNull] XSharpParser.LockStmtContext context)
@@ -2188,7 +2199,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.StmtBlk._Stmts.Count > 0) {
                 stmts.Add(context.StmtBlk.Get<BlockSyntax>());
                 stmts.Add(_syntaxFactory.BreakStatement(SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); // TODO: only add it if missing!
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); // TODO: add it implicitly in the backend (catch error CS0163)
             }
             context.Put(_syntaxFactory.SwitchSection(labels, stmts));
             _pool.Free(labels);
@@ -2208,6 +2219,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitQoutStmt([NotNull] XSharpParser.QoutStmtContext context)
         {
+            // TODO
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
                 WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }

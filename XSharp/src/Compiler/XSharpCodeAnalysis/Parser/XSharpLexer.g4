@@ -417,13 +417,15 @@ AMP			: '&' ;
 ADDROF		: '@' ;
 ALIAS		: '->';
 DOT			: '.' ;
+COLONCOLON	: ':' ':';
+
 
 // Numeric & date constants
 HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
 BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
 INT_CONST	:  ( DIGIT )+ ( U | L )? ;
 DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? DOT DIGIT ( DIGIT )? DOT DIGIT ( DIGIT )?;			// 2015.07.15
-REAL_CONST	: ( ( DIGIT )+ DOT ( DIGIT )* | DOT ( DIGIT )+ ) ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
+REAL_CONST	: ( ( DIGIT )+ ( DOT ( DIGIT )* )? | DOT ( DIGIT )+ ) ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
 
 //DECIMAL_CONST;                         // a literal floating point number followed by 'm'
 
@@ -464,6 +466,7 @@ PP_SYMBOLS      : {LastToken == NL }? '#'
 
 SYMBOL_CONST     : '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
 
+CHAR_CONST  : '\'' ESCAPED_STRING_CHARACTER '\'';
 
 STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 			| '\'' ( ~( '\'' | '\n' | '\r' ) )* '\''		// Single quoted string
@@ -505,7 +508,7 @@ fragment
 UNICODE_ESCAPE_SEQUENCE : '\\' U HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT (HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT)?	// \u 4 hex or \u 8 hex
 						;
 
-WS			:	(' ' |  '\t' |	'\r') -> channel(HIDDEN)
+WS			:	(' ' |  '\t') -> channel(HIDDEN)
 			;
 
 
@@ -524,7 +527,7 @@ SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 ML_COMMENT  : '/' '*' .*? '*' '/'						-> channel(HIDDEN)
 			;
 
-NL						: '\n' ;
+NL						: '\r' '\n'? | '\n' ;
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 

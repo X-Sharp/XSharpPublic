@@ -2464,6 +2464,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.GenericName(context.Id.Get<SyntaxToken>(), context.GenericArgList.Get<TypeArgumentListSyntax>()));
         }
 
+        public override void ExitAliasQualifiedName([NotNull] XSharpParser.AliasQualifiedNameContext context)
+        {
+            context.Put(_syntaxFactory.AliasQualifiedName(context.Alias.Get<IdentifierNameSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
+                _syntaxFactory.IdentifierName(context.Right.Get<SyntaxToken>())));
+        }
+
+        public override void ExitGlobalQualifiedName([NotNull] XSharpParser.GlobalQualifiedNameContext context)
+        {
+            context.Put(_syntaxFactory.AliasQualifiedName(_syntaxFactory.IdentifierName(context.Global.SyntaxKeyword()),
+                SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
+                _syntaxFactory.IdentifierName(context.Right.Get<SyntaxToken>())));
+        }
+
         public override void ExitGenericArgumentList([NotNull] XSharpParser.GenericArgumentListContext context)
         {
             var types = _pool.AllocateSeparated<TypeSyntax>();

@@ -170,6 +170,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return Token(WS, kind, WS);
         }
 
+        internal static SyntaxToken MakeToken(SyntaxKind kind, string text)
+        {
+            return Token(WS, kind, text, text, WS);
+        }
+
         internal static SyntaxToken MakeIdentifier(string text)
         {
             return Identifier(WS, text, WS);

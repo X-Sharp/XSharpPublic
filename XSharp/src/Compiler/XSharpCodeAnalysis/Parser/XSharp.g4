@@ -596,6 +596,8 @@ iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=e
 name				: Left=name Op=DOT Right=identifier							#qualifiedName
 					| Id=identifier	GenericArgList=genericArgumentList			#genericName
 					| Id=identifier												#simpleName
+					| Alias=identifierName Op=COLONCOLON Right=identifierName	#aliasQualifiedName
+					| Global=GLOBAL Op=COLONCOLON Right=identifierName			#globalQualifiedName
 					;
 
 genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
@@ -684,6 +686,7 @@ nativeType			: Token=
 literalValue		: Token=
 					( TRUE_CONST
 					| FALSE_CONST
+					| CHAR_CONST
 					| STRING_CONST
 					| ESCAPED_STRING_CONST
 					| SYMBOL_CONST

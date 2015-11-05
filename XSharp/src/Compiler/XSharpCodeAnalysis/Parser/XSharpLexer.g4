@@ -417,7 +417,6 @@ AMP			: '&' ;
 ADDROF		: '@' ;
 ALIAS		: '->';
 DOT			: '.' ;
-KWID		: '@@' ;
 
 // Numeric & date constants
 HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;

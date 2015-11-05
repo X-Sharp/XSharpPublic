@@ -647,13 +647,11 @@ codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 identifier			: Token=ID  
 					| VnToken=keywordvn 
 					| XsToken=keywordxs
-					| KWID VoToken=keywordvo
 					;
 
 identifierString	: Token=(ID | STRING_CONST)
 					| VnToken=keywordvn 
 					| XsToken=keywordxs
-					| KWID VoToken=keywordvo
 					;
 
 nativeType			: Token=

@@ -20,30 +20,109 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class TokenExtensions
     {
-        private static bool IsChar(IToken token)
+        private static bool IsHexDigit(char c) => (c >= '0' && c<= '9') || (c >= 'A' && c<= 'F') || (c >= 'a' && c<= 'f');
+
+        private static char EscapedChar(string s, ref int pos)
         {
-            return token.Text.StartsWith("'") && token.Text.EndsWith("'") && token.Text.Length == 3;
+            if (s[pos] != '\\' || pos == s.Length-1)
+                return s[pos++];
+            else {
+                switch (s[++pos]) {
+                    case '\\':
+                    case '\'':
+                    case '"':
+                        return s[pos++];
+                    case '0':
+                        pos++;
+                        return '\0';
+                    case 'A':
+                    case 'a':
+                        pos++;
+                        return '\a';
+                    case 'B':
+                    case 'b':
+                        pos++;
+                        return '\b';
+                    case 'F':
+                    case 'f':
+                        pos++;
+                        return '\f';
+                    case 'N':
+                    case 'n':
+                        pos++;
+                        return '\n';
+                    case 'R':
+                    case 'r':
+                        pos++;
+                        return '\r';
+                    case 'T':
+                    case 't':
+                        pos++;
+                        return '\t';
+                    case 'V':
+                    case 'v':
+                        pos++;
+                        return '\v';
+                    case 'X':
+                    case 'x':
+                        {
+                            int l = 0;
+                            pos++;
+                            while (l < 4 && pos+l < s.Length && IsHexDigit(s[pos+l]))
+                                l++;
+                            if (l > 0) {
+                                pos += l;
+                                return (char)HexValue(s.Substring(pos-l,l));
+                            }
+                            else
+                                return s[pos-1];
+                        }
+                    case 'U':
+                    case 'u':
+                        {
+                            int l = 0;
+                            pos++;
+                            while (l < 8 && pos+l < s.Length && IsHexDigit(s[pos+l]))
+                                l++;
+                            if (l == 4 || l == 8) {
+                                pos += l;
+                                return (char)HexValue(s.Substring(pos-l,l));
+                            }
+                            else
+                                return s[pos-1];
+                        }
+                    default:
+                        return s[pos++];
+                }
+            }
         }
 
-        private static char CharValue(IToken token)
+        private static char CharValue(string text)
         {
-            return token.Text[1];
+            int p = 1;
+            return EscapedChar(text, ref p);
         }
 
-        private static string StringValue(IToken token)
+        private static string StringValue(string text)
         {
-            return token.Text.Substring(1, token.Text.Length - 2);
+            return text.Substring(1, text.Length - 2);
         }
 
-        private static string EscapedStringValue(IToken token)
+        private static string EscapedStringValue(string text)
         {
-            return token.Text.Substring(1, token.Text.Length - 2);
+            if (text.Length == 2)
+                return "";
+            StringBuilder sb = new StringBuilder();
+            int p = 1;
+            while (p < text.Length-1)
+                sb.Append(EscapedChar(text, ref p));
+            return sb.ToString();
         }
 
-        private static long HexValue(IToken token)
+        private static long HexValue(string text)
         {
             long r = 0;
-            foreach (char c in token.Text.Substring(2))
+            foreach (char c in text)
             {
                 char cu = char.ToUpper(c);
                 if (cu != 'U' && cu != 'L')
@@ -52,16 +131,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (cu >= '0' && cu <= '9')
                         r |= (long)(cu - '0');
                     else
-                        r |= (long)((char.ToUpper(cu) - 'A') + 10);
+                        r |= (long)((cu - 'A') + 10);
                 }
             }
             return r;
         }
 
-        private static long BinValue(IToken token)
+        private static long BinValue(string text)
         {
             long r = 0;
-            foreach (char c in token.Text.Substring(2))
+            foreach (char c in text)
             {
                 char cu = char.ToUpper(c);
                 if (cu != 'U')
@@ -184,13 +263,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
                 case XSharpParser.CHAR_CONST:
-                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, CharValue(token), SyntaxFactory.WS);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, CharValue(token.Text), SyntaxFactory.WS);
                     break;
                 case XSharpParser.STRING_CONST:
-                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, StringValue(token), SyntaxFactory.WS);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, StringValue(token.Text), SyntaxFactory.WS);
                     break;
                 case XSharpParser.ESCAPED_STRING_CONST:
-                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, EscapedStringValue(token), SyntaxFactory.WS);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, EscapedStringValue(token.Text), SyntaxFactory.WS);
                     break;
                 case XSharpParser.SYMBOL_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text.Substring(1), SyntaxFactory.WS);
@@ -200,22 +279,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case 'U':
                         case 'u':
                             if (token.Text.Length > 33)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)HexValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)HexValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             break;
                         case 'L':
                         case 'l':
                             if (token.Text.Length > 33)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             break;
                         default:
                             if (token.Text.Length > 32)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             break;
                     }
                     break;
@@ -224,22 +303,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case 'U':
                         case 'u':
                             if (token.Text.Length > 33)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)BinValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)BinValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             break;
                         case 'L':
                         case 'l':
                             if (token.Text.Length > 33)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             break;
                         default:
                             if (token.Text.Length > 32)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             break;
                     }
                     break;

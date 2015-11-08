@@ -2271,11 +2271,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
         {
-            context.Put(_syntaxFactory.BinaryExpression(
-                context.Op.ExpressionKindBinaryOp(),
-                context.Left.Get<ExpressionSyntax>(),
-                context.Op.SyntaxOp(),
-                context.Right.Get<ExpressionSyntax>()));
+            switch (context.Op.Type) {
+                case XSharpParser.EXP:
+                    context.Put(_syntaxFactory.InvocationExpression(GenerateQualifiedName("System.Math.Pow"), 
+                        _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            MakeSeparatedList(_syntaxFactory.Argument(null,null,context.Left.Get<ExpressionSyntax>()),
+                                _syntaxFactory.Argument(null,null,context.Right.Get<ExpressionSyntax>())), 
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                    break;
+                case XSharpParser.SUBSTR:
+                    break;
+                case XSharpParser.ASSIGN_EXP:
+                    context.Put(_syntaxFactory.AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        context.Left.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                        _syntaxFactory.InvocationExpression(GenerateQualifiedName("System.Math.Pow"), 
+                            _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                MakeSeparatedList(_syntaxFactory.Argument(null,null,context.Left.Get<ExpressionSyntax>()),
+                                    _syntaxFactory.Argument(null,null,context.Right.Get<ExpressionSyntax>())), 
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)))));
+                    break;
+                default:
+                    context.Put(_syntaxFactory.BinaryExpression(
+                        context.Op.ExpressionKindBinaryOp(),
+                        context.Left.Get<ExpressionSyntax>(),
+                        context.Op.SyntaxOp(),
+                        context.Right.Get<ExpressionSyntax>()));
+                    break;
+            }
         }
 
         public override void ExitAssignmentExpression([NotNull] XSharpParser.AssignmentExpressionContext context)

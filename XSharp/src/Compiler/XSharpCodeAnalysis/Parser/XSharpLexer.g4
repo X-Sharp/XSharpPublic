@@ -375,6 +375,7 @@ LSHIFT				: '<<' ;
 RSHIFT				: '>>' ;
 TILDE				: '~';
 MULT				: '*' ;
+QQMARK				: '??' ;
 QMARK				: '?' ;
 
 // Assignments

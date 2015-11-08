@@ -403,7 +403,7 @@ statement           : localdecl                                                 
 					| Exprs+=expression (COMMA Exprs+=expression)* eos			#expressionStmt
 					| BREAK Expr=expression? eos								#breakStmt
 					| RETURN (VOID | Expr=expression)? eos						#returnStmt
-					| Q1=QMARK (Q2=QMARK)? 
+					| Q=(QMARK | QQMARK)
 					   Exprs+=expression (COMMA Exprs+=expression)* eos			#qoutStmt
 					| BEGIN SEQUENCE eos
 					  StmtBlk=statementBlock

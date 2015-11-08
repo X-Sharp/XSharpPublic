@@ -204,6 +204,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
+        ArgumentListSyntax MakeArgumentList(params ArgumentSyntax[] items)
+        {
+            return _syntaxFactory.ArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken), 
+                    MakeSeparatedList<ArgumentSyntax>(items), 
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+        }
+
         TypeSyntax VoidType()
         {
             return _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
@@ -2220,9 +2228,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitQoutStmt([NotNull] XSharpParser.QoutStmtContext context)
         {
-            // TODO
-            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, 1, ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
+            if (context.Q.Type == XSharpParser.QQMARK && context._Exprs.Count == 0) {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            else {
+                var block = _pool.Allocate<StatementSyntax>();
+                if (context.Q.Type == XSharpParser.QMARK)
+                    block.Add(_syntaxFactory.ExpressionStatement(
+                        _syntaxFactory.InvocationExpression(
+                            GenerateQualifiedName("System.Console.WriteLine"),
+                            EmptyArgumentList()
+                        ),
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                    ));
+                bool first = true;
+                foreach(var eCtx in context._Exprs) {
+                    if (!first) {
+                        block.Add(_syntaxFactory.ExpressionStatement(
+                            _syntaxFactory.InvocationExpression(
+                                GenerateQualifiedName("System.Console.WriteLine"),
+                                MakeArgumentList(_syntaxFactory.Argument(null,null,
+                                    _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,SyntaxFactory.Literal(null," "," ",null))
+                                ))
+                            ),
+                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                        ));
+                    }
+                    // TODO: numeric formatting!
+                    block.Add(_syntaxFactory.ExpressionStatement(
+                        _syntaxFactory.InvocationExpression(
+                            GenerateQualifiedName("System.Console.WriteLine"),
+                            MakeArgumentList(_syntaxFactory.Argument(null,null,eCtx.Get<ExpressionSyntax>()))
+                        ),
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                    ));
+                    first = false;
+                }
+                context.Put(_syntaxFactory.Block(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    block,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)
+                ));
+                _pool.Free(block);
+            }
         }
 
         public override void ExitUnsafeStmt([NotNull] XSharpParser.UnsafeStmtContext context)

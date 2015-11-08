@@ -523,10 +523,11 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
 
-expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #accessMember       // member access The ? is new
-					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
+expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember			// member access The ? is new
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
+					| Left=expression Op=QMARK Right=expression					#condAccessExpr
+					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
 					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
@@ -567,6 +568,7 @@ expression			: Left=expression Q=QMARK? Op=(DOT | COLON) Right=identifierName #a
 					| Name=identifierName										#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
+					| Op=(DOT | COLON) Right=identifierName						#bindMemberAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 //					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )
 //					| nativeType LPAREN CAST COMMA expression RPAREN			#oldcast2				// typename(_CAST, expr )

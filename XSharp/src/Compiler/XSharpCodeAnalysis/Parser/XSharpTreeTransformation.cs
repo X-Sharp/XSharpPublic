@@ -2238,19 +2238,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>()));
         }
 
+        public override void ExitCondAccessExpr([NotNull] XSharpParser.CondAccessExprContext context)
+        {
+            context.Put(_syntaxFactory.ConditionalAccessExpression(
+                context.Left.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                context.Right.Get<ExpressionSyntax>()
+            ));
+        }
+
+        public override void ExitBindMemberAccess([NotNull] XSharpParser.BindMemberAccessContext context)
+        {
+            context.Put(_syntaxFactory.MemberBindingExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                context.Right.Get<IdentifierNameSyntax>()));
+        }
+
         public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
          {
-            if (context.Q != null)
-                context.Put(_syntaxFactory.ConditionalAccessExpression(
-                    context.Left.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                    _syntaxFactory.MemberBindingExpression(SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        context.Right.Get<IdentifierNameSyntax>())));
-            else
-                context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                    context.Left.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                    context.Right.Get<IdentifierNameSyntax>()));
+            context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                context.Left.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                context.Right.Get<IdentifierNameSyntax>()));
         }
 
         public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)
@@ -2284,25 +2293,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.BinaryExpression(
                             SyntaxKind.CoalesceExpression,
                             _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression,
-                                _syntaxFactory.InvocationExpression(
-                                    _syntaxFactory.ConditionalAccessExpression(
-                                        context.Left.Get<ExpressionSyntax>(),
-                                        SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                _syntaxFactory.ConditionalAccessExpression(
+                                    context.Left.Get<ExpressionSyntax>(),
+                                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                    _syntaxFactory.InvocationExpression(
                                         _syntaxFactory.MemberBindingExpression(SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                                             _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("IndexOf"))
+                                        ),
+                                        _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                            MakeSeparatedList(
+                                                _syntaxFactory.Argument(null,null,_syntaxFactory.BinaryExpression(
+                                                    SyntaxKind.CoalesceExpression,
+                                                    context.Right.Get<ExpressionSyntax>(),
+                                                    SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken),
+                                                    _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(null,"","",null))
+                                                )),
+                                                _syntaxFactory.Argument(null,null,GenerateQualifiedName("System.StringComparison.Ordinal"))
+                                            ), 
+                                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)
                                         )
-                                    ),
-                                    _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                        MakeSeparatedList(
-                                            _syntaxFactory.Argument(null,null,_syntaxFactory.BinaryExpression(
-                                                SyntaxKind.CoalesceExpression,
-                                                context.Right.Get<ExpressionSyntax>(),
-                                                SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken),
-                                                _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(null,"","",null))
-                                            )),
-                                            _syntaxFactory.Argument(null,null,GenerateQualifiedName("System.StringComparison.Ordinal"))
-                                        ), 
-                                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)
                                     )
                                 ),
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),

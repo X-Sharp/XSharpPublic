@@ -2280,6 +2280,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
                     break;
                 case XSharpParser.SUBSTR:
+                    context.Put(
+                        _syntaxFactory.BinaryExpression(
+                            SyntaxKind.CoalesceExpression,
+                            _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression,
+                                _syntaxFactory.InvocationExpression(
+                                    _syntaxFactory.ConditionalAccessExpression(
+                                        context.Left.Get<ExpressionSyntax>(),
+                                        SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                        _syntaxFactory.MemberBindingExpression(SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                            _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("IndexOf"))
+                                        )
+                                    ),
+                                    _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                        MakeSeparatedList(
+                                            _syntaxFactory.Argument(null,null,_syntaxFactory.BinaryExpression(
+                                                SyntaxKind.CoalesceExpression,
+                                                context.Right.Get<ExpressionSyntax>(),
+                                                SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken),
+                                                _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(null,"","",null))
+                                            )),
+                                            _syntaxFactory.Argument(null,null,GenerateQualifiedName("System.StringComparison.Ordinal"))
+                                        ), 
+                                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)
+                                    )
+                                ),
+                                SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
+                                _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(null, "", -1, null))
+                            ),
+                            SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken),
+                            _syntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword))
+                        )
+                    );
                     break;
                 case XSharpParser.ASSIGN_EXP:
                     context.Put(_syntaxFactory.AssignmentExpression(

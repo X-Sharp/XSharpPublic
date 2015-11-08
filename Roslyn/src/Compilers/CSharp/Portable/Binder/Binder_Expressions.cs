@@ -5149,7 +5149,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
                 var overloadResolutionResult = OverloadResolutionResult<MethodSymbol>.GetInstance();
+#if XSHARP
+                bool allowRefOmittedArguments = true;
+#else
                 bool allowRefOmittedArguments = methodGroup.Receiver.IsExpressionOfComImportType();
+#endif
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                 OverloadResolution.MethodInvocationOverloadResolution(methodGroup.Methods, methodGroup.TypeArguments, actualArguments, overloadResolutionResult, ref useSiteDiagnostics, isMethodGroupConversion, allowRefOmittedArguments);
                 diagnostics.Add(expression, useSiteDiagnostics);
@@ -6003,7 +6007,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableArray<RefKind> argumentRefKinds = analyzedArguments.RefKinds.ToImmutableOrNull();
 
             OverloadResolutionResult<PropertySymbol> overloadResolutionResult = OverloadResolutionResult<PropertySymbol>.GetInstance();
+#if XSHARP
+            bool allowRefOmittedArguments = true;
+#else
             bool allowRefOmittedArguments = receiverOpt.IsExpressionOfComImportType();
+#endif
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.OverloadResolution.PropertyOverloadResolution(propertyGroup, analyzedArguments, overloadResolutionResult, allowRefOmittedArguments, ref useSiteDiagnostics);
             diagnostics.Add(syntax, useSiteDiagnostics);
@@ -6269,7 +6277,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             else
             {
                 var result = OverloadResolutionResult<MethodSymbol>.GetInstance();
+#if XSHARP
+                bool allowRefOmittedArguments = true;
+#else
                 bool allowRefOmittedArguments = methodGroup.Receiver.IsExpressionOfComImportType();
+#endif
                 OverloadResolution.MethodInvocationOverloadResolution(
                     methodGroup.Methods, methodGroup.TypeArguments, analyzedArguments,
                     result, ref useSiteDiagnostics, isMethodGroupConversion, allowRefOmittedArguments,

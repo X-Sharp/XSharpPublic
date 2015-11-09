@@ -569,6 +569,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| Op=(DOT | COLON) Right=identifierName						#bindMemberAccess
+					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 //					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )
 //					| nativeType LPAREN CAST COMMA expression RPAREN			#oldcast2				// typename(_CAST, expr )

@@ -146,6 +146,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
         }
 
+        BracketedArgumentListSyntax EmptyBracketedArgumentList()
+        {
+            return _syntaxFactory.BracketedArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken), 
+                    default(SeparatedSyntaxList<ArgumentSyntax>), 
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+        }
+
         SyntaxList<T> MakeList<T>(System.Collections.IEnumerable t) where T : InternalSyntax.CSharpSyntaxNode
         {
             if (t == null)
@@ -2300,6 +2308,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.MemberBindingExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                 context.Right.Get<IdentifierNameSyntax>()));
+        }
+
+        public override void ExitBindArrayAccess([NotNull] XSharpParser.BindArrayAccessContext context)
+        {
+            context.Put(_syntaxFactory.ElementBindingExpression(
+                context.ArgList?.Get<BracketedArgumentListSyntax>() ?? EmptyBracketedArgumentList()
+            ));
         }
 
         public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)

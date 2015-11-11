@@ -259,7 +259,7 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
 					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=name DOT)? Id=identifier) AS Type=datatype 
-					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)+ (ASSIGN_OP Initializer=expression)? eos	// Auto
+					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? eos	// Auto
 					  | (LineAccessors+=propertyLineAccessor)+ eos													// Single Line
 					  | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? eos									// Multi Line
 					  )

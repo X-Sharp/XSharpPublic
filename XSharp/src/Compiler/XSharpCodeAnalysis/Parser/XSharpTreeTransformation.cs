@@ -2668,7 +2668,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.TypeName.Get<TypeSyntax>());
         }
 
-        public override void ExitTypeName([NotNull] XSharpParser.TypeNameContext context)
+		public override void ExitNullableDatatype([NotNull] XSharpParser.NullableDatatypeContext context)
+		{
+			// TODO RvdH: Not sure if this is right... 
+			context.Put(context.TypeName.Get<NullableTypeSyntax>());
+		}
+
+		public override void ExitTypeName([NotNull] XSharpParser.TypeNameContext context)
         {
             if (context.NativeType != null)
                 context.Put(context.NativeType.Get<PredefinedTypeSyntax>());

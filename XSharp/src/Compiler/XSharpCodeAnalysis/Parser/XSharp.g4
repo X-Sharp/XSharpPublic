@@ -613,6 +613,7 @@ identifierName		: Id=identifier
 datatype			: TypeName=typeName PTR											#ptrDatatype
 					| TypeName=typeName (Ranks+=arrayRank)+							#arrayDatatype
 					| TypeName=typeName 											#simpleDatatype
+					| TypeName=typeName QMARK 										#nullableDatatype
 					;
 
 arrayRank			: LBRKT (COMMA)* RBRKT

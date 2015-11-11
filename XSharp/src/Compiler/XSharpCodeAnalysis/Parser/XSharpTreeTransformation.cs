@@ -2670,8 +2670,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 		public override void ExitNullableDatatype([NotNull] XSharpParser.NullableDatatypeContext context)
 		{
-			// TODO RvdH: Not sure if this is right... 
-			context.Put(context.TypeName.Get<NullableTypeSyntax>());
+			context.Put(_syntaxFactory.NullableType(context.TypeName.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.QuestionToken)));
 		}
 
 		public override void ExitTypeName([NotNull] XSharpParser.TypeNameContext context)
@@ -2719,25 +2718,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralArray([NotNull] XSharpParser.LiteralArrayContext context)
         {
-            var openBrace = SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken);
-            var closeBrace = SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken);
-            if ((context._Exprs?.Count ?? 0) > 0 )
-            {
-                var exprs = _pool.AllocateSeparated<ExpressionSyntax>();
-                foreach (var e in context._Exprs)
-                {
-                    if (exprs.Count != 0)
-                        exprs.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                    exprs.Add(e.Get<ExpressionSyntax>());
-                }
-                context.Put(_syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, openBrace, exprs, closeBrace));
-                _pool.Free(exprs);
-            }
+            var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, 
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken), 
+                (context._Exprs?.Count ?? 0) == 0 ? default(SeparatedSyntaxList<ExpressionSyntax>)
+                    : MakeSeparatedList<ExpressionSyntax>(context._Exprs), 
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            if (context.Type != null)
+                context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                    _syntaxFactory.ArrayType(context.Type.Get<TypeSyntax>(),
+                    MakeList(_syntaxFactory.ArrayRankSpecifier(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        EmptySeparatedList<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
+                    initializer));
             else
-            {
-                var exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
-                context.Put(_syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, openBrace, exprs, closeBrace));
-            }
+                context.Put(_syntaxFactory.ImplicitArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    EmptyList(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
+                    initializer));
         }
 
         public override void ExitCodeblockExpression([NotNull] XSharpParser.CodeblockExpressionContext context)

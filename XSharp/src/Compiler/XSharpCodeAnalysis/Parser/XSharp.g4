@@ -560,6 +560,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
+                    | Query=queryexpression                                     #queryExpressoin        // LINQ
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
 					| ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
@@ -648,6 +649,38 @@ codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE) Expr=expre
 codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 					;
 
+
+// LINQ Support
+
+queryexpression     : From=fromClause Body=queryBody
+                    ;
+
+fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
+                    ;
+
+queryBody           : (Bodyclauses+=queryBodyClause)* SorG=selectOrGroupclause (Continuation=queryContinuation)?
+                    ;
+
+queryBodyClause     : fromClause                                                                                                #fromBodyClause
+                    | LET Id=identifier ASSIGN_OP Expr=expression                                                               #letClause
+                    | WHERE Expr=expression                                                                                     #whereClause        // expression must be Boolean
+                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression   #joinClause
+                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression INTO IntoId=identifier   #joinIntoClause
+                    | ORDERBY Orders+=ordering (COMMA Orders+=ordering)*                                                        #orderbyClause
+                    ;
+
+ordering            : Expr=expression Direction=(ASCENDING|DESCENDING)?
+                    ;
+
+selectOrGroupclause : SELECT Expr=expression                                #selectClause
+                    | GROUP Expr=expression BY ByExpr=expression            #groupClause
+                    ;
+
+queryContinuation   : INTO Id=identifier Body=queryBody
+                    ;
+// -- End of LINQ
+
+
 // All New Vulcan and X# keywords can also be recognized as Identifier
 identifier			: Token=ID  
 					| VnToken=keywordvn 
@@ -732,5 +765,6 @@ keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DEF
 					| THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
 					;
 
-keywordxs           : Token=(ASSEMBLY | ASYNC | AWAIT | CHECKED | DYNAMIC | EXTERN | MODULE | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR)
+keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
+                              GROUP | INTO | JOIN | LET | MODULE | ORDERBY | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR)
 					;

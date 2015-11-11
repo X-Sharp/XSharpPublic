@@ -253,12 +253,23 @@ WARNINGS            : W A R N I N G S;          // Pragma Warnings
 // New XSharp Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
 
+ASCENDING           : A S C E N D I N G;
 ASSEMBLY			: A S S E M B L Y;
 ASYNC				: A S Y N C;
 AWAIT				: A W A I T ;
+BY                  : B Y ;
 CHECKED				: C H E C K E D;
+DESCENDING          : D E S C E N D I N G;
+EQUALS              : E Q U A L S ;
 EXTERN				: E X T E R N ;
+FROM                : F R O M ;
+GROUP               : G R O U P ;
+INTO                : I N T O ;
+JOIN                : J O I N;
+LET                 : L E T ;
 MODULE				: M O D U L E ;
+ORDERBY             : O R D E R B Y ;
+SELECT              : S E L E C T ;
 SWITCH				: S W I T C H ;
 UNCHECKED			: U N C H E C K E D;
 UNSAFE				: U N S A F E;

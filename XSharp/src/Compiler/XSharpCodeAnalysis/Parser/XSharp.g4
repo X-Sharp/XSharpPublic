@@ -342,7 +342,7 @@ memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPO
 attributes			: ( AttrBlk+=attributeBlock )+
 					;
 
-attributeBlock		: LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+attributeBlock		: LBRKT Target=attributeTarget? Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT
 					;
 
 attributeTarget		: Id=identifier COLON

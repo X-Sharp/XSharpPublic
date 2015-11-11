@@ -76,6 +76,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         private XSharpParser _parser;
         internal SyntaxEntities GlobalEntities;
+        internal SyntaxClassEntities GlobalClassEntities;
         internal Stack<SyntaxClassEntities> ClassEntities = new Stack<SyntaxClassEntities> ();
 
         public XSharpTreeTransformation(XSharpParser parser, SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
@@ -491,7 +492,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
         {
-            ClassEntities.Push(CreateClassEntities());
+            GlobalClassEntities = CreateClassEntities();
+            ClassEntities.Push(GlobalClassEntities);
         }
 
         public override void ExitSource([NotNull] XSharpParser.SourceContext context)
@@ -556,8 +558,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
         {
             var ch = context.children[0];
-            if (ch is XSharpParser.FunctionContext || ch is XSharpParser.ProcedureContext || ch is XSharpParser.VoglobalContext)
-                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, ch.Get<MemberDeclarationSyntax>()));
+            if (ch is XSharpParser.FunctionContext || ch is XSharpParser.ProcedureContext || ch is XSharpParser.VoglobalContext
+                 || ch is XSharpParser.VodefineContext || ch is XSharpParser.VodllContext) {
+                if (ch.CsNode != null)
+                    GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, ch.Get<MemberDeclarationSyntax>()));
+            }
             else
                 context.Put(ch.Get<CSharpSyntaxNode>());
         }
@@ -603,7 +608,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             foreach(var mCtx in context._Members) {
-                members.Add(mCtx.Get<MemberDeclarationSyntax>());
+                if (mCtx.CsNode != null)
+                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
             var generated = ClassEntities.Pop();
             if(generated.Members.Count > 0) {
@@ -651,7 +657,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             foreach(var mCtx in context._Members) {
-                members.Add(mCtx.Get<MemberDeclarationSyntax>());
+                if (mCtx.CsNode != null)
+                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
             var generated = ClassEntities.Pop();
             if(generated.Members.Count > 0) {
@@ -701,7 +708,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
             foreach(var mCtx in context._Members) {
-                members.Add(mCtx.Get<MemberDeclarationSyntax>());
+                if (mCtx.CsNode != null)
+                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
             var generated = ClassEntities.Pop();
             if(generated.Members.Count > 0) {
@@ -885,13 +893,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClassvars([NotNull] XSharpParser.ClassvarsContext context)
         {
-            context.Put(_syntaxFactory.FieldDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
-                declaration: _syntaxFactory.VariableDeclaration(
-                    type: context.DataType.Get<TypeSyntax>(),
-                    variables: MakeSeparatedList<VariableDeclaratorSyntax>(context._Var)),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            var varType = context.Vars.DataType.Get<TypeSyntax>();
+            foreach (var varCtx in context.Vars._Var) {
+                bool isDim = varCtx.ArraySub != null;
+                if (isDim) {
+                    ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
+                        attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                        declaration: _syntaxFactory.VariableDeclaration(
+                            type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(varCtx.ArraySub._ArrayIndex.Count)),
+                            variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
+                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                }
+                else {
+                    if (varList.Count > 0)
+                        varList.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    varList.Add(varCtx.Get<VariableDeclaratorSyntax>());
+                }
+            }
+            if (varList.Count > 0) {
+                context.Put(_syntaxFactory.FieldDeclaration(
+                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                    declaration: _syntaxFactory.VariableDeclaration(
+                        type: varType,
+                        variables: varList),
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            _pool.Free(varList);
         }
 
         public override void ExitClassvarModifiers([NotNull] XSharpParser.ClassvarModifiersContext context)
@@ -905,12 +935,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
         }
 
+        public override void ExitClassVarList([NotNull] XSharpParser.ClassVarListContext context)
+        {
+            // Caugth by classvar
+        }
+
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
         {
+            bool isDim = context.ArraySub != null;
+            var initExpr = context.Initializer.Get<ExpressionSyntax>();
+            if (isDim) {
+                var varType = ((XSharpParser.ClassVarListContext)context.Parent).DataType.Get<TypeSyntax>();
+                if (initExpr == null) {
+                    initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                        _syntaxFactory.ArrayType(varType,context.ArraySub.Get<ArrayRankSpecifierSyntax>()),
+                        null);
+                }
+            }
             context.Put(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(),
                 null,
-                (context.Initializer != null) ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    context.Initializer.Get<ExpressionSyntax>()) : null));
+                (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr)));
         }
 
         public override void ExitProperty([NotNull] XSharpParser.PropertyContext context)
@@ -1538,18 +1582,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoglobal([NotNull] XSharpParser.VoglobalContext context)
         {
-            var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            foreach(var varCtx in context._Var) {
-                if (variables.Count>0)
-                    variables.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                variables.Add(varCtx.Get<VariableDeclaratorSyntax>());
+            var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
+            var varType = context.Vars.DataType.Get<TypeSyntax>();
+            foreach (var varCtx in context.Vars._Var) {
+                bool isDim = varCtx.ArraySub != null;
+                if (isDim) {
+                    GlobalClassEntities.Members.Add(_syntaxFactory.FieldDeclaration(
+                        attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                        declaration: _syntaxFactory.VariableDeclaration(
+                            type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(varCtx.ArraySub._ArrayIndex.Count)),
+                            variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
+                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                }
+                else {
+                    if (varList.Count > 0)
+                        varList.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    varList.Add(varCtx.Get<VariableDeclaratorSyntax>());
+                }
             }
-            context.Put(_syntaxFactory.FieldDeclaration(
-                context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                context.Modifiers?.GetList<SyntaxToken>() ?? TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PublicKeyword),
-                _syntaxFactory.VariableDeclaration(context.DataType.Get<TypeSyntax>(), variables),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-            _pool.Free(variables);
+            if (varList.Count > 0) {
+                context.Put(_syntaxFactory.FieldDeclaration(
+                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
+                    declaration: _syntaxFactory.VariableDeclaration(
+                        type: varType,
+                        variables: varList),
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            _pool.Free(varList);
         }
 
         public override void ExitNestedPragma([NotNull] XSharpParser.NestedPragmaContext context)
@@ -1823,12 +1884,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varType = context.DataType.Get<TypeSyntax>();
             var initExpr = context.Expression.Get<ExpressionSyntax>();
             if (isDim) {
-                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(context.Arraysub._ArrayIndex.Count));
                 if (initExpr == null) {
                     initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                         _syntaxFactory.ArrayType(varType,context.Arraysub.Get<ArrayRankSpecifierSyntax>()),
                         null);
                 }
+                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(context.Arraysub._ArrayIndex.Count));
             }
             if (isStatic) {
                 staticName = StaticLocalFieldNamePrefix+context.Id.Get<SyntaxToken>().Text+UniqueNameSuffix;

@@ -119,7 +119,7 @@ pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA
 pragmaswitch        : ON | OFF | DEFAULT
                     ;
 
-voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)? eos
+voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList eos
 					;
 
 
@@ -242,11 +242,13 @@ eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
 
 
 
-classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)?
-					  Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)? eos
+classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList eos
 					; 
 
 classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE) )+
+					;
+
+classVarList		: Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)?
 					;
 
 classvar			: (DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?

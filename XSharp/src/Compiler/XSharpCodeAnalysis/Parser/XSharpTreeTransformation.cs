@@ -220,6 +220,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
         }
 
+        ArrayRankSpecifierSyntax MakeArrayRankSpeicifier(int ranks)
+        {
+            var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
+            for(int i = 0; i < ranks; i++) {
+                if (i > 0)
+                    sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                sizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+            }
+            var r = _syntaxFactory.ArrayRankSpecifier(SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                sizes,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+            _pool.Free(sizes);
+            return r;
+        }
+
         TypeSyntax VoidType()
         {
             return _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
@@ -1640,7 +1655,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitArraysub([NotNull] XSharpParser.ArraysubContext context)
         {
-            // TODO
+            context.Put(_syntaxFactory.ArrayRankSpecifier(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                MakeSeparatedList<ExpressionSyntax>(context._ArrayIndex),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
         }
 
         public override void ExitFunction([NotNull] XSharpParser.FunctionContext context)
@@ -1800,26 +1818,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isConst = context.Const != null;
             bool isStatic = (context.Parent as XSharpParser.CommonLocalDeclContext).Static != null;
+            bool isDim = context.Arraysub != null;
             string staticName = null;
+            var varType = context.DataType.Get<TypeSyntax>();
+            var initExpr = context.Expression.Get<ExpressionSyntax>();
+            if (isDim) {
+                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(context.Arraysub._ArrayIndex.Count));
+                if (initExpr == null) {
+                    initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                        _syntaxFactory.ArrayType(varType,context.Arraysub.Get<ArrayRankSpecifierSyntax>()),
+                        null);
+                }
+            }
             if (isStatic) {
                 staticName = StaticLocalFieldNamePrefix+context.Id.Get<SyntaxToken>().Text+UniqueNameSuffix;
                 ClassEntities.Peek().Members.Add(
                     _syntaxFactory.FieldDeclaration(
                         EmptyList<AttributeListSyntax>(),
                         TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
-                        _syntaxFactory.VariableDeclaration(context.DataType.Get<TypeSyntax>(), 
+                        _syntaxFactory.VariableDeclaration(varType, 
                             MakeSeparatedList(
                                 _syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(staticName), null,
-                                    _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>())))),
+                                    (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr)))),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                     );
             }
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             variables.Add(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
                 isStatic ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                        _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(staticName))) :
-                    (context.Expression == null) ? null : 
-                    _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expression.Get<ExpressionSyntax>())));
+                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(staticName)))
+                : (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr)));
             var modifiers = _pool.Allocate();
             if (isConst)
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword));
@@ -1827,7 +1855,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword));
             context.Put(_syntaxFactory.LocalDeclarationStatement(
                 modifiers.ToTokenList(),
-                _syntaxFactory.VariableDeclaration(context.DataType.Get<TypeSyntax>(), variables),
+                _syntaxFactory.VariableDeclaration(varType, variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             _pool.Free(variables);
             _pool.Free(modifiers);

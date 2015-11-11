@@ -185,7 +185,7 @@ classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
 typeparameters      : LT TypeParams+=typeparameter (COMMA attributes? TypeParams+=typeparameter)* GT 
 					;
 
-typeparameter       : Attributes=attributes? VarianceKeyword=(IN | OUT) Id=identifier
+typeparameter       : Attributes=attributes? VarianceKeyword=(IN | OUT)? Id=identifier
 					;
 
 typeparameterconstraintsclause
@@ -526,7 +526,7 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember			// member access The ? is new
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
-					| Left=expression Op=QMARK Right=expression					#condAccessExpr
+					| Left=expression Op=QMARK Right=expression					#condAccessExpr			// expr ? expr
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr

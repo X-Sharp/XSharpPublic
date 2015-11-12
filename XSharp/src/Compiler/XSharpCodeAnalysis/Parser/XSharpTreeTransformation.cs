@@ -592,6 +592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 null,
                 _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                     context.Expr.Get<ExpressionSyntax>())));
+            // TODO: (nvk) implicit types do not work with consts in c# !!! This needs to be written differently or handled by the bckend.
             context.Put(_syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
                 TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PublicKeyword),
@@ -1204,7 +1205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.TypeParameter(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                varianceKeyword: context.VarianceKeyword.SyntaxKeyword(),
+                varianceKeyword: context.VarianceKeyword?.SyntaxKeyword(),
                 identifier: context.Id.Get<SyntaxToken>()));
         }
 

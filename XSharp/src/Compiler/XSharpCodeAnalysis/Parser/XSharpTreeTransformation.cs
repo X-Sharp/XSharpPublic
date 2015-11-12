@@ -898,7 +898,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var varType = context.Vars.DataType.Get<TypeSyntax>();
             foreach (var varCtx in context.Vars._Var) {
-                bool isDim = varCtx.ArraySub != null;
+                bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
                     ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
                         attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
@@ -942,9 +942,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Caugth by classvar
         }
 
+        public override void EnterClassvar([NotNull] XSharpParser.ClassvarContext context)
+        {
+            bool isDim = context.Dim != null;
+            bool hasArraySub = context.ArraySub != null;
+            if (isDim && !hasArraySub) {
+                context.AddError(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
+            }
+            if (!isDim && hasArraySub) {
+                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1));
+            }
+        }
+
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
         {
-            bool isDim = context.ArraySub != null;
+            bool isDim = context.Dim != null && context.ArraySub != null;
             var initExpr = context.Initializer.Get<ExpressionSyntax>();
             if (isDim) {
                 var varType = ((XSharpParser.ClassVarListContext)context.Parent).DataType.Get<TypeSyntax>();
@@ -1587,7 +1599,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var varType = context.Vars.DataType.Get<TypeSyntax>();
             foreach (var varCtx in context.Vars._Var) {
-                bool isDim = varCtx.ArraySub != null;
+                bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
                     GlobalClassEntities.Members.Add(_syntaxFactory.FieldDeclaration(
                         attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
@@ -1877,21 +1889,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context._impliedvar?.Get<StatementSyntax>());
         }
 
+        public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
+        {
+            bool isDim = context.Dim != null;
+            bool hasArraySub = context.ArraySub != null;
+            if (isDim && !hasArraySub) {
+                context.AddError(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
+            }
+            if (!isDim && hasArraySub) {
+                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1));
+            }
+        }
+
         public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)
         {
             bool isConst = context.Const != null;
             bool isStatic = (context.Parent as XSharpParser.CommonLocalDeclContext).Static != null;
-            bool isDim = context.Arraysub != null;
+            bool isDim = context.Dim != null && context.ArraySub != null;
             string staticName = null;
             var varType = context.DataType.Get<TypeSyntax>();
             var initExpr = context.Expression.Get<ExpressionSyntax>();
             if (isDim) {
                 if (initExpr == null) {
                     initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                        _syntaxFactory.ArrayType(varType,context.Arraysub.Get<ArrayRankSpecifierSyntax>()),
+                        _syntaxFactory.ArrayType(varType,context.ArraySub.Get<ArrayRankSpecifierSyntax>()),
                         null);
                 }
-                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(context.Arraysub._ArrayIndex.Count));
+                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(context.ArraySub._ArrayIndex.Count));
             }
             if (isStatic) {
                 staticName = StaticLocalFieldNamePrefix+context.Id.Get<SyntaxToken>().Text+UniqueNameSuffix;
@@ -2198,7 +2222,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBreakStmt([NotNull] XSharpParser.BreakStmtContext context)
         {
-            // TODO
+            // TODO: sequence/break/recover are not supported yet
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
                 WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
@@ -2233,20 +2257,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Type.Get<TypeSyntax>(),
                     context.Id.Get<SyntaxToken>(),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)),
-                null, // TODO: catch filters?
+                null, // TODO: (grammar) catch filters?
                 context.StmtBlk.Get<BlockSyntax>()));
         }
 
         public override void ExitSeqStmt([NotNull] XSharpParser.SeqStmtContext context)
         {
-            // TODO
+            // TODO: sequence/break/recover are not supported yet
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
                 WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
 
         public override void ExitRecoverBlock([NotNull] XSharpParser.RecoverBlockContext context)
         {
-            // TODO
+            // TODO: sequence/break/recover are not supported yet
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
                 WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
         }
@@ -2316,7 +2340,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitUsingStmt([NotNull] XSharpParser.UsingStmtContext context)
         {
-            // TODO: variable declarations in using expr
             context.Put(_syntaxFactory.UsingStatement(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 null, // TODO: (grammar) using variable declarations?

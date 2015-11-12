@@ -149,7 +149,7 @@ vounion				: UNION  Id=identifier  eos
 					;
 
 
-vostructmember		: MEMBER DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
+vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
 					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
 					;
 
@@ -251,7 +251,7 @@ classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | H
 classVarList		: Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)?
 					;
 
-classvar			: (DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+classvar			: (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
 					;
 
 arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y
@@ -493,7 +493,7 @@ localdecl          : (Static=STATIC LOCAL? | LOCAL)
 				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               eos   #varLocalDecl		// VAR special for Robert !
 				   ;
 
-localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT Arraysub=arraysub RBRKT)? 
+localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
 					 (ASSIGN_OP Expression=expression)? ((AS | IS) DataType=datatype)?
 				   ;
 					  

@@ -67,6 +67,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string ForEndNamePrefix = "Xs$ForEnd$";
         const string ForIndNamePrefix = "Xs$ForInd$";
         const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
+        const string StaticLocalInitFieldNameSuffix = "$init";
+        const string StaticLocalLockFieldNameSuffix = "$lock";
         const string EventFieldNamePrefix = "Xs$Event$";
 
         public static SyntaxTree DefaultXSharpSyntaxTree = GenerateDefaultTree();
@@ -161,8 +163,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return default(SyntaxList<T>);
             var l = _pool.Allocate<T>();
             foreach (var item in t) {
-                if (item != null)
-                    l.Add(((IParseTree)item).Get<T>());
+                if (item != null) {
+                    if (((IParseTree)item).CsNode is SyntaxList<T>)
+                        l.AddRange(((IParseTree)item).GetList<T>());
+                    else
+                        l.Add(((IParseTree)item).Get<T>());
+                }
             }
             var list = l.ToList();
             _pool.Free(l);
@@ -1854,13 +1860,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var statements = _pool.Allocate<StatementSyntax>();
             foreach (var stmtCtx in context._Stmts)
             {
-                if (stmtCtx is XSharpParser.DeclarationStmtContext) {
-                    var ld = ((XSharpParser.DeclarationStmtContext)stmtCtx).localdecl();
-                    if (ld is XSharpParser.CommonLocalDeclContext)
-                        foreach (var decl in (ld as XSharpParser.CommonLocalDeclContext)._LocalVars) statements.Add(decl.Get<StatementSyntax>());
-                    else if (ld is XSharpParser.VarLocalDeclContext)
-                        foreach (var decl in (ld as XSharpParser.VarLocalDeclContext)._ImpliedVars) statements.Add(decl.Get<StatementSyntax>());
-                }
+                if (stmtCtx.CsNode is SyntaxList<StatementSyntax>)
+                    statements.AddRange(stmtCtx.GetList<StatementSyntax>());
                 else
                     statements.Add(stmtCtx.Get<StatementSyntax>());
             }
@@ -1870,7 +1871,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDeclarationStmt([NotNull] XSharpParser.DeclarationStmtContext context)
         {
-            context.Put(context.localdecl().Get<StatementSyntax>());
+            context.PutList(context.Decl.GetList<StatementSyntax>());
         }
 
         public override void EnterCommonLocalDecl([NotNull] XSharpParser.CommonLocalDeclContext context)
@@ -1892,12 +1893,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCommonLocalDecl([NotNull] XSharpParser.CommonLocalDeclContext context)
         {
-            context.Put(context._localvar?.Get<StatementSyntax>());
+            context.PutList(MakeList<StatementSyntax>(context._LocalVars));
         }
 
         public override void ExitVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context)
         {
-            context.Put(context._impliedvar?.Get<StatementSyntax>());
+            context.PutList(MakeList<StatementSyntax>(context._ImpliedVars));
         }
 
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
@@ -1933,13 +1934,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ClassEntities.Peek().Members.Add(
                     _syntaxFactory.FieldDeclaration(
                         EmptyList<AttributeListSyntax>(),
-                        TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
+                        TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PrivateKeyword),
                         _syntaxFactory.VariableDeclaration(varType, 
-                            MakeSeparatedList(
-                                _syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(staticName), null,
-                                    (initExpr == null) ? null : _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr)))),
+                            MakeSeparatedList(_syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(staticName), null, null))),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                     );
+                if (initExpr != null) {
+                    ClassEntities.Peek().Members.Add(
+                        _syntaxFactory.FieldDeclaration(
+                            EmptyList<AttributeListSyntax>(),
+                            TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PrivateKeyword),
+                            _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.BoolKeyword)), 
+                                MakeSeparatedList(_syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(staticName+StaticLocalInitFieldNameSuffix), null, 
+                                    _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), 
+                                        _syntaxFactory.LiteralExpression(SyntaxKind.TrueLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.TrueKeyword)))))),
+                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                        );
+                    ClassEntities.Peek().Members.Add(
+                        _syntaxFactory.FieldDeclaration(
+                            EmptyList<AttributeListSyntax>(),
+                            TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PrivateKeyword),
+                            _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword)), 
+                                MakeSeparatedList(_syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(staticName+StaticLocalLockFieldNameSuffix), null, 
+                                    _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), 
+                                        _syntaxFactory.ObjectCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                                            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword)),
+                                            EmptyArgumentList(), null))))),
+                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                        );
+                }
             }
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             variables.Add(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null,
@@ -1951,10 +1974,53 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword));
             if (isStatic)
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.RefKeyword));
-            context.Put(_syntaxFactory.LocalDeclarationStatement(
-                modifiers.ToTokenList(),
-                _syntaxFactory.VariableDeclaration(varType, variables),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            if (!isStatic) {
+                context.Put(_syntaxFactory.LocalDeclarationStatement(
+                    modifiers.ToTokenList(),
+                    _syntaxFactory.VariableDeclaration(varType, variables),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            else {
+                var decl = _pool.Allocate<StatementSyntax>();
+                decl.Add(_syntaxFactory.LocalDeclarationStatement(
+                    modifiers.ToTokenList(),
+                    _syntaxFactory.VariableDeclaration(varType, variables),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                if (initExpr != null) {
+                    decl.Add(_syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(staticName+StaticLocalInitFieldNameSuffix)),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(staticName+StaticLocalLockFieldNameSuffix)),
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                            _syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(staticName+StaticLocalInitFieldNameSuffix)),
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                _syntaxFactory.Block(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                    MakeList<StatementSyntax>(
+                                        _syntaxFactory.ExpressionStatement(
+                                            _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(staticName)),
+                                                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                                                initExpr),
+                                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                                        _syntaxFactory.ExpressionStatement(
+                                            _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(staticName+StaticLocalInitFieldNameSuffix)),
+                                                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                                                _syntaxFactory.LiteralExpression(SyntaxKind.FalseLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword))),
+                                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                                        ),
+                                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                                null)),
+                        null));
+                }
+                context.PutList<StatementSyntax>(decl);
+                _pool.Free(decl);
+            }
             _pool.Free(variables);
             _pool.Free(modifiers);
         }

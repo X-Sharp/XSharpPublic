@@ -385,7 +385,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 | { LA(1) == BEGIN && LA(2) == SCOPE }? scopestmt
 | fieldstmt */
 
-statement           : localdecl                                                 #declarationStmt
+statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO WHILE Expr=expression eos
 					  StmtBlk=statementBlock END DO eos							#whileStmt

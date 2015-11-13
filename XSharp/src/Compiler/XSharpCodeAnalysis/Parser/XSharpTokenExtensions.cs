@@ -1111,5 +1111,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 list.Add(t);
             }
         }
+
+        public static void FixDefaultVisibility(this SyntaxListBuilder list)
+        {
+            for (int i = 0; i < list.Count; i++) {
+                var item = list[i];
+                if (SyntaxFacts.IsAccessibilityModifier(item.Kind))
+                    return;
+            }
+            list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+        }
     }
 }

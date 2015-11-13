@@ -887,6 +887,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxKind.FalseLiteralExpression;
                     break;
+                case XSharpParser.CHAR_CONST:
+                    r = SyntaxKind.CharacterLiteralExpression;
+                    break;
                 case XSharpParser.STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
                     break;

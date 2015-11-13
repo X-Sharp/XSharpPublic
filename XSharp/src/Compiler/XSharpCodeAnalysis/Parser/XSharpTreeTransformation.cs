@@ -982,7 +982,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
-            var initExpr = context.Initializer.Get<ExpressionSyntax>();
+            var initExpr = context.Initializer?.Get<ExpressionSyntax>();
             if (isDim) {
                 var varType = ((XSharpParser.ClassVarListContext)context.Parent).DataType.Get<TypeSyntax>();
                 if (initExpr == null) {
@@ -1932,7 +1932,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isDim = context.Dim != null && context.ArraySub != null;
             string staticName = null;
             var varType = context.DataType.Get<TypeSyntax>();
-            var initExpr = context.Expression.Get<ExpressionSyntax>();
+            var initExpr = context.Expression?.Get<ExpressionSyntax>();
             if (isDim) {
                 if (initExpr == null) {
                     initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),

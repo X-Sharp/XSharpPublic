@@ -562,7 +562,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
-                    | Query=queryexpression                                     #queryExpressoin        // LINQ
+                    | Query=linqQuery											#queryExpression        // LINQ
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
 					| ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
@@ -655,7 +655,7 @@ codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 
 // LINQ Support
 
-queryexpression     : From=fromClause Body=queryBody
+linqQuery			: From=fromClause Body=queryBody
                     ;
 
 fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
@@ -664,13 +664,16 @@ fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
 queryBody           : (Bodyclauses+=queryBodyClause)* SorG=selectOrGroupclause (Continuation=queryContinuation)?
                     ;
 
-queryBodyClause     : fromClause                                                                                                #fromBodyClause
+queryBodyClause     : From=fromClause                                                                                           #fromBodyClause
                     | LET Id=identifier ASSIGN_OP Expr=expression                                                               #letClause
                     | WHERE Expr=expression                                                                                     #whereClause        // expression must be Boolean
-                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression   #joinClause
-                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression INTO IntoId=identifier   #joinIntoClause
+                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression
+					  Into=joinIntoClause?																						#joinClause
                     | ORDERBY Orders+=ordering (COMMA Orders+=ordering)*                                                        #orderbyClause
                     ;
+
+joinIntoClause		: INTO Id=identifier
+					;
 
 ordering            : Expr=expression Direction=(ASCENDING|DESCENDING)?
                     ;

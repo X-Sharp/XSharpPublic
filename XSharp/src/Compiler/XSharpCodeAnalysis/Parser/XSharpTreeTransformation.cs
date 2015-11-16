@@ -2981,6 +2981,128 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(@params);
         }
 
+        public override void ExitQueryExpression([NotNull] XSharpParser.QueryExpressionContext context)
+        {
+            context.Put(context.Query.Get<QueryExpressionSyntax>());
+        }
+
+        public override void ExitLinqQuery([NotNull] XSharpParser.LinqQueryContext context)
+        {
+            context.Put(_syntaxFactory.QueryExpression(
+                context.From.Get<FromClauseSyntax>(),
+                context.Body.Get<QueryBodySyntax>()
+                ));
+        }
+
+        public override void ExitFromClause([NotNull] XSharpParser.FromClauseContext context)
+        {
+            context.Put(_syntaxFactory.FromClause(SyntaxFactory.MakeToken(SyntaxKind.FromKeyword),
+                context.Type?.Get<TypeSyntax>(),
+                context.Id.Get<SyntaxToken>(),
+                SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
+                context.Expr.Get<ExpressionSyntax>()
+                ));
+        }
+
+        public override void ExitQueryBody([NotNull] XSharpParser.QueryBodyContext context)
+        {
+            context.Put(_syntaxFactory.QueryBody(
+                MakeList<QueryClauseSyntax>(context._Bodyclauses),
+                context.SorG.Get<SelectOrGroupClauseSyntax>(),
+                context.Continuation?.Get<QueryContinuationSyntax>()
+                ));
+        }
+
+        public override void ExitFromBodyClause([NotNull] XSharpParser.FromBodyClauseContext context)
+        {
+            context.Put(context.From.Get<FromClauseSyntax>());
+        }
+
+        public override void ExitLetClause([NotNull] XSharpParser.LetClauseContext context)
+        {
+            context.Put(_syntaxFactory.LetClause(
+                SyntaxFactory.MakeToken(SyntaxKind.LetKeyword),
+                context.Id.Get<SyntaxToken>(),
+                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                context.Expr.Get<ExpressionSyntax>()
+                ));
+        }
+
+        public override void ExitWhereClause([NotNull] XSharpParser.WhereClauseContext context)
+        {
+            context.Put(_syntaxFactory.WhereClause(
+                SyntaxFactory.MakeToken(SyntaxKind.WhereKeyword),
+                context.Expr.Get<ExpressionSyntax>()
+                ));
+        }
+
+        public override void ExitJoinClause([NotNull] XSharpParser.JoinClauseContext context)
+        {
+            context.Put(_syntaxFactory.JoinClause(
+                SyntaxFactory.MakeToken(SyntaxKind.JoinKeyword),
+                context.Type?.Get<TypeSyntax>(),
+                context.Id.Get<SyntaxToken>(),
+                SyntaxFactory.MakeToken(SyntaxKind.InKeyword),
+                context.Expr.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.OnKeyword),
+                context.OnExpr.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                context.EqExpr.Get<ExpressionSyntax>(),
+                context.Into?.Get<JoinIntoClauseSyntax>()
+                ));
+        }
+
+        public override void ExitJoinIntoClause([NotNull] XSharpParser.JoinIntoClauseContext context)
+        {
+            context.Put(_syntaxFactory.JoinIntoClause(
+                SyntaxFactory.MakeToken(SyntaxKind.IntoKeyword),
+                context.Id.Get<SyntaxToken>()));
+        }
+
+        public override void ExitOrderbyClause([NotNull] XSharpParser.OrderbyClauseContext context)
+        {
+            context.Put(_syntaxFactory.OrderByClause(
+                SyntaxFactory.MakeToken(SyntaxKind.OrderByKeyword),
+                MakeSeparatedList<OrderingSyntax>(context._Orders)
+                ));
+        }
+
+        public override void ExitOrdering([NotNull] XSharpParser.OrderingContext context)
+        {
+            context.Put(_syntaxFactory.Ordering(
+                SyntaxKind.AscendingOrdering,
+                context.Expr.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword)
+                ));
+        }
+
+        public override void ExitSelectClause([NotNull] XSharpParser.SelectClauseContext context)
+        {
+            context.Put(_syntaxFactory.SelectClause(
+                SyntaxFactory.MakeToken(SyntaxKind.SelectKeyword),
+                context.Expr.Get<ExpressionSyntax>()
+                ));
+        }
+
+        public override void ExitGroupClause([NotNull] XSharpParser.GroupClauseContext context)
+        {
+            context.Put(_syntaxFactory.GroupClause(
+                SyntaxFactory.MakeToken(SyntaxKind.GroupKeyword),
+                context.Expr.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.ByKeyword),
+                context.ByExpr.Get<ExpressionSyntax>()
+                ));
+        }
+
+        public override void ExitQueryContinuation([NotNull] XSharpParser.QueryContinuationContext context)
+        {
+            context.Put(_syntaxFactory.QueryContinuation(
+                SyntaxFactory.MakeToken(SyntaxKind.IntoKeyword),
+                context.Id.Get<SyntaxToken>(),
+                context.Body.Get<QueryBodySyntax>()
+                ));
+        }
+
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
             context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue()));

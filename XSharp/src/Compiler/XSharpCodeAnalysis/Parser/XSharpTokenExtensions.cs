@@ -20,43 +20,127 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class TokenExtensions
     {
-        private static string StringValue(IToken token)
+        private static bool IsHexDigit(char c) => (c >= '0' && c<= '9') || (c >= 'A' && c<= 'F') || (c >= 'a' && c<= 'f');
+
+        private static char EscapedChar(string s, ref int pos)
         {
-            return token.Text.Substring(1, token.Text.Length - 2);
+            if (s[pos] != '\\' || pos == s.Length-1)
+                return s[pos++];
+            else {
+                switch (s[++pos]) {
+                    case '\\':
+                    case '\'':
+                    case '"':
+                        return s[pos++];
+                    case '0':
+                        pos++;
+                        return '\0';
+                    case 'A':
+                    case 'a':
+                        pos++;
+                        return '\a';
+                    case 'B':
+                    case 'b':
+                        pos++;
+                        return '\b';
+                    case 'F':
+                    case 'f':
+                        pos++;
+                        return '\f';
+                    case 'N':
+                    case 'n':
+                        pos++;
+                        return '\n';
+                    case 'R':
+                    case 'r':
+                        pos++;
+                        return '\r';
+                    case 'T':
+                    case 't':
+                        pos++;
+                        return '\t';
+                    case 'V':
+                    case 'v':
+                        pos++;
+                        return '\v';
+                    case 'X':
+                    case 'x':
+                        {
+                            int l = 0;
+                            pos++;
+                            while (l < 4 && pos+l < s.Length && IsHexDigit(s[pos+l]))
+                                l++;
+                            if (l > 0) {
+                                pos += l;
+                                return (char)HexValue(s.Substring(pos-l,l));
+                            }
+                            else
+                                return s[pos-1];
+                        }
+                    case 'U':
+                    case 'u':
+                        {
+                            int l = 0;
+                            pos++;
+                            while (l < 8 && pos+l < s.Length && IsHexDigit(s[pos+l]))
+                                l++;
+                            if (l == 4 || l == 8) {
+                                pos += l;
+                                return (char)HexValue(s.Substring(pos-l,l));
+                            }
+                            else
+                                return s[pos-1];
+                        }
+                    default:
+                        return s[pos++];
+                }
+            }
         }
 
-        private static bool IsChar(IToken token)
+        private static char CharValue(string text)
         {
-            return token.Text.StartsWith("'") && token.Text.EndsWith("'") && token.Text.Length == 3;
+            int p = 1;
+            return EscapedChar(text, ref p);
         }
 
-        private static char CharValue(IToken token)
+        private static string StringValue(string text)
         {
-            return token.Text[1];
+            return text.Substring(1, text.Length - 2);
         }
 
-        private static int HexValue(IToken token)
+        private static string EscapedStringValue(string text)
         {
-            int r = 0;
-            foreach (char c in token.Text.Substring(2))
+            if (text.Length == 2)
+                return "";
+            StringBuilder sb = new StringBuilder();
+            int p = 1;
+            while (p < text.Length-1)
+                sb.Append(EscapedChar(text, ref p));
+            return sb.ToString();
+        }
+
+        private static long HexValue(string text)
+        {
+            long r = 0;
+            foreach (char c in text)
             {
                 char cu = char.ToUpper(c);
                 if (cu != 'U' && cu != 'L')
                 {
                     r <<= 4;
                     if (cu >= '0' && cu <= '9')
-                        r |= cu - '0';
+                        r |= (long)(cu - '0');
                     else
-                        r |= (char.ToUpper(cu) - 'A') + 10;
+                        r |= (long)((cu - 'A') + 10);
                 }
             }
             return r;
         }
 
-        private static int BinValue(IToken token)
+        private static long BinValue(string text)
         {
-            int r = 0;
-            foreach (char c in token.Text.Substring(2))
+            long r = 0;
+            foreach (char c in text)
             {
                 char cu = char.ToUpper(c);
                 if (cu != 'U')
@@ -67,16 +151,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             return r;
-        }
-
-        private static double RealValue(IToken token)
-        {
-            return double.Parse(token.Text);
-        }
-
-        private static int IntValue(IToken token)
-        {
-            return int.Parse(token.Text);
         }
 
         public static SyntaxToken SyntaxIdentifier(this IToken token)
@@ -111,9 +185,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DWORD:
                     r = SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword);
                     break;
-                case XSharpParser.FLOAT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword);
-                    break;
+                //case XSharpParser.FLOAT:
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword);
+                //    break;
                 case XSharpParser.SHORTINT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ShortKeyword);
                     break;
@@ -147,9 +221,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.STRING:
                     r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
                     break;
-                case XSharpParser.SYMBOL:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
-                    break;
+                //case XSharpParser.SYMBOL:
+                //    r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
+                //    break;
                 //case XSharpParser.USUAL:
                 //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
                 //    break;
@@ -188,32 +262,121 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
+                case XSharpParser.CHAR_CONST:
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, CharValue(token.Text), SyntaxFactory.WS);
+                    break;
                 case XSharpParser.STRING_CONST:
-                    if (IsChar(token))
-                        r = SyntaxFactory.Literal(null, token.Text, CharValue(token), null);
-                    else
-                        r = SyntaxFactory.Literal(null, token.Text, StringValue(token), null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, StringValue(token.Text), SyntaxFactory.WS);
+                    break;
+                case XSharpParser.ESCAPED_STRING_CONST:
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, EscapedStringValue(token.Text), SyntaxFactory.WS);
                     break;
                 case XSharpParser.SYMBOL_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, token.Text, null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text.Substring(1).ToUpper(), SyntaxFactory.WS)
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
                     break;
                 case XSharpParser.HEX_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, HexValue(token), null);
+                    switch (token.Text.Last()) {
+                        case 'U':
+                        case 'u':
+                            if (token.Text.Length > 32+3)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            break;
+                        case 'L':
+                        case 'l':
+                            if (token.Text.Length > 32+3)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            break;
+                        default:
+                            if (token.Text.Length > 32+2)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            break;
+                    }
                     break;
                 case XSharpParser.BIN_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, BinValue(token), null);
+                    switch (token.Text.Last()) {
+                        case 'U':
+                        case 'u':
+                            if (token.Text.Length > 32+3)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            break;
+                        case 'L':
+                        case 'l':
+                            if (token.Text.Length > 32+3)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            break;
+                        default:
+                            if (token.Text.Length > 32+2)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            break;
+                    }
                     break;
                 case XSharpParser.REAL_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, RealValue(token), null);
+                    switch (token.Text.Last()) {
+                        case 'M':
+                        case 'm':
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, decimal.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            break;
+                        case 'S':
+                        case 's':
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, float.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            break;
+                        case 'D':
+                        case 'd':
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            break;
+                        default:
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text), SyntaxFactory.WS);
+                            break;
+                    }
                     break;
                 case XSharpParser.INT_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, IntValue(token), null);
+                    switch (token.Text.Last()) {
+                        case 'U':
+                        case 'u':
+                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            if (ul > uint.MaxValue)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, ul, SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)ul, SyntaxFactory.WS);
+                            break;
+                        case 'L':
+                        case 'l':
+                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            if (l > int.MaxValue)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)l, SyntaxFactory.WS);
+                            break;
+                        default:
+                            long n = long.Parse(token.Text);
+                            if (n > int.MaxValue)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, n, SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)n, SyntaxFactory.WS);
+                            break;
+                    }
+                    break;
+                case XSharpParser.NULL:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
                     break;
                 case XSharpParser.DATE_CONST:
-                    r = SyntaxFactory.Literal(null, token.Text, token.Text, null);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS)
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
                     break;
                 case XSharpParser.NIL:
-                case XSharpParser.NULL:
                 case XSharpParser.NULL_ARRAY:
                 case XSharpParser.NULL_CODEBLOCK:
                 case XSharpParser.NULL_DATE:
@@ -222,11 +385,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.NULL_PTR:
                 case XSharpParser.NULL_STRING:
                 case XSharpParser.NULL_SYMBOL:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
                     break;
-                default:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
+                default: // nvk: This catches cases where a keyword/identifier is treated as a literal string
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS);
                     break;
             }
             r.XNode = new TerminalNodeImpl(token);
@@ -380,121 +543,124 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (token.Type)
             {
                 case XSharpParser.ABSTRACT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AbstractKeyword, token.Text);
                     break;
                 case XSharpParser.STATIC:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword, token.Text);
                     break;
                 case XSharpParser.INTERNAL:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword, token.Text);
                     break;
                 case XSharpParser.PUBLIC:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword, token.Text);
                     break;
                 case XSharpParser.EXPORT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword, token.Text);
                     break;
                 case XSharpParser.PRIVATE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, token.Text);
                     break;
                 case XSharpParser.HIDDEN:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword, token.Text);
                     break;
                 case XSharpParser.NEW:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.NewKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NewKeyword, token.Text);
                     break;
                 case XSharpParser.PROTECTED:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ProtectedKeyword, token.Text);
                     break;
                 case XSharpParser.PARTIAL:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword, token.Text);
                     break;
                 case XSharpParser.EXTERN:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword, token.Text);
                     break;
                 case XSharpParser.UNSAFE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword, token.Text);
                     break;
                 case XSharpParser.CHECKED:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword, token.Text);
                     break;
                 case XSharpParser.UNCHECKED:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword, token.Text);
                     break;
                 case XSharpParser.ASYNC:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AsyncKeyword, token.Text);
                     break;
                 case XSharpParser.AWAIT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AwaitKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AwaitKeyword, token.Text);
                     break;
                 case XSharpParser.CASE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.CaseKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaseKeyword, token.Text);
                     break;
                 case XSharpParser.DEFAULT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword, token.Text);
                     break;
                 case XSharpParser.OTHERWISE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword, token.Text);
                     break;
                 case XSharpParser.REF:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.RefKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.RefKeyword, token.Text);
                     break;
                 case XSharpParser.OUT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.OutKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.OutKeyword, token.Text);
                     break;
                 case XSharpParser.CONST:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword, token.Text);
                     break;
                 case XSharpParser.CLASS:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword, token.Text);
                     break;
                 case XSharpParser.STRUCTURE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.StructKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.StructKeyword, token.Text);
                     break;
                 case XSharpParser.SEALED:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword, token.Text);
                     break;
                 case XSharpParser.VIRTUAL:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword, token.Text);
                     break;
                 case XSharpParser.SELF:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, token.Text);
                     break;
                 case XSharpParser.USING:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword, token.Text);
                     break;
                 case XSharpParser.SUPER:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword, token.Text);
                     break;
                 case XSharpParser.VAR:
                     r = SyntaxFactory.Identifier("Xs$var");
                     break;
                 case XSharpParser.THROW:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword, token.Text);
                     break;
                 case XSharpParser.TRY:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.TryKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TryKeyword, token.Text);
                     break;
                 case XSharpParser.CATCH:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword, token.Text);
                     break;
                 case XSharpParser.FINALLY:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword, token.Text);
                     break;
                 case XSharpParser.YIELD:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword, token.Text);
                     break;
                 case XSharpParser.VOLATILE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.VolatileKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.VolatileKeyword, token.Text);
                     break;
                 case XSharpParser.INITONLY:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ReadOnlyKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ReadOnlyKeyword, token.Text);
                     break;
                 case XSharpParser.IMPLICIT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ImplicitKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ImplicitKeyword, token.Text);
                     break;
                 case XSharpParser.EXPLICIT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.ExplicitKeyword);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ExplicitKeyword, token.Text);
+                    break;
+                case XSharpParser.GLOBAL:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword, token.Text);
                     break;
                 case XSharpParser.INSTANCE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.None);
@@ -525,7 +691,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FIELD:
                 case XSharpParser.FOR:
                 case XSharpParser.FUNCTION:
-                case XSharpParser.GLOBAL:
                 //case XSharpParser.HIDDEN:
                 case XSharpParser.IF:
                 case XSharpParser.IIF:

@@ -142,7 +142,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     case SyntaxKind.LocalDeclarationStatement:
                         // only const locals have modifiers and those don't have a sequence point:
+#if !XSHARP
                         Debug.Assert(!((LocalDeclarationStatementSyntax)declarationSyntax.Parent).Modifiers.Any());
+#endif
                         GetFirstLocalOrFieldBreakpointSpan(default(SyntaxTokenList), declaratorSyntax, out node, out part);
                         break;
 

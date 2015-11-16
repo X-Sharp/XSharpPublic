@@ -132,6 +132,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                     LocalDeclarationKind kind = decl.IsConst ? LocalDeclarationKind.Constant : LocalDeclarationKind.RegularVariable;
+#if XSHARP
+                    if (decl.IsRef)
+                        kind = LocalDeclarationKind.RefVariable;
+#endif
 
                     foreach (var vdecl in decl.Declaration.Variables)
                     {

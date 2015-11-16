@@ -665,6 +665,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.INSTANCE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.None);
                     break;
+                case XSharpParser.ASCENDING:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword, token.Text);
+                    break;
+                case XSharpParser.DESCENDING:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DescendingKeyword, token.Text);
+                    break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:
@@ -757,6 +763,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //case XSharpParser.UNCHECKED:
                 //case XSharpParser.UNSAFE:
                 case XSharpParser.WHERE:
+                case XSharpParser.FROM:
+                case XSharpParser.LET:
+                case XSharpParser.JOIN:
+                case XSharpParser.ORDERBY:
+                case XSharpParser.INTO:
+                case XSharpParser.ON:
                     r = SyntaxFactory.Identifier(token.Text);
                     break;
                 default:
@@ -765,6 +777,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
             r.XNode = new TerminalNodeImpl(token);
+            return r;
+        }
+
+        public static SyntaxKind OrderingKind(this IToken token)
+        {
+            SyntaxKind r;
+            switch (token.Type)
+            {
+                case XSharpParser.ASCENDING:
+                    r = SyntaxKind.AscendingOrdering;
+                    break;
+                case XSharpParser.DESCENDING:
+                    r = SyntaxKind.DescendingOrdering;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
             return r;
         }
 
@@ -886,6 +915,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxKind.FalseLiteralExpression;
+                    break;
+                case XSharpParser.CHAR_CONST:
+                    r = SyntaxKind.CharacterLiteralExpression;
                     break;
                 case XSharpParser.STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
@@ -1110,6 +1142,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 list.Add(t);
             }
+        }
+
+        public static void FixDefaultVisibility(this SyntaxListBuilder list)
+        {
+            for (int i = 0; i < list.Count; i++) {
+                var item = list[i];
+                if (SyntaxFacts.IsAccessibilityModifier(item.Kind))
+                    return;
+            }
+            list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
         }
     }
 }

@@ -163,14 +163,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static partial class SyntaxFactory
     {
+        readonly static internal SyntaxTrivia WS = Whitespace(" ");
+
         internal static SyntaxToken MakeToken(SyntaxKind kind)
         {
-            return Token(Whitespace(" "), kind, Whitespace(" "));
+            return Token(WS, kind, WS);
+        }
+
+        internal static SyntaxToken MakeToken(SyntaxKind kind, string text)
+        {
+            return Token(WS, kind, text, text, WS);
         }
 
         internal static SyntaxToken MakeIdentifier(string text)
         {
-            return Identifier(Whitespace(" "), text, Whitespace(" "));
+            return Identifier(WS, text, WS);
         }
     }
 

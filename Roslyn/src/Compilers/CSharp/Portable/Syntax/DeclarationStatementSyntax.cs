@@ -11,5 +11,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
                 return this.Modifiers.Any(SyntaxKind.ConstKeyword);
             }
         }
+#if XSHARP
+        public bool IsRef
+        {
+            get
+            {
+                return this.Modifiers.Any(SyntaxKind.RefKeyword);
+            }
+        }
+        public bool IsStatic
+        {
+            get
+            {
+                return this.Modifiers.Any(SyntaxKind.StaticKeyword);
+            }
+        }
+#endif
     }
 }

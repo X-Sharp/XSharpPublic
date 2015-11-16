@@ -465,6 +465,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 kind = LocalDeclarationKind.Constant;
             }
+#if XSHARP
+            if (node.IsRef)
+            {
+                kind = LocalDeclarationKind.RefVariable;
+            }
+#endif
 
             var variableList = node.Declaration.Variables;
             int variableCount = variableList.Count;

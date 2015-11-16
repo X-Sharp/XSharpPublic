@@ -133,7 +133,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 walker.Walk(treeTransform, tree);
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                var result = _syntaxFactory.CompilationUnit(treeTransform.Externs, treeTransform.Usings, treeTransform.Attributes, treeTransform.Members, eof);
+                var result = _syntaxFactory.CompilationUnit(
+                    treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings, 
+                    treeTransform.GlobalEntities.Attributes, treeTransform.GlobalEntities.Members, eof);
                 result.XNode = (XSharpParser.SourceContext)tree;
                 return result;
             }
@@ -149,6 +151,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // happening.  It's not a bug but it's inefficient and should be changed.
             //Debug.Assert(_recursionDepth == 0);
 
+#if DEBUG
+            return parseFunc();
+#else
             try
             {
                 return parseFunc();
@@ -159,10 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return CreateForGlobalFailure(lexer.TextWindow.Position, createEmptyNodeFunc());
             }
-            catch (Exception)
-            {
-                return CreateForGlobalFailure(lexer.TextWindow.Position, createEmptyNodeFunc());
-            }
+#endif
         }
 
         private TNode CreateForGlobalFailure<TNode>(int position, TNode node) where TNode : CSharpSyntaxNode

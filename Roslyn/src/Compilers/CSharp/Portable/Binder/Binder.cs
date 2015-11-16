@@ -593,6 +593,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 BindArgumentAndName(analyzedArguments, unusedDiagnostics, false, argumentSyntax, allowArglist: false);
             }
+#if XSHARP
+            allowRefOmittedArguments = true;
+#endif
 
             OverloadResolution.MethodOrPropertyOverloadResolution(
                 methodsBuilder,

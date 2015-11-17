@@ -38,8 +38,8 @@ BEGIN
   BEGIN
     BLOCK "040904E4"
     BEGIN
-      VALUE "CompanyName",      "Microsoft Corporation"
-      VALUE "LegalCopyright",   "© Microsoft Corporation. All rights reserved."
+      VALUE "CompanyName",      "XSharp BV"
+      VALUE "LegalCopyright",   "© XSharp BV. All rights reserved."
       VALUE "FileVersion",      "$(BuildVersion)"
       VALUE "ProductVersion",   "$(BuildVersion)"
     END

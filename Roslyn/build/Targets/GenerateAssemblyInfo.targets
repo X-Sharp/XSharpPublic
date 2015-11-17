@@ -5,10 +5,10 @@
 
   <ItemGroup>
     <AssemblyVersionAttribute Include="System.Reflection.AssemblyCompanyAttribute">
-      <_Parameter1>Microsoft Corporation</_Parameter1>
+      <_Parameter1>XSharp</_Parameter1>
     </AssemblyVersionAttribute>
     <AssemblyVersionAttribute Include="System.Reflection.AssemblyCopyrightAttribute">
-      <_Parameter1>© Microsoft Corporation. All rights reserved.</_Parameter1>
+      <_Parameter1>© XSharp BV. All rights reserved.</_Parameter1>
     </AssemblyVersionAttribute>
     <AssemblyVersionAttribute Include="System.Reflection.AssemblyVersionAttribute">
       <_Parameter1>$(AssemblyVersion)</_Parameter1>

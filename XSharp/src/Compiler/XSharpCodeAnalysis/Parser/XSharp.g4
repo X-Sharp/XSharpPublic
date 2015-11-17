@@ -750,6 +750,7 @@ literalValue		: Token=
 					;
 
 eos                 : (NL)* (NL|EOF)
+                    | SEMI ~NL
 					;
 
 eof                 : EOF

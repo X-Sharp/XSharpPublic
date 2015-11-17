@@ -23,10 +23,16 @@ namespace ParserTester
 			//var rdr = new System.IO.StreamReader(@"d:\Vewa6\DevU\SDK\VOSDK\RDD_Classes_SDK\DbServer.prg");
 			//var source = rdr.ReadToEnd();
 			string[] noerrors = new string[]{""
-			, "[Obsolete(\"this is obsolete\")] Function Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			, "[Obsolete(\"this is obsolete\")];\nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			, "[StaThread];  //comment\nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			, "[StaThread];  ///comment\nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			// This should work with oldComment TRUE
+			, "[StaThread];  &&comment\nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			, "* Foo \nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			, "[StaThread] Function Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
+			, "Function Foo()\nConsole.WriteLine(e\"\\xABCD\");Console.WriteLine(123)\n"// semi colon delimited
 			, "Function Foo()\nConsole.WriteLine(MailMessage{}:@@To+MailMessage{}:@@From)\n"
 			, "Function Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
-			, "Function Foo()\nConsole.WriteLine(e\"\\xABCD\")\n"
 			, "Function Foo()\nConsole.WriteLine(e\"\\u0066\")\n"
 			, "Function Foo()\nConsole.WriteLine(e\"\\a\\b\\f\\n\\r\\t\\v\")\n"
 			, "Function Main()\nRETURN 1\nPROCEDURE Foo()\nRETURN\n"
@@ -130,6 +136,7 @@ namespace ParserTester
 			var stream = new AntlrInputStream(code.ToString());
 			var lexer = new XSharpLexer(stream);
 			lexer.AllowFourLetterAbbreviations = true;
+			lexer.AllowOldStyleComments = true;
 			var tokens = new CommonTokenStream(lexer);
 			var parser = new XSharpParser(tokens);
 			parser.AllowXBaseVariables = true;
@@ -137,6 +144,7 @@ namespace ParserTester
 			var errorListener = new XSharpErrorListener(showErrors);
 			parser.AddErrorListener(errorListener);
 			var tree = parser.source();
+			//Console.WriteLine(tree.ToStringTree());
 			return errorListener.TotalErrors;
 		}
 	}

@@ -432,6 +432,27 @@ DOT			: '.' ;
 COLONCOLON	: ':' ':';
 
 
+MACRO		: '__' A R R A Y B A S E '__'
+			| '__' C L R '2' '__'
+			| '__' C L R '4' '__'
+			| '__' C L R V E R S I O N '__'
+			| '__' D A T E '__'
+			| '__' D A T E T I M E '__'
+			| '__' D E B U G '__'
+			| '__' E N T I T Y '__'
+			| '__' F I L E '__'
+			| '__' L I N E '__'
+			| '__' M O D U L E '__'
+			| '__' S I G '__'
+			| '__' S R C L O C '__'
+			| '__' S Y S D I R '__'
+			| '__' T I M E '__'
+			| '__' U T C T I M E '__'
+			| '__' V E R S I O N  '__'
+			| '__' W I N D I R '__'
+			| '__' W I N D R I V E '__'
+			;
+
 // Numeric & date constants
 HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
 BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
@@ -520,9 +541,18 @@ fragment
 UNICODE_ESCAPE_SEQUENCE : '\\' U HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT (HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT)?	// \u 4 hex or \u 8 hex
 						;
 
-WS			:	(' ' |  '\t') -> channel(HIDDEN)
+// When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character                            
+LINE_CONT   :   ';' (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')             ->channel(HIDDEN)
+            ;
+
+LINE_CONT_OLD: {_OldComment}? ';' (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
+            ;
+
+SEMI		: ';' 
 			;
 
+WS			:	(' ' |  '\t') -> channel(HIDDEN)
+			;
 
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
 // the Lexer Property AllowOldStyleComments

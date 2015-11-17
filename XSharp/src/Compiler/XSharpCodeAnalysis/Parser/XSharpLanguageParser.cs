@@ -30,9 +30,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
             {
-                if (e.OffendingToken != null)
+                if (e?.OffendingToken != null)
                 {
                     Debug.WriteLine("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
+                }
+                else if (offendingSymbol != null)
+                {
+                    Debug.WriteLine("line :" + offendingSymbol.Line + " column: " + offendingSymbol.Column + " " + msg);
                 }
                 else
                 {

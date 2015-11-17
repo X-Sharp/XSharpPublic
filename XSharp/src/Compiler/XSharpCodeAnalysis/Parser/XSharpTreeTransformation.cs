@@ -1791,9 +1791,67 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVounion([NotNull] XSharpParser.VounionContext context)
         {
-            // TODO
-            context.Put(GenerateGlobalClass(GlobalClassName).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
+            context.Put(_syntaxFactory.StructDeclaration(
+                attributeLists: MakeList(
+                    _syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: null,
+                        attributes: MakeSeparatedList(
+                            _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("System.Runtime.InteropServices.StructLayout"),
+                                argumentList: _syntaxFactory.AttributeArgumentList(
+                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                                    arguments: MakeSeparatedList(
+                                        _syntaxFactory.AttributeArgument(null,null,GenerateQualifiedName("System.Runtime.InteropServices.LayoutKind.Explicit"))
+                                    ),
+                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                                )
+                            ),
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                    ),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: null,
+                baseList: null,
+                constraintClauses: null,
+                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
+                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null));
+        }
+
+        public override void ExitVounionmember([NotNull] XSharpParser.VounionmemberContext context)
+        {
+            bool isDim = context.Dim != null;
+            var varType = context.DataType.Get<TypeSyntax>();
+            if (isDim) {
+                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpeicifier(context.ArraySub._ArrayIndex.Count));
+            }
+            context.Put(_syntaxFactory.FieldDeclaration(
+                MakeList(
+                    _syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: null,
+                        attributes: MakeSeparatedList(
+                            _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("System.Runtime.InteropServices.FieldOffset"),
+                                argumentList: _syntaxFactory.AttributeArgumentList(
+                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                                    arguments: MakeSeparatedList(
+                                        _syntaxFactory.AttributeArgument(null,null,
+                                            _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(null,"0",0,null))
+                                        )
+                                    ),
+                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                                )
+                            ),
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                    ),
+                TokenList(SyntaxKind.PublicKeyword),
+                _syntaxFactory.VariableDeclaration(varType, 
+                    MakeSeparatedList(_syntaxFactory.VariableDeclarator(context.Id.Get<SyntaxToken>(), null, null))),
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitArraysub([NotNull] XSharpParser.ArraysubContext context)

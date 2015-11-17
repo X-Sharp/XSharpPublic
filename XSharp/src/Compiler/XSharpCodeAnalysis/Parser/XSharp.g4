@@ -145,13 +145,17 @@ vostruct			: (Modifiers=funcprocModifiers)?
 					  (Members+=vostructmember)+
 					;
 
+vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
+					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
+					;
+
 vounion				: (Modifiers=funcprocModifiers)? 
 					  UNION  Id=identifier  eos
-					  (Members+=vostructmember)+
+					  (Members+=vounionmember)+
 					;
 
 
-vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
+vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
 					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
 					;
 

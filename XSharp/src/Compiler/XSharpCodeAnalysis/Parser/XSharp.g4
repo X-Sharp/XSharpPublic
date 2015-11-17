@@ -140,11 +140,13 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
 					;
 
-vostruct			: VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? eos
+vostruct			: (Modifiers=funcprocModifiers)? 
+					  VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? eos
 					  (Members+=vostructmember)+
 					;
 
-vounion				: UNION  Id=identifier  eos
+vounion				: (Modifiers=funcprocModifiers)? 
+					  UNION  Id=identifier  eos
 					  (Members+=vostructmember)+
 					;
 

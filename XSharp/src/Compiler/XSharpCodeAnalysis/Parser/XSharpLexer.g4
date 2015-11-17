@@ -432,7 +432,7 @@ DOT			: '.' ;
 COLONCOLON	: ':' ':';
 
 
-MACRO		: '__' A R R A Y B A S E '__'
+MACRO		: '__' A R R A Y B A S E '__' 
 			| '__' C L R '2' '__'
 			| '__' C L R '4' '__'
 			| '__' C L R V E R S I O N '__'

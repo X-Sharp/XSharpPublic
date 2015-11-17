@@ -23,6 +23,7 @@ namespace ParserTester
 			//var rdr = new System.IO.StreamReader(@"d:\Vewa6\DevU\SDK\VOSDK\RDD_Classes_SDK\DbServer.prg");
 			//var source = rdr.ReadToEnd();
 			string[] noerrors = new string[]{""
+			, "Function Foo()\nConsole.WriteLine(__TIME__)\n"
 			, "[Obsolete(\"this is obsolete\")];\nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
 			, "[StaThread];  //comment\nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"
 			, "[StaThread];  ///comment\nFunction Foo()\nConsole.WriteLine(e\"\\r\\nThe quick brown fox\t\")\n"

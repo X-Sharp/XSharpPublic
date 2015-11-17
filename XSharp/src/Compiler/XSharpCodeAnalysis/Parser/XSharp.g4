@@ -746,7 +746,8 @@ literalValue		: Token=
 					| NULL_PSZ
 					| NULL_PTR
 					| NULL_STRING
-					| NULL_SYMBOL )
+					| NULL_SYMBOL 
+					| MACRO )
 					;
 
 eos                 : (NL)* (NL|EOF)

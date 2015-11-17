@@ -168,3 +168,8 @@ $RECYCLE.BIN/
 
 # ANTLR4 generated files
 Generated/
+
+
+#project Locks
+project.lock.json
+

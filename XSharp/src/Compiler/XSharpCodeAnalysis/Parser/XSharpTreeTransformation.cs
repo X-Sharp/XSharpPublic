@@ -47,8 +47,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal class SyntaxClassEntities
         {
+            internal class VoPropertyInfo {
+                internal SyntaxToken idName;
+                internal XSharpParser.MethodContext AccessMethodCtx = null;
+                internal XSharpParser.MethodContext AssignMethodCtx = null;
+            }
+
             internal SyntaxListPool _pool;
             public SyntaxListBuilder<MemberDeclarationSyntax> Members;
+            public Dictionary<string,VoPropertyInfo> VoProperties;
 
             internal SyntaxClassEntities(SyntaxListPool pool) {
                 Members = pool.Allocate<MemberDeclarationSyntax>();
@@ -58,6 +65,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal void Free()
             {
                 _pool.Free(Members);
+            }
+
+            internal void AddVoPropertyAccessor(XSharpParser.MethodContext accessor)
+            {
+                if (VoProperties == null)
+                    VoProperties = new Dictionary<string, VoPropertyInfo>(CaseInsensitiveComparison.Comparer);
+                string name = accessor.Id.Get<SyntaxToken>().Text;
+                VoPropertyInfo propertyInfo;
+                if (!VoProperties.TryGetValue(name,out propertyInfo)) {
+                    propertyInfo = new VoPropertyInfo();
+                    propertyInfo.idName = accessor.Id.Get<SyntaxToken>();
+                    VoProperties.Add(name,propertyInfo);
+                }
+                switch (accessor.T.Token.Type) {
+                    case XSharpParser.ACCESS:
+                        if (propertyInfo.AccessMethodCtx != null)
+                            accessor.AddError(new ParseErrorData(ErrorCode.ERR_DuplicateAccessor, accessor));
+                        else
+                            propertyInfo.AccessMethodCtx = accessor;
+                        break;
+                    case XSharpParser.ASSIGN:
+                        if (propertyInfo.AssignMethodCtx != null)
+                            accessor.AddError(new ParseErrorData(ErrorCode.ERR_DuplicateAccessor, accessor));
+                        else
+                            propertyInfo.AssignMethodCtx = accessor;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -70,6 +106,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string StaticLocalInitFieldNameSuffix = "$init";
         const string StaticLocalLockFieldNameSuffix = "$lock";
         const string EventFieldNamePrefix = "Xs$Event$";
+        const string VoPropertyAccessPrefix = "Xs$Access$";
+        const string VoPropertyAssignPrefix = "Xs$Assign$";
 
         public static SyntaxTree DefaultXSharpSyntaxTree = GenerateDefaultTree();
         private static int _unique = 0;
@@ -460,6 +498,97 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        internal PropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop) {
+            var getMods = _pool.Allocate();
+            var setMods = _pool.Allocate();
+            var outerMods = _pool.Allocate();
+            if (vop.AccessMethodCtx != null) {
+                if (vop.AccessMethodCtx.Modifiers != null)
+                    getMods.AddRange(vop.AccessMethodCtx.Modifiers.GetList<SyntaxToken>());
+                else
+                    getMods.FixDefaultVisibility();
+            }
+            if (vop.AssignMethodCtx != null) {
+                if (vop.AssignMethodCtx.Modifiers != null)
+                    setMods.AddRange(vop.AssignMethodCtx.Modifiers.GetList<SyntaxToken>());
+                else
+                    setMods.FixDefaultVisibility();
+            }
+            var getVisLvl = getMods.GetVisibilityLevel();
+            var setVisLvl = setMods.GetVisibilityLevel();
+            if (getVisLvl <= setVisLvl) {
+                outerMods.AddRange(getMods);
+                getMods.Clear();
+            }
+            else {
+                outerMods.AddRange(setMods);
+                setMods.Clear();
+            }
+            var rawMods = getVisLvl <= setVisLvl ? setMods : getMods;
+            var fixedGetMods = _pool.Allocate();
+            for(int i = 0; i < rawMods.Count; i++) {
+                var t = rawMods[i];
+                if (!outerMods.Any(t.Kind)) {
+                    if (!SyntaxFacts.IsAccessibilityModifier(t.Kind))
+                        t = t.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadMemberFlag,t));
+                    fixedGetMods.Add(t);
+                }
+            }
+            _pool.Free(rawMods);
+            if (getVisLvl <= setVisLvl)
+                setMods = fixedGetMods;
+            else
+                getMods = fixedGetMods;
+
+            TypeSyntax voPropType;
+            if (vop.AssignMethodCtx != null)
+                voPropType = vop.AssignMethodCtx.Type.Get<TypeSyntax>();
+            else if (vop.AccessMethodCtx != null && vop.AccessMethodCtx.ParamList != null && vop.AccessMethodCtx.ParamList._Params?.Count > 0)
+                voPropType = vop.AccessMethodCtx.ParamList._Params[0].Type.Get<TypeSyntax>();
+            else
+                voPropType = MissingType();
+
+            var prop = _syntaxFactory.PropertyDeclaration(
+                attributeLists: EmptyList<AttributeListSyntax>(),
+                modifiers: outerMods.ToTokenList(),
+                type: voPropType,
+                explicitInterfaceSpecifier: null,
+                identifier: vop.idName,
+                accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    MakeList(
+                        _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),getMods.ToTokenList(),
+                            SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
+                            _syntaxFactory.Block(
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
+                                    _syntaxFactory.InvocationExpression(_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VoPropertyAccessPrefix+vop.idName.Text)),
+                                        MakeArgumentList()),
+                                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                            null),
+                        _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),setMods.ToTokenList(),
+                            SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
+                            _syntaxFactory.Block(
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                MakeList<StatementSyntax>(_syntaxFactory.ExpressionStatement(
+                                    _syntaxFactory.InvocationExpression(_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VoPropertyAssignPrefix+vop.idName.Text)),
+                                        MakeArgumentList(_syntaxFactory.Argument(null,null,_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("value"))))),
+                                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                            null)
+                        ),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                expressionBody: null,
+                initializer: null,
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+
+            _pool.Free(getMods);
+            _pool.Free(setMods);
+            _pool.Free(outerMods);
+
+            return prop;
+        }
+
         public static SyntaxTree GenerateDefaultTree()
         {
             var t = new XSharpTreeTransformation(null, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()));
@@ -684,6 +813,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var generated = ClassEntities.Pop();
             if(generated.Members.Count > 0) {
                 members.AddRange(generated.Members);
+            }
+            if (generated.VoProperties != null) {
+                foreach(var vop in generated.VoProperties.Values) {
+                    members.Add(GenerateVoProperty(vop));
+                }
             }
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
@@ -1068,9 +1202,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         (context.Auto != null) ? 
                             ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
-                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),EmptyList(),
                                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),null,SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                                _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),EmptyList(),
                                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),null,SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))) :
                         ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
                         MakeList<AccessorDeclarationSyntax>(context._Accessors),
@@ -1094,9 +1228,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         (context.Auto != null) ? 
                             ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
-                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),EmptyList(),
                                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),null,SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                                _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,null,null,
+                                _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),EmptyList(),
                                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),null,SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))) :
                         ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
                         MakeList<AccessorDeclarationSyntax>(context._Accessors),
@@ -1194,33 +1328,65 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.StmtBlk = null;
             }
-            context.Put(_syntaxFactory.MethodDeclaration(
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
-                returnType: context.Type?.Get<TypeSyntax>() ?? MissingType(),
-                explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
-                    name: context.ExplicitIface.Get<NameSyntax>(),
-                    dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
-                identifier: context.Id.Get<SyntaxToken>(),
-                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
-                parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
-                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
-                body: isInInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
-                expressionBody: null, // TODO: (grammar) expressionBody methods
-                semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-            if (context.ClassId != null) {
-                context.Put(_syntaxFactory.ClassDeclaration(
-                    attributeLists: EmptyList<AttributeListSyntax>(),
-                    modifiers: TokenList(SyntaxKind.PartialKeyword),
-                    keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                    identifier: context.ClassId.Get<SyntaxToken>(),
-                    typeParameterList: default(TypeParameterListSyntax),
-                    baseList: default(BaseListSyntax),
-                    constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                    openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    members: MakeList<MemberDeclarationSyntax>(context.Get<MethodDeclarationSyntax>()),
-                    closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                    semicolonToken: null));
+            var idName = context.Id.Get<SyntaxToken>();
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            bool actualDeclaration = true;
+            if (context.T.Token.Type != XSharpParser.METHOD) {
+                switch (context.T.Token.Type) {
+                    case XSharpParser.ACCESS:
+                        idName = SyntaxFactory.Identifier(VoPropertyAccessPrefix + context.T.Token.Text);
+                        idName.XNode = new TerminalNodeImpl(context.T.Token);
+                        break;
+                    case XSharpParser.ASSIGN:
+                        idName = SyntaxFactory.Identifier(VoPropertyAssignPrefix + context.T.Token.Text);
+                        idName.XNode = new TerminalNodeImpl(context.T.Token);
+                        break;
+                }
+                var vomods = _pool.Allocate();
+                vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
+                vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword));
+                vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword));
+                if (mods.Any(SyntaxKind.StaticKeyword))
+                    vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+                if (mods.Any(SyntaxKind.UnsafeKeyword))
+                    vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
+                if (mods.Any(SyntaxKind.AbstractKeyword))
+                    actualDeclaration = false;
+                mods = vomods.ToTokenList();
+                _pool.Free(vomods);
+            }
+            if (actualDeclaration) {
+                context.Put(_syntaxFactory.MethodDeclaration(
+                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: mods,
+                    returnType: context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                    explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
+                        name: context.ExplicitIface.Get<NameSyntax>(),
+                        dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
+                    identifier: idName,
+                    typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                    parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                    constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                    body: isInInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
+                    expressionBody: null, // TODO: (grammar) expressionBody methods
+                    semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                if (context.ClassId != null) {
+                    context.Put(_syntaxFactory.ClassDeclaration(
+                        attributeLists: EmptyList<AttributeListSyntax>(),
+                        modifiers: TokenList(SyntaxKind.PartialKeyword),
+                        keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                        identifier: context.ClassId.Get<SyntaxToken>(),
+                        typeParameterList: default(TypeParameterListSyntax),
+                        baseList: default(BaseListSyntax),
+                        constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        members: MakeList<MemberDeclarationSyntax>(context.Get<MethodDeclarationSyntax>()),
+                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                        semicolonToken: null));
+                }
+            }
+            if (context.T.Token.Type != XSharpParser.METHOD) {
+                ClassEntities.Peek().AddVoPropertyAccessor(context);
             }
         }
 
@@ -1284,10 +1450,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitMethodtype([NotNull] XSharpParser.MethodtypeContext context)
         {
-            if (context.Token.Type != XSharpParser.METHOD) {
-                // TODO: access/assign accessors
-                context.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1, context.Token));
-            }
+            // nvk: Handled by the method rule
         }
 
         public override void ExitConstructorModifiers([NotNull] XSharpParser.ConstructorModifiersContext context)

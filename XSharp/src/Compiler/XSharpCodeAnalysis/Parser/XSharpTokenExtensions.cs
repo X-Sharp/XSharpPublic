@@ -1153,5 +1153,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
         }
+
+        public static int GetVisibilityLevel(this SyntaxListBuilder list)
+        {
+            if (list.Any(SyntaxKind.PublicKeyword))
+                return 0;
+            if (list.Any(SyntaxKind.ProtectedKeyword)) {
+                if (list.Any(SyntaxKind.InternalKeyword))
+                    return 1;
+                else
+                    return 2;
+            }
+            if (list.Any(SyntaxKind.InternalKeyword))
+                return 2;
+            if (list.Any(SyntaxKind.PrivateKeyword))
+                return 3;
+            return 0;
+        }
     }
 }

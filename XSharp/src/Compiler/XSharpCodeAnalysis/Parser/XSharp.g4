@@ -394,7 +394,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO WHILE Expr=expression eos
-					  StmtBlk=statementBlock END DO eos							#whileStmt
+					  StmtBlk=statementBlock (END DO | ENDDO) eos				#whileStmt
 					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
 					| FOR Iter=expression ASSIGN_OP InitExpr=expression

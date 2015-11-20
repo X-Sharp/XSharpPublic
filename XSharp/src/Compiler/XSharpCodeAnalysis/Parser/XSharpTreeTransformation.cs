@@ -1563,18 +1563,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.CONSTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
             }
             else {
+                var parentId = (context.Parent as XSharpParser.Class_Context)?.Id.Get<SyntaxToken>()
+                    ?? (context.Parent as XSharpParser.Structure_Context)?.Id.Get<SyntaxToken>()
+                    ?? (context.Parent as XSharpParser.Interface_Context)?.Id.Get<SyntaxToken>();
                 context.Put(_syntaxFactory.ConstructorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
-                    identifier: (context.Parent as XSharpParser.Class_Context).Id.Get<SyntaxToken>(),
+                    identifier: parentId,
                     parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                     initializer: context.Chain == null ? null : 
                         _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                             context.Chain.SyntaxKeyword(), 
                             context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
-                    body: context.StmtBlk.Get<BlockSyntax>(),
-                    semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    body: context.StmtBlk?.Get<BlockSyntax>(),
+                    semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
         }
 
@@ -1590,11 +1593,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.DESTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
             }
             else {
+                var parentId = (context.Parent as XSharpParser.Class_Context)?.Id.Get<SyntaxToken>()
+                    ?? (context.Parent as XSharpParser.Structure_Context)?.Id.Get<SyntaxToken>()
+                    ?? (context.Parent as XSharpParser.Interface_Context)?.Id.Get<SyntaxToken>();
                 context.Put(_syntaxFactory.DestructorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                     tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
-                    identifier: (context.Parent as XSharpParser.Class_Context).Id.Get<SyntaxToken>(),
+                    identifier: parentId,
                     parameterList: EmptyParameterList(),
                     body: context.StmtBlk.Get<BlockSyntax>(),
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));

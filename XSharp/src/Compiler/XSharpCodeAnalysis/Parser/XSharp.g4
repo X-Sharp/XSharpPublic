@@ -357,7 +357,7 @@ attributeTarget		: Id=identifier COLON
 					| Kw=keyword COLON
 					;
 
-attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN ) ?
+attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
 					;
 
 attributeParam		: (Name=identifierName ASSIGN_OP)? Expr=expression					#propertyAttributeParam

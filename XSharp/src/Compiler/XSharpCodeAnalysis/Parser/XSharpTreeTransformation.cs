@@ -1721,10 +1721,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 attributes.Add(attrCtx.Get<AttributeSyntax>());
             }
             context.Put(_syntaxFactory.AttributeList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                context.Target.Get<AttributeTargetSpecifierSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                context.Target?.Get<AttributeTargetSpecifierSyntax>(),
                 attributes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
             _pool.Free(attributes);
         }
 
@@ -1738,11 +1738,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAttribute([NotNull] XSharpParser.AttributeContext context)
         {
             var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
-            foreach(var paramCtx in context._Params) {
-                if (arguments.Count != 0) {
-                    arguments.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+            if (context._Params != null) {
+                foreach (var paramCtx in context._Params) {
+                    if (arguments.Count != 0) {
+                        arguments.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    }
+                    arguments.Add(paramCtx.Get<AttributeArgumentSyntax>());
                 }
-                arguments.Add(paramCtx.Get<AttributeArgumentSyntax>());
             }
             context.Put(_syntaxFactory.Attribute(
                 name: context.Name.Get<NameSyntax>(),

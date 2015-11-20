@@ -1503,7 +1503,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Conversion != null)
                 context.Put(_syntaxFactory.ConversionOperatorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(SyntaxKind.StaticKeyword),
                     implicitOrExplicitKeyword: context.Conversion.Get<SyntaxToken>(),
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
                     type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
@@ -1514,7 +1514,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 context.Put(_syntaxFactory.OperatorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(SyntaxKind.StaticKeyword),
                     returnType: context.Type?.Get<TypeSyntax>() ?? MissingType(),
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
                     operatorToken: context.Operation.Get<SyntaxToken>(),
@@ -1531,6 +1531,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
+            if (!modifiers.Any(SyntaxKind.StaticKeyword))
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             modifiers.FixDefaultVisibility();
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);

@@ -327,18 +327,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Text.Last()) {
                         case 'M':
                         case 'm':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, decimal.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, decimal.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         case 'S':
                         case 's':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, float.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, float.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         case 'D':
                         case 'd':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         default:
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                     }
                     break;
@@ -346,7 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Text.Last()) {
                         case 'U':
                         case 'u':
-                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
                             if (ul > uint.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, ul, SyntaxFactory.WS);
                             else
@@ -354,14 +354,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                         case 'L':
                         case 'l':
-                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
                             if (l > int.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)l, SyntaxFactory.WS);
                             break;
                         default:
-                            long n = long.Parse(token.Text);
+                            long n = long.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
                             if (n > int.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, n, SyntaxFactory.WS);
                             else

@@ -665,10 +665,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             generated.Free();
 
+            // Add: using static Xs$Globals
             GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
-                SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword), 
+                SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
                 null,
                 _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(GlobalClassName)),
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+
+            // Add: using System
+            GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
+                null,
+                null,
+                _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("System")),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 

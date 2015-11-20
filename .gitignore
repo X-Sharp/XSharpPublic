@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/XSharpLanguage/packages/Microsoft.VisualStudio.ProjectSystem.SDK.Tools.14.0.50721-pre/build/Microsoft.VisualStudio.ProjectSystem.Sdk.Tasks.dll
+/XSharpLanguage/.vs/XSharpLanguage/v14/.suo
+/XSharpLanguage/XSharpLanguage.sln

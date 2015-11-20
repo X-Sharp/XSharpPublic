@@ -160,8 +160,8 @@ PROCEDURE			: P R O C E D U R E
                     | P R O C
 					| { _Four}? P R O C E(D(U(R)?)?)?
 					;
-PROTECTED			: P R O T E C T E D
-					| { _Four}? P R O T (E(C(T(E)?)?)?)?
+PROTECTED			: P R O T E C T (E D)?
+					| { _Four}? P R O T (E(C(T E)?)?)?
 					;
 PUBLIC				: P U B L I C
 					| { _Four}? P U B L (I)?

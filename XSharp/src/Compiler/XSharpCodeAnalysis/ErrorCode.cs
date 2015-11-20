@@ -4,6 +4,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal enum ErrorCode
     {
+        // Errors treated as warnings in XSharp!
+        WRN_UseDefViolation = 165,
+        WRN_UseDefViolationField = 170,
+        WRN_UseDefViolationThis = 188,
+        WRN_UseDefViolationOut = 269,
+        WRN_UseDefViolationProperty = 8079,
+
         Void = InternalErrorCode.Void,
         Unknown = InternalErrorCode.Unknown,
         //FTL_InternalError = 1,

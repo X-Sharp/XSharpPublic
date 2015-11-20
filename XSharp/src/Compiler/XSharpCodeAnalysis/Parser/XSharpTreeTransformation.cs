@@ -3167,7 +3167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralArrayExpression([NotNull] XSharpParser.LiteralArrayExpressionContext context)
         {
-            context.Put(context.LiteralArray.Get<InitializerExpressionSyntax>());
+            context.Put(context.LiteralArray.Get<ExpressionSyntax>());
         }
 
 		public override void ExitIif([NotNull] XSharpParser.IifContext context)
@@ -3192,7 +3192,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _syntaxFactory.ArrayType(context.Type.Get<TypeSyntax>(),
                     MakeList(_syntaxFactory.ArrayRankSpecifier(
                         SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        EmptySeparatedList<ExpressionSyntax>(),
+                        MakeSeparatedList<ExpressionSyntax>(
+                            _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
                     initializer));
             else

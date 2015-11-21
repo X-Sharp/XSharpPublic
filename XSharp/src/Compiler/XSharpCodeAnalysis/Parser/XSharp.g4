@@ -108,7 +108,7 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
-using_              : HASHUSING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     eos
+using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     eos
                     ;
 
 // nvk: roslyn treats #pragma directives as trivia attached to parse nodes. The parser does not handle them directly.
@@ -357,7 +357,7 @@ attributeTarget		: Id=identifier COLON
 					| Kw=keyword COLON
 					;
 
-attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN ) ?
+attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
 					;
 
 attributeParam		: (Name=identifierName ASSIGN_OP)? Expr=expression					#propertyAttributeParam
@@ -394,7 +394,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO WHILE Expr=expression eos
-					  StmtBlk=statementBlock END DO eos							#whileStmt
+					  StmtBlk=statementBlock (END DO | ENDDO) eos				#whileStmt
 					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
 					| FOR Iter=expression ASSIGN_OP InitExpr=expression
@@ -624,7 +624,7 @@ datatype			: TypeName=typeName PTR											#ptrDatatype
 					| TypeName=typeName QMARK 										#nullableDatatype
 					;
 
-arrayRank			: LBRKT (COMMA)* RBRKT
+arrayRank			: LBRKT (Commas+=COMMA)* RBRKT
 					;
 
 typeName			: NativeType=nativeType

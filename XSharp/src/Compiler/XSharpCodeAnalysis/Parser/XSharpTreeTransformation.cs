@@ -2924,22 +2924,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCtorCall([NotNull] XSharpParser.CtorCallContext context)
         {
-            var type = context.Type.Get<TypeSyntax>();
-            ArgumentListSyntax argList;
-            if (context.ArgList != null)
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            else
-            {
-                var openParen = SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken);
-                var closeParen = SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken);
-                var args = default(SeparatedSyntaxList<ArgumentSyntax>);
-                argList = _syntaxFactory.ArgumentList(openParen, args, closeParen);
+            if (!(context.Type is XSharpParser.ArrayDatatypeContext)) {
+                var type = context.Type.Get<TypeSyntax>();
+                ArgumentListSyntax argList;
+                if (context.ArgList != null)
+                    argList = context.ArgList.Get<ArgumentListSyntax>();
+                else
+                {
+                    var openParen = SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken);
+                    var closeParen = SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken);
+                    var args = default(SeparatedSyntaxList<ArgumentSyntax>);
+                    argList = _syntaxFactory.ArgumentList(openParen, args, closeParen);
+                }
+                context.Put(_syntaxFactory.ObjectCreationExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                    type, 
+                    argList,
+                    initializer: null)); // TODO: (grammar) object creation initializer
             }
-            context.Put(_syntaxFactory.ObjectCreationExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                type, 
-                argList,
-                initializer: null)); // TODO: (grammar) object creation initializer
+            else {
+                var type = (context.Type as XSharpParser.ArrayDatatypeContext).TypeName.Get<TypeSyntax>();
+                var arrayType = context.Type.Get<ArrayTypeSyntax>();
+                int ranks = 0;
+                foreach(var rankSpec in arrayType.RankSpecifiers) {
+                    ranks += rankSpec.Sizes.Count;
+                }
+                if (ranks != context.ArgList?._Args?.Count)
+                    context.AddError(new ParseErrorData(ErrorCode.ERR_NoConstructors,arrayType));
+                var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
+                if (context.ArgList?._Args != null) {
+                    foreach (var size in context.ArgList?._Args) {
+                        if (size.Name != null)
+                            context.AddError(new ParseErrorData(size,ErrorCode.ERR_BadNamedArgument,size));
+                        if (size.RefOut != null)
+                            context.AddError(new ParseErrorData(size,ErrorCode.ERR_BadTypeArgument,size));
+                        if (sizes.Count > 0)
+                            sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                        sizes.Add(size.Expr.Get<ExpressionSyntax>());
+                    }
+                }
+                context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                    _syntaxFactory.ArrayType(type,
+                        MakeList(_syntaxFactory.ArrayRankSpecifier(
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                            sizes,
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
+                    null));
+                _pool.Free(sizes);
+            }
         }
 
         public override void ExitArrayAccess([NotNull] XSharpParser.ArrayAccessContext context)
@@ -3132,7 +3164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
             var omittedArraySizeExpressionInstance = _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken));
-            foreach (var comma in context.COMMA())
+            foreach (var comma in context._Commas)
             {
                 sizes.Add(omittedArraySizeExpressionInstance);
                 sizes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));

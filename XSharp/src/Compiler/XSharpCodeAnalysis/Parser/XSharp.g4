@@ -624,7 +624,7 @@ datatype			: TypeName=typeName PTR											#ptrDatatype
 					| TypeName=typeName QMARK 										#nullableDatatype
 					;
 
-arrayRank			: LBRKT (COMMA)* RBRKT
+arrayRank			: LBRKT (Commas+=COMMA)* RBRKT
 					;
 
 typeName			: NativeType=nativeType

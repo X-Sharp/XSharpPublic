@@ -8,10 +8,23 @@ lexer grammar XSharpLexer;
 {
 	public const int COMMENT = 1;
 
+	bool _inId = false;
+	private bool isKw(IToken t) {
+		char fc = Char.ToUpper(t.Text?[0] ?? (Char)0);
+		return fc == '_' || (fc >= 'A' && fc <= 'Z');
+	}
 	int _lastToken = NL;
 	public override IToken NextToken()
 	{
 		IToken iToken = base.NextToken();
+		if (iToken.Type == ID)
+			_inId = true;
+		else if (_inId) {
+			if (isKw(iToken))
+				(iToken as CommonToken).Type = ID;
+			else if (iToken.Type != DOT)
+				_inId = false;
+		}
 		_lastToken = iToken.Type;
 		return iToken;
 	}
@@ -352,20 +365,20 @@ NULL_SYMBOL			: N U L L '_' S Y M B O L ;
 
 // Logics
 FALSE_CONST			: F A L S E
-					| '.' F '.'
-					| '.' N '.'
+					| {!_inId}? '.' F '.'
+					| {!_inId}? '.' N '.'
 					;
 
 TRUE_CONST			: T R U E
-					| '.' T '.'
-					| '.' Y '.'
+					| {!_inId}? '.' T '.'
+					| {!_inId}? '.' Y '.'
 					;
 
 // Operators
-LOGIC_AND			: '.' A N D '.' ;
-LOGIC_OR			: '.' O R '.'   ;
-LOGIC_NOT			: '.' N O T '.' ;
-LOGIC_XOR			: '.' X O R '.' ;
+LOGIC_AND			: {!_inId}? '.' A N D '.' ;
+LOGIC_OR			: {!_inId}? '.' O R '.'   ;
+LOGIC_NOT			: {!_inId}? '.' N O T '.' ;
+LOGIC_XOR			: {!_inId}? '.' X O R '.' ;
 
 // Prefix and postfix Operators
 INC					: '++' ;

@@ -197,10 +197,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitGenericName([NotNull] XSharpParser.GenericNameContext context)
-        {
-        }
-
         public override void ExitGenericArgumentList([NotNull] XSharpParser.GenericArgumentListContext context)
         {
         }

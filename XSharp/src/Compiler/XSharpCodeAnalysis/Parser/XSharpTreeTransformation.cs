@@ -3093,31 +3093,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.QualifiedName(context.Left.Get<NameSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                _syntaxFactory.IdentifierName(context.Right.Get<SyntaxToken>())));
-        }
-
-        public override void ExitSimpleName([NotNull] XSharpParser.SimpleNameContext context)
-        {
-            context.Put(_syntaxFactory.IdentifierName(context.Id.Get<SyntaxToken>()));
-        }
-
-        public override void ExitGenericName([NotNull] XSharpParser.GenericNameContext context)
-        {
-            context.Put(_syntaxFactory.GenericName(context.Id.Get<SyntaxToken>(), context.GenericArgList.Get<TypeArgumentListSyntax>()));
+                context.Right.Get<SimpleNameSyntax>()));
         }
 
         public override void ExitAliasQualifiedName([NotNull] XSharpParser.AliasQualifiedNameContext context)
         {
             context.Put(_syntaxFactory.AliasQualifiedName(context.Alias.Get<IdentifierNameSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
-                _syntaxFactory.IdentifierName(context.Right.Get<SyntaxToken>())));
+                context.Right.Get<SimpleNameSyntax>()));
         }
 
         public override void ExitGlobalQualifiedName([NotNull] XSharpParser.GlobalQualifiedNameContext context)
         {
             context.Put(_syntaxFactory.AliasQualifiedName(_syntaxFactory.IdentifierName(context.Global.SyntaxKeyword()),
                 SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
-                _syntaxFactory.IdentifierName(context.Right.Get<SyntaxToken>())));
+                context.Right.Get<SimpleNameSyntax>()));
+        }
+
+        public override void ExitIdentifierOrGenericName([NotNull] XSharpParser.IdentifierOrGenericNameContext context)
+        {
+            context.Put(context.Name.Get<SimpleNameSyntax>());
+        }
+
+        public override void ExitSimpleName([NotNull] XSharpParser.SimpleNameContext context)
+        {
+            if (context.GenericArgList == null)
+                context.Put(_syntaxFactory.IdentifierName(context.Id.Get<SyntaxToken>()));
+            else
+                context.Put(_syntaxFactory.GenericName(context.Id.Get<SyntaxToken>(), context.GenericArgList.Get<TypeArgumentListSyntax>()));
         }
 
         public override void ExitGenericArgumentList([NotNull] XSharpParser.GenericArgumentListContext context)
@@ -3127,7 +3130,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (types.Count != 0)
                     types.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                types.Add(context.Get<TypeSyntax>());
+                types.Add(type.Get<TypeSyntax>());
             }
             context.Put(_syntaxFactory.TypeArgumentList(
                 SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),

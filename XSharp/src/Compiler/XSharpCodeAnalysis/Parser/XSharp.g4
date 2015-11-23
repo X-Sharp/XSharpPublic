@@ -574,7 +574,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
-					| Name=identifierName										#nameExpression			// generic name
+					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| Op=(DOT | COLON) Right=identifierName						#bindMemberAccess
@@ -605,11 +605,13 @@ iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=e
 					| IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
-name				: Left=name Op=DOT Right=identifier							#qualifiedName
-					| Id=identifier	GenericArgList=genericArgumentList			#genericName
-					| Id=identifier												#simpleName
-					| Alias=identifierName Op=COLONCOLON Right=identifierName	#aliasQualifiedName
-					| Global=GLOBAL Op=COLONCOLON Right=identifierName			#globalQualifiedName
+name				: Left=name Op=DOT Right=simpleName								#qualifiedName
+					| Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
+					| Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifiedName
+					| Name=simpleName												#identifierOrGenericName
+					;
+
+simpleName			: Id=identifier	GenericArgList=genericArgumentList?
 					;
 
 genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT

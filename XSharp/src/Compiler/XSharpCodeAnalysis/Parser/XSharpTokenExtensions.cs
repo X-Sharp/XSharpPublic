@@ -327,18 +327,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Text.Last()) {
                         case 'M':
                         case 'm':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, decimal.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, decimal.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         case 'S':
                         case 's':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, float.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, float.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         case 'D':
                         case 'd':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         default:
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                     }
                     break;
@@ -346,7 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Text.Last()) {
                         case 'U':
                         case 'u':
-                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
                             if (ul > uint.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, ul, SyntaxFactory.WS);
                             else
@@ -354,14 +354,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                         case 'L':
                         case 'l':
-                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
                             if (l > int.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)l, SyntaxFactory.WS);
                             break;
                         default:
-                            long n = long.Parse(token.Text);
+                            long n = long.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
                             if (n > int.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, n, SyntaxFactory.WS);
                             else
@@ -665,6 +665,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.INSTANCE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.None);
                     break;
+                case XSharpParser.ASCENDING:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword, token.Text);
+                    break;
+                case XSharpParser.DESCENDING:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DescendingKeyword, token.Text);
+                    break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:
@@ -757,6 +763,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //case XSharpParser.UNCHECKED:
                 //case XSharpParser.UNSAFE:
                 case XSharpParser.WHERE:
+                case XSharpParser.FROM:
+                case XSharpParser.LET:
+                case XSharpParser.JOIN:
+                case XSharpParser.ORDERBY:
+                case XSharpParser.INTO:
+                case XSharpParser.ON:
                     r = SyntaxFactory.Identifier(token.Text);
                     break;
                 default:
@@ -765,6 +777,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
             }
             r.XNode = new TerminalNodeImpl(token);
+            return r;
+        }
+
+        public static SyntaxKind OrderingKind(this IToken token)
+        {
+            SyntaxKind r;
+            switch (token.Type)
+            {
+                case XSharpParser.ASCENDING:
+                    r = SyntaxKind.AscendingOrdering;
+                    break;
+                case XSharpParser.DESCENDING:
+                    r = SyntaxKind.DescendingOrdering;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
             return r;
         }
 
@@ -886,6 +915,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxKind.FalseLiteralExpression;
+                    break;
+                case XSharpParser.CHAR_CONST:
+                    r = SyntaxKind.CharacterLiteralExpression;
                     break;
                 case XSharpParser.STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
@@ -1110,6 +1142,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 list.Add(t);
             }
+        }
+
+        public static void FixDefaultVisibility(this SyntaxListBuilder list)
+        {
+            for (int i = 0; i < list.Count; i++) {
+                var item = list[i];
+                if (SyntaxFacts.IsAccessibilityModifier(item.Kind))
+                    return;
+            }
+            list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+        }
+
+        public static int GetVisibilityLevel(this SyntaxListBuilder list)
+        {
+            if (list.Any(SyntaxKind.PublicKeyword))
+                return 0;
+            if (list.Any(SyntaxKind.ProtectedKeyword)) {
+                if (list.Any(SyntaxKind.InternalKeyword))
+                    return 1;
+                else
+                    return 2;
+            }
+            if (list.Any(SyntaxKind.InternalKeyword))
+                return 2;
+            if (list.Any(SyntaxKind.PrivateKeyword))
+                return 3;
+            return 0;
         }
     }
 }

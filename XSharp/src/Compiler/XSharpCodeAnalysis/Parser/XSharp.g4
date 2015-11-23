@@ -108,7 +108,7 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
-using_              : HASHUSING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     eos
+using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     eos
                     ;
 
 // nvk: roslyn treats #pragma directives as trivia attached to parse nodes. The parser does not handle them directly.
@@ -140,16 +140,22 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
 					;
 
-vostruct			: VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? eos
+vostruct			: (Modifiers=funcprocModifiers)? 
+					  VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? eos
 					  (Members+=vostructmember)+
 					;
-
-vounion				: UNION  Id=identifier  eos
-					  (Members+=vostructmember)+
-					;
-
 
 vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
+					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
+					;
+
+vounion				: (Modifiers=funcprocModifiers)? 
+					  UNION  Id=identifier  eos
+					  (Members+=vounionmember)+
+					;
+
+
+vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
 					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
 					;
 
@@ -351,7 +357,7 @@ attributeTarget		: Id=identifier COLON
 					| Kw=keyword COLON
 					;
 
-attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN ) ?
+attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
 					;
 
 attributeParam		: (Name=identifierName ASSIGN_OP)? Expr=expression					#propertyAttributeParam
@@ -385,10 +391,10 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 | { LA(1) == BEGIN && LA(2) == SCOPE }? scopestmt
 | fieldstmt */
 
-statement           : localdecl                                                 #declarationStmt
+statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO WHILE Expr=expression eos
-					  StmtBlk=statementBlock END DO eos							#whileStmt
+					  StmtBlk=statementBlock (END DO? | ENDDO) eos				#whileStmt
 					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
 					| FOR Iter=expression ASSIGN_OP InitExpr=expression
@@ -562,13 +568,13 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
-                    | Query=queryexpression                                     #queryExpressoin        // LINQ
+                    | Query=linqQuery											#queryExpression        // LINQ
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
 					| ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
-					| Name=identifierName										#nameExpression			// generic name
+					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| Op=(DOT | COLON) Right=identifierName						#bindMemberAccess
@@ -599,11 +605,13 @@ iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=e
 					| IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
-name				: Left=name Op=DOT Right=identifier							#qualifiedName
-					| Id=identifier	GenericArgList=genericArgumentList			#genericName
-					| Id=identifier												#simpleName
-					| Alias=identifierName Op=COLONCOLON Right=identifierName	#aliasQualifiedName
-					| Global=GLOBAL Op=COLONCOLON Right=identifierName			#globalQualifiedName
+name				: Left=name Op=DOT Right=simpleName								#qualifiedName
+					| Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
+					| Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifiedName
+					| Name=simpleName												#identifierOrGenericName
+					;
+
+simpleName			: Id=identifier	GenericArgList=genericArgumentList?
 					;
 
 genericArgumentList : LT GenericArgs+=datatype (COMMA GenericArgs+=datatype)* GT
@@ -618,7 +626,7 @@ datatype			: TypeName=typeName PTR											#ptrDatatype
 					| TypeName=typeName QMARK 										#nullableDatatype
 					;
 
-arrayRank			: LBRKT (COMMA)* RBRKT
+arrayRank			: LBRKT (Commas+=COMMA)* RBRKT
 					;
 
 typeName			: NativeType=nativeType
@@ -655,7 +663,7 @@ codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 
 // LINQ Support
 
-queryexpression     : From=fromClause Body=queryBody
+linqQuery			: From=fromClause Body=queryBody
                     ;
 
 fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
@@ -664,13 +672,16 @@ fromClause          : FROM Id=identifier (AS Type=typeName)? IN Expr=expression
 queryBody           : (Bodyclauses+=queryBodyClause)* SorG=selectOrGroupclause (Continuation=queryContinuation)?
                     ;
 
-queryBodyClause     : fromClause                                                                                                #fromBodyClause
+queryBodyClause     : From=fromClause                                                                                           #fromBodyClause
                     | LET Id=identifier ASSIGN_OP Expr=expression                                                               #letClause
                     | WHERE Expr=expression                                                                                     #whereClause        // expression must be Boolean
-                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression   #joinClause
-                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression INTO IntoId=identifier   #joinIntoClause
+                    | JOIN Id=identifier (AS Type=typeName)? IN Expr=expression ON OnExpr=expression EQUALS EqExpr=expression
+					  Into=joinIntoClause?																						#joinClause
                     | ORDERBY Orders+=ordering (COMMA Orders+=ordering)*                                                        #orderbyClause
                     ;
+
+joinIntoClause		: INTO Id=identifier
+					;
 
 ordering            : Expr=expression Direction=(ASCENDING|DESCENDING)?
                     ;
@@ -743,10 +754,12 @@ literalValue		: Token=
 					| NULL_PSZ
 					| NULL_PTR
 					| NULL_STRING
-					| NULL_SYMBOL )
+					| NULL_SYMBOL 
+					| MACRO )
 					;
 
 eos                 : (NL)* (NL|EOF)
+                    | SEMI ~NL
 					;
 
 eof                 : EOF

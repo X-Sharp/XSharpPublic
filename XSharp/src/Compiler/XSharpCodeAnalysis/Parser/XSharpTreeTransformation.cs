@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        const string GlobalClassName = "Xs$Globals";
+        public const string GlobalClassName = "Xs$Globals";
         const string ImpliedTypeName = "Xs$var";
         const string ForStartNamePrefix = "Xs$ForStart$";
         const string ForEndNamePrefix = "Xs$ForEnd$";
@@ -666,14 +666,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             generated.Free();
 
             // Add: using static Xs$Globals
-            GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
-                SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
-                null,
-                _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(GlobalClassName)),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+			if (generated.Members.Count > 0)
+			{
+				GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+					SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
+					null,
+					_syntaxFactory.IdentifierName(SyntaxFactory.Identifier(GlobalClassName)),
+					SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+			}
 
-            // Add: using System
-            GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
+			// Add: using System
+			GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
                 null,
                 null,
                 _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("System")),

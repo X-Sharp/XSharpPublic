@@ -675,13 +675,20 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 i++;
             }
+
 #if XSHARP
-            if (!externalSyntaxTrees.Contains(Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree))
+			if (Options.OutputKind.IsApplication())
             {
-                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree });
+				if (String.IsNullOrEmpty(Options.MainTypeName) )
+						Options.MainTypeName =Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName;
+
+				if (!externalSyntaxTrees.Contains(Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree))
+				{
+					syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree });
+				}
             }
 #endif
-            externalSyntaxTrees.Free();
+			externalSyntaxTrees.Free();
 
             if (this.IsSubmission && i > 1)
             {

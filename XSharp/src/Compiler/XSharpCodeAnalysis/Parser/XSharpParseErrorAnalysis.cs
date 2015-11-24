@@ -121,21 +121,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
-        {
-        }
+        //public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
+        //{
+        //}
 
-        public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)
-        {
-        }
+        //public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)
+        //{
+        //}
 
         public override void ExitPrefixExpression([NotNull] XSharpParser.PrefixExpressionContext context)
         {
         }
 
-        public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
-        {
-        }
+        //public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
+        //{
+        //}
 
         public override void ExitAssignmentExpression([NotNull] XSharpParser.AssignmentExpressionContext context)
         {

@@ -1,5 +1,5 @@
 @echo off
-SET Version=0.1.0
+SET Version=0.1.1
 Echo Building Compiler version %Version%
 msbuild Compiler.sln /fl1 /p:Configuration=Debug	/p:RoslynSemanticVersion=%Version% /t:Build /property:OfficialBuild=true /m /v:m /nologo
 msbuild Compiler.sln /fl2 /p:Configuration=Release	/p:RoslynSemanticVersion=%Version% /t:Build /property:OfficialBuild=true /m /v:m /nologo

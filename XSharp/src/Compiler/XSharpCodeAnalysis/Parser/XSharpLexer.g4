@@ -17,12 +17,16 @@ lexer grammar XSharpLexer;
 	public override IToken NextToken()
 	{
 		IToken iToken = base.NextToken();
-		if (iToken.Type == ID)
-			_inId = true;
-		else if (_inId) {
+		if (!_inId) {
+			if (isKw(iToken) && InputStream.La(1) == (int)'.')
+				(iToken as CommonToken).Type = ID;
+			if (iToken.Type == ID)
+				_inId = true;
+		}
+		else {
 			if (isKw(iToken))
 				(iToken as CommonToken).Type = ID;
-			else if (iToken.Type != DOT)
+			else if (iToken.Type != DOT && iToken.Type != ID)
 				_inId = false;
 		}
 		_lastToken = iToken.Type;

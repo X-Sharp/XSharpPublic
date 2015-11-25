@@ -534,7 +534,7 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember			// member access The ? is new
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
-					| Left=expression Op=QMARK Right=expression					#condAccessExpr			// expr ? expr
+					| <assoc=right> Left=expression Op=QMARK Right=expression	#condAccessExpr			// expr ? expr
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
@@ -579,7 +579,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
-					| Op=(DOT | COLON) Right=identifierName						#bindMemberAccess
+					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 //					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )

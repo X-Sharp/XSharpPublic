@@ -2799,7 +2799,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.MemberBindingExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                context.Right.Get<IdentifierNameSyntax>()));
+                context.Name.Get<SimpleNameSyntax>()));
         }
 
         public override void ExitBindArrayAccess([NotNull] XSharpParser.BindArrayAccessContext context)

@@ -2376,36 +2376,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             object blockStmts = null;
             ExpressionSyntax initExpr, whileExpr, incrExpr;
+            if (!(context.AssignExpr is XSharpParser.AssignmentExpressionContext)) {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                context.AddError(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError,":="));
+                return;
+            }
+            if ((context.AssignExpr as XSharpParser.AssignmentExpressionContext).Op.Type != XSharpParser.ASSIGN_OP) {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                context.AddError(new ParseErrorData((context.AssignExpr as XSharpParser.AssignmentExpressionContext).Op, ErrorCode.ERR_SyntaxError,":="));
+                return;
+            }
+            XSharpParser.ExpressionContext Iter = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Left;
+            XSharpParser.ExpressionContext InitExpr = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Right;
             if (context.Step == null) {
                 context.Step = new XSharpParser.LiteralExpressionContext(new XSharpParser.ExpressionContext());
                 context.Step.Put(_syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(null,"1",1,null)));
             }
             switch (context.Dir.Type) {
                 case XSharpParser.UPTO:
-                    initExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                        context.InitExpr.Get<ExpressionSyntax>());
+                    initExpr = context.AssignExpr.Get<ExpressionSyntax>();
                     whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
+                        Iter.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
                         context.FinalExpr.Get<ExpressionSyntax>());
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
+                        Iter.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
                         context.Step.Get<ExpressionSyntax>());
                     break;
                 case XSharpParser.DOWNTO:
-                    initExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                        context.InitExpr.Get<ExpressionSyntax>());
+                    initExpr = context.AssignExpr.Get<ExpressionSyntax>();
                     whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
+                        Iter.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
                         context.FinalExpr.Get<ExpressionSyntax>());
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SubtractAssignmentExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
+                        Iter.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.MinusEqualsToken),
                         context.Step.Get<ExpressionSyntax>());
                     break;
@@ -2420,7 +2426,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
                         variables.Add(_syntaxFactory.VariableDeclarator(startToken,null,
                             _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                                context.InitExpr.Get<ExpressionSyntax>())));
+                                InitExpr.Get<ExpressionSyntax>())));
                         var modifiers = _pool.Allocate();
                         stmts.Add(_syntaxFactory.LocalDeclarationStatement(
                             modifiers.ToTokenList(),
@@ -2458,24 +2464,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _pool.Free(variables);
                         _pool.Free(modifiers);
                     }
-                    initExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                        _syntaxFactory.IdentifierName(startToken));
+                    initExpr = context.AssignExpr.Get<ExpressionSyntax>();
                     whileExpr = _syntaxFactory.ConditionalExpression(
                         _syntaxFactory.IdentifierName(indToken),
                         SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
                         _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
-                            context.Iter.Get<ExpressionSyntax>(),
+                            Iter.Get<ExpressionSyntax>(),
                             SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
                             _syntaxFactory.IdentifierName(endToken)),
                         SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                         _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression,
-                            context.Iter.Get<ExpressionSyntax>(),
+                            Iter.Get<ExpressionSyntax>(),
                             SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
                             _syntaxFactory.IdentifierName(endToken)));
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
-                        context.Iter.Get<ExpressionSyntax>(),
+                        Iter.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
                         _syntaxFactory.ConditionalExpression(
                             _syntaxFactory.IdentifierName(indToken),
@@ -3188,12 +3191,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.TypeName.Get<TypeSyntax>());
         }
 
-		public override void ExitNullableDatatype([NotNull] XSharpParser.NullableDatatypeContext context)
-		{
-			context.Put(_syntaxFactory.NullableType(context.TypeName.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.QuestionToken)));
-		}
+        public override void ExitNullableDatatype([NotNull] XSharpParser.NullableDatatypeContext context)
+        {
+            context.Put(_syntaxFactory.NullableType(context.TypeName.Get<TypeSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.QuestionToken)));
+        }
 
-		public override void ExitTypeName([NotNull] XSharpParser.TypeNameContext context)
+        public override void ExitTypeName([NotNull] XSharpParser.TypeNameContext context)
         {
             if (context.NativeType != null)
                 context.Put(context.NativeType.Get<PredefinedTypeSyntax>());
@@ -3218,7 +3221,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralExpression([NotNull] XSharpParser.LiteralExpressionContext context)
         {
-			context.Put(context.Literal.Get<LiteralExpressionSyntax>());
+            context.Put(context.Literal.Get<LiteralExpressionSyntax>());
         }
 
         public override void ExitLiteralArrayExpression([NotNull] XSharpParser.LiteralArrayExpressionContext context)
@@ -3226,7 +3229,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.LiteralArray.Get<ExpressionSyntax>());
         }
 
-		public override void ExitIif([NotNull] XSharpParser.IifContext context)
+        public override void ExitIif([NotNull] XSharpParser.IifContext context)
         {
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),
@@ -3423,37 +3426,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
-			if (context.Token.Type == XSharpParser.MACRO)
-			{
-				// Todo: replace Token with proper value
-				switch (context.ToString().ToLowerInvariant())
-				{
-					case "__arraybase__":
-					case "__clr2__":
-					case "__clr4__":
-					case "__clrversion__":
-					case "__datetime__":
-					case "__date__":
-					case "__debug__":
-					case "__entity__":
-					case "__file__":
-					case "__line__":
-					case "__module__":
-					case "__sig__":
-					case "__srcloc__":
-					case "__sysdir__":
-					case "__time__":
-					case "__utctime__":
-					case "__version__":
-					case "__windir__":
-					case "__windrive__":
-						break;
-					default:
-						break;
-				}
-			}
+            if (context.Token.Type == XSharpParser.MACRO)
+            {
+                // Todo: replace Token with proper value
+                switch (context.ToString().ToLowerInvariant())
+                {
+                    case "__arraybase__":
+                    case "__clr2__":
+                    case "__clr4__":
+                    case "__clrversion__":
+                    case "__datetime__":
+                    case "__date__":
+                    case "__debug__":
+                    case "__entity__":
+                    case "__file__":
+                    case "__line__":
+                    case "__module__":
+                    case "__sig__":
+                    case "__srcloc__":
+                    case "__sysdir__":
+                    case "__time__":
+                    case "__utctime__":
+                    case "__version__":
+                    case "__windir__":
+                    case "__windrive__":
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-			context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue()));
+            context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue()));
         }
 
         public override void ExitIdentifierString([NotNull] XSharpParser.IdentifierStringContext context)

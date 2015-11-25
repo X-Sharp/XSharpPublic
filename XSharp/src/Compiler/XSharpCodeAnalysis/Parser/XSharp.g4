@@ -397,7 +397,7 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock (END DO? | ENDDO) eos				#whileStmt
 					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
-					| FOR Iter=expression ASSIGN_OP InitExpr=expression
+					| FOR AssignExpr=expression
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
 					  (STEP Step=expression)? eos
 					  StmtBlk=statementBlock NEXT eos							#forStmt
@@ -563,6 +563,8 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
+
+					// Primary expressions
 					| Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals

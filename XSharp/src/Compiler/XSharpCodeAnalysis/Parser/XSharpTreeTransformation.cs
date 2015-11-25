@@ -2788,6 +2788,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCondAccessExpr([NotNull] XSharpParser.CondAccessExprContext context)
         {
+            switch (context.Right.Start.Type) {
+                case XSharpParser.DOT:
+                case XSharpParser.COLON:
+                case XSharpParser.LBRKT:
+                    break;
+                default:
+                    context.AddError(new ParseErrorData(context.Right.Start,ErrorCode.ERR_SyntaxError,"."));
+                    break;
+            }
             context.Put(_syntaxFactory.ConditionalAccessExpression(
                 context.Left.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),

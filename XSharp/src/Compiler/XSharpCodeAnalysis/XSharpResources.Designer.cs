@@ -5471,7 +5471,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Main method because it is imported.
+        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Start method because it is imported.
         /// </summary>
         internal static string ERR_MainClassIsImport {
             get {
@@ -5480,7 +5480,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Main method must be a valid non-generic class or struct.
+        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Start method must be a valid non-generic class or struct.
         /// </summary>
         internal static string ERR_MainClassNotClass {
             get {
@@ -5489,7 +5489,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Main method.
+        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Start method.
         /// </summary>
         internal static string ERR_MainClassNotFound {
             get {
@@ -6182,7 +6182,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program does not contain a static &apos;Main&apos; method suitable for an entry point.
+        ///   Looks up a localized string similar to Program does not contain a static &apos;Start&apos; method suitable for an entry point.
         /// </summary>
         internal static string ERR_NoEntryPoint {
             get {
@@ -6245,7 +6245,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Main method.
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Start method.
         /// </summary>
         internal static string ERR_NoMainInClass {
             get {

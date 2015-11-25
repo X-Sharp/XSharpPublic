@@ -2494,7 +2494,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             init.Add(initExpr);
             var incr = _pool.AllocateSeparated<ExpressionSyntax>();
             incr.Add(incrExpr);
-            context.Put(_syntaxFactory.ForStatement(SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
+            var forStmt = _syntaxFactory.ForStatement(SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 null,
                 init,
@@ -2503,15 +2503,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
                 incr,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.StmtBlk.Get<BlockSyntax>()));
+                context.StmtBlk.Get<BlockSyntax>());
             _pool.Free(init);
             _pool.Free(incr);
-            if (blockStmts != null) {
+            if (blockStmts == null)
+                context.Put(forStmt);
+            else {
+                var stmts = (SyntaxListBuilder<StatementSyntax>)blockStmts;
+                stmts.Add(forStmt);
                 context.Put(_syntaxFactory.Block(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    (SyntaxListBuilder<StatementSyntax>)blockStmts,
+                    stmts,
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
-                _pool.Free((SyntaxListBuilder<StatementSyntax>)blockStmts);
+                _pool.Free(stmts);
             }
         }
 
@@ -2742,7 +2746,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (!first) {
                         block.Add(_syntaxFactory.ExpressionStatement(
                             _syntaxFactory.InvocationExpression(
-                                GenerateQualifiedName("System.Console.WriteLine"),
+                                GenerateQualifiedName("System.Console.Write"),
                                 MakeArgumentList(_syntaxFactory.Argument(null,null,
                                     _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,SyntaxFactory.Literal(null," "," ",null))
                                 ))
@@ -2753,7 +2757,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // TODO: numeric formatting!
                     block.Add(_syntaxFactory.ExpressionStatement(
                         _syntaxFactory.InvocationExpression(
-                            GenerateQualifiedName("System.Console.WriteLine"),
+                            GenerateQualifiedName("System.Console.Write"),
                             MakeArgumentList(_syntaxFactory.Argument(null,null,eCtx.Get<ExpressionSyntax>()))
                         ),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)

@@ -145,7 +145,6 @@ INIT3				: '_' I N I T '3';
 INSTANCE			: I N S T A N C E
 					| { _Four}? I N S T (A(N(C)?)?)?
 					;
-IN					: I N ;
 IS					: I S ;
 LOCAL				: L O C A L
 					| {_Four}?  L O C A
@@ -240,6 +239,7 @@ GET					: G E T ;
 IMPLEMENTS			: I M P L E M E N T S ;
 IMPLICIT			: I M P L I C I T ;
 IMPLIED				: I M P L I E D ;
+IN					: I N ;
 INITONLY			: I N I T O N L Y ;
 INTERFACE			: I N T E R F A C E ;
 INTERNAL			: I N T E R N A L ;

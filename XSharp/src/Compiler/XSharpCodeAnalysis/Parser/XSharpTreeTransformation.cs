@@ -2180,13 +2180,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else {
                     locCtx.DataType = new XSharpParser.DatatypeContext(context,0);
                     locCtx.DataType.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)));
-                    context.AddError(new ParseErrorData(locCtx.DataType, ErrorCode.ERR_SyntaxError, locCtx.DataType));
+                    context.AddError(new ParseErrorData(locCtx.Stop, ErrorCode.ERR_SyntaxError, "AS")); // TODO nvk: this error should reference the location after the rule
                 }
             }
         }
 
         public override void ExitCommonLocalDecl([NotNull] XSharpParser.CommonLocalDeclContext context)
         {
+            foreach(var lvCtx in context._LocalVars)
+                VisitLocalvar(lvCtx);
             context.PutList(MakeList<StatementSyntax>(context._LocalVars));
         }
 
@@ -2208,6 +2210,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         public override void ExitLocalvar([NotNull] XSharpParser.LocalvarContext context)
+        {
+            // nvk: Do nothing here. It will be handled by the visitor after Datatype(s) are processed.
+        }
+
+        private void VisitLocalvar([NotNull] XSharpParser.LocalvarContext context)
         {
             bool isConst = context.Const != null;
             bool isStatic = (context.Parent as XSharpParser.CommonLocalDeclContext).Static != null;

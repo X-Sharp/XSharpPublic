@@ -2621,6 +2621,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
+            if (!(context._CatchBlock?.Count > 0) && context.FinBlock == null) {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                context.AddError(new ParseErrorData(context.END(),ErrorCode.ERR_ExpectedEndTry));
+                return;
+            }
             var catches = _pool.Allocate<CatchClauseSyntax>();
             foreach (var catchCtx in context._CatchBlock)
             {
@@ -2629,7 +2634,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                 context.StmtBlk.Get<BlockSyntax>(),
                 catches,
-                _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                context.FinBlock == null ? null : _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                     context.FinBlock.Get<BlockSyntax>())));
             _pool.Free(catches);
         }
@@ -2637,7 +2642,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCatchBlock([NotNull] XSharpParser.CatchBlockContext context)
         {
             context.Put(_syntaxFactory.CatchClause(SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
-                _syntaxFactory.CatchDeclaration(
+                context.Id == null ? null : _syntaxFactory.CatchDeclaration(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     context.Type.Get<TypeSyntax>(),
                     context.Id.Get<SyntaxToken>(),

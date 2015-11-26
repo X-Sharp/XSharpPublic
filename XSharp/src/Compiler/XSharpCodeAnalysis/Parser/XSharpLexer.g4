@@ -219,12 +219,17 @@ WHILE				: W H I L E
 					| { _Four}? W H I L
 					;
 
+// Vulcan keywords that are not part of the identifier rule
+// to prevent parser disambiguities
+// (These keywords were NOT contextual in Vulcan either)
+CATCH				: C A T C H ;
+FINALLY				: F I N A L L Y ;
+THROW				: T H R O W ;
 
 // New Vulcan Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
 ABSTRACT			: A B S T R A C T ;
 AUTO				: A U T O ;
-CATCH				: C A T C H ;
 CONSTRUCTOR			: C O N S T R U C T O R ;
 CONST				: C O N S T ;
 DEFAULT				: D E F A U L T;            // Pragma switch
@@ -233,7 +238,6 @@ DESTRUCTOR			: D E S T R U C T O R ;
 ENUM				: E N U M ;
 EVENT				: E V E N T ;
 EXPLICIT			: E X P L I C I T ;
-FINALLY				: F I N A L L Y ;
 FOREACH				: F O R E A C H ;
 GET					: G E T ;
 IMPLEMENTS			: I M P L E M E N T S ;
@@ -258,7 +262,6 @@ SCOPE				: S C O P E ;
 SEALED				: S E A L E D ;
 SET					: S E T ;
 STRUCTURE			: S T R U C T U R E ;					
-THROW				: T H R O W ;
 TRY					: T R Y ;
 UNTIL				: U N T I L ;
 VALUE				: V A L U E ;

@@ -408,7 +408,6 @@ statement           : Decl=localdecl                                            
 					  (END CASE? | ENDCASE) eos									#caseStmt
 					| EXIT eos													#exitStmt
 					| LOOP eos													#loopStmt
-					| Exprs+=expression (COMMA Exprs+=expression)* eos			#expressionStmt
 					| BREAK Expr=expression? eos								#breakStmt
 					| RETURN (VOID | Expr=expression)? eos						#returnStmt
 					| Q=(QMARK | QQMARK)
@@ -430,7 +429,7 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock NEXT eos							#foreachStmt
 					| THROW Expr=expression? eos								#throwStmt
 					| TRY eos StmtBlk=statementBlock
-					  (CATCH CatchBlock+=catchBlock)*
+					  (CATCH CatchBlock+=catchBlock?)*
 					  (FINALLY eos FinBlock=statementBlock)?
 					  END TRY? eos												#tryStmt
 					| BEGIN LOCK Expr=expression eos
@@ -458,7 +457,7 @@ statement           : Decl=localdecl                                            
 					| BEGIN Ch=UNCHECKED eof
 					  StmtBlk=statementBlock
 					  END UNCHECKED? eos										#checkedStmt
-
+					| Exprs+=expression (COMMA Exprs+=expression)* eos			#expressionStmt
 					;
 
 ifElseBlock			: Cond=expression eos StmtBlk=statementBlock
@@ -473,7 +472,7 @@ caseBlock			: Key=CASE Cond=expression eos StmtBlk=statementBlock NextCase=caseB
 switchBlock         : (Key=CASE Const=expression | Key=(OTHERWISE|DEFAULT)) eos StmtBlk=statementBlock			 
 					;
 
-catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
+catchBlock			: (Id=identifier AS Type=datatype)? eos StmtBlk=statementBlock
 					;
 
 recoverBlock		: (USING Id=identifier)? eos StmtBlock=statementBlock
@@ -777,10 +776,10 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
 					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE )
 					;
 
-keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR	| ENUM | EVENT
-					| EXPLICIT | FINALLY | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERFACE | INTERNAL 
+keywordvn           : Token=(ABSTRACT | AUTO | /*CATCH |*/ CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR	| ENUM | EVENT
+					| EXPLICIT | /*FINALLY |*/ FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERFACE | INTERNAL 
 					| LOCK | NAMESPACE | NEW | OPERATOR	| OPTIONS | OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
-					| THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
+					| /*THROW |*/ TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 

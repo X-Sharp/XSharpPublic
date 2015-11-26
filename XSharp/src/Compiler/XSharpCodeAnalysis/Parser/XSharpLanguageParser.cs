@@ -117,6 +117,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             catch (Exception)
             {
+#if DEBUG
+                Debug.WriteLine("Antlr: SLL parsing failed. Trying again in LL mode.");
+#endif
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

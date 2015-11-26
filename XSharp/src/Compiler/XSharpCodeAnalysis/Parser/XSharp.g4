@@ -397,7 +397,7 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock (END DO? | ENDDO) eos				#whileStmt
 					| WHILE Expr=expression eos
 					  StmtBlk=statementBlock END eos							#whileStmt
-					| FOR Iter=expression ASSIGN_OP InitExpr=expression
+					| FOR AssignExpr=expression
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
 					  (STEP Step=expression)? eos
 					  StmtBlk=statementBlock NEXT eos							#forStmt
@@ -534,7 +534,7 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember			// member access The ? is new
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
-					| Left=expression Op=QMARK Right=expression					#condAccessExpr			// expr ? expr
+					| <assoc=right> Left=expression Op=QMARK Right=expression	#condAccessExpr			// expr ? expr
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
@@ -563,6 +563,8 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
+
+					// Primary expressions
 					| Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
@@ -577,7 +579,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
-					| Op=(DOT | COLON) Right=identifierName						#bindMemberAccess
+					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 //					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )

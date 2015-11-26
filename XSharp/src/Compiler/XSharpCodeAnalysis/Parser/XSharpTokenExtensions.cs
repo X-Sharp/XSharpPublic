@@ -110,10 +110,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static string EscapedStringValue(string text)
         {
-            if (text.Length == 2)
+            if (text.Length <= 3)
                 return "";
             StringBuilder sb = new StringBuilder();
-            int p = 1;
+            int p = 2;
             while (p < text.Length-1)
                 sb.Append(EscapedChar(text, ref p));
             return sb.ToString();
@@ -920,6 +920,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxKind.CharacterLiteralExpression;
                     break;
                 case XSharpParser.STRING_CONST:
+                case XSharpParser.ESCAPED_STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
                     break;
                 case XSharpParser.SYMBOL_CONST:

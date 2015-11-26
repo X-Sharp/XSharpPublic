@@ -2374,7 +2374,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Expr.Get<ExpressionSyntax>(),
+                _syntaxFactory.PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken),
+                    context.Expr.Get<ExpressionSyntax>()),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }

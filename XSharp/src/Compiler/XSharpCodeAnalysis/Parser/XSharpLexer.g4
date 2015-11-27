@@ -510,11 +510,11 @@ PP_SYMBOLS      : {LastToken == NL }? '#'
                   | I F N D E F                 // #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
                   | I N C L U D E               // #include "<headerfilename>"
                   | L I N E                     // #line <number> [FileName] or #line default
-				  //| P R A G M A					// Ignored for now. Should be handled by the parser
+				  //| P R A G M A					// Handled by the parser
                   | R E G I O N                 // #region [description]sourceCode#endregion
                   | T R A N S L A T E           // #translate <matchPattern> => <resultPattern> 
                   | U N D E F                   // #undef <identifier>
-				  //| U S I N G					// Ignored for now. Should be handled by the parser
+				  //| U S I N G					// Handled by the parser
                   | W A R N I N G               // #warning [warningMessage]
                   ) (~(  '\n' | '\r' ) )* -> channel(HIDDEN) 
                 ;

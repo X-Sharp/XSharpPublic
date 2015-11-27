@@ -198,8 +198,8 @@ typeparameterconstraintsclause
 					: WHERE Name=identifierName IS Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
 					;
 							  
-typeparameterconstraint: Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer
-					   | Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
+typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
+					   | Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer		
                        | NEW LPAREN RPAREN					#constructorConstraint		//  Class Foo<t> WHERE T IS NEW()
 					   ; 
 							  

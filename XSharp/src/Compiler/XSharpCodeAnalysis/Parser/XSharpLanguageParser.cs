@@ -109,6 +109,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var errorListener = new XSharpErrorListener();
             parser.AddErrorListener(errorListener);
 #endif
+#if DEBUG && DUMP_TIMES
+            DateTime t = DateTime.Now;
+#endif
             parser.ErrorHandler = new XSharpErrorStrategy();
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             try
@@ -125,6 +128,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 tree = parser.source();
             }
+#if DEBUG && DUMP_TIMES
+            {
+                var ts = DateTime.Now - t;
+                t += ts;
+                Debug.WriteLine("Parsing completed in {0}",ts);
+            }
+#endif
 
             var walker = new ParseTreeWalker();
 
@@ -133,6 +143,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var errorAnalyzer = new XSharpParseErrorAnalysis(parser);
                 walker.Walk(errorAnalyzer, tree);
+#if DEBUG && DUMP_TIMES
+                {
+                    var ts = DateTime.Now - t;
+                    t += ts;
+                    Debug.WriteLine("Error analysis completed in {0}",ts);
+                }
+#endif
             }
 
             var treeTransform = new XSharpTreeTransformation(parser, _pool, _syntaxFactory);
@@ -148,6 +165,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             finally
             {
+#if DEBUG && DUMP_TIMES
+                {
+                    var ts = DateTime.Now - t;
+                    t += ts;
+                    Debug.WriteLine("Tree transform completed in {0}",ts);
+                }
+#endif
                 treeTransform.Free();
             }
         }

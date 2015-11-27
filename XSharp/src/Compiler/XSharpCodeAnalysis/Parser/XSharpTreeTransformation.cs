@@ -611,7 +611,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterEveryRule([NotNull] ParserRuleContext context)
         {
-#if DEBUG && false
+#if DEBUG && DUMP_TREE
             var s = context.GetType().ToString();
             s = s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1);
             s = s.Replace("Context","");
@@ -630,7 +630,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         new SyntaxDiagnosticInfo(csNode.GetLeadingTriviaWidth(), csNode.Width, e.Code, e.Args)));
                 }
             }
-#if DEBUG && false
+#if DEBUG && DUMP_TREE
             var s = context.GetType().ToString();
             s = s.Substring(s.LastIndexOfAny(".+".ToCharArray())+1);
             s = s.Replace("Context","");
@@ -724,14 +724,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
                 context.Put(ch.Get<CSharpSyntaxNode>());
-        }
-
-        public override void ExitEof([NotNull] XSharpParser.EofContext context)
-        {
-        }
-
-        public override void ExitEos([NotNull] XSharpParser.EosContext context)
-        {
         }
 
         public override void ExitUsing_([NotNull] XSharpParser.Using_Context context)

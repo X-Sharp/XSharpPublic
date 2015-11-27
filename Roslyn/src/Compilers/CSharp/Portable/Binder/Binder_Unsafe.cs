@@ -52,12 +52,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             diagnostics.Add(new CSDiagnostic(diagnosticInfo, location));
+#if XSHARP
+            if ((object)sizeOfTypeOpt != null)
+                return false;
+#endif
             return true;
         }
 
         private CSDiagnosticInfo GetUnsafeDiagnosticInfo(TypeSymbol sizeOfTypeOpt)
         {
+#if XSHARP
+            if (this.IsIndirectlyInIterator && (object)sizeOfTypeOpt == null)
+#else
             if (this.IsIndirectlyInIterator)
+#endif
             {
                 // Spec 8.2: "An iterator block always defines a safe context, even when its declaration
                 // is nested in an unsafe context."

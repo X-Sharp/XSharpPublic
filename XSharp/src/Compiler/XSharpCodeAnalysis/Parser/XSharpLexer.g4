@@ -261,7 +261,8 @@ REPEAT				: R E P E A T ;
 SCOPE				: S C O P E ;
 SEALED				: S E A L E D ;
 SET					: S E T ;
-STRUCTURE			: S T R U C T U R E ;					
+STRUCTURE			: S T R U C T U R E 
+					| S T R U C T;					
 TRY					: T R Y ;
 UNTIL				: U N T I L ;
 VALUE				: V A L U E ;

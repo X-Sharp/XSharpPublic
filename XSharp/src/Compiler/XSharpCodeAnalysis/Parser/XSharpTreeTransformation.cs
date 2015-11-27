@@ -2701,6 +2701,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var sections = _pool.Allocate<SwitchSectionSyntax>();
             foreach(var switchBlkCtx in context._SwitchBlock) {
                 sections.Add(switchBlkCtx.Get<SwitchSectionSyntax>());
+                // Add check for switch block without statements and insert a Jump to the next Switch block in the statement list
             }
             context.Put(_syntaxFactory.SwitchStatement(SyntaxFactory.MakeToken(SyntaxKind.SwitchKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -2715,9 +2716,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitSwitchBlock([NotNull] XSharpParser.SwitchBlockContext context)
         {
             var labels = _pool.Allocate<SwitchLabelSyntax>();
-            labels.Add(_syntaxFactory.CaseSwitchLabel(context.Key.SyntaxKeyword(),
-                context.Const?.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+            var kw = context.Key.SyntaxKeyword();
+            if (kw.Kind == SyntaxKind.CaseKeyword)
+            {
+                labels.Add(_syntaxFactory.CaseSwitchLabel(kw, context.Const?.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+            }
+            else
+            {
+                labels.Add(_syntaxFactory.DefaultSwitchLabel(kw, SyntaxFactory.MakeToken(SyntaxKind.ColonToken)));
+            }
             var stmts = _pool.Allocate<StatementSyntax>();
             if (context.StmtBlk._Stmts.Count > 0) {
                 stmts.Add(context.StmtBlk.Get<BlockSyntax>());

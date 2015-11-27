@@ -443,7 +443,7 @@ statement           : Decl=localdecl                                            
 					//
 					| YIELD RETURN (VOID | Expr=expression)? eos				#yieldStmt
 					| SWITCH Expr=expression eos
-					  (SwitchBlock+=switchBlock)*
+					  (SwitchBlock+=switchBlock)+
 					  END SWITCH?  eos											#switchStmt
 					| BEGIN USING Expr=expression eos
 						Stmtblk=statementBlock

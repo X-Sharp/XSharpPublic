@@ -9,6 +9,7 @@ lexer grammar XSharpLexer;
 	public const int COMMENT = 1;
 
 	bool _inId = false;
+	bool _hasEos = true;
 	private bool isKw(IToken t) {
 		char fc = Char.ToUpper(t.Text?[0] ?? (Char)0);
 		return fc == '_' || (fc >= 'A' && fc <= 'Z');
@@ -16,21 +17,40 @@ lexer grammar XSharpLexer;
 	int _lastToken = NL;
 	public override IToken NextToken()
 	{
-		IToken iToken = base.NextToken();
+		var t = base.NextToken() as CommonToken;
+		var type = t.Type;
 		if (!_inId) {
-			if (isKw(iToken) && InputStream.La(1) == (int)'.')
-				(iToken as CommonToken).Type = ID;
-			if (iToken.Type == ID)
+			if (isKw(t) && InputStream.La(1) == (int)'.') {
+				t.Type = ID;
+				_inId = true;
+			}
+			else if (type == ID)
 				_inId = true;
 		}
 		else {
-			if (isKw(iToken))
-				(iToken as CommonToken).Type = ID;
-			else if (iToken.Type != DOT && iToken.Type != ID)
+			if (isKw(t))
+				t.Type = ID;
+			else if (type != DOT && type != ID)
 				_inId = false;
 		}
-		_lastToken = iToken.Type;
-		return iToken;
+		if (type == NL || type == SEMI) {
+			if (_hasEos) {
+				t.Channel = TokenConstants.HiddenChannel;
+			}
+			else {
+				t.Type = EOS;
+				_hasEos = true;
+			}
+		}
+		else if (_hasEos && t.Channel == TokenConstants.DefaultChannel) {
+			_hasEos = false;
+		}
+		else if (!_hasEos && type == Eof) {
+			t.Type = EOS;
+			_hasEos = true;
+		}
+		_lastToken = type;
+		return t;
 	}
 	int LastToken
 	{
@@ -54,8 +74,7 @@ options	{
 			language=CSharp; 
 		}
 
-
-
+tokens {EOS}
 
 /*
  * Lexer Rules

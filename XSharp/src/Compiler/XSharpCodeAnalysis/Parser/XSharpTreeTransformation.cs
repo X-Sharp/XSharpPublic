@@ -3460,35 +3460,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
-            if (context.Token.Type == XSharpParser.MACRO)
-            {
-                // Todo: replace Token with proper value
-                switch (context.ToString().ToLowerInvariant())
-                {
-                    case "__arraybase__":
-                    case "__clr2__":
-                    case "__clr4__":
-                    case "__clrversion__":
-                    case "__datetime__":
-                    case "__date__":
-                    case "__debug__":
-                    case "__entity__":
-                    case "__file__":
-                    case "__line__":
-                    case "__module__":
-                    case "__sig__":
-                    case "__srcloc__":
-                    case "__sysdir__":
-                    case "__time__":
-                    case "__utctime__":
-                    case "__version__":
-                    case "__windir__":
-                    case "__windrive__":
-                        break;
-                    default:
-                        break;
-                }
-            }
+            //if (context.Token.Type == XSharpParser.MACRO)
+            //{
+            //    // Todo: replace Token with proper value
+            //    switch (context.ToString().ToLowerInvariant())
+            //    {
+            //        case "__arraybase__":
+            //        case "__clr2__":
+            //        case "__clr4__":
+            //        case "__clrversion__":
+            //        case "__datetime__":
+            //        case "__date__":
+            //        case "__debug__":
+            //        case "__entity__":
+            //        case "__file__":
+            //        case "__line__":
+            //        case "__module__":
+            //        case "__sig__":
+            //        case "__srcloc__":
+            //        case "__sysdir__":
+            //        case "__time__":
+            //        case "__utctime__":
+            //        case "__version__":
+            //        case "__windir__":
+            //        case "__windrive__":
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //}
 
             context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue()));
         }

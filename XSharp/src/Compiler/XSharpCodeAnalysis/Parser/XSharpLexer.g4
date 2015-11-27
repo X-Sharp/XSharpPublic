@@ -453,7 +453,7 @@ DOT			: '.' ;
 COLONCOLON	: ':' ':';
 
 
-MACRO		: '__' A R R A Y B A S E '__' 
+MACRO		: ('__' A R R A Y B A S E '__' 
 			| '__' C L R '2' '__'
 			| '__' C L R '4' '__'
 			| '__' C L R V E R S I O N '__'
@@ -470,8 +470,9 @@ MACRO		: '__' A R R A Y B A S E '__'
 			| '__' T I M E '__'
 			| '__' U T C T I M E '__'
 			| '__' V E R S I O N  '__'
-			| '__' W I N D I R '__'
-			| '__' W I N D R I V E '__'
+			| '__' W I N D I R '__'  
+			| '__' W I N D R I V E '__' 
+			) {Text = "\""+ Text+"\"";} -> type(STRING_CONST) 
 			;
 
 // Numeric & date constants

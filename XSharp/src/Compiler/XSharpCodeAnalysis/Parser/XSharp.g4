@@ -562,9 +562,11 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
+					| Expr=primary												#primaryExpression
+					;
 
 					// Primary expressions
-					| Key=SELF													#selfExpression
+primary				: Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }

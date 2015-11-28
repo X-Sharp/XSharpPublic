@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Uncomment this define to dump the AST to the debug console.
+//#define DUMP_TREE
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
@@ -2389,7 +2392,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XSharpParser.ExpressionContext Iter = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Left;
             XSharpParser.ExpressionContext InitExpr = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Right;
             if (context.Step == null) {
-                context.Step = new XSharpParser.LiteralExpressionContext(new XSharpParser.ExpressionContext());
+                context.Step = new XSharpParser.PrimaryExpressionContext(new XSharpParser.ExpressionContext());
                 context.Step.Put(_syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(null,"1",1,null)));
             }
             switch (context.Dir.Type) {
@@ -2927,6 +2930,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Left.Get<ExpressionSyntax>(),
                 context.Op.SyntaxOp(),
                 context.Right.Get<ExpressionSyntax>()));
+        }
+
+        public override void ExitPrimaryExpression([NotNull] XSharpParser.PrimaryExpressionContext context)
+        {
+            context.Put(context.Expr.Get<ExpressionSyntax>());
         }
 
         public override void ExitCheckedExpression([NotNull] XSharpParser.CheckedExpressionContext context)

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Uncomment this define to dump time profiling info of the parsing phases.
+//#define DUMP_TIMES
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
@@ -111,6 +114,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
 #if DEBUG && DUMP_TIMES
             DateTime t = DateTime.Now;
+#endif
+#if DEBUG && DUMP_TIMES
+            {
+                while (tokens.Fetch(1) > 0) { }
+                tokens.Reset();
+            }
+            {
+                var ts = DateTime.Now - t;
+                t += ts;
+                Debug.WriteLine("Lexing completed in {0}",ts);
+            }
 #endif
             parser.ErrorHandler = new XSharpErrorStrategy();
             parser.Interpreter.PredictionMode = PredictionMode.Sll;

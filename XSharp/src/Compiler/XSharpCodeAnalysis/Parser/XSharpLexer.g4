@@ -15,10 +15,477 @@ lexer grammar XSharpLexer;
 		return fc == '_' || (fc >= 'A' && fc <= 'Z');
 	}
 	int _lastToken = NL;
+    System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
 	public override IToken NextToken()
 	{
-		var t = base.NextToken() as CommonToken;
+        CommonToken t;
+        {
+            var _startCharIndex = InputStream.Index;
+            var _startColumn = Interpreter.Column;
+            var _startLine = Interpreter.Line;
+			int _type = -1;
+			int _channel = TokenConstants.DefaultChannel;
+            int c = InputStream.La(1);
+			switch (c) {
+				case '(':
+					_type = LPAREN;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case ')':
+					_type = RPAREN;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case '{':
+					_type = LCURLY;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case '}':
+					_type = RCURLY;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case '[':
+					_type = LBRKT;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case ']':
+					_type = RBRKT;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case ':':
+					_type = COLON;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == ':') {
+						_type = COLONCOLON;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					else if (c == '=') {
+						_type = ASSIGN_OP;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case ',':
+					_type = COMMA;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case '|':
+					_type = PIPE;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '|') {
+						_type = OR;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					else if (c == '=') {
+						_type = ASSIGN_BITOR;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '&':
+					_type = AMP;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '&') {
+						_type = AND;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					else if (c == '=') {
+						_type = ASSIGN_BITAND;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '@':
+					if (InputStream.La(2) != '@') {
+						_type = ADDROF;
+						_textSb.Clear();
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '-':
+					_type = MINUS;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '>') {
+						_type = ALIAS;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					else if (c == '-') {
+						_type = DEC;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					else if (c == '=') {
+						_type = ASSIGN_SUB;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '+':
+					_type = PLUS;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '+') {
+						_type = INC;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					else if (c == '=') {
+						_type = ASSIGN_ADD;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '/':
+					if (InputStream.La(2) != '/' && InputStream.La(2) != '*') {
+						_type = DIV;
+						_textSb.Clear();
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+						if (c == '=') {
+							_type = ASSIGN_DIV;
+							_textSb.Append((char)c);
+							InputStream.Consume();
+						}
+					}
+					break;
+				case '%':
+					_type = MOD;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = ASSIGN_MOD;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '^':
+					_type = EXP;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = ASSIGN_EXP;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '<':
+					_type = LT;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '<') {
+						_type = LSHIFT;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+						if (c == '=') {
+							_type = ASSIGN_LSHIFT;
+							_textSb.Append((char)c);
+							InputStream.Consume();
+						}
+					}
+					else if (c == '=') {
+						_type = LTE;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					else if (c == '>') {
+						_type = NEQ;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '>':
+					_type = GT;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '>') {
+						_type = RSHIFT;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+						if (c == '=') {
+							_type = ASSIGN_RSHIFT;
+							_textSb.Append((char)c);
+							InputStream.Consume();
+						}
+					}
+					else if (c == '=') {
+						_type = GTE;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '~':
+					_type = TILDE;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = ASSIGN_XOR;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '*':
+					_type = MULT;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = ASSIGN_MUL;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '?':
+					_type = QMARK;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '?') {
+						_type = QQMARK;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '=':
+					_type = EQ;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = EEQ;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '$':
+					_type = SUBSTR;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
+				case '!':
+					_type = NOT;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = NEQ;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
+					break;
+				case '.':
+					_type = DOT;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					if (!_inId) {
+						if (InputStream.La(2) == '.') {
+							c = InputStream.La(1);
+							if (c == 'F' || c == 'N' || c == 'f' || c == 'n') {
+								_type = FALSE_CONST;
+								_textSb.Append((char)c);
+								InputStream.Consume();
+								_textSb.Append('.');
+								InputStream.Consume();
+							}
+							else if (c == 'T' || c == 'Y' || c == 't' || c == 'y') {
+								_type = TRUE_CONST;
+								_textSb.Append((char)c);
+								InputStream.Consume();
+								_textSb.Append('.');
+								InputStream.Consume();
+							}
+						}
+						else if (InputStream.La(3) == '.') {
+							c = InputStream.La(1);
+							var c2 = InputStream.La(2);
+							if ((c == 'O' || c == 'o') && (c2 == 'R' || c2 == 'r')) {
+								_type = LOGIC_OR;
+								_textSb.Append((char)c);
+								InputStream.Consume();
+								_textSb.Append((char)c2);
+								InputStream.Consume();
+								_textSb.Append('.');
+								InputStream.Consume();
+							}
+						}
+						else if (InputStream.La(4) == '.') {
+							c = InputStream.La(1);
+							var c2 = InputStream.La(2);
+							var c3 = InputStream.La(3);
+							if ((c == 'A' || c == 'a') && (c2 == 'N' || c2 == 'n') && (c3 == 'D' || c3 == 'd')) {
+								_type = LOGIC_AND;
+								_textSb.Append((char)c);
+								InputStream.Consume();
+								_textSb.Append((char)c2);
+								InputStream.Consume();
+								_textSb.Append((char)c3);
+								InputStream.Consume();
+								_textSb.Append('.');
+								InputStream.Consume();
+							}
+							else if ((c == 'N' || c == 'n') && (c2 == 'O' || c2 == 'o') && (c3 == 'T' || c3 == 't')) {
+								_type = LOGIC_NOT;
+								_textSb.Append((char)c);
+								InputStream.Consume();
+								_textSb.Append((char)c2);
+								InputStream.Consume();
+								_textSb.Append((char)c3);
+								InputStream.Consume();
+								_textSb.Append('.');
+								InputStream.Consume();
+							}
+							else if ((c == 'X' || c == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r')) {
+								_type = LOGIC_NOT;
+								_textSb.Append((char)c);
+								InputStream.Consume();
+								_textSb.Append((char)c2);
+								InputStream.Consume();
+								_textSb.Append((char)c3);
+								InputStream.Consume();
+								_textSb.Append('.');
+								InputStream.Consume();
+							}
+						}
+					}
+					break;
+				case '\r':
+				case '\n':
+					_type = NL;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					while (c == '\r' || c == '\n') {
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+					}
+					break;
+				case '\t':
+				case ' ':
+					_type = WS;
+					_channel = TokenConstants.HiddenChannel;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					while (c == ' ' || c == '\t') {
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+					}
+					break;
+				case 'e': 
+					if (InputStream.La(2) != '"') {
+						_type = ID;
+						_textSb.Clear();
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+						while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
+							_textSb.Append((char)c);
+							InputStream.Consume();
+							c = InputStream.La(1);
+						}
+					}
+					break;
+                case 'a': case 'b': case 'c': case 'd': case 'f': case 'g': case 'h': case 'i': case 'j':
+                case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r': case 's': case 't':
+                case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
+                case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T':
+                case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+                case '_':
+					_type = ID;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
+							|| (c >= '\u00C0' && c <= '\u00D6') || (c >= '\u00D8' && c <= '\u00F6')
+							|| (c >= '\u00F8' && c <= '\u02FF') || (c >= '\u0370' && c <= '\u037D')
+							|| (c >= '\u037F' && c <= '\u1FFF') || (c >= '\u200C' && c <= '\u200D')
+							|| c == '\u00B7' || (c >= '\u0300' && c <= '\u036F') || (c >= '\u203F' && c <= '\u2040')
+							) {
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+					}
+                    break;
+			}
+            if (_type >= 0) {
+                t = TokenFactory.Create(TokenFactorySourcePair, _type, _textSb.ToString(), _channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as CommonToken;
+                Emit(t);
+            }
+            else
+			    t = base.NextToken() as CommonToken;
+        }
+		//System.Diagnostics.Debug.WriteLine("T[{0},{1}]:{2}",t.Line,t.Column,t.Text);
 		var type = t.Type;
+		if (type == ID) {
+			int kwtype;
+			if (kwIds.TryGetValue(t.Text,out kwtype)) {
+				if (kwtype == MACRO) {
+					t.Text = '"' + t.Text + '"';
+					t.Type = STRING_CONST;
+				}
+				else
+					t.Type = kwtype;
+			}
+		}
+		else if (type == KWID) {
+			t.Type = ID;
+		}
 		if (!_inId) {
 			if (isKw(t) && InputStream.La(1) == (int)'.') {
 				t.Type = ID;
@@ -68,441 +535,357 @@ lexer grammar XSharpLexer;
 		get {return _OldComment;}
 		set {_OldComment = value;}
 	}
+
+	System.Collections.Generic.Dictionary<string,int> _kwIds;
+
+	System.Collections.Generic.Dictionary<string,int> kwIds { 
+		get {
+			if (_kwIds == null) {
+				_kwIds = new System.Collections.Generic.Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+
+				var VoKeywords = new System.Collections.Generic.Dictionary<string,int>
+				{
+					{"ACCESS", ACCESS},
+					{"ALIGN", ALIGN},
+					{"AS", AS},
+					{"ASSIGN", ASSIGN},
+					{"BEGIN", BEGIN},
+					{"BREAK", BREAK},
+					{"CASE", CASE},
+					{"_CAST", CAST},
+					{"CLASS", CLASS},
+					{"CLIPPER", CLIPPER},
+					{"DEFINE", DEFINE},
+					{"DIM", DIM},
+					{"_DLL", DLL},
+					{"DO", DO},
+					{"DOWNTO", DOWNTO},
+					{"ELSE", ELSE},
+					{"ELSEIF", ELSEIF},
+					{"END", END},
+					{"ENDCASE", ENDCASE},
+					{"ENDDO", ENDDO},
+					{"ENDIF", ENDIF},
+					{"EXIT", EXIT},
+					{"EXPORT", EXPORT},
+					{"FASTCALL", FASTCALL},
+					{"FIELD", FIELD},
+					{"_FIELD", FIELD},
+					{"FOR", FOR},
+					{"FUNCTION", FUNCTION},
+					{"FUNC", FUNCTION},
+					{"GLOBAL", GLOBAL},
+					{"HIDDEN", HIDDEN},
+					{"IF", IF},
+					{"IIF", IIF},
+					{"INHERIT", INHERIT},
+					{"_INIT1", INIT1},
+					{"_INIT2", INIT2},
+					{"_INIT3", INIT3},
+					{"INSTANCE", INSTANCE},
+					{"IS", IS},
+					{"LOCAL", LOCAL},
+					{"LOOP", LOOP},
+					{"MEMBER", MEMBER},
+					{"MEMVAR", MEMVAR},
+					{"METHOD", METHOD},
+					{"NEXT", NEXT},
+					{"OTHERWISE", OTHERWISE},
+					{"PARAMETERS", PARAMETERS},
+					{"PASCAL", PASCAL},
+					{"PRIVATE", PRIVATE},
+					{"PROCEDURE", PROCEDURE},
+					{"PROC", PROCEDURE},
+					{"PROTECTED", PROTECTED},
+					{"PROTECT", PROTECTED},
+					{"PUBLIC", PUBLIC},
+					{"RECOVER", RECOVER},
+					{"RETURN", RETURN},
+					{"SELF", SELF},
+					{"SEQUENCE", SEQUENCE},
+					{"SIZEOF", SIZEOF},
+					{"_SIZEOF", SIZEOF},
+					{"STATIC", STATIC},
+					{"STEP", STEP},
+					{"STRICT", STRICT},
+					{"SUPER", SUPER},
+					{"THISCALL", THISCALL},
+					{"TO", TO},
+					{"TYPEOF", TYPEOF},
+					{"_TYPEOF", TYPEOF},
+					{"UNION", UNION},
+					{"UPTO", UPTO},
+					{"USING", USING},
+					{"WHILE", WHILE},
+
+					// Predefined types
+					{"ARRAY", ARRAY},
+					{"BYTE", BYTE},
+					{"CHAR", CHAR},
+					{"CODEBLOCK", CODEBLOCK},
+					{"DATE", DATE},
+					{"DWORD", DWORD},
+					{"FLOAT", FLOAT},
+					{"INT", INT},
+					{"LOGIC", LOGIC},
+					{"LONGINT", LONGINT},
+					{"OBJECT", OBJECT},
+					{"PSZ", PSZ},
+					{"PTR", PTR},
+					{"REAL4", REAL4},
+					{"REAL8", REAL8},
+					{"REF", REF},
+					{"SHORTINT", SHORTINT},
+					{"STRING", STRING},
+					{"SYMBOL", SYMBOL},
+					{"USUAL", USUAL},
+					{"VOID", VOID},
+					{"WORD", WORD},
+				};
+				foreach (var text in VoKeywords.Keys) {
+					var token = VoKeywords[text];
+					_kwIds.Add(text,token);
+					if (_Four) {
+						var s = text;
+						while (s.Length > 4) {
+							s = s.Substring(0,s.Length-1);
+							if (!_kwIds.ContainsKey(s))
+								_kwIds.Add(s,token);
+						}
+					}
+				}
+
+				var Keywords = new System.Collections.Generic.Dictionary<string,int>
+				{
+					// Vulcan keywords
+					{"ABSTRACT", ABSTRACT},
+					{"AUTO", AUTO},
+					{"CATCH", CATCH},
+					{"CONSTRUCTOR", CONSTRUCTOR},
+					{"CONST", CONST},
+					{"DEFAULT", DEFAULT},
+					{"DELEGATE", DELEGATE},
+					{"DESTRUCTOR", DESTRUCTOR},
+					{"ENUM", ENUM},
+					{"EVENT", EVENT},
+					{"EXPLICIT", EXPLICIT},
+					{"FINALLY", FINALLY},
+					{"FOREACH", FOREACH},
+					{"GET", GET},
+					{"IMPLEMENTS", IMPLEMENTS},
+					{"IMPLICIT", IMPLICIT},
+					{"IMPLIED", IMPLIED},
+					{"IN", IN},
+					{"INITONLY", INITONLY},
+					{"INTERFACE", INTERFACE},
+					{"INTERNAL", INTERNAL},
+					{"LOCK", LOCK},
+					{"NAMESPACE", NAMESPACE},
+					{"NEW", NEW},
+					{"OFF", OFF},
+					{"ON", ON},
+					{"OPERATOR", OPERATOR},
+					{"OPTIONS", OPTIONS},
+					{"OUT", OUT},
+					{"PARTIAL", PARTIAL},
+					{"PROPERTY", PROPERTY},
+					{"REPEAT", REPEAT},
+					{"SCOPE", SCOPE},
+					{"SEALED", SEALED},
+					{"SET", SET},
+					{"STRUCTURE", STRUCTURE},
+					{"STRUCT", STRUCTURE},
+					{"THROW", THROW},
+					{"TRY", TRY},
+					{"UNTIL", UNTIL},
+					{"VALUE", VALUE},
+					{"VIRTUAL", VIRTUAL},
+					{"VOSTRUCT", VOSTRUCT},
+					{"WARNINGS", WARNINGS},
+
+					// XSharp keywords
+					{"ASCENDING", ASCENDING},
+					{"ASSEMBLY", ASSEMBLY},
+					{"ASYNC", ASYNC},
+					{"AWAIT", AWAIT},
+					{"BY", BY},
+					{"CHECKED", CHECKED},
+					{"DESCENDING", DESCENDING},
+					{"EQUALS", EQUALS},
+					{"EXTERN", EXTERN},
+					{"FROM", FROM},
+					{"GROUP", GROUP},
+					{"INTO", INTO},
+					{"JOIN", JOIN},
+					{"LET", LET},
+					{"MODULE", MODULE},
+					{"ORDERBY", ORDERBY},
+					{"SELECT", SELECT},
+					{"SWITCH", SWITCH},
+					{"UNCHECKED", UNCHECKED},
+					{"UNSAFE", UNSAFE},
+					{"VAR", VAR},
+					{"VOLATILE", VOLATILE},
+					{"WHERE", WHERE},
+					{"YIELD", YIELD},
+
+					// Vulcan types
+					{"INT64", INT64},
+					{"UINT64", UINT64},
+
+					// XSharp types
+					{"DYNAMIC", DYNAMIC},
+
+					// Null types
+					{"NIL", NIL},
+					{"NULL", NULL},
+					{"NULL_ARRAY", NULL_ARRAY},
+					{"NULL_CODEBLOCK", NULL_CODEBLOCK},
+					{"NULL_DATE", NULL_DATE},
+					{"NULL_OBJECT", NULL_OBJECT},
+					{"NULL_PSZ", NULL_PSZ},
+					{"NULL_PTR", NULL_PTR},
+					{"NULL_STRING", NULL_STRING},
+					{"NULL_SYMBOL", NULL_SYMBOL},
+
+					// Consts
+					{"FALSE", FALSE_CONST},
+					{"TRUE", TRUE_CONST},
+
+					// Macros
+					{"__ARRAYBASE__", MACRO},
+					{"__CLR2__", MACRO},
+					{"__CLR4__", MACRO},
+					{"__CLRVERSION__", MACRO},
+					{"__DATE__", MACRO},
+					{"__DATETIME__", MACRO},
+					{"__DEBUG__", MACRO},
+					{"__ENTITY__", MACRO},
+					{"__FILE__", MACRO},
+					{"__LINE__", MACRO},
+					{"__MODULE__", MACRO},
+					{"__SIG__", MACRO},
+					{"__SRCLOC__", MACRO},
+					{"__SYSDIR__", MACRO},
+					{"__TIME__", MACRO},
+					{"__UTCTIME__", MACRO},
+					{"__VERSION__", MACRO},
+					{"__WINDIR__", MACRO},
+					{"__WINDRIVE__", MACRO},
+				};
+				foreach (var text in Keywords.Keys) {
+					var token = Keywords[text];
+					_kwIds.Add(text,token);
+				}
+			}
+			return _kwIds;
+		}
+	}
 }
 
 options	{ 
 			language=CSharp; 
 		}
 
-tokens {EOS}
-
-/*
- * Lexer Rules
- */
+tokens {
 
 // Keywords
 // Old (VO) Keywords can have 4 letter abbreviations. This can be enabled/disabled with the
 // AllowFourLetterAbbreviations property of the Lexer, which sets the protected field _Four.
 // New (Vulcan) Keywords only full names
 //
-
-ACCESS				: A C C E S S
-					| {_Four}?  A C C E (S)?
-					;
-ALIGN				: A L I G N
-					| {_Four}?  A L I G
-					;
-AS					: A S ; 
-ASSIGN				: A S S I G N
-					| {_Four}?  A S S I (G)?
-					;
-BEGIN				: B E G I N
-					| {_Four}?  B E G I
-					;
-BREAK				: B R E A K
-					| {_Four}?  B R E A
-					;
-CASE				: C A S E;
-CAST				: '_' C A S T ;
-CLASS				: C L A S S
-					| {_Four}?  C L A S
-					;
-CLIPPER				: C L I P P E R
-					| {_Four}?  C L I P (P(E)?)?
-					;
-DEFINE				: D E F I N E
-					| {_Four}?  D E F I (N)?
-					;
-DIM					: D I M ;
-DLL					: '_' D L L ;
-DO					: D O ;
-DOWNTO				: D O W N T O
-					| {_Four}?  D O W N (T)?
-					;
-ELSE				: E L S E;
-ELSEIF				: E L S E I F
-					| {_Four}?  E L S E I
-					;
-END					: E N D ;
-ENDCASE				: E N D C A S E
-					| {_Four}?  E N D C(A(S)?)?
-					;
-ENDDO				: E N D D O
-					| {_Four}?  E N D D
-					;
-ENDIF				: E N D I F
-					| {_Four}?  E N D I
-					;
-EXIT				: E X I T ;
-EXPORT				: E X P O R T
-					| {_Four}?  E X P O (R)?
-					;
-FASTCALL			: F A S T C A L L
-					| {_Four}?  F A S T (C(A(L)?)?)?
-					;
-
-FIELD				: '_'? F I E L D ;
-FOR					: F O R ;
-FUNCTION			: F U N C T I O N
-                    | F U N C 
-					| {_Four}?  F U N C T(I(O)?)?
-					;
-GLOBAL				: G L O B A L
-					| {_Four}?  G L O B (A)?
-					;
-HIDDEN				: H I D D E N
-					| {_Four}?  H I D D (E)?
-					;
-IF					: I F ;
-IIF					: I I F;
-INHERIT				: I N H E R I T
-					| { _Four}? I N H E (R(I)?)?
-					;
-INIT1				: '_' I N I T '1';
-INIT2				: '_' I N I T '2';
-INIT3				: '_' I N I T '3';
-INSTANCE			: I N S T A N C E
-					| { _Four}? I N S T (A(N(C)?)?)?
-					;
-IS					: I S ;
-LOCAL				: L O C A L
-					| {_Four}?  L O C A
-					;
-LOOP				: L O O P ;
-MEMBER				: M E M B E R
-					| {_Four}?  M E M B (E)?
-					;
-MEMVAR				: M E M V A R 
-					| {_Four}?  M E M V (A)?
-					; 
-METHOD				: M E T H O D
-					| {_Four}?  M E T H (O)?
-					;
-NEXT				: N E X T ;
-OTHERWISE			: O T H E R W I S E
-					| {_Four}?  O T H E (R(W(I(S)?)?)?)?
-					;
-PARAMETERS			: P A R A M E T E R S
-					| {_Four}?  P A R A (M(E(T(E(R)?)?)?)?)?
-					;
-PASCAL				: P A S C A L
-					| {_Four}?  P A S C (A)?
-					;
-PRIVATE				: P R I V A T E
-					| {_Four}?  P R I V (A ( T)?)?
-					;
-PROCEDURE			: P R O C E D U R E
-                    | P R O C
-					| { _Four}? P R O C E(D(U(R)?)?)?
-					;
-PROTECTED			: P R O T E C T (E D)?
-					| { _Four}? P R O T (E(C(T E)?)?)?
-					;
-PUBLIC				: P U B L I C
-					| { _Four}? P U B L (I)?
-					;
-RECOVER				: R E C O V E R
-					| { _Four}? R E C O (V(E)?)?
-					;
-RETURN				: R E T U R N
-					| { _Four}? R E T U (R)?
-					;
-SELF				: S E L F ;
-SEQUENCE			: S E Q U E N C E
-					| { _Four}? S E Q U (E(N(C)?)?)?
-					;
-SIZEOF				: '_'? S I Z E O F ;
-STATIC				: S T A T I C
-					| { _Four}? S T A T (I)?
-					;
-STEP				: S T E P ;
-STRICT				: S T R I C T
-					| { _Four}? S T R I (C)?
-					;
-SUPER				: S U P E R
-					| { _Four}? S U P E
-					;
-THISCALL			: T H I S C A L L
-					| { _Four}? T H I S (C(A(L)?)?)?
-					;
-TO					: T O ;
-TYPEOF				: '_'? T Y P E O F ;
-UNION				: U N I O N
-					| { _Four}? U N I O
-					;
-UPTO				: U P T O ;
-USING				: U S I N G
-					| { _Four}? U S I N
-					;
-WHILE				: W H I L E
-					| { _Four}? W H I L
-					;
+ACCESS,ALIGN,AS,ASSIGN,BEGIN,BREAK,CASE,CAST,CLASS,CLIPPER,DEFINE,DIM,DLL,DO,DOWNTO,ELSE,ELSEIF,END,ENDCASE,ENDDO,ENDIF,EXIT,EXPORT,FASTCALL,FIELD,
+FIELD,FOR,FUNCTION,FUNCTION,GLOBAL,HIDDEN,IF,IIF,INHERIT,INIT1,INIT2,INIT3,INSTANCE,IS,LOCAL,LOOP,MEMBER,MEMVAR,METHOD,NEXT,OTHERWISE,PARAMETERS,PASCAL,
+PRIVATE,PROCEDURE,PROCEDURE,PROTECTED,PROTECTED,PUBLIC,RECOVER,RETURN,SELF,SEQUENCE,SIZEOF,SIZEOF,STATIC,STEP,STRICT,SUPER,THISCALL,TO,TYPEOF,TYPEOF,UNION,
+UPTO,USING,WHILE,
 
 // Vulcan keywords that are not part of the identifier rule
 // to prevent parser disambiguities
 // (These keywords were NOT contextual in Vulcan either)
-CATCH				: C A T C H ;
-FINALLY				: F I N A L L Y ;
-THROW				: T H R O W ;
+//
+CATCH,FINALLY,THROW,
 
 // New Vulcan Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
-ABSTRACT			: A B S T R A C T ;
-AUTO				: A U T O ;
-CONSTRUCTOR			: C O N S T R U C T O R ;
-CONST				: C O N S T ;
-DEFAULT				: D E F A U L T;            // Pragma switch
-DELEGATE			: D E L E G A T E ;
-DESTRUCTOR			: D E S T R U C T O R ;
-ENUM				: E N U M ;
-EVENT				: E V E N T ;
-EXPLICIT			: E X P L I C I T ;
-FOREACH				: F O R E A C H ;
-GET					: G E T ;
-IMPLEMENTS			: I M P L E M E N T S ;
-IMPLICIT			: I M P L I C I T ;
-IMPLIED				: I M P L I E D ;
-IN					: I N ;
-INITONLY			: I N I T O N L Y ;
-INTERFACE			: I N T E R F A C E ;
-INTERNAL			: I N T E R N A L ;
-LOCK				: L O C K ;
-NAMESPACE			: N A M E S P A C E ;
-NEW					: N E W ;
-OFF                 : O F F ;                   // Pragma switch
-ON                  : O N ;                     // Pragma switch
-OPERATOR 			: O P E R A T O R ;
-OPTIONS             : O P T I O N S ;           // Pragma Options
-OUT					: O U T ;
-PARTIAL				: P A R T I A L ;
-PROPERTY			: P R O P E R T Y ;
-REPEAT				: R E P E A T ;
-SCOPE				: S C O P E ;
-SEALED				: S E A L E D ;
-SET					: S E T ;
-STRUCTURE			: S T R U C T U R E 
-					| S T R U C T;					
-TRY					: T R Y ;
-UNTIL				: U N T I L ;
-VALUE				: V A L U E ;
-VIRTUAL				: V I R T U A L ;
-VOSTRUCT			: V O S T R U C T ;
-WARNINGS            : W A R N I N G S;          // Pragma Warnings
-
+//
+ABSTRACT,AUTO,CONSTRUCTOR,CONST,DEFAULT,DELEGATE,DESTRUCTOR,ENUM,EVENT,EXPLICIT,FOREACH,GET,IMPLEMENTS,IMPLICIT,IMPLIED,IN,INITONLY,INTERFACE,INTERNAL,
+LOCK,NAMESPACE,NEW,OFF,ON,OPERATOR,OPTIONS,OUT,PARTIAL,PROPERTY,REPEAT,SCOPE,SEALED,SET,STRUCTURE,TRY,UNTIL,VALUE,VIRTUAL,VOSTRUCT,WARNINGS,
 
 // New XSharp Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
-
-ASCENDING           : A S C E N D I N G;
-ASSEMBLY			: A S S E M B L Y;
-ASYNC				: A S Y N C;
-AWAIT				: A W A I T ;
-BY                  : B Y ;
-CHECKED				: C H E C K E D;
-DESCENDING          : D E S C E N D I N G;
-EQUALS              : E Q U A L S ;
-EXTERN				: E X T E R N ;
-FROM                : F R O M ;
-GROUP               : G R O U P ;
-INTO                : I N T O ;
-JOIN                : J O I N;
-LET                 : L E T ;
-MODULE				: M O D U L E ;
-ORDERBY             : O R D E R B Y ;
-SELECT              : S E L E C T ;
-SWITCH				: S W I T C H ;
-UNCHECKED			: U N C H E C K E D;
-UNSAFE				: U N S A F E;
-VAR					: V A R ;
-VOLATILE			: V O L A T I L E ;
-WHERE				: W H E R E ;
-YIELD				: Y I E L D ;
-
-
+//
+ASCENDING,ASSEMBLY,ASYNC,AWAIT,BY,CHECKED,DESCENDING,EQUALS,EXTERN,FROM,GROUP,INTO,JOIN,LET,MODULE,ORDERBY,SELECT,SWITCH,UNCHECKED,UNSAFE,VAR,VOLATILE,
+WHERE,YIELD,
 
 // Predefined types
-ARRAY				: A R R A Y
-					| { _Four}? A R R A
-					;
-BYTE				: B Y T E ;
-CHAR				: C H A R ;
-CODEBLOCK			: C O D E B L O C K
-					| { _Four}? C O D E (B(L(O(C)?)?)?)?
-					;
-DATE				: D A T E ;
-DWORD				: D W O R D
-					| { _Four}? D W O R
-					;
-FLOAT				: F L O A T
-					| { _Four}? F L O A
-					;
-INT					: I N T ;
-LOGIC				: L O G I C
-					| { _Four}? L O G I
-					;
-
-LONGINT				: L O N G I N T
-                    | L O N G
-					| { _Four}? L O N G I(N)?
-					;
-
-OBJECT				: O B J E C T
-					| { _Four}? O B J E (C)?
-					;
-PSZ					: P S Z ;
-PTR					: P T R ;
-REAL4				: R E A L '4' ;
-REAL8				: R E A L '8' ;
-REF					: R E F ;
-SHORTINT			: S H O R T I N T
-					| { _Four}? S H O R (T(I(N)?)?)?
-					;
-STRING				: S T R I N G
-					| { _Four}? S T R I (N)?
-					;
-SYMBOL				: S Y M B O L
-					| { _Four}? S Y M B (O)?
-					;
-USUAL				: U S U A L
-					| { _Four}? U S U A
-					;
-VOID				: V O I D ;
-WORD				: W O R D ;
+ARRAY,BYTE,CHAR,CODEBLOCK,DATE,DWORD,FLOAT,INT,LOGIC,LONGINT,OBJECT,PSZ,PTR,REAL4,REAL8,REF,SHORTINT,STRING,SYMBOL,USUAL,VOID,WORD,
 
 // Vulcan Types
-INT64				: I N T '6' '4' ;
-UINT64				: U I N T '6' '4' ;
-
+INT64,UINT64,
 
 // XSharp Types
-DYNAMIC				: D Y N A M I C ;
-
+DYNAMIC,
 
 // Null values
-NIL					: N I L ;
-NULL				: N U L L ;
-NULL_ARRAY			: N U L L '_' A R R A Y ;
-NULL_CODEBLOCK		: N U L L '_' C O D E B L O C K ;
-NULL_DATE			: N U L L '_' D A T E ;
-NULL_OBJECT			: N U L L '_' O B J E C T ;
-NULL_PSZ			: N U L L '_' P S Z ;
-NULL_PTR			: N U L L '_' P T R  ;
-NULL_STRING			: N U L L '_' S T R I N G ;
-NULL_SYMBOL			: N U L L '_' S Y M B O L ;
-
-// Logics
-FALSE_CONST			: F A L S E
-					| {!_inId}? '.' F '.'
-					| {!_inId}? '.' N '.'
-					;
-
-TRUE_CONST			: T R U E
-					| {!_inId}? '.' T '.'
-					| {!_inId}? '.' Y '.'
-					;
-
-// Operators
-LOGIC_AND			: {!_inId}? '.' A N D '.' ;
-LOGIC_OR			: {!_inId}? '.' O R '.'   ;
-LOGIC_NOT			: {!_inId}? '.' N O T '.' ;
-LOGIC_XOR			: {!_inId}? '.' X O R '.' ;
-
-// Prefix and postfix Operators
-INC					: '++' ;
-DEC					: '--' ;
-
-// Boolean operators
-NOT					: '!'  ;
-AND					: '&&' ;
-OR					: '||' ;
-
-// Unary & binary operators
-PLUS				: '+';
-MINUS				: '-' ;
-DIV					: '/' ;
-MOD					: '%';
-EXP					: '^';
-LSHIFT				: '<<' ;
-RSHIFT				: '>>' ;
-TILDE				: '~';
-MULT				: '*' ;
-QQMARK				: '??' ;
-QMARK				: '?' ;
-
-// Assignments
-ASSIGN_OP			: ':=' ;
-ASSIGN_ADD			: '+=' ;
-ASSIGN_SUB			: '-=' ;
-ASSIGN_EXP			: '^=' ;
-ASSIGN_MUL			: '*=' ;
-ASSIGN_DIV			: '/=' ;
-ASSIGN_MOD			: '%=' ;
-ASSIGN_BITAND		: '&=';
-ASSIGN_BITOR		: '|=';
-ASSIGN_LSHIFT		: '<<=';
-ASSIGN_RSHIFT		: '>>=';
-ASSIGN_XOR			: '~=';
+NIL,NULL,NULL_ARRAY,NULL_CODEBLOCK,NULL_DATE,NULL_OBJECT,NULL_PSZ,NULL_PTR,NULL_STRING,NULL_SYMBOL,
 
 // Relational operators
-LT			: '<' ;
-LTE			: '<=' ;
-GT			: '>' ;
-GTE			: '>=' ;
-EQ			: '=' ;
-EEQ			: '==' ;
-SUBSTR		: '$'	;
-NEQ			: '<>'
-			| '!='
-			;
+LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,
 
-// Misc Lexical Elements
-LPAREN      : '(' ;
-RPAREN		: ')' ;
-LCURLY		: '{' ;
-RCURLY		: '}' ;
-LBRKT		: '[' ;
-RBRKT		: ']' ;
-COLON		: ':' ;
-COMMA		: ',' ;
-PIPE		: '|' ;
-AMP			: '&' ;
-ADDROF		: '@' ;
-ALIAS		: '->';
-DOT			: '.' ;
-COLONCOLON	: ':' ':';
+// Prefix and postfix Operators
+INC,DEC,
 
+// Unary & binary operators
+PLUS,MINUS,DIV,MOD,EXP,LSHIFT,RSHIFT,TILDE,MULT,QQMARK,QMARK,
 
-MACRO		: ('__' A R R A Y B A S E '__' 
-			| '__' C L R '2' '__'
-			| '__' C L R '4' '__'
-			| '__' C L R V E R S I O N '__'
-			| '__' D A T E '__'
-			| '__' D A T E T I M E '__'
-			| '__' D E B U G '__'
-			| '__' E N T I T Y '__'
-			| '__' F I L E '__'
-			| '__' L I N E '__'
-			| '__' M O D U L E '__'
-			| '__' S I G '__'
-			| '__' S R C L O C '__'
-			| '__' S Y S D I R '__'
-			| '__' T I M E '__'
-			| '__' U T C T I M E '__'
-			| '__' V E R S I O N  '__'
-			| '__' W I N D I R '__'  
-			| '__' W I N D R I V E '__' 
-			) {Text = "\""+ Text+"\"";} -> type(STRING_CONST) 
-			;
+// Boolean operators
+NOT,AND,OR,
+
+// Assignments
+ASSIGN_OP,ASSIGN_ADD,ASSIGN_SUB,ASSIGN_EXP,ASSIGN_MUL,ASSIGN_DIV,
+ASSIGN_MOD,ASSIGN_BITAND,ASSIGN_BITOR,ASSIGN_LSHIFT,ASSIGN_RSHIFT,
+ASSIGN_XOR,
+
+// Logics
+FALSE_CONST,TRUE_CONST,
+
+// Operators
+LOGIC_AND,LOGIC_OR,LOGIC_NOT,LOGIC_XOR,
+
+// Symbols
+LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,COLONCOLON,
+
+// Consts
+HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,
+
+// Pre processor symbols
+PRAGMA,HASHUSING,PP_SYMBOLS,MACRO,
+
+// Ids
+ID,KWID,
+
+// Comments
+DOC_COMMENT,SL_COMMENT,ML_COMMENT,
+
+// Separators
+LINE_CONT,LINE_CONT_OLD,
+SEMI,WS,NL,EOS,
+
+// Error
+UNRECOGNIZED
+
+}
+
+/*
+ * Lexer Rules
+ */
 
 // Numeric & date constants
 HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
 BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
 INT_CONST	:  ( DIGIT )+ ( U | L )? ;
-DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? DOT DIGIT ( DIGIT )? DOT DIGIT ( DIGIT )?;			// 2015.07.15
-REAL_CONST	: ( ( DIGIT )+ ( DOT ( DIGIT )* )? | DOT ( DIGIT )+ ) ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
-
-//DECIMAL_CONST;                         // a literal floating point number followed by 'm'
-
+DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? '.' DIGIT ( DIGIT )? '.' DIGIT ( DIGIT )?;			// 2015.07.15
+REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
 
 // Preprocessopr symbols handled by the compiler
 // Must precede the SYMBOL rule
@@ -592,9 +975,6 @@ LINE_CONT_OLD: {_OldComment}? ';' (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )
 SEMI		: ';' 
 			;
 
-WS			:	(' ' |  '\t') -> channel(HIDDEN)
-			;
-
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
 // the Lexer Property AllowOldStyleComments
 
@@ -610,12 +990,12 @@ SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 ML_COMMENT  : '/' '*' .*? '*' '/'						-> channel(HIDDEN)
 			;
 
-NL						: '\r' '\n'? | '\n' ;
-
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 
 ID						: ID_PART 
-						| '@' '@' ID_PART {Text = Text.Substring(2, Text.Length-2);}
+						;
+
+KWID					: '@' '@' ID_PART {Text = Text.Substring(2, Text.Length-2);}
 						;
 
 UNRECOGNIZED			: . ;

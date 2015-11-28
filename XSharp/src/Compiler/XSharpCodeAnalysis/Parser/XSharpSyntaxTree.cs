@@ -73,6 +73,10 @@ namespace Antlr4.Runtime
         }
     }
 
+    public partial class Lexer {
+        protected Tuple<ITokenSource, ICharStream> TokenFactorySourcePair { get { return _tokenFactorySourcePair; } }
+    }
+
     public partial class RuleContext
     {
         public object CsNode { get; set; }

@@ -1120,7 +1120,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
             }
             if (!isDim && hasArraySub) {
-                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1));
+                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1,"Indexed Class variable"));
             }
         }
 
@@ -2190,6 +2190,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach(var lvCtx in context._LocalVars)
                 VisitLocalvar(lvCtx);
             context.PutList(MakeList<StatementSyntax>(context._LocalVars));
+            
         }
 
         public override void ExitVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context)
@@ -2205,7 +2206,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
             }
             if (!isDim && hasArraySub) {
-                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1));
+                context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInVersion1,"Indexed Local"));
             }
         }
 
@@ -2354,9 +2355,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXbasedecl([NotNull] XSharpParser.XbasedeclContext context)
         {
-            // TODO
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1,  context.T.Text+" statement" )));
         }
 
         public override void ExitWhileStmt([NotNull] XSharpParser.WhileStmtContext context)
@@ -2610,7 +2610,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // TODO: sequence/break/recover are not supported yet
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "BREAK statement")));
         }
 
         public override void ExitThrowStmt([NotNull] XSharpParser.ThrowStmtContext context)
@@ -2656,14 +2656,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // TODO: sequence/break/recover are not supported yet
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "BEGIN SEQUENCE statement")));
         }
 
         public override void ExitRecoverBlock([NotNull] XSharpParser.RecoverBlockContext context)
         {
             // TODO: sequence/break/recover are not supported yet
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context)));
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "RECOVER statement" )));
         }
 
         public override void ExitLockStmt([NotNull] XSharpParser.LockStmtContext context)

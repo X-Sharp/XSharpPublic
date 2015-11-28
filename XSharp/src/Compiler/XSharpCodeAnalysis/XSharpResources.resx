@@ -4297,22 +4297,22 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>lambda expression</value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion1" xml:space="preserve">
-    <value>Feature '{0}' is not available in X# 1.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 1.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion2" xml:space="preserve">
-    <value>Feature '{0}' is not available in X# 2.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 2.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion3" xml:space="preserve">
-    <value>Feature '{0}' is not available in X# 3.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 3.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion4" xml:space="preserve">
-    <value>Feature '{0}' is not available in X# 4.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 4.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion5" xml:space="preserve">
-    <value>Feature '{0}' is not available in X# 5.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 5.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion6" xml:space="preserve">
-    <value>Feature '{0}' is not available in X# 6.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 6.  </value>
   </data>
   <data name="ERR_FeatureIsExperimental" xml:space="preserve">
     <value>Feature '{0}' is only available in 'experimental' language version.</value>

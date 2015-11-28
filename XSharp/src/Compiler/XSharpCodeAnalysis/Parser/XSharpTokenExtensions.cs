@@ -273,7 +273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.SYMBOL_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text.Substring(1).ToUpper(), SyntaxFactory.WS)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "SYMBOL constant ("+token.Text+")" ));
                     break;
                 case XSharpParser.HEX_CONST:
                     switch (token.Text.Last()) {
@@ -374,7 +374,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.DATE_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "DATE constant ("+token.Text+")"));
                     break;
                 case XSharpParser.NIL:
                 case XSharpParser.NULL_ARRAY:
@@ -386,7 +386,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.NULL_STRING:
                 case XSharpParser.NULL_SYMBOL:
                     r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, token.Text));
                     break;
                 default: // nvk: This catches cases where a keyword/identifier is treated as a literal string
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS);

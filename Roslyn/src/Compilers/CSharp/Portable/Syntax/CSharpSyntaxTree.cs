@@ -695,6 +695,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 var start = snode.XNode?.Position ?? 0;
                 var length = enode.XNode?.FullWidth ?? 0;
+                if (length < 0)
+                    length = 0;
                 return new TextSpan(start,length);
             }
             return span;

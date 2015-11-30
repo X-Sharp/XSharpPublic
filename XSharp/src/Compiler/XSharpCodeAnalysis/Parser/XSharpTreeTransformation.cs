@@ -3091,6 +3091,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
         }
 
+        public override void ExitDefaultExpression([NotNull] XSharpParser.DefaultExpressionContext context)
+        {
+            context.Put(_syntaxFactory.DefaultExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword),
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                context.Type.Get<TypeSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+        }
+
         public override void ExitBracketedArgumentList([NotNull] XSharpParser.BracketedArgumentListContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();

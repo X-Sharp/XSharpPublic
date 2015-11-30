@@ -573,7 +573,6 @@ lexer grammar XSharpLexer;
 					{"_FIELD", FIELD},
 					{"FOR", FOR},
 					{"FUNCTION", FUNCTION},
-					{"FUNC", FUNCTION},
 					{"GLOBAL", GLOBAL},
 					{"HIDDEN", HIDDEN},
 					{"IF", IF},
@@ -595,9 +594,7 @@ lexer grammar XSharpLexer;
 					{"PASCAL", PASCAL},
 					{"PRIVATE", PRIVATE},
 					{"PROCEDURE", PROCEDURE},
-					{"PROC", PROCEDURE},
 					{"PROTECTED", PROTECTED},
-					{"PROTECT", PROTECTED},
 					{"PUBLIC", PUBLIC},
 					{"RECOVER", RECOVER},
 					{"RETURN", RETURN},
@@ -642,6 +639,15 @@ lexer grammar XSharpLexer;
 					{"VOID", VOID},
 					{"WORD", WORD},
 				};
+
+				if (! _Four)
+				{
+					VoKeywords.Add("PROC", PROCEDURE);
+					VoKeywords.Add("FUNC", FUNCTION);
+					VoKeywords.Add("PROTECT", PROTECTED);
+					VoKeywords.Add("SHORT", SHORTINT);
+					VoKeywords.Add("LONG", LONGINT);
+				}
 				foreach (var text in VoKeywords.Keys) {
 					var token = VoKeywords[text];
 					_kwIds.Add(text,token);

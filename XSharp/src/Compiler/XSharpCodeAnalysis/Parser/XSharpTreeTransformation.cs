@@ -1878,14 +1878,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             _syntaxFactory.Attribute(
                                 name: GenerateQualifiedName("global::System.Runtime.InteropServices.DllImport"),
                                 argumentList: _syntaxFactory.AttributeArgumentList(
-                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                     arguments: MakeSeparatedList(
                                         _syntaxFactory.AttributeArgument(null,null,context.Dll.Get<ExpressionSyntax>()),
                                         context.Entrypoint == null ? null : 
                                             _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"),null,context.Entrypoint.Get<ExpressionSyntax>()),
                                         context.CallingConvention?.Get<AttributeArgumentSyntax>()
                                     ),
-                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 )
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
@@ -3532,9 +3532,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIdentifierString([NotNull] XSharpParser.IdentifierStringContext context)
         {
-            context.Put(context.Token?.SyntaxLiteralValue()
+            context.Put(_syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,
+                context.Token?.SyntaxLiteralValue()
                 ?? context.XsToken?.Token.SyntaxLiteralValue()
-                ?? context.VnToken?.Token.SyntaxLiteralValue());
+                ?? context.VnToken?.Token.SyntaxLiteralValue()));
         }
 
         public override void ExitIdentifier([NotNull] XSharpParser.IdentifierContext context)

@@ -121,12 +121,13 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '@':
-					if (InputStream.La(2) != '@') {
-						_type = ADDROF;
-						_textSb.Clear();
-						_textSb.Append((char)c);
-						InputStream.Consume();
+					if (InputStream.La(2) == '@') {
+						break;
 					}
+					_type = ADDROF;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
 					break;
 				case '-':
 					_type = MINUS;
@@ -168,17 +169,18 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '/':
-					if (InputStream.La(2) != '/' && InputStream.La(2) != '*') {
-						_type = DIV;
-						_textSb.Clear();
+					if (InputStream.La(2) == '/' || InputStream.La(2) == '*') {
+						break;
+					}
+					_type = DIV;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = ASSIGN_DIV;
 						_textSb.Append((char)c);
 						InputStream.Consume();
-						c = InputStream.La(1);
-						if (c == '=') {
-							_type = ASSIGN_DIV;
-							_textSb.Append((char)c);
-							InputStream.Consume();
-						}
 					}
 					break;
 				case '%':
@@ -323,6 +325,9 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '.':
+					if (InputStream.La(2) >= '0' && InputStream.La(2) <= '9') {
+						break;
+					}
 					_type = DOT;
 					_textSb.Clear();
 					_textSb.Append((char)c);
@@ -426,17 +431,18 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case 'e': 
-					if (InputStream.La(2) != '"') {
-						_type = ID;
-						_textSb.Clear();
+					if (InputStream.La(2) == '"') {
+						break;
+					}
+					_type = ID;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
 						_textSb.Append((char)c);
 						InputStream.Consume();
 						c = InputStream.La(1);
-						while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
-							_textSb.Append((char)c);
-							InputStream.Consume();
-							c = InputStream.La(1);
-						}
 					}
 					break;
                 case 'a': case 'b': case 'c': case 'd': case 'f': case 'g': case 'h': case 'i': case 'j':

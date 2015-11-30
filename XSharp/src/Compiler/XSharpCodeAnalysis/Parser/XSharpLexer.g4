@@ -414,6 +414,7 @@ lexer grammar XSharpLexer;
 					_textSb.Append((char)c);
 					InputStream.Consume();
                     if (c == '\r' && InputStream.La(1) == '\n') {
+						c = InputStream.La(1);
 						_textSb.Append((char)c);
 						InputStream.Consume();
                     }
@@ -423,6 +424,7 @@ lexer grammar XSharpLexer;
 						_textSb.Append((char)c);
 						InputStream.Consume();
                         if (c == '\r' && InputStream.La(1) == '\n') {
+							c = InputStream.La(1);
 							_textSb.Append((char)c);
 							InputStream.Consume();
                         }

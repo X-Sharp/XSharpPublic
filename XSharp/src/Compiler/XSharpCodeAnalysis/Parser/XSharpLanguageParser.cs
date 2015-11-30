@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Uncomment this define to dump time profiling info of the parsing phases.
+//#define DUMP_TIMES
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
@@ -109,6 +112,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var errorListener = new XSharpErrorListener();
             parser.AddErrorListener(errorListener);
 #endif
+#if DEBUG && DUMP_TIMES
+            DateTime t = DateTime.Now;
+#endif
+#if DEBUG && DUMP_TIMES
+            {
+                while (tokens.Fetch(1) > 0) { }
+                tokens.Reset();
+            }
+            {
+                var ts = DateTime.Now - t;
+                t += ts;
+                Debug.WriteLine("Lexing completed in {0}",ts);
+            }
+#endif
             parser.ErrorHandler = new XSharpErrorStrategy();
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             try
@@ -117,11 +134,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             catch (Exception)
             {
+#if DEBUG
+                Debug.WriteLine("Antlr: SLL parsing failed. Trying again in LL mode.");
+#endif
                 tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 tree = parser.source();
             }
+#if DEBUG && DUMP_TIMES
+            {
+                var ts = DateTime.Now - t;
+                t += ts;
+                Debug.WriteLine("Parsing completed in {0}",ts);
+            }
+#endif
 
             var walker = new ParseTreeWalker();
 
@@ -130,6 +157,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var errorAnalyzer = new XSharpParseErrorAnalysis(parser);
                 walker.Walk(errorAnalyzer, tree);
+#if DEBUG && DUMP_TIMES
+                {
+                    var ts = DateTime.Now - t;
+                    t += ts;
+                    Debug.WriteLine("Error analysis completed in {0}",ts);
+                }
+#endif
             }
 
             var treeTransform = new XSharpTreeTransformation(parser, _pool, _syntaxFactory);
@@ -145,6 +179,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             finally
             {
+#if DEBUG && DUMP_TIMES
+                {
+                    var ts = DateTime.Now - t;
+                    t += ts;
+                    Debug.WriteLine("Tree transform completed in {0}",ts);
+                }
+#endif
                 treeTransform.Free();
             }
         }

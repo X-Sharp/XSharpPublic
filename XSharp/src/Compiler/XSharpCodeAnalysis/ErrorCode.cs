@@ -5,6 +5,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal enum ErrorCode
     {
         // Errors treated as warnings in XSharp!
+        WRN_SizeofUnsafe = 233,
         WRN_UseDefViolation = 165,
         WRN_UseDefViolationField = 170,
         WRN_UseDefViolationThis = 188,

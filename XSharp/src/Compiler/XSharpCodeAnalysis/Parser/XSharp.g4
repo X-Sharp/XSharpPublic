@@ -37,7 +37,7 @@ options	{
 		}
 
 
-source				: (eos)? (Entities+=entity)* eof
+source				: (Entities+=entity)* EOF
 					;
 
 entity              : namespace_
@@ -64,14 +64,14 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
 						FUNCTION Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
 					   (AS Type=datatype)? 
 					   (ConstraintsClauses+=typeparameterconstraintsclause)*
-					   (CallingConvention=callingconvention)? eos 
+					   (CallingConvention=callingconvention)? EOS 
 					   StmtBlk=statementBlock
 					;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
 					   PROCEDURE Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
 					   (ConstraintsClauses+=typeparameterconstraintsclause)*
-					   (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? eos 
+					   (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? EOS 
 					   StmtBlk=statementBlock
 					;
 
@@ -108,18 +108,18 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
-using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     eos
+using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     EOS
                     ;
 
 // nvk: roslyn treats #pragma directives as trivia attached to parse nodes. The parser does not handle them directly.
-pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN eos         #pragmaOptions
-                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN eos         #pragmaWarnings
+pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN EOS         #pragmaOptions
+                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN EOS         #pragmaWarnings
                     ;
 
 pragmaswitch        : ON | OFF | DEFAULT
                     ;
 
-voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList eos
+voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList EOS
 					;
 
 
@@ -129,7 +129,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					  T=methodtype (ExplicitIface=name DOT)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (ConstraintsClauses+=typeparameterconstraintsclause)*
-					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? eos 
+					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? EOS 
 					  StmtBlk=statementBlock		
 					;
 
@@ -141,35 +141,35 @@ vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
 					;
 
 vostruct			: (Modifiers=funcprocModifiers)? 
-					  VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? eos
+					  VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? EOS
 					  (Members+=vostructmember)+
 					;
 
-vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
-					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
+vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype EOS
+					| MEMBER Id=identifier (AS | IS) DataType=datatype EOS
 					;
 
 vounion				: (Modifiers=funcprocModifiers)? 
-					  UNION  Id=identifier  eos
+					  UNION  Id=identifier  EOS
 					  (Members+=vounionmember)+
 					;
 
 
-vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype eos
-					| MEMBER Id=identifier (AS | IS) DataType=datatype eos
+vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype EOS
+					| MEMBER Id=identifier (AS | IS) DataType=datatype EOS
 					;
 
-namespace_			: BEGIN NAMESPACE Name=name eos
+namespace_			: BEGIN NAMESPACE Name=name EOS
 					  (Entities+=entity)*
-					  END NAMESPACE eos
+					  END NAMESPACE EOS
 					;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
 					  INTERFACE Id=identifier TypeParameters=typeparameters?
 					  ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
-					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos         // Optional typeparameterconstraints for Generic Class
+					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
 					  (Members+=classmember)*
-					  END INTERFACE eos
+					  END INTERFACE EOS
 					;
 
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -179,9 +179,9 @@ class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
 					  CLASS Id=identifier TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
 					  (INHERIT BaseType=datatype)?
 					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos         // Optional typeparameterconstraints for Generic Class
+					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
 					  (Members+=classmember)*
-					  END CLASS  eos
+					  END CLASS  EOS
 					;
 
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -198,8 +198,8 @@ typeparameterconstraintsclause
 					: WHERE Name=identifierName IS Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
 					;
 							  
-typeparameterconstraint: Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer
-					   | Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
+typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
+					   | Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer		
                        | NEW LPAREN RPAREN					#constructorConstraint		//  Class Foo<t> WHERE T IS NEW()
 					   ; 
 							  
@@ -208,9 +208,9 @@ typeparameterconstraint: Type=typeName						#typeConstraint				//  Class Foo<t> 
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
 					  STRUCTURE Id=identifier TypeParameters=typeparameters?
 					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos
+					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
 					  (Members+=classmember)+
-					  END STRUCTURE eos
+					  END STRUCTURE EOS
 					;
 
 structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -220,7 +220,7 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
 					  DELEGATE Id=identifier TypeParameters=typeparameters?
 					  ParamList=parameterList? AS Type=datatype
-					  (ConstraintsClauses+=typeparameterconstraintsclause)* eos
+					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
 					;
 
 delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+
@@ -228,19 +228,19 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-					  ENUM Id=identifier (AS Type=datatype)? eos
+					  ENUM Id=identifier (AS Type=datatype)? EOS
 					  (Members+=enummember)+
-					  END (ENUM)? eos
+					  END (ENUM)? EOS
 					;
 
 enumModifiers		: ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
 					;
 
-enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? eos
+enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? EOS
 					;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-					   EVENT (ExplicitIface=name DOT)? Id=identifier AS Type=datatype eos
+					   EVENT (ExplicitIface=name DOT)? Id=identifier AS Type=datatype EOS
 					;
 
 eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
@@ -248,7 +248,7 @@ eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
 
 
 
-classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList eos
+classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList EOS
 					; 
 
 classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE) )+
@@ -267,9 +267,9 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
 					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=name DOT)? Id=identifier) AS Type=datatype 
-					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? eos	// Auto
-					  | (LineAccessors+=propertyLineAccessor)+ eos													// Single Line
-					  | Multi=eos (Accessors+=propertyAccessor)+  END PROPERTY? eos									// Multi Line
+					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? EOS	// Auto
+					  | (LineAccessors+=propertyLineAccessor)+ EOS													// Single Line
+					  | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS									// Multi Line
 					  )
 					;
 
@@ -289,21 +289,21 @@ expressionListStmt	: Exprs+=expression (COMMA Exprs+=expression)*
 					;
 
 propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers? 
-					  ( Key=GET eos StmtBlk=statementBlock END GET?
-					  | Key=SET eos StmtBlk=statementBlock END SET? )
-					  eos
+					  ( Key=GET EOS StmtBlk=statementBlock END GET?
+					  | Key=SET EOS StmtBlk=statementBlock END SET? )
+					  EOS
 					;
 
 classmember			: Member=method										#clsmethod
 					| (Attributes=attributes)?
 					  (Modifiers=constructorModifiers)? 
-					  CONSTRUCTOR (ParamList=parameterList)? eos 
+					  CONSTRUCTOR (ParamList=parameterList)? EOS 
 					  (Chain=(SELF | SUPER) 
-						LPAREN ArgList=argumentList? RPAREN  eos)?
+						LPAREN ArgList=argumentList? RPAREN  EOS)?
 					  StmtBlk=statementBlock							#clsctor
 					| (Attributes=attributes)? 
 					  (Modifiers=destructorModifiers)?
-					  DESTRUCTOR (LPAREN RPAREN)?  eos 
+					  DESTRUCTOR (LPAREN RPAREN)?  EOS 
 					  StmtBlk=statementBlock							#clsdtor
 					| Member=classvars									#clsvars
 					| Member=property									#clsproperty
@@ -338,7 +338,7 @@ conversionOps		: Token=( IMPLICIT | EXPLICIT )
 
 operator_			: Attributes=attributes? Modifiers=operatorModifiers? 
 					  OPERATOR (Operation=overloadedOps | Conversion=conversionOps)
-					  ParamList=parameterList AS Type=datatype eos StmtBlk=statementBlock
+					  ParamList=parameterList AS Type=datatype EOS StmtBlk=statementBlock
 					;
 
 operatorModifiers	: ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
@@ -393,90 +393,89 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
-					| DO WHILE Expr=expression eos
-					  StmtBlk=statementBlock (END DO? | ENDDO) eos				#whileStmt
-					| WHILE Expr=expression eos
-					  StmtBlk=statementBlock END eos							#whileStmt
-					| FOR Iter=expression ASSIGN_OP InitExpr=expression
+					| DO WHILE Expr=expression EOS
+					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				#whileStmt
+					| WHILE Expr=expression EOS
+					  StmtBlk=statementBlock END EOS							#whileStmt
+					| FOR AssignExpr=expression
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
-					  (STEP Step=expression)? eos
-					  StmtBlk=statementBlock NEXT eos							#forStmt
+					  (STEP Step=expression)? EOS
+					  StmtBlk=statementBlock NEXT EOS							#forStmt
 					| IF IfStmt=ifElseBlock
-					  (END IF? | ENDIF)  eos									#ifStmt	
-					| DO CASE eos
+					  (END IF? | ENDIF)  EOS									#ifStmt	
+					| DO CASE EOS
 					  CaseStmt=caseBlock?
-					  (END CASE? | ENDCASE) eos									#caseStmt
-					| EXIT eos													#exitStmt
-					| LOOP eos													#loopStmt
-					| Exprs+=expression (COMMA Exprs+=expression)* eos			#expressionStmt
-					| BREAK Expr=expression? eos								#breakStmt
-					| RETURN (VOID | Expr=expression)? eos						#returnStmt
+					  (END CASE? | ENDCASE) EOS									#caseStmt
+					| EXIT EOS													#exitStmt
+					| LOOP EOS													#loopStmt
+					| BREAK Expr=expression? EOS								#breakStmt
+					| RETURN (VOID | Expr=expression)? EOS						#returnStmt
 					| Q=(QMARK | QQMARK)
-					   Exprs+=expression (COMMA Exprs+=expression)* eos			#qoutStmt
-					| BEGIN SEQUENCE eos
+					   Exprs+=expression (COMMA Exprs+=expression)* EOS			#qoutStmt
+					| BEGIN SEQUENCE EOS
 					  StmtBlk=statementBlock
 					  (RECOVER RecoverBlock=recoverBlock)?
-					  (FINALLY eos FinBlock=statementBlock)?
-					  END (SEQUENCE)? eos										#seqStmt
+					  (FINALLY EOS FinBlock=statementBlock)?
+					  END (SEQUENCE)? EOS										#seqStmt
 					//
 					// New in Vulcan
 					//
-					| REPEAT eos
+					| REPEAT EOS
 					  StmtBlk=statementBlock
-					  UNTIL Expr=expression eos									#repeatStmt
+					  UNTIL Expr=expression EOS									#repeatStmt
 					| FOREACH
 					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
-					  IN Container=expression eos
-					  StmtBlk=statementBlock NEXT eos							#foreachStmt
-					| THROW Expr=expression? eos								#throwStmt
-					| TRY eos StmtBlk=statementBlock
-					  (CATCH CatchBlock+=catchBlock)*
-					  (FINALLY eos FinBlock=statementBlock)?
-					  END TRY? eos												#tryStmt
-					| BEGIN LOCK Expr=expression eos
+					  IN Container=expression EOS
+					  StmtBlk=statementBlock NEXT EOS							#foreachStmt
+					| THROW Expr=expression? EOS								#throwStmt
+					| TRY EOS StmtBlk=statementBlock
+					  (CATCH CatchBlock+=catchBlock?)*
+					  (FINALLY EOS FinBlock=statementBlock)?
+					  END TRY? EOS												#tryStmt
+					| BEGIN LOCK Expr=expression EOS
 					  StmtBlk=statementBlock
-					  END LOCK? eos												#lockStmt
-					| BEGIN SCOPE eos
+					  END LOCK? EOS												#lockStmt
+					| BEGIN SCOPE EOS
 					  StmtBlk=statementBlock
-					  END SCOPE? eos											#scopeStmt
+					  END SCOPE? EOS											#scopeStmt
 					//
 					// New XSharp Statements
 					//
-					| YIELD RETURN (VOID | Expr=expression)? eos				#yieldStmt
-					| SWITCH Expr=expression eos
-					  (SwitchBlock+=switchBlock)*
-					  END SWITCH?  eos											#switchStmt
-					| BEGIN USING Expr=expression eos
+					| YIELD RETURN (VOID | Expr=expression)? EOS				#yieldStmt
+					| SWITCH Expr=expression EOS
+					  (SwitchBlock+=switchBlock)+
+					  END SWITCH?  EOS											#switchStmt
+					| BEGIN USING Expr=expression EOS
 						Stmtblk=statementBlock
-					  END USING? eos											#usingStmt
-					| BEGIN UNSAFE eof
+					  END USING? EOS											#usingStmt
+					| BEGIN UNSAFE EOS
 					  StmtBlk=statementBlock
-					  END UNSAFE? eos											#unsafeStmt
-					| BEGIN Ch=CHECKED eof
+					  END UNSAFE? EOS											#unsafeStmt
+					| BEGIN Ch=CHECKED EOS
 					  StmtBlk=statementBlock
-					  END CHECKED? eos											#checkedStmt
-					| BEGIN Ch=UNCHECKED eof
+					  END CHECKED? EOS											#checkedStmt
+					| BEGIN Ch=UNCHECKED EOS
 					  StmtBlk=statementBlock
-					  END UNCHECKED? eos										#checkedStmt
-
+					  END UNCHECKED? EOS										#checkedStmt
+					| Exprs+=expression (COMMA Exprs+=expression)* EOS			#expressionStmt
 					;
 
-ifElseBlock			: Cond=expression eos StmtBlk=statementBlock
-					  (ELSEIF ElseIfBlock=ifElseBlock | ELSE eos ElseBlock=statementBlock)?
+ifElseBlock			: Cond=expression EOS StmtBlk=statementBlock
+					  (ELSEIF ElseIfBlock=ifElseBlock | ELSE EOS ElseBlock=statementBlock)?
 					;
 
-caseBlock			: Key=CASE Cond=expression eos StmtBlk=statementBlock NextCase=caseBlock?
-					| Key=OTHERWISE eos StmtBlk=statementBlock
+caseBlock			: Key=CASE Cond=expression EOS StmtBlk=statementBlock NextCase=caseBlock?
+					| Key=OTHERWISE EOS StmtBlk=statementBlock
 					;
 
 // Note that literalValue is not enough. We also need to support members of enums
-switchBlock         : (Key=CASE Const=expression | Key=(OTHERWISE|DEFAULT)) eos StmtBlk=statementBlock			 
+switchBlock         : (Key=CASE Const=expression | Key=(OTHERWISE|DEFAULT)) EOS StmtBlk=statementBlock			 
 					;
 
-catchBlock			: Id=identifier AS Type=datatype eos StmtBlk=statementBlock
+catchBlock			: (Id=identifier AS Type=datatype)? EOS StmtBlk=statementBlock
 					;
 
-recoverBlock		: (USING Id=identifier)? eos StmtBlock=statementBlock
+recoverBlock		: (USING Id=identifier)? EOS StmtBlock=statementBlock
 					;
 
 // Variable declarations
@@ -494,9 +493,9 @@ recoverBlock		: (USING Id=identifier)? eos StmtBlock=statementBlock
 // then the type of the following element propagates forward until for all elements without type
 
 localdecl          : (Static=STATIC LOCAL? | LOCAL)
-					 LocalVars+=localvar (COMMA LocalVars+=localvar)*						eos   #commonLocalDecl	// STATIC LOCAL or LOCAL
+					 LocalVars+=localvar (COMMA LocalVars+=localvar)*						EOS   #commonLocalDecl	// STATIC LOCAL or LOCAL
 				   | (Static=STATIC LOCAL? IMPLIED | LOCAL IMPLIED | Static=STATIC? VAR)							// LOCAL IMPLIED
-				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               eos   #varLocalDecl		// VAR special for Robert !
+				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               EOS   #varLocalDecl		// VAR special for Robert !
 				   ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
@@ -513,7 +512,7 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 					  |PUBLIC												// PUBLIC  Foo, Bar
 					  |MEMVAR												// MEMVAR  Foo, Bar
 					  |PARAMETERS											// PARAMETERS Foo, Bar
-					 )   Vars+=identifier (COMMA Vars+=identifier)* eos       
+					 )   Vars+=identifier (COMMA Vars+=identifier)* EOS       
 				 ;
  
 // The operators in VO have the following precedence level:
@@ -534,7 +533,7 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember			// member access The ? is new
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
-					| Left=expression Op=QMARK Right=expression					#condAccessExpr			// expr ? expr
+					| <assoc=right> Left=expression Op=QMARK Right=expression	#condAccessExpr			// expr ? expr
 					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
@@ -563,7 +562,11 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
 					  Right=expression											#assignmentExpression	// expr := expr
-					| Key=SELF													#selfExpression
+					| Expr=primary												#primaryExpression
+					;
+
+					// Primary expressions
+primary				: Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
@@ -577,7 +580,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
-					| Op=(DOT | COLON) Right=identifierName						#bindMemberAccess
+					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 //					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )
@@ -754,15 +757,8 @@ literalValue		: Token=
 					| NULL_PSZ
 					| NULL_PTR
 					| NULL_STRING
-					| NULL_SYMBOL 
-					| MACRO )
-					;
-
-eos                 : (NL)* (NL|EOF)
-                    | SEMI ~NL
-					;
-
-eof                 : EOF
+					| NULL_SYMBOL ) 
+//					| MACRO )
 					;
 
 
@@ -770,15 +766,15 @@ keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs) ;
 
 keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
 					| ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
-					| HIDDEN | IF | IIF | INHERIT | IN | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
+					| HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
 					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
-					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE )
+					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY)
 					;
 
-keywordvn           : Token=(ABSTRACT | AUTO | CATCH | CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR	| ENUM | EVENT
-					| EXPLICIT | FINALLY | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERFACE | INTERNAL 
+keywordvn           : Token=(ABSTRACT | AUTO | CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR | ENUM | EVENT
+					| EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERFACE | INTERNAL 
 					| LOCK | NAMESPACE | NEW | OPERATOR	| OPTIONS | OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
-					| THROW | TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
+					|  TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 

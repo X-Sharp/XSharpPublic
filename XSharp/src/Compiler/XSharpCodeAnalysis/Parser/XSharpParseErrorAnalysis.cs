@@ -61,14 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitEof([NotNull] XSharpParser.EofContext context)
-        {
-        }
-
-        public override void ExitEos([NotNull] XSharpParser.EosContext context)
-        {
-        }
-
         public override void ExitSource([NotNull] XSharpParser.SourceContext context)
         {
         }

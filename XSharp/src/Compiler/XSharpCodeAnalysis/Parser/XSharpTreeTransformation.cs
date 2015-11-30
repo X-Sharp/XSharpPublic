@@ -3138,6 +3138,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.RefOut?.SyntaxKeyword(), context.Expr.Get<ExpressionSyntax>()));
         }
 
+        public override void ExitQualifiedNameDot([NotNull] XSharpParser.QualifiedNameDotContext context)
+        {
+            context.Put(_syntaxFactory.QualifiedName(context.Left.Get<NameSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                context.Right.Get<SimpleNameSyntax>()));
+        }
+
+        public override void ExitSimpleOrAliasedNameDot([NotNull] XSharpParser.SimpleOrAliasedNameDotContext context)
+        {
+            context.Put(context.Name.Get<NameSyntax>());
+        }
+
         public override void ExitQualifiedName([NotNull] XSharpParser.QualifiedNameContext context)
         {
             context.Put(_syntaxFactory.QualifiedName(context.Left.Get<NameSyntax>(),
@@ -3150,6 +3162,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.AliasQualifiedName(context.Alias.Get<IdentifierNameSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
                 context.Right.Get<SimpleNameSyntax>()));
+        }
+
+        public override void ExitSimpleOrAliasedName([NotNull] XSharpParser.SimpleOrAliasedNameContext context)
+        {
+            context.Put(context.Name.Get<NameSyntax>());
         }
 
         public override void ExitGlobalQualifiedName([NotNull] XSharpParser.GlobalQualifiedNameContext context)

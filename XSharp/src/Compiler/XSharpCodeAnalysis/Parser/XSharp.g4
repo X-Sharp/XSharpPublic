@@ -127,7 +127,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 // And when Class is outside of assembly, convert to Extension Method?
 // nvk: we have no knowledge of whether a class is outside of the assembly at the parser stage!
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
-					  T=methodtype (ExplicitIface=name DOT)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
+					  T=methodtype (ExplicitIface=nameDot)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (ConstraintsClauses+=typeparameterconstraintsclause)*
 					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? EOS 
 					  StmtBlk=statementBlock		
@@ -240,7 +240,7 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
 					;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-					   EVENT (ExplicitIface=name DOT)? Id=identifier AS Type=datatype EOS
+					   EVENT (ExplicitIface=nameDot)? Id=identifier AS Type=datatype EOS
 					;
 
 eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
@@ -266,7 +266,7 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 					;
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
-					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=name DOT)? Id=identifier) AS Type=datatype 
+					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) AS Type=datatype 
 					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? EOS	// Auto
 					  | (LineAccessors+=propertyLineAccessor)+ EOS													// Single Line
 					  | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS									// Multi Line
@@ -609,8 +609,15 @@ iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=e
 					| IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
+nameDot				: Left=nameDot Right=simpleName DOT								#qualifiedNameDot
+					| Name=aliasedName DOT											#simpleOrAliasedNameDot
+					;
+
 name				: Left=name Op=DOT Right=simpleName								#qualifiedName
-					| Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
+					| Name=aliasedName												#simpleOrAliasedName
+					;
+
+aliasedName			: Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
 					| Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifiedName
 					| Name=simpleName												#identifierOrGenericName
 					;

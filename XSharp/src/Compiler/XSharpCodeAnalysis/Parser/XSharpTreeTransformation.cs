@@ -1867,6 +1867,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // TODO
         }
 
+        public override void EnterVodll([NotNull] XSharpParser.VodllContext context)
+        {
+            if (context.Modifiers != null) {
+                context.Modifiers._Tokens.Add(_parser.TokenFactory.Create(XSharpParser.EXTERN,""));
+            }
+        }
+
         public override void ExitVodll([NotNull] XSharpParser.VodllContext context)
         {
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -1890,7 +1897,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(SyntaxKind.StaticKeyword),
+                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(SyntaxKind.StaticKeyword,SyntaxKind.ExternKeyword),
                 returnType: context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XSharpParser.FUNCTION ? MissingType() : VoidType()),
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),

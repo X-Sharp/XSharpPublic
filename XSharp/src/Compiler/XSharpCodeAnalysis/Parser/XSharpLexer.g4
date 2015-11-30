@@ -104,6 +104,8 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '&':
+					if (_OldComment && InputStream.La(2) == '&')
+						break;
 					_type = AMP;
 					_textSb.Clear();
 					_textSb.Append((char)c);
@@ -271,6 +273,8 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '*':
+					if (_OldComment && LastToken == NL)
+						break;
 					_type = MULT;
 					_textSb.Clear();
 					_textSb.Append((char)c);
@@ -409,12 +413,23 @@ lexer grammar XSharpLexer;
 					_textSb.Clear();
 					_textSb.Append((char)c);
 					InputStream.Consume();
+                    if (c == '\r' && InputStream.La(1) == '\n') {
+						_textSb.Append((char)c);
+						InputStream.Consume();
+                    }
+                    Interpreter.Line += 1;
 					c = InputStream.La(1);
 					while (c == '\r' || c == '\n') {
 						_textSb.Append((char)c);
 						InputStream.Consume();
+                        if (c == '\r' && InputStream.La(1) == '\n') {
+							_textSb.Append((char)c);
+							InputStream.Consume();
+                        }
+						Interpreter.Line += 1;
 						c = InputStream.La(1);
 					}
+                    Interpreter.Column = 1 - (InputStream.Index - _startCharIndex);
 					break;
 				case '\t':
 				case ' ':
@@ -470,6 +485,7 @@ lexer grammar XSharpLexer;
                     break;
 			}
             if (_type >= 0) {
+                Interpreter.Column += (InputStream.Index - _startCharIndex);
                 t = TokenFactory.Create(TokenFactorySourcePair, _type, _textSb.ToString(), _channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as CommonToken;
                 Emit(t);
             }

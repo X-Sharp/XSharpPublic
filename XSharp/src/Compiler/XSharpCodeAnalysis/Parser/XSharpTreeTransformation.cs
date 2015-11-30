@@ -1012,7 +1012,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("value"))),
                                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
                                     closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
-                                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                                semicolonToken: null),
                             _syntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration,
                                 attributeLists: EmptyList<AttributeListSyntax>(),
                                 modifiers: EmptyList(),
@@ -1029,7 +1029,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("value"))),
                                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
                                     closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
-                                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken))
+                                semicolonToken: null)
                             ),
                         closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken))));
             }
@@ -1676,7 +1676,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNestedEvent([NotNull] XSharpParser.NestedEventContext context)
         {
-            
+            context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 
         public override void ExitNestedInterface([NotNull] XSharpParser.NestedInterfaceContext context)

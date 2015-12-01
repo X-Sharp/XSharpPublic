@@ -1323,7 +1323,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitMethod([NotNull] XSharpParser.MethodContext context)
         {
-            var isInInterface = context.isInInterface();
+            var idName = context.Id.Get<SyntaxToken>();
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            bool isInInterface = context.isInInterface();
+            bool isAbstract = mods.Any(SyntaxKind.AbstractKeyword);
+            bool isInInterfaceOrAbstract = isInInterface || isAbstract;
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
@@ -1336,7 +1340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.StmtBlk = null;
             }
-            if (context.Modifiers?._ABSTRACT != null) {
+            if (isAbstract) {
                 if (context.Modifiers?._EXTERN != null) {
                     context.AddError(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
                 }
@@ -1345,8 +1349,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.StmtBlk = null;
             }
-            var idName = context.Id.Get<SyntaxToken>();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
             bool actualDeclaration = true;
             if (context.T.Token.Type != XSharpParser.METHOD) {
                 switch (context.T.Token.Type) {
@@ -1367,7 +1369,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
                 if (mods.Any(SyntaxKind.UnsafeKeyword))
                     vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
-                if (mods.Any(SyntaxKind.AbstractKeyword))
+                if (isInInterfaceOrAbstract)
                     actualDeclaration = false;
                 mods = vomods.ToTokenList();
                 _pool.Free(vomods);
@@ -1384,9 +1386,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                     parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                     constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
-                    body: isInInterface ? null : context.StmtBlk.Get<BlockSyntax>(),
+                    body: isInInterfaceOrAbstract ? null : context.StmtBlk?.Get<BlockSyntax>(),
                     expressionBody: null, // TODO: (grammar) expressionBody methods
-                    semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: (!isInInterfaceOrAbstract && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                 if (context.ClassId != null) {
                     context.Put(_syntaxFactory.ClassDeclaration(
                         attributeLists: EmptyList<AttributeListSyntax>(),

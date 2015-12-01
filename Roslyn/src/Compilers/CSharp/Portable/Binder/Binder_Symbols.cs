@@ -1461,6 +1461,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // Single viable result.
                     var singleResult = symbols[0];
 
+#if !XSHARP
                     // Cannot reference System.Void directly.
                     var singleType = singleResult as TypeSymbol;
 #if XSHARP
@@ -1476,6 +1477,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     // Check for bad symbol.
                     else
+#endif
                     {
                         if (singleResult.Kind == SymbolKind.NamedType &&
                             ((SourceModuleSymbol)this.Compilation.SourceModule).AnyReferencedAssembliesAreLinked)

@@ -70,7 +70,6 @@ namespace ParserTester
 			, "GLOBAL Foo[0] AS ARRAY\n"
 			, "STATIC GLOBAL Foo AS STRING\n"
 			, "INTERNAL GLOBAL Foo := '123' AS STRING"
-			, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.'MessageBoxA'"
 			,"CLASS Foo\n CLASS BAR\n END CLASS \nEND CLASS\n"			// Nested class
 			,"CLASS Foo <T> WHERE T IS Customer, New() \n END CLASS\n"					// Generic Class
 			,"CLASS Foo <T> WHERE T IS Class  \n END CLASS\n"					// Generic Class
@@ -83,8 +82,10 @@ namespace ParserTester
 			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nEND \nRETURN x\n"							// No recover at all
 			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nFINALLY\nConsole.WriteLine('Finally')\nEND \nRETURN x\n"		// No recover at all
 			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER\nConsole.WriteLine('Recover')\nFINALLY\nConsole.WriteLine('Finally')\nRETURN \nEND \n"		
-			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER\nConsole.WriteLine('Recover')\nFINALLY\nConsole.WriteLine('Finally')\nRETURN \nEND \n"		
-			, "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.MessageBoxA"
+			,"FUNCTION Foo\nBEGIN SEQUENCE\n x:= y\nRECOVER\nConsole.WriteLine('Recover')\nFINALLY\nConsole.WriteLine('Finally')\nRETURN \nEND \n"
+            , "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.'MessageBoxA'"
+            , "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.\"MessageBoxA\""
+            , "_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD) AS INT PASCAL:USER32.MessageBoxA"
 			,"FUNCTION Foo\nVAR x := FROM Customer IN Customers ORDERBY LastName SELECT Customer\nRETURN x\n"		// Missing End
 			};
 			//

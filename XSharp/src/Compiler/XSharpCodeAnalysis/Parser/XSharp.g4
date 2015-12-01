@@ -84,6 +84,7 @@ vodll				: (Modifiers=funcprocModifiers)? DLL
 					  | T=PROCEDURE Id=identifier ParamList=parameterList )
 					  (CallingConvention=dllcallconv)? COLON 
 					  Dll=identifierString DOT Entrypoint=identifierString //(NEQ Ordinal=INT_CONST)? 
+					  EOS
                     ;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)

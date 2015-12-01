@@ -22,7 +22,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     {
         private readonly Location _location;
         private readonly SyntaxReference _syntaxRef;
+#if XSHARP
+        internal DeclarationModifiers _modifiers;
+#else
         private readonly DeclarationModifiers _modifiers;
+#endif
         internal readonly SourceMemberContainerTypeSymbol containingType;
 
         protected SymbolCompletionState state;
@@ -426,7 +430,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // A static member '{0}' cannot be marked as override, virtual, or abstract
                 diagnostics.Add(ErrorCode.ERR_StaticNotVirtual, location, this);
             }
+#if XSHARP
+            else if (IsOverride && IsNew)
+#else
             else if (IsOverride && (IsNew || IsVirtual))
+#endif
             {
                 // A member '{0}' marked as override cannot be marked as new or virtual
                 diagnostics.Add(ErrorCode.ERR_OverrideNotNew, location, this);

@@ -1536,7 +1536,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
             modifiers.FixDefaultVisibility();
-            if (modifiers.Any(SyntaxKind.VirtualKeyword) && !modifiers.Any(SyntaxKind.NewKeyword))
+            if (modifiers.Any(SyntaxKind.VirtualKeyword) && !modifiers.Any(SyntaxKind.NewKeyword)
+                    && !modifiers.Any(SyntaxKind.AbstractKeyword) && !context.Parent.isInInterface())
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);

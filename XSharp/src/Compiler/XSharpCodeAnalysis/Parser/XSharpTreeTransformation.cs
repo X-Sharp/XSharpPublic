@@ -3502,11 +3502,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitOrdering([NotNull] XSharpParser.OrderingContext context)
         {
-            context.Put(_syntaxFactory.Ordering(
-                SyntaxKind.AscendingOrdering,
-                context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword)
-                ));
+            SyntaxToken direction;
+            SyntaxKind kind;
+            if (context.Direction != null && context.Direction.Type == XSharpParser.DESCENDING)
+            {
+                direction = SyntaxFactory.MakeToken(SyntaxKind.DescendingKeyword);
+                kind = SyntaxKind.DescendingOrdering;
+                }
+            else
+            {
+                direction = SyntaxFactory.MakeToken(SyntaxKind.AscendingKeyword);
+                kind = SyntaxKind.AscendingOrdering;
+            }
+            context.Put(_syntaxFactory.Ordering(kind,context.Expr.Get<ExpressionSyntax>(),direction));
+
         }
 
         public override void ExitSelectClause([NotNull] XSharpParser.SelectClauseContext context)

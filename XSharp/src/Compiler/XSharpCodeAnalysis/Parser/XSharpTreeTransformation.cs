@@ -1412,7 +1412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(_syntaxFactory.MethodDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: mods,
-                    returnType: context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                    returnType: context.Type?.Get<TypeSyntax>() ?? (context.T.Token.Type == XSharpParser.ASSIGN ? VoidType() : MissingType()),
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),

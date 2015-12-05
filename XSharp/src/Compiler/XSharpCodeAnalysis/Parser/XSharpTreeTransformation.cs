@@ -1526,7 +1526,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
-            modifiers.FixDefaultVisibility();
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
         }
@@ -1654,7 +1653,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ?? (context.Parent as XSharpParser.Interface_Context)?.Id.Get<SyntaxToken>();
                 context.Put(_syntaxFactory.DestructorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>(),
                     tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
                     identifier: parentId,
                     parameterList: EmptyParameterList(),

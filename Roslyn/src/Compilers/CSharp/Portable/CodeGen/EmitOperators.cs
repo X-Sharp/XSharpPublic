@@ -488,6 +488,9 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                 case BinaryOperatorKind.EnumAndUnderlyingAddition:
                 case BinaryOperatorKind.EnumSubtraction:
                 case BinaryOperatorKind.EnumAndUnderlyingSubtraction:
+#if XSHARP
+                case BinaryOperatorKind.EnumAddition:
+#endif
                     enumType = expression.Left.Type;
                     break;
                 case BinaryOperatorKind.EnumAnd:

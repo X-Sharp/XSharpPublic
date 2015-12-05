@@ -1245,6 +1245,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.EnumLessThanOrEqual:
                 case BinaryOperatorKind.EnumNotEqual:
                 case BinaryOperatorKind.EnumSubtraction:
+#if XSHARP
+                case BinaryOperatorKind.EnumAddition:
+#endif
                     return left.Type;
                 case BinaryOperatorKind.UnderlyingAndEnumAddition:
                 case BinaryOperatorKind.UnderlyingAndEnumSubtraction:
@@ -1342,7 +1345,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (operatorType != SpecialType.System_Boolean && constantValue != null && !constantValue.IsBad)
             {
+#if XSHARP
+                TypeSymbol resultType = (kind == BinaryOperatorKind.EnumSubtraction || kind == BinaryOperatorKind.EnumAddition) ? underlyingType : enumType;
+#else
                 TypeSymbol resultType = kind == BinaryOperatorKind.EnumSubtraction ? underlyingType : enumType;
+#endif
 
                 // We might need to convert back to the underlying type.
                 return FoldConstantNumericConversion(syntax, constantValue, resultType, diagnostics);

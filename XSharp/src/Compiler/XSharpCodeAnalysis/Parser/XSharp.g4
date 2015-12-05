@@ -412,7 +412,7 @@ statement           : Decl=localdecl                                            
 					| BREAK Expr=expression? EOS								#breakStmt
 					| RETURN (VOID | Expr=expression)? EOS						#returnStmt
 					| Q=(QMARK | QQMARK)
-					   Exprs+=expression (COMMA Exprs+=expression)* EOS			#qoutStmt
+					   (Exprs+=expression (COMMA Exprs+=expression)*)? EOS		#qoutStmt
 					| BEGIN SEQUENCE EOS
 					  StmtBlk=statementBlock
 					  (RECOVER RecoverBlock=recoverBlock)?

@@ -2804,7 +2804,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitQoutStmt([NotNull] XSharpParser.QoutStmtContext context)
         {
-            if (context.Q.Type == XSharpParser.QQMARK && context._Exprs.Count == 0) {
+            if (context.Q.Type == XSharpParser.QQMARK && !(context._Exprs?.Count > 0)) {
                 context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
             else {
@@ -2818,27 +2818,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                     ));
                 bool first = true;
-                foreach(var eCtx in context._Exprs) {
-                    if (!first) {
+                if (context._Exprs != null) {
+                    foreach(var eCtx in context._Exprs) {
+                        if (!first) {
+                            block.Add(_syntaxFactory.ExpressionStatement(
+                                _syntaxFactory.InvocationExpression(
+                                    GenerateQualifiedName("global::System.Console.Write"),
+                                    MakeArgumentList(_syntaxFactory.Argument(null,null,
+                                        _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,SyntaxFactory.Literal(null," "," ",null))
+                                    ))
+                                ),
+                                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                            ));
+                        }
+                        // TODO: numeric formatting!
                         block.Add(_syntaxFactory.ExpressionStatement(
                             _syntaxFactory.InvocationExpression(
                                 GenerateQualifiedName("global::System.Console.Write"),
-                                MakeArgumentList(_syntaxFactory.Argument(null,null,
-                                    _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,SyntaxFactory.Literal(null," "," ",null))
-                                ))
+                                MakeArgumentList(_syntaxFactory.Argument(null,null,eCtx.Get<ExpressionSyntax>()))
                             ),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                         ));
+                        first = false;
                     }
-                    // TODO: numeric formatting!
-                    block.Add(_syntaxFactory.ExpressionStatement(
-                        _syntaxFactory.InvocationExpression(
-                            GenerateQualifiedName("global::System.Console.Write"),
-                            MakeArgumentList(_syntaxFactory.Argument(null,null,eCtx.Get<ExpressionSyntax>()))
-                        ),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
-                    ));
-                    first = false;
                 }
                 context.Put(_syntaxFactory.Block(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),

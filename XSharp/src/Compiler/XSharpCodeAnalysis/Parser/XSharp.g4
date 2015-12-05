@@ -458,7 +458,9 @@ statement           : Decl=localdecl                                            
 					| BEGIN Ch=UNCHECKED EOS
 					  StmtBlk=statementBlock
 					  END UNCHECKED? EOS										#checkedStmt
-					| Exprs+=expression (COMMA Exprs+=expression)* EOS			#expressionStmt
+					| {InputStream.La(2) != LPAREN ||
+					   (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
+					  Exprs+=expression (COMMA Exprs+=expression)* EOS			#expressionStmt
 					;
 
 ifElseBlock			: Cond=expression EOS StmtBlk=statementBlock

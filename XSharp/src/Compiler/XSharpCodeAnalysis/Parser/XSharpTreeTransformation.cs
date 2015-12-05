@@ -3074,6 +3074,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitDelegateCtorCall([NotNull] XSharpParser.DelegateCtorCallContext context)
+        {
+            if (((context.Obj as XSharpParser.PrimaryExpressionContext)?.Expr as XSharpParser.LiteralExpressionContext)?.Literal.Token.Type == XSharpParser.NULL) {
+                context.Put(_syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.Type.Get<TypeSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    context.Func.Get<NameSyntax>()
+                    ));
+            }
+            else {
+                var fobj = context.Obj.Get<ExpressionSyntax>();
+                SimpleNameSyntax fname;
+                if (context.Func.CsNode is SimpleNameSyntax) {
+                    fname = context.Func.Get<SimpleNameSyntax>();
+                }
+                else {
+                    var fCtx = context.Func as XSharpParser.QualifiedNameContext;
+                    if (fCtx != null) {
+                        fobj = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            fCtx.Left.Get<NameSyntax>(),
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                            fobj);
+                        fname = fCtx.Right.Get<SimpleNameSyntax>();
+                    }
+                    else {
+                        fname = _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("<missing>"));
+                        context.AddError(new ParseErrorData(fCtx, ErrorCode.ERR_IdentifierExpected));
+                    }
+                }
+                context.Put(_syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.Type.Get<TypeSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                        fobj,
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        fname)
+                    ));
+            }
+        }
+
         public override void ExitArrayAccess([NotNull] XSharpParser.ArrayAccessContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();

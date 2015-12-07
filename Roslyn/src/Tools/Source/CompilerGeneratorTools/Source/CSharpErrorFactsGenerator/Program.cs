@@ -56,6 +56,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Internal.CSharpErrorFactsGenerator
                 {
                     hiddenCodeNames.Add(line.Substring(0, line.IndexOf(' ')));
                 }
+                else if (line.StartsWith("XS_WRN:", StringComparison.OrdinalIgnoreCase))
+                {
+                    warningCodeNames.Add(line.Substring(0, line.IndexOf(' ')).Replace("XS_WRN:",""));
+                }
             }
 
             outputText.AppendLine("        public static bool IsWarning(ErrorCode code)");

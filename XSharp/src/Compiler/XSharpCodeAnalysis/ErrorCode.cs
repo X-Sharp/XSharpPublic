@@ -2,16 +2,20 @@
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+    // Errors treated as warnings in XSharp!
+    // Warning: The following comment is parsed by the error facts generator !!!
+    /*
+    XS_WRN:ERR_BadVisFieldType = 52,
+    XS_WRN:ERR_SizeofUnsafe = 233,
+    XS_WRN:ERR_UseDefViolation = 165,
+    XS_WRN:ERR_UseDefViolationField = 170,
+    XS_WRN:ERR_UseDefViolationThis = 188,
+    XS_WRN:ERR_UseDefViolationOut = 269,
+    XS_WRN:ERR_UseDefViolationProperty = 8079,
+    */
+
     internal enum ErrorCode
     {
-        // Errors treated as warnings in XSharp!
-        WRN_SizeofUnsafe = 233,
-        WRN_UseDefViolation = 165,
-        WRN_UseDefViolationField = 170,
-        WRN_UseDefViolationThis = 188,
-        WRN_UseDefViolationOut = 269,
-        WRN_UseDefViolationProperty = 8079,
-
         Void = InternalErrorCode.Void,
         Unknown = InternalErrorCode.Unknown,
         //FTL_InternalError = 1,

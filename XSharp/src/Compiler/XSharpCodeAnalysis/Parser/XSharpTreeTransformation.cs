@@ -3433,7 +3433,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.ParenthesizedLambdaExpression(
                 asyncKeyword: null,
-                parameterList: context.CbParamList.Get<ParameterListSyntax>(),
+                parameterList: context.CbParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken), 
                 body: context.Expr.Get<ExpressionSyntax>()));
         }

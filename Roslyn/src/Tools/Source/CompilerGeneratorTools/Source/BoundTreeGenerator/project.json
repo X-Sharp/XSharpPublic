@@ -3,7 +3,8 @@
   "frameworks": {
     "net45": {}
   },
-  "runtimes": {
-    "win-anycpu": { }
-  }
+    "runtimes": {
+        "win": { },
+        "win-anycpu": { }
+    }
 }

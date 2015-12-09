@@ -66,8 +66,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             get
             {
-                return "CS";
-            }
+#if XSHARP
+				return "XS";
+#else
+				return "CS";
+#endif
+			}
         }
 
         // Given a message identifier (e.g., CS0219), severity, warning as error and a culture, 

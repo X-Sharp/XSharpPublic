@@ -1815,7 +1815,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>Member overrides obsolete member</value>
   </data>
   <data name="ERR_SystemVoid" xml:space="preserve">
-    <value>System.Void cannot be used from C# -- use typeof(void) to get the void type object</value>
+    <value>System.Void cannot be used from X# -- use typeof(void) to get the void type object</value>
   </data>
   <data name="ERR_ExplicitParamArray" xml:space="preserve">
     <value>Do not use 'System.ParamArrayAttribute'. Use the 'params' keyword instead.</value>
@@ -2459,16 +2459,16 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Declaration is not valid; use '{0} operator &lt;dest-type&gt; (...' instead</value>
   </data>
   <data name="ERR_MainClassNotFound" xml:space="preserve">
-    <value>Could not find '{0}' specified for Main method</value>
+    <value>Could not find '{0}' specified for Start method</value>
   </data>
   <data name="ERR_MainClassNotClass" xml:space="preserve">
-    <value>'{0}' specified for Main method must be a valid non-generic class or struct</value>
+    <value>'{0}' specified for Start method must be a valid non-generic class or struct</value>
   </data>
   <data name="ERR_NoMainInClass" xml:space="preserve">
-    <value>'{0}' does not have a suitable static Main method</value>
+    <value>'{0}' does not have a suitable static Start method</value>
   </data>
   <data name="ERR_MainClassIsImport" xml:space="preserve">
-    <value>Cannot use '{0}' for Main method because it is imported</value>
+    <value>Cannot use '{0}' for Start method because it is imported</value>
   </data>
   <data name="ERR_OutputNeedsName" xml:space="preserve">
     <value>Outputs without source must have the /out option specified</value>
@@ -2618,7 +2618,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Cannot pass '{0}' as a ref or out argument because it is read-only</value>
   </data>
   <data name="ERR_CantUseRequiredAttribute" xml:space="preserve">
-    <value>The RequiredAttribute attribute is not permitted on C# types</value>
+    <value>The RequiredAttribute attribute is not permitted on X# types</value>
   </data>
   <data name="ERR_NoModifiersOnAccessor" xml:space="preserve">
     <value>Modifiers cannot be placed on event accessor declarations</value>
@@ -3190,7 +3190,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
   <data name="WRN_MultipleRuntimeImplementationMatches_Description" xml:space="preserve">
     <value>This warning can be generated when two interface methods are differentiated only by whether a particular parameter is marked with ref or with out. It is best to change your code to avoid this warning because it is not obvious or guaranteed which method is called at runtime.
 
-Although C# distinguishes between out and ref, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.
+Although X# distinguishes between out and ref, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.
 
 Give the compiler some way to differentiate the methods. For example, you can give them different names or provide an additional parameter on one of them.</value>
   </data>
@@ -3612,7 +3612,7 @@ You should consider suppressing the warning only if you're sure that you don't w
     <value>The CallerMemberNameAttribute will have no effect because it applies to a member that is used in contexts that do not allow optional arguments</value>
   </data>
   <data name="ERR_NoEntryPoint" xml:space="preserve">
-    <value>Program does not contain a static 'Main' method suitable for an entry point</value>
+    <value>Program does not contain a static 'Start' method suitable for an entry point</value>
   </data>
   <data name="ERR_ArrayInitializerIncorrectLength" xml:space="preserve">
     <value>An array initializer of length '{0}' is expected</value>
@@ -4150,7 +4150,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>&lt;namespace&gt;</value>
   </data>
   <data name="CompilationC" xml:space="preserve">
-    <value>Compilation (C#): </value>
+    <value>Compilation (X#): </value>
   </data>
   <data name="SyntaxNodeIsNotWithinSynt" xml:space="preserve">
     <value>Syntax node is not within syntax tree</value>
@@ -4258,7 +4258,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Within cref attributes, nested types of generic types should be qualified</value>
   </data>
   <data name="NotACSharpSymbol" xml:space="preserve">
-    <value>Not a C# symbol.</value>
+    <value>Not a X# symbol.</value>
   </data>
   <data name="HDN_UnusedUsingDirective" xml:space="preserve">
     <value>Unnecessary using directive.</value>
@@ -4297,22 +4297,22 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>lambda expression</value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion1" xml:space="preserve">
-    <value>Feature '{0}' is not available in C# 1.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 1.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion2" xml:space="preserve">
-    <value>Feature '{0}' is not available in C# 2.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 2.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion3" xml:space="preserve">
-    <value>Feature '{0}' is not available in C# 3.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 3.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion4" xml:space="preserve">
-    <value>Feature '{0}' is not available in C# 4.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 4.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion5" xml:space="preserve">
-    <value>Feature '{0}' is not available in C# 5.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 5.  </value>
   </data>
   <data name="ERR_FeatureNotAvailableInVersion6" xml:space="preserve">
-    <value>Feature '{0}' is not available in C# 6.  Please use language version {1} or greater.</value>
+    <value>Feature '{0}' is not available in X# 6.  </value>
   </data>
   <data name="ERR_FeatureIsExperimental" xml:space="preserve">
     <value>Feature '{0}' is only available in 'experimental' language version.</value>
@@ -4340,7 +4340,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   <data name="IDS_CSCHelp" xml:space="preserve">
     <value>
-                              Visual C# Compiler Options
+                              X# Compiler Options
 
                         - OUTPUT FILES -
  /out:&lt;file&gt;                   Specify output file name (default: base name of 
@@ -4462,7 +4462,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                                a part of
  /modulename:&lt;string&gt;          Specify the name of the source module
 </value>
-    <comment>Visual C# Compiler Options</comment>
+    <comment>X# Compiler Options</comment>
   </data>
   <data name="ERR_ComImportWithInitializers" xml:space="preserve">
     <value>'{0}': a class with the ComImport attribute cannot specify field initializers.</value>

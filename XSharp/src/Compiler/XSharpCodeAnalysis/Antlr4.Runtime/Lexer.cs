@@ -44,7 +44,7 @@ namespace Antlr4.Runtime
     /// uses simplified match() and error recovery mechanisms in the interest
     /// of speed.
     /// </remarks>
-    public abstract class Lexer : Recognizer<int, LexerATNSimulator>, ITokenSource
+    public abstract partial class Lexer : Recognizer<int, LexerATNSimulator>, ITokenSource
     {
         public const int DefaultMode = 0;
 

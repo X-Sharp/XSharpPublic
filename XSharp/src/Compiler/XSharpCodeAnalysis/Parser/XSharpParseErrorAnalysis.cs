@@ -61,14 +61,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitEof([NotNull] XSharpParser.EofContext context)
-        {
-        }
-
-        public override void ExitEos([NotNull] XSharpParser.EosContext context)
-        {
-        }
-
         public override void ExitSource([NotNull] XSharpParser.SourceContext context)
         {
         }
@@ -121,21 +113,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
-        {
-        }
+        //public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
+        //{
+        //}
 
-        public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)
-        {
-        }
+        //public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)
+        //{
+        //}
 
         public override void ExitPrefixExpression([NotNull] XSharpParser.PrefixExpressionContext context)
         {
         }
 
-        public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
-        {
-        }
+        //public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
+        //{
+        //}
 
         public override void ExitAssignmentExpression([NotNull] XSharpParser.AssignmentExpressionContext context)
         {
@@ -194,10 +186,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         public override void ExitSimpleName([NotNull] XSharpParser.SimpleNameContext context)
-        {
-        }
-
-        public override void ExitGenericName([NotNull] XSharpParser.GenericNameContext context)
         {
         }
 

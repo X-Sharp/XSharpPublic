@@ -1,7 +1,7 @@
-﻿# Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿# Copyright (c)  XSharp BV.  All Rights Reserved.  
 
-# This file contains command-line options that the C#
-# command line compiler (CSC) will process as part
+# This file contains command-line options that the X#
+# command line compiler (XSC) will process as part
 # of every compilation, unless the "/noconfig" option
 # is specified. 
 

@@ -89,7 +89,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compilation (C#): .
+        ///   Looks up a localized string similar to Compilation (X#): .
         /// </summary>
         internal static string CompilationC {
             get {
@@ -2510,7 +2510,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The RequiredAttribute attribute is not permitted on C# types.
+        ///   Looks up a localized string similar to The RequiredAttribute attribute is not permitted on X# types.
         /// </summary>
         internal static string ERR_CantUseRequiredAttribute {
             get {
@@ -4031,7 +4031,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in C# 1.  Please use language version {1} or greater..
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 1.  .
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion1 {
             get {
@@ -4040,7 +4040,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in C# 2.  Please use language version {1} or greater..
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 2.  .
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion2 {
             get {
@@ -4049,7 +4049,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in C# 3.  Please use language version {1} or greater..
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 3.  .
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion3 {
             get {
@@ -4058,7 +4058,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in C# 4.  Please use language version {1} or greater..
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 4.  .
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion4 {
             get {
@@ -4067,7 +4067,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in C# 5.  Please use language version {1} or greater..
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 5.  .
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion5 {
             get {
@@ -4076,7 +4076,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in C# 6.  Please use language version {1} or greater..
+        ///   Looks up a localized string similar to Feature &apos;{0}&apos; is not available in X# 6.  .
         /// </summary>
         internal static string ERR_FeatureNotAvailableInVersion6 {
             get {
@@ -5471,7 +5471,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Main method because it is imported.
+        ///   Looks up a localized string similar to Cannot use &apos;{0}&apos; for Start method because it is imported.
         /// </summary>
         internal static string ERR_MainClassIsImport {
             get {
@@ -5480,7 +5480,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Main method must be a valid non-generic class or struct.
+        ///   Looks up a localized string similar to &apos;{0}&apos; specified for Start method must be a valid non-generic class or struct.
         /// </summary>
         internal static string ERR_MainClassNotClass {
             get {
@@ -5489,7 +5489,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Main method.
+        ///   Looks up a localized string similar to Could not find &apos;{0}&apos; specified for Start method.
         /// </summary>
         internal static string ERR_MainClassNotFound {
             get {
@@ -6182,7 +6182,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Program does not contain a static &apos;Main&apos; method suitable for an entry point.
+        ///   Looks up a localized string similar to Program does not contain a static &apos;Start&apos; method suitable for an entry point.
         /// </summary>
         internal static string ERR_NoEntryPoint {
             get {
@@ -6245,7 +6245,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Main method.
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not have a suitable static Start method.
         /// </summary>
         internal static string ERR_NoMainInClass {
             get {
@@ -8018,7 +8018,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to System.Void cannot be used from C# -- use typeof(void) to get the void type object.
+        ///   Looks up a localized string similar to System.Void cannot be used from X# -- use typeof(void) to get the void type object.
         /// </summary>
         internal static string ERR_SystemVoid {
             get {
@@ -8802,7 +8802,7 @@ namespace LanguageService.CodeAnalysis {
         
         /// <summary>
         ///   Looks up a localized string similar to 
-        ///                              Visual C# Compiler Options
+        ///                              X# Compiler Options
         ///
         ///                        - OUTPUT FILES -
         /// /out:&lt;file&gt;                   Specify output file name (default: base name of 
@@ -8811,7 +8811,7 @@ namespace LanguageService.CodeAnalysis {
         ///                               form: /t:exe)
         /// /target:winexe                Build a Windows executable (Short form: 
         ///                               /t:winexe)
-        /// /target:library               [rest of string was truncated]&quot;;.
+        /// /target:library            [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string IDS_CSCHelp {
             get {
@@ -9648,7 +9648,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not a C# symbol..
+        ///   Looks up a localized string similar to Not a X# symbol..
         /// </summary>
         internal static string NotACSharpSymbol {
             get {
@@ -12019,9 +12019,9 @@ namespace LanguageService.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to This warning can be generated when two interface methods are differentiated only by whether a particular parameter is marked with ref or with out. It is best to change your code to avoid this warning because it is not obvious or guaranteed which method is called at runtime.
         ///
-        ///Although C# distinguishes between out and ref, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.
+        ///Although X# distinguishes between out and ref, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.
         ///
-        ///Give the compiler some way to differentiate the methods. For example, you can gi [rest of string was truncated]&quot;;.
+        ///Give the compiler some way to differentiate the methods. For example, you ca [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WRN_MultipleRuntimeImplementationMatches_Description {
             get {
@@ -12455,7 +12455,7 @@ namespace LanguageService.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to You have added a reference to an assembly using /link (Embed Interop Types property set to True). This instructs the compiler to embed interop type information from that assembly. However, the compiler cannot embed interop type information from that assembly because another assembly that you have referenced also references that assembly using /reference (Embed Interop Types property set to False).
         ///
-        ///To embed interop type information for both assemblies, use /link for references to each assembly (set the Embe [rest of string was truncated]&quot;;.
+        ///To embed interop type information for both assemblies, use /link for references to each assembly (set the Em [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WRN_ReferencedAssemblyReferencesLinkedPIA_Description {
             get {
@@ -12853,7 +12853,7 @@ namespace LanguageService.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to This warning is caused when a catch() block has no specified exception type after a catch (System.Exception e) block. The warning advises that the catch() block will not catch any exceptions.
         ///
-        ///A catch() block after a catch (System.Exception e) block can catch non-CLS exceptions if the RuntimeCompatibilityAttribute is set to false in the AssemblyInfo.cs file: [assembly: RuntimeCompatibilityAttribute(WrapNonExceptionThrows = false)]. If this attribute is not set explicitly to false, all thrown non-CLS excepti [rest of string was truncated]&quot;;.
+        ///A catch() block after a catch (System.Exception e) block can catch non-CLS exceptions if the RuntimeCompatibilityAttribute is set to false in the AssemblyInfo.cs file: [assembly: RuntimeCompatibilityAttribute(WrapNonExceptionThrows = false)]. If this attribute is not set explicitly to false, all thrown non-CLS excep [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WRN_UnreachableGeneralCatch_Description {
             get {

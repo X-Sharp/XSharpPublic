@@ -37,12 +37,18 @@ namespace Antlr4.Runtime
             internal readonly IParseTree Node;
             internal readonly ErrorCode Code;
             internal readonly object[] Args;
-            internal ParseErrorData(ErrorCode code) : this(null, code, SpecializedCollections.EmptyObjects) { }
-            internal ParseErrorData(ErrorCode code, params object[] args) : this(null, code, args) { }
+            internal ParseErrorData(ErrorCode code) : this(node: null, code: code, args: SpecializedCollections.EmptyObjects) { }
+            internal ParseErrorData(ErrorCode code, params object[] args) : this(node: null, code: code, args: args) { }
             internal ParseErrorData(IParseTree node, ErrorCode code) : this(node, code, SpecializedCollections.EmptyObjects) { }
             internal ParseErrorData(IParseTree node, ErrorCode code, params object[] args)
             {
                 this.Node = node;
+                this.Code = code;
+                this.Args = args;
+            }
+            internal ParseErrorData(IToken token, ErrorCode code, params object[] args)
+            {
+                this.Node = new TerminalNodeImpl(token);
                 this.Code = code;
                 this.Args = args;
             }
@@ -65,6 +71,10 @@ namespace Antlr4.Runtime
             public int FullWidth {  get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
             public override string ToString() { return this.GetText(); }
         }
+    }
+
+    public partial class Lexer {
+        protected Tuple<ITokenSource, ICharStream> TokenFactorySourcePair { get { return _tokenFactorySourcePair; } }
     }
 
     public partial class RuleContext

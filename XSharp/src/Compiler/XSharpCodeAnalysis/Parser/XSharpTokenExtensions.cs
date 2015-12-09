@@ -110,10 +110,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private static string EscapedStringValue(string text)
         {
-            if (text.Length == 2)
+            if (text.Length <= 3)
                 return "";
             StringBuilder sb = new StringBuilder();
-            int p = 1;
+            int p = 2;
             while (p < text.Length-1)
                 sb.Append(EscapedChar(text, ref p));
             return sb.ToString();
@@ -273,7 +273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.SYMBOL_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text.Substring(1).ToUpper(), SyntaxFactory.WS)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "SYMBOL constant ("+token.Text+")" ));
                     break;
                 case XSharpParser.HEX_CONST:
                     switch (token.Text.Last()) {
@@ -327,18 +327,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Text.Last()) {
                         case 'M':
                         case 'm':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, decimal.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, decimal.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         case 'S':
                         case 's':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, float.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, float.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         case 'D':
                         case 'd':
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text.Substring(0,token.Text.Length-1)), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                         default:
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text), SyntaxFactory.WS);
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture), SyntaxFactory.WS);
                             break;
                     }
                     break;
@@ -346,7 +346,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Text.Last()) {
                         case 'U':
                         case 'u':
-                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
                             if (ul > uint.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, ul, SyntaxFactory.WS);
                             else
@@ -354,14 +354,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             break;
                         case 'L':
                         case 'l':
-                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1));
+                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
                             if (l > int.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
                             else
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)l, SyntaxFactory.WS);
                             break;
                         default:
-                            long n = long.Parse(token.Text);
+                            long n = long.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
                             if (n > int.MaxValue)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, n, SyntaxFactory.WS);
                             else
@@ -374,7 +374,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.DATE_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "DATE constant ("+token.Text+")"));
                     break;
                 case XSharpParser.NIL:
                 case XSharpParser.NULL_ARRAY:
@@ -386,7 +386,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.NULL_STRING:
                 case XSharpParser.NULL_SYMBOL:
                     r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_FeatureNotAvailableInVersion1, token));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, token.Text));
                     break;
                 default: // nvk: This catches cases where a keyword/identifier is treated as a literal string
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS);
@@ -920,6 +920,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxKind.CharacterLiteralExpression;
                     break;
                 case XSharpParser.STRING_CONST:
+                case XSharpParser.ESCAPED_STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
                     break;
                 case XSharpParser.SYMBOL_CONST:
@@ -1152,6 +1153,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return;
             }
             list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+        }
+
+        public static int GetVisibilityLevel(this SyntaxListBuilder list)
+        {
+            if (list.Any(SyntaxKind.PublicKeyword))
+                return 0;
+            if (list.Any(SyntaxKind.ProtectedKeyword)) {
+                if (list.Any(SyntaxKind.InternalKeyword))
+                    return 1;
+                else
+                    return 2;
+            }
+            if (list.Any(SyntaxKind.InternalKeyword))
+                return 2;
+            if (list.Any(SyntaxKind.PrivateKeyword))
+                return 3;
+            return 0;
         }
     }
 }

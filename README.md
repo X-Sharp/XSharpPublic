@@ -1,3 +1,0 @@
-# XSharpDev
-XSharp Development branch
-

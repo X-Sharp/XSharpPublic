@@ -1824,10 +1824,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 attributes.Add(attrCtx.Get<AttributeSyntax>());
             }
             context.Put(_syntaxFactory.AttributeList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                 context.Target.Get<AttributeTargetSpecifierSyntax>(),
                 attributes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
             _pool.Free(attributes);
         }
 

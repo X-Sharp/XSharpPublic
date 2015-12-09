@@ -361,11 +361,11 @@ attributeTarget		: Id=identifier COLON
 attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
 					;
 
-attributeParam		: (Name=identifierName ASSIGN_OP)? Expr=expression					#propertyAttributeParam
+attributeParam		: Name=identifierName ASSIGN_OP Expr=expression						#propertyAttributeParam
 					| Expr=expression													#exprAttributeParam
 					;
 
-globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT EOS
 					;
 
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON

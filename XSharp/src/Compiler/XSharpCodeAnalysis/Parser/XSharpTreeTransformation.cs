@@ -1148,7 +1148,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClassVarList([NotNull] XSharpParser.ClassVarListContext context)
         {
-            // Caugth by classvar
+            foreach(var cvCtx in context._Var)
+                VisitClassvar(cvCtx);
         }
 
         public override void EnterClassvar([NotNull] XSharpParser.ClassvarContext context)
@@ -1163,7 +1164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
+        public void VisitClassvar([NotNull] XSharpParser.ClassvarContext context)
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
@@ -1667,7 +1668,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.isInInterface()) {
                 context.AddError(new ParseErrorData(context.Member, ErrorCode.ERR_InterfacesCantContainFields));
             }
-            else
+            else if (context.Member.CsNode != null)
                 context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 

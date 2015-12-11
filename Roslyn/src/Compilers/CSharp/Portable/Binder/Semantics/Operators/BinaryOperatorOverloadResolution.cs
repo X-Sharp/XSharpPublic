@@ -257,7 +257,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     operators.Add(new BinaryOperatorSignature(BinaryOperatorKind.LiftedEnumAndUnderlyingAddition, nullableEnum, nullableUnderlying, nullableEnum));
                     operators.Add(new BinaryOperatorSignature(BinaryOperatorKind.LiftedUnderlyingAndEnumAddition, nullableUnderlying, nullableEnum, nullableEnum));
 #if XSHARP
-                    operators.Add(new BinaryOperatorSignature(BinaryOperatorKind.EnumAddition, enumType, enumType, underlying));
+                    operators.Add(new BinaryOperatorSignature(BinaryOperatorKind.EnumAddition, enumType, enumType, enumType));
 #endif
                     break;
                 case BinaryOperatorKind.Subtraction:

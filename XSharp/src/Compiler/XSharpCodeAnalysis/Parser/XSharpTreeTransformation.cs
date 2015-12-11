@@ -3174,6 +3174,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>()));
         }
 
+        public override void ExitVoConversionExpression([NotNull] XSharpParser.VoConversionExpressionContext context)
+        {
+            context.Put(_syntaxFactory.CastExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                context.Type.Get<TypeSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                context.Expr.Get<ExpressionSyntax>()));
+        }
+
+        public override void ExitVoCastExpression([NotNull] XSharpParser.VoCastExpressionContext context)
+        {
+            context.Put(_syntaxFactory.CastExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                context.Type.Get<TypeSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                context.Expr.Get<ExpressionSyntax>()));
+        }
+
+        public override void ExitVoCastPtrExpression([NotNull] XSharpParser.VoCastPtrExpressionContext context)
+        {
+            context.Put(_syntaxFactory.CastExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                _syntaxFactory.PointerType(context.Type.Get<TypeSyntax>(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                context.Expr.Get<ExpressionSyntax>()));
+        }
+
         public override void ExitSizeOfExpression([NotNull] XSharpParser.SizeOfExpressionContext context)
         {
             context.Put(_syntaxFactory.SizeOfExpression(

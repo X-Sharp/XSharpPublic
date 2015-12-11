@@ -584,14 +584,14 @@ primary				: Key=SELF													#selfExpression
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
 					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// sizeof( typeORid )
 					| Name=simpleName											#nameExpression			// generic name
+					| Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
+					| Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
+					| PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
-//					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )
-//					| nativeType LPAREN CAST COMMA expression RPAREN			#oldcast2				// typename(_CAST, expr )
-//					| nativeType LPAREN expression RPAREN						#conversion				// nativetype( expr )
 //					| aliasedField												#aliasfield				//  ALIAS->FIELD
 //					| aliasedExpr												#aliasexpr				// ALIAS->(expr)
 //					| aliasedFuncCall											#aliasfunccall			//  foo->bar()
@@ -780,7 +780,7 @@ keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs) ;
 keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
 					| ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
 					| HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
-					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
+					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
 					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY)
 					;
 

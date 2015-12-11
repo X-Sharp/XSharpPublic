@@ -571,6 +571,7 @@ lexer grammar XSharpLexer;
 				{
 					{"ACCESS", ACCESS},
 					{"ALIGN", ALIGN},
+					{"_AND", AND},
 					{"AS", AS},
 					{"ASSIGN", ASSIGN},
 					{"BEGIN", BEGIN},
@@ -613,6 +614,8 @@ lexer grammar XSharpLexer;
 					{"MEMVAR", MEMVAR},
 					{"METHOD", METHOD},
 					{"NEXT", NEXT},
+					{"_NOT", NOT},
+					{"_OR", OR},
 					{"OTHERWISE", OTHERWISE},
 					{"PARAMETERS", PARAMETERS},
 					{"PASCAL", PASCAL},
@@ -638,6 +641,7 @@ lexer grammar XSharpLexer;
 					{"UPTO", UPTO},
 					{"USING", USING},
 					{"WHILE", WHILE},
+					{"_XOR", XOR},
 
 					// Predefined types
 					{"ARRAY", ARRAY},
@@ -869,7 +873,7 @@ INC,DEC,
 PLUS,MINUS,DIV,MOD,EXP,LSHIFT,RSHIFT,TILDE,MULT,QQMARK,QMARK,
 
 // Boolean operators
-NOT,AND,OR,
+NOT,AND,OR,XOR,
 
 // Assignments
 ASSIGN_OP,ASSIGN_ADD,ASSIGN_SUB,ASSIGN_EXP,ASSIGN_MUL,ASSIGN_DIV,

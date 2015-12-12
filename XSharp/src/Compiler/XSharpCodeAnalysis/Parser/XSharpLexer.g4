@@ -394,7 +394,7 @@ lexer grammar XSharpLexer;
 								InputStream.Consume();
 							}
 							else if ((c == 'X' || c == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r')) {
-								_type = LOGIC_NOT;
+								_type = LOGIC_XOR;
 								_textSb.Append((char)c);
 								InputStream.Consume();
 								_textSb.Append((char)c2);

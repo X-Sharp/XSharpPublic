@@ -3186,11 +3186,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoCastExpression([NotNull] XSharpParser.VoCastExpressionContext context)
         {
-            context.Put(_syntaxFactory.CastExpression(
+            context.Put(_syntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression,
+                SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.Expr.Get<ExpressionSyntax>()));
+                _syntaxFactory.CastExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.Type.Get<TypeSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    context.Expr.Get<ExpressionSyntax>()),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
         }
 
         public override void ExitVoCastPtrExpression([NotNull] XSharpParser.VoCastPtrExpressionContext context)
@@ -3199,7 +3203,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 _syntaxFactory.PointerType(context.Type.Get<TypeSyntax>(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.Expr.Get<ExpressionSyntax>()));
+                _syntaxFactory.PrefixUnaryExpression(SyntaxKind.AddressOfExpression,
+                    SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
+                    context.Expr.Get<ExpressionSyntax>())));
         }
 
         public override void ExitSizeOfExpression([NotNull] XSharpParser.SizeOfExpressionContext context)
@@ -3698,6 +3704,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             switch (context.Token.Type) {
                 case XSharpParser.PTR:
+                    context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
+                    break;
                 case XSharpParser.PSZ:
                     context.Put(GenerateQualifiedName("global::System.IntPtr"));
                     break;

@@ -74,7 +74,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             else if (!this.InUnsafeRegion)
             {
                 return ((object)sizeOfTypeOpt == null)
+#if XSHARP
+                    ? new CSDiagnosticInfo(this.Compilation.Options.AllowUnsafe ? ErrorCode.WRN_UnsafeImplied : ErrorCode.ERR_UnsafeNeeded)
+#else
                     ? new CSDiagnosticInfo(ErrorCode.ERR_UnsafeNeeded)
+#endif
                     : new CSDiagnosticInfo(ErrorCode.ERR_SizeofUnsafe, sizeOfTypeOpt);
             }
             else

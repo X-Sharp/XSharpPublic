@@ -1080,7 +1080,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else {
                 context.Put(_syntaxFactory.EventFieldDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(context.isInInterface()),
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     declaration: _syntaxFactory.VariableDeclaration(
                         context.Type.Get<TypeSyntax>(),

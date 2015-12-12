@@ -540,7 +540,8 @@ lexer grammar XSharpLexer;
 			t.Type = EOS;
 			_hasEos = true;
 		}
-		_lastToken = type;
+		if (t.Channel == TokenConstants.DefaultChannel)
+			_lastToken = type; // nvk: Note that this is the type before any modifications!!!
 		return t;
 	}
 	int LastToken

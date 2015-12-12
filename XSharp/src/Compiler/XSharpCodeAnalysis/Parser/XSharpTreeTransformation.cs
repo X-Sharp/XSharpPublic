@@ -1080,7 +1080,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else {
                 context.Put(_syntaxFactory.EventFieldDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(context.isInInterface()),
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     declaration: _syntaxFactory.VariableDeclaration(
                         context.Type.Get<TypeSyntax>(),
@@ -1390,12 +1390,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.T.Token.Type != XSharpParser.METHOD) {
                 switch (context.T.Token.Type) {
                     case XSharpParser.ACCESS:
-                        idName = SyntaxFactory.Identifier(VoPropertyAccessPrefix + context.Id.Token.Text);
-                        idName.XNode = new TerminalNodeImpl(context.Id.Token);
+                        idName = SyntaxFactory.Identifier(VoPropertyAccessPrefix + context.Id.GetText());
+                        idName.XNode = context.Id;
                         break;
                     case XSharpParser.ASSIGN:
-                        idName = SyntaxFactory.Identifier(VoPropertyAssignPrefix + context.Id.Token.Text);
-                        idName.XNode = new TerminalNodeImpl(context.Id.Token);
+                        idName = SyntaxFactory.Identifier(VoPropertyAssignPrefix + context.Id.GetText());
+                        idName.XNode = context.Id;
                         break;
                 }
                 var vomods = _pool.Allocate();

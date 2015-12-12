@@ -130,7 +130,7 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					  T=methodtype (ExplicitIface=nameDot)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (ConstraintsClauses+=typeparameterconstraintsclause)*
-					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? EOS 
+					  (CallingConvention=callingconvention)? (CLASS (Namespace=nameDot)? ClassId=identifier)? EOS 
 					  StmtBlk=statementBlock		
 					;
 
@@ -142,7 +142,7 @@ vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
 					;
 
 vostruct			: (Modifiers=funcprocModifiers)? 
-					  VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? EOS
+					  VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? EOS
 					  (Members+=vostructmember)+
 					;
 
@@ -151,7 +151,7 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS
 					;
 
 vounion				: (Modifiers=funcprocModifiers)? 
-					  UNION  Id=identifier  EOS
+					  UNION (Namespace=nameDot)? Id=identifier EOS
 					  (Members+=vounionmember)+
 					;
 
@@ -166,7 +166,7 @@ namespace_			: BEGIN NAMESPACE Name=name EOS
 					;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
-					  INTERFACE Id=identifier TypeParameters=typeparameters?
+					  INTERFACE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
 					  ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
 					  (Members+=classmember)*
@@ -177,7 +177,7 @@ interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 					;
 
 class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
-					  CLASS Id=identifier TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
+					  CLASS (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
 					  (INHERIT BaseType=datatype)?
 					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
@@ -198,16 +198,16 @@ typeparameter       : Attributes=attributes? VarianceKeyword=(IN | OUT)? Id=iden
 typeparameterconstraintsclause
 					: WHERE Name=identifierName IS Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
 					;
-							  
+
 typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
 					   | Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer		
                        | NEW LPAREN RPAREN					#constructorConstraint		//  Class Foo<t> WHERE T IS NEW()
 					   ; 
-							  
+
 // End of Extensions for Generic Classes
 
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
-					  STRUCTURE Id=identifier TypeParameters=typeparameters?
+					  STRUCTURE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
 					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
 					  (Members+=classmember)+
@@ -219,7 +219,7 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 
 
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
-					  DELEGATE Id=identifier TypeParameters=typeparameters?
+					  DELEGATE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
 					  ParamList=parameterList? AS Type=datatype
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
 					;
@@ -229,7 +229,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-					  ENUM Id=identifier (AS Type=datatype)? EOS
+					  ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? EOS
 					  (Members+=enummember)+
 					  END (ENUM)? EOS
 					;

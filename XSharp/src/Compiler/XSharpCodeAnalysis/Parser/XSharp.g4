@@ -282,8 +282,9 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET
 					;
 
 propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
-					  ( Key=GET Expr=expression?
-					  | Key=SET ExprList=expressionListStmt? )
+					  ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
+					  | {InputStream.La(1) != GET}? Key=SET ExprList=expressionListStmt?
+					  | Key=(GET|SET) )
 					;
 
 expressionListStmt	: Exprs+=expression (COMMA Exprs+=expression)*

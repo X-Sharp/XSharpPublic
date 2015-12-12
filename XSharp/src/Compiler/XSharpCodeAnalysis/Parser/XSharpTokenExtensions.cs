@@ -1033,6 +1033,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.OR:
                     r = SyntaxKind.LogicalOrExpression;
                     break;
+                case XSharpParser.LOGIC_XOR:
+                    r = SyntaxKind.ExclusiveOrExpression;
+                    break;
 
                 case XSharpParser.ASSIGN_OP:
                     r = SyntaxKind.SimpleAssignmentExpression;

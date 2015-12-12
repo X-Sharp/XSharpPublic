@@ -709,11 +709,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 			//}
 
 			// Add: using System
-			GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
-                null,
-                null,
-                _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("System")),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            bool alreadyUsingSystem = false;
+            for(int i=0; i<GlobalEntities.Usings.Count; i++) {
+                if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(),"System") == 0)
+                    alreadyUsingSystem = true;
+            }
+            if (!alreadyUsingSystem) {
+			    GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
+                    null,
+                    null,
+                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("System")),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
         }
 
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)

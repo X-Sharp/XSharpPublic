@@ -12,6 +12,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_UseDefViolationThis = 188,
     XS_WRN:ERR_SizeofUnsafe = 233,
     XS_WRN:ERR_UseDefViolationOut = 269,
+    XS_WRN:ERR_MemberNameSameAsType = 542,
     XS_WRN:ERR_UseDefViolationProperty = 8079,
     */
 

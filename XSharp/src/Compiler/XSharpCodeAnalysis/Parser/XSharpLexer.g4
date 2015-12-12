@@ -958,7 +958,7 @@ PP_SYMBOLS      : {LastToken == NL }? '#'
 
 SYMBOL_CONST     : '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
 
-CHAR_CONST  : '\'' ESCAPED_STRING_CHARACTER '\'';
+CHAR_CONST  : '\'' ESCAPED_CHARACTER '\'';
 
 STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 			| '\'' ( ~( '\'' | '\n' | '\r' ) )* '\''		// Single quoted string
@@ -967,6 +967,13 @@ STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 ESCAPED_STRING_CONST
 			: 'e' '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
 			;
+
+fragment
+ESCAPED_CHARACTER       : ~( '\'' | '\\' | '\r' | '\n' )
+						| SIMPLE_ESCAPE_SEQUENCE
+						| HEX_ESCAPE_SEQUENCE
+						| UNICODE_ESCAPE_SEQUENCE
+						;
 
 fragment
 ESCAPED_STRING_CHARACTER: SIMPLE_ESCAPE_CHARACTER

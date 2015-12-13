@@ -307,6 +307,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.Xor:
                     operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Enum, enumType, enumType, enumType));
                     operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Lifted | BinaryOperatorKind.Enum, nullableEnum, nullableEnum, nullableEnum));
+#if XSHARP
+                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.EnumAndUnderlying, enumType, underlying, enumType));
+                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.UnderlyingAndEnum, underlying, enumType, enumType));
+                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying, nullableEnum, nullableUnderlying, nullableEnum));
+                    operators.Add(new BinaryOperatorSignature(kind | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum, nullableUnderlying, nullableEnum, nullableEnum));
+#endif
                     break;
             }
         }

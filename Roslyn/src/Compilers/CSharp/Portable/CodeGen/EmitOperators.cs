@@ -488,6 +488,14 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                 case BinaryOperatorKind.EnumAndUnderlyingAddition:
                 case BinaryOperatorKind.EnumSubtraction:
                 case BinaryOperatorKind.EnumAndUnderlyingSubtraction:
+#if XSHARP
+                case BinaryOperatorKind.And | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+#endif
                     enumType = expression.Left.Type;
                     break;
                 case BinaryOperatorKind.EnumAnd:
@@ -501,6 +509,14 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeGen
                     break;
                 case BinaryOperatorKind.UnderlyingAndEnumSubtraction:
                 case BinaryOperatorKind.UnderlyingAndEnumAddition:
+#if XSHARP
+                case BinaryOperatorKind.And | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+#endif
                     enumType = expression.Right.Type;
                     break;
                 default:

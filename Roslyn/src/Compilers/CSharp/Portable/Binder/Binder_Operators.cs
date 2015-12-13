@@ -1247,10 +1247,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.EnumSubtraction:
 #if XSHARP
                 case BinaryOperatorKind.EnumAddition:
+                case BinaryOperatorKind.And | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
 #endif
                     return left.Type;
                 case BinaryOperatorKind.UnderlyingAndEnumAddition:
                 case BinaryOperatorKind.UnderlyingAndEnumSubtraction:
+#if XSHARP
+                case BinaryOperatorKind.And | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+#endif
                     return right.Type;
                 default:
                     throw ExceptionUtilities.UnexpectedValue(kind);

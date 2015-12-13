@@ -573,31 +573,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             if (vop.AccessMethodCtx != null) {
+                bool isInInterfaceOrAbstract = vop.AccessMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
                 accessors.Add(
                     _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),getMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
-                        _syntaxFactory.Block(
+                        isInInterfaceOrAbstract ? null
+                        : _syntaxFactory.Block(
                             SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                             MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
                                 _syntaxFactory.InvocationExpression(_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VoPropertyAccessPrefix+vop.idName.Text)),
                                     MakeArgumentList()),
                                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
                             SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
-                        null)
+                        isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                        : null)
                     );
             }
             if (vop.AssignMethodCtx != null) {
+                bool isInInterfaceOrAbstract = vop.AssignMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
                 accessors.Add(
                     _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration,EmptyList<AttributeListSyntax>(),setMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
-                        _syntaxFactory.Block(
+                        isInInterfaceOrAbstract ? null
+                        : _syntaxFactory.Block(
                             SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                             MakeList<StatementSyntax>(_syntaxFactory.ExpressionStatement(
                                 _syntaxFactory.InvocationExpression(_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VoPropertyAssignPrefix+vop.idName.Text)),
                                     MakeArgumentList(_syntaxFactory.Argument(null,null,_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("value"))))),
                                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
                             SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
-                        null)
+                        isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
+                        : null)
                     );
             }
 
@@ -1688,7 +1694,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClsmethod([NotNull] XSharpParser.ClsmethodContext context)
         {
-            context.Put(context.Member.Get<MemberDeclarationSyntax>());
+            if (context.Member.CsNode != null)
+                context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 
         public override void ExitClsctor([NotNull] XSharpParser.ClsctorContext context)

@@ -462,13 +462,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken);
                     break;
                 case XSharpParser.AND:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
                 case XSharpParser.LOGIC_OR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarBarToken);
                     break;
                 case XSharpParser.OR:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.BarBarToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
+                    break;
+                case XSharpParser.NOT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
+                    break;
+                case XSharpParser.XOR:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
 
                 case XSharpParser.ASSIGN_OP:
@@ -525,8 +531,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.LOGIC_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
-                case XSharpParser.NOT:
+                default:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
+                    break;
+            }
+            r.XNode = new TerminalNodeImpl(token);
+            return r;
+        }
+
+        public static SyntaxToken SyntaxPrefixOp(this IToken token)
+        {
+            SyntaxToken r;
+            switch (token.Type)
+            {
+                case XSharpParser.PLUS:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken);
+                    break;
+                case XSharpParser.MINUS:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.MinusToken);
+                    break;
+                case XSharpParser.TILDE:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
+                    break;
+                case XSharpParser.ADDROF:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    break;
+                case XSharpParser.INC:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PlusPlusToken);
+                    break;
+                case XSharpParser.DEC:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.MinusMinusToken);
+                    break;
+                case XSharpParser.LOGIC_NOT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
+                    break;
+                case XSharpParser.LOGIC_XOR:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
+                    break;
+                case XSharpParser.NOT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
                     break;
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
@@ -1025,15 +1069,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxKind.LogicalAndExpression;
                     break;
                 case XSharpParser.AND:
-                    r = SyntaxKind.LogicalAndExpression;
+                    r = SyntaxKind.BitwiseAndExpression;
                     break;
                 case XSharpParser.LOGIC_OR:
                     r = SyntaxKind.LogicalOrExpression;
                     break;
                 case XSharpParser.OR:
-                    r = SyntaxKind.LogicalOrExpression;
+                    r = SyntaxKind.BitwiseOrExpression;
                     break;
                 case XSharpParser.LOGIC_XOR:
+                    r = SyntaxKind.ExclusiveOrExpression;
+                    break;
+                case XSharpParser.NOT:
+                    r = SyntaxKind.BitwiseNotExpression;
+                    break;
+                case XSharpParser.XOR:
                     r = SyntaxKind.ExclusiveOrExpression;
                     break;
 
@@ -1109,10 +1159,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxKind.LogicalNotExpression;
                     break;
                 case XSharpParser.LOGIC_XOR:
-                    r = SyntaxKind.BitwiseNotExpression;
+                    r = SyntaxKind.LogicalNotExpression;
                     break;
                 case XSharpParser.NOT:
-                    r = SyntaxKind.LogicalNotExpression;
+                    r = SyntaxKind.BitwiseNotExpression;
                     break;
                 default:
                     throw new InvalidOperationException();

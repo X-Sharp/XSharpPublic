@@ -1231,6 +1231,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void ExitClassvar([NotNull] XSharpParser.ClassvarContext context)
+        {
+            // nvk: Not handled here due to datatype, which is processed later
+        }
+
         public void VisitClassvar([NotNull] XSharpParser.ClassvarContext context)
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
@@ -3019,7 +3024,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.PrefixUnaryExpression(
                 context.Op.ExpressionKindPrefixOp(),
-                context.Op.SyntaxOp(),
+                context.Op.SyntaxPrefixOp(),
                 context.Expr.Get<ExpressionSyntax>()));
         }
 
@@ -3258,6 +3263,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+        }
+
+        public override void ExitIntrinsicExpression([NotNull] XSharpParser.IntrinsicExpressionContext context)
+        {
+            var kind = context.Op.ExpressionKindBinaryOp();
+            var syntax = context.Op.SyntaxOp();
+            if (kind == SyntaxKind.BitwiseNotExpression) {
+                if (context._Exprs?.Count > 1) {
+                    context.AddError(new ParseErrorData(context.COMMA()[0], ErrorCode.ERR_CloseParenExpected));
+                }
+                context.Put(_syntaxFactory.PrefixUnaryExpression(
+                    kind,
+                    syntax,
+                    context._Exprs?[0].Get<ExpressionSyntax>()));
+            }
+            else {
+                var e = context._Exprs?[0].Get<ExpressionSyntax>();
+                for (int i = 1; i < context._Exprs?.Count; i++) {
+                    context.Put(_syntaxFactory.BinaryExpression(
+                        kind,
+                        e,
+                        syntax,
+                        context._Exprs[i].Get<ExpressionSyntax>()));
+                }
+            }
         }
 
         public override void ExitTypeCheckExpression([NotNull] XSharpParser.TypeCheckExpressionContext context)

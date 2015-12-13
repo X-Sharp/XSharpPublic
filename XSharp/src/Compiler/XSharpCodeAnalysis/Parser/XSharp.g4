@@ -593,6 +593,8 @@ primary				: Key=SELF													#selfExpression
 					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
+					| Op=(AND | OR | XOR | NOT) LPAREN Exprs+=expression 
+					  (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
 //					| aliasedField												#aliasfield				//  ALIAS->FIELD
 //					| aliasedExpr												#aliasexpr				// ALIAS->(expr)
 //					| aliasedFuncCall											#aliasfunccall			//  foo->bar()
@@ -778,11 +780,11 @@ literalValue		: Token=
 
 keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs) ;
 
-keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
+keywordvo           : Token=(ACCESS | ALIGN | AND | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
 					| ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
-					| HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
+					| HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | NOT | OR | OTHERWISE 
 					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
-					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY)
+					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | XOR | CATCH | FINALLY | TRY)
 					;
 
 keywordvn           : Token=(ABSTRACT | AUTO | CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR | ENUM | EVENT

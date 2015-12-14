@@ -555,10 +555,10 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
 					| Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
-					| Op=(LOGIC_NOT | LOGIC_XOR | NOT) Expr=expression			#prefixExpression		// .not. expr (logical not)
-					| Left=expression Op=LOGIC_AND Right=expression				#binaryExpression		// expr .and. expr (logical and)
-					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
-					| Left=expression Op=LOGIC_OR Right=expression				#binaryExpression		// expr .or. expr (logical or)
+					| Op=LOGIC_NOT Expr=expression								#prefixExpression		// .not. expr (logical not)  also  !
+					| Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and) also &&
+					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor) 
+					| Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)  also || 
 					| Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr 
 					| <assoc=right> Left=expression
 					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP

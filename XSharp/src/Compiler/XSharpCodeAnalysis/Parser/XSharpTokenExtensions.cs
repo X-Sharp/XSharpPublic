@@ -465,18 +465,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.VO_AND:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
+                case XSharpParser.OR:
                 case XSharpParser.LOGIC_OR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarBarToken);
                     break;
-                case XSharpParser.OR:
                 case XSharpParser.VO_OR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
                     break;
-                case XSharpParser.NOT:
                 case XSharpParser.VO_NOT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
                     break;
-                case XSharpParser.XOR:
                 case XSharpParser.VO_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
@@ -1069,10 +1067,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.PIPE:
                     r = SyntaxKind.BitwiseOrExpression;
                     break;
+                case XSharpParser.AND:
                 case XSharpParser.LOGIC_AND:
                     r = SyntaxKind.LogicalAndExpression;
                     break;
-                case XSharpParser.AND:
                 case XSharpParser.VO_AND:
                     r = SyntaxKind.BitwiseAndExpression;
                     break;
@@ -1090,7 +1088,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.VO_NOT:
                     r = SyntaxKind.BitwiseNotExpression;
                     break;
-                case XSharpParser.XOR:
                 case XSharpParser.VO_XOR:
                     r = SyntaxKind.ExclusiveOrExpression;
                     break;

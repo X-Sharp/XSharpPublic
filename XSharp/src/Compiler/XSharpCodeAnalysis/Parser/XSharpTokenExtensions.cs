@@ -571,9 +571,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.LOGIC_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
                     break;
-                case XSharpParser.NOT:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
-                    break;
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
@@ -1084,7 +1081,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.LOGIC_XOR:
                     r = SyntaxKind.ExclusiveOrExpression;
                     break;
-                case XSharpParser.NOT:
                 case XSharpParser.VO_NOT:
                     r = SyntaxKind.BitwiseNotExpression;
                     break;
@@ -1165,9 +1161,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.LOGIC_XOR:
                     r = SyntaxKind.LogicalNotExpression;
-                    break;
-                case XSharpParser.NOT:
-                    r = SyntaxKind.BitwiseNotExpression;
                     break;
                 default:
                     throw new InvalidOperationException();

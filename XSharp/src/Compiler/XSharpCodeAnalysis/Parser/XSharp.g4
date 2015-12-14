@@ -556,9 +556,9 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
 					| Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
 					| Op=(LOGIC_NOT | LOGIC_XOR | NOT) Expr=expression			#prefixExpression		// .not. expr (logical not)
-					| Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and)
+					| Left=expression Op=LOGIC_AND Right=expression				#binaryExpression		// expr .and. expr (logical and)
 					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
-					| Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)
+					| Left=expression Op=LOGIC_OR Right=expression				#binaryExpression		// expr .or. expr (logical or)
 					| Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr 
 					| <assoc=right> Left=expression
 					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
@@ -593,7 +593,7 @@ primary				: Key=SELF													#selfExpression
 					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
-					| Op=(AND | OR | XOR | NOT) LPAREN Exprs+=expression 
+					| Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
 					  (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
 //					| aliasedField												#aliasfield				//  ALIAS->FIELD
 //					| aliasedExpr												#aliasexpr				// ALIAS->(expr)

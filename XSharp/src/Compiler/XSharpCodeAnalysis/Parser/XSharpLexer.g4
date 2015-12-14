@@ -317,7 +317,7 @@ lexer grammar XSharpLexer;
 					InputStream.Consume();
 					break;
 				case '!':
-					_type = NOT;
+						_type = LOGIC_NOT;
 					_textSb.Clear();
 					_textSb.Append((char)c);
 					InputStream.Consume();
@@ -572,7 +572,7 @@ lexer grammar XSharpLexer;
 				{
 					{"ACCESS", ACCESS},
 					{"ALIGN", ALIGN},
-					{"_AND", AND},
+					{"_AND", VO_AND},
 					{"AS", AS},
 					{"ASSIGN", ASSIGN},
 					{"BEGIN", BEGIN},
@@ -615,8 +615,8 @@ lexer grammar XSharpLexer;
 					{"MEMVAR", MEMVAR},
 					{"METHOD", METHOD},
 					{"NEXT", NEXT},
-					{"_NOT", NOT},
-					{"_OR", OR},
+					{"_NOT", VO_NOT},
+					{"_OR", VO_OR},
 					{"OTHERWISE", OTHERWISE},
 					{"PARAMETERS", PARAMETERS},
 					{"PASCAL", PASCAL},
@@ -642,7 +642,7 @@ lexer grammar XSharpLexer;
 					{"UPTO", UPTO},
 					{"USING", USING},
 					{"WHILE", WHILE},
-					{"_XOR", XOR},
+					{"_XOR", VO_XOR},
 
 					// Predefined types
 					{"ARRAY", ARRAY},
@@ -875,6 +875,9 @@ PLUS,MINUS,DIV,MOD,EXP,LSHIFT,RSHIFT,TILDE,MULT,QQMARK,QMARK,
 
 // Boolean operators
 NOT,AND,OR,XOR,
+
+// VO Bitwise operators
+VO_NOT, VO_AND, VO_OR, VO_XOR,
 
 // Assignments
 ASSIGN_OP,ASSIGN_ADD,ASSIGN_SUB,ASSIGN_EXP,ASSIGN_MUL,ASSIGN_DIV,

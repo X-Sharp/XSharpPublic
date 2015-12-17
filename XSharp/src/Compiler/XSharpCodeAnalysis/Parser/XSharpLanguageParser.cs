@@ -23,6 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal partial class XSharpLanguageParser : SyntaxParser
     {
+        private readonly String _fileName;
         private readonly SourceText _text;
         private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
@@ -31,26 +32,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
+
+            String _fileName;
+            internal XSharpErrorListener(String FileName) : base()
+            {
+                _fileName = FileName;
+            }
             public void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
             {
                 if (e?.OffendingToken != null)
                 {
-                    Debug.WriteLine("line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
+                    Debug.WriteLine(_fileName+" line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
                 }
                 else if (offendingSymbol != null)
                 {
-                    Debug.WriteLine("line :" + offendingSymbol.Line + " column: " + offendingSymbol.Column + " " + msg);
+                    Debug.WriteLine(_fileName + " line :" + offendingSymbol.Line + " column: " + offendingSymbol.Column + " " + msg);
                 }
                 else
                 {
-                    Debug.WriteLine("line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
+                    Debug.WriteLine(_fileName + " line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
                 }
             }
         }
 #endif
 
         internal XSharpLanguageParser(
-            //Lexer lexer,
+            String FileName,
             SourceText Text,
             CSharp.CSharpSyntaxNode oldTree,
             IEnumerable<TextChangeRange> changes,
@@ -62,6 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _syntaxFactoryContext = new SyntaxFactoryContext();
             _syntaxFactory = new ContextAwareSyntax(_syntaxFactoryContext);
             _text = Text;
+            _fileName = FileName;
         }
 
         internal CompilationUnitSyntax ParseCompilationUnit()
@@ -109,7 +117,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var tokens = new CommonTokenStream(lexer);
             var parser = new XSharpParser(tokens);
 #if DEBUG
-            var errorListener = new XSharpErrorListener();
+            var errorListener = new XSharpErrorListener(_fileName);
             parser.AddErrorListener(errorListener);
 #endif
 #if DEBUG && DUMP_TIMES

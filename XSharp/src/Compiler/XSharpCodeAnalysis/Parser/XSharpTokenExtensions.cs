@@ -458,10 +458,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.PIPE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
                     break;
+                case XSharpParser.AND:
                 case XSharpParser.LOGIC_AND:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken);
                     break;
-                case XSharpParser.AND:
                 case XSharpParser.VO_AND:
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
@@ -527,6 +527,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DEC:
                     r = SyntaxFactory.MakeToken(SyntaxKind.MinusMinusToken);
                     break;
+                case XSharpParser.NOT:
                 case XSharpParser.LOGIC_NOT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
                     break;
@@ -565,6 +566,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DEC:
                     r = SyntaxFactory.MakeToken(SyntaxKind.MinusMinusToken);
                     break;
+                case XSharpParser.NOT:
                 case XSharpParser.LOGIC_NOT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
                     break;
@@ -1156,6 +1158,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DEC:
                     r = SyntaxKind.PreDecrementExpression;
                     break;
+                case XSharpParser.NOT:
                 case XSharpParser.LOGIC_NOT:
                     r = SyntaxKind.LogicalNotExpression;
                     break;

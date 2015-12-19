@@ -317,7 +317,7 @@ lexer grammar XSharpLexer;
 					InputStream.Consume();
 					break;
 				case '!':
-					_type = LOGIC_NOT;
+					_type = NOT;
 					_textSb.Clear();
 					_textSb.Append((char)c);
 					InputStream.Consume();
@@ -874,7 +874,7 @@ INC,DEC,
 PLUS,MINUS,DIV,MOD,EXP,LSHIFT,RSHIFT,TILDE,MULT,QQMARK,QMARK,
 
 // Boolean operators
-AND,OR,
+AND,OR,NOT,
 
 // VO Bitwise operators
 VO_NOT, VO_AND, VO_OR, VO_XOR,

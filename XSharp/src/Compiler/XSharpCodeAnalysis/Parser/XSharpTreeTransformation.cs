@@ -433,14 +433,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder<MemberDeclarationSyntax> globalClassMembers = _pool.Allocate<MemberDeclarationSyntax>();
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-            if (members.Length > 0) {
-                foreach(var m in members)
-                    globalClassMembers.Add(m);
-            }
-            else {
+            if (members.Length == 0) {
+                members = new MemberDeclarationSyntax[] {
+                    _syntaxFactory.FieldDeclaration(EmptyList<AttributeListSyntax>(),
+                        TokenList(SyntaxKind.ConstKeyword,SyntaxKind.PublicKeyword),
+                        _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)), 
+                            MakeSeparatedList<VariableDeclaratorSyntax>(
+                                _syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("Xs$Dummy"),null,
+                                    _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                                        _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression,
+                                            SyntaxFactory.Literal(null,"",0,null))))
+                                )),
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                };
                 GenerateAttributeList(attributeLists, 
                     "global::System.Runtime.CompilerServices.CompilerGenerated",
                     "global::System.Runtime.CompilerServices.CompilerGlobalScope");
+            }
+            if (members.Length > 0) {
+                foreach(var m in members)
+                    globalClassMembers.Add(m);
             }
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));

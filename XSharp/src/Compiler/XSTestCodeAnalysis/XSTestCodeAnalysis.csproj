@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="Settings">
+    <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Settings.targets" />
+  </ImportGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CDB50137-5A12-4515-A15F-DAF46DD62579}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>XSTestCodeAnalysis</RootNamespace>
+    <AssemblyName>XSTestCodeAnalysis</AssemblyName>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LargeAddressAware>true</LargeAddressAware>
+    <StartupObject>XSTestCodeAnalysis.Program</StartupObject>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\</SolutionDir>
+    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
+    <CscToolPath>$(BaseOutputPath)\$(Configuration)\</CscToolPath>
+  </PropertyGroup>
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
+      <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
+      <Name>XSharpCodeAnalysis</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
+    <NoWarn>1591, CS8032</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>XSHARP</DefineConstants>
+    <NoWarn>1591, CS8032</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Binaries\Packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Binaries\Packages\System.Reflection.Metadata.1.1.0-alpha-00012\lib\dotnet\System.Reflection.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="TestAttribute.cs" />
+    <Compile Include="TestClass.cs" />
+    <Compile Include="TestExecutor.cs" />
+    <Compile Include="Tests\Internal\Chris.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\Customer\" />
+    <Folder Include="Tests\Features\" />
+  </ItemGroup>
+  <ImportGroup Label="Targets">
+    <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Imports.targets" />
+  </ImportGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+</Project>

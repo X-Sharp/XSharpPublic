@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+#if false // Do not use the regular X# code analysis namespaces ...
 using LanguageService.CodeAnalysis.XSharp;
 using LanguageService.CodeAnalysis.XSharp.Syntax;
 
@@ -11,7 +13,20 @@ using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Atn;
 using LanguageService.SyntaxTree.Misc;
 using LanguageService.SyntaxTree.Tree;
+
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+
+#else // ... instead, use these namespaces, that work only with our cusrom string-transforming C# compiler
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+#endif
 
 
 namespace ParserTester

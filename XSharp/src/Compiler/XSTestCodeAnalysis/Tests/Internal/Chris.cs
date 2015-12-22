@@ -45,5 +45,63 @@ END STRUCTURE
 ");
             CompileAndLoadWithoutErrors(s);
         }
+
+        [Test(Author = "Chris", Id = "C65.1", Title = "Crash with invalid code (Use keywords as names #1)")]
+        public static void Crash_InvalidCode_KeywordNames_1() {
+            var s = ParseSource(@"
+CLASS TestClass
+ACCESS OPTIONS AS INT
+RETURN 0
+");
+            CompileWithErrors(s);
+        }
+
+        [Test(Author = "Chris", Id = "C65.2", Title = "Crash with invalid code (Use keywords as names #2)")]
+        public static void Crash_InvalidCode_KeywordNames_2() {
+            var s = ParseSource(@"
+CLASS TestClass
+PROPERTY INT AS INT AUTO
+END CLASS
+");
+            CompileWithErrors(s);
+        }
+
+        [Test(Author = "Chris", Id = "C66", Title = "Crash with missing arguments")]
+        public static void Crash_MissingArguments() {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+SomeMethod( , , 1) 
+");
+            CompileWithErrors(s);
+        }
+
+        [Test(Author = "Chris", Id = "C74", Title = "Crash with invalid code (constructor return type)")]
+        public static void Crash_InvalidCode_NoValidCtor() {
+            var s = ParseSource(@"
+CLASS BaseClass
+CONSTRUCTOR(c AS STRING)
+END CLASS
+
+CLASS ChildClass INHERIT BaseClass
+CONSTRUCTOR(n AS STRING) AS VOID
+SUPER(n)
+END CLASS
+");
+            CompileWithErrors(s);
+        }
+
+        [Test(Author = "Chris", Id = "C75", Title = "Crash with unsupported native type")]
+        public static void Crash_UnsupportedNativeType() {
+            var s = ParseSource(@"
+CLASS TestClass
+METHOD TestMethod() AS VOID
+LOCAL a AS ARRAY
+LOCAL s AS SYMBOL
+LOCAL d AS DATE
+LOCAL u AS USUAL
+END CLASS 
+");
+            CompileWithErrors(s);
+        }
     }
 }

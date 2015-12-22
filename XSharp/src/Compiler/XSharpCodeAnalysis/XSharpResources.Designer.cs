@@ -6803,6 +6803,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parser error.
+        /// </summary>
+        internal static string ERR_ParserError {
+            get {
+                return ResourceManager.GetString("ERR_ParserError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A partial method cannot have out parameters.
         /// </summary>
         internal static string ERR_PartialMethodCannotHaveOutParameters {

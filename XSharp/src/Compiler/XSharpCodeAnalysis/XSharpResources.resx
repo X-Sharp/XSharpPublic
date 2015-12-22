@@ -4660,4 +4660,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_UnsafeImplied" xml:space="preserve">
     <value>Use of pointers and fixed-size buffers should be marked as unsafe</value>
   </data>
+  <data name="ERR_ParserError" xml:space="preserve">
+    <value>Parser error</value>
+  </data>
 </root>

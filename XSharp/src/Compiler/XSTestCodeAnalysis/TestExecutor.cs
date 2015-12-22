@@ -43,7 +43,6 @@ namespace XSTestCodeAnalysis
                     Console.WriteLine("{0}",e);
                 }
             }
-            Console.ReadLine();
 
             return errors;
         }

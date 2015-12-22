@@ -160,7 +160,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var walker = new ParseTreeWalker();
 
-            //if (errorListener.TotalErrors != 0)
+//#if DEBUG
+            /* Temporary solution to prevent crashes with invalid syntax */
+            if (parser.NumberOfSyntaxErrors != 0)
+            {
+                var failedTreeTransform = new XSharpTreeTransformation(parser, _pool, _syntaxFactory);
+                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken).
+                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError));
+                eof.XNode = new TerminalNodeImpl(tree.Stop);
+                var result = _syntaxFactory.CompilationUnit(
+                    failedTreeTransform.GlobalEntities.Externs,
+                    failedTreeTransform.GlobalEntities.Usings, 
+                    failedTreeTransform.GlobalEntities.Attributes, 
+                    failedTreeTransform.GlobalEntities.Members, 
+                    eof);
+                result.XNode = (XSharpParser.SourceContext)tree;
+                return result;
+            }
+//#endif
+
             if (parser.NumberOfSyntaxErrors != 0)
             {
                 var errorAnalyzer = new XSharpParseErrorAnalysis(parser);

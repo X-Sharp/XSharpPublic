@@ -3268,7 +3268,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTypeExpression([NotNull] XSharpParser.TypeExpressionContext context)
         {
-            context.Put(context.Type.Get<TypeSyntax>());
+            if (context.Type != null)
+                context.Put(context.Type.Get<TypeSyntax>());
+            else
+                context.Put(context.XType.Get<TypeSyntax>());
         }
 
         public override void ExitIifExpression([NotNull] XSharpParser.IifExpressionContext context)
@@ -3329,11 +3332,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoConversionExpression([NotNull] XSharpParser.VoConversionExpressionContext context)
         {
-            context.Put(_syntaxFactory.CastExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.Expr.Get<ExpressionSyntax>()));
+            if (context.Type != null)
+            {
+                context.Put(_syntaxFactory.CastExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.Type.Get<TypeSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    context.Expr.Get<ExpressionSyntax>()));
+            }
+            else if (context.XType != null)
+            {
+                context.Put(_syntaxFactory.CastExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.XType.Get<TypeSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    context.Expr.Get<ExpressionSyntax>()));
+            }
         }
 
         public override void ExitVoCastExpression([NotNull] XSharpParser.VoCastExpressionContext context)
@@ -3547,6 +3561,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.NativeType != null)
                 context.Put(context.NativeType.Get<TypeSyntax>());
+            else if (context.XType != null)
+                context.Put(context.XType.Get<TypeSyntax>());
             else if (context.Name != null)
                 context.Put(context.Name.Get<NameSyntax>());
         }
@@ -3858,14 +3874,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.PTR:
                     context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
                     break;
-                case XSharpParser.PSZ:
-                    context.Put(GenerateQualifiedName("global::System.IntPtr"));
-                    break;
+                //case XSharpParser.PSZ:
+                //    context.Put(GenerateQualifiedName("global::System.IntPtr"));
+                //    break;
                 default:
                     context.Put(_syntaxFactory.PredefinedType(context.Token.SyntaxNativeType()));
                     break;
             }
         }
+        public override void ExitXbaseType([NotNull] XSharpParser.XbaseTypeContext context)
+        {
+            context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
+                .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context.Token.Text )));
+        }
+
 
     }
 }

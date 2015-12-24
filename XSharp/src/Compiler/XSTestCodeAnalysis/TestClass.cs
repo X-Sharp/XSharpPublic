@@ -65,6 +65,30 @@ namespace XSTestCodeAnalysis
                 throw new Exception("Compiled without errors!");
             }
         }
+        public static IEnumerable<Diagnostic> CompileWithoutWarnings(params CSharpSyntaxTree[] sources)
+        {
+            MetadataReference[] refs = new MetadataReference[]
+            {
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
+            };
+
+            var c = CSharpCompilation.Create(
+                System.IO.Path.GetRandomFileName(),
+                syntaxTrees: sources,
+                references: refs,
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+                );
+            using (var ms = new System.IO.MemoryStream())
+            {
+                EmitResult r = c.Emit(ms);
+                if (!r.Success)
+                {
+                    return r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error);
+                }
+                throw new Exception("Compiled without errors!");
+            }
+        }
 
         public static System.Reflection.Assembly CompileAndLoadWithoutErrors(params CSharpSyntaxTree[] sources) {
             MetadataReference[] refs = new MetadataReference[]

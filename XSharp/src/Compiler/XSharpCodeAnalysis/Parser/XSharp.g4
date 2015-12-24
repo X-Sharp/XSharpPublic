@@ -586,9 +586,11 @@ primary				: Key=SELF													#selfExpression
 					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// sizeof( typeORid )
 					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
+					| XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
 					| Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
 					| PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
-					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
+					| Type=nativeType											#typeExpression			// Standard DotNet Types
+					| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
@@ -649,6 +651,7 @@ arrayRank			: LBRKT (Commas+=COMMA)* RBRKT
 					;
 
 typeName			: NativeType=nativeType
+					| XType=xbaseType
 					| Name=name
 					;
 
@@ -725,27 +728,33 @@ identifierString	: Token=(ID | STRING_CONST)
 					| XsToken=keywordxs
 					;
 
-nativeType			: Token=
-					( ARRAY
-					| BYTE
+// remove Vulcan types for now
+//					
+
+xbaseType			: Token=
+					( ARRAY 
 					| CODEBLOCK
-					| DATE
+					| DATE 
+					| FLOAT 
+					| PSZ 
+					| SYMBOL 
+					| USUAL)
+					;
+
+nativeType			: Token=
+					( BYTE
 					| DWORD
 					| DYNAMIC
-					| FLOAT
 					| SHORTINT
 					| INT
 					| INT64
 					| LOGIC
 					| LONGINT
 					| OBJECT
-					| PSZ
 					| PTR
 					| REAL4
 					| REAL8
 					| STRING
-					| SYMBOL
-					| USUAL
 					| UINT64
 					| WORD
 					| VOID 

@@ -141,7 +141,7 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
 					;
 
-vostruct			: (Modifiers=funcprocModifiers)? 
+vostruct			: (Modifiers=votypeModifiers)? 
 					  VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? EOS
 					  (Members+=vostructmember)+
 					;
@@ -150,9 +150,13 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS
 					| MEMBER Id=identifier (AS | IS) DataType=datatype EOS
 					;
 
-vounion				: (Modifiers=funcprocModifiers)? 
+
+vounion				: (Modifiers=votypeModifiers)? 
 					  UNION (Namespace=nameDot)? Id=identifier EOS
 					  (Members+=vounionmember)+
+					;
+
+votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 

@@ -2109,7 +2109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: null);
+                semicolonToken: null );
             if (context.Namespace != null) {
                 m = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: context.Namespace.Get<NameSyntax>(),
@@ -2323,6 +2323,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
         }
+
+        public override void ExitVotypeModifiers([NotNull] XSharpParser.VotypeModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            modifiers.FixDefaultVisibility();
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
 
         public override void ExitStatementBlock([NotNull] XSharpParser.StatementBlockContext context)
         {

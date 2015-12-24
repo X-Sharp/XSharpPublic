@@ -273,6 +273,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeAnalysisResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="CommandLine\CommandLineParser.cs" />
+    <Compile Include="CommandLine\CompilationOptions.cs" />
     <Compile Include="Generated\XSharpBaseListener.cs" />
     <Compile Include="Generated\XSharpLexer.cs" />
     <Compile Include="Generated\XSharpListener.cs" />

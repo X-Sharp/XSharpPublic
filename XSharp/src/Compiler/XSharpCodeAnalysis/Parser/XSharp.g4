@@ -84,6 +84,7 @@ vodll				: (Modifiers=funcprocModifiers)? DLL
 					  | T=PROCEDURE Id=identifier ParamList=parameterList )
 					  (CallingConvention=dllcallconv)? COLON 
 					  Dll=identifierString DOT Entrypoint=identifierString //(NEQ Ordinal=INT_CONST)? 
+					  EOS
                     ;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)
@@ -127,9 +128,9 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 // And when Class is outside of assembly, convert to Extension Method?
 // nvk: we have no knowledge of whether a class is outside of the assembly at the parser stage!
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
-					  T=methodtype (ExplicitIface=name DOT)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
+					  T=methodtype (ExplicitIface=nameDot)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
 					  (ConstraintsClauses+=typeparameterconstraintsclause)*
-					  (CallingConvention=callingconvention)? (CLASS ClassId=identifier)? EOS 
+					  (CallingConvention=callingconvention)? (CLASS (Namespace=nameDot)? ClassId=identifier)? EOS 
 					  StmtBlk=statementBlock		
 					;
 
@@ -141,7 +142,7 @@ vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
 					;
 
 vostruct			: (Modifiers=funcprocModifiers)? 
-					  VOSTRUCT Id=identifier (ALIGN Alignment=INT_CONST)? EOS
+					  VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? EOS
 					  (Members+=vostructmember)+
 					;
 
@@ -150,7 +151,7 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS
 					;
 
 vounion				: (Modifiers=funcprocModifiers)? 
-					  UNION  Id=identifier  EOS
+					  UNION (Namespace=nameDot)? Id=identifier EOS
 					  (Members+=vounionmember)+
 					;
 
@@ -165,7 +166,7 @@ namespace_			: BEGIN NAMESPACE Name=name EOS
 					;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
-					  INTERFACE Id=identifier TypeParameters=typeparameters?
+					  INTERFACE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
 					  ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
 					  (Members+=classmember)*
@@ -176,7 +177,7 @@ interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 					;
 
 class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
-					  CLASS Id=identifier TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
+					  CLASS (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
 					  (INHERIT BaseType=datatype)?
 					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
@@ -197,16 +198,16 @@ typeparameter       : Attributes=attributes? VarianceKeyword=(IN | OUT)? Id=iden
 typeparameterconstraintsclause
 					: WHERE Name=identifierName IS Constraints+=typeparameterconstraint (COMMA Constraints+=typeparameterconstraint)*
 					;
-							  
+
 typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
 					   | Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer		
                        | NEW LPAREN RPAREN					#constructorConstraint		//  Class Foo<t> WHERE T IS NEW()
 					   ; 
-							  
+
 // End of Extensions for Generic Classes
 
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
-					  STRUCTURE Id=identifier TypeParameters=typeparameters?
+					  STRUCTURE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
 					  (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
 					  (Members+=classmember)+
@@ -218,7 +219,7 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 
 
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
-					  DELEGATE Id=identifier TypeParameters=typeparameters?
+					  DELEGATE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
 					  ParamList=parameterList? AS Type=datatype
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
 					;
@@ -228,7 +229,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-					  ENUM Id=identifier (AS Type=datatype)? EOS
+					  ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? EOS
 					  (Members+=enummember)+
 					  END (ENUM)? EOS
 					;
@@ -240,7 +241,7 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
 					;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-					   EVENT (ExplicitIface=name DOT)? Id=identifier AS Type=datatype EOS
+					   EVENT (ExplicitIface=nameDot)? Id=identifier AS Type=datatype EOS
 					;
 
 eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
@@ -266,7 +267,7 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 					;
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
-					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=name DOT)? Id=identifier) AS Type=datatype 
+					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) AS Type=datatype 
 					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? EOS	// Auto
 					  | (LineAccessors+=propertyLineAccessor)+ EOS													// Single Line
 					  | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS									// Multi Line
@@ -281,8 +282,9 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET
 					;
 
 propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
-					  ( Key=GET Expr=expression?
-					  | Key=SET ExprList=expressionListStmt? )
+					  ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
+					  | {InputStream.La(1) != GET}? Key=SET ExprList=expressionListStmt?
+					  | Key=(GET|SET) )
 					;
 
 expressionListStmt	: Exprs+=expression (COMMA Exprs+=expression)*
@@ -328,7 +330,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
 					;
 
 
-overloadedOps		: Token=(INC | DEC | NOT | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
+overloadedOps		: Token=(INC | DEC | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
 					| GT  | LT | NEQ | GTE| LTE | TRUE_CONST | FALSE_CONST
 					| TILDE | AMP   | PIPE )
 					;
@@ -360,11 +362,11 @@ attributeTarget		: Id=identifier COLON
 attribute			: Name=name (LPAREN (Params+=attributeParam (COMMA Params+=attributeParam)* )? RPAREN )?
 					;
 
-attributeParam		: (Name=identifierName ASSIGN_OP)? Expr=expression					#propertyAttributeParam
+attributeParam		: Name=identifierName ASSIGN_OP Expr=expression						#propertyAttributeParam
 					| Expr=expression													#exprAttributeParam
 					;
 
-globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute) RBRKT
+globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT EOS
 					;
 
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
@@ -411,7 +413,7 @@ statement           : Decl=localdecl                                            
 					| BREAK Expr=expression? EOS								#breakStmt
 					| RETURN (VOID | Expr=expression)? EOS						#returnStmt
 					| Q=(QMARK | QQMARK)
-					   Exprs+=expression (COMMA Exprs+=expression)* EOS			#qoutStmt
+					   (Exprs+=expression (COMMA Exprs+=expression)*)? EOS		#qoutStmt
 					| BEGIN SEQUENCE EOS
 					  StmtBlk=statementBlock
 					  (RECOVER RecoverBlock=recoverBlock)?
@@ -457,7 +459,9 @@ statement           : Decl=localdecl                                            
 					| BEGIN Ch=UNCHECKED EOS
 					  StmtBlk=statementBlock
 					  END UNCHECKED? EOS										#checkedStmt
-					| Exprs+=expression (COMMA Exprs+=expression)* EOS			#expressionStmt
+					| {InputStream.La(2) != LPAREN ||
+					   (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
+					  Exprs+=expression (COMMA Exprs+=expression)* EOS			#expressionStmt
 					;
 
 ifElseBlock			: Cond=expression EOS StmtBlk=statementBlock
@@ -551,10 +555,10 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
 					| Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
-					| Op=(LOGIC_NOT | LOGIC_XOR | NOT) Expr=expression			#prefixExpression		// .not. expr (logical not)
-					| Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and)
-					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
-					| Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)
+					| Op=LOGIC_NOT Expr=expression								#prefixExpression		// .not. expr (logical not)  also  !
+					| Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and) also &&
+					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor) 
+					| Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)  also || 
 					| Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr 
 					| <assoc=right> Left=expression
 					  Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
@@ -572,20 +576,25 @@ primary				: Key=SELF													#selfExpression
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | Query=linqQuery											#queryExpression        // LINQ
+					| Type=datatype LCURLY Obj=expression COMMA
+					  ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
 					| Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
 					| ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
+					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// sizeof( typeORid )
 					| Name=simpleName											#nameExpression			// generic name
+					| Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
+					| Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
+					| PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
 					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
-//					| PTR LPAREN nativeType COMMA expression RPAREN				#oldcast				// PTR( typeName, expr )
-//					| nativeType LPAREN CAST COMMA expression RPAREN			#oldcast2				// typename(_CAST, expr )
-//					| nativeType LPAREN expression RPAREN						#conversion				// nativetype( expr )
+					| Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
+					  (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
 //					| aliasedField												#aliasfield				//  ALIAS->FIELD
 //					| aliasedExpr												#aliasexpr				// ALIAS->(expr)
 //					| aliasedFuncCall											#aliasfunccall			//  foo->bar()
@@ -608,8 +617,15 @@ iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=e
 					| IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
 					;
 
+nameDot				: Left=nameDot Right=simpleName DOT								#qualifiedNameDot
+					| Name=aliasedName DOT											#simpleOrAliasedNameDot
+					;
+
 name				: Left=name Op=DOT Right=simpleName								#qualifiedName
-					| Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
+					| Name=aliasedName												#simpleOrAliasedName
+					;
+
+aliasedName			: Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
 					| Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifiedName
 					| Name=simpleName												#identifierOrGenericName
 					;
@@ -767,8 +783,8 @@ keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs) ;
 keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
 					| ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
 					| HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
-					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
-					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY)
+					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
+					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR)
 					;
 
 keywordvn           : Token=(ABSTRACT | AUTO | CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR | ENUM | EVENT

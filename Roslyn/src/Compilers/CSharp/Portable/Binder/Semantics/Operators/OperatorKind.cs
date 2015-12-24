@@ -381,6 +381,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         FloatAddition = Float | Addition,
         DoubleAddition = Double | Addition,
         DecimalAddition = Decimal | Addition,
+#if XSHARP
+        EnumAddition = Enum | Addition,
+#endif
         EnumAndUnderlyingAddition = EnumAndUnderlying | Addition,
         UnderlyingAndEnumAddition = UnderlyingAndEnum | Addition,
         UserDefinedAddition = UserDefined | Addition,

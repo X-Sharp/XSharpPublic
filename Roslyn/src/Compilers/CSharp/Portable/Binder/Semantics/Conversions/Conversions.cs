@@ -337,6 +337,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // value of the constant-expression is not negative.
                 return true;
             }
+#if XSHARP
+            else if (specialSource == SpecialType.System_Double  && destination.GetSpecialTypeSafe() == SpecialType.System_Single) {
+                // TODO (nvk): Check numeric range before accepting conversion!
+                return true;
+            }
+#endif
 
             return false;
         }

@@ -5,7 +5,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// <summary>
     /// The command line arguments to a C# <see cref="CSharpCompiler"/>.
     /// </summary>
-    public sealed class CSharpCommandLineArguments : CommandLineArguments
+
+    public  sealed partial class CSharpCommandLineArguments : CommandLineArguments
     {
         /// <summary>
         /// Gets the compilation options for the C# <see cref="Compilation"/>

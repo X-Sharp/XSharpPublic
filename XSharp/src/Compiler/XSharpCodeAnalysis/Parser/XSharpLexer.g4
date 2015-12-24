@@ -104,6 +104,8 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '&':
+					if (_OldComment && InputStream.La(2) == '&')
+						break;
 					_type = AMP;
 					_textSb.Clear();
 					_textSb.Append((char)c);
@@ -121,12 +123,13 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '@':
-					if (InputStream.La(2) != '@') {
-						_type = ADDROF;
-						_textSb.Clear();
-						_textSb.Append((char)c);
-						InputStream.Consume();
+					if (InputStream.La(2) == '@') {
+						break;
 					}
+					_type = ADDROF;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
 					break;
 				case '-':
 					_type = MINUS;
@@ -168,17 +171,18 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '/':
-					if (InputStream.La(2) != '/' && InputStream.La(2) != '*') {
-						_type = DIV;
-						_textSb.Clear();
+					if (InputStream.La(2) == '/' || InputStream.La(2) == '*') {
+						break;
+					}
+					_type = DIV;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					if (c == '=') {
+						_type = ASSIGN_DIV;
 						_textSb.Append((char)c);
 						InputStream.Consume();
-						c = InputStream.La(1);
-						if (c == '=') {
-							_type = ASSIGN_DIV;
-							_textSb.Append((char)c);
-							InputStream.Consume();
-						}
 					}
 					break;
 				case '%':
@@ -269,6 +273,8 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '*':
+					if (_OldComment && LastToken == NL)
+						break;
 					_type = MULT;
 					_textSb.Clear();
 					_textSb.Append((char)c);
@@ -323,6 +329,9 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '.':
+					if (InputStream.La(2) >= '0' && InputStream.La(2) <= '9') {
+						break;
+					}
 					_type = DOT;
 					_textSb.Clear();
 					_textSb.Append((char)c);
@@ -385,7 +394,7 @@ lexer grammar XSharpLexer;
 								InputStream.Consume();
 							}
 							else if ((c == 'X' || c == 'x') && (c2 == 'O' || c2 == 'o') && (c3 == 'R' || c3 == 'r')) {
-								_type = LOGIC_NOT;
+								_type = LOGIC_XOR;
 								_textSb.Append((char)c);
 								InputStream.Consume();
 								_textSb.Append((char)c2);
@@ -404,12 +413,25 @@ lexer grammar XSharpLexer;
 					_textSb.Clear();
 					_textSb.Append((char)c);
 					InputStream.Consume();
+                    if (c == '\r' && InputStream.La(1) == '\n') {
+						c = InputStream.La(1);
+						_textSb.Append((char)c);
+						InputStream.Consume();
+                    }
+                    Interpreter.Line += 1;
 					c = InputStream.La(1);
 					while (c == '\r' || c == '\n') {
 						_textSb.Append((char)c);
 						InputStream.Consume();
+                        if (c == '\r' && InputStream.La(1) == '\n') {
+							c = InputStream.La(1);
+							_textSb.Append((char)c);
+							InputStream.Consume();
+                        }
+						Interpreter.Line += 1;
 						c = InputStream.La(1);
 					}
+                    Interpreter.Column = 1 - (InputStream.Index - _startCharIndex);
 					break;
 				case '\t':
 				case ' ':
@@ -426,17 +448,18 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case 'e': 
-					if (InputStream.La(2) != '"') {
-						_type = ID;
-						_textSb.Clear();
+					if (InputStream.La(2) == '"') {
+						break;
+					}
+					_type = ID;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					c = InputStream.La(1);
+					while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
 						_textSb.Append((char)c);
 						InputStream.Consume();
 						c = InputStream.La(1);
-						while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
-							_textSb.Append((char)c);
-							InputStream.Consume();
-							c = InputStream.La(1);
-						}
 					}
 					break;
                 case 'a': case 'b': case 'c': case 'd': case 'f': case 'g': case 'h': case 'i': case 'j':
@@ -464,6 +487,7 @@ lexer grammar XSharpLexer;
                     break;
 			}
             if (_type >= 0) {
+                Interpreter.Column += (InputStream.Index - _startCharIndex);
                 t = TokenFactory.Create(TokenFactorySourcePair, _type, _textSb.ToString(), _channel, _startCharIndex, CharIndex - 1, _startLine, _startColumn) as CommonToken;
                 Emit(t);
             }
@@ -516,7 +540,8 @@ lexer grammar XSharpLexer;
 			t.Type = EOS;
 			_hasEos = true;
 		}
-		_lastToken = type;
+		if (t.Channel == TokenConstants.DefaultChannel)
+			_lastToken = type; // nvk: Note that this is the type before any modifications!!!
 		return t;
 	}
 	int LastToken
@@ -547,6 +572,7 @@ lexer grammar XSharpLexer;
 				{
 					{"ACCESS", ACCESS},
 					{"ALIGN", ALIGN},
+					{"_AND", VO_AND},
 					{"AS", AS},
 					{"ASSIGN", ASSIGN},
 					{"BEGIN", BEGIN},
@@ -573,7 +599,6 @@ lexer grammar XSharpLexer;
 					{"_FIELD", FIELD},
 					{"FOR", FOR},
 					{"FUNCTION", FUNCTION},
-					{"FUNC", FUNCTION},
 					{"GLOBAL", GLOBAL},
 					{"HIDDEN", HIDDEN},
 					{"IF", IF},
@@ -590,14 +615,14 @@ lexer grammar XSharpLexer;
 					{"MEMVAR", MEMVAR},
 					{"METHOD", METHOD},
 					{"NEXT", NEXT},
+					{"_NOT", VO_NOT},
+					{"_OR", VO_OR},
 					{"OTHERWISE", OTHERWISE},
 					{"PARAMETERS", PARAMETERS},
 					{"PASCAL", PASCAL},
 					{"PRIVATE", PRIVATE},
 					{"PROCEDURE", PROCEDURE},
-					{"PROC", PROCEDURE},
 					{"PROTECTED", PROTECTED},
-					{"PROTECT", PROTECTED},
 					{"PUBLIC", PUBLIC},
 					{"RECOVER", RECOVER},
 					{"RETURN", RETURN},
@@ -617,6 +642,7 @@ lexer grammar XSharpLexer;
 					{"UPTO", UPTO},
 					{"USING", USING},
 					{"WHILE", WHILE},
+					{"_XOR", VO_XOR},
 
 					// Predefined types
 					{"ARRAY", ARRAY},
@@ -642,6 +668,15 @@ lexer grammar XSharpLexer;
 					{"VOID", VOID},
 					{"WORD", WORD},
 				};
+
+				if (! _Four)
+				{
+					VoKeywords.Add("PROC", PROCEDURE);
+					VoKeywords.Add("FUNC", FUNCTION);
+					VoKeywords.Add("PROTECT", PROTECTED);
+					VoKeywords.Add("SHORT", SHORTINT);
+					VoKeywords.Add("LONG", LONGINT);
+				}
 				foreach (var text in VoKeywords.Keys) {
 					var token = VoKeywords[text];
 					_kwIds.Add(text,token);
@@ -839,7 +874,10 @@ INC,DEC,
 PLUS,MINUS,DIV,MOD,EXP,LSHIFT,RSHIFT,TILDE,MULT,QQMARK,QMARK,
 
 // Boolean operators
-NOT,AND,OR,
+AND,OR,NOT,
+
+// VO Bitwise operators
+VO_NOT, VO_AND, VO_OR, VO_XOR,
 
 // Assignments
 ASSIGN_OP,ASSIGN_ADD,ASSIGN_SUB,ASSIGN_EXP,ASSIGN_MUL,ASSIGN_DIV,
@@ -923,7 +961,7 @@ PP_SYMBOLS      : {LastToken == NL }? '#'
 
 SYMBOL_CONST     : '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
 
-CHAR_CONST  : '\'' ESCAPED_STRING_CHARACTER '\'';
+CHAR_CONST  : '\'' ESCAPED_CHARACTER '\'';
 
 STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 			| '\'' ( ~( '\'' | '\n' | '\r' ) )* '\''		// Single quoted string
@@ -932,6 +970,13 @@ STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 ESCAPED_STRING_CONST
 			: 'e' '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
 			;
+
+fragment
+ESCAPED_CHARACTER       : ~( '\'' | '\\' | '\r' | '\n' )
+						| SIMPLE_ESCAPE_SEQUENCE
+						| HEX_ESCAPE_SEQUENCE
+						| UNICODE_ESCAPE_SEQUENCE
+						;
 
 fragment
 ESCAPED_STRING_CHARACTER: SIMPLE_ESCAPE_CHARACTER

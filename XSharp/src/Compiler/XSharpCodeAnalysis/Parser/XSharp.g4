@@ -537,6 +537,7 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 3)  multiplicative       * / %
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
+//
 
 expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember			// member access The ? is new
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call

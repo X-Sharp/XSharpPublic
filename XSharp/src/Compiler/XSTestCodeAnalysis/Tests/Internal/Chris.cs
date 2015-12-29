@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -57,7 +57,9 @@ END STRUCTURE
 
 
         // 17
-        [Test(Author = "Chris", Id = "C17", Title = "error XS1003: Syntax error, 'ForStmt' expected")]
+//      [Test(Author = "Chris", Id = "C17", Title = "error XS1003: Syntax error, 'ForStmt' expected")]
+// Update at Nikos' house:
+        [Test(Author = "Chris", Id = "C17", Title = "error XS9002: Parser error")]
         public static void error_XS1003_FOR_LOCAL()
         {
             var s = ParseSource(@"

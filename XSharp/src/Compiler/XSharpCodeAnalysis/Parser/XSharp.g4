@@ -560,7 +560,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
 					| Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
-					| Op=LOGIC_NOT Expr=expression								#prefixExpression		// .not. expr (logical not)  also  !
+					| Op=(LOGIC_NOT|NOT) Expr=expression						#prefixExpression		// .not. expr (logical not)  also  !
 					| Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and) also &&
 					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor) 
 					| Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)  also || 

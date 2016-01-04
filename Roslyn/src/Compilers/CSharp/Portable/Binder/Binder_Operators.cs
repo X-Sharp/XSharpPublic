@@ -1245,9 +1245,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case BinaryOperatorKind.EnumLessThanOrEqual:
                 case BinaryOperatorKind.EnumNotEqual:
                 case BinaryOperatorKind.EnumSubtraction:
+#if XSHARP
+                case BinaryOperatorKind.EnumAddition:
+                case BinaryOperatorKind.And | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.EnumAndUnderlying:
+#endif
                     return left.Type;
                 case BinaryOperatorKind.UnderlyingAndEnumAddition:
                 case BinaryOperatorKind.UnderlyingAndEnumSubtraction:
+#if XSHARP
+                case BinaryOperatorKind.And | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.And | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Or | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+                case BinaryOperatorKind.Xor | BinaryOperatorKind.Lifted | BinaryOperatorKind.UnderlyingAndEnum:
+#endif
                     return right.Type;
                 default:
                     throw ExceptionUtilities.UnexpectedValue(kind);
@@ -1342,7 +1359,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (operatorType != SpecialType.System_Boolean && constantValue != null && !constantValue.IsBad)
             {
+#if XSHARP
+                TypeSymbol resultType = (kind == BinaryOperatorKind.EnumSubtraction || kind == BinaryOperatorKind.EnumAddition) ? underlyingType : enumType;
+#else
                 TypeSymbol resultType = kind == BinaryOperatorKind.EnumSubtraction ? underlyingType : enumType;
+#endif
 
                 // We might need to convert back to the underlying type.
                 return FoldConstantNumericConversion(syntax, constantValue, resultType, diagnostics);

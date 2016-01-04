@@ -61,6 +61,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         CopyEventCustomModifiers(overriddenEvent, ref _type);
                     }
+#if XSHARP
+                    else if (this.IsVirtual)
+                    {
+                        _modifiers &= ~DeclarationModifiers.Override;
+                    }
+#endif
                 }
             }
             else if ((object)explicitlyImplementedEvent != null)

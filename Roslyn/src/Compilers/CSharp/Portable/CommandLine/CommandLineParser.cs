@@ -15,7 +15,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
-    public class CSharpCommandLineParser : CommandLineParser
+    public partial class CSharpCommandLineParser : CommandLineParser
     {
         public static CSharpCommandLineParser Default { get; } = new CSharpCommandLineParser();
 
@@ -148,6 +148,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     continue;
                 }
 
+#if XSHARP
+                if (ParseXSharpArgument(ref name, ref value, diagnostics))
+                    continue;
+#endif
                 switch (name)
                 {
                     case "?":
@@ -290,7 +294,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         Debugger.Launch();
                         continue;
 #endif
-                }
+               }
 
                 if (IsInteractive)
                 {
@@ -974,6 +978,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                             additionalFiles.AddRange(ParseAdditionalFileArgument(value, baseDirectory, diagnostics));
                             continue;
+
                     }
                 }
 

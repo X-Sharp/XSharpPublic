@@ -2,16 +2,22 @@
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+    // Errors treated as warnings in XSharp!
+    // Warning: The following comment is parsed by the error facts generator !!!
+    /*
+    XS_WRN:ERR_BadVisFieldType = 52,
+    XS_WRN:ERR_UseDefViolation = 165,
+    XS_WRN:ERR_UseDefViolationField = 170,
+    XS_WRN:ERR_UnassignedThis = 171,
+    XS_WRN:ERR_UseDefViolationThis = 188,
+    XS_WRN:ERR_SizeofUnsafe = 233,
+    XS_WRN:ERR_UseDefViolationOut = 269,
+    XS_WRN:ERR_MemberNameSameAsType = 542,
+    XS_WRN:ERR_UseDefViolationProperty = 8079,
+    */
+
     internal enum ErrorCode
     {
-        // Errors treated as warnings in XSharp!
-        WRN_SizeofUnsafe = 233,
-        WRN_UseDefViolation = 165,
-        WRN_UseDefViolationField = 170,
-        WRN_UseDefViolationThis = 188,
-        WRN_UseDefViolationOut = 269,
-        WRN_UseDefViolationProperty = 8079,
-
         Void = InternalErrorCode.Void,
         Unknown = InternalErrorCode.Unknown,
         //FTL_InternalError = 1,
@@ -1323,5 +1329,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_LoadDirectiveOnlyAllowedInScripts = 8097,
         ERR_PPLoadFollowsToken = 8098,
         ERR_SourceFileReferencesNotSupported = 8099,
+
+        // X#-only messages
+        WRN_UnsafeImplied = 9001,
+        ERR_ParserError = 9002,
     }
 }

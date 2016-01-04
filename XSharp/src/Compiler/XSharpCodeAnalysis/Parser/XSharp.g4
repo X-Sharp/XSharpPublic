@@ -404,7 +404,11 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				#whileStmt
 					| WHILE Expr=expression EOS
 					  StmtBlk=statementBlock END EOS							#whileStmt
-					| FOR AssignExpr=expression
+					| FOR 
+						( AssignExpr=expression
+						| (LOCAL? IMPLIED|VAR) AssignExpr=expression
+						| LOCAL			AssignExpr=expression AS Type=datatype
+						)
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
 					  (STEP Step=expression)? EOS
 					  StmtBlk=statementBlock NEXT EOS							#forStmt

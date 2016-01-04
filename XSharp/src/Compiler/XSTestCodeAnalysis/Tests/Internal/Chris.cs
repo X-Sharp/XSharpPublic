@@ -455,6 +455,7 @@ c := s:Chars[1]
         }
 
 
+ 
         // 83
         [Test(Author = "Chris", Id = "C83", Title = "Error XS0034: Operator '*' is ambiguous on operands of type 'int' and 'double'")]
         public static void Error_XS0034_Operator_is_ambiguous()
@@ -481,6 +482,81 @@ PROC test( h AS PTR)
 ");
             CompileAndLoadWithoutErrors(s);
         }
+
+
+
+        // 85
+        [Test(Author = "Chris", Id = "C85", Title = "error XS9002: Parser error: no viable alternative at input '(ac,'")]
+        public static void Error_Calling_Generic_static_method()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL ac AS STRING[]
+ac := <STRING>{""1"",""2"",""3""}
+? System.Array.IndexOf<STRING>(ac,""2"")
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+
+        // 86
+        [Test(Author = "Chris", Id = "C86", Title = "compiler crash with #pragma options")]
+        public static void Crash_with_pragma_options()
+        {
+            var s = ParseSource(@"
+#pragma options (""lb"",on)
+FUNCTION Start() AS VOID
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+
+        // 87
+        [Test(Author = "Chris", Id = "C87", Title = "error XS0106: The modifier 'public' is not valid for this item")]
+        public static void Error_XS0106_access_in_interface()
+        {
+            var s = ParseSource(@"
+INTERFACE ITest
+	ACCESS Name AS STRING
+END INTERFACE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+        // 88
+        [Test(Author = "Chris", Id = "C88", Title = "error XS0034: Operator '*' is ambiguous on operands of type 'int' and 'double'")]
+        public static void error_XS0034_operator_ambiguous_on_int_and_double()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL n := 2 AS INT
+n := (INT) (n * 42.5)
+? n
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+
+        // 89
+        [Test(Author = "Chris", Id = "C89", Title = "Parser error: no viable alternative at input 'PROPERTY SELF'mismatched input ']' expecting EOS")]
+        public static void Parser_error_default_indexed_property()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PROPERTY SELF[index AS DWORD] AS INT GET 0
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
 
 
 

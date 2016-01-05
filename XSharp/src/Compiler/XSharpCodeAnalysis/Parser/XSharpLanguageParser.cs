@@ -42,15 +42,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (e?.OffendingToken != null)
                 {
-                    Debug.WriteLine(_fileName+" line :" + e.OffendingToken.Line + " column: " + e.OffendingToken.Column + " " + msg);
+                    Debug.WriteLine(_fileName+"(" + e.OffendingToken.Line + "," + e.OffendingToken.Column + "): error: " + msg);
                 }
                 else if (offendingSymbol != null)
                 {
-                    Debug.WriteLine(_fileName + " line :" + offendingSymbol.Line + " column: " + offendingSymbol.Column + " " + msg);
+                    Debug.WriteLine(_fileName + "(" + offendingSymbol.Line + "," + offendingSymbol.Column + "): error: " + msg);
                 }
                 else
                 {
-                    Debug.WriteLine(_fileName + " line :" + line + 1 + " column: " + charPositionInLine + 1 + " " + msg);
+                    Debug.WriteLine(_fileName + "(" + line + 1 + "," + charPositionInLine + 1 + "): error: " + msg);
                 }
             }
         }

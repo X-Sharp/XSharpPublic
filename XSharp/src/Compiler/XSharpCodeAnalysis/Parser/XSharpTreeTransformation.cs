@@ -2109,7 +2109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: null);
+                semicolonToken: null );
             if (context.Namespace != null) {
                 m = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: context.Namespace.Get<NameSyntax>(),
@@ -2323,6 +2323,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
         }
+
+        public override void ExitVotypeModifiers([NotNull] XSharpParser.VotypeModifiersContext context)
+        {
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            foreach (var m in context._Tokens)
+            {
+                modifiers.AddCheckUnique(m.SyntaxKeyword());
+            }
+            modifiers.FixDefaultVisibility();
+            context.PutList(modifiers.ToTokenList());
+            _pool.Free(modifiers);
+        }
+
 
         public override void ExitStatementBlock([NotNull] XSharpParser.StatementBlockContext context)
         {
@@ -3268,7 +3281,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTypeExpression([NotNull] XSharpParser.TypeExpressionContext context)
         {
-            context.Put(context.Type.Get<TypeSyntax>());
+            if (context.Type != null)
+                context.Put(context.Type.Get<TypeSyntax>());
+            else
+                context.Put(context.XType.Get<TypeSyntax>());
         }
 
         public override void ExitIifExpression([NotNull] XSharpParser.IifExpressionContext context)
@@ -3329,11 +3345,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoConversionExpression([NotNull] XSharpParser.VoConversionExpressionContext context)
         {
-            context.Put(_syntaxFactory.CastExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.Expr.Get<ExpressionSyntax>()));
+            if (context.Type != null)
+            {
+                context.Put(_syntaxFactory.CastExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.Type.Get<TypeSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    context.Expr.Get<ExpressionSyntax>()));
+            }
+            else if (context.XType != null)
+            {
+                context.Put(_syntaxFactory.CastExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    context.XType.Get<TypeSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    context.Expr.Get<ExpressionSyntax>()));
+            }
         }
 
         public override void ExitVoCastExpression([NotNull] XSharpParser.VoCastExpressionContext context)
@@ -3547,6 +3574,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.NativeType != null)
                 context.Put(context.NativeType.Get<TypeSyntax>());
+            else if (context.XType != null)
+                context.Put(context.XType.Get<TypeSyntax>());
             else if (context.Name != null)
                 context.Put(context.Name.Get<NameSyntax>());
         }
@@ -3858,14 +3887,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.PTR:
                     context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
                     break;
-                case XSharpParser.PSZ:
-                    context.Put(GenerateQualifiedName("global::System.IntPtr"));
-                    break;
+                //case XSharpParser.PSZ:
+                //    context.Put(GenerateQualifiedName("global::System.IntPtr"));
+                //    break;
                 default:
                     context.Put(_syntaxFactory.PredefinedType(context.Token.SyntaxNativeType()));
                     break;
             }
         }
+        public override void ExitXbaseType([NotNull] XSharpParser.XbaseTypeContext context)
+        {
+            context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
+                .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context.Token.Text )));
+        }
+
 
     }
 }

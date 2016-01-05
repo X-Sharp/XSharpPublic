@@ -141,7 +141,7 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
 					;
 
-vostruct			: (Modifiers=funcprocModifiers)? 
+vostruct			: (Modifiers=votypeModifiers)? 
 					  VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? EOS
 					  (Members+=vostructmember)+
 					;
@@ -150,9 +150,13 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS
 					| MEMBER Id=identifier (AS | IS) DataType=datatype EOS
 					;
 
-vounion				: (Modifiers=funcprocModifiers)? 
+
+vounion				: (Modifiers=votypeModifiers)? 
 					  UNION (Namespace=nameDot)? Id=identifier EOS
 					  (Members+=vounionmember)+
+					;
+
+votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
@@ -267,7 +271,7 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 					;
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
-					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) AS Type=datatype 
+					  PROPERTY (ExplicitIface=nameDot)?  Id=identifier (ParamList=propertyParameterList)?  AS Type=datatype 
 					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? EOS	// Auto
 					  | (LineAccessors+=propertyLineAccessor)+ EOS													// Single Line
 					  | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS									// Multi Line
@@ -275,7 +279,8 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
 					;
 
 propertyParameterList
-					: LBRKT (Params+=parameter (COMMA Params+=parameter)*)? RBRKT
+					: LBRKT  (Params+=parameter (COMMA Params+=parameter)*)? RBRKT
+					| LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN			// Allow Parentheses as well
 					;
 
 propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET|SET)
@@ -399,7 +404,11 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				#whileStmt
 					| WHILE Expr=expression EOS
 					  StmtBlk=statementBlock END EOS							#whileStmt
-					| FOR AssignExpr=expression
+					| FOR 
+						( AssignExpr=expression
+						| (LOCAL? IMPLIED|VAR) AssignExpr=expression
+						| LOCAL			AssignExpr=expression AS Type=datatype
+						)
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
 					  (STEP Step=expression)? EOS
 					  StmtBlk=statementBlock NEXT EOS							#forStmt
@@ -555,7 +564,7 @@ expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMem
 					| Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
 					| Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
-					| Op=LOGIC_NOT Expr=expression								#prefixExpression		// .not. expr (logical not)  also  !
+					| Op=(LOGIC_NOT|NOT) Expr=expression						#prefixExpression		// .not. expr (logical not)  also  !
 					| Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and) also &&
 					| Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor) 
 					| Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)  also || 
@@ -586,9 +595,11 @@ primary				: Key=SELF													#selfExpression
 					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// sizeof( typeORid )
 					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
+					| XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
 					| Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
 					| PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
-					| Type=nativeType											#typeExpression			// ARRAY, CODEBLOCK, etc.
+					| Type=nativeType											#typeExpression			// Standard DotNet Types
+					| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
 					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
 					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
@@ -649,6 +660,7 @@ arrayRank			: LBRKT (Commas+=COMMA)* RBRKT
 					;
 
 typeName			: NativeType=nativeType
+					| XType=xbaseType
 					| Name=name
 					;
 
@@ -725,27 +737,33 @@ identifierString	: Token=(ID | STRING_CONST)
 					| XsToken=keywordxs
 					;
 
-nativeType			: Token=
-					( ARRAY
-					| BYTE
+// remove Vulcan types for now
+//					
+
+xbaseType			: Token=
+					( ARRAY 
 					| CODEBLOCK
-					| DATE
+					| DATE 
+					| FLOAT 
+					| PSZ 
+					| SYMBOL 
+					| USUAL)
+					;
+
+nativeType			: Token=
+					( BYTE
 					| DWORD
 					| DYNAMIC
-					| FLOAT
 					| SHORTINT
 					| INT
 					| INT64
 					| LOGIC
 					| LONGINT
 					| OBJECT
-					| PSZ
 					| PTR
 					| REAL4
 					| REAL8
 					| STRING
-					| SYMBOL
-					| USUAL
 					| UINT64
 					| WORD
 					| VOID 

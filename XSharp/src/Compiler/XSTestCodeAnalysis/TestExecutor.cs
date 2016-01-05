@@ -40,7 +40,7 @@ namespace XSTestCodeAnalysis
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("Fail: {0}",TestTitle(m));
                     Console.ResetColor();
-                    Console.WriteLine("{0}",e);
+                    Console.WriteLine("{0}",e.InnerException.Message);
                 }
             }
 

@@ -5,8 +5,8 @@
   <Symbols>
     <String Name="Resources" Value="/XSharp.ProjectSystem;Component/" />
     <Guid Name="XSharpImagesGuid" Value="6c1120ab-b5cc-4593-9413-ad506eedcec7" />
-    <ID Name="ProjectIcon" Value="0" />
-    <ID Name="ItemIcon" Value="1" />
+    <ID Name="ProjectIcon" Value="1" />
+    <ID Name="ItemIcon" Value="2" />
   </Symbols>
   <Images>
     <Image Guid="$(XSharpImagesGuid)" ID="$(ProjectIcon)">

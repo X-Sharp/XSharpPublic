@@ -9,7 +9,7 @@
     <SortOrder>1</SortOrder>
     <TemplateID>A868BDE2-111B-4058-B098-E9EACBBA565B</TemplateID>
     <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>XSharp</DefaultName>
+    <DefaultName>ConsoleApplication</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
   </TemplateData>
   <TemplateContent>

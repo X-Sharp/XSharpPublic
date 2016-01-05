@@ -6,7 +6,7 @@ $endif$#using System.Text
 Begin Namespace $safeprojectname$
 	Class Program
  
-    static Method Main() as void
+    static Method Start() as void
         Console.WriteLine("Hello World!")
         Console.WriteLine("Press any key to continue...")
         Console.ReadKey()

@@ -8,7 +8,7 @@ namespace XSharpLanguage
         private static readonly Guid ManifestGuid = new Guid("6c1120ab-b5cc-4593-9413-ad506eedcec7");
 
         private const int ProjectIcon = 1;
-        private const int ItemIcon = 0;
+        private const int ItemIcon = 2;
 
         public static ImageMoniker ProjectIconImageMoniker
         {

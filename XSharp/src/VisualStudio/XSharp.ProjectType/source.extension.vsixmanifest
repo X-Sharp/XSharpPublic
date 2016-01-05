@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="XSharp.ProjectType" Version="1.0" Language="en-US" Publisher="XSharp.ProjectType" />
-    <DisplayName>XSharp  Visual Studio Project System</DisplayName>
+    <Identity Id="XSharp.ProjectType" Version="0.1.6.0" Language="en-US" Publisher="XSharp BV" />
+    <DisplayName>XSharp Visual Studio Project System</DisplayName>
     <Description xml:space="preserve">XSharp Visual Studio Project Integration</Description>
     <MoreInfo>http://www.xsharp.info</MoreInfo>
     <Icon>XSharp.ico</Icon>
@@ -22,5 +22,6 @@
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="Template-Console Function" d:TargetPath="|Template-Console Function;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Template-Class Empty" d:TargetPath="|Template-Class Empty;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+    <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Template-CodeFile" d:TargetPath="|Template-CodeFile;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
   </Assets>
 </PackageManifest>

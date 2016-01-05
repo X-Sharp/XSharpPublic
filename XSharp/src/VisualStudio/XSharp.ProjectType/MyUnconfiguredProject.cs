@@ -45,7 +45,7 @@ namespace XSharpLanguage
         /// </remarks>
         internal const string UniqueCapability = "XSharp";
 
-        internal const string Language = "X#";
+        internal const string Language = "XSharp";
 
         [ImportingConstructor]
         public MyUnconfiguredProject(UnconfiguredProject unconfiguredProject)

@@ -8,6 +8,8 @@ goto Error
 call Setversion
 Echo Building Compiler version %BuildVersion%
 msbuild Compiler.sln /fl1 /p:Configuration=%1	/p:RoslynSemanticVersion=%Version% /t:Build /p:OfficialBuild=%OfficialBuild% /p:BuildNumber=%BuildNumber% /m /v:m /nologo
+msbuild XSharpLanguage.sln /fl1 /p:Configuration=%1	/p:RoslynSemanticVersion=%Version% /t:Build /p:OfficialBuild=%OfficialBuild% /p:BuildNumber=%BuildNumber% /m /v:m /nologo
+msbuild XSharpSetup.sln /fl1 /p:Configuration=%1	/p:RoslynSemanticVersion=%Version% /t:Build /p:OfficialBuild=%OfficialBuild% /p:BuildNumber=%BuildNumber% /m /v:m /nologo
 if exist build-%1.log del build-%1.log
 rename msbuild1.log build-%1.log
 Goto End

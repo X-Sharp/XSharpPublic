@@ -52,9 +52,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\XSharpCodeAnalysis\XSharpCodeAnalysis.csproj">
       <Project>{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}</Project>
       <Name>XSharpCodeAnalysis</Name>

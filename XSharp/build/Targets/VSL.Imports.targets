@@ -198,9 +198,10 @@
 
          Generation of AssemblyVersion attributes from the BuildVersion property
 
-       ==================================================================================== -->
-
+       ==================================================================================== 
+ 
   <Import Project="GenerateAssemblyInfo.targets" Condition="'$(ProjectLanguage)' == 'CSharp' OR '$(ProjectLanguage)' == 'VB'" />
+  -->
   <Import Project="GenerateVersionInfoResourceFile.targets" Condition="'$(ProjectLanguage)' == 'C++'" />
 
   <!-- ====================================================================================

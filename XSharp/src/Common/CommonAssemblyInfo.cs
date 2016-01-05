@@ -12,8 +12,7 @@ using System.Runtime.InteropServices;
 #endif	
 [assembly: AssemblyProduct("XSharp")]
 [assembly: AssemblyCompany("XSharp BV")]
-[assembly: AssemblyCopyright("Copyright ©  2015-2016")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © XSharp BV 2015-2016")]
 [assembly: AssemblyCulture("")]
 
 [assembly: AssemblyVersion("0.1.6.0")]

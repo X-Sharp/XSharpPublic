@@ -53,8 +53,9 @@
     This is why if we use CoreCompile below the correct version will end up in the temporary assembly
     and the .baml will be generated correctly eliminating the assembly load failures.
     
-    -->
+    
     <CoreCompileDependsOn>GenerateAssemblyInfoFile;$(CoreCompileDependsOn)</CoreCompileDependsOn>
+	-->
   </PropertyGroup>
 
   <!-- Depends on PrepareForBuild because the latter is responsible for calling MakeDir(IntermediateOutputPath). 

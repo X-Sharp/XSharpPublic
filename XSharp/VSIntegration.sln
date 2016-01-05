@@ -14,6 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharp.Build", "src\VisualStudio\XSharp.Build\XSharp.Build.csproj", "{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharp.ProjectType", "src\VisualStudio\XSharp.ProjectType\XSharp.ProjectType.csproj", "{679502AC-264C-40AC-9E3A-587F2A27F08B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BD3EBF3F-1AE6-4C08-8E7A-C63F8956DA1D} = {BD3EBF3F-1AE6-4C08-8E7A-C63F8956DA1D}
+		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B} = {CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

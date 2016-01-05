@@ -60,7 +60,11 @@
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\ShadowCopyAnalyzerAssemblyLoader.cs">
       <Link>ShadowCopyAnalyzerAssemblyLoader.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Assembly.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -47,6 +47,7 @@
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARPPRE</DefineConstants>
     <NoWarn>1591, CS0649</NoWarn>
+    <DocumentationFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>

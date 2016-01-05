@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    TODO: Reference the rule from the targets file using the PropertyPageSchema tag
+    
+    Example: Including the following in the targets file will add a new property page in the project properties dialog.
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\AdditionalCompilerSettings.xaml;">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    
+    For more information, please refer to the following blog post:
+    http://blogs.msdn.com/b/vsproject/archive/2009/06/18/platform-extensibility-part-2.aspx
+-->
+<Rule
+	Name="AdditionalCompilerSettings"
+	DisplayName="Build"
+	PageTemplate="generic"
+	Description="Build Options"
+	xmlns="http://schemas.microsoft.com/build/2009/properties">
+    <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" />
+    </Rule.DataSource>
+
+    <Rule.Categories>
+        <Category Name="General" DisplayName="General"/>
+    </Rule.Categories>
+
+    <StringProperty Category="General" Name="CommandLineOption" DisplayName="Command Line Options" Visible="True" Description="User-Defined Command Line options"/>
+</Rule>

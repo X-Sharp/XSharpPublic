@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="$(MSBuildThisFileDirectory)\XSharpProject.Default.targets" />
+
+  <ItemGroup>
+    <ProjectCapability Include="ReferencesFolder"/>
+
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;"/>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\xsharp.xaml;">
+      <Context>File</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\xsharp.browseobject.xaml;">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+  </ItemGroup>
+ 
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(XSharpPath)XSharpProject.targets</MSBuildAllProjects>
+    <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
+    <Language>XSharp</Language>
+	<GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
+  </PropertyGroup>   
+
+   <ItemGroup>
+      <AvailableItemName Include="NativeResource" />
+   </ItemGroup>
+
+   <!--
+    The CreateManifestResourceNames target create the manifest resource names from the .RESX
+    files.
+    
+        [IN]
+        @(EmbeddedResource) - The list of EmbeddedResource items that have been pre-processed to add metadata about resource type
+                              Expected Metadata "Type" can either be "Resx" or "Non-Resx"
+
+        [OUT]
+        @(EmbeddedResource) - EmbeddedResource items with metadata         
+
+
+    For Vulcan.NET applications the transformation is:
+
+        Resources1.resx => RootNamespace.Resources1 => Build into main assembly
+        SubFolder\Resources1.resx => RootNamespace.SubFolder.Resources1 => Build into main assembly
+        Resources1.fr.resx => RootNamespace.Resources1.fr => Build into satellite assembly
+        Resources1.notaculture.resx => RootNamespace.Resources1.notaculture => Build into main assembly
+    -->
+
+   <PropertyGroup>
+      <CreateManifestResourceNamesDependsOn></CreateManifestResourceNamesDependsOn>
+   </PropertyGroup>
+
+      <Target
+          Name="CreateManifestResourceNames"
+          Condition="'@(EmbeddedResource)' != '' "
+        >
+
+         <ItemGroup>
+            <_Temporary Remove="@(_Temporary)" />
+         </ItemGroup>
+
+         <!-- Create manifest names for culture and non-culture Resx files, and for non-culture Non-Resx resources -->
+         <CreateXSharpManifestResourceName
+               ResourceFiles="@(EmbeddedResource)"
+               RootNamespace="$(RootNamespace)"
+               Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and ('%(EmbeddedResource.WithCulture)' == 'false' or '%(EmbeddedResource.Type)' == 'Resx')">
+
+            <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
+
+         </CreateXSharpManifestResourceName>
+
+         <!-- Create manifest names for all culture non-resx resources -->
+         <CreateXSharpManifestResourceName
+               ResourceFiles="@(EmbeddedResource)"
+               RootNamespace="$(RootNamespace)"
+               PrependCultureAsDirectory="false"
+               Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and '%(EmbeddedResource.WithCulture)' == 'true' and '%(EmbeddedResource.Type)' == 'Non-Resx'">
+
+            <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
+
+         </CreateXSharpManifestResourceName>
+
+         <ItemGroup>
+            <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.ManifestResourceName)' == ''"/>
+            <EmbeddedResource Include="@(_Temporary)" />
+            <_Temporary Remove="@(_Temporary)" />
+         </ItemGroup>
+
+      </Target>
+
+   <PropertyGroup Condition="'$(IntermediateOutputPath)'!=''">
+      <!--
+      If we've set IntermediateOutputPath in the project file, then we want to override the
+      setting of BaseIntermediateOutputPath in Microsoft.Common.targets, which sets it to "obj\".
+      That causes some stuff to be written to the obj directory even though IntermediateOutputPath
+      has been explicitly set by the user.  Setting BaseIntermediateOutputPath here fixes that.
+      -->
+
+      <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
+   </PropertyGroup>
+
+  <ItemGroup>
+    <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName).xml" Condition="'$(DocumentationFile)'!=''"/>
+  </ItemGroup>
+
+  <!--
+     *** Important - Import this here because some targets
+     that follow will override targets found in Microsoft.Common.targets 
+   -->
+   <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
+
+   <PropertyGroup>
+      <CoreCompileDependsOn>_ComputeNonExistentFileProperty</CoreCompileDependsOn>
+   </PropertyGroup>
+
+   <Target Name="AfterResGen">
+
+      <GenerateNativeResource
+         Sources="@(NativeResource)"
+         UseSourcePath="$(UseSourcePath)"
+         IncludePaths="$(IncludePaths)"
+         OutputPath="$(IntermediateOutputPath)"
+         TargetFrameworkVersion="$(TargetFrameworkVersion)"
+         EmitDebugInformation="$(EmitDebugInformation)"         
+         Condition="'@(NativeResource)' != ''">
+      </GenerateNativeResource>
+
+      <CreateItem Include="$(IntermediateOutputPath)NativeResources.res" Condition="'@(NativeResource)' != ''">
+
+         <Output TaskParameter="Include" ItemName="Win32Resource" />
+         <!-- this causes the .res file to be deleted on a Clean -->
+         <Output TaskParameter="Include" ItemName="FileWrites" />
+
+      </CreateItem>
+
+   </Target>
+
+   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
+
+ 
+
+  <UsingTask
+  TaskName="XSharp.Build.Xsc"
+  AssemblyFile="$(XSharpPath)XSharp.Build.dll"/>
+
+
+
+  <Target
+          Name="CoreCompile"
+          Inputs="$(MSBuildAllProjects);
+                @(Compile);
+                @(_CoreCompileResourceInputs);
+                $(ApplicationIcon);
+                $(AssemblyOriginatorKeyFile);
+                @(ReferencePath);
+                @(CompiledLicenseFile);
+                @(EmbeddedDocumentation); 
+                $(Win32Resource);
+                $(Win32Manifest);
+                @(CustomAdditionalCompileInputs)"
+          Outputs="@(DocFileItem);
+                 @(IntermediateAssembly);
+                 @(_DebugSymbolsIntermediatePath);
+                 @(CustomAdditionalCompileOutputs)"
+          DependsOnTargets="$(CoreCompileDependsOn)"
+    >
+    <ItemGroup>
+      <_NonMacroReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) != 'macro'" />
+      <_MacroProjectReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) == 'macro'" />
+    </ItemGroup>
+    <Xsc
+        CompilerPath="$(XSharpPath)"
+        References="@(_NonMacroReferencePath)"
+        OutputAssembly="@(IntermediateAssembly)"
+        ResponseFiles="$(CompilerResponseFile)"
+        Sources="@(Compile)"
+        TargetType="$(OutputType)"
+        EmitDebugInformation="$(DebugSymbols)"
+        CommandLineOption="$(CommandLineOption)"
+    />
+    <ItemGroup>
+      <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />
+    </ItemGroup>
+    <CallTarget Targets="$(TargetsTriggeredByCompilation)" Condition="'$(TargetsTriggeredByCompilation)' != ''"/>
+  </Target>
+
+
+
+
+</Project>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Class</Name>
+    <Description>An empty class definition</Description>
+    <Icon>Template-Class Empty.ico</Icon>
+    <TemplateID>8b5ad6b6-26d5-4311-bb9d-278e2941e01a</TemplateID>
+    <ProjectType>XSharp</ProjectType>
+    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Class.prg</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>System</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem OpenInEditor="true" ReplaceParameters="true">Class.prg</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

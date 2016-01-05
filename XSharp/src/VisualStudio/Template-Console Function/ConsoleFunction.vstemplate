@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>XSharp Console Project Function</Name>
+    <Description>Basic XSharp console application - Function Version.</Description>
+    <Icon>XSharp.ico</Icon>
+    <ProjectType>XSharp</ProjectType>
+    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
+    <SortOrder>1</SortOrder>
+    <TemplateID>A868BDE2-111B-4058-B098-E9EACBBA565B</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>XSharp</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="ConsoleFunction.xsprj" ReplaceParameters="true">
+      <!-- 
+      These are the items which will show up when a new project is created using the custom project system.
+      Items referenced in here must also be referenced in the project file.
+      -->
+      <ProjectItem ReplaceParameters="true">Properties\AssemblyInfo.prg</ProjectItem>
+      <ProjectItem OpenInEditor="true" ReplaceParameters="true">Program.prg</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

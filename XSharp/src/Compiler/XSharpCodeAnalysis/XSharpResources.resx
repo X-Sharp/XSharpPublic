@@ -409,10 +409,10 @@
     <value>Operator '{0}' cannot be applied to operand of type '{1}'</value>
   </data>
   <data name="ERR_ThisInStaticMeth" xml:space="preserve">
-    <value>Keyword 'this' is not valid in a static property, static method, or static field initializer</value>
+    <value>Keyword 'SELF' is not valid in a static property, static method, or static field initializer</value>
   </data>
   <data name="ERR_ThisInBadContext" xml:space="preserve">
-    <value>Keyword 'this' is not available in the current context</value>
+    <value>Keyword 'SELF' is not available in the current context</value>
   </data>
   <data name="WRN_InvalidMainSig" xml:space="preserve">
     <value>'{0}' has the wrong signature to be an entry point</value>
@@ -781,10 +781,10 @@
     <value>Type of conditional expression cannot be determined because there is no implicit conversion between '{0}' and '{1}'</value>
   </data>
   <data name="ERR_NoBaseClass" xml:space="preserve">
-    <value>A base class is required for a 'base' reference</value>
+    <value>A base class is required for a 'SUPER' reference</value>
   </data>
   <data name="ERR_BaseIllegal" xml:space="preserve">
-    <value>Use of keyword 'base' is not valid in this context</value>
+    <value>Use of keyword 'SUPER' is not valid in this context</value>
   </data>
   <data name="ERR_ObjectProhibited" xml:space="preserve">
     <value>Member '{0}' cannot be accessed with an instance reference; qualify it with a type name instead</value>
@@ -832,7 +832,7 @@
     <value>Use of null is not valid in this context</value>
   </data>
   <data name="ERR_UseDefViolationThis" xml:space="preserve">
-    <value>The 'this' object cannot be used before all of its fields are assigned to</value>
+    <value>The 'SELF' object cannot be used before all of its fields are assigned to</value>
   </data>
   <data name="ERR_ArgsInvalid" xml:space="preserve">
     <value>The __arglist construct is valid only within a variable argument method</value>
@@ -1413,7 +1413,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>'{0}' is abstract but it is contained in non-abstract class '{1}'</value>
   </data>
   <data name="ERR_StaticConstructorWithExplicitConstructorCall" xml:space="preserve">
-    <value>'{0}': static constructor cannot have an explicit 'this' or 'base' constructor call</value>
+    <value>'{0}': static constructor cannot have an explicit 'SELF' or 'SUPER' constructor call</value>
   </data>
   <data name="ERR_StaticConstructorWithAccessModifiers" xml:space="preserve">
     <value>'{0}': access modifiers are not allowed on static constructors</value>
@@ -2193,7 +2193,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>Catch clauses cannot follow the general catch clause of a try statement</value>
   </data>
   <data name="ERR_ThisOrBaseExpected" xml:space="preserve">
-    <value>Keyword 'this' or 'base' expected</value>
+    <value>Keyword 'SELF' or 'SUPER' expected</value>
   </data>
   <data name="ERR_OvlUnaryOperatorExpected" xml:space="preserve">
     <value>Overloadable unary operator expected</value>
@@ -2303,19 +2303,19 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>'{0}' does not contain a definition for '{1}' and no extension method '{1}' accepting a first argument of type '{0}' could be found (are you missing a using directive for '{2}'?)</value>
   </data>
   <data name="ERR_BadThisParam" xml:space="preserve">
-    <value>Method '{0}' has a parameter modifier 'this' which is not on the first parameter</value>
+    <value>Method '{0}' has a parameter modifier 'SELF' which is not on the first parameter</value>
   </data>
   <data name="ERR_BadRefWithThis" xml:space="preserve">
-    <value> The parameter modifier 'ref' cannot be used with 'this' </value>
+    <value> The parameter modifier 'ref' cannot be used with 'SELF' </value>
   </data>
   <data name="ERR_BadOutWithThis" xml:space="preserve">
-    <value> The parameter modifier 'out' cannot be used with 'this' </value>
+    <value> The parameter modifier 'out' cannot be used with 'SELF' </value>
   </data>
   <data name="ERR_BadTypeforThis" xml:space="preserve">
     <value>The first parameter of an extension method cannot be of type '{0}'</value>
   </data>
   <data name="ERR_BadParamModThis" xml:space="preserve">
-    <value>A parameter array cannot be used with 'this' modifier on an extension method</value>
+    <value>A parameter array cannot be used with 'SELF' modifier on an extension method</value>
   </data>
   <data name="ERR_BadExtensionMeth" xml:space="preserve">
     <value>Extension method must be static</value>
@@ -2336,7 +2336,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Cannot define a new extension method because the compiler required type '{0}' cannot be found. Are you missing a reference to System.Core.dll?</value>
   </data>
   <data name="ERR_ExplicitExtension" xml:space="preserve">
-    <value>Do not use 'System.Runtime.CompilerServices.ExtensionAttribute'. Use the 'this' keyword instead.</value>
+    <value>Do not use 'System.Runtime.CompilerServices.ExtensionAttribute'. Use the 'SELF' keyword instead.</value>
   </data>
   <data name="ERR_ExplicitDynamicAttr" xml:space="preserve">
     <value>Do not use 'System.Runtime.CompilerServices.DynamicAttribute'. Use the 'dynamic' keyword instead.</value>
@@ -2372,10 +2372,10 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>A ref or out argument must be an assignable variable</value>
   </data>
   <data name="ERR_BaseInStaticMeth" xml:space="preserve">
-    <value>Keyword 'base' is not available in a static method</value>
+    <value>Keyword 'SUPER' is not available in a static method</value>
   </data>
   <data name="ERR_BaseInBadContext" xml:space="preserve">
-    <value>Keyword 'base' is not available in the current context</value>
+    <value>Keyword 'SUPER' is not available in the current context</value>
   </data>
   <data name="ERR_RbraceExpected" xml:space="preserve">
     <value>} expected</value>
@@ -2822,7 +2822,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Invalid option '{0}' for /platform; must be anycpu, x86, Itanium or x64</value>
   </data>
   <data name="ERR_ThisStructNotInAnonMeth" xml:space="preserve">
-    <value>Anonymous methods, lambda expressions, and query expressions inside structs cannot access instance members of 'this'. Consider copying 'this' to a local variable outside the anonymous method, lambda expression or query expression and using the local instead.</value>
+    <value>Anonymous methods, lambda expressions, and query expressions inside structs cannot access instance members of 'SELF'. Consider copying 'SELF' to a local variable outside the anonymous method, lambda expression or query expression and using the local instead.</value>
   </data>
   <data name="ERR_NoConvToIDisp" xml:space="preserve">
     <value>'{0}': type used in a using statement must be implicitly convertible to 'System.IDisposable'</value>
@@ -3747,7 +3747,7 @@ You should consider suppressing the warning only if you're sure that you don't w
     <value>A ref or out parameter cannot have a default value</value>
   </data>
   <data name="ERR_DefaultValueForExtensionParameter" xml:space="preserve">
-    <value>Cannot specify a default value for the 'this' parameter</value>
+    <value>Cannot specify a default value for the 'SELF' parameter</value>
   </data>
   <data name="ERR_DefaultValueForParamsParameter" xml:space="preserve">
     <value>Cannot specify a default value for a parameter array</value>

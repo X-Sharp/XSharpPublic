@@ -1655,7 +1655,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  The parameter modifier &apos;out&apos; cannot be used with &apos;this&apos; .
+        ///   Looks up a localized string similar to  The parameter modifier &apos;out&apos; cannot be used with &apos;SELF&apos; .
         /// </summary>
         internal static string ERR_BadOutWithThis {
             get {
@@ -1673,7 +1673,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A parameter array cannot be used with &apos;this&apos; modifier on an extension method.
+        ///   Looks up a localized string similar to A parameter array cannot be used with &apos;SELF&apos; modifier on an extension method.
         /// </summary>
         internal static string ERR_BadParamModThis {
             get {
@@ -1736,7 +1736,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  The parameter modifier &apos;ref&apos; cannot be used with &apos;this&apos; .
+        ///   Looks up a localized string similar to  The parameter modifier &apos;ref&apos; cannot be used with &apos;SELF&apos; .
         /// </summary>
         internal static string ERR_BadRefWithThis {
             get {
@@ -1817,7 +1817,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}&apos; has a parameter modifier &apos;this&apos; which is not on the first parameter.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has a parameter modifier &apos;SELF&apos; which is not on the first parameter.
         /// </summary>
         internal static string ERR_BadThisParam {
             get {
@@ -2105,7 +2105,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of keyword &apos;base&apos; is not valid in this context.
+        ///   Looks up a localized string similar to Use of keyword &apos;SUPER&apos; is not valid in this context.
         /// </summary>
         internal static string ERR_BaseIllegal {
             get {
@@ -2114,7 +2114,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keyword &apos;base&apos; is not available in the current context.
+        ///   Looks up a localized string similar to Keyword &apos;SUPER&apos; is not available in the current context.
         /// </summary>
         internal static string ERR_BaseInBadContext {
             get {
@@ -2123,7 +2123,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keyword &apos;base&apos; is not available in a static method.
+        ///   Looks up a localized string similar to Keyword &apos;SUPER&apos; is not available in a static method.
         /// </summary>
         internal static string ERR_BaseInStaticMeth {
             get {
@@ -3014,7 +3014,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot specify a default value for the &apos;this&apos; parameter.
+        ///   Looks up a localized string similar to Cannot specify a default value for the &apos;SELF&apos; parameter.
         /// </summary>
         internal static string ERR_DefaultValueForExtensionParameter {
             get {
@@ -3725,7 +3725,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do not use &apos;System.Runtime.CompilerServices.ExtensionAttribute&apos;. Use the &apos;this&apos; keyword instead..
+        ///   Looks up a localized string similar to Do not use &apos;System.Runtime.CompilerServices.ExtensionAttribute&apos;. Use the &apos;SELF&apos; keyword instead..
         /// </summary>
         internal static string ERR_ExplicitExtension {
             get {
@@ -6056,7 +6056,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A base class is required for a &apos;base&apos; reference.
+        ///   Looks up a localized string similar to A base class is required for a &apos;SUPER&apos; reference.
         /// </summary>
         internal static string ERR_NoBaseClass {
             get {
@@ -7865,7 +7865,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos;: static constructor cannot have an explicit &apos;this&apos; or &apos;base&apos; constructor call.
+        ///   Looks up a localized string similar to &apos;{0}&apos;: static constructor cannot have an explicit &apos;SELF&apos; or &apos;SUPER&apos; constructor call.
         /// </summary>
         internal static string ERR_StaticConstructorWithExplicitConstructorCall {
             get {
@@ -8054,7 +8054,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keyword &apos;this&apos; is not available in the current context.
+        ///   Looks up a localized string similar to Keyword &apos;SELF&apos; is not available in the current context.
         /// </summary>
         internal static string ERR_ThisInBadContext {
             get {
@@ -8063,7 +8063,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keyword &apos;this&apos; is not valid in a static property, static method, or static field initializer.
+        ///   Looks up a localized string similar to Keyword &apos;SELF&apos; is not valid in a static property, static method, or static field initializer.
         /// </summary>
         internal static string ERR_ThisInStaticMeth {
             get {
@@ -8072,7 +8072,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keyword &apos;this&apos; or &apos;base&apos; expected.
+        ///   Looks up a localized string similar to Keyword &apos;SELF&apos; or &apos;SUPER&apos; expected.
         /// </summary>
         internal static string ERR_ThisOrBaseExpected {
             get {
@@ -8081,7 +8081,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Anonymous methods, lambda expressions, and query expressions inside structs cannot access instance members of &apos;this&apos;. Consider copying &apos;this&apos; to a local variable outside the anonymous method, lambda expression or query expression and using the local instead..
+        ///   Looks up a localized string similar to Anonymous methods, lambda expressions, and query expressions inside structs cannot access instance members of &apos;SELF&apos;. Consider copying &apos;SELF&apos; to a local variable outside the anonymous method, lambda expression or query expression and using the local instead..
         /// </summary>
         internal static string ERR_ThisStructNotInAnonMeth {
             get {
@@ -8459,7 +8459,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;this&apos; object cannot be used before all of its fields are assigned to.
+        ///   Looks up a localized string similar to The &apos;SELF&apos; object cannot be used before all of its fields are assigned to.
         /// </summary>
         internal static string ERR_UseDefViolationThis {
             get {
@@ -8820,7 +8820,7 @@ namespace LanguageService.CodeAnalysis {
         ///                               form: /t:exe)
         /// /target:winexe                Build a Windows executable (Short form: 
         ///                               /t:winexe)
-        /// /target:library               Build  [rest of string was truncated]&quot;;.
+        /// /target:library            [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string IDS_CSCHelp {
             get {
@@ -12030,7 +12030,7 @@ namespace LanguageService.CodeAnalysis {
         ///
         ///Although X# distinguishes between out and ref, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.
         ///
-        ///Give the compiler some way to differentiate the methods. For example, you can gi [rest of string was truncated]&quot;;.
+        ///Give the compiler some way to differentiate the methods. For example, you ca [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WRN_MultipleRuntimeImplementationMatches_Description {
             get {
@@ -12464,7 +12464,7 @@ namespace LanguageService.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to You have added a reference to an assembly using /link (Embed Interop Types property set to True). This instructs the compiler to embed interop type information from that assembly. However, the compiler cannot embed interop type information from that assembly because another assembly that you have referenced also references that assembly using /reference (Embed Interop Types property set to False).
         ///
-        ///To embed interop type information for both assemblies, use /link for references to each assembly (set the Embe [rest of string was truncated]&quot;;.
+        ///To embed interop type information for both assemblies, use /link for references to each assembly (set the Em [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WRN_ReferencedAssemblyReferencesLinkedPIA_Description {
             get {
@@ -12862,7 +12862,7 @@ namespace LanguageService.CodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to This warning is caused when a catch() block has no specified exception type after a catch (System.Exception e) block. The warning advises that the catch() block will not catch any exceptions.
         ///
-        ///A catch() block after a catch (System.Exception e) block can catch non-CLS exceptions if the RuntimeCompatibilityAttribute is set to false in the AssemblyInfo.cs file: [assembly: RuntimeCompatibilityAttribute(WrapNonExceptionThrows = false)]. If this attribute is not set explicitly to false, all thrown non-CLS excepti [rest of string was truncated]&quot;;.
+        ///A catch() block after a catch (System.Exception e) block can catch non-CLS exceptions if the RuntimeCompatibilityAttribute is set to false in the AssemblyInfo.cs file: [assembly: RuntimeCompatibilityAttribute(WrapNonExceptionThrows = false)]. If this attribute is not set explicitly to false, all thrown non-CLS excep [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string WRN_UnreachableGeneralCatch_Description {
             get {

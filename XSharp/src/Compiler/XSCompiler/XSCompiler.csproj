@@ -51,7 +51,9 @@
       <HintPath>..\..\..\Binaries\Packages\System.Reflection.Metadata.1.1.0\lib\dotnet5.2\System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AbstractAnalyzerAssemblyLoader.cs">

@@ -3,10 +3,10 @@
   <TemplateData>
     <Name>Class</Name>
     <Description>An empty class definition</Description>
-    <Icon>Template-Class Empty.ico</Icon>
+    <Icon>Class.ico</Icon>
     <TemplateID>8b5ad6b6-26d5-4311-bb9d-278e2941e01a</TemplateID>
     <ProjectType>XSharp</ProjectType>
-    <RequiredFrameworkVersion>4.5.2</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>Class.prg</DefaultName>
   </TemplateData>

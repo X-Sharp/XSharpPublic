@@ -85,10 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Codefile.prg" />
-    <None Include="Template-Codefile.ico" />
+    <None Include="CodeFile.ico" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="Template-Codefile.vstemplate">
+    <VSTemplate Include="Codefile.vstemplate">
       <SubType>Designer</SubType>
     </VSTemplate>
   </ItemGroup>

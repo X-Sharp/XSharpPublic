@@ -52,10 +52,26 @@ namespace XSharp.Build
             }
         }
 
+        protected override string GenerateCommandLineCommands()
+        {
+            return "/shared";
+        }
+
+
+        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
+        {
+            int iResult;
+            DateTime start = DateTime.Now;
+            iResult = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+            var time = DateTime.Now - start;
+            var timestring = time.ToString();
+            Log.LogMessageFromText("XSharp Compilation time: "+timestring, MessageImportance.High);
+            return iResult;
+        }
 
         private string FindXsc(string toolName)
         {
-           //System.Diagnostics.Debugger.Launch();
+            //System.Diagnostics.Debugger.Launch();
             if (string.IsNullOrEmpty(CompilerPath))
             {
                 // If used after MSI Installer, value should be in the Registry
@@ -143,7 +159,7 @@ namespace XSharp.Build
             // Debug ?
             commandLine.AppendSwitchIfNotNull("\n/debug", this.EmitDebugInformation ? "+" : "-");
 
-            // User-defined CommandLine Option (in order to support switches unkown at that time)
+            // User-defined CommandLine Option (in order to support switches unknown at that time)
             commandLine.AppendSwitchIfNotNull("\n", this.CommandLineOption);
 
             commandLine.AppendSwitchIfNotNull("\n\n/out:", OutputAssembly);

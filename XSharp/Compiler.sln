@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xsc", "src\Compiler\xsc\xsc.csproj", "{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}"
 EndProject
@@ -56,22 +56,22 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{54e08bf5-f819-404f-a18d-0ab9ea81ea04}*SharedItemsImports = 13
+		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{7b774abc-83a0-4fd8-91fb-1dbe8829765b}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{a8c219d6-3055-46ee-ba3e-6f07af0f7806}*SharedItemsImports = 13
 		..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems*{f9127f0f-95c8-4576-8081-96e004c1652f}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{d0bc9be7-24f6-40ca-8dc6-fcb93bd44b34}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{9d02e3f9-7157-46b7-9e97-f62010e4b3f2}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{9508f118-f62e-4c16-a6f4-7c3b56e166ad}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
+		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
-		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{a472bfb0-1bc4-4f9a-b610-9e83f6292d57}*SharedItemsImports = 4
 		..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerShared.projitems*{8b70ae9e-1054-4b80-ac8d-fe20c5041631}*SharedItemsImports = 13
 		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{10993c9b-80cc-4df7-9b32-e6ccd920d64b}*SharedItemsImports = 13
@@ -310,7 +310,7 @@ Global
 		{54E08BF5-F819-404F-A18D-0AB9EA81EA04} = {0ADD894E-77AB-4B93-B395-B7D0A315E748}
 		{DFB67BA4-B8A2-4968-B745-D201B4F4EF11} = {7A829140-9720-43DA-9151-DA13E6248878}
 		{0E3865DD-590B-4C77-9AAF-E78A9D68473B} = {7A829140-9720-43DA-9151-DA13E6248878}
-		{0ADD894E-77AB-4B93-B395-B7D0A315E748} = {7A829140-9720-43DA-9151-DA13E6248878}
+		{0ADD894E-77AB-4B93-B395-B7D0A315E748} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
 		{D0BC9BE7-24F6-40CA-8DC6-FCB93BD44B34} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
 		{C1930979-C824-496B-A630-70F5369A636F} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
 		{10993C9B-80CC-4DF7-9B32-E6CCD920D64B} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}

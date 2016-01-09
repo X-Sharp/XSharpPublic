@@ -6,6 +6,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     // Warning: The following comment is parsed by the error facts generator !!!
     /*
     XS_WRN:ERR_BadVisFieldType = 52,
+    XS_WRN:ERR_BadVisPropertyType = 53,
     XS_WRN:ERR_UseDefViolation = 165,
     XS_WRN:ERR_UseDefViolationField = 170,
     XS_WRN:ERR_UnassignedThis = 171,

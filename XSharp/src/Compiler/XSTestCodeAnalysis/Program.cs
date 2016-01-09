@@ -13,7 +13,16 @@ namespace XSTestCodeAnalysis
 /*#if (DEBUG)
             System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
 #endif*/
-            return TestExecutor.RunTests();
+            var res = TestExecutor.RunTests(new TestOptions(args));
+
+            if (res.Total > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Total {0} tests, failed {1} tests", res.Total, res.Errors);
+                Console.ResetColor();
+            }
+
+            return res.Errors;
         }
     }
 }

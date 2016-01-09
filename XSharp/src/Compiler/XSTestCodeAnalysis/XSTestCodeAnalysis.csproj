@@ -59,13 +59,16 @@
     <Compile Include="TestAttribute.cs" />
     <Compile Include="TestClass.cs" />
     <Compile Include="TestExecutor.cs" />
+    <Compile Include="TestOptions.cs" />
+    <Compile Include="TestResults.cs" />
+    <Compile Include="Tests\Customer\Issues.cs" />
     <Compile Include="Tests\Internal\Chris.cs" />
+    <Compile Include="Tests\Internal\Nikos.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tests\Customer\" />
     <Folder Include="Tests\Features\" />
   </ItemGroup>
   <ImportGroup Label="Targets">

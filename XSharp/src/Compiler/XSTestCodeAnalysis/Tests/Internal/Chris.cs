@@ -75,7 +75,7 @@ NEXT
 
 
         // 31
-        [Test(Author = "Chris", Id = "C31", Title = "error XS0175: Use of keyword 'base' is not valid in this context")]
+        [Test(Author = "Chris", Id = "C31", Title = "error XS0175: Use of keyword 'SUPER' is not valid in this context")]
         public static void cannot_use_super_in_constructor_body()
         {
             var s = ParseSource(@"
@@ -124,7 +124,7 @@ END CLASS
         }
 
         // 41
-        [Test(Author = "Chris", Id = "C41", Title = "error XS1112: Do not use ExtensionAttribute. Use the 'this' keyword instead.")]
+        [Test(Author = "Chris", Id = "C41", Title = "error XS1112: Do not use ExtensionAttribute. Use the 'SELF' keyword instead.")]
         public static void error_XS1112_Extension_Attribute()
         {
             var s = ParseSource(@"
@@ -497,6 +497,7 @@ ac := <STRING>{""1"",""2"",""3""}
 ");
             CompileAndRunWithoutExceptions(s);
         }
+
 
 
 

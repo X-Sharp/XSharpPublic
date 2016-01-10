@@ -8,7 +8,7 @@ IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
 PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 
 ***************************************************************************/
-
+using XSharp;
 namespace XSharpLanguage
 {
     using System;
@@ -17,7 +17,6 @@ namespace XSharpLanguage
     using Microsoft.VisualStudio.Shell;
     using System.ComponentModel.Composition;
     using Microsoft.VisualStudio.LanguageServices;
-
     /// <summary>
     /// This class implements the package exposed by this assembly.
     /// </summary>
@@ -26,6 +25,7 @@ namespace XSharpLanguage
     /// or localized resources for the strings that appear in the New Project and Open Project dialogs.
     /// Creating project extensions or project types does not actually require a VSPackage.
     /// </remarks>
+    [InstalledProductRegistration("#110", "#112", Constants.Version, IconResourceID = 400)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [Description("XSharp project type based on CPS")]
     [Guid(XSharpVsPackage.PackageGuid)]

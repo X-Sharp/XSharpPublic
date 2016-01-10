@@ -1110,6 +1110,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // add option incompatibility errors if any
             diagnostics.AddRange(options.Errors);
 
+#if XSHARP
+            parseOptions.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions);
+            options.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions);
+#endif
+
             return new CSharpCommandLineArguments
             {
                 IsInteractive = IsInteractive,

@@ -278,6 +278,7 @@
     </Compile>
     <Compile Include="CommandLine\CommandLineParser.cs" />
     <Compile Include="CommandLine\CompilationOptions.cs" />
+    <Compile Include="CommandLine\XSharpCompilationOptions.cs" />
     <Compile Include="Generated\XSharpBaseListener.cs" />
     <Compile Include="Generated\XSharpLexer.cs" />
     <Compile Include="Generated\XSharpListener.cs" />
@@ -286,6 +287,7 @@
     <Compile Include="Parser\XSharpErrorStrategy.cs" />
     <Compile Include="Parser\XSharpParseErrorAnalysis.cs" />
     <Compile Include="Parser\XSharpLanguageParser.cs" />
+    <Compile Include="CommandLine\XSharpParseOptions.cs" />
     <Compile Include="Parser\XSharpSyntaxTree.cs" />
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />

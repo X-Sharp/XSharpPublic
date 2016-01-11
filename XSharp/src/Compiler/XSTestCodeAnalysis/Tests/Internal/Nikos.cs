@@ -36,6 +36,7 @@ LOCAL a AS INT[]
 a := <INT>{1}
 ? a[1]
 ? a[1U]
+a[1] := 5
 ? a[1L]
 ");
             CompileAndRunWithoutExceptions(s);
@@ -49,6 +50,7 @@ LOCAL a AS INT[]
 a := <INT>{1}
 ? a[0]
 ? a[0U]
+a[0] := 5
 ? a[0L]
 ");
             CompileAndRunWithoutExceptions("/az",s);

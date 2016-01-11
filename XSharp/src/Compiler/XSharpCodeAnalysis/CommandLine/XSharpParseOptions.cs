@@ -10,6 +10,10 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
+            if (opt != null)
+            {
+
+            }
         }
 
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)

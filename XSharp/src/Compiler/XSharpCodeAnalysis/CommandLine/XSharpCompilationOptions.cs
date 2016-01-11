@@ -14,7 +14,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
-            ArrayZero = opt.ArrayZero;
+            if (opt != null)
+            {
+                ArrayZero = opt.ArrayZero;
+            }
         }
 
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)

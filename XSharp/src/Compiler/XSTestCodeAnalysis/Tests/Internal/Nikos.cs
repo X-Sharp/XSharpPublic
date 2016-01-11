@@ -27,5 +27,31 @@ END CLASS
 ");
             CompileAndLoadWithoutErrors(s);
         }
+
+        [Test(Author = "Nikos", Id = "N2", Title = "Array base 1")]
+        public static void Array_base_1()
+        {
+            var s = ParseStartFunction(@"
+LOCAL a AS INT[]
+a := <INT>{1}
+? a[1]
+? a[1U]
+? a[1L]
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+        [Test(Author = "Nikos", Id = "N3", Title = "Array base 0")]
+        public static void Array_base_0()
+        {
+            var s = ParseStartFunction(@"
+LOCAL a AS INT[]
+a := <INT>{1}
+? a[0]
+? a[0U]
+? a[0L]
+");
+            CompileAndRunWithoutExceptions("/az",s);
+        }
     }
 }

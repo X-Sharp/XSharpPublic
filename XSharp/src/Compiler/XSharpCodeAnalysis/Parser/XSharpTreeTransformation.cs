@@ -2814,15 +2814,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
-            if (!(context._CatchBlock?.Count > 0) && context.FinBlock == null) {
-                //context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                //context.AddError(new ParseErrorData(context.END(),ErrorCode.ERR_ExpectedEndTry));
+            if (!(context._CatchBlock.Count > 0) && context.FinBlock == null) {
                 var cb = new XSharpParser.CatchBlockContext(context,0);
                 cb.StmtBlk = new XSharpParser.StatementBlockContext(cb,0);
                 this.ExitStatementBlock(cb.StmtBlk);
                 this.ExitCatchBlock(cb);
                 context._CatchBlock.Add(cb);
-                return;
             }
             var catches = _pool.Allocate<CatchClauseSyntax>();
             foreach (var catchCtx in context._CatchBlock)

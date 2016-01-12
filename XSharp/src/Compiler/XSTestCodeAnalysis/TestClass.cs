@@ -76,8 +76,8 @@ namespace XSTestCodeAnalysis
             }
         }
 
-        public static IEnumerable<Diagnostic> CompileWithoutWarnings(params CSharpSyntaxTree[] sources) { return CompileWithoutWarnings("", sources); }
-        public static IEnumerable<Diagnostic> CompileWithoutWarnings(string cmdLine, params CSharpSyntaxTree[] sources)
+        public static void CompileWithoutWarnings(params CSharpSyntaxTree[] sources) { CompileWithoutWarnings("", sources); }
+        public static void CompileWithoutWarnings(string cmdLine, params CSharpSyntaxTree[] sources)
         {
             var c = CreateCompilation(cmdLine, sources);
             using (var ms = new System.IO.MemoryStream())
@@ -85,9 +85,14 @@ namespace XSTestCodeAnalysis
                 EmitResult r = c.Emit(ms);
                 if (!r.Success)
                 {
-                    return r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error);
+                    string err = "";
+                    r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error).ToList().ForEach(d => err += d.ToString() + "\r\n");
+                    throw new Exception(err);
                 }
-                throw new Exception("Compiled without errors!");
+                string wrn = "";
+                r.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ToList().ForEach(d => wrn += d.ToString() + "\r\n");
+                if (wrn != "")
+                    throw new Exception(wrn);
             }
         }
 

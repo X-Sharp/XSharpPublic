@@ -55,6 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.CompactFramework = positive;
                     break;
                 case "clr": // CLR
+                    break;
                 case "cs": 
                     options.CaseSensitive = positive;
                     break;

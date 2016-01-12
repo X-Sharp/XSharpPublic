@@ -118,15 +118,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal SyntaxListPool _pool;
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         private XSharpParser _parser;
+        private readonly CSharpParseOptions _options;
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
         internal Stack<SyntaxClassEntities> ClassEntities = new Stack<SyntaxClassEntities> ();
 
-        public XSharpTreeTransformation(XSharpParser parser, SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
+        public XSharpTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
         {
             _pool = pool;
             _syntaxFactory = syntaxFactory;
             _parser = parser;
+            _options = options;
             GlobalEntities = CreateEntities();
         }
 
@@ -642,7 +644,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static SyntaxTree GenerateDefaultTree()
         {
-            var t = new XSharpTreeTransformation(null, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()));
+            var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()));
 
             t.GlobalEntities.Members.Add(t.GenerateGlobalClass(GlobalClassName));
 

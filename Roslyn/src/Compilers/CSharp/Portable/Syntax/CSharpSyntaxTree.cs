@@ -413,7 +413,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             options = options ?? CSharpParseOptions.Default;
 
 #if XSHARP
-            using (var parser = new InternalSyntax.XSharpLanguageParser(path, text, oldTree: null, changes: null, cancellationToken: cancellationToken))
+            using (var parser = new InternalSyntax.XSharpLanguageParser(path, text, options, oldTree: null, changes: null, cancellationToken: cancellationToken))
             {
                 var compilationUnit = (CompilationUnitSyntax)parser.ParseCompilationUnit().CreateRed();
                 var tree = new ParsedSyntaxTree(text, text.Encoding, text.ChecksumAlgorithm, path, options, compilationUnit, default(InternalSyntax.DirectiveStack));

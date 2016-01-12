@@ -86,6 +86,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             kind: other.Kind,
             preprocessorSymbols: other.PreprocessorSymbols)
         {
+#if XSHARP
+            this.SetXSharpSpecificOptions(other);
+#endif
         }
 
         // No validation

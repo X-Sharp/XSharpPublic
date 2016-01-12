@@ -25,6 +25,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         private readonly String _fileName;
         private readonly SourceText _text;
+        private readonly CSharpParseOptions _options;
         private readonly SyntaxListPool _pool = new SyntaxListPool(); // Don't need to reset this.
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
@@ -59,6 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal XSharpLanguageParser(
             String FileName,
             SourceText Text,
+            CSharpParseOptions options,
             CSharp.CSharpSyntaxNode oldTree,
             IEnumerable<TextChangeRange> changes,
             LexerMode lexerMode = LexerMode.Syntax,
@@ -70,6 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _syntaxFactory = new ContextAwareSyntax(_syntaxFactoryContext);
             _text = Text;
             _fileName = FileName;
+            _options = options;
         }
 
         internal CompilationUnitSyntax ParseCompilationUnit()
@@ -164,7 +167,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             /* Temporary solution to prevent crashes with invalid syntax */
             if (parser.NumberOfSyntaxErrors != 0)
             {
-                var failedTreeTransform = new XSharpTreeTransformation(parser, _pool, _syntaxFactory);
+                var failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken).
                     WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError));
                 eof.XNode = new TerminalNodeImpl(tree.Stop);
@@ -192,7 +195,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
             }
 
-            var treeTransform = new XSharpTreeTransformation(parser, _pool, _syntaxFactory);
+            var treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
             try
             {
                 walker.Walk(treeTransform, tree);

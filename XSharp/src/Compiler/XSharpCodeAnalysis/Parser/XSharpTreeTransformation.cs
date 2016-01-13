@@ -362,6 +362,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        public NameSyntax GenerateGlobalQualifiedNameFromList(string name, params string[] dotNames)
+        {
+            NameSyntax r = _syntaxFactory.IdentifierName(SyntaxToken.Identifier(name));
+            r = _syntaxFactory.AliasQualifiedName(
+                _syntaxFactory.IdentifierName(SyntaxFactory.MakeToken(SyntaxKind.GlobalKeyword, "global")),
+                SyntaxFactory.MakeToken(SyntaxKind.ColonColonToken),
+                (SimpleNameSyntax)r);
+            foreach (var dotName in dotNames)
+            {
+                r = _syntaxFactory.QualifiedName(
+                    r,
+                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    _syntaxFactory.IdentifierName(SyntaxToken.Identifier(dotName)));
+            }
+            return r;
+        }
+
         private void GenerateAttributeList(SyntaxListBuilder<AttributeListSyntax> attributeLists, params string[] attributeNames)
         {
             SeparatedSyntaxListBuilder<AttributeSyntax> attributes = _pool.AllocateSeparated<AttributeSyntax>();
@@ -407,14 +424,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        private ClassDeclarationSyntax GenerateGlobalClass(string className, SyntaxList<MemberDeclarationSyntax> members)
+        private NamespaceDeclarationSyntax GenerateNamespace(string name, SyntaxList<MemberDeclarationSyntax> members)
+        {
+            var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
+            var usings = _pool.Allocate<UsingDirectiveSyntax>();
+            var r = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                name: _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(name)),
+                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                externs: externs,
+                usings: usings,
+                members: members,
+                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            _pool.Free(externs);
+            _pool.Free(usings);
+            return r;
+        }
+
+        private MemberDeclarationSyntax GenerateGlobalClass(string className, SyntaxList<MemberDeclarationSyntax> members)
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var r = _syntaxFactory.ClassDeclaration(
+            var r = /*GenerateNamespace(_options.ModuleName, MakeList<MemberDeclarationSyntax>(*/
+                _syntaxFactory.ClassDeclaration(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
@@ -425,13 +460,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken) );
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken) ) /*))*/;
             _pool.Free(attributeLists);
             _pool.Free(modifiers);
             return r;
         }
 
-        private ClassDeclarationSyntax GenerateGlobalClass(string className, params MemberDeclarationSyntax[] members)
+        private MemberDeclarationSyntax GenerateGlobalClass(string className, params MemberDeclarationSyntax[] members)
         {
             SyntaxListBuilder<MemberDeclarationSyntax> globalClassMembers = _pool.Allocate<MemberDeclarationSyntax>();
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
@@ -460,7 +495,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var r = _syntaxFactory.ClassDeclaration(
+            var r = /*GenerateNamespace(_options.ModuleName, MakeList<MemberDeclarationSyntax>(*/
+                _syntaxFactory.ClassDeclaration(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
@@ -471,7 +507,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 members: globalClassMembers,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken) );
+                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken) ) /*))*/;
             _pool.Free(attributeLists);
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
@@ -719,13 +755,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             generated.Free();
 
             // Add: using static Xs$Globals
-			//if (generated.Members.Count > 0)
-			//{
-				GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+            //if (generated.Members.Count > 0)
+            //{
+            GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
 					SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
 					null,
-					_syntaxFactory.IdentifierName(SyntaxFactory.Identifier(GlobalClassName)),
-					SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+					//GenerateGlobalQualifiedNameFromList(_options.ModuleName,GlobalClassName),
+                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(GlobalClassName)),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
 			//}
 
 			// Add: using System

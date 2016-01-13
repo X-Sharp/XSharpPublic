@@ -149,6 +149,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             get { return "$"+_unique++; }
         }
 
+        internal T FixPosition<T>(T r, IToken t) where T: ParserRuleContext
+        {
+            r.Start = r.Stop = t;
+            return r;
+        }
+
         SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
         {
             var rb = _pool.Allocate();
@@ -2852,8 +2858,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitTryStmt([NotNull] XSharpParser.TryStmtContext context)
         {
             if (!(context._CatchBlock.Count > 0) && context.FinBlock == null) {
-                var cb = new XSharpParser.CatchBlockContext(context,0);
-                cb.StmtBlk = new XSharpParser.StatementBlockContext(cb,0);
+                var cb = FixPosition(new XSharpParser.CatchBlockContext(context,0), context.Stop);
+                cb.StmtBlk = FixPosition(new XSharpParser.StatementBlockContext(cb,0), context.Stop);
                 this.ExitStatementBlock(cb.StmtBlk);
                 this.ExitCatchBlock(cb);
                 context._CatchBlock.Add(cb);

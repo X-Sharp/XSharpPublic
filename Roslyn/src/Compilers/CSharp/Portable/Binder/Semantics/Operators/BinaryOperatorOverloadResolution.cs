@@ -953,6 +953,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
+#if XSHARP
+            else {
+                if ((op1.Kind & BinaryOperatorKind.OpMask) == (op2.Kind & BinaryOperatorKind.OpMask))
+                {
+                    if ((op1.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Float && (op2.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Double)
+                    {
+                        return BetterResult.Right;
+                    }
+                    if ((op1.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Double && (op2.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Float)
+                    {
+                        return BetterResult.Left;
+                    }
+                }
+            }
+#endif
+
             return BetterResult.Neither;
         }
 

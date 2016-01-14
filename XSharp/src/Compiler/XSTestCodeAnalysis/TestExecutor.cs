@@ -19,8 +19,9 @@ namespace XSTestCodeAnalysis
             return title;
         }
 
-        public static int RunTests()
+        public static TestResults RunTests(TestOptions opts)
         {
+            int total = 0;
             int errors = 0;
 
             foreach (var m in from t in Assembly.GetExecutingAssembly().GetTypes() where t.IsClass 
@@ -30,21 +31,31 @@ namespace XSTestCodeAnalysis
                                                              m.IsStatic &&
                                                              m.CustomAttributes.Any(a => a.AttributeType == typeof(TestAttribute))
                               select m) {
-                try {
-                    m.Invoke(null, new object[] {});
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Success: {0}",TestTitle(m));
-                    Console.ResetColor();
-                }
-                catch (Exception e) {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Fail: {0}",TestTitle(m));
-                    Console.ResetColor();
-                    Console.WriteLine("{0}",e.InnerException.Message);
+                string testId = m.GetTestAttribute().GetId();
+                if (opts.IsTestEnabled(testId))
+                {
+                    total += 1;
+                    try
+                    {
+                        m.Invoke(null, new object[] { });
+#if false // nvk: do not show successes!
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Success: {0}", TestTitle(m));
+                        Console.ResetColor();
+#endif
+                    }
+                    catch (Exception e)
+                    {
+                        errors += 1;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Fail: {0}", TestTitle(m));
+                        Console.ResetColor();
+                        Console.WriteLine("{0}", e.InnerException.Message);
+                    }
                 }
             }
 
-            return errors;
+            return new TestResults(total, errors);
         }
     }
 }

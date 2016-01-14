@@ -15,7 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// whether to emit an executable or a library, whether to optimize
     /// generated code, and so on.
     /// </summary>
-    public sealed class CSharpCompilationOptions : CompilationOptions, IEquatable<CSharpCompilationOptions>
+    public sealed partial class CSharpCompilationOptions : CompilationOptions, IEquatable<CSharpCompilationOptions>
     {
         /// <summary>
         /// Allow unsafe regions (i.e. unsafe modifiers on members and unsafe blocks).
@@ -171,6 +171,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             metadataImportOptions: other.MetadataImportOptions,
             reportSuppressedDiagnostics: other.ReportSuppressedDiagnostics)
         {
+#if XSHARP
+            this.SetXSharpSpecificOptions(other);
+#endif
         }
 
         public new CSharpCompilationOptions WithOutputKind(OutputKind kind)

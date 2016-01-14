@@ -278,6 +278,7 @@
     </Compile>
     <Compile Include="CommandLine\CommandLineParser.cs" />
     <Compile Include="CommandLine\CompilationOptions.cs" />
+    <Compile Include="CommandLine\XSharpCompilationOptions.cs" />
     <Compile Include="Generated\XSharpBaseListener.cs" />
     <Compile Include="Generated\XSharpLexer.cs" />
     <Compile Include="Generated\XSharpListener.cs" />
@@ -286,6 +287,7 @@
     <Compile Include="Parser\XSharpErrorStrategy.cs" />
     <Compile Include="Parser\XSharpParseErrorAnalysis.cs" />
     <Compile Include="Parser\XSharpLanguageParser.cs" />
+    <Compile Include="CommandLine\XSharpParseOptions.cs" />
     <Compile Include="Parser\XSharpSyntaxTree.cs" />
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />
@@ -330,7 +332,10 @@
   <ItemGroup>
     <Compile Include="Assembly.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+  </ItemGroup>
   <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
   <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
   <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />

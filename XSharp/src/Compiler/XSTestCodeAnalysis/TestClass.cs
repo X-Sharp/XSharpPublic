@@ -44,19 +44,29 @@ namespace XSTestCodeAnalysis
             return (CSharpSyntaxTree)CSharpSyntaxTree.ParseText("FUNCTION Start() AS VOID\r\n"+body);
         }
 
-        public static IEnumerable<Diagnostic> CompileWithErrors(params CSharpSyntaxTree[] sources) {
+        private static CSharpCompilation CreateCompilation(string cmdLine, params CSharpSyntaxTree[] sources)
+        {
             MetadataReference[] refs = new MetadataReference[]
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
             };
 
-            var c = CSharpCompilation.Create(
+            var args = CSharpCommandLineParser.SplitCommandLineIntoArguments(cmdLine, false);
+            var cmdParser = new CSharpCommandLineParser();
+            var parsedArgs = cmdParser.Parse(args, ".", null);
+
+            return CSharpCompilation.Create(
                 System.IO.Path.GetRandomFileName(),
                 syntaxTrees: sources,
                 references: refs,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+                options: parsedArgs.CompilationOptions.WithOutputKind(OutputKind.DynamicallyLinkedLibrary)
                 );
+        }
+
+        public static IEnumerable<Diagnostic> CompileWithErrors(params CSharpSyntaxTree[] sources) { return CompileWithErrors("", sources); }
+        public static IEnumerable<Diagnostic> CompileWithErrors(string cmdLine, params CSharpSyntaxTree[] sources) {
+            var c = CreateCompilation(cmdLine, sources);
             using (var ms = new System.IO.MemoryStream()) {
                 EmitResult r = c.Emit(ms);
                 if (!r.Success) {
@@ -65,44 +75,30 @@ namespace XSTestCodeAnalysis
                 throw new Exception("Compiled without errors!");
             }
         }
-        public static IEnumerable<Diagnostic> CompileWithoutWarnings(params CSharpSyntaxTree[] sources)
-        {
-            MetadataReference[] refs = new MetadataReference[]
-            {
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
-            };
 
-            var c = CSharpCompilation.Create(
-                System.IO.Path.GetRandomFileName(),
-                syntaxTrees: sources,
-                references: refs,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-                );
+        public static void CompileWithoutWarnings(params CSharpSyntaxTree[] sources) { CompileWithoutWarnings("", sources); }
+        public static void CompileWithoutWarnings(string cmdLine, params CSharpSyntaxTree[] sources)
+        {
+            var c = CreateCompilation(cmdLine, sources);
             using (var ms = new System.IO.MemoryStream())
             {
                 EmitResult r = c.Emit(ms);
                 if (!r.Success)
                 {
-                    return r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error);
+                    string err = "";
+                    r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error).ToList().ForEach(d => err += d.ToString() + "\r\n");
+                    throw new Exception(err);
                 }
-                throw new Exception("Compiled without errors!");
+                string wrn = "";
+                r.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ToList().ForEach(d => wrn += d.ToString() + "\r\n");
+                if (wrn != "")
+                    throw new Exception(wrn);
             }
         }
 
-        public static System.Reflection.Assembly CompileAndLoadWithoutErrors(params CSharpSyntaxTree[] sources) {
-            MetadataReference[] refs = new MetadataReference[]
-            {
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
-            };
-
-            var c = CSharpCompilation.Create(
-                System.IO.Path.GetRandomFileName(),
-                syntaxTrees: sources,
-                references: refs,
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-                );
+        public static System.Reflection.Assembly CompileAndLoadWithoutErrors(params CSharpSyntaxTree[] sources) { return CompileAndLoadWithoutErrors("", sources); }
+        public static System.Reflection.Assembly CompileAndLoadWithoutErrors(string cmdLine, params CSharpSyntaxTree[] sources) {
+            var c = CreateCompilation(cmdLine, sources);
             using (var ms = new System.IO.MemoryStream()) {
                 EmitResult r = c.Emit(ms);
                 if (!r.Success) {
@@ -115,8 +111,9 @@ namespace XSTestCodeAnalysis
             }
         }
 
-        public static void CompileAndRunWithoutExceptions(params CSharpSyntaxTree[] sources) {
-            var a = CompileAndLoadWithoutErrors(sources);
+        public static void CompileAndRunWithoutExceptions(params CSharpSyntaxTree[] sources) { CompileAndRunWithoutExceptions("", sources); }
+        public static void CompileAndRunWithoutExceptions(string cmdLine, params CSharpSyntaxTree[] sources) {
+            var a = CompileAndLoadWithoutErrors(cmdLine, sources);
             Type t = a.GetType("Xs$Globals");
 
             var co = new System.IO.StringWriter();
@@ -133,8 +130,9 @@ namespace XSTestCodeAnalysis
             }
         }
 
-        public static void CompileAndRunWithExceptions(params CSharpSyntaxTree[] sources) {
-            var a = CompileAndLoadWithoutErrors(sources);
+        public static void CompileAndRunWithExceptions(params CSharpSyntaxTree[] sources) { CompileAndRunWithExceptions("", sources); }
+        public static void CompileAndRunWithExceptions(string cmdLine, params CSharpSyntaxTree[] sources) {
+            var a = CompileAndLoadWithoutErrors(cmdLine, sources);
             Type t = a.GetType("Xs$Globals");
 
             bool e = false;
@@ -161,8 +159,9 @@ namespace XSTestCodeAnalysis
                 throw new Exception("Exception not thrown!");
         }
 
-        public static void CompileAndRunWithoutExceptionsAndNonEmptyConsoleOutput(params CSharpSyntaxTree[] sources) {
-            var a = CompileAndLoadWithoutErrors(sources);
+        public static void CompileAndRunWithoutExceptionsAndNonEmptyConsoleOutput(params CSharpSyntaxTree[] sources) { CompileAndRunWithoutExceptionsAndNonEmptyConsoleOutput("", sources); }
+        public static void CompileAndRunWithoutExceptionsAndNonEmptyConsoleOutput(string cmdLine, params CSharpSyntaxTree[] sources) {
+            var a = CompileAndLoadWithoutErrors(cmdLine, sources);
             Type t = a.GetType("Xs$Globals");
 
             var co = new System.IO.StringWriter();

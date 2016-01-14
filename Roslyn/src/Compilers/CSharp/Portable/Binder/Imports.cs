@@ -162,6 +162,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
                         }
 
+#if XSHARP
+                        if (string.Compare(usingDirective.Name.ToString(),Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            var result = LookupResult.GetInstance();
+                            LookupOptions options = LookupOptions.AllNamedTypesOnArityZero;
+                            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                            usingsBinder.LookupSymbolsSimpleName(result, null, Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName, 0, basesBeingResolved, options, false, useSiteDiagnostics: ref useSiteDiagnostics);
+                            foreach (var sym in result.Symbols)
+                            {
+                                if (sym.Kind == SymbolKind.NamedType)
+                                {
+                                    var ts = (NamedTypeSymbol)sym;
+                                    if (!uniqueUsings.Contains(ts))
+                                    {
+                                        uniqueUsings.Add(ts);
+                                        usings.Add(new NamespaceOrTypeAndUsingDirective(ts, usingDirective));
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+#endif
                         var imported = usingsBinder.BindNamespaceOrTypeSymbol(usingDirective.Name, diagnostics, basesBeingResolved);
                         if (imported.Kind == SymbolKind.Namespace)
                         {

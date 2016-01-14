@@ -1,0 +1,193 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1043\deflangfe1043{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri Light;}{\f1\fswiss\fprq2\fcharset0 Calibri;}{\f2\fmodern\fprq1\fcharset0 Consolas;}{\f3\fswiss\fprq2\fcharset0 Arial;}{\f4\fmodern\fprq1\fcharset0 Courier New;}{\f5\fnil\fcharset2 Symbol;}}
+{\colortbl ;\red46\green116\blue181;\red0\green0\blue255;\red0\green0\blue0;\red255\green255\blue255;}
+{\*\listtable 
+{\list\listhybrid
+{\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f5\jclisttab\tx0}
+{\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f5\jclisttab\tx0}\listid1 }}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+{\stylesheet{ Normal;}{\s1 heading 1;}{\s2 heading 2;}}
+{\*\generator Riched20 10.0.11082}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+\pard\keep\keepn\widctlpar\s1\sb240\sl252\slmult1\cf1\f0\fs32\lang1033 X# Compiler build 0.1.6\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\fs26 Introduction\par
+
+\pard\widctlpar\sa160\sl252\slmult1\cf0\f1\fs22 This alpha version of the compiler only supports the \ldblquote Core\rdblquote  language, that means that VO & Vulcan specific datatypes such as DATE, ARRAY, USUAL, SYMBOL, FLOAT etc. are not supported.\par
+Please note that this is a very early build of the compiler. Things will break and errors will throw exceptions, you can be sure of this.\par
+Please report all reproducible errors to {{\field{\*\fldinst{HYPERLINK "mailto:bugreports@xsharp.eu" }}{\fldrslt{\ul\cf2\cf2\ul bugreports@xsharp.eu}}}}\f1\fs22 . Include a reproducible example and a description what you expected to do. \par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.6\par
+
+\pard{\pntext\f5\'B7\tab}{\*\pn\pnlvlblt\pnf5\pnindent0{\pntxtb\'B7}}\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 This version now comes with an installer\par
+{\pntext\f5\'B7\tab}This version includes a first version of the Visual Studio Integration. You can edit, build, run and debug inside Visual Studio. There is no "intellisense" available.\cf1\f0\fs26\par
+{\pntext\f5\'B7\tab}\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1 Changes in 0.1.5\par
+
+\pard{\pntext\f5\'B7\tab}{\*\pn\pnlvlblt\pnf5\pnindent0{\pntxtb\'B7}}\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 When an error occurs in the parsing stage, X# no longer enters the following stages of the compiler to prevent crashes. In addition to the errors from the parser also an error 9002 is displayed.\par
+{\pntext\f5\'B7\tab}Parser errors now also include the source file name in the error message and have the same format as other error messages. Please note that we are not finished yet with handling these error messages. There will be improvements in the format of these error messages in the upcoming builds.\par
+{\pntext\f5\'B7\tab}The compiler will display a \ldblquote feature not available\rdblquote  (\cf3\highlight4\f2\fs19 8022\highlight0 ) \cf0\f1\fs22 error when a program uses one of the Xbase types (ARRAY, DATE, FLOAT, PSZ, SYMBOL, USUAL).\par
+{\pntext\f5\'B7\tab}Fixed an error with VOSTRUCT and UNION types\par
+{\pntext\f5\'B7\tab}Fixed a problem with the exclamation mark (!) NOT operator \par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.4\par
+
+\pard{\pntext\f5\'B7\tab}{\*\pn\pnlvlblt\pnf5\pnindent0{\pntxtb\'B7}}\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Several changes to allow calculations with integers and enums\par
+{\pntext\f5\'B7\tab}Several changes to allow VO compatible _OR, _AND, _NOT an _XOR operations\par
+{\pntext\f5\'B7\tab}Fix interface/abstract VO properties\par
+{\pntext\f5\'B7\tab}Insert an implicit \ldblquote USING System\rdblquote  only if not explicitly declared\par
+{\pntext\f5\'B7\tab}Error 542 turned to warning (members cannot have the same name as their enclosing type)\par
+{\pntext\f5\'B7\tab}Changes in the .XOR. expression definition\par
+{\pntext\f5\'B7\tab}Fix double quote in CHAR_CONST lexer rule\par
+{\pntext\f5\'B7\tab}Allow namespace declaration in class/struct/etc. name (CLASS Foo.Bar)\par
+{\pntext\f5\'B7\tab}Fix access/assign crash where identifier name was a (positional) keword: ACCESS Value\par
+{\pntext\f5\'B7\tab}Preprocessor keywords were not recognized after spaces, but only at the start of the line. This has been fixed.\par
+{\pntext\f5\'B7\tab}Prevent property GET SET from being parsed as expression body\par
+{\pntext\f5\'B7\tab}Fix default visibility for interface event\par
+{\pntext\f5\'B7\tab}Unsafe errors become warnings with /unsafe option, PTR is void*\par
+{\pntext\f5\'B7\tab}Fix dim array field declaration\par
+{\pntext\f5\'B7\tab}Initial support of VO cast and VO Conversion rules (TYPE(_CAST, Expression) and TYPE(Expression)).  _CAST is always unchecked (LONG(_CAST, dwValue)) and convert follows the checked/unchecked rules (LONG(dwValue))\par
+{\pntext\f5\'B7\tab}Fixed problem with codeblock with empty parameter list\par
+{\pntext\f5\'B7\tab}Fixed problems with GlobalAttributes.\par
+{\pntext\f5\'B7\tab}An AUTO property without GET SET now automatically adds a GET and SET block\par
+{\pntext\f5\'B7\tab}Allow implicit constant double-to-single conversion\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.3\par
+
+\pard{\pntext\f5\'B7\tab}{\*\pn\pnlvlblt\pnf5\pnindent0{\pntxtb\'B7}}\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Change inconsistent field accessibility error to warning and other similar errors\par
+{\pntext\f5\'B7\tab}Added commandline support for Vulcan arguments. These arguments no longer result in an error message, but are not really implemented, unless an equivalent argument exists for the Roslyn (C#) compiler. For example: /ovf and /fovf are both mapped to /checked, /wx is mapped to /warnaserror. /w should not be used because that has a different meaning /warning level). /nowarn:nnnn should be used in stead\par
+{\pntext\f5\'B7\tab}Fixed problem where the PUBLIC modifier was assigned to Interface Members or Destructors\par
+{\pntext\f5\'B7\tab}Prevent expression statements from starting with CONSTRUCTOR() or DESTRUCTOR()\par
+{\pntext\f5\'B7\tab}Added support for ? statement without parameters\par
+{\pntext\f5\'B7\tab}The default return type for assigns is now VOID when not specified\par
+{\pntext\f5\'B7\tab}Added support for \ldblquote old Style\rdblquote  delegate instantiation\par
+{\pntext\f5\'B7\tab}Added support for Enum addition\par
+{\pntext\f5\'B7\tab}Added an implicit empty catch block for TRY .. END TRY without catch and finally\par
+{\pntext\f5\'B7\tab}Added support for the DESCENDING keyword in LINQ statements\par
+{\pntext\f5\'B7\tab}Added support for VIRTUAL and OVERRIDE for Properties and Events\par
+{\pntext\f5\'B7\tab}Prevent implied override insertion for abstract interface members\par
+{\pntext\f5\'B7\tab}Fixed a problem where System.Void could not be resolved\par
+{\pntext\f5\'B7\tab}Fixed problem with Property Generation for ACCESS/ASSIGN\par
+{\pntext\f5\'B7\tab}Fixed problem with Abstract method handling\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.2.1\par
+
+\pard{\pntext\f5\'B7\tab}{\*\pn\pnlvlblt\pnf5\pnindent0{\pntxtb\'B7}}\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Added default expression\par
+{\pntext\f5\'B7\tab}Fixed problem with events\par
+{\pntext\f5\'B7\tab}Fixed some small lexer problems\par
+{\pntext\f5\'B7\tab}Fixed problem with _DLL FUNCTION and _DLL PROCEDURE\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\par
+Changes in 0.1.2\par
+
+\pard{\pntext\f5\'B7\tab}{\*\pn\pnlvlblt\pnf5\pnindent0{\pntxtb\'B7}}\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Fixed problem with handling escape sequences in extended strings\par
+{\pntext\f5\'B7\tab}Fixed issue in FOR.. NEXT statements\par
+{\pntext\f5\'B7\tab}Fixed a problem with SWITCH statements\par
+{\pntext\f5\'B7\tab}Fixed a problem with the sizeof() operator\par
+{\pntext\f5\'B7\tab}Fixed a problem in the REPEAT .. UNTIL statement\par
+{\pntext\f5\'B7\tab}Fixed a problem in TRY .. CATCH .. FINALLY .. END TRY statements. \par
+{\pntext\f5\'B7\tab}Fixed issue in Conditional Access Expression ( Expr  ? Expr)\par
+{\pntext\f5\'B7\tab}Allow bound member access of name with type args\par
+{\pntext\f5\'B7\tab}Fixed problem in LOCAL statement with multiple locals\par
+{\pntext\f5\'B7\tab}Fixed a problem when compiling with debug info for methods without a body\par
+{\pntext\f5\'B7\tab}Optimized the Lexer. This should increase the compile speed a lot\par
+{\pntext\f5\'B7\tab}Fixed a problem in the code that reports that a feature is not supported yet\par
+{\pntext\f5\'B7\tab}Fixed a problem when defining Generic types with a STRUCTURE constraint\par
+{\pntext\f5\'B7\tab}Compilere macros (__ENTITY__, __LINE__ etc) were causing a crash. For now the compiler inserts a literal string with the name of the macro.\par
+{\pntext\f5\'B7\tab}Build 0.1.1 did not contain XSC.RSP\par
+{\pntext\f5\'B7\tab}Fixed a problem where identifiers were not recognized when they were matching a (new) keyword\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 New Features\par
+
+\pard\brdrb\brdrs\brdrw15\brsp20 \widctlpar\qc\cf0\v\f3\fs16 Top of Form\par
+
+\pard\widctlpar\sb100\sa100\v0\fs24 Below is a list of some of the most visible new language features in the Core language of X#, compared to Visual Objects and Vulcan.\par
+As you can see many new keywords were introduced, but these are positional: they will also be recognized as Identifiers on other places, so there is very little chance that you will have to make changes to avoid naming conflicts.\par
+\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1\b\f1\fs22 FEATURE\cell Description\cell Working in this build\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1\b0 DEFINE <id> := <Expression>\cell The VO Define is back again in X#. \line It will be compiled into a constant of the Globals class, the same class in which all Functions and Methods are implemented.\line The biggest advantage of a DEFINE over the preprocessor DEFINEs in Vulcan.NET is that there is no longer a chance that a DEFINE with the same name as a Method, Property or Variable will lead to incomprehensible compiler errors.\cell NO\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 USING STATIC <Name>\cell 
+\pard\intbl\widctlpar\sb100\sa100\fs24 The STATIC modifier for USING (note that the # sign is no longer needed) allows you to name a static class. When you do so you can then use the methods of this class as functions.\line For example:\par
+
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f4\fs20 USING STATIC System.Console\line\line FUNCTION Start as VOID\line WriteLine("X# is cool!")\line RETURN\par
+
+\pard\intbl\widctlpar\sb100\sa100\fs24\~\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1\f1\fs22 BEGIN USING <Var>\line\~ <Statements> \line END [USING]\cell The USING block allows you to control the lifetime of a variable.\line If <Var> has a destructor then it will be automatically destructed once the block has finished\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 SWITCH <Expression>\line CASE <Const>\line\~ <Statements>\line CASE <Const2>\line CASE <Const3>\line\~ <Statements>\line OTHERWISE\line\~\~<Statements>\line END [SWITCH]\cell The SWITCH statement generates a more efficient jump structure than the DO CASE command. Also the expression is only evaluated once.\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 BEGIN\~UNSAFE\line\~ <Statements> \line END [UNSAFE]\cell Allows unsafe code in the context of this block , regardless of the compiler setting for the project as a whole.\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 BEGIN\~CHECKED\line\~ <Statements> \line END [CHECKED]\cell The statements inside the block will have checked conversions, regardless of the compiler setting for the project as a whole.\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 BEGIN\~UNCHECKED\line\~ <Statements> \line END [UNCHECKED]\cell The statements inside the block will have unchecked conversions, regardless of the compiler setting for the project as a whole.\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 VAR <Identifier> := <Expression>\cell This is a synonym for LOCAL IMPLIED\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sb100\sa100\fs24 CLASS <Id> \b <\b0  <ParamName> \b >\line\b0 WHERE <TypeConstraints> \line\~\~ <Classmembers>\line END [CLASS]\cell Creating Generic classes is now supported in X#, with all the features that C# also has\line For example\par
+
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f4\fs20 CLASS MyList<T> WHERE T IS CLASS\line ..\line END CLASS\par
+
+\pard\intbl\widctlpar\sb100\sa100\fs24 or\par
+
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\fs20 CLASS MyList<T> WHERE T IS ICustomer, NEW()\line ..\line END CLASS\par
+
+\pard\intbl\widctlpar\sb100\sa100\fs24\~\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1\f1\fs22 ASYNC - AWAIT\cell The ASYNC AWAIT infratructure is fully available inside X#\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 <Expression> IS <Type>\cell Allows to check an expression for a type. Can be used in stead of IsInstanceOf() and will perform better\cell Yes\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1 Conditional Access Operator ? <Expression> ? <Expression>\cell 
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f4\fs20 Conditional access for properties, methods etc.\line For example\line\line nCount\~ := MyList?:Count\line\line This translates to\~something like:\~\par
+VAR temp := MyList\line IF temp\~ != NULL\line\~ nCount := temp:Count\line ENDIF\line\line The expression on the Left hand side of the Questionmark will be evaluated only once !\cell Yes\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sa160\sl252\slmult1\f1\fs22 <Expression> DEFAULT <Expression>\cell 
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f4\fs20 The default operator allows you to inline a check for NULL:\line\line lResult := Foo() DEFAULT Bar()\par
+This translates to the same as\line\line lResult := Foo()\line IF lResult == NULL\line\~\~ lResult := Bar()\line ENDIF\par
+
+\pard\intbl\widctlpar\sb100\sa100\fs24 Foo() will be evaluated only once. And only when the result is NULL then Bar() will be evaluated.\cell 
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\fs20 Yes\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
+\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
+\pard\intbl\widctlpar\sb100\sa100\f1\fs24 LINQ Query expressions are now supported:\par
+VAR CustQuery = FROM Cust in Customers WHERE Cust.City = "Athens" ORDER BY Cust.Zipcode Select Cust\cell The full LINQ feature set will be supported by X#:\line FROM\line LET\line WHERE\line JOIN\line ORDER BY\line EQUALS\line INTO\cell Yes\cell\row 
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Known Issues\par
+
+\pard 
+{\listtext\f1\u10625?\tab}\ls1\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 No preprocessor support, so no support for:\par
+
+\pard 
+{\listtext\f1\u10625?\tab}\ls1\ilvl1\fi-360\li1080\sa160\sl252\slmult1 #region\par
+{\listtext\f1 1\tab}#pragma\par
+{\listtext\f1 2\tab}#define\par
+{\listtext\f1 3\tab}#ifdef\par
+{\listtext\f1 4\tab}#command\par
+{\listtext\f1 5\tab}#translate\par
+{\listtext\f1 6\tab}#warning\par
+{\listtext\f1 7\tab}#error\par
+
+\pard 
+{\listtext\f1\u10625?\tab}\ls1\fi-360\li360\sa160\sl252\slmult1 Array indexes are zero based\par
+{\listtext\f1 1\tab}No Vulcan compatible compiler commandline options. C# compatible options should work\par
+{\listtext\f1 2\tab}DEFINE is not working yet\par
+{\listtext\f1 3\tab}ACCESS/ASSIGN must be both in same (partial) class. Cannot be spread over 2 parts of the class\par
+{\listtext\f1 4\tab}VOSTRUCT and VOUNION are compiled as a special kind of STRUCTURE but the special AS/IS handling is not supported yet\par
+{\listtext\f1 5\tab}Calling convention is ignored\par
+{\listtext\f1 6\tab}BEGIN SEQUENCE\'85 END\par
+{\listtext\f1 7\tab}SWITCH Block may give warnings about unreachable code\par
+{\listtext\f1 8\tab}TRY statements must have a CATCH block and/or a FINALLY Block. TRY .. END TRY without both blocks is not supported yet\par
+{\listtext\f1 9\tab}Some literal values are not handled properly\par
+{\listtext\f1 10\tab}The compiler macros (__ENTITY__, __VERSION__ , __DEBUG__, etc) are not handled properly\par
+{\listtext\f1 11\tab}XML Doc is not generated\par
+{\listtext\f1 12\tab}Erroneous code may generate compiler runtime errors\par
+{\listtext\f1 13\tab}Compiler errors may be cryptic every now and then\par
+{\listtext\f1 14\tab}Missing arguments in a comma separated list are nor supported. \par
+{\listtext\f1 15\tab}Compiler error messages are sometimes pointing to incorrect source locations\par
+{\listtext\f1 16\tab}The compiler is case insensitive. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now\par
+{\listtext\f1 17\tab}Adding a namespace name to a class name is not working ( CLASS Foo.Bar \'85.. END CLASS)\par
+{\listtext\f1 18\tab}When creating a library (/target:library) you must include at least one function in your code, or else you will get an error message indicating that the Xs$Globals class cannot be found.\par
+}
+ 

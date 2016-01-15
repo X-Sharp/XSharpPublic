@@ -28,7 +28,7 @@ END CLASS
             CompileAndLoadWithoutErrors(s);
         }
 
-        [Test(Author = "Nikos", Id = "N2", Title = "Array base 1")]
+        [Test(Author = "Nikos", Id = "N2", Title = "Array base 1 (no /az)")]
         public static void Array_base_1()
         {
             var s = ParseStartFunction(@"
@@ -42,7 +42,7 @@ a[1] := 5
             CompileAndRunWithoutExceptions(s);
         }
 
-        [Test(Author = "Nikos", Id = "N3", Title = "Array base 0")]
+        [Test(Author = "Nikos", Id = "N3", Title = "Array base 0 (/az)")]
         public static void Array_base_0()
         {
             var s = ParseStartFunction(@"
@@ -54,6 +54,30 @@ a[0] := 5
 ? a[0L]
 ");
             CompileAndRunWithoutExceptions("/az",s);
+        }
+
+        [Test(Author = "Nikos", Id = "N3", Title = "Do not init string vars to empty string (no /vo2)")]
+        public static void InitStringVarsToNullString()
+        {
+            var s = ParseStartFunction(@"
+LOCAL s AS STRING
+IF s != NULL
+  THROW Exception{'<s> is not NULL'}
+ENDIF
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+        [Test(Author = "Nikos", Id = "N4", Title = "Init string vars to empty string (/vo2)")]
+        public static void InitStringVarsToEmptyString()
+        {
+            var s = ParseStartFunction(@"
+LOCAL s AS STRING
+IF s == NULL
+  THROW Exception{'<s> is NULL'}
+ENDIF
+");
+            CompileAndRunWithoutExceptions("/vo2", s);
         }
     }
 }

@@ -23,10 +23,12 @@
 		</StringProperty.DataSource>
 	</StringProperty>
 	<StringProperty Name="OutputName" />
-	<EnumProperty Name="OutputType">
-		<EnumValue Name="dll" DisplayName="Class Library" />
+    <EnumProperty Name="OutputType">
+		<EnumValue Name="Library" DisplayName="Class Library" />
 		<EnumValue Name="exe" DisplayName="Console Application" />
 		<EnumValue Name="winexe" DisplayName="Windows Application" />
+		<EnumValue Name="AppContainerExe" DisplayName="Windows Store app" />
+		<EnumValue Name="WinMDObj" DisplayName="WinMD" />
 	</EnumProperty>
 	<StringListProperty Name="AvailablePlatforms" Separator="," />
 	<StringProperty Name="FullPath" ReadOnly="True">

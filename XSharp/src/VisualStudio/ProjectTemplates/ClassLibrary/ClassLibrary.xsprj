@@ -8,17 +8,15 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>$guid1$</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>$safeprojectname$</RootNamespace>
     <AssemblyName>$safeprojectname$</AssemblyName>
     <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
-
     <Name>$safeprojectname$</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>false</GenerateFullPaths>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
@@ -39,9 +37,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-
   <Import Project="$(XSharpProjectExtensionsPath)XSharpProject.props" />
-    
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
@@ -52,9 +48,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     $endif$
-
   </ItemGroup>
-  
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
@@ -63,9 +57,7 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-
   <Import Project="$(XSharpProjectExtensionsPath)XSharpProject.targets" />
-
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>
     <ProjectCapabilities>

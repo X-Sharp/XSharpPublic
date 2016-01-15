@@ -12,17 +12,21 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         public bool ArrayZero { get; private set; }
 
+        public bool InitStringVarsToEmpty { get; private set; }
+
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
             {
                 ArrayZero = opt.ArrayZero;
+                InitStringVarsToEmpty = opt.Vo2;
             }
         }
 
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
         {
             ArrayZero = opt.ArrayZero;
+            InitStringVarsToEmpty = opt.InitStringVarsToEmpty;
         }
     }
 }

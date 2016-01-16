@@ -712,6 +712,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                         initializerOpt = GenerateConversionForAssignment(declTypeOpt, initializerOpt, localDiagnostics);
                     }
                 }
+#if XSHARP
+                if (this.Compilation.Options.InitStringVarsToEmpty && initializerOpt == null && declTypeOpt.SpecialType == SpecialType.System_String)
+                {
+                    initializerOpt = BindPossibleArrayInitializer(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), declTypeOpt, new DiagnosticBag());
+                    initializerOpt.WasCompilerGenerated = true;
+                }
+#endif
             }
 
             Debug.Assert((object)declTypeOpt != null);

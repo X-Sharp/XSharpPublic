@@ -94,6 +94,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                         fieldInit.Field.Type)
                     { WasCompilerGenerated = true })
                 { WasCompilerGenerated = true };
+#if XSHARP
+            if (syntax.IsKind(SyntaxKind.VariableDeclarator))
+            {
+                boundStatement = LocalRewriter.AddSequencePoint((VariableDeclaratorSyntax)syntax, boundStatement);
+                return boundStatement;
+            }
+            else if (syntax.IsKind(SyntaxKind.PropertyDeclaration))
+            {
+                boundStatement = LocalRewriter.AddSequencePoint((PropertyDeclarationSyntax)syntax, boundStatement);
+                return boundStatement;
+            }
+#endif
 
             Debug.Assert(syntax is ExpressionSyntax); // Should be the initial value.
             Debug.Assert(syntax.Parent.Kind() == SyntaxKind.EqualsValueClause);

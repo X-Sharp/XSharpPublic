@@ -64,6 +64,11 @@ LOCAL s AS STRING
 IF s != NULL
   THROW Exception{'<s> is not NULL'}
 ENDIF
+
+LOCAL s2 AS System.String
+IF s2 != NULL
+  THROW Exception{'<s2> is not NULL'}
+ENDIF
 ");
             CompileAndRunWithoutExceptions(s);
         }
@@ -76,6 +81,53 @@ LOCAL s AS STRING
 IF s == NULL
   THROW Exception{'<s> is NULL'}
 ENDIF
+
+LOCAL s2 AS STRING
+IF s2 == NULL
+  THROW Exception{'<s2> is NULL'}
+ENDIF
+");
+            CompileAndRunWithoutExceptions("/vo2", s);
+        }
+
+        [Test(Author = "Nikos", Id = "N5", Title = "Do not init string fields to empty string (no /vo2)")]
+        public static void InitStringFieldsToNullString()
+        {
+            var s = ParseSource(@"
+CLASS Test
+    PUBLIC S AS STRING
+    PUBLIC S2 AS System.String
+END CLASS
+
+FUNCTION Start() AS VOID
+    VAR t := Test{}
+    IF t:s != NULL
+      THROW Exception{'<t:s> is not NULL'}
+    ENDIF
+    IF t:s2 != NULL
+      THROW Exception{'<t:s2> is not NULL'}
+    ENDIF
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+        [Test(Author = "Nikos", Id = "N6", Title = "Init string fields to empty string (/vo2)")]
+        public static void InitStringFieldsToEmptyString()
+        {
+            var s = ParseSource(@"
+CLASS Test
+    PUBLIC S AS STRING
+    PUBLIC S2 AS System.String
+END CLASS
+
+FUNCTION Start() AS VOID
+    VAR t := Test{}
+    IF t:s == NULL
+      THROW Exception{'<t:s> is NULL'}
+    ENDIF
+    IF t:s2 == NULL
+      THROW Exception{'<t:s2> is NULL'}
+    ENDIF
 ");
             CompileAndRunWithoutExceptions("/vo2", s);
         }

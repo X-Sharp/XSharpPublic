@@ -90,6 +90,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         //Can't assert that this is a regular C# compilation, because we could be in a nested type of a script class.
                         SyntaxReference syntaxRef = initializer.Syntax;
+#if XSHARP
+                        if (syntaxRef.GetSyntax().IsKind(SyntaxKind.VariableDeclarator) || syntaxRef.GetSyntax().IsKind(SyntaxKind.PropertyDeclaration)) {
+                            var variable = (CSharpSyntaxNode)syntaxRef.GetSyntax();
+                            if (binderFactory == null) binderFactory = compilation.GetBinderFactory(syntaxRef.SyntaxTree);
+                            Binder pb = binderFactory.GetBinder(variable);
+                            Debug.Assert(pb.ContainingMemberOrLambda == fieldSymbol.ContainingType || fieldSymbol.ContainingType.IsImplicitClass);
+                            if (firstDebugImports == null) firstDebugImports = pb.ImportChain;
+                            ConstantValue cv = ConstantValue.Create("", SpecialType.System_String);
+                            TypeSymbol type = compilation.GetSpecialType(SpecialType.System_String);
+                            boundInitializers.Add(new BoundFieldInitializer(
+                                variable, //we want the attached sequence point to indicate the value node
+                                fieldSymbol,
+                                new BoundLiteral(variable, cv, type) { WasCompilerGenerated = true }) { WasCompilerGenerated = true } );
+                            continue;
+                        }
+#endif
                         var initializerNode = (EqualsValueClauseSyntax)syntaxRef.GetSyntax();
 
                         if (binderFactory == null)
@@ -151,6 +167,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     var syntaxRef = initializer.Syntax;
                     Debug.Assert(syntaxRef.SyntaxTree.Options.Kind != SourceCodeKind.Regular);
+#if XSHARP
+                    if (syntaxRef.GetSyntax().IsKind(SyntaxKind.VariableDeclarator) || syntaxRef.GetSyntax().IsKind(SyntaxKind.PropertyDeclaration))
+                    {
+                        var variable = (CSharpSyntaxNode)syntaxRef.GetSyntax();
+                        if (binderFactory == null) binderFactory = compilation.GetBinderFactory(syntaxRef.SyntaxTree);
+                        Binder scb = binderFactory.GetBinder(variable);
+                        Debug.Assert(((ImplicitNamedTypeSymbol)scb.ContainingMemberOrLambda).IsScriptClass);
+                        if (firstDebugImports == null) firstDebugImports = scb.ImportChain;
+                        ConstantValue cv = ConstantValue.Create("", SpecialType.System_String);
+                        TypeSymbol type = compilation.GetSpecialType(SpecialType.System_String);
+                        boundInitializers.Add(new BoundFieldInitializer(
+                            variable, //we want the attached sequence point to indicate the value node
+                            fieldSymbol,
+                            new BoundLiteral(variable, cv, type) { WasCompilerGenerated = true }) { WasCompilerGenerated = true });
+                        continue;
+                    }
+#endif
 
                     var initializerNode = (CSharpSyntaxNode)syntaxRef.GetSyntax();
 

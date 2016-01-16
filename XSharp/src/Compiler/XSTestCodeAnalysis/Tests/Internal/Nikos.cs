@@ -97,15 +97,46 @@ ENDIF
 CLASS Test
     PUBLIC S AS STRING
     PUBLIC S2 AS System.String
+    STATIC PUBLIC SS AS STRING
+    STATIC PUBLIC SS2 AS System.String
 END CLASS
 
+STRUCTURE TestS
+    PUBLIC S AS STRING
+    PUBLIC S2 AS System.String
+    STATIC PUBLIC SS AS STRING
+    STATIC PUBLIC SS2 AS System.String
+END STRUCTURE
+
 FUNCTION Start() AS VOID
+    IF Test.ss != NULL
+      THROW Exception{'<Test.ss> is not NULL'}
+    ENDIF
+    IF Test.ss2 != NULL
+      THROW Exception{'<Test.ss2> is not NULL'}
+    ENDIF
+
+    IF TestS.ss != NULL
+      THROW Exception{'<TestS.ss> is not NULL'}
+    ENDIF
+    IF TestS.ss2 != NULL
+      THROW Exception{'<TestS.ss2> is not NULL'}
+    ENDIF
+
     VAR t := Test{}
     IF t:s != NULL
       THROW Exception{'<t:s> is not NULL'}
     ENDIF
     IF t:s2 != NULL
       THROW Exception{'<t:s2> is not NULL'}
+    ENDIF
+
+    VAR ts := TestS{}
+    IF ts:s != NULL
+      THROW Exception{'<ts:s> is not NULL'}
+    ENDIF
+    IF ts:s2 != NULL
+      THROW Exception{'<ts:s2> is not NULL'}
     ENDIF
 ");
             CompileAndRunWithoutExceptions(s);
@@ -118,15 +149,46 @@ FUNCTION Start() AS VOID
 CLASS Test
     PUBLIC S AS STRING
     PUBLIC S2 AS System.String
+    STATIC PUBLIC SS AS STRING
+    STATIC PUBLIC SS2 AS System.String
 END CLASS
 
+STRUCTURE TestS
+    PUBLIC S AS STRING
+    PUBLIC S2 AS System.String
+    STATIC PUBLIC SS AS STRING
+    STATIC PUBLIC SS2 AS System.String
+END STRUCTURE
+
 FUNCTION Start() AS VOID
+    IF Test.ss == NULL
+      THROW Exception{'<Test.ss> is NULL'}
+    ENDIF
+    IF Test.ss2 == NULL
+      THROW Exception{'<Test.ss2> is NULL'}
+    ENDIF
+
+    IF TestS.ss == NULL
+      THROW Exception{'<TestS.ss> is NULL'}
+    ENDIF
+    IF TestS.ss2 == NULL
+      THROW Exception{'<TestS.ss2> is NULL'}
+    ENDIF
+
     VAR t := Test{}
     IF t:s == NULL
       THROW Exception{'<t:s> is NULL'}
     ENDIF
     IF t:s2 == NULL
       THROW Exception{'<t:s2> is NULL'}
+    ENDIF
+
+    VAR ts := TestS{}
+    IF ts:s == NULL
+      THROW Exception{'<ts:s> is NULL'}
+    ENDIF
+    IF ts:s2 == NULL
+      THROW Exception{'<ts:s2> is NULL'}
     ENDIF
 ");
             CompileAndRunWithoutExceptions("/vo2", s);

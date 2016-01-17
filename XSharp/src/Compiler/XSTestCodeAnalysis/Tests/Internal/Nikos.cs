@@ -168,12 +168,13 @@ FUNCTION Start() AS VOID
       THROW Exception{'<Test.ss2> is NULL'}
     ENDIF
 
-    IF TestS.ss == NULL
+// unsupported
+/*    IF TestS.ss == NULL
       THROW Exception{'<TestS.ss> is NULL'}
     ENDIF
     IF TestS.ss2 == NULL
       THROW Exception{'<TestS.ss2> is NULL'}
-    ENDIF
+    ENDIF*/
 
     VAR t := Test{}
     IF t:s == NULL
@@ -183,13 +184,14 @@ FUNCTION Start() AS VOID
       THROW Exception{'<t:s2> is NULL'}
     ENDIF
 
-    VAR ts := TestS{}
+// unsupported
+/*    VAR ts := TestS{}
     IF ts:s == NULL
       THROW Exception{'<ts:s> is NULL'}
     ENDIF
     IF ts:s2 == NULL
       THROW Exception{'<ts:s2> is NULL'}
-    ENDIF
+    ENDIF*/
 ");
             CompileAndRunWithoutExceptions("/vo2", s);
         }

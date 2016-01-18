@@ -115,6 +115,7 @@ Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; 
 Source: "Baggage\Readme.rtf";                             DestDir: "{app}"    ; Flags: isreadme {#StdFlags}; Components: main
 Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Images"; Flags: touch {#StdFlags}; Components: main
 Source: "Baggage\License.rtf";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
+Source: "Baggage\License.txt";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
 
 ;MsBuild Files
 Source: "{#VsProjectFolder}BuildSystem\Rules\*.*";                DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Components: main
@@ -141,6 +142,7 @@ Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}"; Filename: "{#XSharpURL}";IconFilename:{app}\Images\XSharp.ico;
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
+Name: "{commondesktop}\Xsharp in Visual Studio 2015"; Filename: "{code:GetVs2015IdeDir}Devenv.exe";  Components: vs2015
 
 [Registry]
 Root: HKLM; Subkey: "Software\{#RegCompany}"; Flags: uninsdeletekeyifempty 
@@ -149,7 +151,7 @@ Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPa
 
 
 [Run]
-Filename:  "{code:GetVs2015IdeDir}\Devenv.exe"; Parameters: "/setup"; StatusMsg: "Registering Project System in Visual Studio"; Flags: runhidden;  Components: vs2015 ;
+Filename:  "{code:GetVs2015IdeDir}\Devenv.exe"; Parameters: "/InstallVSTemplates"; StatusMsg: "Registering Project System in Visual Studio"; Flags: runhidden;  Components: vs2015 ;
 
 
 

@@ -119,13 +119,18 @@ namespace XSTestCodeAnalysis
             var co = new System.IO.StringWriter();
             var stdo = Console.Out;
             Console.SetOut(co);
-            try {
+            try
+            {
                 t.InvokeMember("Start", System.Reflection.BindingFlags.Default | System.Reflection.BindingFlags.InvokeMethod,
                     binder: null,
                     target: null,
-                    args: new object[] { } );
+                    args: new object[] { });
             }
-            finally {
+            catch (Exception e) {
+                throw new Exception(e.InnerException?.Message ?? e.Message);
+            }
+            finally
+            {
                 Console.SetOut(stdo);
             }
         }

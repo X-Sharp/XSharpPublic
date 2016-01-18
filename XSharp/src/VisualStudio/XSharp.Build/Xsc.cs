@@ -52,10 +52,10 @@ namespace XSharp.Build
             }
         }
 
-        protected override string GenerateCommandLineCommands()
-        {
-            return "/shared";
-        }
+        //protected override string GenerateCommandLineCommands()
+        //{
+        //    return "/shared";
+        //}
 
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)

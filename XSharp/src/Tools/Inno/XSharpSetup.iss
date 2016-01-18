@@ -8,9 +8,9 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.1.6.1602"
-#define VITextVersion   "0.1.6.1602 (Alpha 6)"
-#define TouchDate       "2016-01-14"
+#define VIVersion       "0.1.6.1603"
+#define VITextVersion   "0.1.6.1603 (Alpha 6)"
+#define TouchDate       "2016-01-18"
 #define TouchTime       "01:06:00"
 #define SetupExeName    "XSharpSetup016"
 #define InstallPath     "XSharpPath"
@@ -148,6 +148,11 @@ Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPath}"; ValueType: string; ValueData: "{app}" ;
 
 
+[Run]
+Filename:  "{code:GetVs2015IdeDir}\Devenv.exe"; Parameters: "/setup"; StatusMsg: "Registering Project System in Visual Studio"; Flags: runhidden;  Components: vs2015 ;
+
+
+
 [InstallDelete]
 ; Template cache
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
@@ -203,13 +208,20 @@ end;
 
 
 function InitializeSetup(): Boolean;
+var
+  ErrorCode: Integer;
 begin
   DetectVS();
+  result := true;
   if not Vs2015Installed then
   begin
-    MsgBox('Visual Studio 2015 has not been detected and the option to install the project system will not be available', mbInformation, MB_OK);
+    if MsgBox('Visual Studio 2015 has not been detected, do you want to download the free Visual Studio Community Edition ?', mbConfirmation, MB_YESNO) = IDYES then
+    begin
+    ShellExec('open','https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx','','',SW_SHOW,ewWaitUntilIdle, ErrorCode);
+    result := false;
+    end
   end;
-  result := true;
+  
 end;
 
 

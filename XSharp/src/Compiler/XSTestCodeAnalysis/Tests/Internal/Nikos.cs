@@ -195,5 +195,53 @@ FUNCTION Start() AS VOID
 ");
             CompileAndRunWithoutExceptions("/vo2", s);
         }
+
+        [Test(Author = "Nikos", Id = "N7", Title = "Non-vritual instance methods by default (no /vo3)")]
+        public static void NonVirtualInstanceMethodsByDEfault()
+        {
+            var s = ParseSource(@"
+CLASS Test
+    PUBLIC METHOD TestValue() AS INT
+        RETURN 0
+END CLASS
+
+CLASS Test2 INHERIT Test
+    PUBLIC METHOD TestValue() AS INT
+        RETURN 1
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL t AS Test
+    t := (Test)(Test2{})
+    IF t:TestValue() == 1
+      THROW Exception{'<t:TestValue> == 1'}
+    ENDIF
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+        [Test(Author = "Nikos", Id = "N8", Title = "Vritual instance methods by default (/vo3)")]
+        public static void VirtualInstanceMethodsByDEfault()
+        {
+            var s = ParseSource("/vo3", @"
+CLASS Test
+    PUBLIC METHOD TestValue() AS INT
+        RETURN 0
+END CLASS
+
+CLASS Test2 INHERIT Test
+    PUBLIC METHOD TestValue() AS INT
+        RETURN 1
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL t AS Test
+    t := (Test)(Test2{})
+    IF t:TestValue() == 0
+      THROW Exception{'<t:TestValue> == 0'}
+    ENDIF
+");
+            CompileAndRunWithoutExceptions("/vo3", s);
+        }
     }
 }

@@ -36,12 +36,28 @@ namespace XSTestCodeAnalysis
 {
     public partial class TestClass
     {
-        public static CSharpSyntaxTree ParseSource(string source) {
-            return (CSharpSyntaxTree)CSharpSyntaxTree.ParseText(source);
+        public static CSharpSyntaxTree ParseSource(string source) { return ParseSource("", source); }
+        public static CSharpSyntaxTree ParseSource(string cmdLine, string source) {
+            var args = CSharpCommandLineParser.SplitCommandLineIntoArguments(cmdLine, false);
+            var cmdParser = new CSharpCommandLineParser();
+            var parsedArgs = cmdParser.Parse(args, ".", null);
+
+            return (CSharpSyntaxTree)CSharpSyntaxTree.ParseText(
+                source,
+                options: parsedArgs.ParseOptions
+                );
         }
 
-        public static CSharpSyntaxTree ParseStartFunction(string body) {
-            return (CSharpSyntaxTree)CSharpSyntaxTree.ParseText("FUNCTION Start() AS VOID\r\n"+body);
+        public static CSharpSyntaxTree ParseStartFunction(string body) { return ParseStartFunction("", body); }
+        public static CSharpSyntaxTree ParseStartFunction(string cmdLine, string body) {
+            var args = CSharpCommandLineParser.SplitCommandLineIntoArguments(cmdLine, false);
+            var cmdParser = new CSharpCommandLineParser();
+            var parsedArgs = cmdParser.Parse(args, ".", null);
+
+            return (CSharpSyntaxTree)CSharpSyntaxTree.ParseText(
+                "FUNCTION Start() AS VOID\r\n"+body,
+                options: parsedArgs.ParseOptions
+                );
         }
 
         private static CSharpCompilation CreateCompilation(string cmdLine, params CSharpSyntaxTree[] sources)

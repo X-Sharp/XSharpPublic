@@ -1209,6 +1209,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             list.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
         }
 
+        public static void FixDefaultVirtual(this SyntaxListBuilder list)
+        {
+            if (list.Any(SyntaxKind.StaticKeyword) || list.Any(SyntaxKind.VirtualKeyword))
+                return;
+            list.Add(SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword));
+            if (list.Any(SyntaxKind.OverrideKeyword) || list.Any(SyntaxKind.NewKeyword) || list.Any(SyntaxKind.AbstractKeyword))
+                return;
+            list.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
+        }
+
         public static int GetVisibilityLevel(this SyntaxListBuilder list)
         {
             if (list.Any(SyntaxKind.PublicKeyword))

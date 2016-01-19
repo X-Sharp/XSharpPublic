@@ -179,6 +179,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        SyntaxList<SyntaxToken> DefaultMethodModifiers(bool inInterface = false)
+        {
+            var rb = _pool.Allocate();
+            if (!inInterface)
+            {
+                rb.FixDefaultVisibility();
+                if (_options.VirtualInstanceMethods)
+                    rb.FixDefaultVirtual();
+            }
+            var r = rb.ToTokenList();
+            _pool.Free(rb);
+            return r;
+        }
+
         SyntaxList<SyntaxToken> EmptyList()
         {
             var rb = _pool.Allocate();
@@ -1160,7 +1174,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     );
                 context.Put(_syntaxFactory.EventDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface()),
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     type: context.Type.Get<TypeSyntax>(),
                     explicitInterfaceSpecifier: _syntaxFactory.ExplicitInterfaceSpecifier(
@@ -1210,7 +1224,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else {
                 context.Put(_syntaxFactory.EventFieldDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(context.isInInterface()),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface()),
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     declaration: _syntaxFactory.VariableDeclaration(
                         context.Type.Get<TypeSyntax>(),
@@ -1227,6 +1241,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
             modifiers.FixDefaultVisibility();
+            if (_options.VirtualInstanceMethods)
+                modifiers.FixDefaultVirtual();
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
         }
@@ -1381,7 +1397,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.ParamList == null)
                 context.Put(_syntaxFactory.PropertyDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface),
                     type: context.Type.Get<TypeSyntax>(),
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
@@ -1406,7 +1422,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.AddError(new ParseErrorData(context.AUTO(),ErrorCode.ERR_SyntaxError,SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
                 context.Put(_syntaxFactory.IndexerDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface),
+                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface),
                     type: context.Type.Get<TypeSyntax>(),
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
@@ -1496,7 +1512,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
-            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface);
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface);
             var isExtern = context.Modifiers?._EXTERN != null;
             var isAbstract = mods.Any(SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;
@@ -1686,8 +1702,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
             modifiers.FixDefaultVisibility();
-            if (modifiers.Any(SyntaxKind.VirtualKeyword) && !modifiers.Any(SyntaxKind.NewKeyword)
-                    && !modifiers.Any(SyntaxKind.AbstractKeyword) && !context.Parent.isInInterface())
+            if (_options.VirtualInstanceMethods && !context.Parent.isInInterface())
+                modifiers.FixDefaultVirtual();
+            else if (modifiers.Any(SyntaxKind.VirtualKeyword) && !modifiers.Any(SyntaxKind.NewKeyword)
+                    && !modifiers.Any(SyntaxKind.AbstractKeyword) && !context.Parent.isInInterface()
+                    && !modifiers.Any(SyntaxKind.OverrideKeyword))
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);

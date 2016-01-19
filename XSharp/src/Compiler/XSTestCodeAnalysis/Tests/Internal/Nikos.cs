@@ -243,5 +243,29 @@ FUNCTION Start() AS VOID
 ");
             CompileAndRunWithoutExceptions("/vo3", s);
         }
+
+        [Test(Author = "Nikos", Id = "N9", Title = "FOR LOCAL variable declaration")]
+        public static void ForLocalDeclaration()
+        {
+            var s = ParseStartFunction(@"
+LOCAL total := 0 AS INT
+FOR LOCAL i := 1 AS INT TO 10
+    total += 1
+NEXT
+FOR VAR i := 1 TO 10
+    total += 1
+NEXT
+FOR LOCAL IMPLIED i := 1 UPTO 10
+    total += 1
+NEXT
+FOR IMPLIED i := 10 DOWNTO 1
+    total += 1
+NEXT
+IF total != 40
+    THROW Exception{'total != 40'}
+ENDIF
+");
+            CompileAndRunWithoutExceptions(s);
+        }
     }
 }

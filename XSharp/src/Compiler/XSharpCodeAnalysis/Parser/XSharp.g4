@@ -406,8 +406,8 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock END EOS							#whileStmt
 					| FOR 
 						( AssignExpr=expression
-						| (LOCAL? IMPLIED|VAR) AssignExpr=expression
-						| LOCAL			AssignExpr=expression AS Type=datatype
+						| (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier ASSIGN_OP Expr=expression
+						| ForDecl=LOCAL ForIter=identifier ASSIGN_OP Expr=expression AS Type=datatype
 						)
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
 					  (STEP Step=expression)? EOS

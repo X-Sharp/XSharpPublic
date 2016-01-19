@@ -2637,43 +2637,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitForStmt([NotNull] XSharpParser.ForStmtContext context)
         {
             object blockStmts = null;
-            ExpressionSyntax initExpr, whileExpr, incrExpr;
-            if (!(context.AssignExpr is XSharpParser.AssignmentExpressionContext)) {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                context.AddError(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError,":="));
-                return;
+            ExpressionSyntax assignExpr, whileExpr, incrExpr, iterExpr, initExpr;
+            if (context.AssignExpr != null)
+            {
+                if (!(context.AssignExpr is XSharpParser.AssignmentExpressionContext))
+                {
+                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    context.AddError(new ParseErrorData(context.Dir, ErrorCode.ERR_SyntaxError, ":="));
+                    return;
+                }
+                if ((context.AssignExpr as XSharpParser.AssignmentExpressionContext).Op.Type != XSharpParser.ASSIGN_OP)
+                {
+                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    context.AddError(new ParseErrorData((context.AssignExpr as XSharpParser.AssignmentExpressionContext).Op, ErrorCode.ERR_SyntaxError, ":="));
+                    return;
+                }
+                iterExpr = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Left.Get<ExpressionSyntax>();
+                initExpr = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Right.Get<ExpressionSyntax>();
+                assignExpr = context.AssignExpr.Get<ExpressionSyntax>();
             }
-            if ((context.AssignExpr as XSharpParser.AssignmentExpressionContext).Op.Type != XSharpParser.ASSIGN_OP) {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                context.AddError(new ParseErrorData((context.AssignExpr as XSharpParser.AssignmentExpressionContext).Op, ErrorCode.ERR_SyntaxError,":="));
-                return;
+            else
+            {
+                iterExpr = _syntaxFactory.IdentifierName(context.ForIter.Get<SyntaxToken>());
+                initExpr = context.Expr.Get<ExpressionSyntax>();
+                assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                    iterExpr,
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                    initExpr);
             }
-            XSharpParser.ExpressionContext Iter = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Left;
-            XSharpParser.ExpressionContext InitExpr = (context.AssignExpr as XSharpParser.AssignmentExpressionContext).Right;
             if (context.Step == null) {
                 context.Step = new XSharpParser.PrimaryExpressionContext(new XSharpParser.ExpressionContext());
                 context.Step.Put(_syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(null,"1",1,null)));
             }
             switch (context.Dir.Type) {
                 case XSharpParser.UPTO:
-                    initExpr = context.AssignExpr.Get<ExpressionSyntax>();
                     whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
-                        Iter.Get<ExpressionSyntax>(),
+                        iterExpr,
                         SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
                         context.FinalExpr.Get<ExpressionSyntax>());
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
-                        Iter.Get<ExpressionSyntax>(),
+                        iterExpr,
                         SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
                         context.Step.Get<ExpressionSyntax>());
                     break;
                 case XSharpParser.DOWNTO:
-                    initExpr = context.AssignExpr.Get<ExpressionSyntax>();
                     whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression,
-                        Iter.Get<ExpressionSyntax>(),
+                        iterExpr,
                         SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
                         context.FinalExpr.Get<ExpressionSyntax>());
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SubtractAssignmentExpression,
-                        Iter.Get<ExpressionSyntax>(),
+                        iterExpr,
                         SyntaxFactory.MakeToken(SyntaxKind.MinusEqualsToken),
                         context.Step.Get<ExpressionSyntax>());
                     break;
@@ -2688,7 +2701,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
                         variables.Add(_syntaxFactory.VariableDeclarator(startToken,null,
                             _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                                InitExpr.Get<ExpressionSyntax>())));
+                                initExpr)));
                         var modifiers = _pool.Allocate();
                         stmts.Add(_syntaxFactory.LocalDeclarationStatement(
                             modifiers.ToTokenList(),
@@ -2726,21 +2739,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _pool.Free(variables);
                         _pool.Free(modifiers);
                     }
-                    initExpr = context.AssignExpr.Get<ExpressionSyntax>();
                     whileExpr = _syntaxFactory.ConditionalExpression(
                         _syntaxFactory.IdentifierName(indToken),
                         SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
                         _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
-                            Iter.Get<ExpressionSyntax>(),
+                            iterExpr,
                             SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
                             _syntaxFactory.IdentifierName(endToken)),
                         SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                         _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression,
-                            Iter.Get<ExpressionSyntax>(),
+                            iterExpr,
                             SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
                             _syntaxFactory.IdentifierName(endToken)));
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
-                        Iter.Get<ExpressionSyntax>(),
+                        iterExpr,
                         SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
                         _syntaxFactory.ConditionalExpression(
                             _syntaxFactory.IdentifierName(indToken),
@@ -2752,13 +2764,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 context.Step.Get<ExpressionSyntax>())));
                     break;
             }
+            var decl = default(VariableDeclarationSyntax);
             var init = _pool.AllocateSeparated<ExpressionSyntax>();
-            init.Add(initExpr);
+            if (context.ForDecl != null)
+            {
+                decl = _syntaxFactory.VariableDeclaration(
+                    context.Type?.Get<TypeSyntax>() ?? _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(ImpliedTypeName)),
+                    MakeSeparatedList(_syntaxFactory.VariableDeclarator(
+                        context.ForIter.Get<SyntaxToken>(),
+                        null,
+                        _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), initExpr))));
+            }
+            else
+            {
+                init.Add(assignExpr);
+            }
             var incr = _pool.AllocateSeparated<ExpressionSyntax>();
             incr.Add(incrExpr);
             var forStmt = _syntaxFactory.ForStatement(SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                null,
+                decl,
                 init,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken),
                 whileExpr,

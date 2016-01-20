@@ -11,9 +11,11 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_UseDefViolationField = 170,
     XS_WRN:ERR_UnassignedThis = 171,
     XS_WRN:ERR_UseDefViolationThis = 188,
+    XS_WRN:ERR_OperatorNeedsMatch = 216,
     XS_WRN:ERR_SizeofUnsafe = 233,
     XS_WRN:ERR_UseDefViolationOut = 269,
     XS_WRN:ERR_MemberNameSameAsType = 542,
+    XS_WRN:ERR_ProtectedInStruct = 666,
     XS_WRN:ERR_UseDefViolationProperty = 8079,
     */
 

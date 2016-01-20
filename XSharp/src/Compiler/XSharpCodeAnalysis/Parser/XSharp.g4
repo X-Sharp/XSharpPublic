@@ -812,5 +812,7 @@ keywordvn           : Token=(ABSTRACT | AUTO | CONSTRUCTOR | CONST | DEFAULT | D
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | ORDERBY | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR)
+                              GROUP | INTO | JOIN | LET | MODULE | ORDERBY | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+							  MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
+							)
 					;

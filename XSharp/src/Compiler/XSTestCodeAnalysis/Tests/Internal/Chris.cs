@@ -213,24 +213,30 @@ END NAMESPACE
         public static void crash_with_keywords_as_identifiers()
         {
             var s = ParseSource(@"
-// both lines, because of using keywords as names
+// crash because of using keywords as names
 CLASS TestClass
 ACCESS OPTIONS AS INT
 RETURN 0
-PROPERTY INT AS INT AUTO
 END CLASS
 ");
             CompileAndLoadWithoutErrors(s);
+
+            var s2 = ParseSource(@"
+// crash because of using keywords as names
+CLASS TestClass
+PROPERTY INT AS INT AUTO
+END CLASS
+");
+            CompileWithErrors(s2);
         }
 
 
 
         // 66
-        [Test(Author = "Chris", Id = "C66", Title = "compiler crash with empty params")]
+        [Test(Author = "Chris", Id = "C66", Title = "Empty arguments in method call")]
         public static void crash_with_keywords_with_empty_params()
         {
             var s = ParseSource(@"
-// both lines, because of using keywords as names
 FUNCTION Start() AS VOID
 SomeMethod( , , 1)
 ");
@@ -245,7 +251,7 @@ SomeMethod( , , 1)
         [Test(Author = "Chris", Id = "C69", Title = "error XS0201: Only assignment, call, increment, decrement, and new object expressions can be used as a statement")]
         public static void Error_XS0201_not_operator_with_logic()
         {
-            var s = ParseSource(@"
+            var s = ParseStartFunction(@"
 LOCAL lVar AS LOGIC
 IF ! lVar
 	? lVar
@@ -264,8 +270,14 @@ CLASS Foo
 	OPERATOR ==(a AS Foo , b AS STRING) AS LOGIC
 	RETURN TRUE
 END CLASS
+
+FUNCTION Start() AS VOID
+    VAR a := Foo{}
+    IF !(a == '')
+        THROW Exception{'Operator == failed!'}
+    END IF
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndRunWithoutExceptions(s);
         }
 
 
@@ -276,10 +288,11 @@ END CLASS
         {
             var s = ParseSource(@"
 CLASS Foo
+// NOTE: Old comments not supported yet!
 *** comments here ***
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
 
@@ -330,7 +343,7 @@ CONSTRUCTOR(n AS STRING) AS VOID
 SUPER(n)
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
 
@@ -341,10 +354,13 @@ END CLASS
             var s = ParseSource(@"
 CLASS TestClass
 METHOD TestMethod() AS VOID
-LOCAL o AS ARRAY // or SYMBOL, DATE, USUAL etc
+LOCAL o AS ARRAY
+LOCAL o AS SYMBOL
+LOCAL o AS DATE
+LOCAL o AS USUAL
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
 
@@ -356,7 +372,7 @@ END CLASS
 CLASS INT // or almost any other keyword
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
 
@@ -398,7 +414,7 @@ INTERNAL VOSTRUCT _winPOINT
             var s = ParseSource(@"
 #using System.IO
 FUNCTION Directory() AS INT
-Directory.CreateDirectory("")
+Directory.CreateDirectory('')
 RETURN 0
 ");
             CompileAndLoadWithoutErrors(s);
@@ -480,7 +496,7 @@ test(h)
 
 PROC test( h AS PTR)
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors("/unsafe",s);
         }
 
 

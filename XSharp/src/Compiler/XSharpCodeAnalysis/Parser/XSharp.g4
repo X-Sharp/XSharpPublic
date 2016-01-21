@@ -95,10 +95,10 @@ parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 					;
 
 // Compared with C# PARAMS is not supported. This can be achived by setting [ParamArrayAttribute] on the parameter: [ParamArrayAttribute] args as OBJECT[] 
-parameter			: (Attributes=attributes)? Id=identifier (ASSIGN_OP Default=expression)? Modifiers=parameterDeclMods Type=datatype
+parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? Modifiers=parameterDeclMods Type=datatype
 					;
 
-parameterDeclMods   : Tokens+=(AS | REF | OUT | IS ) Tokens+=SELF? Tokens+=CONST?
+parameterDeclMods   : Tokens+=(AS | REF | OUT | IS ) Tokens+=CONST?
 					;
 
 statementBlock      : (Stmts+=statement)*

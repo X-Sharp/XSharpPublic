@@ -3185,7 +3185,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if (!_lazyContainsExtensionMethods.HasValue())
                 {
+#if XSHARP
+                    bool containsExtensionMethods = ((!this.IsGenericType) || this.IsScriptClass) && this.declaration.ContainsExtensionMethods;
+#else
                     bool containsExtensionMethods = ((this.IsStatic && !this.IsGenericType) || this.IsScriptClass) && this.declaration.ContainsExtensionMethods;
+#endif
                     _lazyContainsExtensionMethods = containsExtensionMethods.ToThreeState();
                 }
 

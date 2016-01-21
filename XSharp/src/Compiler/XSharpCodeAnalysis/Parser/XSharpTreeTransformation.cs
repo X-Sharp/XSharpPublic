@@ -1560,6 +1560,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = vomods.ToTokenList();
                 _pool.Free(vomods);
             }
+            else
+            {
+                if (context.ParamList?._Params[0].Self != null && !mods.Any(SyntaxKind.StaticKeyword))
+                {
+                    var m = _pool.Allocate();
+                    m.AddRange(mods);
+                    m.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+                    mods = m.ToTokenList();
+                    _pool.Free(m);
+                }
+            }
             if (actualDeclaration) {
                 MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
@@ -2347,6 +2358,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 @params,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
             _pool.Free(@params);
+        }
+
+        public override void EnterParameter([NotNull] XSharpParser.ParameterContext context)
+        {
+            if (context.Self != null)
+            {
+                context.Modifiers._Tokens.Add(context.Self);
+            }
         }
 
         public override void ExitParameter([NotNull] XSharpParser.ParameterContext context)

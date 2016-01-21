@@ -148,6 +148,9 @@ CLASS Extensions
 METHOD MyExtension( SELF n AS INT ) AS INT
 RETURN 0
 END CLASS
+
+FUNCTION Start() AS VOID
+  ? 0:MyExtension()
 ");
             CompileAndLoadWithoutErrors(s);
         }

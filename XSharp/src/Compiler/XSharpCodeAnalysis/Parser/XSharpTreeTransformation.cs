@@ -1172,9 +1172,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             MakeSeparatedList(_syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(evtFldName), null, null))),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                     );
+                var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface());
+                //if (context.ExplicitIface != null)
+                {
+                    var m = _pool.Allocate();
+                    foreach (var mod in mods)
+                    {
+                        if (mod.Kind != SyntaxKind.VirtualKeyword && mod.Kind != SyntaxKind.OverrideKeyword && mod.Kind != SyntaxKind.PublicKeyword)
+                            m.Add(mod);
+                    }
+                    mods = m.ToTokenList();
+                    _pool.Free(m);
+                }
                 context.Put(_syntaxFactory.EventDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(context.isInInterface()),
+                    modifiers: mods,
                     eventKeyword: SyntaxFactory.MakeToken(SyntaxKind.EventKeyword),
                     type: context.Type.Get<TypeSyntax>(),
                     explicitInterfaceSpecifier: _syntaxFactory.ExplicitInterfaceSpecifier(
@@ -1394,10 +1406,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface);
+            if (context.ExplicitIface != null)
+            {
+                var m = _pool.Allocate();
+                foreach (var mod in mods)
+                {
+                    if (mod.Kind != SyntaxKind.VirtualKeyword && mod.Kind != SyntaxKind.OverrideKeyword && mod.Kind != SyntaxKind.PublicKeyword)
+                        m.Add(mod);
+                }
+                mods = m.ToTokenList();
+                _pool.Free(m);
+            }
             if (context.ParamList == null)
                 context.Put(_syntaxFactory.PropertyDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface),
+                    modifiers: mods,
                     type: context.Type.Get<TypeSyntax>(),
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
@@ -1422,7 +1446,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.AddError(new ParseErrorData(context.AUTO(),ErrorCode.ERR_SyntaxError,SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
                 context.Put(_syntaxFactory.IndexerDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface),
+                    modifiers: mods,
                     type: context.Type.Get<TypeSyntax>(),
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
@@ -1570,6 +1594,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     mods = m.ToTokenList();
                     _pool.Free(m);
                 }
+            }
+            if (context.ExplicitIface != null)
+            {
+                var m = _pool.Allocate();
+                foreach(var mod in mods)
+                {
+                    if (mod.Kind != SyntaxKind.VirtualKeyword && mod.Kind != SyntaxKind.OverrideKeyword && mod.Kind != SyntaxKind.PublicKeyword)
+                        m.Add(mod);
+                }
+                mods = m.ToTokenList();
+                _pool.Free(m);
             }
             if (actualDeclaration) {
                 MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(

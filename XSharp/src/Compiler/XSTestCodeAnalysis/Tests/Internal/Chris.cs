@@ -322,10 +322,13 @@ END CLASS
             var s = ParseSource(@"
 CLASS TestClass IMPLEMENTS ITest
    VIRTUAL PROPERTY ITest.MyProp AS Boolean GET FALSE
+   VIRTUAL METHOD ITest.MyMeth() AS Boolean
+       RETURN False
 END CLASS
 
 INTERFACE ITest
 	PROPERTY MyProp AS Boolean GET
+	METHOD MyMeth() AS Boolean
 END INTERFACE
 ");
             CompileAndLoadWithoutErrors(s);

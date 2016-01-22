@@ -1562,7 +1562,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (context.ParamList?._Params[0].Self != null && !mods.Any(SyntaxKind.StaticKeyword))
+                if (context.ParamList?._Params.Count > 0 && context.ParamList?._Params[0].Self != null && !mods.Any(SyntaxKind.StaticKeyword))
                 {
                     var m = _pool.Allocate();
                     m.AddRange(mods);

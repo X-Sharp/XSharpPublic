@@ -348,7 +348,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return MemberAnalysisResult.UseSiteError();
             }
 
+#if XSHARP
+            var effectiveParameters = GetEffectiveParametersInNormalForm(constructor, arguments.Arguments.Count, argumentAnalysis.ArgsToParamsOpt, arguments.RefKinds, allowRefOmittedArguments: true);
+#else
             var effectiveParameters = GetEffectiveParametersInNormalForm(constructor, arguments.Arguments.Count, argumentAnalysis.ArgsToParamsOpt, arguments.RefKinds, allowRefOmittedArguments: false);
+#endif
 
             return IsApplicable(constructor, effectiveParameters, arguments, argumentAnalysis.ArgsToParamsOpt, isVararg: constructor.IsVararg, hasAnyRefOmittedArgument: false, ignoreOpenTypes: false, useSiteDiagnostics: ref useSiteDiagnostics);
         }
@@ -367,7 +371,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return MemberAnalysisResult.UseSiteError();
             }
 
+#if XSHARP
+            var effectiveParameters = GetEffectiveParametersInExpandedForm(constructor, arguments.Arguments.Count, argumentAnalysis.ArgsToParamsOpt, arguments.RefKinds, allowRefOmittedArguments: true);
+#else
             var effectiveParameters = GetEffectiveParametersInExpandedForm(constructor, arguments.Arguments.Count, argumentAnalysis.ArgsToParamsOpt, arguments.RefKinds, allowRefOmittedArguments: false);
+#endif
 
             // A vararg ctor is never applicable in its expanded form because
             // it is never a params method.
@@ -2107,7 +2115,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             Debug.Assert(r2.SpecialType != SpecialType.System_Void);
                             Debug.Assert(!Conversions.HasIdentityConversion(r1, r2));
                         }
-#endif 
+#endif
 
                         if (r1.SpecialType == SpecialType.System_Void)
                         {
@@ -2272,7 +2280,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (argumentCount == parameterCount && argToParamMap.IsDefaultOrEmpty)
             {
                 ImmutableArray<RefKind> parameterRefKinds = member.GetParameterRefKinds();
+#if XSHARP
+                if (parameterRefKinds.IsDefaultOrEmpty || !parameterRefKinds.Any(refKind => refKind == RefKind.Ref || refKind == RefKind.Out))
+#else
                 if (parameterRefKinds.IsDefaultOrEmpty || !parameterRefKinds.Any(refKind => refKind == RefKind.Ref))
+#endif
                 {
                     return new EffectiveParameters(member.GetParameterTypes(), parameterRefKinds);
                 }
@@ -2327,6 +2339,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 hasAnyRefOmittedArgument = true;
                 return RefKind.None;
             }
+
+#if XSHARP
+            if (allowRefOmittedArguments && paramRefKind == RefKind.Out && (argRefKind == RefKind.None || argRefKind == RefKind.Ref) && !_binder.InAttributeArgument)
+            {
+                hasAnyRefOmittedArgument = argRefKind == RefKind.None;
+                return argRefKind;
+            }
+#endif
 
             return paramRefKind;
         }

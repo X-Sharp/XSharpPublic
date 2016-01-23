@@ -166,10 +166,16 @@ FUNCTION Start() AS VOID
 FUNCTION Start() AS VOID
 // vulcan compiles both
 LOCAL r AS REAL8
-System.Double.TryParse(""1.2"", r) 
-System.Double.TryParse(""1.2"", REF r)
+System.Double.TryParse('1.2', r) 
+if r != 1.2
+    THROW Exception{String.Format('V = {0}',r)}
+endif
+System.Double.TryParse('2.2', REF r)
+if r != 2.2
+    THROW Exception{String.Format('V = {0}',r)}
+endif
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndRunWithoutExceptions(s);
         }
 
 

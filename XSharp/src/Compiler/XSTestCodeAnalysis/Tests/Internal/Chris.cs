@@ -166,6 +166,7 @@ FUNCTION Start() AS VOID
 FUNCTION Start() AS VOID
 // vulcan compiles both
 LOCAL r AS REAL8
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture  := System.Globalization.CultureInfo.CreateSpecificCulture(""en-US"")
 System.Double.TryParse('1.2', r) 
 if r != 1.2
     THROW Exception{String.Format('V = {0}',r)}

@@ -175,6 +175,10 @@ System.Double.TryParse('2.2', REF r)
 if r != 2.2
     THROW Exception{String.Format('V = {0}',r)}
 endif
+System.Double.TryParse('3.2', OUT r)
+if r != 3.2
+    THROW Exception{String.Format('V = {0}',r)}
+endif
 ");
             CompileAndRunWithoutExceptions(s);
         }

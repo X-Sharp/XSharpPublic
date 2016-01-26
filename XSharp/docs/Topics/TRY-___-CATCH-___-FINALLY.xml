@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">TRY ... CATCH ... FINALLY</title>
+  <keywords>
+    <keyword translate="true">CATCH</keyword>
+    <keyword translate="true">END</keyword>
+    <keyword translate="true">FINALLY</keyword>
+    <keyword translate="true">TRY</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">TRY &#160; ... CATCH ... FINALLY</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+  </body>
+</topic>

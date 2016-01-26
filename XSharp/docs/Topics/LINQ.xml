@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">LINQ Expressions</title>
+  <keywords>
+    <keyword translate="true">AS</keyword>
+    <keyword translate="true">ASCENDING</keyword>
+    <keyword translate="true">BY</keyword>
+    <keyword translate="true">DESCENDING</keyword>
+    <keyword translate="true">EQUALS</keyword>
+    <keyword translate="true">FROM</keyword>
+    <keyword translate="true">GROUP</keyword>
+    <keyword translate="true">IN</keyword>
+    <keyword translate="true">INTO</keyword>
+    <keyword translate="true">JOIN</keyword>
+    <keyword translate="true">LET</keyword>
+    <keyword translate="true">ON</keyword>
+    <keyword translate="true">ORDERBY</keyword>
+    <keyword translate="true">SELECT</keyword>
+    <keyword translate="true">WHERE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">LINQ Expressions</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">AS</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">ASCENDING</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">BY</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">DESCENDING</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">EQUALS</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">FROM</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">GROUP</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">IN</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">INTO</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">JOIN</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">LET</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">ON</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">ORDERBY</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">SELECT</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">WHERE</text></para>
+  </body>
+</topic>

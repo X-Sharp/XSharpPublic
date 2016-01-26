@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">BEGIN NAMESPACE</title>
+  <keywords>
+    <keyword translate="true">BEGIN</keyword>
+    <keyword translate="true">END</keyword>
+    <keyword translate="true">NAMESPACE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">BEGIN NAMESPACE</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">BEGIN NAMESPACE &lt;Namespace&gt;</text></para>
+    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">...</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">END NAMESPACE</text></para>
+  </body>
+</topic>

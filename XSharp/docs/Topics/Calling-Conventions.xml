@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Calling Conventions</title>
+  <keywords>
+    <keyword translate="true">CLIPPER</keyword>
+    <keyword translate="true">FASTCALL</keyword>
+    <keyword translate="true">PASCAL</keyword>
+    <keyword translate="true">STRICT</keyword>
+    <keyword translate="true">THISCALL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Calling Conventions</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">CLIPPER</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">FASTCALL</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">PASCAL</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">STRICT</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">THISCALL</text></para>
+  </body>
+</topic>

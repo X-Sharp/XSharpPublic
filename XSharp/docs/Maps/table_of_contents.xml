@@ -1,0 +1,759 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns:xsi="http://www.w3.org/2001/XInclude">
+  <topicref type="topic" id="421579986017862" modified="2015-06-02T18:56:53.338Z" icon="0" href="Stylesheet-for-Style-Test">
+    <caption translate="true">Stylesheet for Style Test</caption>
+  </topicref>
+  <topicref type="topic" id="423886812341331" build="ALL" modified="2016-01-20T10:36:08.813Z" icon="0" href="XSharp">
+    <caption translate="true">X# (XSharp)</caption>
+    <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-19T22:40:44.431Z" icon="0" href="Introduction">
+      <caption translate="true">Getting Sytarted with X#</caption>
+      <topicref type="topic" id="423888143662582" build="ALL" modified="2016-01-19T21:13:50.350Z" icon="0" href="Second-topic">
+        <caption translate="true">Version History</caption>
+      </topicref>
+      <topicref type="topic" id="423890249842237" build="ALL" modified="2016-01-19T21:14:28.114Z" icon="0" href="Known-Issues">
+        <caption translate="true">Known Issues</caption>
+      </topicref>
+      <topicref type="topic" id="423886741980303" build="ALL" modified="2016-01-19T21:15:13.357Z" icon="0" href="New-features">
+        <caption translate="true">New features</caption>
+      </topicref>
+    </topicref>
+    <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
+      <caption translate="true">Using X# in Visual Studio</caption>
+      <topicref type="topic" id="423888586335039" build="ALL" modified="2016-01-19T21:24:53.563Z" icon="0" href="Project-System">
+        <caption translate="true">Project System</caption>
+        <topicref type="topic" id="423889199749481" build="ALL" modified="2016-01-19T21:24:53.624Z" icon="0" href="Project-Properties">
+          <caption translate="true">Project Properties</caption>
+        </topicref>
+        <topicref type="topic" id="42386764973040" build="ALL" modified="2016-01-19T21:24:53.694Z" icon="0" href="Source-code-Items">
+          <caption translate="true">Source code Items</caption>
+        </topicref>
+        <topicref type="topic" id="423887085079505" build="ALL" modified="2016-01-19T21:24:53.759Z" icon="0" href="Resources">
+          <caption translate="true">Resources</caption>
+        </topicref>
+        <topicref type="topic" id="423889093227394" build="ALL" modified="2016-01-19T21:24:53.825Z" icon="0" href="Settings">
+          <caption translate="true">Settings</caption>
+        </topicref>
+        <topicref type="topic" id="423886862409427" build="ALL" modified="2016-01-19T21:24:53.893Z" icon="0" href="Forms">
+          <caption translate="true">Forms</caption>
+        </topicref>
+        <topicref type="topic" id="423887693907857" build="ALL" modified="2016-01-19T21:24:53.961Z" icon="0" href="Other-Item-types">
+          <caption translate="true">Other Item types</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423888873133831" build="ALL" modified="2016-01-19T21:24:54.026Z" icon="0" href="Source-Code-Editor">
+        <caption translate="true">Source Code Editor</caption>
+        <topicref type="topic" id="423887361540682" build="ALL" modified="2016-01-19T21:24:54.093Z" icon="0" href="Keyword-Coloring">
+          <caption translate="true">Keyword Coloring</caption>
+        </topicref>
+        <topicref type="topic" id="423896290118079" build="ALL" modified="2016-01-20T10:13:42.757Z" icon="0" href="Highlighting-Errors">
+          <caption translate="true">Highlighting Errors</caption>
+        </topicref>
+        <topicref type="topic" id="423889358133456" build="ALL" modified="2016-01-19T21:24:54.159Z" icon="0" href="Regions">
+          <caption translate="true">Regions</caption>
+        </topicref>
+        <topicref type="topic" id="423889781598128" build="ALL" modified="2016-01-19T21:24:54.228Z" icon="0" href="Blocks">
+          <caption translate="true">Blocks</caption>
+        </topicref>
+        <topicref type="topic" id="423888278218038" build="ALL" modified="2016-01-19T21:24:54.294Z" icon="0" href="Parameter-Tips">
+          <caption translate="true">Parameter Tips</caption>
+        </topicref>
+        <topicref type="topic" id="423887688675988" build="ALL" modified="2016-01-19T21:24:54.361Z" icon="0" href="Quick-Info">
+          <caption translate="true">Quick Info</caption>
+        </topicref>
+        <topicref type="topic" id="423888640134134" build="ALL" modified="2016-01-19T21:24:54.427Z" icon="0" href="Code-Completion">
+          <caption translate="true">Code Completion</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423890888167298" build="ALL" modified="2016-01-19T21:24:54.492Z" icon="0" href="Templates">
+        <caption translate="true">Templates</caption>
+        <topicref type="topic" id="423886836758749" build="ALL" modified="2016-01-19T21:24:54.559Z" icon="0" href="Project-Templates">
+          <caption translate="true">Project Templates</caption>
+        </topicref>
+        <topicref type="topic" id="423888912108340" build="ALL" modified="2016-01-19T21:24:54.613Z" icon="0" href="Item-Templates">
+          <caption translate="true">Item Templates</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423887105698173" build="ALL" modified="2016-01-19T21:24:54.667Z" icon="0" href="Debugger">
+        <caption translate="true">Debugger</caption>
+      </topicref>
+    </topicref>
+    <topicref type="topic" id="423889242125195" build="ALL" modified="2016-01-19T22:45:58.016Z" icon="0" href="X-Programming-guide">
+      <caption translate="true">X# Programming guide</caption>
+      <topicref type="topic" id="423891170408015" build="ALL" modified="2016-01-19T22:45:58.148Z" icon="0" href="Quick-Start">
+        <caption translate="true">Quick Start</caption>
+      </topicref>
+      <topicref type="topic" id="423890630286744" build="ALL" modified="2016-01-19T22:45:58.209Z" icon="0" href="Arrays">
+        <caption translate="true">Arrays</caption>
+      </topicref>
+      <topicref type="topic" id="423888812622405" build="ALL" modified="2016-01-19T22:45:58.260Z" icon="0" href="Classes-and-Structures">
+        <caption translate="true">Classes and Structures</caption>
+      </topicref>
+      <topicref type="topic" id="423890322729183" build="ALL" modified="2016-01-19T22:45:58.309Z" icon="0" href="Delegates">
+        <caption translate="true">Delegates</caption>
+      </topicref>
+      <topicref type="topic" id="423890157788231" build="ALL" modified="2016-01-19T22:45:58.359Z" icon="0" href="Enumeration-Types">
+        <caption translate="true">Enumeration Types</caption>
+      </topicref>
+      <topicref type="topic" id="423889529120510" build="ALL" modified="2016-01-19T22:45:58.411Z" icon="0" href="Events">
+        <caption translate="true">Events</caption>
+      </topicref>
+      <topicref type="topic" id="423890144002277" build="ALL" modified="2016-01-19T22:45:58.476Z" icon="0" href="Exceptions-and-Exception-Handl">
+        <caption translate="true">Exceptions and Exception Handling</caption>
+      </topicref>
+      <topicref type="topic" id="423887634112346" build="ALL" modified="2016-01-19T22:45:58.527Z" icon="0" href="File-System-and-the-Registry">
+        <caption translate="true">File System and the Registry</caption>
+      </topicref>
+      <topicref type="topic" id="423887518590729" build="ALL" modified="2016-01-19T22:45:58.576Z" icon="0" href="Generics">
+        <caption translate="true">Generics</caption>
+      </topicref>
+      <topicref type="topic" id="423888716547497" build="ALL" modified="2016-01-19T22:45:58.624Z" icon="0" href="Indexers">
+        <caption translate="true">Indexers</caption>
+      </topicref>
+      <topicref type="topic" id="423887935410958" build="ALL" modified="2016-01-19T22:45:58.677Z" icon="0" href="Interfaces">
+        <caption translate="true">Interfaces</caption>
+      </topicref>
+      <topicref type="topic" id="423888497357636" build="ALL" modified="2016-01-19T22:45:58.726Z" icon="0" href="Interoperability">
+        <caption translate="true">Interoperability</caption>
+      </topicref>
+      <topicref type="topic" id="423888175410133" build="ALL" modified="2016-01-19T22:45:58.774Z" icon="0" href="LINQ-Query-Expressions">
+        <caption translate="true">LINQ Query Expressions</caption>
+      </topicref>
+      <topicref type="topic" id="42389463199336" build="ALL" modified="2016-01-19T22:45:58.831Z" icon="0" href="Namespaces2">
+        <caption translate="true">Namespaces</caption>
+      </topicref>
+      <topicref type="topic" id="423889985895203" build="ALL" modified="2016-01-19T22:45:58.895Z" icon="0" href="Nullable-Types">
+        <caption translate="true">Nullable Types</caption>
+      </topicref>
+      <topicref type="topic" id="423890724030365" build="ALL" modified="2016-01-19T22:45:58.947Z" icon="0" href="Statements_-Expressions-and-Op">
+        <caption translate="true">Statements, Expressions and Operators</caption>
+      </topicref>
+      <topicref type="topic" id="423888819569735" build="ALL" modified="2016-01-19T22:45:58.997Z" icon="0" href="Strings">
+        <caption translate="true">Strings</caption>
+      </topicref>
+      <topicref type="topic" id="42388775368697" build="ALL" modified="2016-01-19T22:45:59.047Z" icon="0" href="Types">
+        <caption translate="true">Types</caption>
+      </topicref>
+      <topicref type="topic" id="423888708711938" build="ALL" modified="2016-01-19T22:45:59.095Z" icon="0" href="Unsafe-Code-and-Pointers">
+        <caption translate="true">Unsafe Code and Pointers</caption>
+      </topicref>
+      <topicref type="topic" id="423891384096573" build="ALL" modified="2016-01-19T22:45:59.144Z" icon="0" href="XML-Documentation-Comments">
+        <caption translate="true">XML Documentation Comments</caption>
+      </topicref>
+    </topicref>
+    <topicref type="topic" id="423889629409879" build="ALL" modified="2016-01-19T20:47:47.869Z" icon="0" href="Chapter-2">
+      <caption translate="true">X# Reference</caption>
+      <topicref type="topic" id="423891053622515" build="ALL" modified="2016-01-19T22:47:35.558Z" icon="0" href="X-Keywords">
+        <caption translate="true">X# Keywords</caption>
+        <topicref type="topic" id="423889842078590" build="ALL" modified="2016-01-19T22:48:15.647Z" icon="0" href="Built-in-Types">
+          <caption translate="true">Types</caption>
+          <topicref type="topic" id="423889647849809" build="ALL" modified="2016-01-19T20:50:25.473Z" icon="0" href="Native-Types">
+            <caption translate="true">Native Types</caption>
+            <topicref type="topic" id="423889963400613" build="ALL" modified="2016-01-19T20:54:01.330Z" icon="0" href="BYTE">
+              <caption translate="true">BYTE</caption>
+            </topicref>
+            <topicref type="topic" id="42388989074765" build="ALL" modified="2016-01-19T20:54:01.386Z" icon="0" href="CHAR">
+              <caption translate="true">CHAR</caption>
+            </topicref>
+            <topicref type="topic" id="423889168473100" build="ALL" modified="2016-01-19T20:54:01.452Z" icon="0" href="DWORD">
+              <caption translate="true">DWORD</caption>
+            </topicref>
+            <topicref type="topic" id="423889316138936" build="ALL" modified="2016-01-19T21:36:25.935Z" icon="0" href="DYNAMIC">
+              <caption translate="true">DYNAMIC</caption>
+            </topicref>
+            <topicref type="topic" id="423889972736791" build="ALL" modified="2016-01-19T20:54:01.565Z" icon="0" href="INT">
+              <caption translate="true">INT</caption>
+            </topicref>
+            <topicref type="topic" id="423889073537517" build="ALL" modified="2016-01-19T20:54:01.631Z" icon="0" href="INT64">
+              <caption translate="true">INT64</caption>
+            </topicref>
+            <topicref type="topic" id="423888282430524" build="ALL" modified="2016-01-19T20:54:01.684Z" icon="0" href="LOGIC">
+              <caption translate="true">LOGIC</caption>
+            </topicref>
+            <topicref type="topic" id="423887482695230" build="ALL" modified="2016-01-19T20:58:54.865Z" icon="0" href="OBJECT">
+              <caption translate="true">OBJECT</caption>
+            </topicref>
+            <topicref type="topic" id="423889114775107" build="ALL" modified="2016-01-19T21:36:26.058Z" icon="0" href="PTR2">
+              <caption translate="true">PTR</caption>
+            </topicref>
+            <topicref type="topic" id="423887976837284" build="ALL" modified="2016-01-19T20:54:01.815Z" icon="0" href="REAL4">
+              <caption translate="true">REAL4</caption>
+            </topicref>
+            <topicref type="topic" id="423887865665128" build="ALL" modified="2016-01-19T20:54:01.881Z" icon="0" href="REAL8">
+              <caption translate="true">REAL8</caption>
+            </topicref>
+            <topicref type="topic" id="423890781942997" build="ALL" modified="2016-01-19T20:54:01.930Z" icon="0" href="SHORT">
+              <caption translate="true">SHORT</caption>
+            </topicref>
+            <topicref type="topic" id="4239360736078" build="ALL" modified="2016-01-19T20:54:01.980Z" icon="0" href="STRING">
+              <caption translate="true">STRING</caption>
+            </topicref>
+            <topicref type="topic" id="423889054098904" build="ALL" modified="2016-01-19T20:54:02.030Z" icon="0" href="UINT64">
+              <caption translate="true">UINT64</caption>
+            </topicref>
+            <topicref type="topic" id="423890807768922" build="ALL" modified="2016-01-19T20:54:02.083Z" icon="0" href="VOID">
+              <caption translate="true">VOID</caption>
+            </topicref>
+            <topicref type="topic" id="42389487082273" build="ALL" modified="2016-01-19T20:58:17.926Z" icon="0" href="WORD">
+              <caption translate="true">WORD</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423887482349676" build="ALL" modified="2016-01-19T20:50:25.533Z" icon="0" href="XBase-Specific-Types">
+            <caption translate="true">xBase Specific Types</caption>
+            <topicref type="topic" id="423890644701462" build="ALL" modified="2016-01-19T20:54:30.895Z" icon="0" href="ARRAY">
+              <caption translate="true">ARRAY</caption>
+            </topicref>
+            <topicref type="topic" id="423887355411409" build="ALL" modified="2016-01-19T20:57:24.371Z" icon="0" href="CODEBLOCK">
+              <caption translate="true">CODEBLOCK</caption>
+            </topicref>
+            <topicref type="topic" id="423888896117478" build="ALL" modified="2016-01-19T20:54:30.948Z" icon="0" href="DATE">
+              <caption translate="true">DATE</caption>
+            </topicref>
+            <topicref type="topic" id="423887761285575" build="ALL" modified="2016-01-19T20:54:31.006Z" icon="0" href="FLOAT">
+              <caption translate="true">FLOAT</caption>
+            </topicref>
+            <topicref type="topic" id="423887320462507" build="ALL" modified="2016-01-19T20:54:31.055Z" icon="0" href="PSZ">
+              <caption translate="true">PSZ</caption>
+            </topicref>
+            <topicref type="topic" id="423889526537822" build="ALL" modified="2016-01-19T20:54:31.157Z" icon="0" href="SYMBOL">
+              <caption translate="true">SYMBOL</caption>
+            </topicref>
+            <topicref type="topic" id="423888352466620" build="ALL" modified="2016-01-19T20:54:31.225Z" icon="0" href="USUAL">
+              <caption translate="true">USUAL</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423890697550599" build="ALL" modified="2016-01-19T20:55:39.104Z" icon="0" href="User-defines-Types">
+            <caption translate="true">User defines Types</caption>
+            <topicref type="topic" id="423889941887025" build="ALL" modified="2016-01-19T21:27:30.751Z" icon="0" href="FUNCTION">
+              <caption translate="true">FUNCTION</caption>
+            </topicref>
+            <topicref type="topic" id="423887492265519" build="ALL" modified="2016-01-19T21:27:30.870Z" icon="0" href="PROCEDURE">
+              <caption translate="true">PROCEDURE</caption>
+            </topicref>
+            <topicref type="topic" id="423888967356687" build="ALL" modified="2016-01-19T20:56:50.106Z" icon="0" href="CLASS">
+              <caption translate="true">CLASS</caption>
+            </topicref>
+            <topicref type="topic" id="423889694655495" build="ALL" modified="2016-01-19T20:56:50.161Z" icon="0" href="DELEGATE">
+              <caption translate="true">DELEGATE</caption>
+            </topicref>
+            <topicref type="topic" id="423888712594007" build="ALL" modified="2016-01-19T20:56:50.219Z" icon="0" href="ENUM2">
+              <caption translate="true">ENUM</caption>
+            </topicref>
+            <topicref type="topic" id="423886857998346" build="ALL" modified="2016-01-19T21:32:30.999Z" icon="0" href="GLOBAL">
+              <caption translate="true">GLOBAL</caption>
+            </topicref>
+            <topicref type="topic" id="423887668642635" build="ALL" modified="2016-01-19T20:56:50.287Z" icon="0" href="INTERFACE">
+              <caption translate="true">INTERFACE</caption>
+            </topicref>
+            <topicref type="topic" id="423887701884582" build="ALL" modified="2016-01-19T21:28:25.142Z" icon="0" href="MEMBERS">
+              <caption translate="true">MEMBERS</caption>
+              <topicref type="topic" id="423887347754406" build="ALL" modified="2016-01-19T21:27:13.953Z" icon="0" href="CONSTRUCTOR">
+                <caption translate="true">CONSTRUCTOR</caption>
+              </topicref>
+              <topicref type="topic" id="423888235539236" build="ALL" modified="2016-01-19T21:27:14.009Z" icon="0" href="DESTRUCTOR">
+                <caption translate="true">DESTRUCTOR</caption>
+              </topicref>
+              <topicref type="topic" id="423887730311630" build="ALL" modified="2016-01-19T21:27:14.069Z" icon="0" href="FIELDS">
+                <caption translate="true">FIELDS</caption>
+              </topicref>
+              <topicref type="topic" id="423890587576762" build="ALL" modified="2016-01-19T21:27:14.138Z" icon="0" href="METHOD">
+                <caption translate="true">METHOD</caption>
+              </topicref>
+              <topicref type="topic" id="423889245363698" build="ALL" modified="2016-01-19T21:27:14.208Z" icon="0" href="OPERATOR">
+                <caption translate="true">OPERATOR</caption>
+              </topicref>
+              <topicref type="topic" id="423890175439155" build="ALL" modified="2016-01-19T21:27:14.268Z" icon="0" href="PROPERTY">
+                <caption translate="true">PROPERTY</caption>
+              </topicref>
+              <topicref type="topic" id="423890904856549" build="ALL" modified="2016-01-19T21:27:14.337Z" icon="0" href="ACCESS">
+                <caption translate="true">ACCESS</caption>
+              </topicref>
+              <topicref type="topic" id="423887620293224" build="ALL" modified="2016-01-19T21:27:14.401Z" icon="0" href="ASSIGN">
+                <caption translate="true">ASSIGN</caption>
+              </topicref>
+              <topicref type="topic" id="423889754272901" build="ALL" modified="2016-01-19T21:34:13.479Z" icon="0" href="EVENT">
+                <caption translate="true">EVENT</caption>
+              </topicref>
+            </topicref>
+            <topicref type="topic" id="42660889868" build="ALL" modified="2016-01-19T21:28:06.689Z" icon="0" href="STRUCT">
+              <caption translate="true">STRUCTURE</caption>
+            </topicref>
+            <topicref type="topic" id="423890638386516" build="ALL" modified="2016-01-19T20:56:50.487Z" icon="0" href="UNION">
+              <caption translate="true">UNION</caption>
+            </topicref>
+            <topicref type="topic" id="423890695890568" build="ALL" modified="2016-01-19T20:56:50.419Z" icon="0" href="VOSTRUCT">
+              <caption translate="true">VOSTRUCT</caption>
+            </topicref>
+            <topicref type="topic" id="423888978942314" build="ALL" modified="2016-01-19T21:33:00.299Z" icon="0" href="_DLL">
+              <caption translate="true">_DLL</caption>
+            </topicref>
+            <topicref type="topic" id="423888987638349" build="ALL" modified="2016-01-19T21:33:45.893Z" icon="0" href="Generic-Types">
+              <caption translate="true">Generic Types</caption>
+            </topicref>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="423889917318429" build="ALL" modified="2016-01-19T21:00:26.212Z" icon="0" href="Statements">
+          <caption translate="true">Statements</caption>
+          <topicref type="topic" id="42388147423807" build="ALL" modified="2016-01-19T23:00:17.572Z" icon="0" href="Jump-Statements">
+            <caption translate="true">Jump Statements</caption>
+            <topicref type="topic" id="423889013011988" build="ALL" modified="2016-01-19T21:35:14.217Z" icon="0" href="ASYNC-__-AWAIT">
+              <caption translate="true">ASYNC .. AWAIT</caption>
+            </topicref>
+            <topicref type="topic" id="423887945589974" build="ALL" modified="2016-01-19T21:30:37.131Z" icon="0" href="EXIT">
+              <caption translate="true">EXIT</caption>
+            </topicref>
+            <topicref type="topic" id="423889431246127" build="ALL" modified="2016-01-19T21:30:37.252Z" icon="0" href="LOOP">
+              <caption translate="true">LOOP</caption>
+            </topicref>
+            <topicref type="topic" id="423888901165657" build="ALL" modified="2016-01-19T21:05:10.359Z" icon="0" href="RETURN">
+              <caption translate="true">RETURN</caption>
+            </topicref>
+            <topicref type="topic" id="423888261978880" build="ALL" modified="2016-01-19T21:31:46.783Z" icon="0" href="YIELD">
+              <caption translate="true">YIELD RETURN</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423891427435698" build="ALL" modified="2016-01-19T23:00:17.682Z" icon="0" href="Iteration-Statements">
+            <caption translate="true">Iteration Statements</caption>
+            <topicref type="topic" id="423889823273477" build="ALL" modified="2016-01-19T21:05:10.036Z" icon="0" href="DO-WHILE">
+              <caption translate="true">DO WHILE</caption>
+            </topicref>
+            <topicref type="topic" id="423886754445485" build="ALL" modified="2016-01-19T21:05:10.096Z" icon="0" href="FOR-___-NEXT">
+              <caption translate="true">FOR ... NEXT</caption>
+            </topicref>
+            <topicref type="topic" id="423888322474948" build="ALL" modified="2016-01-19T21:05:10.161Z" icon="0" href="FOREACH-___-NEXT">
+              <caption translate="true">FOREACH ... NEXT</caption>
+            </topicref>
+            <topicref type="topic" id="423887339989427" build="ALL" modified="2016-01-19T21:05:10.292Z" icon="0" href="REPEAT-___-UNTIL">
+              <caption translate="true">REPEAT ... UNTIL</caption>
+            </topicref>
+            <topicref type="topic" id="423888006089921" build="ALL" modified="2016-01-19T21:05:10.427Z" icon="0" href="SWITCH">
+              <caption translate="true">SWITCH</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423888476587208" build="ALL" modified="2016-01-19T23:00:17.738Z" icon="0" href="Block-Statements">
+            <caption translate="true">Block Statements</caption>
+            <topicref type="topic" id="423889269807360" build="ALL" modified="2016-01-19T22:22:02.600Z" icon="0" href="BEGIN-CHECKED">
+              <caption translate="true">BEGIN (UN)CHECKED</caption>
+            </topicref>
+            <topicref type="topic" id="423887192829292" build="ALL" modified="2016-01-19T21:05:09.524Z" icon="0" href="BEGIN-LOCK">
+              <caption translate="true">BEGIN LOCK</caption>
+            </topicref>
+            <topicref type="topic" id="42389015641052" build="ALL" modified="2016-01-19T21:05:09.575Z" icon="0" href="BEGIN-SCOPE">
+              <caption translate="true">BEGIN SCOPE</caption>
+            </topicref>
+            <topicref type="topic" id="423889245042076" build="ALL" modified="2016-01-19T21:05:09.760Z" icon="0" href="BEGIN-UNSAFE">
+              <caption translate="true">BEGIN UNSAFE</caption>
+            </topicref>
+            <topicref type="topic" id="423890664256386" build="ALL" modified="2016-01-19T21:05:09.895Z" icon="0" href="BEGIN-USING">
+              <caption translate="true">BEGIN USING</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423891010974848" build="ALL" modified="2016-01-19T23:00:17.806Z" icon="0" href="Exception-Handling">
+            <caption translate="true">Exception Handling</caption>
+            <topicref type="topic" id="423889519465913" build="ALL" modified="2016-01-19T21:05:09.627Z" icon="0" href="BEGIN-SEQUENCE">
+              <caption translate="true">BEGIN SEQUENCE</caption>
+            </topicref>
+            <topicref type="topic" id="423891047459633" build="ALL" modified="2016-01-19T21:30:37.311Z" icon="0" href="RECOVER">
+              <caption translate="true">RECOVER</caption>
+            </topicref>
+            <topicref type="topic" id="423887467190100" build="ALL" modified="2016-01-19T21:05:10.478Z" icon="0" href="THROW">
+              <caption translate="true">THROW</caption>
+            </topicref>
+            <topicref type="topic" id="423889766314800" build="ALL" modified="2016-01-19T21:31:26.624Z" icon="0" href="TRY-___-CATCH-___-FINALLY">
+              <caption translate="true">TRY   ... CATCH ... FINALLY</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423891418207155" build="ALL" modified="2016-01-19T23:00:17.869Z" icon="0" href="Selection-Statements">
+            <caption translate="true">Selection Statements</caption>
+            <topicref type="topic" id="423886743379886" build="ALL" modified="2016-01-19T21:05:09.964Z" icon="0" href="DO-CASE">
+              <caption translate="true">DO CASE</caption>
+            </topicref>
+            <topicref type="topic" id="423889129234516" build="ALL" modified="2016-01-19T21:05:10.227Z" icon="0" href="IF-___-ELSE-___-ENDIF">
+              <caption translate="true">IF ... ELSE ... ENDIF</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423888652394528" build="ALL" modified="2016-01-19T23:00:17.933Z" icon="0" href="Declaration-Statements">
+            <caption translate="true">Declaration Statements</caption>
+            <topicref type="topic" id="423887768581854" build="ALL" modified="2016-01-19T21:05:27.023Z" icon="0" href="LOCAL">
+              <caption translate="true">LOCAL</caption>
+            </topicref>
+            <topicref type="topic" id="423888911265666" build="ALL" modified="2016-01-19T21:05:53.480Z" icon="0" href="LOCAL_2">
+              <caption translate="true">STATIC</caption>
+            </topicref>
+            <topicref type="topic" id="423890520858901" build="ALL" modified="2016-01-19T21:06:20.114Z" icon="0" href="VAR">
+              <caption translate="true">VAR</caption>
+            </topicref>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="423890220586711" build="ALL" modified="2016-01-19T20:51:14.267Z" icon="0" href="Literals">
+          <caption translate="true">Literals</caption>
+          <topicref type="topic" id="423887937208891" build="ALL" modified="2016-01-19T21:37:57.805Z" icon="0" href="Char2">
+            <caption translate="true">Char</caption>
+          </topicref>
+          <topicref type="topic" id="423889587575677" build="ALL" modified="2016-01-19T21:37:57.872Z" icon="0" href="Date2">
+            <caption translate="true">Date</caption>
+          </topicref>
+          <topicref type="topic" id="423887867754946" build="ALL" modified="2016-01-19T21:37:57.681Z" icon="0" href="Logic2">
+            <caption translate="true">Logic</caption>
+          </topicref>
+          <topicref type="topic" id="423890081813098" build="ALL" modified="2016-01-19T21:38:58.710Z" icon="0" href="Macros">
+            <caption translate="true">Macros</caption>
+          </topicref>
+          <topicref type="topic" id="423887993100569" build="ALL" modified="2016-01-19T21:37:58.072Z" icon="0" href="Null">
+            <caption translate="true">Null</caption>
+          </topicref>
+          <topicref type="topic" id="423889745296552" build="ALL" modified="2016-01-19T21:37:57.941Z" icon="0" href="Numeric">
+            <caption translate="true">Numeric</caption>
+            <topicref type="topic" id="423890126324200" build="ALL" modified="2016-01-19T21:38:50.672Z" icon="0" href="Integer">
+              <caption translate="true">Integer</caption>
+            </topicref>
+            <topicref type="topic" id="423887952433382" build="ALL" modified="2016-01-19T21:38:50.730Z" icon="0" href="Hex">
+              <caption translate="true">Hex</caption>
+            </topicref>
+            <topicref type="topic" id="423888047209841" build="ALL" modified="2016-01-19T21:38:50.792Z" icon="0" href="Binary">
+              <caption translate="true">Binary</caption>
+            </topicref>
+            <topicref type="topic" id="423890067649063" build="ALL" modified="2016-01-19T21:38:50.857Z" icon="0" href="Real">
+              <caption translate="true">Real</caption>
+            </topicref>
+          </topicref>
+          <topicref type="topic" id="423888241301361" build="ALL" modified="2016-01-19T21:37:57.739Z" icon="0" href="String2">
+            <caption translate="true">String</caption>
+          </topicref>
+          <topicref type="topic" id="423890264622123" build="ALL" modified="2016-01-19T21:37:58.003Z" icon="0" href="Symbol2">
+            <caption translate="true">Symbol</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="423890044539152" build="ALL" modified="2016-01-19T21:16:41.371Z" icon="0" href="NameSpaces">
+          <caption translate="true">NameSpaces</caption>
+          <topicref type="topic" id="423886791199984" build="ALL" modified="2016-01-19T21:17:02.341Z" icon="0" href="USING">
+            <caption translate="true">USING</caption>
+          </topicref>
+          <topicref type="topic" id="423890475851258" build="ALL" modified="2016-01-19T21:17:02.457Z" icon="0" href="BEGIN-NAMESPACE">
+            <caption translate="true">BEGIN NAMESPACE</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="42389704422360" build="ALL" modified="2016-01-19T21:35:35.315Z" icon="0" href="Identifiers">
+          <caption translate="true">Identifiers</caption>
+        </topicref>
+        <topicref type="topic" id="423890338204503" build="ALL" modified="2016-01-19T21:06:34.356Z" icon="0" href="Expressions">
+          <caption translate="true">Expressions</caption>
+        </topicref>
+        <topicref type="topic" id="423886881484677" build="ALL" modified="2016-01-19T21:34:53.491Z" icon="0" href="LINQ">
+          <caption translate="true">LINQ Expressions</caption>
+        </topicref>
+        <topicref type="topic" id="423889291163878" build="ALL" modified="2016-01-19T21:40:41.458Z" icon="0" href="Attributes2">
+          <caption translate="true">Attributes</caption>
+        </topicref>
+        <topicref type="topic" id="423887027128405" build="ALL" modified="2016-01-19T21:40:41.390Z" icon="0" href="Calling-Conventions">
+          <caption translate="true">Calling Conventions</caption>
+        </topicref>
+        <topicref type="topic" id="423889200092124" build="ALL" modified="2016-01-19T20:51:14.373Z" icon="0" href="Comments">
+          <caption translate="true">Comments</caption>
+        </topicref>
+        <topicref type="topic" id="423887080212844" build="ALL" modified="2016-01-19T22:54:29.270Z" icon="0" href="Visibility">
+          <caption translate="true">Modifiers</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423889109101067" build="ALL" modified="2016-01-19T22:47:35.662Z" icon="0" href="X-Operators">
+        <caption translate="true">X# Operators</caption>
+        <topicref type="topic" id="423887682890922" build="ALL" modified="2016-01-19T21:11:46.389Z" icon="0" href="Assignment">
+          <caption translate="true">Assignment</caption>
+        </topicref>
+        <topicref type="topic" id="42387974843972" build="ALL" modified="2016-01-19T21:11:46.442Z" icon="0" href="Logical">
+          <caption translate="true">Logical</caption>
+        </topicref>
+        <topicref type="topic" id="42390446934182" build="ALL" modified="2016-01-19T21:11:46.496Z" icon="0" href="Bitwise">
+          <caption translate="true">Bitwise</caption>
+        </topicref>
+        <topicref type="topic" id="42390595140805" build="ALL" modified="2016-01-19T21:11:46.550Z" icon="0" href="Relational">
+          <caption translate="true">Relational</caption>
+        </topicref>
+        <topicref type="topic" id="423889057077198" build="ALL" modified="2016-01-19T21:11:46.615Z" icon="0" href="Shift">
+          <caption translate="true">Shift</caption>
+        </topicref>
+        <topicref type="topic" id="423889867171741" build="ALL" modified="2016-01-19T21:11:46.680Z" icon="0" href="Simple">
+          <caption translate="true">Simple</caption>
+        </topicref>
+        <topicref type="topic" id="423890249914780" build="ALL" modified="2016-01-19T21:11:46.748Z" icon="0" href="Unary">
+          <caption translate="true">Unary</caption>
+        </topicref>
+        <topicref type="topic" id="423888050525421" build="ALL" modified="2016-01-19T22:08:55.471Z" icon="0" href="Equality">
+          <caption translate="true">Equality</caption>
+        </topicref>
+        <topicref type="topic" id="423888894934256" build="ALL" modified="2016-01-19T22:09:49.901Z" icon="0" href="Workarea">
+          <caption translate="true">Workarea</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423891454294167" build="ALL" modified="2016-01-19T22:47:35.715Z" icon="0" href="X-Preprocessor-Directives">
+        <caption translate="true">X# Preprocessor Directives</caption>
+        <topicref type="topic" id="423887609228458" build="ALL" modified="2016-01-19T22:11:51.480Z" icon="0" href="Preprocessor">
+          <caption translate="true">Preprocessor</caption>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="423887666250768" build="ALL" modified="2016-01-19T22:47:35.766Z" icon="0" href="X-Compiler-Options">
+        <caption translate="true">X# Compiler Options</caption>
+        <topicref type="topic" id="423891769948279" build="ALL" modified="2016-01-20T08:58:14.880Z" icon="0" href="Command-line-Building-With-xsc">
+          <caption translate="true">Command-line Building With xsc.exe</caption>
+        </topicref>
+        <topicref type="topic" id="423888293315751" build="ALL" modified="2016-01-19T22:53:23.657Z" icon="0" href="X-Compiler-Options-By-Category">
+          <caption translate="true">X# Compiler Options By Category</caption>
+        </topicref>
+        <topicref type="topic" id="423888629693577" build="ALL" modified="2016-01-19T22:53:23.717Z" icon="0" href="X-Compiler-Options-Listed-Alph">
+          <caption translate="true">X# Compiler Options Listed Alphabetically</caption>
+          <topicref type="topic" id="423895745392288" build="ALL" modified="2016-01-20T09:45:47.193Z" icon="0" href="opt-At">
+            <caption translate="true">@</caption>
+          </topicref>
+          <topicref type="topic" id="423895573972437" build="ALL" modified="2016-01-20T09:45:41.310Z" icon="0" href="opt-additionalfile">
+            <caption translate="true">/additionalfile</caption>
+          </topicref>
+          <topicref type="topic" id="423894984487432" build="ALL" modified="2016-01-20T09:45:43.575Z" icon="0" href="opt-addmodule">
+            <caption translate="true">/addmodule</caption>
+          </topicref>
+          <topicref type="topic" id="423894748709370" build="ALL" modified="2016-01-20T09:45:54.408Z" icon="0" href="opt-_analyzer">
+            <caption translate="true">/analyzer, /a</caption>
+          </topicref>
+          <topicref type="topic" id="423892462437599" build="ALL" modified="2016-01-20T09:45:56.670Z" icon="0" href="opt-appconfig">
+            <caption translate="true">/appconfig</caption>
+          </topicref>
+          <topicref type="topic" id="423895373416237" build="ALL" modified="2016-01-20T09:45:58.371Z" icon="0" href="opt-az">
+            <caption translate="true">/az</caption>
+          </topicref>
+          <topicref type="topic" id="423893654712185" build="ALL" modified="2016-01-20T09:46:00.043Z" icon="0" href="opt-baseaddress">
+            <caption translate="true">/baseaddress</caption>
+          </topicref>
+          <topicref type="topic" id="423892275141226" build="ALL" modified="2016-01-20T09:46:01.286Z" icon="0" href="opt-bugreport">
+            <caption translate="true">/bugreport</caption>
+          </topicref>
+          <topicref type="topic" id="423891988203537" build="ALL" modified="2016-01-20T09:46:05.831Z" icon="0" href="opt-checked">
+            <caption translate="true">/checked</caption>
+          </topicref>
+          <topicref type="topic" id="423893753168118" build="ALL" modified="2016-01-20T09:46:07.596Z" icon="0" href="opt-checksumalgorithm">
+            <caption translate="true">/checksumalgorithm</caption>
+          </topicref>
+          <topicref type="topic" id="423894663558282" build="ALL" modified="2016-01-20T09:46:09.119Z" icon="0" href="opt-codepage">
+            <caption translate="true">/codepage</caption>
+          </topicref>
+          <topicref type="topic" id="423894237931976" build="ALL" modified="2016-01-20T09:46:10.489Z" icon="0" href="opt-cs">
+            <caption translate="true">/cs</caption>
+          </topicref>
+          <topicref type="topic" id="423895088794327" build="ALL" modified="2016-01-20T09:46:11.902Z" icon="0" href="opt-debug">
+            <caption translate="true">/debug</caption>
+          </topicref>
+          <topicref type="topic" id="423894830081676" build="ALL" modified="2016-01-20T09:46:13.247Z" icon="0" href="opt-define">
+            <caption translate="true">/define</caption>
+          </topicref>
+          <topicref type="topic" id="42390944922440" build="ALL" modified="2016-01-20T09:46:14.505Z" icon="0" href="opt-delaysign">
+            <caption translate="true">/delaysign</caption>
+          </topicref>
+          <topicref type="topic" id="42390665422030" build="ALL" modified="2016-01-20T09:46:15.692Z" icon="0" href="opt-doc">
+            <caption translate="true">/doc</caption>
+          </topicref>
+          <topicref type="topic" id="42388776619199" build="ALL" modified="2016-01-20T09:46:16.770Z" icon="0" href="opt-errorreport">
+            <caption translate="true">/errorreport</caption>
+          </topicref>
+          <topicref type="topic" id="423895138795483" build="ALL" modified="2016-01-20T09:46:17.961Z" icon="0" href="opt-filealign">
+            <caption translate="true">/filealign</caption>
+          </topicref>
+          <topicref type="topic" id="423893924419519" build="ALL" modified="2016-01-20T09:46:19.415Z" icon="0" href="opt-fovf">
+            <caption translate="true">/fovf</caption>
+          </topicref>
+          <topicref type="topic" id="423892407757277" build="ALL" modified="2016-01-20T09:46:22.400Z" icon="0" href="opt-fullpaths">
+            <caption translate="true">/fullpaths</caption>
+          </topicref>
+          <topicref type="topic" id="423894862000692" build="ALL" modified="2016-01-20T09:46:45.005Z" icon="0" href="opt-help">
+            <caption translate="true">/help, /?</caption>
+          </topicref>
+          <topicref type="topic" id="423894686640551" build="ALL" modified="2016-01-20T09:46:46.867Z" icon="0" href="opt-highentroyva">
+            <caption translate="true">/highentroyva</caption>
+          </topicref>
+          <topicref type="topic" id="423892640420966" build="ALL" modified="2016-01-20T09:46:48.518Z" icon="0" href="opt-i">
+            <caption translate="true">/i</caption>
+          </topicref>
+          <topicref type="topic" id="423894258729324" build="ALL" modified="2016-01-20T10:58:08.394Z" icon="0" href="opt-ins">
+            <caption translate="true">/ins</caption>
+          </topicref>
+          <topicref type="topic" id="423894917882933" build="ALL" modified="2016-01-20T09:46:49.889Z" icon="0" href="opt-keycontainer">
+            <caption translate="true">/keycontainer</caption>
+          </topicref>
+          <topicref type="topic" id="423894696855398" build="ALL" modified="2016-01-20T09:46:51.208Z" icon="0" href="opt-keyfile">
+            <caption translate="true">/keyfile</caption>
+          </topicref>
+          <topicref type="topic" id="423894559147117" build="ALL" modified="2016-01-20T09:46:52.421Z" icon="0" href="opt-langversion">
+            <caption translate="true">/langversion</caption>
+          </topicref>
+          <topicref type="topic" id="423892890596013" build="ALL" modified="2016-01-20T09:46:54.647Z" icon="0" href="opt-lb">
+            <caption translate="true">/lb</caption>
+          </topicref>
+          <topicref type="topic" id="423895050578111" build="ALL" modified="2016-01-20T09:46:55.851Z" icon="0" href="opt-lib">
+            <caption translate="true">/lib</caption>
+          </topicref>
+          <topicref type="topic" id="423893215033803" build="ALL" modified="2016-01-20T09:46:56.934Z" icon="0" href="opt-link">
+            <caption translate="true">/link</caption>
+          </topicref>
+          <topicref type="topic" id="423892423799430" build="ALL" modified="2016-01-20T09:46:58.100Z" icon="0" href="opt-linkresource">
+            <caption translate="true">/linkresource</caption>
+          </topicref>
+          <topicref type="topic" id="423894825097684" build="ALL" modified="2016-01-20T09:46:59.258Z" icon="0" href="opt-main">
+            <caption translate="true">/main</caption>
+          </topicref>
+          <topicref type="topic" id="42388171085567" build="ALL" modified="2016-01-20T09:47:00.545Z" icon="0" href="opt-moduleassemblyname">
+            <caption translate="true">/moduleassemblyname</caption>
+          </topicref>
+          <topicref type="topic" id="423891757272897" build="ALL" modified="2016-01-20T09:47:01.774Z" icon="0" href="opt-modulenamestring">
+            <caption translate="true">/modulename:&lt;string&gt;</caption>
+          </topicref>
+          <topicref type="topic" id="423893943704911" build="ALL" modified="2016-01-20T09:47:02.893Z" icon="0" href="opt-noconfig">
+            <caption translate="true">/noconfig</caption>
+          </topicref>
+          <topicref type="topic" id="423895087325436" build="ALL" modified="2016-01-20T09:47:04.028Z" icon="0" href="opt-nologo">
+            <caption translate="true">/nologo</caption>
+          </topicref>
+          <topicref type="topic" id="423894257618205" build="ALL" modified="2016-01-20T09:47:05.179Z" icon="0" href="opt-nostddefs">
+            <caption translate="true">/nostddefs</caption>
+          </topicref>
+          <topicref type="topic" id="423893095042818" build="ALL" modified="2016-01-20T09:47:06.283Z" icon="0" href="opt-nostdlib">
+            <caption translate="true">/nostdlib</caption>
+          </topicref>
+          <topicref type="topic" id="423893443552552" build="ALL" modified="2016-01-20T09:47:07.323Z" icon="0" href="opt-nowarn">
+            <caption translate="true">/nowarn</caption>
+          </topicref>
+          <topicref type="topic" id="423892425559180" build="ALL" modified="2016-01-20T09:47:08.683Z" icon="0" href="opt-nowin32manifest">
+            <caption translate="true">/nowin32manifest</caption>
+          </topicref>
+          <topicref type="topic" id="42389742814200" build="ALL" modified="2016-01-20T09:47:09.988Z" icon="0" href="opt-ns">
+            <caption translate="true">/ns</caption>
+          </topicref>
+          <topicref type="topic" id="423891682853497" build="ALL" modified="2016-01-20T09:47:11.096Z" icon="0" href="opt-optimize">
+            <caption translate="true">/optimize</caption>
+          </topicref>
+          <topicref type="topic" id="423892095455643" build="ALL" modified="2016-01-20T09:47:12.164Z" icon="0" href="opt-out">
+            <caption translate="true">/out</caption>
+          </topicref>
+          <topicref type="topic" id="423892282449061" build="ALL" modified="2016-01-20T09:47:13.279Z" icon="0" href="opt-ovf">
+            <caption translate="true">/ovf</caption>
+          </topicref>
+          <topicref type="topic" id="423892971107092" build="ALL" modified="2016-01-20T09:47:17.159Z" icon="0" href="opt-parallel">
+            <caption translate="true">/parallel</caption>
+          </topicref>
+          <topicref type="topic" id="423893100935321" build="ALL" modified="2016-01-20T09:47:18.724Z" icon="0" href="opt-pdb">
+            <caption translate="true">/pdb</caption>
+          </topicref>
+          <topicref type="topic" id="423891710785876" build="ALL" modified="2016-01-20T09:47:19.898Z" icon="0" href="opt-platform">
+            <caption translate="true">/platform</caption>
+          </topicref>
+          <topicref type="topic" id="423894595923125" build="ALL" modified="2016-01-20T09:47:21.309Z" icon="0" href="opt-ppo">
+            <caption translate="true">/ppo</caption>
+          </topicref>
+          <topicref type="topic" id="423893646446377" build="ALL" modified="2016-01-20T09:47:22.542Z" icon="0" href="opt-preferreduilang">
+            <caption translate="true">/preferreduilang</caption>
+          </topicref>
+          <topicref type="topic" id="423891778626480" build="ALL" modified="2016-01-20T09:47:23.855Z" icon="0" href="opt-recurse">
+            <caption translate="true">/recurse</caption>
+          </topicref>
+          <topicref type="topic" id="423891724876042" build="ALL" modified="2016-01-20T09:47:25.154Z" icon="0" href="opt-reference">
+            <caption translate="true">/reference</caption>
+          </topicref>
+          <topicref type="topic" id="423893013499884" build="ALL" modified="2016-01-20T09:47:28.436Z" icon="0" href="opt-ruleset">
+            <caption translate="true">/ruleset</caption>
+          </topicref>
+          <topicref type="topic" id="423894484316881" build="ALL" modified="2016-01-20T09:47:30.260Z" icon="0" href="opt-resource">
+            <caption translate="true">/resource</caption>
+          </topicref>
+          <topicref type="topic" id="423893586106333" build="ALL" modified="2016-01-20T09:47:48.688Z" icon="0" href="opt-s">
+            <caption translate="true">/s</caption>
+          </topicref>
+          <topicref type="topic" id="423894563382635" build="ALL" modified="2016-01-20T09:47:50.088Z" icon="0" href="opt-showincludes">
+            <caption translate="true">/showincludes</caption>
+          </topicref>
+          <topicref type="topic" id="423891786127394" build="ALL" modified="2016-01-20T09:47:51.275Z" icon="0" href="opt-snk">
+            <caption translate="true">/snk</caption>
+          </topicref>
+          <topicref type="topic" id="423894865213409" build="ALL" modified="2016-01-20T09:47:52.442Z" icon="0" href="opt-subsystemversion">
+            <caption translate="true">/subsystemversion</caption>
+          </topicref>
+          <topicref type="topic" id="42387395028509" build="ALL" modified="2016-01-20T09:47:53.603Z" icon="0" href="opt-target">
+            <caption translate="true">/target</caption>
+          </topicref>
+          <topicref type="topic" id="423894071853707" build="ALL" modified="2016-01-20T09:47:54.682Z" icon="0" href="opt-unsafe">
+            <caption translate="true">/unsafe</caption>
+          </topicref>
+          <topicref type="topic" id="423892780785481" build="ALL" modified="2016-01-20T09:47:55.759Z" icon="0" href="opt-utf8output">
+            <caption translate="true">/utf8output</caption>
+          </topicref>
+          <topicref type="topic" id="423893850878914" build="ALL" modified="2016-01-20T09:47:56.869Z" icon="0" href="opt-vo1">
+            <caption translate="true">/vo1</caption>
+          </topicref>
+          <topicref type="topic" id="423894049775832" build="ALL" modified="2016-01-20T09:47:58.052Z" icon="0" href="opt-vo2">
+            <caption translate="true">/vo2</caption>
+          </topicref>
+          <topicref type="topic" id="423893205405631" build="ALL" modified="2016-01-20T09:47:59.009Z" icon="0" href="opt-vo3">
+            <caption translate="true">/vo3</caption>
+          </topicref>
+          <topicref type="topic" id="423891543197945" build="ALL" modified="2016-01-20T09:48:00.102Z" icon="0" href="opt-vo4">
+            <caption translate="true">/vo4</caption>
+          </topicref>
+          <topicref type="topic" id="423893723867365" build="ALL" modified="2016-01-20T09:48:01.044Z" icon="0" href="opt-vo5">
+            <caption translate="true">/vo5</caption>
+          </topicref>
+          <topicref type="topic" id="423893021568712" build="ALL" modified="2016-01-20T09:48:02.080Z" icon="0" href="opt-vo6">
+            <caption translate="true">/vo6</caption>
+          </topicref>
+          <topicref type="topic" id="42387953066244" build="ALL" modified="2016-01-20T09:48:03.111Z" icon="0" href="opt-vo7">
+            <caption translate="true">/vo7</caption>
+          </topicref>
+          <topicref type="topic" id="423892356043971" build="ALL" modified="2016-01-20T09:48:04.142Z" icon="0" href="opt-vo8">
+            <caption translate="true">/vo8</caption>
+          </topicref>
+          <topicref type="topic" id="423894376298841" build="ALL" modified="2016-01-20T09:48:05.125Z" icon="0" href="opt-vo9">
+            <caption translate="true">/vo9</caption>
+          </topicref>
+          <topicref type="topic" id="42390811694964" build="ALL" modified="2016-01-20T09:48:06.086Z" icon="0" href="opt-vo10">
+            <caption translate="true">/vo10</caption>
+          </topicref>
+          <topicref type="topic" id="423894115008435" build="ALL" modified="2016-01-20T09:48:06.986Z" icon="0" href="opt-vo11">
+            <caption translate="true">/vo11</caption>
+          </topicref>
+          <topicref type="topic" id="423892167710843" build="ALL" modified="2016-01-20T09:48:07.918Z" icon="0" href="opt-vo12">
+            <caption translate="true">/vo12</caption>
+          </topicref>
+          <topicref type="topic" id="423893391153373" build="ALL" modified="2016-01-20T09:48:08.880Z" icon="0" href="opt-vo13">
+            <caption translate="true">/vo13</caption>
+          </topicref>
+          <topicref type="topic" id="423892403560623" build="ALL" modified="2016-01-20T09:48:09.787Z" icon="0" href="opt-w">
+            <caption translate="true">/w</caption>
+          </topicref>
+          <topicref type="topic" id="423894941068471" build="ALL" modified="2016-01-20T09:48:10.816Z" icon="0" href="opt-warn">
+            <caption translate="true">/warn</caption>
+          </topicref>
+          <topicref type="topic" id="42389807440216" build="ALL" modified="2016-01-20T09:48:11.694Z" icon="0" href="opt-warnaserror">
+            <caption translate="true">/warnaserror</caption>
+          </topicref>
+          <topicref type="topic" id="423893547101519" build="ALL" modified="2016-01-20T09:48:12.915Z" icon="0" href="opt-win32icon">
+            <caption translate="true">/win32icon</caption>
+          </topicref>
+          <topicref type="topic" id="423893025013828" build="ALL" modified="2016-01-20T09:48:14.095Z" icon="0" href="opt-win32manifest">
+            <caption translate="true">/win32manifest</caption>
+          </topicref>
+          <topicref type="topic" id="423891900917353" build="ALL" modified="2016-01-20T09:48:15.025Z" icon="0" href="opt-win32res">
+            <caption translate="true">/win32res</caption>
+          </topicref>
+          <topicref type="topic" id="423894125694455" build="ALL" modified="2016-01-20T09:48:15.904Z" icon="0" href="opt-wx">
+            <caption translate="true">/wx</caption>
+          </topicref>
+        </topicref>
+      </topicref>
+      <topicref type="topic" id="42390796229101" build="ALL" modified="2016-01-20T09:48:25.843Z" icon="0" href="X-Compiler-Errors">
+        <caption translate="true">X# Compiler Errors</caption>
+      </topicref>
+      <topicref type="topic" id="423890739145443" build="ALL" modified="2016-01-19T22:47:35.865Z" icon="0" href="X-Language-Specification">
+        <caption translate="true">X# Language Specification</caption>
+      </topicref>
+      <topicref type="topic" id="423890627480191" build="ALL" modified="2016-01-19T22:47:35.921Z" icon="0" href="X-Walkthroughs">
+        <caption translate="true">X# Walkthroughs</caption>
+      </topicref>
+    </topicref>
+    <topicref type="topic" id="423888999781141" build="ALL" modified="2016-01-19T21:25:27.363Z" icon="0" href="Class-and-Function-Reference">
+      <caption translate="true">Class and Function Reference</caption>
+    </topicref>
+  </topicref>
+</map>

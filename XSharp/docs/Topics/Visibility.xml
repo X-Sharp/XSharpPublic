@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Modifiers</title>
+  <keywords>
+    <keyword translate="true">ABSTRACT</keyword>
+    <keyword translate="true">ASYNC</keyword>
+    <keyword translate="true">CONST</keyword>
+    <keyword translate="true">EXPORT</keyword>
+    <keyword translate="true">EXTERN</keyword>
+    <keyword translate="true">HIDDEN</keyword>
+    <keyword translate="true">INITONLY</keyword>
+    <keyword translate="true">INTERNAL</keyword>
+    <keyword translate="true">NEW</keyword>
+    <keyword translate="true">PARTIAL</keyword>
+    <keyword translate="true">PRIVATE</keyword>
+    <keyword translate="true">PROTECTED</keyword>
+    <keyword translate="true">PUBLIC</keyword>
+    <keyword translate="true">SEALED</keyword>
+    <keyword translate="true">STATIC</keyword>
+    <keyword translate="true">UNSAFE</keyword>
+    <keyword translate="true">VIRTUAL</keyword>
+    <keyword translate="true">VOLATILE</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Modifiers</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+  </body>
+</topic>

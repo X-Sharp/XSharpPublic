@@ -510,9 +510,31 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!best.HasValue)
             {
+#if XSHARP
+                // TODO: (nvk) This should be done in the local rewriter
+                if (left.Type.SpecialType == SpecialType.System_String && right.Type.SpecialType == SpecialType.System_String &&
+                    (node.Kind() == SyntaxKind.LessThanExpression || node.Kind() == SyntaxKind.LessThanOrEqualExpression ||
+                    node.Kind() == SyntaxKind.GreaterThanExpression || node.Kind() == SyntaxKind.GreaterThanOrEqualExpression))
+                {
+                    MethodSymbol opMeth;
+                    TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);
+                    var opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                    int compoundStringLength1 = 0;
+                    return BindSimpleBinaryOperator(node, diagnostics, opCall,
+                        new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)),
+                        ref compoundStringLength1);
+                }
+                else
+                {
+                    resultOperatorKind = kind;
+                    resultType = CreateErrorType();
+                    hasErrors = true;
+                }
+#else
                 resultOperatorKind = kind;
                 resultType = CreateErrorType();
                 hasErrors = true;
+#endif
             }
             else
             {

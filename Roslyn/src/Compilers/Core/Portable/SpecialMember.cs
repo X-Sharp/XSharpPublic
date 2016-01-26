@@ -141,6 +141,9 @@ namespace Microsoft.CodeAnalysis
         System_Nullable_T__op_Implicit_FromT,
         System_Nullable_T__op_Explicit_ToT,
 
+#if XSHARP
+        System_String__Compare,
+#endif
         Count
     }
 }

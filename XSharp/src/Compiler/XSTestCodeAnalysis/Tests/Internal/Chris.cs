@@ -592,6 +592,33 @@ END CLASS
         }
 
 
+        // 94
+        [Test(Author = "Chris", Id = "C94", Title = "String comparison relational ops '<','>' (trasnlated to String.Compare() call)")]
+        public static void String_comparison_relational_operators()
+        {
+            var s = ParseStartFunction(@"
+LOCAL c1,c2,c3 AS STRING
+c1 := 'aa'
+c2:= 'bb'
+c3:= 'aa'
+IF c1 > c2
+    THROW Exception{'c1 > c2'}
+ENDIF
+IF !(c3 < c2)
+    THROW Exception{'!(c3 > c2)'}
+ENDIF
+IF c1 >= c2
+    THROW Exception{'c1 >= c2'}
+ENDIF
+IF !(c3 <= c2)
+    THROW Exception{'!(c3 >= c2)'}
+ENDIF
+IF !(c1 >= c3 && c1 <= c3)
+    THROW Exception{'!(c1 >= c3 && c1 <= c3)'}
+ENDIF
+");
+            CompileAndLoadWithoutErrors(s);
+        }
 
 
     }

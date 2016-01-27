@@ -267,5 +267,27 @@ ENDIF
 ");
             CompileAndRunWithoutExceptions(s);
         }
+
+        [Test(Author = "Nikos", Id = "N10", Title = "Defaulkt namespace (/ns)")]
+        public static void DefaultNamespace()
+        {
+            var s = ParseSource(@"
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileWithErrors(s);
+
+            s = ParseSource("/ns:CustomNs", @"
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs",s);
+        }
     }
 }

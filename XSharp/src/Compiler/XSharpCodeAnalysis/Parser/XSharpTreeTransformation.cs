@@ -755,11 +755,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitSource([NotNull] XSharpParser.SourceContext context)
         {
+            var globalMembers = GlobalEntities.Members;
+            if (!string.IsNullOrEmpty(_options.DefaultNamespace))
+            {
+                globalMembers = _pool.Allocate<MemberDeclarationSyntax>();
+            }
             foreach(var entityCtx in context._Entities)
             {
                 var s = entityCtx.CsNode;
-                if (s is MemberDeclarationSyntax)
+                if (s is NamespaceDeclarationSyntax)
                     GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
+                else if (s is MemberDeclarationSyntax)
+                    globalMembers.Add(s as MemberDeclarationSyntax);
                 else if (s is UsingDirectiveSyntax)
                     GlobalEntities.Usings.Add(s as UsingDirectiveSyntax);
                 else if (s is AttributeListSyntax)
@@ -770,9 +777,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var generated = ClassEntities.Pop();
             if(generated.Members.Count > 0) {
-                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, generated.Members));
+                globalMembers.Add(GenerateGlobalClass(GlobalClassName, generated.Members));
             }
             generated.Free();
+
+            if (!string.IsNullOrEmpty(_options.DefaultNamespace))
+            {
+                GlobalEntities.Members.Add(_syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
+                    name: _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(_options.DefaultNamespace)),
+                    openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    externs: MakeList<ExternAliasDirectiveSyntax>(),
+                    usings: MakeList<UsingDirectiveSyntax>(),
+                    members: globalMembers,
+                    closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+                    null,
+                    null,
+                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(_options.DefaultNamespace)),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
 
             // Add: using static Xs$Globals
             //if (generated.Members.Count > 0)

@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+   <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
+
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|AnyCPU">
       <Configuration>Debug</Configuration>
@@ -21,8 +23,10 @@
 
   <ItemGroup>
 		<PropertyPageSchema Include="
-												$(MSBuildThisFileDirectory)Rules\general.xaml;
-                        $(MSBuildThisFileDirectory)Rules\CustomPropertyPage.xaml;
+												$(MSBuildThisFileDirectory)Rules\PropertyPage_Application.xaml;
+                        $(MSBuildThisFileDirectory)Rules\PropertyPage_Language.xaml;
+												$(MSBuildThisFileDirectory)Rules\PropertyPage_Build.xaml;
+                        $(MSBuildThisFileDirectory)Rules\XSharpDebugger.xaml 
 												">
         <Context>Project</Context>
 		</PropertyPageSchema>
@@ -34,9 +38,13 @@
                         ">
       <Context>Project</Context>
     </PropertyPageSchema>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general_file.xaml">
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_General.xaml">
       <Context>File</Context>
     </PropertyPageSchema>
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_XSharpSource.xaml;" >
+      <Context>File</Context>
+    </PropertyPageSchema>
+
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\scc.xaml">
       <Context>Invisible</Context>
     </PropertyPageSchema>
@@ -70,9 +78,6 @@
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\AdditionalCompilerSettings.xaml;">
-      <Context>Project</Context>
-    </PropertyPageSchema>
   </ItemGroup>
   
   

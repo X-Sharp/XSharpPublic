@@ -20,9 +20,41 @@ namespace XSharp.Build
 
         #region The values are set through .targets
         // The  fullpath to Compiler
+
+        public string AZ { get; set; }
+        public string CS { get; set; }
+        public string LB { get; set; }
+        public string UnSafe { get; set; }
+        public string OVF { get; set; }
+        public string DisabledWarnings { get; set; }
+        public string DocumentationFile { get; set; }
+        public string GenerateFullPaths { get; set; }
+        public string PPO { get; set; }
+        public string NS { get; set; }
+        public string INS { get; set; }
+        public string IncludePaths { get; set; }
+        public string NoStandardDefs { get; set; }
+        public string NoStandardLib { get; set; }
+        public string RootNameSpace{ get; set; }
+        public string VO1 { get; set; }
+        public string VO2 { get; set; }
+        public string VO3 { get; set; }
+        public string VO4 { get; set; }
+        public string VO5 { get; set; }
+        public string VO6 { get; set; }
+        public string VO7 { get; set; }
+        public string VO8 { get; set; }
+        public string VO9 { get; set; }
+        public string VO10 { get; set; }
+        public string VO11{ get; set; }
+        public string VO12 { get; set; }
+        public string VO13 { get; set; }
+
         public string CompilerPath { get; set; }
         // Misc. (unknown at that time) CommandLine options
         public string CommandLineOption { get; set; }
+
+       
         #endregion
 
         protected override string ToolName
@@ -159,11 +191,42 @@ namespace XSharp.Build
             // Debug ?
             commandLine.AppendSwitchIfNotNull("\n/debug", this.EmitDebugInformation ? "+" : "-");
 
+            // Compatibility
+            AppendSwitchIfTrue(commandLine, "/az", AZ);
+            AppendSwitchIfTrue(commandLine, "/cs", CS);
+            AppendSwitchIfTrue(commandLine, "/ins", INS);
+            AppendSwitchIfTrue(commandLine, "/lb", LB);
+            AppendSwitchIfTrue(commandLine, "/ovf", OVF);
+            AppendSwitchIfTrue(commandLine, "/ppo", PPO);
+            AppendSwitchIfTrue(commandLine, "/vo1", VO1);
+            AppendSwitchIfTrue(commandLine, "/vo2", VO2);
+            AppendSwitchIfTrue(commandLine, "/vo3", VO3);
+            AppendSwitchIfTrue(commandLine, "/vo4", VO4);
+            AppendSwitchIfTrue(commandLine, "/vo5", VO5);
+            AppendSwitchIfTrue(commandLine, "/vo6", VO6);
+            AppendSwitchIfTrue(commandLine, "/vo7", VO7);
+            AppendSwitchIfTrue(commandLine, "/vo8", VO8);
+            AppendSwitchIfTrue(commandLine, "/vo9", VO9);
+            AppendSwitchIfTrue(commandLine, "/vo10", VO10);
+            AppendSwitchIfTrue(commandLine, "/vo11", VO11);
+            AppendSwitchIfTrue(commandLine, "/vo12", VO12);
+            AppendSwitchIfTrue(commandLine, "/vo13", VO13);
+
+            // Output assembly name
+            commandLine.AppendSwitchIfNotNull("\n/out:", OutputAssembly);
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             commandLine.AppendSwitchIfNotNull("\n", this.CommandLineOption);
 
-            commandLine.AppendSwitchIfNotNull("\n\n/out:", OutputAssembly);
             //
+        }
+
+        protected void AppendSwitchIfTrue(CommandLineBuilderExtension commandLine, string Switch, string Option)
+        {
+            if (!String.IsNullOrEmpty(Option))
+            {
+                if (Option.ToUpper() == "TRUE")
+                    commandLine.AppendSwitch(Switch);
+            }
         }
 
         protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)

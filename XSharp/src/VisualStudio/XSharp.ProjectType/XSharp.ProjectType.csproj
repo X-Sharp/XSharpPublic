@@ -12,6 +12,9 @@
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\</OutDir>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -328,6 +331,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PropertyPages.txt" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -353,7 +357,9 @@
   -->
   <ItemGroup>
     <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.Default.props" />
-    <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.props" />
+    <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.props">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.Default.targets" />
     <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.targets">
       <SubType>Designer</SubType>
@@ -372,14 +378,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <XamlPropertyRule Include="BuildSystem\Rules\general.xaml">
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Application.xaml">
       <SubType>Designer</SubType>
     </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\CustomPropertyPage.xaml">
-      <RuleInjection>None</RuleInjection>
-      <SubType>Designer</SubType>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\general_file.xaml">
+    <XamlPropertyRule Include="BuildSystem\Rules\File_General.xaml">
       <RuleInjection>None</RuleInjection>
       <SubType>Designer</SubType>
     </XamlPropertyRule>
@@ -421,7 +423,7 @@
     <XamlPropertyRule Include="BuildSystem\Rules\debugger_general.xaml">
       <SubType>Designer</SubType>
     </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\xsharp.xaml">
+    <XamlPropertyRule Include="BuildSystem\Rules\File_XSharpSource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
     </XamlPropertyRule>
@@ -434,9 +436,13 @@
     </XamlPropertyRule>
   </ItemGroup>
   <ItemGroup>
-    <XamlPropertyRule Include="BuildSystem\Rules\AdditionalCompilerSettings.xaml">
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Language.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </XamlPropertyRule>
+    <XamlPropertyRule Include="BuildSystem\Rules\PropertyPage_Build.xaml">
+      <Generator>MSBuild:GenerateRuleSourceFromXaml</Generator>
+      <SubType>Designer</SubType>
     </XamlPropertyRule>
     <Page Include="BuildSystem\Rules\general.browseobject.xaml">
       <Generator>MSBuild:Compile</Generator>

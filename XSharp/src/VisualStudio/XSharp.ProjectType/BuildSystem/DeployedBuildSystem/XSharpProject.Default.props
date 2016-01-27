@@ -1,8 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <PropertyGroup>
     <ProjectSystemBase>$(MSBuildThisFileDirectory)</ProjectSystemBase>
+    <ProjectName>$(MSBuildProjectName)</ProjectName>
+    <ProjectExt>$(MSBuildProjectExtension)</ProjectExt>
+    <ProjectDir>$(MSBuildProjectDirectory)</ProjectDir>
+    <ProjectFileName>$(MSBuildProjectFile)</ProjectFileName>
+    <ProjectPath>$(ProjectDir)$(ProjectFileName)</ProjectPath>
 
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -11,7 +15,8 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
-	<UseOSWinMdReferences>true</UseOSWinMdReferences>
+    <TargetPath>\$(OutputPath)\$(OutputName)</TargetPath>
+  	<UseOSWinMdReferences>true</UseOSWinMdReferences>
     <OutputType>exe</OutputType>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DebugSymbols>true</DebugSymbols>

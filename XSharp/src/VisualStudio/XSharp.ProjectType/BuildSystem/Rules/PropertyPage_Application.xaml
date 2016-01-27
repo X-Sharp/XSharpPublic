@@ -2,17 +2,16 @@
 <!--Copyright, Microsoft Corporation, All rights reserved.-->
 <Rule
 	Name="ConfigurationGeneral"
-	DisplayName="General"
+	DisplayName="Application"
 	PageTemplate="generic"
-	Description="General"
+	Description="Application properties"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
 	<Rule.Categories>
 		<Category Name="General" DisplayName="General" Description="General" />
 	</Rule.Categories>
 	<Rule.DataSource>
-		<DataSource Persistence="ProjectFile" Label="Configuration" />
+        <DataSource Persistence="ProjectFile"   HasConfigurationCondition="False"/>
 	</Rule.DataSource>
-	<StringProperty Name="ApplicationIcon" DisplayName="Application Icon" />
 	<StringListProperty Name="ProjectTypeGuids" Visible="False" />
 	<StringProperty Name="ProjectGuid" Visible="False">
 		<StringProperty.DataSource>
@@ -24,7 +23,6 @@
 	<StringProperty Name="TargetFrameworkVersion" Visible="False" />
 	<StringProperty Name="TargetFrameworkProfile" Visible="False" />
 	<StringProperty Name="TargetPath" />
-	<StringProperty Name="DocumentationFile" DisplayName="XML doc comments file" />
 	<StringProperty Name="AssemblyName" />
 	<StringProperty Name="Name" />
 	<StringProperty Name="RootNamespace" DisplayName="Root namespace">
@@ -33,8 +31,7 @@
 		</StringProperty.DataSource>
 	</StringProperty>
 	<StringProperty Name="OutputName" />
-	<StringProperty Name="OutputPath" />
-    <EnumProperty Name="OutputType">
+    <EnumProperty Name="OutputType" DisplayName="Output Type" Default="exe">
 		<EnumValue Name="Library" DisplayName="Class Library" />
 		<EnumValue Name="exe" DisplayName="Console Application" />
 		<EnumValue Name="winexe" DisplayName="Windows Application" />
@@ -42,7 +39,6 @@
 		<EnumValue Name="WinMDObj" DisplayName="WinMD" />
 	</EnumProperty>
 	<StringListProperty Name="AvailablePlatforms" Separator="," />
-	<BoolProperty Name="Optimize" Description="Should compiler optimize output?" />
   <StringProperty Name="MSBuildProjectDirectory" Visible="false"/>
   <StringProperty Name="DefaultPlatform" Visible="false" />
   <StringProperty Name="PackageAction" Visible="false" Description="The MSBuild target to use when packaging a project." />

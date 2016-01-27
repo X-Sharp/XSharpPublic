@@ -1,18 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright, Microsoft Corporation, All rights reserved.-->
-        
-<!--TODO: Update the following files with the specified content
-
-    *BuildSystem\DeployedBuildSystem\CustomProject.Default.props* - update the value of the existing DebuggerFlavor element to use the new debugger
-    <PropertyGroup>
-      <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
-    </PropertyGroup>
--->
 <Rule
 	Name="XSharpDebugger"
 	DisplayName="XSharp Debugger"
 	PageTemplate="debugger"
-	Description="XSharpDebugger Debugger options"
+    Description="XSharpDebugger Debugger options"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>
         <DataSource Persistence="UserFileWithXamlDefaults" />

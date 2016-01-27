@@ -7,16 +7,13 @@
     <ProjectCapability Include="ReferencesFolder"/>
 
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;"/>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\xsharp.xaml;">
-      <Context>File</Context>
-    </PropertyPageSchema>
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\xsharp.browseobject.xaml;">
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
   </ItemGroup>
  
   <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(XSharpPath)XSharpProject.targets</MSBuildAllProjects>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildExtensionsPath)\XSharp\XSharpProject.targets</MSBuildAllProjects>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <Language>XSharp</Language>
 	<GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
@@ -135,15 +132,9 @@
 
    </Target>
 
-   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
+  <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
- 
-
-  <UsingTask
-  TaskName="XSharp.Build.Xsc"
-  AssemblyFile="$(XSharpPath)XSharp.Build.dll"/>
-
-
+  <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpPath)XSharp.Build.dll"/>
 
   <Target
           Name="CoreCompile"
@@ -169,13 +160,50 @@
       <_MacroProjectReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) == 'macro'" />
     </ItemGroup>
     <Xsc
-        CompilerPath="$(XSharpPath)"
-        References="@(_NonMacroReferencePath)"
+	      AdditionalLibPaths="$(__VulcanDevLibPath);$(AdditionalLibPaths)"
+	      CompilerPath="$(XSharpPath)"
+	      DefineConstants="$(DefineConstants)"
+	      DisabledWarnings="$(DisabledWarnings)"
+	      DocumentationFile="@(DocFileItem)"
+	      EmitDebugInformation="$(EmitDebugInformation)"
+	      GenerateFullPaths="$(GenerateFullPaths)"
+	      IncludePaths="$(__VulcanDevIncludePath);$(IncludePaths)"
+	      KeyFile="$(AssemblyOriginatorKeyFile)"
+	      NoConfig="true"
+	      NoLogo="$(NoLogo)"
+	      NoStandardDefs="$(NoStandardDefs)"
+	      NoStandardLib="$(NoStandardLib)"
         OutputAssembly="@(IntermediateAssembly)"
+        References="@(_NonMacroReferencePath)"
+	      Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
         ResponseFiles="$(CompilerResponseFile)"
+      	RootNamespace="$(RootNamespace)"      
         Sources="@(Compile)"
         TargetType="$(OutputType)"
-        EmitDebugInformation="$(DebugSymbols)"
+	      TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
+	      OVF="$(OVF)"
+	      AZ="$(AZ)"
+	      CS="$(CS)"
+	      LB="$(LB)"
+	      INS="$(INS)"
+	      NS="$(NS)"
+	      PPO="$(PPO)"
+	      UnSafe="$(UnSafe)"
+        VO1="$(VO1)"
+	      VO2="$(VO2)"
+	      VO3="$(VO3)"
+	      VO4="$(VO4)"
+	      VO5="$(VO5)"
+	      VO6="$(VO6)"
+	      VO7="$(VO7)"
+	      VO8="$(VO8)"
+	      VO9="$(VO9)"
+	      VO10="$(VO10)"
+	      VO11="$(VO11)"
+	      VO12="$(VO12)"
+	      VO13="$(VO13)"
+	      Win32Resource="@(Win32Resource)"
+
         CommandLineOption="$(CommandLineOption)"
     />
     <ItemGroup>

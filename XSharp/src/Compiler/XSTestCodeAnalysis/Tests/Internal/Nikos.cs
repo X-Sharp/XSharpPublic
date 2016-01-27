@@ -288,6 +288,39 @@ FUNCTION Start() AS VOID
 VAR t := CustomNs.Test{}
 ");
             CompileAndRunWithoutExceptions("/ns:CustomNs",s);
+
+            s = ParseSource("/ns:CustomNs", @"
+BEGIN NAMESPACE CustomNs
+CLASS Test
+END CLASS
+END NAMESPACE
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs", s);
+
+            s = ParseSource("/ns:CustomNs", @"
+USING CustomNs
+
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs", s);
+
+            s = ParseSource("/ns:CustomNs", @"
+#USING global::CustomNs
+
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs", s);
         }
     }
 }

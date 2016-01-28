@@ -784,7 +784,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!string.IsNullOrEmpty(_options.DefaultNamespace))
             {
                 GlobalEntities.Members.Add(_syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
-                    name: _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(_options.DefaultNamespace)),
+                    name: GenerateQualifiedName(_options.DefaultNamespace),
                     openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                     externs: MakeList<ExternAliasDirectiveSyntax>(),
                     usings: MakeList<UsingDirectiveSyntax>(),
@@ -794,7 +794,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                     null,
                     null,
-                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(_options.DefaultNamespace)),
+                    GenerateQualifiedName(_options.DefaultNamespace),
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
 

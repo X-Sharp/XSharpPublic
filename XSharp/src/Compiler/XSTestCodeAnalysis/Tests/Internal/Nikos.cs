@@ -321,6 +321,15 @@ FUNCTION Start() AS VOID
 VAR t := CustomNs.Test{}
 ");
             CompileAndRunWithoutExceptions("/ns:CustomNs", s);
+
+            s = ParseSource("/ns:ns1.ns2", @"
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := ns1.ns2.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:ns1.ns2", s);
         }
     }
 }

@@ -25,7 +25,8 @@
     <CppCommentsFixup>False</CppCommentsFixup>
     <CleanIntermediates>False</CleanIntermediates>
     <DocumentationSources>
-      <DocumentationSource sourceFile="C:\Program Files (x86)\Vulcan.NET 4.0\Redist\Assemblies\v4.0\VulcanVOConsoleClasses.dll" />
+      <DocumentationSource sourceFile="C:\Program Files (x86)\Vulcan.NET 4.0\Redist\Assemblies\v4.0\VulcanRTFuncs.dll" />
+      <DocumentationSource sourceFile="C:\Program Files (x86)\Vulcan.NET 4.0\Redist\Assemblies\v4.0\VulcanRT.dll" />
     </DocumentationSources>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <ComponentConfigurations>
@@ -55,7 +56,20 @@
           </configurations>
         </component>
       </ComponentConfig>
-    </ComponentConfigurations>
+<ComponentConfig id="IntelliSense Component" enabled="True"><component id="IntelliSense Component"><!-- Output options (optional)
+  Attributes:
+    Include namespaces (false by default)
+    Namespaces comments filename ("Namespaces" if not specified or empty)
+    Output folder (current folder if not specified or empty) --><output includeNamespaces="true" namespacesFile="Namespaces" folder="{@OutputFolder}" /></component></ComponentConfig>
+<ComponentConfig id="Reflection Index Data (ESENT Cache)" enabled="True"><component id="Reflection Index Data (ESENT Cache)">
+  <index name="reflection" value="/reflection/apis/api" key="@id" cache="15" localCacheSize="2500" frameworkCachePath="{@LocalDataFolder}Cache\ReflectionIndexCache" projectCachePath="">
+    <data base="{@FrameworkReflectionDataFolder}" recurse="true" files="*.xml" duplicateWarning="false" groupId="ReflectionIndexCache">
+		{@ReferenceLinkNamespaceFiles}
+	</data>
+    <data files="reflection.xml" groupId="Project_Ref_{@UniqueID}" />
+  </index>
+  <copy name="reflection" source="*" target="/document/reference" />
+</component></ComponentConfig></ComponentConfigurations>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>True</NamespaceGrouping>
     <SyntaxFilters>C#, X#</SyntaxFilters>
@@ -78,7 +92,7 @@
     <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
     <CatalogVersion>100</CatalogVersion>
     <CatalogProductId>VS</CatalogProductId>
-    <VisibleItems>Attributes, ExplicitInterfaceImplementations, ProtectedInternalAsProtected, PublicCompilerGenerated</VisibleItems>
+    <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, Internals, Privates, PrivateFields, Protected, SealedProtected, ProtectedInternalAsProtected, PublicCompilerGenerated</VisibleItems>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
       <Argument Key="logoHeight" Value="" />
@@ -91,15 +105,67 @@
       <Argument Key="includeEnumValues" Value="true" />
     </TransformComponentArguments>
     <ApiFilter>
-      <Filter entryType="Namespace" fullName="Vulcan.VO" isExposed="True">
-  <Filter entryType="Class" fullName="Vulcan.VO.Console" filterName="Console" isExposed="True">
-    <Filter entryType="Field" fullName="Vulcan.VO.Console.hConErr" filterName="hConErr" isExposed="False" />
-    <Filter entryType="Field" fullName="Vulcan.VO.Console.hConIn" filterName="hConIn" isExposed="False" />
-    <Filter entryType="Field" fullName="Vulcan.VO.Console.hConOut" filterName="hConOut" isExposed="False" />
-    <Filter entryType="Field" fullName="Vulcan.VO.Console.lNewConsole" filterName="lNewConsole" isExposed="False" />
-  </Filter>
+      <Filter entryType="Namespace" fullName="" isExposed="False">
+  <Filter entryType="Delegate" fullName="__IVarGetDelegate" isExposed="True" />
+  <Filter entryType="Class" fullName="__IVarGetInfo" isExposed="True" />
+  <Filter entryType="Delegate" fullName="__SendAsUsualDelegate" isExposed="True" />
+  <Filter entryType="Delegate" fullName="__SendClipConvDelegate" isExposed="True" />
+  <Filter entryType="Class" fullName="__SendMethodInfo" isExposed="True" />
+  <Filter entryType="Structure" fullName="_WINFILETIME" isExposed="True" />
+  <Filter entryType="Structure" fullName="_winSYSTEM_INFO" isExposed="True" />
+  <Filter entryType="Class" fullName="&lt;Module&gt;" isExposed="True" />
+  <Filter entryType="Structure" fullName="ArraySortComparer" isExposed="True" />
+  <Filter entryType="Structure" fullName="BITMAPFILEHEADER" isExposed="True" />
+  <Filter entryType="Structure" fullName="BITMAPINFO" isExposed="True" />
+  <Filter entryType="Structure" fullName="BITMAPINFO.$DIM_Array_bmiColors" isExposed="True" />
+  <Filter entryType="Structure" fullName="BITMAPINFOHEADER" isExposed="True" />
+  <Filter entryType="Class" fullName="FF" isExposed="True" />
+  <Filter entryType="Structure" fullName="LARGE_INTEGER" isExposed="True" />
+  <Filter entryType="Structure" fullName="LOGPALETTE" isExposed="True" />
+  <Filter entryType="Structure" fullName="LOGPALETTE.$DIM_Array_palPalEntry" isExposed="True" />
+  <Filter entryType="Structure" fullName="MemBlockEnd" isExposed="True" />
+  <Filter entryType="Structure" fullName="MemBlockStart" isExposed="True" />
+  <Filter entryType="Structure" fullName="MEMORY_BASIC_INFORMATION" isExposed="True" />
+  <Filter entryType="Structure" fullName="NonGCData" isExposed="True" />
+  <Filter entryType="Structure" fullName="PAINTSTRUCT" isExposed="True" />
+  <Filter entryType="Structure" fullName="PAINTSTRUCT.$DIM_Array_rgbReserved" isExposed="True" />
+  <Filter entryType="Structure" fullName="PALETTEENTRY" isExposed="True" />
+  <Filter entryType="Structure" fullName="RECT" isExposed="True" />
+  <Filter entryType="Class" fullName="RES_Collation" isExposed="True" />
+  <Filter entryType="Structure" fullName="RGBQUAD" isExposed="True" />
+  <Filter entryType="Class" fullName="SR" isExposed="True" />
+  <Filter entryType="Class" fullName="SR_VOSDK" isExposed="True" />
+  <Filter entryType="Enumeration" fullName="TransformFunc" isExposed="True" />
+  <Filter entryType="Class" fullName="VersionNumbers" isExposed="True" />
+  <Filter entryType="Enumeration" fullName="VOStringResources" isExposed="True" />
+  <Filter entryType="Class" fullName="VulcanFileMode" isExposed="True" />
 </Filter>
-<Filter entryType="Namespace" fullName="VulcanVOConsoleClasses" isExposed="False" /></ApiFilter>
+<Filter entryType="Namespace" fullName="VulcanRTFuncs" isExposed="False">
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions" filterName="Functions" isExposed="True" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$__RDD$_115_15" filterName="Functions.$CB_$__RDD$_115_15" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$__RDD$_293_21" filterName="Functions.$CB_$__RDD$_293_21" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$__RDD$_317_29" filterName="Functions.$CB_$__RDD$_317_29" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$__RDD$_318_39" filterName="Functions.$CB_$__RDD$_318_39" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1249_18" filterName="Functions.$CB_$Database$_1249_18" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1252_40" filterName="Functions.$CB_$Database$_1252_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1339_20" filterName="Functions.$CB_$Database$_1339_20" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1640_40" filterName="Functions.$CB_$Database$_1640_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1752_20" filterName="Functions.$CB_$Database$_1752_20" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1758_18" filterName="Functions.$CB_$Database$_1758_18" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1792_40" filterName="Functions.$CB_$Database$_1792_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_1932_40" filterName="Functions.$CB_$Database$_1932_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_4291_40" filterName="Functions.$CB_$Database$_4291_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_536_40" filterName="Functions.$CB_$Database$_536_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_602_40" filterName="Functions.$CB_$Database$_602_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_680_40" filterName="Functions.$CB_$Database$_680_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_803_40" filterName="Functions.$CB_$Database$_803_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_874_40" filterName="Functions.$CB_$Database$_874_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_933_40" filterName="Functions.$CB_$Database$_933_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Database$_991_40" filterName="Functions.$CB_$Database$_991_40" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Error$_930_22" filterName="Functions.$CB_$Error$_930_22" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$Error$_941_22" filterName="Functions.$CB_$Error$_941_22" isExposed="False" />
+  <Filter entryType="Class" fullName="VulcanRTFuncs.Functions.$CB_$FileSys$_249_46" filterName="Functions.$CB_$FileSys$_249_46" isExposed="False" />
+</Filter></ApiFilter>
     <HeaderText>This documentation was generated for reference purposes</HeaderText>
     <HelpFileVersion>1.0.0.0</HelpFileVersion>
   </PropertyGroup>

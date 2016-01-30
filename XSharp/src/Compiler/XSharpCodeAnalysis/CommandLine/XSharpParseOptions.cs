@@ -10,17 +10,21 @@ namespace Microsoft.CodeAnalysis.CSharp
     { 
         public bool VirtualInstanceMethods { get; private set; }
 
+        public string DefaultNamespace { get; private set; }
+
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
             {
                 VirtualInstanceMethods = opt.Vo3;
+                DefaultNamespace = opt.NameSpace;
             }
         }
 
         public void SetXSharpSpecificOptions(CSharpParseOptions opt)
         {
             VirtualInstanceMethods = opt.VirtualInstanceMethods;
+            DefaultNamespace = opt.DefaultNamespace;
         }
     }
 }

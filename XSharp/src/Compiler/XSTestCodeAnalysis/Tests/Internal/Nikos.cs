@@ -267,5 +267,69 @@ ENDIF
 ");
             CompileAndRunWithoutExceptions(s);
         }
+
+        [Test(Author = "Nikos", Id = "N10", Title = "Defaulkt namespace (/ns)")]
+        public static void DefaultNamespace()
+        {
+            var s = ParseSource(@"
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileWithErrors(s);
+
+            s = ParseSource("/ns:CustomNs", @"
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs",s);
+
+            s = ParseSource("/ns:CustomNs", @"
+BEGIN NAMESPACE CustomNs
+CLASS Test
+END CLASS
+END NAMESPACE
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs", s);
+
+            s = ParseSource("/ns:CustomNs", @"
+USING CustomNs
+
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs", s);
+
+            s = ParseSource("/ns:CustomNs", @"
+#USING global::CustomNs
+
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := CustomNs.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:CustomNs", s);
+
+            s = ParseSource("/ns:ns1.ns2", @"
+CLASS Test
+END CLASS
+
+FUNCTION Start() AS VOID
+VAR t := ns1.ns2.Test{}
+");
+            CompileAndRunWithoutExceptions("/ns:ns1.ns2", s);
+        }
     }
 }

@@ -751,9 +751,9 @@
       <topicref type="topic" id="423890627480191" build="ALL" modified="2016-01-19T22:47:35.921Z" icon="0" href="X-Walkthroughs">
         <caption translate="true">X# Walkthroughs</caption>
       </topicref>
-    </topicref>
-    <topicref type="topic" id="423888999781141" build="ALL" modified="2016-01-19T21:25:27.363Z" icon="0" href="Class-and-Function-Reference">
-      <caption translate="true">Class and Function Reference</caption>
+      <navref href="NewProject::root" build="ALL" id="42398863705791" modified="2016-01-28T12:09:04.583Z" merge="compile">
+        <caption translate="true">NewProject</caption>
+      </navref>
     </topicref>
   </topicref>
 </map>

@@ -21,34 +21,37 @@ namespace XSharp.Build
         #region The values are set through .targets
         // The  fullpath to Compiler
 
-        public string AZ { get; set; }
-        public string CS { get; set; }
-        public string LB { get; set; }
-        public string UnSafe { get; set; }
-        public string OVF { get; set; }
-        public string DisabledWarnings { get; set; }
+        // Todo: store the values in base.bag
+
+        public Boolean AZ { get; set; }
+        public Boolean CS { get; set; }
+        public Boolean LB { get; set; }
+        public Boolean UnSafe { get; set; }
+        public Boolean OVF { get; set; }
+        public String DisabledWarnings { get; set; }
         public string DocumentationFile { get; set; }
-        public string GenerateFullPaths { get; set; }
-        public string PPO { get; set; }
-        public string NS { get; set; }
-        public string INS { get; set; }
-        public string IncludePaths { get; set; }
-        public string NoStandardDefs { get; set; }
-        public string NoStandardLib { get; set; }
+        public Boolean GenerateFullPaths { get; set; }
+        public Boolean PPO { get; set; }
+        public Boolean NS { get; set; }
+        public Boolean INS { get; set; }
+        public String IncludePaths { get; set; }
+        public Boolean NoStandardDefs { get; set; }
+        public Boolean NoStandardLib { get; set; }
         public string RootNameSpace{ get; set; }
-        public string VO1 { get; set; }
-        public string VO2 { get; set; }
-        public string VO3 { get; set; }
-        public string VO4 { get; set; }
-        public string VO5 { get; set; }
-        public string VO6 { get; set; }
-        public string VO7 { get; set; }
-        public string VO8 { get; set; }
-        public string VO9 { get; set; }
-        public string VO10 { get; set; }
-        public string VO11{ get; set; }
-        public string VO12 { get; set; }
-        public string VO13 { get; set; }
+        public int WarningLevel { get; set; }
+        public Boolean VO1 { get; set; }
+        public Boolean VO2 { get; set; }
+        public Boolean VO3 { get; set; }
+        public Boolean VO4 { get; set; }
+        public Boolean VO5 { get; set; }
+        public Boolean VO6 { get; set; }
+        public Boolean VO7 { get; set; }
+        public Boolean VO8 { get; set; }
+        public Boolean VO9 { get; set; }
+        public Boolean VO10 { get; set; }
+        public Boolean VO11{ get; set; }
+        public Boolean VO12 { get; set; }
+        public Boolean VO13 { get; set; }
 
         public string CompilerPath { get; set; }
         // Misc. (unknown at that time) CommandLine options
@@ -190,7 +193,34 @@ namespace XSharp.Build
             }
             // Debug ?
             commandLine.AppendSwitchIfNotNull("\n/debug", this.EmitDebugInformation ? "+" : "-");
-
+            // Default Namespace
+            if (NS)
+            {
+                commandLine.AppendSwitch("/ns:" + this.RootNameSpace);
+            }
+            else
+            {
+                commandLine.AppendSwitch("/ns:" );
+            }
+            if (WarningLevel < 0 || WarningLevel > 4)
+            {
+                WarningLevel = 4;
+            }
+            commandLine.AppendSwitch("/warn:" + WarningLevel.ToString());
+            AppendSwitchIfTrue(commandLine, "/warnaserror", TreatWarningsAsErrors);
+            if (!String.IsNullOrEmpty(DisabledWarnings))
+            {
+                string[] warnings = DisabledWarnings.Split(new char[] { ' ', ',', ';' });
+                string warninglist = String.Empty;
+                foreach (string s in warnings)
+                {
+                    if (warninglist.Length > 0)
+                        warninglist += ";";
+                    warninglist += s;
+                }
+                if (warninglist.Length > 0)
+                    commandLine.AppendSwitch("/nowarn:" + warninglist);
+            }
             // Compatibility
             AppendSwitchIfTrue(commandLine, "/az", AZ);
             AppendSwitchIfTrue(commandLine, "/cs", CS);
@@ -220,12 +250,17 @@ namespace XSharp.Build
             //
         }
 
-        protected void AppendSwitchIfTrue(CommandLineBuilderExtension commandLine, string Switch, string Option)
+        protected void AppendSwitchIfTrue(CommandLineBuilderExtension commandLine, string Switch, Boolean Option)
         {
-            if (!String.IsNullOrEmpty(Option))
+            
+            if (Option)
             {
-                if (Option.ToUpper() == "TRUE")
-                    commandLine.AppendSwitch(Switch);
+                commandLine.AppendSwitch(Switch+"+");
+            }
+            else
+            {
+                commandLine.AppendSwitch(Switch + "-");
+
             }
         }
 

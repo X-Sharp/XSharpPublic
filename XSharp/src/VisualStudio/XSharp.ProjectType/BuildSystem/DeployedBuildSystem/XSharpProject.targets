@@ -100,11 +100,6 @@
     <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName).xml" Condition="'$(DocumentationFile)'!=''"/>
   </ItemGroup>
 
-  <!--
-     *** Important - Import this here because some targets
-     that follow will override targets found in Microsoft.Common.targets 
-   -->
-   <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets" />
 
    <PropertyGroup>
       <CoreCompileDependsOn>_ComputeNonExistentFileProperty</CoreCompileDependsOn>
@@ -181,6 +176,7 @@
         Sources="@(Compile)"
         TargetType="$(OutputType)"
 	      TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
+	      WarningLevel="$(WarningLevel)"
 	      OVF="$(OVF)"
 	      AZ="$(AZ)"
 	      CS="$(CS)"
@@ -203,7 +199,6 @@
 	      VO12="$(VO12)"
 	      VO13="$(VO13)"
 	      Win32Resource="@(Win32Resource)"
-
         CommandLineOption="$(CommandLineOption)"
     />
     <ItemGroup>

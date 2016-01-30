@@ -22,7 +22,6 @@
 	<StringProperty Name="TargetFrameworkIdentifier" Visible="False" />
 	<StringProperty Name="TargetFrameworkVersion" Visible="False" />
 	<StringProperty Name="TargetFrameworkProfile" Visible="False" />
-	<StringProperty Name="TargetPath" />
 	<StringProperty Name="AssemblyName" />
 	<StringProperty Name="Name" />
 	<StringProperty Name="RootNamespace" DisplayName="Root namespace">

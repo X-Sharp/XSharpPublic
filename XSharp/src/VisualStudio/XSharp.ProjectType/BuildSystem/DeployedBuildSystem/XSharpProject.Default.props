@@ -15,7 +15,6 @@
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
-    <TargetPath>\$(OutputPath)\$(OutputName)</TargetPath>
   	<UseOSWinMdReferences>true</UseOSWinMdReferences>
     <OutputType>exe</OutputType>
     <OutputPath>bin\$(Configuration)\</OutputPath>

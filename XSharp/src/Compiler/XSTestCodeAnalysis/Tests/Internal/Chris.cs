@@ -591,6 +591,84 @@ END CLASS
             CompileAndLoadWithoutErrors(s);
         }
 
+        // 90
+        [Test(Author = "Chris", Id = "C90", Title = "Crash with uint32")]
+        public static void Crash_with_uint32()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL d := 0X80880000 AS DWORD
+? d 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 91
+        [Test(Author = "Chris", Id = "C91", Title = "VO incompatibility with virtual methods")]
+        public static void Vo_incompatibility_with_virtual_methods()
+        {
+            var s = ParseSource(@"
+// same code in vulcan compiled with no /vo options enabled
+// vulcan calls child method, xsharp calls parent
+CLASS ParentClass
+    VIRTUAL METHOD OnTest() AS STRING
+        ? 'parent'
+    RETURN 'parent'
+END CLASS
+
+CLASS ChildClass INHERIT ParentClass
+    METHOD OnTest() AS STRING
+        ? 'child'
+    RETURN 'child'
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL o AS ParentClass
+    o:= ChildClass{ }
+    IF o:OnTest() == 'parent'
+        THROW System.Exception{ 'parent called, vulcan calls child'}
+    END IF
+RETURN
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 92
+        [Test(Author = "Chris", Id = "C92", Title = "Roslyn ASSERTION failed ")]
+        public static void Roslyn_assert_failed()
+        {
+            var s = ParseSource(@"
+//92. ASSERTION failed at LanguageService.CodeAnalysis.XSharp.Symbols.SourceMemberContainerTypeSymbol.CheckNonOverrideMember, SourceMemberContainerSymbol_ImplementationChecks.cs:line 817
+// also no warnings, while a warning should be reported about hiding parent property
+CLASS ParentClass
+    PROPERTY Name AS INT GET 0
+END CLASS
+
+CLASS ChildClass INHERIT ParentClass
+    VIRTUAL PROPERTY Name AS INT GET 0
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 93
+        [Test(Author = "Chris", Id = "C93", Title = "Cannot override inherited method")]
+        public static void Cannot_override_inherited_method()
+        {
+            var s = ParseSource(@"
+//93. error XS0506: 'ChildClass.OnTest()': cannot override inherited member 'ParentClass.OnTest()' because it is not marked virtual, abstract, or override
+
+// vulcan only warning about hiding base method
+CLASS ParentClass
+    METHOD OnTest() AS VOID
+END CLASS
+
+CLASS ChildClass INHERIT ParentClass
+    VIRTUAL METHOD OnTest() AS VOID
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
 
         // 94
         [Test(Author = "Chris", Id = "C94", Title = "String comparison relational ops '<','>' (trasnlated to String.Compare() call)")]
@@ -620,6 +698,375 @@ ENDIF
             CompileAndLoadWithoutErrors(s);
         }
 
+        // 95
+        [Test(Author = "Chris", Id = "C95", Title = "Operator > is ambiguous on float & double")]
+        public static void Operator_gt_ambiguous_float_double()
+        {
+            var s = ParseSource(@"
+//95. error XS0034: Operator '>' is ambiguous on operands of type 'float' and 'double'
+FUNCTION Start() AS VOID
+LOCAL r4 AS REAL4
+LOCAL r8 AS REAL8
+? r4 > 0.5 // error XS0034
+? r4 > r8  // no error here!
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 96
+        [Test(Author = "Chris", Id = "C96", Title = "Cannot implicitly call operator or accessor")]
+        public static void Cannot_implicitly_call_operator_or_accessor()
+        {
+            var s = ParseSource(@"
+//96. error XS0571: 'ArrayList.this[int].get': cannot explicitly call operator or accessor
+// that was part of code probably more than 10 years old, from the time that the vulcan (or cule?) compiler did not support accessing indexed properties
+// not saying we should support this, just mentioning it because I had a lot of code using this!
+FUNCTION Start() AS VOID
+LOCAL a AS System.Collections.ArrayList
+a := System.Collections.ArrayList{}
+a:Add(17)
+? a:get_Item(0)
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 97
+        [Test(Author = "Chris", Id = "C97", Title = "Cannot implicitly convert INT to INTPTR")]
+        public static void Cannot_implicitly_convert_int_to_intptr()
+        {
+            var s = ParseSource(@"
+//97. error XS0266: Cannot implicitly convert type 'int' to 'System.IntPtr'. An explicit conversion exists (are you missing a cast?)
+FUNCTION Start() AS VOID
+LOCAL p AS IntPtr
+p := 1
+p := 1u
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 98
+        [Test(Author = "Chris", Id = "C98", Title = "Partial declarations different base classes")]
+        public static void Partial_declarations_different_base_classes_v1()
+        {
+            var s1 = ParseSource(@"
+//98. error XS0263: Partial declarations of 'test' must not specify different base classes
+// file 1
+PARTIAL CLASS test
+//END CLASS
+");
+            var s2 = ParseSource(@"
+// file 2
+PARTIAL CLASS test INHERIT System.Windows.Forms.Form 
+//END CLASS
+");
+            CompileAndLoadWithoutErrors(s1,s2);
+        }
+
+        // 99
+        [Test(Author = "Chris", Id = "C99", Title = "Keyword 'this' not available in the current context")]
+        public static void Keyword_this_not_available_in_current_context()
+        {
+            var s = ParseSource(@"
+//Not sure if this one is the same as 31:
+//99. error XS0027: Keyword 'this' is not available in the current context
+
+CLASS Parent
+CONSTRUCTOR(o AS OBJECT)
+END CLASS
+
+CLASS Child INHERIT Parent
+CONSTRUCTOR()
+SUPER(SELF)
+END CLASS 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 100
+        [Test(Author = "Chris", Id = "C100", Title = "Extraneous input at dll import")]
+        public static void Extraneous_input_dll_import()
+        {
+            var s = ParseSource(@"
+//100. error: extraneous input 'ANSI','UNICODE','AUTO' expecting EOS
+_DLL FUNCTION GetPrivateProfileString1(c1 AS STRING, c2 AS STRING, c3 AS STRING,o AS System.Text.StringBuilder, nSize AS DWORD, cFileName AS STRING ) AS DWORD PASCAL:KERNEL32.GetPrivateProfileStringA ANSI
+_DLL FUNCTION GetPrivateProfileString2(c1 AS STRING, c2 AS STRING, c3 AS STRING,o AS System.Text.StringBuilder, nSize AS DWORD, cFileName AS STRING ) AS DWORD PASCAL:KERNEL32.GetPrivateProfileStringA UNICODE
+_DLL FUNCTION GetPrivateProfileString3(c1 AS STRING, c2 AS STRING, c3 AS STRING,o AS System.Text.StringBuilder, nSize AS DWORD, cFileName AS STRING ) AS DWORD PASCAL:KERNEL32.GetPrivateProfileStringA AUTO
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 101
+        [Test(Author = "Chris", Id = "C101", Title = "DLLimport must be specified on a method marked 'static extern'")]
+        public static void Dllimport_static_extern()
+        {
+            var s = ParseSource(@"
+//101. error XS0601: The DllImport attribute must be specified on a method marked 'static' and 'extern'
+#using System.Runtime.InteropServices
+// vulcan does not require EXTERN
+CLASS Test
+    [DllImport('gdi32.dll',  EntryPoint:='CreateSolidBrush')];
+    STATIC METHOD CreateSolidBrush(hDC AS DWORD) AS IntPtr
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 102
+        [Test(Author = "Chris", Id = "C102", Title = "Cannot be extern with body")]
+        public static void Cannot_be_extern_with_body()
+        {
+            var s = ParseSource(@"
+//102. error XS0179: 'Test.CreateSolidBrush(uint)' cannot be extern and declare a body
+#using System.Runtime.InteropServices
+CLASS Test
+    [DllImport('gdi32.dll',  EntryPoint:='CreateSolidBrush')];
+    STATIC EXTERN METHOD CreateSolidBrush(hDC AS DWORD) AS IntPtr
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 103
+        [Test(Author = "Chris", Id = "C103", Title = "Extraneous input DO")]
+        public static void Extraneous_input_do()
+        {
+            var s = ParseSource(@"
+//103. error: extraneous input 'DO' expecting EOS
+FUNCTION Start() AS VOID
+WHILE FALSE
+END DO
+
+WHILE FALSE
+ENDDO
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 104
+        [Test(Author = "Chris", Id = "C104", Title = "Method cannot be sealed because it is not an override")]
+        public static void Method_cannot_be_sealed_not_override()
+        {
+            var s = ParseSource(@"
+// vulcan incompatibility, related to #91
+CLASS Parent
+    VIRTUAL METHOD Test() AS VOID
+END CLASS
+
+CLASS Child INHERIT Parent
+    SEALED METHOD Test() AS VOID
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 105
+        [Test(Author = "Chris", Id = "C105", Title = "FOR local declaration")]
+        public static void For_local_declaration()
+        {
+            var s = ParseSource(@"
+// used to be compile crash, bug 17
+FUNCTION Start() AS VOID
+FOR LOCAL n := 1 AS INT UPTO 10
+NEXT
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+        // 106
+        [Test(Author = "Chris", Id = "C106", Title = "Crash with missing global type")]
+        public static void Crash_with_missing_global_type()
+        {
+            var s = ParseSource(@"
+GLOBAL ggg := 123 // AS INT missing
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 107
+        [Test(Author = "Chris", Id = "C107", Title = "No error on missing local type, gets treated as INT")]
+        public static void No_error_on_missing_local_type()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL c
+c := '123'
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 108
+        [Test(Author = "Chris", Id = "C108", Title = "Name conflict with '.' static member access")]
+        public static void Name_conflict_static_access()
+        {
+            var s = ParseSource(@"
+INTERFACE ITest
+    METHOD Foo() AS VOID
+END INTERFACE
+
+CLASS Test
+    STATIC METHOD StaticMethod() AS VOID
+END CLASS
+
+FUNCTION Start() AS VOID
+LOCAL Test AS ITest
+Test.StaticMethod()
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 109
+        [Test(Author = "Chris", Id = "C109", Title = "Static class cannot derive from parent")]
+        public static void Static_class_cannot_derive_from_parent()
+        {
+            var s = ParseSource(@"
+CLASS Parent
+END CLASS
+STATIC CLASS Child INHERIT Parent
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 110
+        [Test(Author = "Chris", Id = "C110", Title = "Partial declarations different base classes")]
+        public static void Partial_declarations_different_base_classes()
+        {
+            var s = ParseSource(@"
+// just mentioning it as it is an incompatibility with vulcan
+// not sure if it's a good idea to 'fix' this particular one, though
+// allthough it's very common scenario in vulcan code...
+CLASS Parent
+END CLASS
+
+PARTIAL CLASS TestClass INHERIT Parent
+END CLASS
+PARTIAL CLASS TestClass
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 111
+        [Test(Author = "Chris", Id = "C111", Title = "Method cannot be sealed because it is not an override")]
+        public static void Method_cannot_be_sealed_because_it_is_not_an_override()
+        {
+            var s = ParseSource(@"
+PARTIAL CLASS TestClass
+SEALED METHOD mmm() AS VOID
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 112
+        [Test(Author = "Chris", Id = "C112", Title = "Interface members cannot have a definition")]
+        public static void Interface_members_cannot_have_a_definition()
+        {
+            var s = ParseSource(@"
+// related to #50, but different order of SET/GET keywords
+INTERFACE ITest
+    PROPERTY prop1 AS INT GET SET // ok
+    PROPERTY prop2 AS INT SET GET // error
+END INTERFACE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 113
+        [Test(Author = "Chris", Id = "C113", Title = "Inconsistent accessibility of inherited class")]
+        public static void Inconsistent_accessibility_of_inherited_class()
+        {
+            var s = ParseSource(@"
+INTERNAL CLASS Parent
+END CLASS
+CLASS Child INHERIT Parent
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 114
+        [Test(Author = "Chris", Id = "C114", Title = "Virtual access properties with /vo3")]
+        public static void Virtual_access_prop_vo3()
+        {
+            var s = ParseSource("/vo3", @"
+CLASS Parent
+    ACCESS acc AS STRING
+    RETURN 'Parent'
+    METHOD met() AS STRING
+    RETURN 'Parent'
+    PROPERTY prop AS STRING GET 'Parent'
+END CLASS
+
+CLASS Child INHERIT Parent
+    ACCESS acc AS STRING
+    RETURN 'Child'
+    METHOD met() AS STRING
+    RETURN 'Child'
+    PROPERTY prop AS STRING GET 'Child'
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL o AS Parent
+    o:= Child{ }
+    if o: met() != 'Child'
+        Throw Exception{'Method called parent!'}
+    end if
+    if o : prop != 'Child'
+        Throw Exception{'Property called parent!'}
+    end if
+    if o : acc != 'Child'
+        Throw Exception{'Access property called parent!'}
+    end if
+");
+            CompileAndRunWithoutExceptions("/vo3", s);
+        }
+
+        // 115
+        [Test(Author = "Chris", Id = "C115", Title = "Nested default namespace not found")]
+        public static void Nested_default_namespace_not_found()
+        {
+            var s = ParseSource("/ns:ns1.ns2", @"
+CLASS TestClass
+END CLASS
+FUNCTION Start() AS VOID
+LOCAL o AS ns1.ns2.TestClass
+");
+            CompileAndLoadWithoutErrors("/ns:ns1.ns2", s);
+        }
+
+        // 116
+        [Test(Author = "Chris", Id = "C116", Title = "Nested default namespace: cannot access class")]
+        public static void Nested_default_namespace_cannot_access_class()
+        {
+            var s = ParseSource("/ns:ns1.ns2",@"
+BEGIN NAMESPACE ns1.ns2
+CLASS TestClass
+END CLASS
+END NAMESPACE
+
+CLASS AnotherClass
+    PROTECT o AS TestClass
+END CLASS
+");
+            CompileAndLoadWithoutErrors("/ns:ns1.ns2", s);
+        }
+
+        // 117
+        [Test(Author = "Chris", Id = "C117", Title = "Property SET must declare a body")]
+        public static void Prop_set_must_declare_body()
+        {
+            var s = ParseSource(@"
+INTERFACE ITest
+    PROPERTY prop AS INT GET SET
+END INTERFACE
+
+CLASS TestClass IMPLEMENTS ITest
+    VIRTUAL PROPERTY prop AS INT GET 0 SET
+END CLASS 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
 
         // 118
         [Test(Author = "Chris", Id = "C118", Title = "Compiler crash after: Assertion Failed: binding should be enclosed in a conditional access")]
@@ -629,6 +1076,44 @@ ENDIF
 LOCAL n AS INT
 LOCAL s AS STRING
 s := ( n ):ToString() 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 119
+        [Test(Author = "Chris", Id = "C119", Title = "Constructor chaning in body")]
+        public static void Ctor_chain_in_body()
+        {
+            var s = ParseStartFunction(@"
+CLASS Test
+    CONSTRUCTOR(n AS INT)
+    CONSTRUCTOR()
+    SUPER()
+    SELF(1)
+END CLASS 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 120
+        [Test(Author = "Chris", Id = "C120", Title = "Name conflict with '.' for static member access")]
+        public static void Name_conflict_static_member_access()
+        {
+            var s = ParseSource(@"
+CLASS Alignment
+    STATIC EXPORT Left AS INT
+END CLASS
+
+CLASS Foo
+    PROPERTY Alignment AS INT
+        SET
+            IF Alignment.Left == 1
+            ENDIF
+        END SET
+    END PROPERTY
+    METHOD Bar() AS VOID
+    ? Alignment.Left
+END CLASS 
 ");
             CompileAndLoadWithoutErrors(s);
         }

@@ -621,5 +621,16 @@ ENDIF
         }
 
 
+        // 118
+        [Test(Author = "Chris", Id = "C118", Title = "Compiler crash after: Assertion Failed: binding should be enclosed in a conditional access")]
+        public static void Crash_118()
+        {
+            var s = ParseStartFunction(@"
+LOCAL n AS INT
+LOCAL s AS STRING
+s := ( n ):ToString() 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
     }
 }

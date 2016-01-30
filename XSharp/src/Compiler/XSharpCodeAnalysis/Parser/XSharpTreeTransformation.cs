@@ -3170,6 +3170,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCondAccessExpr([NotNull] XSharpParser.CondAccessExprContext context)
         {
+#if false // nvk: check not needed because it is a separate rule now!
             switch (context.Right.Start.Type) {
                 case XSharpParser.DOT:
                 case XSharpParser.COLON:
@@ -3179,6 +3180,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.AddError(new ParseErrorData(context.Right.Start,ErrorCode.ERR_SyntaxError,"."));
                     break;
             }
+#endif
+            context.Put(_syntaxFactory.ConditionalAccessExpression(
+                context.Left.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                context.Right.Get<ExpressionSyntax>()
+            ));
+        }
+
+        public override void ExitBoundAccessMember([NotNull] XSharpParser.BoundAccessMemberContext context)
+        {
+            context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                context.Expr.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                context.Name.Get<SimpleNameSyntax>()));
+        }
+
+        public override void ExitBoundArrayAccess([NotNull] XSharpParser.BoundArrayAccessContext context)
+        {
+            context.Put(_syntaxFactory.ElementAccessExpression(
+                context.Expr.Get<ExpressionSyntax>(),
+                context.ArgList?.Get<BracketedArgumentListSyntax>() 
+                    ?? _syntaxFactory.BracketedArgumentList(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        default(SeparatedSyntaxList<ArgumentSyntax>),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))));
+        }
+
+        public override void ExitBoundMethodCall([NotNull] XSharpParser.BoundMethodCallContext context)
+        {
+            context.Put(_syntaxFactory.InvocationExpression(
+                context.Expr.Get<ExpressionSyntax>(),
+                context.ArgList?.Get<ArgumentListSyntax>()
+                    ?? _syntaxFactory.ArgumentList(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        default(SeparatedSyntaxList<ArgumentSyntax>),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+        }
+
+        public override void ExitBoundCondAccessExpr([NotNull] XSharpParser.BoundCondAccessExprContext context)
+        {
             context.Put(_syntaxFactory.ConditionalAccessExpression(
                 context.Left.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
@@ -3203,9 +3244,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAccessMember([NotNull] XSharpParser.AccessMemberContext context)
          {
             context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                context.Left.Get<ExpressionSyntax>(),
+                context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                context.Right.Get<IdentifierNameSyntax>()));
+                context.Name.Get<SimpleNameSyntax>()));
         }
 
         public override void ExitPostfixExpression([NotNull] XSharpParser.PostfixExpressionContext context)

@@ -543,12 +543,12 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 2)  exponentation        ^ **
 //           ( 1)  unary                + - ++ -- ~
 
-expression			: Left=expression Op=(DOT | COLON) Right=identifierName		#accessMember			// member access The ? is new
+expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember			// member access The ? is new
 					| Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
 					| Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
-					| <assoc=right> Left=expression Op=QMARK Right=expression	#condAccessExpr			// expr ? expr
-					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
+					| Left=expression Op=QMARK Right=boundExpression			#condAccessExpr			// expr ? expr
 					| LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
+					| Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
 					| Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
 					| Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
 					  Expr=expression											#prefixExpression		// +/-/~/&/++/-- expr
@@ -601,8 +601,6 @@ primary				: Key=SELF													#selfExpression
 					| Type=nativeType											#typeExpression			// Standard DotNet Types
 					| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
 					| Expr=iif													#iifExpression			// iif( expr, expr, expr )
-					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
-					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 					| Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
 					  (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
@@ -612,6 +610,16 @@ primary				: Key=SELF													#selfExpression
 //					| extendedaliasExpr											#aliasextended			// (expr) -> ...
 //					| AMP LPAREN expression RPAREN								#macroexpr				// &( expr )
 //					| AMP identifierName										#macrovar				// &id
+					;
+
+boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new
+					| Expr=boundExpression LPAREN ArgList=argumentList? RPAREN	#boundMethodCall		// method call
+					| Expr=boundExpression 
+					  LBRKT ArgList=bracketedArgumentList? RBRKT				#boundArrayAccess		// Array element access
+					| <assoc=right> Left=boundExpression
+					  Op=QMARK Right=boundExpression							#boundCondAccessExpr	// expr ? expr
+					| Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
+					| LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
 					;
 
 bracketedArgumentList

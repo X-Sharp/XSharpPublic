@@ -621,5 +621,29 @@ ENDIF
         }
 
 
+        // 118
+        [Test(Author = "Chris", Id = "C118", Title = "Compiler crash after: Assertion Failed: binding should be enclosed in a conditional access")]
+        public static void Crash_118()
+        {
+            var s = ParseStartFunction(@"
+LOCAL n AS INT
+LOCAL s AS STRING
+s := ( n ):ToString() 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 121
+        [Test(Author = "Chris", Id = "C121", Title = "Crash with empty constructors")]
+        public static void Crash_empty_ctor()
+        {
+            var s = ParseSource(@"
+CLASS Test
+    PRIVATE CONSTRUCTOR
+    STATIC CONSTRUCTOR
+END CLASS 
+");
+            CompileAndLoadWithoutErrors(s);
+        }
     }
 }

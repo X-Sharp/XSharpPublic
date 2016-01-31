@@ -2509,11 +2509,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     t = locCtx.DataType;
                 else if (t != null)
                     locCtx.DataType = t;
-                else {
-                    locCtx.DataType = FixPosition(new XSharpParser.DatatypeContext(context,0),context.Stop);
-                    locCtx.DataType.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)));
-                    context.AddError(new ParseErrorData(locCtx.Stop, ErrorCode.ERR_SyntaxError, "AS")); // TODO nvk: this error should reference the location after the rule
-                }
             }
         }
 
@@ -2522,7 +2517,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach(var lvCtx in context._LocalVars)
                 VisitLocalvar(lvCtx);
             context.PutList(MakeList<StatementSyntax>(context._LocalVars));
-            
         }
 
         public override void ExitVarLocalDecl([NotNull] XSharpParser.VarLocalDeclContext context)
@@ -2553,7 +2547,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isStatic = (context.Parent as XSharpParser.CommonLocalDeclContext).Static != null;
             bool isDim = context.Dim != null && context.ArraySub != null;
             string staticName = null;
-            var varType = context.DataType.Get<TypeSyntax>();
+            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
             var initExpr = context.Expression?.Get<ExpressionSyntax>();
             if (isDim) {
                 if (initExpr == null) {

@@ -325,7 +325,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         TypeSyntax MissingType()
         {
-            return _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword))
+            return _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
                 .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
         }
 
@@ -2091,7 +2091,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoglobal([NotNull] XSharpParser.VoglobalContext context)
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = context.Vars.DataType.Get<TypeSyntax>();
+            var varType = context.Vars.DataType?.Get<TypeSyntax>() ?? MissingType();
             foreach (var varCtx in context.Vars._Var) {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {

@@ -879,7 +879,7 @@ NEXT
             var s = ParseSource(@"
 GLOBAL ggg := 123 // AS INT missing
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
         // 107
@@ -891,7 +891,7 @@ FUNCTION Start() AS VOID
 LOCAL c
 c := '123'
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
         // 108

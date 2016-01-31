@@ -88,6 +88,9 @@
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
     <Compile Include="Antlr4.Runtime\AntlrFileStream.cs" />
     <Compile Include="Antlr4.Runtime\AntlrInputStream.cs" />
     <Compile Include="Antlr4.Runtime\Atn\AbstractPredicateTransition.cs" />

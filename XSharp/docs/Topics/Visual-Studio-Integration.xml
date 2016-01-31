@@ -6,6 +6,24 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Using X# in Visual Studio</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">XSharp comes with 2 options for development environments:</text></para>
+    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Chris Pyrgas has adjusted his existing IDE to support XSharp (it is now called XIDE, and compiled in XSharp !)</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We supply Visual Studio integration for Visual Studio 2015. If you do not have Visual Studio 2015, you can download a (</text><text styleclass="Normal" style="font-weight:bold;" translate="true">free!) </text><text styleclass="Normal" style="font-weight:normal;" translate="true">community edition from Visual Studio from the web:</text></li>
+    </list>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="weblink" href="https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx" target="_blank" styleclass="Normal" style="font-weight:normal;" translate="true">https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx</link></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">The Visual Studio integration is also work in progress. What is supported in this version is:</text></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Edit</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Compile</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Debug</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Source control</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Known issues:</text></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Most of the intellisense options in the Editor are not working </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Tools that generate code (Form Editor, WPF Editor, Resource Editor etc) are not working</text></li>
+    </list>
   </body>
 </topic>

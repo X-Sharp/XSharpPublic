@@ -5,8 +5,8 @@
   </topicref>
   <topicref type="topic" id="423886812341331" build="ALL" modified="2016-01-20T10:36:08.813Z" icon="0" href="XSharp">
     <caption translate="true">X# (XSharp)</caption>
-    <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-19T22:40:44.431Z" icon="0" href="Introduction">
-      <caption translate="true">Getting Sytarted with X#</caption>
+    <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-30T22:08:40.876Z" icon="0" href="Introduction">
+      <caption translate="true">Getting Started with X#</caption>
       <topicref type="topic" id="423888143662582" build="ALL" modified="2016-01-19T21:13:50.350Z" icon="0" href="Second-topic">
         <caption translate="true">Version History</caption>
       </topicref>
@@ -15,6 +15,63 @@
       </topicref>
       <topicref type="topic" id="423886741980303" build="ALL" modified="2016-01-19T21:15:13.357Z" icon="0" href="New-features">
         <caption translate="true">New features</caption>
+        <topicref type="topic" id="423997726350447" build="ALL" modified="2016-01-30T21:22:45.037Z" icon="0" href="Anonymous-Methods">
+          <caption translate="true">Anonymous Methods</caption>
+        </topicref>
+        <topicref type="topic" id="423997260438779" build="ALL" modified="2016-01-30T21:22:44.821Z" icon="0" href="ASYNC---AWAIT">
+          <caption translate="true">ASYNC - AWAIT</caption>
+        </topicref>
+        <topicref type="topic" id="42401026480448" build="ALL" modified="2016-01-30T21:22:44.432Z" icon="0" href="BEGIN-CHECKED2">
+          <caption translate="true">BEGIN CHECKED</caption>
+        </topicref>
+        <topicref type="topic" id="423997235399279" build="ALL" modified="2016-01-30T21:22:44.484Z" icon="0" href="BEGIN-UNCHECKED">
+          <caption translate="true">BEGIN UNCHECKED</caption>
+        </topicref>
+        <topicref type="topic" id="423997459416966" build="ALL" modified="2016-01-30T21:22:44.363Z" icon="0" href="BEGIN-UNSAFE2">
+          <caption translate="true">BEGIN UNSAFE</caption>
+        </topicref>
+        <topicref type="topic" id="423998818673834" build="ALL" modified="2016-01-30T21:26:07.774Z" icon="0" href="BEGIN-USING2">
+          <caption translate="true">BEGIN USING</caption>
+        </topicref>
+        <topicref type="topic" id="423999743079358" build="ALL" modified="2016-01-30T21:22:45.093Z" icon="0" href="CHECKED-Expression">
+          <caption translate="true">CHECKED Expression</caption>
+        </topicref>
+        <topicref type="topic" id="423997959494963" build="ALL" modified="2016-01-30T21:22:44.712Z" icon="0" href="Conditional-Access-Expression">
+          <caption translate="true">Conditional Access Expression</caption>
+        </topicref>
+        <topicref type="topic" id="423999550018776" build="ALL" modified="2016-01-30T21:22:44.876Z" icon="0" href="Creating-Generic-Classes">
+          <caption translate="true">Creating Generic Classes</caption>
+        </topicref>
+        <topicref type="topic" id="423996909584445" build="ALL" modified="2016-01-30T21:22:44.657Z" icon="0" href="DEFAULT-Expressions">
+          <caption translate="true">DEFAULT Expressions</caption>
+        </topicref>
+        <topicref type="topic" id="424000368292699" build="ALL" modified="2016-01-30T21:22:44.766Z" icon="0" href="Expression-IS-Type">
+          <caption translate="true">Expression IS Type</caption>
+        </topicref>
+        <topicref type="topic" id="423999835390226" build="ALL" modified="2016-01-30T21:26:07.826Z" icon="0" href="FUNCTION-inside-CLASS">
+          <caption translate="true">FUNCTION inside CLASS</caption>
+        </topicref>
+        <topicref type="topic" id="424000721218508" build="ALL" modified="2016-01-30T21:22:44.928Z" icon="0" href="LINQ-Query-Expressions2">
+          <caption translate="true">LINQ Query Expressions</caption>
+        </topicref>
+        <topicref type="topic" id="424000091554061" build="ALL" modified="2016-01-30T21:26:07.878Z" icon="0" href="PROCEDURE-inside-CLASS">
+          <caption translate="true">PROCEDURE inside CLASS</caption>
+        </topicref>
+        <topicref type="topic" id="424000696810158" build="ALL" modified="2016-01-30T21:22:44.541Z" icon="0" href="SWITCH2">
+          <caption translate="true">SWITCH</caption>
+        </topicref>
+        <topicref type="topic" id="423997134335867" build="ALL" modified="2016-01-30T21:22:45.152Z" icon="0" href="UNCHECKED-Expression">
+          <caption translate="true">UNCHECKED Expression</caption>
+        </topicref>
+        <topicref type="topic" id="423998464245427" build="ALL" modified="2016-01-30T21:26:07.621Z" icon="0" href="USING2">
+          <caption translate="true">USING</caption>
+        </topicref>
+        <topicref type="topic" id="423999741385489" build="ALL" modified="2016-01-30T21:22:44.981Z" icon="0" href="VAR2">
+          <caption translate="true">VAR</caption>
+        </topicref>
+        <topicref type="topic" id="424000672684667" build="ALL" modified="2016-01-30T21:22:44.598Z" icon="0" href="YIELD-RETURN">
+          <caption translate="true">YIELD RETURN</caption>
+        </topicref>
       </topicref>
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">
@@ -751,9 +808,6 @@
       <topicref type="topic" id="423890627480191" build="ALL" modified="2016-01-19T22:47:35.921Z" icon="0" href="X-Walkthroughs">
         <caption translate="true">X# Walkthroughs</caption>
       </topicref>
-      <navref href="NewProject::root" build="ALL" id="42398863705791" modified="2016-01-28T12:09:04.583Z" merge="compile">
-        <caption translate="true">NewProject</caption>
-      </navref>
     </topicref>
   </topicref>
 </map>

@@ -9,7 +9,7 @@
     <para style="margin-top:3px; line-height:1.05; page-break-inside:avoid; page-break-after:avoid;"></para>
     <para style="margin-top:7px; margin-bottom:7px;"><text styleclass="Font Style" style="font-family:Arial; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Below is a list of some of the most visible new language features in the Core language of X#, compared to Visual Objects and Vulcan.</text></para>
     <para style="margin-top:7px; margin-bottom:7px;"><text styleclass="Font Style" style="font-family:Arial; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">As you can see many new keywords were introduced, but these are positional: they will also be recognized as Identifiers on other places, so there is very little chance that you will have to make changes to avoid naming conflicts.</text></para>
-    <para styleclass="Normal"><table rowcount="15" colcount="3" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+    <para styleclass="Normal"><table rowcount="18" colcount="3" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:1px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <thead style="vertical-align:top">
         <td style="vertical-align:top; width:225px;">
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">FEATURE</text></para>
@@ -40,7 +40,7 @@
           <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The STATIC modifier for USING (note that the # sign is no longer needed) allows you to name a static class. When you do so you can then use the methods of this class as functions. For example: </text><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">USING STATIC System.Console &#160;FUNCTION Start as VOID WriteLine(&quot;X# is cool!&quot;) RETURN </text><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">&#32;</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">YES</text></para>
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">YES</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -79,6 +79,10 @@
       <tr style="vertical-align:top">
         <td style="vertical-align:top; width:225px;">
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">BEGIN CHECKED &#160; &lt;Statements&gt; &#160;END [CHECKED]</text></para>
+          <para style="line-height:1.05;"></para>
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Also allowed as expression</text></para>
+          <para style="line-height:1.05;"></para>
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">x := CHECKED(y)</text></para>
         </td>
         <td style="vertical-align:top; width:346px;">
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The statements inside the block will have checked conversions, regardless of the compiler setting for the project as a whole.</text></para>
@@ -90,12 +94,16 @@
       <tr style="vertical-align:top">
         <td style="vertical-align:top; width:225px;">
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">BEGIN UNCHECKED &#160; &lt;Statements&gt; &#160;END [UNCHECKED]</text></para>
+          <para style="line-height:1.05;"></para>
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Also allowed as expression</text></para>
+          <para style="line-height:1.05;"></para>
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">x := UNCHECKED(y)</text></para>
         </td>
         <td style="vertical-align:top; width:346px;">
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The statements inside the block will have unchecked conversions, regardless of the compiler setting for the project as a whole.</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">YES</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">YES</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -106,7 +114,7 @@
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">This is a synonym for LOCAL IMPLIED</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">YES</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">YES</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -117,7 +125,7 @@
           <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Creating Generic classes is now supported in X#, with all the features that C# also has For example </text><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">CLASS MyList&lt;T&gt; WHERE T IS CLASS .. END CLASS </text><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">or </text><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">CLASS MyList&lt;T&gt; WHERE T IS ICustomer, NEW() .. END CLASS </text><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">&#32;</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">YES</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">YES</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -128,7 +136,7 @@
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The ASYNC AWAIT infratructure is fully available inside X#</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">YES</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">YES</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -139,7 +147,7 @@
           <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Allows to check an expression for a type. Can be used in stead of IsInstanceOf() and will perform better</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Yes</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -147,10 +155,10 @@
           <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Conditional Access Operator ? &lt;Expression&gt; ? &lt;Expression&gt;</text></para>
         </td>
         <td style="vertical-align:top; width:346px;">
-          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Conditional access for properties, methods etc. For example &#160;nCount &#160;:= MyList?:Count &#160;This translates to something like: &#160;VAR temp := MyList IF temp &#160;!= NULL &#160; nCount := temp:Count ENDIF &#160;The expression on the Left hand side of the Questionmark will be evaluated only once !</text></para>
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Conditional access for properties, methods etc. For example &#160;nCount &#160;:= MyList?:Count &#160;This translates to something like: &#160;VAR temp := MyList IF temp &#160;!= NULL &#160; nCount := temp:Count ENDIF &#160;The expression on the Left hand side of the Questionmark will be evaluated only once !</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Yes</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -158,10 +166,32 @@
           <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">&lt;Expression&gt; DEFAULT &lt;Expression&gt;</text></para>
         </td>
         <td style="vertical-align:top; width:346px;">
-          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The default operator allows you to inline a check for NULL: &#160;lResult := Foo() DEFAULT Bar() This translates to the same as &#160;lResult := Foo() IF lResult == NULL &#160; &#160;lResult := Bar() ENDIF </text><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Foo() will be evaluated only once. And only when the result is NULL then Bar() will be evaluated.</text></para>
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The default operator allows you to inline a check for NULL: &#160;lResult := Foo() DEFAULT Bar() This translates to the same as &#160;lResult := Foo() IF lResult == NULL &#160; &#160;lResult := Bar() ENDIF Foo() will be evaluated only once. And only when the result is NULL then Bar() will be evaluated.</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:&apos;Courier New&apos;; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Yes</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:225px;">
+          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">y := CHECKED(x)</text></para>
+        </td>
+        <td style="vertical-align:top; width:346px;">
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Tells the compiler to generate code that checks for overflow</text></para>
+        </td>
+        <td style="vertical-align:top; width:118px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:225px;">
+          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">y := UNCHECKED(x)</text></para>
+        </td>
+        <td style="vertical-align:top; width:346px;">
+          <para style="line-height:1.05;"><text styleclass="Font Style" style="font-family:Calibri; font-size:11pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Tells the compiler to generate code that does NOT check for overflow</text></para>
+        </td>
+        <td style="vertical-align:top; width:118px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -172,7 +202,18 @@
           <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The full LINQ feature set will be supported by X#: FROM LET WHERE JOIN ORDER BY EQUALS INTO</text></para>
         </td>
         <td style="vertical-align:top; width:118px;">
-          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Yes</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:225px;">
+          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">YIELD RETURN &lt;Value&gt;</text></para>
+        </td>
+        <td style="vertical-align:top; width:346px;">
+          <para styleclass="Normal"><text styleclass="Font Style" style="font-family:Calibri; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Can be used in a method declared as Enumerator of a type. This will instruct the compiler to automatically generate a class that implemented an enumerator and return to the calling code directly on the YIELD RETURN line. The next time the Iterator is called the code will remember where the code was the previous time it was executed and will continue on the next statement after the YIELD RETURN line. </text></para>
+        </td>
+        <td style="vertical-align:top; width:118px;">
+          <para styleclass="Normal"></para>
         </td>
       </tr>
     </table></para>

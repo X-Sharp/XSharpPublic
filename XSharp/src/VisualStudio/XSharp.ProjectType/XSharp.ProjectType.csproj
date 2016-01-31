@@ -337,7 +337,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="source.extension.vsixmanifest" />
     <None Include="Key.snk" />
     <None Include="XSharp.ProjectType.ruleset" />
@@ -356,12 +358,12 @@
   final implementation, and provide the basic processing for handling rules in CPS.
   -->
   <ItemGroup>
-    <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.Default.props" />
-    <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.props">
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.Default.props" />
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.props">
       <SubType>Designer</SubType>
     </None>
-    <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.Default.targets" />
-    <None Include="BuildSystem\DeployedBuildSystem\XSharpProject.targets">
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.Default.targets" />
+    <None Include="BuildSystem\DeployedBuildSystem\XSharp.targets">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

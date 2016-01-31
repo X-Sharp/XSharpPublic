@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace XSharp
+﻿namespace XSharp
 {
-    public static class Constants
+    internal static class Constants
     {
-        public const string Company = "XSharpBV";
-        public const string Product = "XSharp";
-        public const string Version = "0.1.6.0";
+        internal const string Company = "XSharpBV";
+        internal const string Product = "XSharp";
+        internal const string Version = "0.1.7.0";
+        internal const string Copyright = "Copyright © XSharp BV 2015-2016";
 
-        public const string RegistryKey = "Software\\" + Company + "\\" + Product;
-        public const string RegistryValue = "XSharpPath";
-        public const string ProjectDll = "XSharp.ProjectSystem";
+        internal const string RegistryKey = "Software\\" + Company + "\\" + Product;
+        internal const string RegistryValue = "XSharpPath";
+        internal const string ProjectDll = "XSharp.ProjectSystem";
 
 
     }

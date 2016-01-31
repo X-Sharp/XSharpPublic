@@ -6,7 +6,11 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Known Issues</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following language features are not working yet in the current build of XSharp</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">Please understand that XSharp is still under development.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">YOU CANNOT COMPILE EXISTING VO/Vulcan or other xBase code. That does not work yet, unless you are very lucky.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">However you can create new code with XSharp for those areas that are missing in Vulcan and use the familiar xBase syntax.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Below is a more specific list of things that are not supported yet or are known problems.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">xBase Specific Data Types and Constants</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">ARRAY</text></para>
@@ -23,7 +27,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Commands and Keywords</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">DEFINE</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">LOCAL keyword inside FOR statement</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">ACCESS/ASSIGN must be both in same (partial) class. Cannot be spread over 2 parts of the class</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">VOSTRUCT and VOUNION are compiled as a special kind of STRUCTURE but the special AS/IS handling is not supported yet</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Calling convention is ignored</text></para>

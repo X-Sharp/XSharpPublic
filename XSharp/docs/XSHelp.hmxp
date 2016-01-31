@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <helpproject xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd" version="1.8" isskin="false" isrepository="false">
   <config>
-    <namespaces>
-      <namespace name="NewProject" href="./Test2/NewProject.hmxz"/>
-    </namespaces>
+    <namespaces/>
     <export-task-groups>
       <export-task-group name="Recent Publishes">
         <export-tasks>
@@ -141,9 +139,9 @@
       <config-value name="title" translate="true">XSharp documentation</config-value>
       <config-value name="author" translate="true">XSharp BV</config-value>
       <config-value name="copyright" translate="true">© &lt;%YEAR%&gt; &lt;%AUTHOR%&gt;</config-value>
-      <config-value name="versionmajor">1</config-value>
-      <config-value name="versionminor">0</config-value>
-      <config-value name="versionbuild">0</config-value>
+      <config-value name="versionmajor">0</config-value>
+      <config-value name="versionminor">1</config-value>
+      <config-value name="versionbuild">7</config-value>
       <config-value name="lcid" translate="true">en-us</config-value>
       <config-value name="charset" translate="true">ANSI_CHARSET</config-value>
       <config-value name="deffont">font-family:Tahoma; font-size:10pt; color:#000000; </config-value>
@@ -157,7 +155,6 @@
       <config-value name="make4include">PDF</config-value>
       <config-value name="make4status">*</config-value>
       <config-value name="bidimode">0</config-value>
-      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>

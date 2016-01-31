@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharpProject.Default.props" />
+  <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -40,7 +40,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 
-  <Import Project="$(XSharpProjectExtensionsPath)XSharpProject.props" />
+  <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
     
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -63,7 +63,7 @@
     </Compile>
   </ItemGroup>
 
-  <Import Project="$(XSharpProjectExtensionsPath)XSharpProject.targets" />
+  <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
 
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

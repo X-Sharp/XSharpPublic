@@ -377,27 +377,6 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 					;
 
-/*
-: localdecl
-| casestmt
-| whilestmt
-| repeatstmt
-| forstmt
-| foreachstmt
-| ifstmt
-| retstmt
-| seqstmt
-| breakstmt
-| throwstmt
-| exprstmt
-| exitstmt
-| loopstmt
-| qoutstmt
-| tryblock
-| { LA(1) == BEGIN && LA(2) == LOCK }? lockstmt
-| { LA(1) == BEGIN && LA(2) == SCOPE }? scopestmt
-| fieldstmt */
-
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO? WHILE Expr=expression EOS

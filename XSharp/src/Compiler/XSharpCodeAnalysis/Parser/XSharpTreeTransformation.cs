@@ -2082,7 +2082,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Modifiers != null)
                     context.Modifiers._Tokens.Add(context.Const);
                 else {
-                    context.Modifiers = new XSharpParser.FuncprocModifiersContext(context,0);
+                    context.Modifiers = FixPosition(new XSharpParser.FuncprocModifiersContext(context,0),context.Start);
                     context.Modifiers.PutList(TokenList(SyntaxKind.ConstKeyword,SyntaxKind.StaticKeyword,SyntaxKind.PublicKeyword));
                 }
             }
@@ -2510,7 +2510,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (t != null)
                     locCtx.DataType = t;
                 else {
-                    locCtx.DataType = new XSharpParser.DatatypeContext(context,0);
+                    locCtx.DataType = FixPosition(new XSharpParser.DatatypeContext(context,0),context.Stop);
                     locCtx.DataType.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)));
                     context.AddError(new ParseErrorData(locCtx.Stop, ErrorCode.ERR_SyntaxError, "AS")); // TODO nvk: this error should reference the location after the rule
                 }
@@ -2744,7 +2744,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     initExpr);
             }
             if (context.Step == null) {
-                context.Step = new XSharpParser.PrimaryExpressionContext(new XSharpParser.ExpressionContext());
+                context.Step = FixPosition(new XSharpParser.PrimaryExpressionContext(FixPosition(new XSharpParser.ExpressionContext(),context.Stop)),context.Stop);
                 context.Step.Put(_syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(null,"1",1,null)));
             }
             switch (context.Dir.Type) {

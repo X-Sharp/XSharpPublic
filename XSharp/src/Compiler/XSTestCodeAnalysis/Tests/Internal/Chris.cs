@@ -1124,11 +1124,18 @@ END CLASS
         {
             var s = ParseSource(@"
 CLASS Test
+    PUBLIC STATIC One AS INT
     PRIVATE CONSTRUCTOR
     STATIC CONSTRUCTOR
+        One := 1
 END CLASS 
+
+FUNCTION Start() AS VOID
+    IF Test.One != 1
+        THROW Exception{'Static constructor not called!'}
+    ENDIF
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndRunWithoutExceptions("/debug+ /debug:full",s);
         }
     }
 }

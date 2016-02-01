@@ -269,6 +269,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType, out _lazyReturnTypeCustomModifiers, out _lazyParameters, alsoCopyParamsModifier: true);
                 }
+#if XSHARP
+                if (this.IsVirtual)
+                {
+                    if ((object)overriddenMethod != null)
+                    {
+                        flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Virtual, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                    }
+                    else
+                        flags = new Flags(flags.MethodKind, flags.DeclarationModifiers & ~DeclarationModifiers.Override, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtual(true));
+                }
+#endif
             }
             else if (_lazyReturnType.SpecialType != SpecialType.System_Void)
             {

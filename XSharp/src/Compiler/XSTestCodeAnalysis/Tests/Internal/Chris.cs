@@ -650,7 +650,7 @@ CLASS ChildClass INHERIT ParentClass
     VIRTUAL PROPERTY Name AS INT GET 0
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithWarnings(s);
         }
 
         // 93

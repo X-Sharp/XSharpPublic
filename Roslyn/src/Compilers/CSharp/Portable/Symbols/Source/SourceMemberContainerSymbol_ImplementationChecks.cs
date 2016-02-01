@@ -814,8 +814,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var hidingMemberLocation = hidingMember.Locations[0];
 
             Debug.Assert(overriddenOrHiddenMembers != null);
+#if !XSHARP
             Debug.Assert(!overriddenOrHiddenMembers.OverriddenMembers.Any()); //since hidingMethod.IsOverride is false
             Debug.Assert(!overriddenOrHiddenMembers.RuntimeOverriddenMembers.Any()); //since hidingMethod.IsOverride is false
+#endif
+
+#if XSHARP
+            var diagnosticAddedX = false;
+#endif
 
             var hiddenMembers = overriddenOrHiddenMembers.HiddenMembers;
             Debug.Assert(!hiddenMembers.IsDefault);
@@ -825,6 +831,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (hidingMemberIsNew && !hidingMember.IsAccessor())
                 {
                     diagnostics.Add(ErrorCode.WRN_NewNotRequired, hidingMemberLocation, hidingMember);
+#if XSHARP
+                    diagnosticAddedX = true;
+#endif
                 }
             }
             else
@@ -859,7 +868,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember, hiddenMembers[0]);
                 }
+#if XSHARP
+                diagnosticAddedX = diagnosticAdded;
+#endif
             }
+#if XSHARP
+            if (overriddenOrHiddenMembers.OverriddenMembers.Any() || overriddenOrHiddenMembers.RuntimeOverriddenMembers.Any()) // nvk: can happen due to override flag mangling!
+            {
+                if (!hidingMemberIsNew && !diagnosticAddedX && !hidingMember.IsAccessor() && !hidingMember.IsOperator())
+                {
+                    diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember,
+                        overriddenOrHiddenMembers.OverriddenMembers.Any() ? overriddenOrHiddenMembers.OverriddenMembers[0] 
+                        : overriddenOrHiddenMembers.RuntimeOverriddenMembers[0]);
+                }
+            }
+#endif
         }
 
         /// <summary>

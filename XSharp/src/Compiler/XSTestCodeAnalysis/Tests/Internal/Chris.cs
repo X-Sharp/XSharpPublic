@@ -186,6 +186,8 @@ endif
 
 
         // 46
+        // RvdH 20160201: I do not thing this is a bug. There is no need to make a new virtual property in a sealed class
+        // The compiler is simply telling the user that there is a design error in his code...
         [Test(Author = "Chris", Id = "C46", Title = "error XS0549: 'TestClass.TestProp.get' is a new virtual member in sealed class 'TestClass'")]
         public static void error_XS0549_new_virtual_member_in_sealed_class()
         {
@@ -947,6 +949,8 @@ END CLASS
         }
 
         // 111
+        // RvdH 20160201: I do not thing this is a bug. There is no need to seal a method when it is not an override
+        // of a method in a parent class. See my comments for Bug #62 on PlanIO.
         [Test(Author = "Chris", Id = "C111", Title = "Method cannot be sealed because it is not an override")]
         public static void Method_cannot_be_sealed_because_it_is_not_an_override()
         {
@@ -1081,7 +1085,7 @@ s := ( n ):ToString()
         }
 
         // 119
-        [Test(Author = "Chris", Id = "C119", Title = "Constructor chaning in body")]
+        [Test(Author = "Chris", Id = "C119", Title = "Constructor chaining in body")]
         public static void Ctor_chain_in_body()
         {
             var s = ParseStartFunction(@"
@@ -1090,6 +1094,7 @@ CLASS Test
     CONSTRUCTOR()
     SUPER()
     SELF(1)
+    RETURN
 END CLASS 
 ");
             CompileAndLoadWithoutErrors(s);

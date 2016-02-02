@@ -1063,10 +1063,14 @@ END CLASS
             var s = ParseSource(@"
 INTERFACE ITest
     PROPERTY prop AS INT GET SET
+    PROPERTY propg AS INT GET
+    //PROPERTY props AS INT SET
 END INTERFACE
 
 CLASS TestClass IMPLEMENTS ITest
     VIRTUAL PROPERTY prop AS INT GET 0 SET
+    VIRTUAL PROPERTY propg AS INT GET
+    //VIRTUAL PROPERTY props AS INT SET // nvk: I think it's reasonable for this to throw an error
 END CLASS 
 ");
             CompileAndLoadWithoutErrors(s);

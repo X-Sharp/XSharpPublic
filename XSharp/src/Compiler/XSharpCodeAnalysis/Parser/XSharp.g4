@@ -288,7 +288,7 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET
 
 propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
 					  ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
-					  | {InputStream.La(1) != GET}? Key=SET ExprList=expressionListStmt?
+					  | {InputStream.La(2) != GET}? Key=SET ExprList=expressionListStmt?
 					  | Key=(GET|SET) )
 					;
 

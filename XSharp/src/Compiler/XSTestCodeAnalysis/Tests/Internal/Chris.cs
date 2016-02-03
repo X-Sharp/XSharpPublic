@@ -951,6 +951,8 @@ END CLASS
         // 111
         // RvdH 20160201: I do not thing this is a bug. There is no need to seal a method when it is not an override
         // of a method in a parent class. See my comments for Bug #62 on PlanIO.
+        // nvk 20160203: If vulcan compiles it, I think we should turn it into a warning. It will be the responsibility
+        // of the user to heed the warning or not.
         [Test(Author = "Chris", Id = "C111", Title = "Method cannot be sealed because it is not an override")]
         public static void Method_cannot_be_sealed_because_it_is_not_an_override()
         {
@@ -958,6 +960,9 @@ END CLASS
 PARTIAL CLASS TestClass
 SEALED METHOD mmm() AS VOID
 END CLASS
+FUNCTION Start() AS VOID
+  VAR o := TestClass{}
+  o:mmm()
 ");
             CompileAndLoadWithoutErrors(s);
         }

@@ -592,8 +592,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (vop.AccessMethodCtx != null) {
                 if (vop.AccessMethodCtx.Modifiers != null)
                     getMods.AddRange(vop.AccessMethodCtx.Modifiers.GetList<SyntaxToken>());
-                else
+                else {
                     getMods.FixDefaultVisibility();
+                    if (_options.VirtualInstanceMethods)
+                        getMods.FixDefaultVirtual();
+                }
                 getVisLvl = getMods.GetVisibilityLevel();
             }
             else
@@ -601,8 +604,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (vop.AssignMethodCtx != null) {
                 if (vop.AssignMethodCtx.Modifiers != null)
                     setMods.AddRange(vop.AssignMethodCtx.Modifiers.GetList<SyntaxToken>());
-                else
+                else {
                     setMods.FixDefaultVisibility();
+                    if (_options.VirtualInstanceMethods)
+                        setMods.FixDefaultVirtual();
+                }
                 setVisLvl = setMods.GetVisibilityLevel();
             }
             else
@@ -1479,12 +1485,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     parameterList: context.ParamList.Get<BracketedParameterListSyntax>(),
                     accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         (context.Auto != null) ? 
-                            ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
+                            (context._AutoAccessors?.Count > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
                             MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),EmptyList(),
                                     SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),null,SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
                                 _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration,EmptyList<AttributeListSyntax>(),EmptyList(),
                                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),null,SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))) :
-                        ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
+                        (context._LineAccessors?.Count > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
                         MakeList<AccessorDeclarationSyntax>(context._Accessors),
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
                     expressionBody: null, // TODO: (grammar) expressionBody methods
@@ -1520,17 +1526,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitPropertyLineAccessor([NotNull] XSharpParser.PropertyLineAccessorContext context)
         {
+            bool forceBody = false;
+            if (context.Key.Type == XSharpParser.SET && context.ExprList == null)
+            {
+                var property = context.Parent as XSharpParser.PropertyContext;
+                var isExtern = property.Modifiers?._EXTERN != null;
+                var isAbstract = property.Modifiers?._ABSTRACT != null;
+                if (!isExtern && !isAbstract && !property.isInInterface() && property._LineAccessors.Count > 1 &&
+                    (property._LineAccessors[0].Expr != null || property._LineAccessors[1].Expr != null))
+                {
+                    forceBody = true;
+                }
+            }
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 keyword: context.Key.SyntaxKeyword(),
                 body: context.Key.Type == XSharpParser.GET ? 
-                    context.Expr == null ? null : _syntaxFactory.Block(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    ( context.Expr == null ? null : _syntaxFactory.Block(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
                             context.Expr.Get<ExpressionSyntax>(),SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)) :
-                    context.ExprList == null ? null : _syntaxFactory.Block(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        context.ExprList.GetList<StatementSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)) )
+                    : (context.ExprList == null && !forceBody) ? null 
+                    : _syntaxFactory.Block(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        context.ExprList?.GetList<StatementSyntax>() ?? EmptyList<StatementSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken))
                     ,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));

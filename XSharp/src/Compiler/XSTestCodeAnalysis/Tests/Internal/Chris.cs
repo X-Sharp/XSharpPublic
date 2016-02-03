@@ -930,6 +930,7 @@ END CLASS
         }
 
         // 110
+        // nvk 20160203: I don't think we want to 'fix' this ...
         [Test(Author = "Chris", Id = "C110", Title = "Partial declarations different base classes")]
         public static void Partial_declarations_different_base_classes()
         {
@@ -945,12 +946,14 @@ END CLASS
 PARTIAL CLASS TestClass
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
         // 111
         // RvdH 20160201: I do not thing this is a bug. There is no need to seal a method when it is not an override
         // of a method in a parent class. See my comments for Bug #62 on PlanIO.
+        // nvk 20160203: If vulcan compiles it, I think we should turn it into a warning. It will be the responsibility
+        // of the user to heed the warning or not.
         [Test(Author = "Chris", Id = "C111", Title = "Method cannot be sealed because it is not an override")]
         public static void Method_cannot_be_sealed_because_it_is_not_an_override()
         {
@@ -958,6 +961,9 @@ END CLASS
 PARTIAL CLASS TestClass
 SEALED METHOD mmm() AS VOID
 END CLASS
+FUNCTION Start() AS VOID
+  VAR o := TestClass{}
+  o:mmm()
 ");
             CompileAndLoadWithoutErrors(s);
         }
@@ -985,6 +991,8 @@ INTERNAL CLASS Parent
 END CLASS
 CLASS Child INHERIT Parent
 END CLASS
+FUNCTION Start() AS VOID
+    VAR o := Child{}
 ");
             CompileAndLoadWithoutErrors(s);
         }
@@ -1063,10 +1071,14 @@ END CLASS
             var s = ParseSource(@"
 INTERFACE ITest
     PROPERTY prop AS INT GET SET
+    PROPERTY propg AS INT GET
+    //PROPERTY props AS INT SET
 END INTERFACE
 
 CLASS TestClass IMPLEMENTS ITest
     VIRTUAL PROPERTY prop AS INT GET 0 SET
+    VIRTUAL PROPERTY propg AS INT GET
+    //VIRTUAL PROPERTY props AS INT SET // nvk: I think it's reasonable for this to throw an error
 END CLASS 
 ");
             CompileAndLoadWithoutErrors(s);

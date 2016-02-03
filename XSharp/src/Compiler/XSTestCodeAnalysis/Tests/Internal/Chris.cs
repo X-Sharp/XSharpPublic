@@ -985,6 +985,8 @@ INTERNAL CLASS Parent
 END CLASS
 CLASS Child INHERIT Parent
 END CLASS
+FUNCTION Start() AS VOID
+    VAR o := Child{}
 ");
             CompileAndLoadWithoutErrors(s);
         }

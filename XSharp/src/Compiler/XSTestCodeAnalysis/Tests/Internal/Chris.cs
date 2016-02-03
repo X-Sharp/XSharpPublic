@@ -930,6 +930,7 @@ END CLASS
         }
 
         // 110
+        // nvk 20160203: I don't think we want to 'fix' this ...
         [Test(Author = "Chris", Id = "C110", Title = "Partial declarations different base classes")]
         public static void Partial_declarations_different_base_classes()
         {
@@ -945,7 +946,7 @@ END CLASS
 PARTIAL CLASS TestClass
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
         // 111

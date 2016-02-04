@@ -1580,7 +1580,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface);
-            var isExtern = context.Modifiers?._EXTERN != null;
+            var isExtern = mods.Any(SyntaxKind.ExternKeyword);
             var isAbstract = mods.Any(SyntaxKind.AbstractKeyword);
             var hasNoBody = isInInterface || isExtern || isAbstract;
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {

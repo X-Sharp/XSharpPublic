@@ -924,7 +924,12 @@ Test.StaticMethod()
 CLASS Parent
 END CLASS
 STATIC CLASS Child INHERIT Parent
+    STATIC T := 1 AS INT
 END CLASS
+FUNCTION Start() AS VOID
+    IF Child.T != 1
+        THROW Exception{""STATIC check fail""}
+    ENDIF
 ");
             CompileAndLoadWithoutErrors(s);
         }

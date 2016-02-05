@@ -811,6 +811,16 @@ CLASS Test
 END CLASS
 ");
             CompileAndLoadWithoutErrors(s);
+            s = ParseSource(@"
+// nvk: this should throw an error because the method has a body
+#using System.Runtime.InteropServices
+CLASS Test
+    [DllImport('gdi32.dll',  EntryPoint:='CreateSolidBrush')];
+    STATIC METHOD CreateSolidBrush(hDC AS DWORD) AS IntPtr
+        RETURN (IntPtr)0
+END CLASS
+");
+            CompileWithErrors(s);
         }
 
         // 102
@@ -924,7 +934,12 @@ Test.StaticMethod()
 CLASS Parent
 END CLASS
 STATIC CLASS Child INHERIT Parent
+    STATIC T := 1 AS INT
 END CLASS
+FUNCTION Start() AS VOID
+    IF Child.T != 1
+        THROW Exception{""STATIC check fail""}
+    ENDIF
 ");
             CompileAndLoadWithoutErrors(s);
         }

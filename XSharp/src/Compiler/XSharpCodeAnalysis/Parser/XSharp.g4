@@ -83,7 +83,8 @@ vodll				: (Modifiers=funcprocModifiers)? DLL
 					  ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
 					  | T=PROCEDURE Id=identifier ParamList=parameterList )
 					  (CallingConvention=dllcallconv)? COLON 
-					  Dll=identifierString DOT Entrypoint=identifierString //(NEQ Ordinal=INT_CONST)? 
+					  Dll=identifierString ( DOT Entrypoint=identifierString | Ordinal=ORDINAL )
+					  ( CharSet=(AUTO | ANSI | UNICODE) )?
 					  EOS
                     ;
 
@@ -793,8 +794,8 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
 					// Entity Keywords are added to the keywordvo list, although not strictly VO keyword. 
 					// But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
 
-keywordvn           : Token=(ABSTRACT | AUTO | CONST | DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
-					| LOCK | NAMESPACE | NEW | OPTIONS | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNTIL | VALUE | VIRTUAL  | WARNINGS)
+keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
+					| LOCK | NAMESPACE | NEW | OPTIONS | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 

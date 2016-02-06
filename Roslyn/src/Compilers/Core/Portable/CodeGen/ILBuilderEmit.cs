@@ -561,6 +561,11 @@ namespace Microsoft.CodeAnalysis.CodeGen
                 case ConstantValueTypeDiscriminator.Boolean:
                     EmitBoolConstant(value.BooleanValue);
                     break;
+#if XSHARP
+                case ConstantValueTypeDiscriminator.IntPtr:
+                    EmitIntConstant((int)value.IntPtrValue);
+                    break;
+#endif
                 default:
                     throw ExceptionUtilities.UnexpectedValue(discriminator);
             }

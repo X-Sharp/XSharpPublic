@@ -727,7 +727,7 @@ FUNCTION Start() AS VOID
 LOCAL a AS System.Collections.ArrayList
 a := System.Collections.ArrayList{}
 a:Add(17)
-? a:get_Item(0)
+? a:get_item(0)
 ");
             CompileAndLoadWithoutErrors(s);
         }

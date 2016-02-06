@@ -227,6 +227,48 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
+#if XSHARP
+        private sealed class ConstantValueIntPtr : ConstantValue
+        {
+            private readonly IntPtr _value;
+
+            public ConstantValueIntPtr(IntPtr value)
+            {
+                _value = value;
+            }
+
+            public override ConstantValueTypeDiscriminator Discriminator
+            {
+                get
+                {
+                    return ConstantValueTypeDiscriminator.IntPtr;
+                }
+            }
+
+            internal override SpecialType SpecialType
+            {
+                get { return SpecialType.System_IntPtr; }
+            }
+
+            public override IntPtr IntPtrValue
+            {
+                get
+                {
+                    return _value;
+                }
+            }
+
+            public override int GetHashCode()
+            {
+                return Hash.Combine(base.GetHashCode(), _value.GetHashCode());
+            }
+
+            public override bool Equals(ConstantValue other)
+            {
+                return base.Equals(other) && _value == other.IntPtrValue;
+            }
+        }
+#endif
         // base for constant classes that may represent more than one 
         // constant type
         private abstract class ConstantValueDiscriminated : ConstantValue
@@ -269,6 +311,9 @@ namespace Microsoft.CodeAnalysis
             public static readonly ConstantValueDefault Decimal = new ConstantValueDecimalZero();
             public static readonly ConstantValueDefault DateTime = new ConstantValueDefault(ConstantValueTypeDiscriminator.DateTime);
             public static readonly ConstantValueDefault Boolean = new ConstantValueDefault(ConstantValueTypeDiscriminator.Boolean);
+#if XSHARP
+            public static readonly ConstantValueDefault IntPtr = new ConstantValueDefault(ConstantValueTypeDiscriminator.IntPtr);
+#endif
 
             protected ConstantValueDefault(ConstantValueTypeDiscriminator discriminator)
                 : base(discriminator)
@@ -339,6 +384,15 @@ namespace Microsoft.CodeAnalysis
                 }
             }
 
+#if XSHARP
+            public override IntPtr IntPtrValue
+            {
+                get
+                {
+                    return default(IntPtr);
+                }
+            }
+#endif
             // all instances of this class are singletons
             public override bool Equals(ConstantValue other)
             {

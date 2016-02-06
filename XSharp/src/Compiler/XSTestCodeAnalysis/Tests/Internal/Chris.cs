@@ -727,7 +727,9 @@ FUNCTION Start() AS VOID
 LOCAL a AS System.Collections.ArrayList
 a := System.Collections.ArrayList{}
 a:Add(17)
-? a:get_item(0)
+IF (int)a:get_Item(0) != 17
+    THROW Exception{'a:get_Item(0) != 17'}
+ENDIF
 ");
             CompileAndLoadWithoutErrors(s);
         }

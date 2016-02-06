@@ -18,6 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_UseDefViolationOut = 269,
     XS_WRN:ERR_MemberNameSameAsType = 542,
     XS_WRN:ERR_NewVirtualInSealed = 549,
+    XS_WRN:ERR_CantCallSpecialMethod = 571,
     XS_WRN:ERR_ProtectedInStruct = 666,
     XS_WRN:ERR_StaticDerivedFromNonObject = 713,
     XS_WRN:ERR_ProtectedInStatic = 1057,

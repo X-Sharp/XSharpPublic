@@ -592,7 +592,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (vop.AccessMethodCtx != null) {
                 if (vop.AccessMethodCtx.Modifiers != null)
                     getMods.AddRange(vop.AccessMethodCtx.Modifiers.GetList<SyntaxToken>());
-                else {
+                else if (!vop.AccessMethodCtx.isInInterface()) {
                     getMods.FixDefaultVisibility();
                     if (_options.VirtualInstanceMethods)
                         getMods.FixDefaultVirtual();
@@ -604,7 +604,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (vop.AssignMethodCtx != null) {
                 if (vop.AssignMethodCtx.Modifiers != null)
                     setMods.AddRange(vop.AssignMethodCtx.Modifiers.GetList<SyntaxToken>());
-                else {
+                else if (!vop.AssignMethodCtx.isInInterface()) {
                     setMods.FixDefaultVisibility();
                     if (_options.VirtualInstanceMethods)
                         setMods.FixDefaultVirtual();

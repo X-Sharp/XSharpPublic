@@ -669,7 +669,7 @@ CLASS ChildClass INHERIT ParentClass
     VIRTUAL METHOD OnTest() AS VOID
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithWarnings(s);
         }
 
         // 94

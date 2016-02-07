@@ -652,6 +652,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         diagnostics.Add(ErrorCode.ERR_CantOverrideBogusMethod, overridingMemberLocation, overridingMember, overriddenMember);
                         suppressAccessors = true;
                     }
+#if !XSHARP
                     else if (!overriddenMember.IsVirtual && !overriddenMember.IsAbstract && !overriddenMember.IsOverride &&
                         !(overridingMemberIsMethod && ((MethodSymbol)overriddenMember).MethodKind == MethodKind.Destructor)) //destructors are metadata virtual
                     {
@@ -659,6 +660,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         diagnostics.Add(ErrorCode.ERR_CantOverrideNonVirtual, overridingMemberLocation, overridingMember, overriddenMember);
                         suppressAccessors = true;
                     }
+#endif
                     else if (overriddenMember.IsSealed)
                     {
                         // CONSIDER: To match Dev10, skip the error for properties, and don't suppressAccessors
@@ -673,6 +675,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                     else
                     {
+#if XSHARP
+                        if (!overriddenMember.IsVirtual && !overriddenMember.IsAbstract && !overriddenMember.IsOverride &&
+                            !(overridingMemberIsMethod && ((MethodSymbol)overriddenMember).MethodKind == MethodKind.Destructor)) //destructors are metadata virtual
+                        {
+                            diagnostics.Add(ErrorCode.WRN_NewRequired, overridingMemberLocation, overridingMember, overriddenMember);
+                        }
+#endif
                         // As in dev11, we don't compare obsoleteness to the immediately-overridden member,
                         // but to the least-overridden member.
                         var leastOverriddenMember = overriddenMember.GetLeastOverriddenMember(overriddenMember.ContainingType);

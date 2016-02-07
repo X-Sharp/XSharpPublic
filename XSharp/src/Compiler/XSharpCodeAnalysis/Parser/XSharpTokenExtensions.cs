@@ -280,22 +280,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case 'U':
                         case 'u':
                             if (token.Text.Length > 32+3)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((ulong)HexValue(token.Text.Substring(2))), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((uint)HexValue(token.Text.Substring(2))), SyntaxFactory.WS);
                             break;
                         case 'L':
                         case 'l':
                             if (token.Text.Length > 32+3)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((int)HexValue(token.Text.Substring(2))), SyntaxFactory.WS);
                             break;
                         default:
-                            if (token.Text.Length > 32+2)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
-                            else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)HexValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            {
+                                long l = HexValue(token.Text.Substring(2));
+                                if (l < 0)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((ulong)l), SyntaxFactory.WS);
+                                else if (l > uint.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
+                                else if (l > int.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((uint)l), SyntaxFactory.WS);
+                                else
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((int)l), SyntaxFactory.WS);
+                            }
                             break;
                     }
                     break;
@@ -304,22 +311,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case 'U':
                         case 'u':
                             if (token.Text.Length > 32+3)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (ulong)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((ulong)BinValue(token.Text.Substring(2))), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((uint)BinValue(token.Text.Substring(2))), SyntaxFactory.WS);
                             break;
                         case 'L':
                         case 'l':
                             if (token.Text.Length > 32+3)
                                 r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
                             else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((int)BinValue(token.Text.Substring(2))), SyntaxFactory.WS);
                             break;
                         default:
-                            if (token.Text.Length > 32+2)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
-                            else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)BinValue(token.Text.Substring(2)), SyntaxFactory.WS);
+                            {
+                                long l = BinValue(token.Text.Substring(2));
+                                if (l < 0)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((ulong)l), SyntaxFactory.WS);
+                                else if (l > uint.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
+                                else if (l > int.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((uint)l), SyntaxFactory.WS);
+                                else
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((int)l), SyntaxFactory.WS);
+                            }
                             break;
                     }
                     break;
@@ -346,26 +360,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     switch (token.Text.Last()) {
                         case 'U':
                         case 'u':
-                            ulong ul = ulong.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
-                            if (ul > uint.MaxValue)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, ul, SyntaxFactory.WS);
-                            else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (uint)ul, SyntaxFactory.WS);
+                            try
+                            {
+                                ulong ul = ulong.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                if (ul > uint.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, ul, SyntaxFactory.WS);
+                                else
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((uint)ul), SyntaxFactory.WS);
+                            }
+                            catch (OverflowException)
+                            {
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, 0, SyntaxFactory.WS)
+                                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                            }
                             break;
                         case 'L':
                         case 'l':
-                            long l = long.Parse(token.Text.Substring(0,token.Text.Length-1), System.Globalization.CultureInfo.InvariantCulture);
-                            if (l > int.MaxValue)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
-                            else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)l, SyntaxFactory.WS);
+                            try
+                            {
+                                long l = long.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                if (l > int.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, l, SyntaxFactory.WS);
+                                else
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((int)l), SyntaxFactory.WS);
+                            }
+                            catch (OverflowException)
+                            {
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, 0, SyntaxFactory.WS)
+                                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                            }
                             break;
                         default:
-                            long n = long.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
-                            if (n > int.MaxValue)
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, n, SyntaxFactory.WS);
-                            else
-                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, (int)n, SyntaxFactory.WS);
+                            try
+                            {
+                                ulong un = 0;
+                                long n = 0;
+                                if (token.Text.First() != '-')
+                                {
+                                    un = ulong.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                    if (un <= long.MaxValue)
+                                        n = unchecked((long)un);
+                                }
+                                else {
+                                    n = long.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                if (un > long.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, un, SyntaxFactory.WS);
+                                else if (n > int.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, n, SyntaxFactory.WS);
+                                else
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((int)n), SyntaxFactory.WS);
+                            }
+                            catch (OverflowException)
+                            {
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, 0, SyntaxFactory.WS)
+                                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_IntOverflow));
+                            }
                             break;
                     }
                     break;

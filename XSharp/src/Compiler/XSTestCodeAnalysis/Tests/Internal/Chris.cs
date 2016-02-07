@@ -601,6 +601,8 @@ END CLASS
 FUNCTION Start() AS VOID
 LOCAL d := 0X80880000 AS DWORD
 ? d 
+LOCAL i := 0X70880000 AS INT
+? i
 ");
             CompileAndLoadWithoutErrors(s);
         }

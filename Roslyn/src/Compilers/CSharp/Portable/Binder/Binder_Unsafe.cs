@@ -55,6 +55,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if ((object)sizeOfTypeOpt != null)
                 return false;
+            if (ErrorFacts.IsWarning(diagnosticInfo.Code))
+                return false;
 #endif
             return true;
         }

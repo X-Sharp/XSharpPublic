@@ -477,6 +477,7 @@ RETURN
 
 
         // 82
+        // nvk: This should normally be part of the runtime, imo (not a compiler error)
         [Test(Author = "Chris", Id = "C82", Title = "Error XS1061: 'string' does not contain a definition for 'Chars' and no extension ...")]
         public static void Error_XS1061_unavailable_String_Chars()
         {

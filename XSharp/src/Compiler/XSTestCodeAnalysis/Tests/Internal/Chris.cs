@@ -260,6 +260,25 @@ SomeMethod( , , 1)
         }
 
 
+        // 68
+        [Test(Author = "Chris", Id = "C68", Title = "error XS0019: Operator '|' cannot be applied to operands of type 'int' and 'MyEnum'")]
+        public static void or_operator_with_enum_and_int()
+        {
+            var s = ParseSource(@"
+// not sure I like it, but vulcan does compile this
+FUNCTION Start() AS VOID
+LOCAL e AS MyEnum
+e := MyEnum.m2
+? ((INT)e | MyEnum.m1) != 0
+? ((INT)e & MyEnum.m2) != 0
+
+ENUM MyEnum AS Int32
+	MEMBER m1 := 0
+	MEMBER m2 := 1
+END ENUM
+");
+            CompileAndRunWithoutExceptions(s);
+        }
 
 
 
@@ -638,7 +657,7 @@ FUNCTION Start() AS VOID
     END IF
 RETURN
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndRunWithoutExceptions(s);
         }
 
         // 92
@@ -1178,5 +1197,18 @@ FUNCTION Start() AS VOID
 ");
             CompileAndRunWithoutExceptions("/debug+ /debug:full",s);
         }
+
+        // 122
+        [Test(Author = "Chris", Id = "C122", Title = "Asterisk comments not allowed")]
+        public static void Asterisk_comments()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+* comments here
+RETURN
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
     }
 }

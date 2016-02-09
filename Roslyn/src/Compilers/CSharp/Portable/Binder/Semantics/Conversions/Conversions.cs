@@ -398,6 +398,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!validType)
             {
+#if XSHARP
+                if(source.Type != null && (source.Type.IsEnumType() || source.Type.IsNullableType() && source.Type.GetNullableUnderlyingType().IsEnumType())) {
+                    return IsNumericType(destination.GetSpecialTypeSafe());
+                }
+#endif
                 return false;
             }
 

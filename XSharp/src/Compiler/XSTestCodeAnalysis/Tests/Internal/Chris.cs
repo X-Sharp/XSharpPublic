@@ -468,6 +468,9 @@ FUNCTION Start() AS VOID
 	LOCAL a AS INT[]
 	a := INT[]{3}
 	a[MyEnum.m1] := 1
+    if a[1] != 1
+        throw Exception{'Failed'}
+    endif
 RETURN
 ");
             CompileAndRunWithoutExceptions(s);

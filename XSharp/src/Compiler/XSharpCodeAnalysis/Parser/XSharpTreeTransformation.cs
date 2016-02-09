@@ -889,11 +889,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 null,
                 _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                     context.Expr.Get<ExpressionSyntax>())));
-            // TODO: (nvk) implicit types do not work with consts in c# !!! This needs to be written differently or handled by the bckend.
+            // RvdH May need to change to PUBLIC STATIC later. 
+            // Const does not support unsafe types such as Ptr, but has the advantage
+            // that it is in-lined when used
+            // We can probably inspect the type and depending on the type switch between
+            // public Const and public Static
             context.Put(_syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
-                TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PublicKeyword),
-                _syntaxFactory.VariableDeclaration(_syntaxFactory.IdentifierName(SyntaxFactory.Identifier(ImpliedTypeName)), variables),
+                TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ConstKeyword),
+                _syntaxFactory.VariableDeclaration(context.DataType.Get<TypeSyntax>(), variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             _pool.Free(variables);
         }

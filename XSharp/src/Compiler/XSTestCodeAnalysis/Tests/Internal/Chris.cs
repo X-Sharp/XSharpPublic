@@ -260,6 +260,23 @@ SomeMethod( , , 1)
         }
 
 
+        // 68
+        [Test(Author = "Chris", Id = "C68", Title = "error XS0034: Operator '==' is ambiguous on operands of type 'MyEnum' and 'int'")]
+        public static void or_operator_with_enum_and_int()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+? (123 | MyEnum.m1) == 0
+? (MyEnum.m1 | 123) == 0
+? (123 & MyEnum.m2) != 0
+
+ENUM MyEnum AS Int32
+	MEMBER m1 := 0
+	MEMBER m2 := 1
+END ENUM
+");
+            CompileAndRunWithoutExceptions(s);
+        }
 
 
 
@@ -638,7 +655,7 @@ FUNCTION Start() AS VOID
     END IF
 RETURN
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndRunWithoutExceptions(s);
         }
 
         // 92
@@ -1178,5 +1195,18 @@ FUNCTION Start() AS VOID
 ");
             CompileAndRunWithoutExceptions("/debug+ /debug:full",s);
         }
+
+        // 122
+        [Test(Author = "Chris", Id = "C122", Title = "Asterisk comments not allowed")]
+        public static void Asterisk_comments()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+* comments here
+RETURN
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
     }
 }

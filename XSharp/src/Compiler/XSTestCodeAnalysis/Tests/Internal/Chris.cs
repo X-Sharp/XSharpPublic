@@ -269,6 +269,9 @@ FUNCTION Start() AS VOID
 ? (123 | MyEnum.m1) == 0
 ? (MyEnum.m1 | 123) == 0
 ? (123 & MyEnum.m2) != 0
+? 0 & MyEnum.m2
+? 0 | MyEnum.m2
+? 0 + MyEnum.m2
 
 ENUM MyEnum AS Int32
 	MEMBER m1 := 0

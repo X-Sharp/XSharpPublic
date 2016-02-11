@@ -965,6 +965,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         return BetterResult.Left;
                     }
+                    if (left.Type != null && right.Type != null)
+                    {
+                        bool enumL = left.Type.IsEnumType() || left.Type.IsNullableType() && left.Type.GetNullableUnderlyingType().IsEnumType();
+                        bool enumR = right.Type.IsEnumType() || right.Type.IsNullableType() && right.Type.GetNullableUnderlyingType().IsEnumType();
+                        if (enumL ^ enumR)
+                        {
+                            bool enum1 = (op1.LeftType.IsEnumType() || op1.LeftType.IsNullableType() && op1.LeftType.GetNullableUnderlyingType().IsEnumType())
+                                && (op1.RightType.IsEnumType() || op1.RightType.IsNullableType() && op1.RightType.GetNullableUnderlyingType().IsEnumType());
+                            bool enum2 = (op2.LeftType.IsEnumType() || op2.LeftType.IsNullableType() && op2.LeftType.GetNullableUnderlyingType().IsEnumType())
+                                && (op2.RightType.IsEnumType() || op2.RightType.IsNullableType() && op2.RightType.GetNullableUnderlyingType().IsEnumType());
+                            if (enum1 && !enum2)
+                            {
+                                return BetterResult.Left;
+                            }
+                            else if (!enum1 && enum2)
+                                return BetterResult.Right;
+                        }
+                    }
                 }
             }
 #endif

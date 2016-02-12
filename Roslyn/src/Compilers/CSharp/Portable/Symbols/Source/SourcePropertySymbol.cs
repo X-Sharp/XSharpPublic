@@ -243,7 +243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     _lazyParameters = CustomModifierUtils.CopyParameterCustomModifiers(overriddenOrImplementedProperty.Parameters, _lazyParameters, alsoCopyParamsModifier: isOverride);
                 }
 #if XSHARP
-                else if (this.IsVirtual) {
+                else /*if (this.IsVirtual)*/ {
                     _modifiers &= ~DeclarationModifiers.Override;
                 }
 #endif

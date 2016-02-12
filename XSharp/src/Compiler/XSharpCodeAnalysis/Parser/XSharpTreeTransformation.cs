@@ -187,6 +187,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 rb.FixDefaultVisibility();
                 if (_options.VirtualInstanceMethods)
                     rb.FixDefaultVirtual();
+                else
+                    rb.FixDefaultMethod();
             }
             var r = rb.ToTokenList();
             _pool.Free(rb);
@@ -596,6 +598,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     getMods.FixDefaultVisibility();
                     if (_options.VirtualInstanceMethods)
                         getMods.FixDefaultVirtual();
+                    else
+                        getMods.FixDefaultMethod();
                 }
                 getVisLvl = getMods.GetVisibilityLevel();
             }
@@ -608,6 +612,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     setMods.FixDefaultVisibility();
                     if (_options.VirtualInstanceMethods)
                         setMods.FixDefaultVirtual();
+                    else
+                        setMods.FixDefaultMethod();
                 }
                 setVisLvl = setMods.GetVisibilityLevel();
             }
@@ -1286,9 +1292,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
-            modifiers.FixDefaultVisibility();
-            if (_options.VirtualInstanceMethods)
-                modifiers.FixDefaultVirtual();
+            if (!context.Parent.isInInterface())
+            {
+                modifiers.FixDefaultVisibility();
+                if (_options.VirtualInstanceMethods)
+                    modifiers.FixDefaultVirtual();
+                else
+                    modifiers.FixDefaultMethod();
+            }
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
         }
@@ -1794,13 +1805,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
-            modifiers.FixDefaultVisibility();
-            if (_options.VirtualInstanceMethods && !context.Parent.isInInterface())
-                modifiers.FixDefaultVirtual();
-            else if (modifiers.Any(SyntaxKind.VirtualKeyword) && !modifiers.Any(SyntaxKind.NewKeyword)
-                    && !modifiers.Any(SyntaxKind.AbstractKeyword) && !context.Parent.isInInterface()
-                    && !modifiers.Any(SyntaxKind.OverrideKeyword))
-                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
+            if (!context.Parent.isInInterface())
+            {
+                modifiers.FixDefaultVisibility();
+                if (_options.VirtualInstanceMethods)
+                    modifiers.FixDefaultVirtual();
+                else
+                    modifiers.FixDefaultMethod();
+            }
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
         }

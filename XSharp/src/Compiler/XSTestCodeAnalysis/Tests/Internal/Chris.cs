@@ -673,10 +673,19 @@ CLASS ParentClass
 END CLASS
 
 CLASS ChildClass INHERIT ParentClass
-    VIRTUAL PROPERTY Name AS INT GET 0
+    VIRTUAL PROPERTY Name AS INT GET 1
 END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL o AS ParentClass
+    o:= ChildClass{ }
+    IF o:Name == 1
+        THROW System.Exception{ 'child called, should call parent'}
+    END IF
+RETURN
 ");
             CompileWithWarnings(s);
+            CompileAndRunWithoutExceptions(s);
         }
 
         // 93

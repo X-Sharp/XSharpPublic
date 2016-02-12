@@ -340,7 +340,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType, out _lazyReturnTypeCustomModifiers, out _lazyParameters, alsoCopyParamsModifier: true);
                     }
 #if XSHARP
-                    if (this.IsVirtual) {
+                    /*if (this.IsVirtual)*/ {
                         if ((object)overriddenMethod != null) {
                             if (this.Name != overriddenMethod.Name)
                                 this._name = overriddenMethod.Name;

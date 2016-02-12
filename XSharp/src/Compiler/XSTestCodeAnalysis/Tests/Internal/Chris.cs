@@ -328,7 +328,7 @@ CLASS Foo
 *** comments here ***
 END CLASS
 ");
-            CompileWithErrors(s);
+            CompileAndLoadWithoutErrors(s);
         }
 
 

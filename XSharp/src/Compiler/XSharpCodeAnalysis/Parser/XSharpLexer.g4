@@ -273,7 +273,7 @@ lexer grammar XSharpLexer;
 					}
 					break;
 				case '*':
-					if (_OldComment && LastToken == NL)
+					if (/*_OldComment && */LastToken == NL)
 						break;
 					_type = MULT;
 					_textSb.Clear();
@@ -1030,7 +1030,7 @@ DOC_COMMENT :  '/' '/' '/' ( ~(  '\n' | '\r' ) )*	-> channel(1)
 
 SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 			| {_OldComment}? '&' '&' ( ~(  '\n' | '\r' ) )*
-			| {_OldComment && LastToken == NL }? '*' ( ~(  '\n' | '\r' ) )*)	-> channel(HIDDEN)
+			| {/*_OldComment && */LastToken == NL }? '*' ( ~(  '\n' | '\r' ) )*)	-> channel(HIDDEN)
 			;
 
 

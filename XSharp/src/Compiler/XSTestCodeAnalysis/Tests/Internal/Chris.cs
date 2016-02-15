@@ -1247,7 +1247,7 @@ CLASS Child INHERIT Parent
     ? 'Child'
 END CLASS
 ");
-            CompileAndLoadWithoutErrors("/vo3",s);
+            CompileWithoutWarnings("/vo3",s);
         }
 
     }

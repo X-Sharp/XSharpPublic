@@ -1232,5 +1232,23 @@ END CLASS
             CompileAndLoadWithoutErrors(s);
         }
 
+        // 124
+        [Test(Author = "Chris", Id = "C124", Title = "Sealed method with /vo3")]
+        public static void Seale_method_with_vo3()
+        {
+            var s = ParseSource("/vo3",@"
+CLASS Parent
+    SEALED METHOD TEst() AS VOID
+    ? 'parent'
+END CLASS
+
+CLASS Child INHERIT Parent
+    NEW METHOD TEst() AS VOID
+    ? 'Child'
+END CLASS
+");
+            CompileAndLoadWithoutErrors("/vo3",s);
+        }
+
     }
 }

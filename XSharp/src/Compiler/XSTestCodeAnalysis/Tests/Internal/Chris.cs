@@ -1220,5 +1220,17 @@ RETURN
             CompileAndRunWithoutExceptions(s);
         }
 
+        // 123
+        [Test(Author = "Chris", Id = "C123", Title = "Event no suitable override")]
+        public static void Event_no_suitable_override()
+        {
+            var s = ParseSource(@"
+CLASS MyTest
+EVENT ev AS EventHandler
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
     }
 }

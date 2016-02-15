@@ -448,6 +448,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                         // Handle the accessors here, instead of in the loop, so that we can ensure that
                         // they're checked *after* the corresponding event.
+#if !XSHARP
                         if (member.IsOverride)
                         {
                             CheckOverrideMember(@event, @event.OverriddenOrHiddenMembers, diagnostics, out suppressAccessors);
@@ -465,6 +466,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             }
                         }
                         else
+#endif
                         {
                             var isNewEvent = ((SourceEventSymbol)@event).IsNew;
                             CheckNonOverrideMember(@event, isNewEvent, @event.OverriddenOrHiddenMembers, diagnostics, out suppressAccessors);

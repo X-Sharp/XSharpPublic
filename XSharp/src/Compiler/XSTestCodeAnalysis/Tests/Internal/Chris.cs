@@ -1250,5 +1250,21 @@ END CLASS
             CompileWithoutWarnings("/vo3",s);
         }
 
+
+        // 125
+        [Test(Author = "Chris", Id = "C125", Title = "error XS0621: 'TestClass.Test': virtual or abstract members cannot be private")]
+        public static void Property_member_cannot_be_private()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PRIVATE PROPERTY Test AS INT GET 0
+PRIVATE ACCESS Test2 AS INT
+RETURN 0
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
     }
 }

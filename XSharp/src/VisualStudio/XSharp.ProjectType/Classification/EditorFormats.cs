@@ -61,15 +61,28 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpRegionFormat)]
-    [Name(Constants.XSharpRegionFormat)]
+    [ClassificationType(ClassificationTypeNames = Constants.XSharpRegionStartFormat)]
+    [Name(Constants.XSharpRegionStartFormat)]
     [UserVisible(true)]
     [Order(After = Priority.Default)]
-    internal sealed class XSharpRegionFormat : ClassificationFormatDefinition
+    internal sealed class XSharpRegionStartFormat : ClassificationFormatDefinition
     {
-        public XSharpRegionFormat()
+        public XSharpRegionStartFormat()
         {
-            this.DisplayName = "XSharp Region";
+            this.DisplayName = "XSharp Region Start";
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = Constants.XSharpRegionStopFormat)]
+    [Name(Constants.XSharpRegionStopFormat)]
+    [UserVisible(true)]
+    [Order(After = Priority.Default)]
+    internal sealed class XSharpRegionStopFormat : ClassificationFormatDefinition
+    {
+        public XSharpRegionStopFormat()
+        {
+            this.DisplayName = "XSharp Region Stop";
         }
     }
 

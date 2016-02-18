@@ -23,8 +23,12 @@ namespace XSharpColorizer
         internal static ClassificationTypeDefinition XSharpBraceCloseFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpRegionFormat)]
-        internal static ClassificationTypeDefinition XSharpRegionFormat = null;
+        [Name(Constants.XSharpRegionStartFormat)]
+        internal static ClassificationTypeDefinition XSharpRegionStartFormat = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.XSharpRegionStopFormat)]
+        internal static ClassificationTypeDefinition XSharpRegionStopFormat = null;
 
     }
 }

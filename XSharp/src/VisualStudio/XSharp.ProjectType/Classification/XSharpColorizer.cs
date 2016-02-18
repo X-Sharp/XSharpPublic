@@ -44,83 +44,95 @@ namespace XSharpColorizer
 
     class XSharpColorizer : ITagger<IClassificationTag>
     {
-        private ITextBuffer theBuffer;
+        private ITextBuffer Buffer;
         public ITextSnapshot Snapshot { get; set; }
-        private IClassificationType xsharpKeywordType;
-        private IClassificationType xsharpValueType;
-        private IClassificationType xsharpBraceOpenType;
-        private IClassificationType xsharpBraceCloseType;
-        private IClassificationType xsharpRegionType;
+        //private IClassificationType xsharpKeywordType;
+        //private IClassificationType xsharpValueType;
+        //private IClassificationType xsharpBraceOpenType;
+        //private IClassificationType xsharpBraceCloseType;
+        //private IClassificationType xsharpRegionStartType;
+        //private IClassificationType xsharpRegionStopType;
+
+        private XSharpTagger xsTagger;
+
 
 #pragma warning disable CS0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore CS0067
-        private List<ITagSpan<IClassificationTag>> tags;
+        //private List<ITagSpan<IClassificationTag>> tags;
 
         internal XSharpColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry)
         {
-            this.theBuffer = buffer;
+            this.Buffer = buffer;
             this.Snapshot = buffer.CurrentSnapshot;
-            xsharpKeywordType = registry.GetClassificationType(Constants.XSharpKeywordFormat);
-            xsharpValueType = registry.GetClassificationType(Constants.XSharpValueFormat);
-            xsharpBraceOpenType = registry.GetClassificationType(Constants.XSharpBraceOpenFormat);
-            xsharpBraceCloseType = registry.GetClassificationType(Constants.XSharpBraceCloseFormat);
-            xsharpRegionType = registry.GetClassificationType(Constants.XSharpRegionFormat);
             //
-            this.ReParse();
-            this.theBuffer.Changed += BufferChanged;
+            xsTagger = new XSharpTagger(registry);
+            xsTagger.Parse(buffer.CurrentSnapshot);
+            //
+            //xsharpKeywordType = registry.GetClassificationType(Constants.XSharpKeywordFormat);
+            //xsharpValueType = registry.GetClassificationType(Constants.XSharpValueFormat);
+            //xsharpBraceOpenType = registry.GetClassificationType(Constants.XSharpBraceOpenFormat);
+            //xsharpBraceCloseType = registry.GetClassificationType(Constants.XSharpBraceCloseFormat);
+            //xsharpRegionStartType = registry.GetClassificationType(Constants.XSharpRegionStartFormat);
+            //xsharpRegionStopType = registry.GetClassificationType(Constants.XSharpRegionStopFormat);
+            //
+            //this.ReParse(buffer.CurrentSnapshot);
+            this.Buffer.Changed += OnBufferChanged;
             //
         }
 
 
-        void BufferChanged(object sender, TextContentChangedEventArgs e)
+        void OnBufferChanged(object sender, TextContentChangedEventArgs e)
         {
             // If this isn't the most up-to-date version of the buffer, then ignore it for now (we'll eventually get another change event).
-            if (e.After != theBuffer.CurrentSnapshot)
+            if (e.After != Buffer.CurrentSnapshot)
                 return;
-            this.ReParse();
+            //this.ReParse(e.After);
+            xsTagger.Parse(e.After);
         }
 
 
         /// <summary>
         /// Parse the current Snapshot, and build the Tag List
         /// </summary>
-        void ReParse()
-        {
-            this.Snapshot = this.theBuffer.CurrentSnapshot;
-            string source = this.Snapshot.GetText();
-            // Currently we "eat" all Exception that might be raised
-            // by XSharpSyntaxTree.ParseText
-            try
-            {
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source);
-                var syntaxRoot = tree.GetRoot();
-                // Get the antlr4 parse tree root
-                var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
+        //void ReParse( ITextSnapshot snapshot )
+        //{
+        //    this.Snapshot = snapshot;
+        //    string source = this.Snapshot.GetText();
+        //    // Currently we "eat" all Exception that might be raised
+        //    // by XSharpSyntaxTree.ParseText
+        //    try
+        //    {
+        //        LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source);
+        //        var syntaxRoot = tree.GetRoot();
+        //        // Get the antlr4 parse tree root
+        //        var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
 
-                //
-                var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
-                var discover = new XSharpTreeDiscover();
-                discover.Snapshot = this.Snapshot;
-                discover.xsharpBraceCloseType = xsharpBraceCloseType;
-                discover.xsharpBraceOpenType = xsharpBraceOpenType;
-                discover.xsharpValueType = xsharpValueType;
-                discover.xsharpKeywordType = xsharpKeywordType;
-                discover.xsharpRegionType = xsharpRegionType;
-                walker.Walk(discover, xtree);
-                //
-                this.tags = discover.tags;
-            }
-            catch
-            {
+        //        //
+        //        var walker = new LanguageService.SyntaxTree.Tree.ParseTreeWalker();
+        //        var discover = new XSharpTreeDiscover();
+        //        discover.Snapshot = this.Snapshot;
+        //        discover.xsharpBraceCloseType = xsharpBraceCloseType;
+        //        discover.xsharpBraceOpenType = xsharpBraceOpenType;
+        //        discover.xsharpValueType = xsharpValueType;
+        //        discover.xsharpKeywordType = xsharpKeywordType;
+        //        discover.xsharpRegionStartType = xsharpRegionStartType;
+        //        discover.xsharpRegionStopType = xsharpRegionStopType;
+        //        walker.Walk(discover, xtree);
+        //        //
+        //        this.tags = discover.tags;
+        //        //
+        //    }
+        //    catch
+        //    {
 
-            }
-            //
-        }
+        //    }
+        //    //
+        //}
 
         public IEnumerable<ITagSpan<IClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if ((spans.Count == 0) || (this.tags == null) || (this.tags.Count == 0) )
+            if ((spans.Count == 0) || (this.xsTagger.Tags == null) || (this.xsTagger.Tags.Count == 0) )
             {
                 //return Enumerable.Empty<ITagSpan<IClassificationTag>>();
                 yield break;
@@ -128,13 +140,13 @@ namespace XSharpColorizer
             //
             SnapshotSpan entire = new SnapshotSpan(spans[0].Start, spans[spans.Count - 1].End).TranslateTo(this.Snapshot, SpanTrackingMode.EdgeExclusive);
             //
-            foreach ( var tag in this.tags )
+            foreach ( var tag in this.xsTagger.Tags )
             {
-                if ( tag.Span.Start.Position >= entire.Start.Position &&
-                     tag.Span.End.Position <= entire.End.Position )
-                {
+                //if ( tag.Span.Start.Position >= entire.Start.Position &&
+                //     tag.Span.End.Position <= entire.End.Position )
+                //{
                     yield return tag;
-                }
+                //}
             }
             //return this.tags; // GetTagsXS(this.cache, spans);
         }

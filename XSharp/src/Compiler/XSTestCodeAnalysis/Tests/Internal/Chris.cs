@@ -509,6 +509,13 @@ LOCAL s AS STRING
 LOCAL c AS Char
 s := System.String{'a',3}
 c := s:Chars[1]
+? c
+
+LOCAL a := System.Collections.ArrayList{} AS System.Collections.ArrayList
+LOCAL o AS OBJECT
+a:Add(1)
+o := a:Item[0]
+? o
 ");
             CompileAndRunWithoutExceptions(s);
         }

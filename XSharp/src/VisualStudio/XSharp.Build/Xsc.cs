@@ -191,7 +191,11 @@ namespace XSharp.Build
                 foreach (var it in base.References)
                     commandLine.AppendSwitchIfNotNull("\n/reference:", it.ItemSpec);
             }
+            // target and platform
+            commandLine.AppendSwitch("\n/target:" + this.TargetType);
+            commandLine.AppendSwitchIfNotNull("\n/platform:", this.Platform);
             // Debug ?
+
             commandLine.AppendSwitchIfNotNull("\n/debug", this.EmitDebugInformation ? "+" : "-");
             // Default Namespace
             if (NS)
@@ -245,7 +249,11 @@ namespace XSharp.Build
             // Output assembly name
             commandLine.AppendSwitchIfNotNull("\n/out:", OutputAssembly);
             // User-defined CommandLine Option (in order to support switches unknown at that time)
-            commandLine.AppendSwitchIfNotNull("\n", this.CommandLineOption);
+            // cannot use appendswitch because it will quote the string when there are embedded spaces
+            if (!String.IsNullOrEmpty(this.CommandLineOption))
+            {
+                commandLine.AppendTextUnquoted("\n"+this.CommandLineOption);
+            }
 
             //
         }

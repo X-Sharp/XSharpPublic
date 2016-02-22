@@ -41,9 +41,7 @@ namespace XSharpOutlining
         }
     }
 
-
-
-
+    
 
     internal sealed class XSharpOutliningTagger : ITagger<IOutliningRegionTag> //, IDisposable
     {

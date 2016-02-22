@@ -3,17 +3,17 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.1.7"
-#define ProdBuild       "XSharp Alpha 0.1.7"
+#define ProdVer         "XSharp 0.2.1"
+#define ProdBuild       "XSharp Beta 0.2.1"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.1.7.1701"
-#define VITextVersion   "0.1.7.1701 (Alpha 7)"
-#define TouchDate       "2016-01-31"
-#define TouchTime       "01:07:00"
-#define SetupExeName    "XSharpSetup017"
+#define VIVersion       "0.2.1.2101"
+#define VITextVersion   "0.2.1.2101 (Beta 1)"
+#define TouchDate       "2016-02-29"
+#define TouchTime       "02:01:00"
+#define SetupExeName    "XSharpSetup021"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -22,10 +22,10 @@
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
-
+#define XIDESetupExe    "XIDE_Set_up_1.01.exe"                                             
 #define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
-#define Compression     "lzma2/ultra"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra"
+#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -136,7 +136,7 @@ Source: "{#DocFolder}\XSharp.chm";                     DestDir: "{app}\Help";   
 
 
 ;XIDE
-Source: "{#XIDEFolder}\XIDE_017.zip";                     DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; Components: Xide
+Source: "{#XIDEFolder}\{#XIDESetupExe}";              DestDir: "{app}\Xide";        Flags: {#StdFlags}; Components: Xide
 
 ;Uninstaller
 ;Source: "d:\Xsharp\Dev\XSharp\src\Tools\Inno\XsVsUnInst.exe";DestDir: "{app}\UnInst";    Flags: touch {#StdFlags}; Components: main
@@ -171,6 +171,7 @@ Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\ExtensionManager"; Fla
 
 [Run]
 ;Filename:  "{code:GetVs2015IdeDir}\Devenv.exe"; Parameters: "/Setup"; StatusMsg: "Registering X# Project System in Visual Studio (this may take a while...)"; Flags: runhidden;  Components: vs2015 ;
+FileName:"{app}\Xide\{#XIDESetupExe}"; Description: "Run the XIDE Installer"; Flags: PostInstall; Components: Xide
 
 [UninstallRun]
 ; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry
@@ -251,4 +252,4 @@ begin
 end;
 
 
-;#expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")
+#expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")

@@ -448,6 +448,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                         // Handle the accessors here, instead of in the loop, so that we can ensure that
                         // they're checked *after* the corresponding event.
+#if !XSHARP
                         if (member.IsOverride)
                         {
                             CheckOverrideMember(@event, @event.OverriddenOrHiddenMembers, diagnostics, out suppressAccessors);
@@ -465,6 +466,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             }
                         }
                         else
+#endif
                         {
                             var isNewEvent = ((SourceEventSymbol)@event).IsNew;
                             CheckNonOverrideMember(@event, isNewEvent, @event.OverriddenOrHiddenMembers, diagnostics, out suppressAccessors);
@@ -589,7 +591,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     diagnostics.Add(errorCode, overridingMemberLocation, overridingMember, hiddenMembers[0]);
                 }
 #if XSHARP
-                else if (!overridingMember.IsVirtual)
+                else if (overridingMember.IsOverride) // nvk: This prevents the following checks because the override flag gets cleared
 #else
                 else
 #endif
@@ -652,6 +654,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         diagnostics.Add(ErrorCode.ERR_CantOverrideBogusMethod, overridingMemberLocation, overridingMember, overriddenMember);
                         suppressAccessors = true;
                     }
+#if !XSHARP
                     else if (!overriddenMember.IsVirtual && !overriddenMember.IsAbstract && !overriddenMember.IsOverride &&
                         !(overridingMemberIsMethod && ((MethodSymbol)overriddenMember).MethodKind == MethodKind.Destructor)) //destructors are metadata virtual
                     {
@@ -659,6 +662,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         diagnostics.Add(ErrorCode.ERR_CantOverrideNonVirtual, overridingMemberLocation, overridingMember, overriddenMember);
                         suppressAccessors = true;
                     }
+#endif
                     else if (overriddenMember.IsSealed)
                     {
                         // CONSIDER: To match Dev10, skip the error for properties, and don't suppressAccessors
@@ -673,6 +677,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
                     else
                     {
+#if XSHARP
+                        if (!overriddenMember.IsVirtual && !overriddenMember.IsAbstract && !overriddenMember.IsOverride &&
+                            !(overridingMemberIsMethod && ((MethodSymbol)overriddenMember).MethodKind == MethodKind.Destructor)) //destructors are metadata virtual
+                        {
+                            diagnostics.Add(ErrorCode.WRN_NewRequired, overridingMemberLocation, overridingMember, overriddenMember);
+                        }
+#endif
                         // As in dev11, we don't compare obsoleteness to the immediately-overridden member,
                         // but to the least-overridden member.
                         var leastOverriddenMember = overriddenMember.GetLeastOverriddenMember(overriddenMember.ContainingType);
@@ -814,8 +825,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             var hidingMemberLocation = hidingMember.Locations[0];
 
             Debug.Assert(overriddenOrHiddenMembers != null);
+#if !XSHARP
             Debug.Assert(!overriddenOrHiddenMembers.OverriddenMembers.Any()); //since hidingMethod.IsOverride is false
             Debug.Assert(!overriddenOrHiddenMembers.RuntimeOverriddenMembers.Any()); //since hidingMethod.IsOverride is false
+#endif
+
+#if XSHARP
+            var diagnosticAddedX = false;
+#endif
 
             var hiddenMembers = overriddenOrHiddenMembers.HiddenMembers;
             Debug.Assert(!hiddenMembers.IsDefault);
@@ -825,6 +842,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (hidingMemberIsNew && !hidingMember.IsAccessor())
                 {
                     diagnostics.Add(ErrorCode.WRN_NewNotRequired, hidingMemberLocation, hidingMember);
+#if XSHARP
+                    diagnosticAddedX = true;
+#endif
                 }
             }
             else
@@ -859,7 +879,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember, hiddenMembers[0]);
                 }
+#if XSHARP
+                diagnosticAddedX = diagnosticAdded;
+#endif
             }
+#if XSHARP
+            if (overriddenOrHiddenMembers.OverriddenMembers.Any() || overriddenOrHiddenMembers.RuntimeOverriddenMembers.Any()) // nvk: can happen due to override flag mangling!
+            {
+                if (!hidingMemberIsNew && !diagnosticAddedX && !hidingMember.IsAccessor() && !hidingMember.IsOperator())
+                {
+                    diagnostics.Add(ErrorCode.WRN_NewRequired, hidingMemberLocation, hidingMember,
+                        overriddenOrHiddenMembers.OverriddenMembers.Any() ? overriddenOrHiddenMembers.OverriddenMembers[0] 
+                        : overriddenOrHiddenMembers.RuntimeOverriddenMembers[0]);
+                }
+            }
+#endif
         }
 
         /// <summary>

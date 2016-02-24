@@ -167,7 +167,10 @@ Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}";
 Root: HKLM; Subkey: "Software\{#RegCompany}"; Flags: uninsdeletekeyifempty 
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; Flags: uninsdeletekey 
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPath}"; ValueType: string; ValueData: "{app}" ;
-Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\ExtensionManager"; Flags: deletekey uninsdeletekey; Components: vs2015
+;Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\ExtensionManager"; Flags: deletekey uninsdeletekey; Components: vs2015
+
+[Ini]
+Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "1"; Flags: uninsdeletesection; Components: vs2015;
 
 [Run]
 ;Filename:  "{code:GetVs2015IdeDir}\Devenv.exe"; Parameters: "/Setup"; StatusMsg: "Registering X# Project System in Visual Studio (this may take a while...)"; Flags: runhidden;  Components: vs2015 ;
@@ -251,4 +254,4 @@ begin
 end;
 
 
-;#expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")
+#expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")

@@ -170,7 +170,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         protected readonly SyntaxReference syntaxReferenceOpt;
 
         // some symbols may not have a body syntax (e.g. abstract and extern members, primary constructors, synthesized event accessors, etc.)
+#if XSHARP
+        protected SyntaxReference bodySyntaxReferenceOpt;
+#else
         protected readonly SyntaxReference bodySyntaxReferenceOpt;
+#endif
 
         protected ImmutableArray<Location> locations;
         protected string lazyDocComment;
@@ -1227,6 +1231,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             Debug.Assert(!attribute.HasErrors);
             bool hasErrors = false;
 
+#if XSHARP
+            if (!this.IsExtern && this.IsStatic && (this.BodySyntax == null || !(this.BodySyntax.ChildNodes()?.Count() > 0)))
+            {
+                MakeFlags(flags.MethodKind, flags.DeclarationModifiers | DeclarationModifiers.Extern, flags.ReturnsVoid, flags.IsExtensionMethod, flags.IsMetadataVirtualLocked);
+                this.bodySyntaxReferenceOpt = null;
+            }
+#endif
             if (!this.IsExtern || !this.IsStatic)
             {
                 arguments.Diagnostics.Add(ErrorCode.ERR_DllImportOnInvalidMethod, arguments.AttributeSyntaxOpt.Name.Location);

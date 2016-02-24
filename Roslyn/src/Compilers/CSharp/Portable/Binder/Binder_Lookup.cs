@@ -1078,6 +1078,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return LookupResult.WrongArity(symbol, diagInfo);
             }
+#if !XSHARP
             else if (!InCref && !unwrappedSymbol.CanBeReferencedByNameIgnoringIllegalCharacters)
             {
                 // Strictly speaking, this test should actually check CanBeReferencedByName.
@@ -1088,6 +1089,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 diagInfo = diagnose ? new CSDiagnosticInfo(ErrorCode.ERR_CantCallSpecialMethod, unwrappedSymbol) : null;
                 return LookupResult.NotReferencable(symbol, diagInfo);
             }
+#endif
             else if ((options & LookupOptions.NamespacesOrTypesOnly) != 0 && !(unwrappedSymbol is NamespaceOrTypeSymbol))
             {
                 return LookupResult.NotTypeOrNamespace(unwrappedSymbol, symbol, diagnose);
@@ -1149,6 +1151,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
+#if XSHARP
+                if (!InCref && !unwrappedSymbol.CanBeReferencedByNameIgnoringIllegalCharacters)
+                {
+                    // Strictly speaking, this test should actually check CanBeReferencedByName.
+                    // However, we don't want to pay that cost in cases where the lookup is based
+                    // on a provided name.  As a result, we skip the character check here and let
+                    // SemanticModel.LookupNames filter out invalid names before returning.
+
+                    diagInfo = diagnose ? new CSDiagnosticInfo(ErrorCode.ERR_CantCallSpecialMethod, unwrappedSymbol) : null;
+                    return LookupResult.Good(symbol, diagInfo);
+                }
+#endif
                 return LookupResult.Good(symbol);
             }
         }

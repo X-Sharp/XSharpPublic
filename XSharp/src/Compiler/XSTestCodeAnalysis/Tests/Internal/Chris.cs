@@ -186,6 +186,8 @@ endif
 
 
         // 46
+        // RvdH 20160201: I do not thing this is a bug. There is no need to make a new virtual property in a sealed class
+        // The compiler is simply telling the user that there is a design error in his code...
         [Test(Author = "Chris", Id = "C46", Title = "error XS0549: 'TestClass.TestProp.get' is a new virtual member in sealed class 'TestClass'")]
         public static void error_XS0549_new_virtual_member_in_sealed_class()
         {
@@ -258,6 +260,26 @@ SomeMethod( , , 1)
         }
 
 
+        // 68
+        [Test(Author = "Chris", Id = "C68", Title = "error XS0034: Operator '==' is ambiguous on operands of type 'MyEnum' and 'int'")]
+        public static void or_operator_with_enum_and_int()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+? (123 | MyEnum.m1) == 0
+? (MyEnum.m1 | 123) == 0
+? (123 & MyEnum.m2) != 0
+? 0 & MyEnum.m2
+? 0 | MyEnum.m2
+? 0 + MyEnum.m2
+
+ENUM MyEnum AS Int32
+	MEMBER m1 := 0
+	MEMBER m2 := 1
+END ENUM
+");
+            CompileAndRunWithoutExceptions(s);
+        }
 
 
 
@@ -306,7 +328,7 @@ CLASS Foo
 *** comments here ***
 END CLASS
 ");
-            CompileWithErrors(s);
+            CompileAndLoadWithoutErrors(s);
         }
 
 
@@ -466,6 +488,9 @@ FUNCTION Start() AS VOID
 	LOCAL a AS INT[]
 	a := INT[]{3}
 	a[MyEnum.m1] := 1
+    if a[1] != 1
+        throw Exception{'Failed'}
+    endif
 RETURN
 ");
             CompileAndRunWithoutExceptions(s);
@@ -475,6 +500,7 @@ RETURN
 
 
         // 82
+        // nvk: This should normally be part of the runtime, imo (not a compiler error)
         [Test(Author = "Chris", Id = "C82", Title = "Error XS1061: 'string' does not contain a definition for 'Chars' and no extension ...")]
         public static void Error_XS1061_unavailable_String_Chars()
         {
@@ -483,6 +509,13 @@ LOCAL s AS STRING
 LOCAL c AS Char
 s := System.String{'a',3}
 c := s:Chars[1]
+? c
+
+LOCAL a := System.Collections.ArrayList{} AS System.Collections.ArrayList
+LOCAL o AS OBJECT
+a:Add(1)
+o := a:Item[0]
+? o
 ");
             CompileAndRunWithoutExceptions(s);
         }
@@ -599,6 +632,8 @@ END CLASS
 FUNCTION Start() AS VOID
 LOCAL d := 0X80880000 AS DWORD
 ? d 
+LOCAL i := 0X70880000 AS INT
+? i
 ");
             CompileAndLoadWithoutErrors(s);
         }
@@ -630,7 +665,7 @@ FUNCTION Start() AS VOID
     END IF
 RETURN
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndRunWithoutExceptions(s);
         }
 
         // 92
@@ -645,10 +680,19 @@ CLASS ParentClass
 END CLASS
 
 CLASS ChildClass INHERIT ParentClass
-    VIRTUAL PROPERTY Name AS INT GET 0
+    VIRTUAL PROPERTY Name AS INT GET 1
 END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL o AS ParentClass
+    o:= ChildClass{ }
+    IF o:Name == 1
+        THROW System.Exception{ 'child called, should call parent'}
+    END IF
+RETURN
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithWarnings(s);
+            CompileAndRunWithoutExceptions(s);
         }
 
         // 93
@@ -667,7 +711,7 @@ CLASS ChildClass INHERIT ParentClass
     VIRTUAL METHOD OnTest() AS VOID
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithWarnings(s);
         }
 
         // 94
@@ -725,7 +769,9 @@ FUNCTION Start() AS VOID
 LOCAL a AS System.Collections.ArrayList
 a := System.Collections.ArrayList{}
 a:Add(17)
-? a:get_Item(0)
+IF (int)a:get_Item(0) != 17
+    THROW Exception{'a:get_Item(0) != 17'}
+ENDIF
 ");
             CompileAndLoadWithoutErrors(s);
         }
@@ -752,14 +798,14 @@ p := 1u
 //98. error XS0263: Partial declarations of 'test' must not specify different base classes
 // file 1
 PARTIAL CLASS test
-//END CLASS
+END CLASS
 ");
             var s2 = ParseSource(@"
 // file 2
-PARTIAL CLASS test INHERIT System.Windows.Forms.Form 
-//END CLASS
+PARTIAL CLASS test INHERIT System.Dynamic.DynamicObject // System.Windows.Forms.Form
+END CLASS
 ");
-            CompileAndLoadWithoutErrors(s1,s2);
+            CompileAndLoadWithoutErrors(s1, s2);
         }
 
         // 99
@@ -791,6 +837,7 @@ END CLASS
 _DLL FUNCTION GetPrivateProfileString1(c1 AS STRING, c2 AS STRING, c3 AS STRING,o AS System.Text.StringBuilder, nSize AS DWORD, cFileName AS STRING ) AS DWORD PASCAL:KERNEL32.GetPrivateProfileStringA ANSI
 _DLL FUNCTION GetPrivateProfileString2(c1 AS STRING, c2 AS STRING, c3 AS STRING,o AS System.Text.StringBuilder, nSize AS DWORD, cFileName AS STRING ) AS DWORD PASCAL:KERNEL32.GetPrivateProfileStringA UNICODE
 _DLL FUNCTION GetPrivateProfileString3(c1 AS STRING, c2 AS STRING, c3 AS STRING,o AS System.Text.StringBuilder, nSize AS DWORD, cFileName AS STRING ) AS DWORD PASCAL:KERNEL32.GetPrivateProfileStringA AUTO
+_DLL FUNCTION GetPrivateProfileString4(c1 AS STRING, c2 AS STRING, c3 AS STRING,o AS System.Text.StringBuilder, nSize AS DWORD, cFileName AS STRING ) AS DWORD PASCAL:KERNEL32#111
 ");
             CompileAndLoadWithoutErrors(s);
         }
@@ -809,6 +856,16 @@ CLASS Test
 END CLASS
 ");
             CompileAndLoadWithoutErrors(s);
+            s = ParseSource(@"
+// nvk: this should throw an error because the method has a body
+#using System.Runtime.InteropServices
+CLASS Test
+    [DllImport('gdi32.dll',  EntryPoint:='CreateSolidBrush')];
+    STATIC METHOD CreateSolidBrush(hDC AS DWORD) AS IntPtr
+        RETURN (IntPtr)0
+END CLASS
+");
+            CompileWithErrors(s);
         }
 
         // 102
@@ -879,7 +936,7 @@ NEXT
             var s = ParseSource(@"
 GLOBAL ggg := 123 // AS INT missing
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
         // 107
@@ -891,7 +948,7 @@ FUNCTION Start() AS VOID
 LOCAL c
 c := '123'
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
         // 108
@@ -922,12 +979,18 @@ Test.StaticMethod()
 CLASS Parent
 END CLASS
 STATIC CLASS Child INHERIT Parent
+    STATIC T := 1 AS INT
 END CLASS
+FUNCTION Start() AS VOID
+    IF Child.T != 1
+        THROW Exception{""STATIC check fail""}
+    ENDIF
 ");
             CompileAndLoadWithoutErrors(s);
         }
 
         // 110
+        // nvk 20160203: I don't think we want to 'fix' this ...
         [Test(Author = "Chris", Id = "C110", Title = "Partial declarations different base classes")]
         public static void Partial_declarations_different_base_classes()
         {
@@ -943,10 +1006,14 @@ END CLASS
 PARTIAL CLASS TestClass
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileWithErrors(s);
         }
 
         // 111
+        // RvdH 20160201: I do not thing this is a bug. There is no need to seal a method when it is not an override
+        // of a method in a parent class. See my comments for Bug #62 on PlanIO.
+        // nvk 20160203: If vulcan compiles it, I think we should turn it into a warning. It will be the responsibility
+        // of the user to hide the warning or not.
         [Test(Author = "Chris", Id = "C111", Title = "Method cannot be sealed because it is not an override")]
         public static void Method_cannot_be_sealed_because_it_is_not_an_override()
         {
@@ -954,6 +1021,9 @@ END CLASS
 PARTIAL CLASS TestClass
 SEALED METHOD mmm() AS VOID
 END CLASS
+FUNCTION Start() AS VOID
+  VAR o := TestClass{}
+  o:mmm()
 ");
             CompileAndLoadWithoutErrors(s);
         }
@@ -981,6 +1051,8 @@ INTERNAL CLASS Parent
 END CLASS
 CLASS Child INHERIT Parent
 END CLASS
+FUNCTION Start() AS VOID
+    VAR o := Child{}
 ");
             CompileAndLoadWithoutErrors(s);
         }
@@ -1059,10 +1131,14 @@ END CLASS
             var s = ParseSource(@"
 INTERFACE ITest
     PROPERTY prop AS INT GET SET
+    PROPERTY propg AS INT GET
+    //PROPERTY props AS INT SET
 END INTERFACE
 
 CLASS TestClass IMPLEMENTS ITest
     VIRTUAL PROPERTY prop AS INT GET 0 SET
+    VIRTUAL PROPERTY propg AS INT GET
+    //VIRTUAL PROPERTY props AS INT SET // nvk: I think it's reasonable for this to throw an error
 END CLASS 
 ");
             CompileAndLoadWithoutErrors(s);
@@ -1081,7 +1157,7 @@ s := ( n ):ToString()
         }
 
         // 119
-        [Test(Author = "Chris", Id = "C119", Title = "Constructor chaning in body")]
+        [Test(Author = "Chris", Id = "C119", Title = "Constructor chaining in body")]
         public static void Ctor_chain_in_body()
         {
             var s = ParseStartFunction(@"
@@ -1090,6 +1166,7 @@ CLASS Test
     CONSTRUCTOR()
     SUPER()
     SELF(1)
+    RETURN
 END CLASS 
 ");
             CompileAndLoadWithoutErrors(s);
@@ -1124,11 +1201,77 @@ END CLASS
         {
             var s = ParseSource(@"
 CLASS Test
+    PUBLIC STATIC One AS INT
     PRIVATE CONSTRUCTOR
     STATIC CONSTRUCTOR
+        One := 1
 END CLASS 
+
+FUNCTION Start() AS VOID
+    IF Test.One != 1
+        THROW Exception{'Static constructor not called!'}
+    ENDIF
+");
+            CompileAndRunWithoutExceptions("/debug+ /debug:full",s);
+        }
+
+        // 122
+        [Test(Author = "Chris", Id = "C122", Title = "Asterisk comments not allowed")]
+        public static void Asterisk_comments()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+* comments here
+RETURN
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+        // 123
+        [Test(Author = "Chris", Id = "C123", Title = "Event no suitable override")]
+        public static void Event_no_suitable_override()
+        {
+            var s = ParseSource(@"
+CLASS MyTest
+EVENT ev AS EventHandler
+END CLASS
 ");
             CompileAndLoadWithoutErrors(s);
         }
+
+        // 124
+        [Test(Author = "Chris", Id = "C124", Title = "Sealed method with /vo3")]
+        public static void Seale_method_with_vo3()
+        {
+            var s = ParseSource("/vo3",@"
+CLASS Parent
+    SEALED METHOD TEst() AS VOID
+    ? 'parent'
+END CLASS
+
+CLASS Child INHERIT Parent
+    NEW METHOD TEst() AS VOID
+    ? 'Child'
+END CLASS
+");
+            CompileWithoutWarnings("/vo3",s);
+        }
+
+
+        // 125
+        [Test(Author = "Chris", Id = "C125", Title = "error XS0621: 'TestClass.Test': virtual or abstract members cannot be private")]
+        public static void Property_member_cannot_be_private()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PRIVATE PROPERTY Test AS INT GET 0
+PRIVATE ACCESS Test2 AS INT
+RETURN 0
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
     }
 }

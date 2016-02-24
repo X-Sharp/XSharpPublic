@@ -152,6 +152,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SingleLookupResult(LookupResultKind.Viable, symbol, null);
         }
 
+#if XSHARP
+        internal static SingleLookupResult Good(Symbol symbol, DiagnosticInfo error)
+        {
+            return new SingleLookupResult(LookupResultKind.Viable, symbol, error);
+        }
+#endif
         internal static SingleLookupResult WrongArity(Symbol symbol, DiagnosticInfo error)
         {
             return new SingleLookupResult(LookupResultKind.WrongArity, symbol, error);

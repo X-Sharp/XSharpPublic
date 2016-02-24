@@ -83,7 +83,8 @@ vodll				: (Modifiers=funcprocModifiers)? DLL
 					  ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
 					  | T=PROCEDURE Id=identifier ParamList=parameterList )
 					  (CallingConvention=dllcallconv)? COLON 
-					  Dll=identifierString DOT Entrypoint=identifierString //(NEQ Ordinal=INT_CONST)? 
+					  Dll=identifierString ( DOT Entrypoint=identifierString | Ordinal=ORDINAL )
+					  ( CharSet=(AUTO | ANSI | UNICODE) )?
 					  EOS
                     ;
 
@@ -138,7 +139,7 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 					;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
-vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression
+vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression AS DataType=nativeType  EOS
 					;
 
 vostruct			: (Modifiers=votypeModifiers)? 
@@ -288,7 +289,7 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET
 
 propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
 					  ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
-					  | {InputStream.La(1) != GET}? Key=SET ExprList=expressionListStmt?
+					  | {InputStream.La(2) != GET}? Key=SET ExprList=expressionListStmt?
 					  | Key=(GET|SET) )
 					;
 
@@ -376,27 +377,6 @@ globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (
 
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 					;
-
-/*
-: localdecl
-| casestmt
-| whilestmt
-| repeatstmt
-| forstmt
-| foreachstmt
-| ifstmt
-| retstmt
-| seqstmt
-| breakstmt
-| throwstmt
-| exprstmt
-| exitstmt
-| loopstmt
-| qoutstmt
-| tryblock
-| { LA(1) == BEGIN && LA(2) == LOCK }? lockstmt
-| { LA(1) == BEGIN && LA(2) == SCOPE }? scopestmt
-| fieldstmt */
 
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
@@ -808,13 +788,14 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
 					| ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
 					| HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
 					| PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
-					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR)
+					| THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
+					| CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT) 
 					;
+					// Entity Keywords are added to the keywordvo list, although not strictly VO keyword. 
+					// But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
 
-keywordvn           : Token=(ABSTRACT | AUTO | CONSTRUCTOR | CONST | DEFAULT | DELEGATE | DESTRUCTOR | ENUM | EVENT
-					| EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERFACE | INTERNAL 
-					| LOCK | NAMESPACE | NEW | OPERATOR	| OPTIONS | OUT | PARTIAL | PROPERTY | REPEAT | SCOPE | SEALED | SET | STRUCTURE			
-					|  TRY | UNTIL | VALUE | VIRTUAL | VOSTRUCT | WARNINGS)
+keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
+					| LOCK | NAMESPACE | NEW | OPTIONS | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 

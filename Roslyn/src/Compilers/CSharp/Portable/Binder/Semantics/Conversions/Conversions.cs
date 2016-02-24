@@ -327,6 +327,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return (int)ulong.MinValue <= value;
                     case SpecialType.System_UInt16:
                         return ushort.MinValue <= value && value <= ushort.MaxValue;
+#if XSHARP
+                    case SpecialType.System_IntPtr:
+                        return true;
+#endif
                     default:
                         return false;
                 }
@@ -340,6 +344,10 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             else if (specialSource == SpecialType.System_Double  && destination.GetSpecialTypeSafe() == SpecialType.System_Single) {
                 // TODO (nvk): Check numeric range before accepting conversion!
+                return true;
+            }
+            else if (specialSource == SpecialType.System_UInt32 && destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr)
+            {
                 return true;
             }
 #endif
@@ -390,6 +398,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!validType)
             {
+#if XSHARP
+                if(source.Type != null && (source.Type.IsEnumType() || source.Type.IsNullableType() && source.Type.GetNullableUnderlyingType().IsEnumType())) {
+                    return IsNumericType(destination.GetSpecialTypeSafe());
+                }
+#endif
                 return false;
             }
 

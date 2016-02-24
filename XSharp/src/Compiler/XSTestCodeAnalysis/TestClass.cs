@@ -112,6 +112,26 @@ namespace XSTestCodeAnalysis
             }
         }
 
+        public static void CompileWithWarnings(params CSharpSyntaxTree[] sources) { CompileWithWarnings("", sources); }
+        public static void CompileWithWarnings(string cmdLine, params CSharpSyntaxTree[] sources)
+        {
+            var c = CreateCompilation(cmdLine, sources);
+            using (var ms = new System.IO.MemoryStream())
+            {
+                EmitResult r = c.Emit(ms);
+                if (!r.Success)
+                {
+                    string err = "";
+                    r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error).ToList().ForEach(d => err += d.ToString() + "\r\n");
+                    throw new Exception(err);
+                }
+                string wrn = "";
+                r.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Warning).ToList().ForEach(d => wrn += d.ToString() + "\r\n");
+                if (wrn == "")
+                    throw new Exception("No warnings");
+            }
+        }
+
         public static System.Reflection.Assembly CompileAndLoadWithoutErrors(params CSharpSyntaxTree[] sources) { return CompileAndLoadWithoutErrors("", sources); }
         public static System.Reflection.Assembly CompileAndLoadWithoutErrors(string cmdLine, params CSharpSyntaxTree[] sources) {
             var c = CreateCompilation(cmdLine, sources);

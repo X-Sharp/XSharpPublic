@@ -117,8 +117,11 @@ namespace Antlr4.Runtime
     {
         internal static void Put<T>([NotNull] this IParseTree t, T node) where T : InternalSyntax.CSharpSyntaxNode
         {
-            node.XNode = t;
-            t.CsNode = node;
+            if (node != null)
+            {
+                node.XNode = t;
+                t.CsNode = node;
+            }
         }
 
         internal static T Get<T>([NotNull] this IParseTree t) where T : InternalSyntax.CSharpSyntaxNode

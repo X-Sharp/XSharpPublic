@@ -243,7 +243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     _lazyParameters = CustomModifierUtils.CopyParameterCustomModifiers(overriddenOrImplementedProperty.Parameters, _lazyParameters, alsoCopyParamsModifier: isOverride);
                 }
 #if XSHARP
-                else if (this.IsVirtual) {
+                else /*if (this.IsVirtual)*/ {
                     _modifiers &= ~DeclarationModifiers.Override;
                 }
 #endif
@@ -767,11 +767,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // A member '{0}' marked as override cannot be marked as new or virtual
                 diagnostics.Add(ErrorCode.ERR_OverrideNotNew, location, this);
             }
+#if !XSHARP // TODO nvk: Possibly add this check after the other errors have been added, only if /vo3 is not used (it is a warning in X#)
             else if (IsSealed && !IsOverride)
             {
                 // '{0}' cannot be sealed because it is not an override
                 diagnostics.Add(ErrorCode.ERR_SealedNonOverride, location, this);
             }
+#endif
             else if (IsAbstract && IsExtern)
             {
                 diagnostics.Add(ErrorCode.ERR_AbstractAndExtern, location, this);
@@ -926,7 +928,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #region Attributes
+#region Attributes
 
         IAttributeTargetSymbol IAttributeTargetSymbol.AttributesOwner
         {
@@ -1155,9 +1157,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
-        #region Completion
+#region Completion
 
         internal sealed override bool RequiresCompletion
         {
@@ -1245,7 +1247,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
         }
 
-        #endregion
+#endregion
 
         private TypeSymbol ComputeType(Binder binder, BasePropertyDeclarationSyntax syntax, DiagnosticBag diagnostics)
         {

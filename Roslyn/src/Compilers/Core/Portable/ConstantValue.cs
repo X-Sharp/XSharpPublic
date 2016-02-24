@@ -26,6 +26,9 @@ namespace Microsoft.CodeAnalysis
         String,
         Decimal,
         DateTime,
+#if XSHARP
+        IntPtr,
+#endif
     }
 
     internal abstract partial class ConstantValue : IEquatable<ConstantValue>
@@ -65,6 +68,9 @@ namespace Microsoft.CodeAnalysis
         public virtual double DoubleValue { get { throw new InvalidOperationException(); } }
         public virtual float SingleValue { get { throw new InvalidOperationException(); } }
 
+#if XSHARP
+        public virtual IntPtr IntPtrValue { get { throw new InvalidOperationException(); } }
+#endif
         // returns true if value is in its default (zero-inited) form.
         public virtual bool IsDefaultValue { get { return false; } }
 
@@ -302,6 +308,17 @@ namespace Microsoft.CodeAnalysis
             return new ConstantValueDateTime(value);
         }
 
+#if XSHARP
+        public static ConstantValue Create(IntPtr value)
+        {
+            if (value == default(IntPtr))
+            {
+                return ConstantValueDefault.IntPtr;
+            }
+
+            return new ConstantValueIntPtr(value);
+        }
+#endif
         public static ConstantValue Create(object value, SpecialType st)
         {
             var discriminator = GetDiscriminator(st);
@@ -341,6 +358,9 @@ namespace Microsoft.CodeAnalysis
                 case ConstantValueTypeDiscriminator.Decimal: return Create((decimal)value);
                 case ConstantValueTypeDiscriminator.DateTime: return Create((DateTime)value);
                 case ConstantValueTypeDiscriminator.String: return Create((string)value);
+#if XSHARP
+                case ConstantValueTypeDiscriminator.IntPtr: return Create((IntPtr)value);
+#endif
                 default:
                     throw new InvalidOperationException();  //Not using ExceptionUtilities.UnexpectedValue() because this failure path is tested.
             }
@@ -373,6 +393,9 @@ namespace Microsoft.CodeAnalysis
                 case ConstantValueTypeDiscriminator.Double: return ConstantValueDefault.Double;
                 case ConstantValueTypeDiscriminator.Decimal: return ConstantValueDefault.Decimal;
                 case ConstantValueTypeDiscriminator.DateTime: return ConstantValueDefault.DateTime;
+#if XSHARP
+                case ConstantValueTypeDiscriminator.IntPtr: return ConstantValueDefault.IntPtr;
+#endif
 
                 case ConstantValueTypeDiscriminator.Null:
                 case ConstantValueTypeDiscriminator.String: return Null;
@@ -400,6 +423,9 @@ namespace Microsoft.CodeAnalysis
                 case SpecialType.System_Decimal: return ConstantValueTypeDiscriminator.Decimal;
                 case SpecialType.System_DateTime: return ConstantValueTypeDiscriminator.DateTime;
                 case SpecialType.System_String: return ConstantValueTypeDiscriminator.String;
+#if XSHARP
+                case SpecialType.System_IntPtr: return ConstantValueTypeDiscriminator.IntPtr;
+#endif
             }
 
             return ConstantValueTypeDiscriminator.Bad;
@@ -424,6 +450,9 @@ namespace Microsoft.CodeAnalysis
                 case ConstantValueTypeDiscriminator.Decimal: return SpecialType.System_Decimal;
                 case ConstantValueTypeDiscriminator.DateTime: return SpecialType.System_DateTime;
                 case ConstantValueTypeDiscriminator.String: return SpecialType.System_String;
+#if XSHARP
+                case ConstantValueTypeDiscriminator.IntPtr: return SpecialType.System_IntPtr;
+#endif
                 default: return SpecialType.None;
             }
         }
@@ -451,6 +480,9 @@ namespace Microsoft.CodeAnalysis
                     case ConstantValueTypeDiscriminator.Decimal: return Boxes.Box(DecimalValue);
                     case ConstantValueTypeDiscriminator.DateTime: return DateTimeValue;
                     case ConstantValueTypeDiscriminator.String: return StringValue;
+#if XSHARP
+                    case ConstantValueTypeDiscriminator.IntPtr: return IntPtrValue;
+#endif
                     default: throw ExceptionUtilities.UnexpectedValue(this.Discriminator);
                 }
             }
@@ -623,6 +655,15 @@ namespace Microsoft.CodeAnalysis
             }
         }
 
+#if XSHARP
+        public bool IsIntPtr
+        {
+            get
+            {
+                return this.Discriminator == ConstantValueTypeDiscriminator.IntPtr;
+            }
+        }
+#endif
         public static bool IsFloatingType(ConstantValueTypeDiscriminator discriminator)
         {
             return discriminator == ConstantValueTypeDiscriminator.Double ||

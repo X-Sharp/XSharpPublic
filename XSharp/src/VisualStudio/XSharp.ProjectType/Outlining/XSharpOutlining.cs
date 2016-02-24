@@ -19,7 +19,6 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using Microsoft.VisualStudio.Text.Classification;
 using XSharpColorizer;
-using System.Windows.Threading;
 
 namespace XSharpOutlining
 {
@@ -29,14 +28,16 @@ namespace XSharpOutlining
     [ContentType("XSharp")]
     internal sealed class XSharpOutliningTaggerProvider : ITaggerProvider
     {
-        
+        [Import]
+        IClassifierAggregatorService aggregator = null;
+
         [Import]
         internal IClassificationTypeRegistryService ClassificationRegistry = null; // Set via MEF
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             //create a single tagger for each buffer.
-            Func<ITagger<T>> outliner = delegate () { return new XSharpOutliningTagger(buffer, ClassificationRegistry) as ITagger<T>; };
+            Func<ITagger<T>> outliner = delegate () { return new XSharpOutliningTagger(buffer, aggregator, ClassificationRegistry) as ITagger<T>; };
             return buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(outliner);
         }
     }
@@ -45,38 +46,36 @@ namespace XSharpOutlining
 
 
 
-    internal sealed class XSharpOutliningTagger : ITagger<IOutliningRegionTag> //, IDisposable
+    internal sealed class XSharpOutliningTagger : ITagger<IOutliningRegionTag>
     {
 
+        //string startHide = "[";     //the characters that start the outlining region
+        //string endHide = "]";       //the characters that end the outlining region
         string ellipsis = "...";    //the characters that are displayed when the region is collapsed
         string hoverText = "hover text"; //the contents of the tooltip for the collapsed span
         ITextBuffer buffer;
         ITextSnapshot snapshot;
         //List<Region> regions;
+        private readonly IClassifier classifier;
         private IClassificationType xsharpRegionStartType;
         private IClassificationType xsharpRegionStopType;
 
-        //private List<ITagSpan<IClassificationTag>> tags;
-
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
-
         private XSharpTagger xsTagger;
 
-
-        public XSharpOutliningTagger(ITextBuffer buffer, IClassificationTypeRegistryService registry)
+        public XSharpOutliningTagger(ITextBuffer buffer, IClassifierAggregatorService AggregatorFactory, IClassificationTypeRegistryService registry)
         {
             this.buffer = buffer;
             this.snapshot = buffer.CurrentSnapshot;
-
             //
             xsTagger = new XSharpTagger(registry);
             xsTagger.Parse(this.snapshot);
             //
             this.buffer.Changed += OnBufferChanged;
-            //
-            this.xsharpRegionStartType = registry.GetClassificationType(Constants.XSharpRegionStartFormat);
-            this.xsharpRegionStopType = registry.GetClassificationType(Constants.XSharpRegionStopFormat);
-            //
+
+            this.classifier = AggregatorFactory.GetClassifier(buffer);
+            xsharpRegionStartType = registry.GetClassificationType(Constants.XSharpRegionStartFormat);
+            xsharpRegionStopType = registry.GetClassificationType(Constants.XSharpRegionStopFormat);
         }
 
         void OnBufferChanged(object sender, TextContentChangedEventArgs e)
@@ -139,6 +138,7 @@ namespace XSharpOutlining
         }
 
     }
-
-
 }
+
+
+

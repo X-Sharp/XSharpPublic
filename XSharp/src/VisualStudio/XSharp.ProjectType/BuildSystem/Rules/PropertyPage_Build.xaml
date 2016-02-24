@@ -4,13 +4,14 @@
     Name="BuildOptions"
 	DisplayName="Build"
 	PageTemplate="generic"
-	Description="Build options"
+    Order="3"
+    Description="Build options"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>
         <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" />
     </Rule.DataSource>
     <Rule.Categories>
-        <Category Name="Build" DisplayName="Build"  Description="General" />
+        <Category Name="Build" DisplayName="Build"  Description="General"  />
         <Category Name="Events"  DisplayName="Build Events" Description="Define pre- and post- build events" />
         <Category Name="Warnings"  DisplayName="Warnings" Description="Suppress specific warnings and set warning level" />
     </Rule.Categories>
@@ -19,7 +20,6 @@
     <StringProperty Category="Build" Name="IntermediateOutputPath" DisplayName ="Intermediate Output Path" Subtype="file" />
     <BoolProperty   Category="Build" Name="DocumentationFile" DisplayName="Generate XML doc comments file" Default="False"/>
     <StringProperty Category="Build" Name="TargetPath" DisplayName="Complete Target Path" ReadOnly="True" />
-    <BoolProperty Category="Build" Name="Optimize" Description="Should compiler optimize output?" />
     <StringProperty Category="Events" Name="PreBuildEvent"  DisplayName="Pre Build Event"  Description="Pre Build Event Command Line" Subtype="CommandLine"/>
     <StringProperty Category="Events" Name="PostBuildEvent" DisplayName="Post Build Event" Description="Post Build Event Command Line" Subtype="CommandLine" />
     <EnumProperty Category="Events" Name="RunPostBuildEvent" DisplayName="Run the Post Build Event" Description="When to run the Post Build Event" Default="Always" >

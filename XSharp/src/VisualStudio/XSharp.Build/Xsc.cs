@@ -57,8 +57,16 @@ namespace XSharp.Build
         // Misc. (unknown at that time) CommandLine options
         public string CommandLineOption { get; set; }
 
-       
+        public string BaseAddress { get; set; }
+
+        public string PdbFile { get; set; }
         #endregion
+
+
+        public Xsc(): base()
+        {
+            //ystem.Diagnostics.Debugger.Launch();
+        }
 
         protected override string ToolName
         {
@@ -106,7 +114,6 @@ namespace XSharp.Build
 
         private string FindXsc(string toolName)
         {
-            //System.Diagnostics.Debugger.Launch();
             if (string.IsNullOrEmpty(CompilerPath))
             {
                 // If used after MSI Installer, value should be in the Registry
@@ -191,23 +198,30 @@ namespace XSharp.Build
                 foreach (var it in base.References)
                     commandLine.AppendSwitchIfNotNull("\n/reference:", it.ItemSpec);
             }
-            // Debug ?
-            commandLine.AppendSwitchIfNotNull("\n/debug", this.EmitDebugInformation ? "+" : "-");
+            // target and platform
+            commandLine.AppendSwitch("\n/target:" + this.TargetType);
+            commandLine.AppendSwitchIfNotNull("\n/platform:", this.Platform);
+            commandLine.AppendSwitchIfNotNull("\n/baseaddress:", this.BaseAddress);
+            AppendLogicSwitch(commandLine, "\n/optimize", Optimize);
+
+            if (String.IsNullOrEmpty(DebugType) || DebugType.ToLower() == "none")
+                commandLine.AppendSwitch("\n/debug-");
+            else
+                commandLine.AppendSwitch("\n/debug:"+ this.DebugType);
+
+            if (!String.IsNullOrEmpty(PdbFile))
+                commandLine.AppendSwitch("\n/pdb:" + this.PdbFile);
             // Default Namespace
             if (NS)
             {
-                commandLine.AppendSwitch("/ns:" + this.RootNameSpace);
-            }
-            else
-            {
-                commandLine.AppendSwitch("/ns:" );
+                commandLine.AppendSwitch("\n/ns:" + this.RootNameSpace);
             }
             if (WarningLevel < 0 || WarningLevel > 4)
             {
                 WarningLevel = 4;
             }
             commandLine.AppendSwitch("/warn:" + WarningLevel.ToString());
-            AppendSwitchIfTrue(commandLine, "/warnaserror", TreatWarningsAsErrors);
+            AppendLogicSwitch(commandLine, "/warnaserror", TreatWarningsAsErrors);
             if (!String.IsNullOrEmpty(DisabledWarnings))
             {
                 string[] warnings = DisabledWarnings.Split(new char[] { ' ', ',', ';' });
@@ -222,35 +236,40 @@ namespace XSharp.Build
                     commandLine.AppendSwitch("/nowarn:" + warninglist);
             }
             // Compatibility
-            AppendSwitchIfTrue(commandLine, "/az", AZ);
-            AppendSwitchIfTrue(commandLine, "/cs", CS);
-            AppendSwitchIfTrue(commandLine, "/ins", INS);
-            AppendSwitchIfTrue(commandLine, "/lb", LB);
-            AppendSwitchIfTrue(commandLine, "/ovf", OVF);
-            AppendSwitchIfTrue(commandLine, "/ppo", PPO);
-            AppendSwitchIfTrue(commandLine, "/vo1", VO1);
-            AppendSwitchIfTrue(commandLine, "/vo2", VO2);
-            AppendSwitchIfTrue(commandLine, "/vo3", VO3);
-            AppendSwitchIfTrue(commandLine, "/vo4", VO4);
-            AppendSwitchIfTrue(commandLine, "/vo5", VO5);
-            AppendSwitchIfTrue(commandLine, "/vo6", VO6);
-            AppendSwitchIfTrue(commandLine, "/vo7", VO7);
-            AppendSwitchIfTrue(commandLine, "/vo8", VO8);
-            AppendSwitchIfTrue(commandLine, "/vo9", VO9);
-            AppendSwitchIfTrue(commandLine, "/vo10", VO10);
-            AppendSwitchIfTrue(commandLine, "/vo11", VO11);
-            AppendSwitchIfTrue(commandLine, "/vo12", VO12);
-            AppendSwitchIfTrue(commandLine, "/vo13", VO13);
+            AppendLogicSwitch(commandLine, "/az", AZ);
+            AppendLogicSwitch(commandLine, "/cs", CS);
+            AppendLogicSwitch(commandLine, "/ins", INS);
+            AppendLogicSwitch(commandLine, "/lb", LB);
+            AppendLogicSwitch(commandLine, "/ovf", OVF);
+            AppendLogicSwitch(commandLine, "/ppo", PPO);
+            AppendLogicSwitch(commandLine, "/unsafe", UnSafe);
+            AppendLogicSwitch(commandLine, "/vo1", VO1);
+            AppendLogicSwitch(commandLine, "/vo2", VO2);
+            AppendLogicSwitch(commandLine, "/vo3", VO3);
+            AppendLogicSwitch(commandLine, "/vo4", VO4);
+            AppendLogicSwitch(commandLine, "/vo5", VO5);
+            AppendLogicSwitch(commandLine, "/vo6", VO6);
+            AppendLogicSwitch(commandLine, "/vo7", VO7);
+            AppendLogicSwitch(commandLine, "/vo8", VO8);
+            AppendLogicSwitch(commandLine, "/vo9", VO9);
+            AppendLogicSwitch(commandLine, "/vo10", VO10);
+            AppendLogicSwitch(commandLine, "/vo11", VO11);
+            AppendLogicSwitch(commandLine, "/vo12", VO12);
+            AppendLogicSwitch(commandLine, "/vo13", VO13);
 
             // Output assembly name
             commandLine.AppendSwitchIfNotNull("\n/out:", OutputAssembly);
             // User-defined CommandLine Option (in order to support switches unknown at that time)
-            commandLine.AppendSwitchIfNotNull("\n", this.CommandLineOption);
+            // cannot use appendswitch because it will quote the string when there are embedded spaces
+            if (!String.IsNullOrEmpty(this.CommandLineOption))
+            {
+                commandLine.AppendTextUnquoted("\n"+this.CommandLineOption);
+            }
 
             //
         }
 
-        protected void AppendSwitchIfTrue(CommandLineBuilderExtension commandLine, string Switch, Boolean Option)
+        protected void AppendLogicSwitch(CommandLineBuilderExtension commandLine, string Switch, Boolean Option)
         {
             
             if (Option)

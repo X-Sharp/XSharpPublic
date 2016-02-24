@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Windows Forms Application</Name>
+    <Description>Basic XSharp Windows Forms Application.</Description>
+    <Icon>XSharp.ico</Icon>
+    <ProjectType>XSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>100</SortOrder>
+    <TemplateID>EDE95018-F40E-4303-9753-899D00052897</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>WindowsFormsApplication</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="WinFormApp.xsprj" ReplaceParameters="true">
+      <!-- 
+      These are the items which will show up when a new project is created using the custom project system.
+      Items referenced in here must also be referenced in the project file.
+      -->
+      <ProjectItem ReplaceParameters="true">Properties\AssemblyInfo.prg</ProjectItem>
+      <ProjectItem OpenInEditor="true" ReplaceParameters="true">Program.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Form1.Designer.prg</ProjectItem>	  		 
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true" OpenOrder="10" SubType="Form">Form1.prg</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

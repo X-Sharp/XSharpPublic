@@ -326,6 +326,7 @@
     <Compile Include="ProjectTreeModifier_Icon.cs" />
     <Compile Include="Images\XSharpImagesMonikers.cs" />
     <Compile Include="Debugging\XSharpDebuggerLaunchProvider.cs" />
+    <Compile Include="Tagger\XSharpTagger.cs" />
     <Compile Include="XSharpVsPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

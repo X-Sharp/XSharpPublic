@@ -18,11 +18,11 @@ namespace XSharpColorizer
     {
         internal List<ITagSpan<IClassificationTag>> tags;
         public ITextSnapshot Snapshot { get; set; }
-        internal IClassificationType xsharpKeywordType;
-        internal IClassificationType xsharpValueType;
+        internal IClassificationType xsharpIdentifierType;
         internal IClassificationType xsharpBraceOpenType;
         internal IClassificationType xsharpBraceCloseType;
-        internal IClassificationType xsharpRegionType;
+        internal IClassificationType xsharpRegionStartType;
+        internal IClassificationType xsharpRegionStopType;
 
         public XSharpTreeDiscover()
         {
@@ -32,90 +32,40 @@ namespace XSharpColorizer
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
-            //
-            if ((context is XSharpParser.Using_Context) ||
-                (context is XSharpParser.Namespace_Context) ||
+            base.ExitEveryRule(context);
+            if ((context is XSharpParser.Namespace_Context) ||
                 (context is XSharpParser.Class_Context) ||
                 (context is XSharpParser.PropertyContext) ||
-                (context is XSharpParser.NativeTypeContext) ||
-                (context is XSharpParser.ClassvarModifiersContext) ||
-                (context is XSharpParser.MethodtypeContext) ||
-                (context is XSharpParser.MemberModifiersContext) ||
-                (context is XSharpParser.ConstructorModifiersContext) ||
-                (context is XSharpParser.PropertyAutoAccessorContext) ||
-                (context is XSharpParser.ForeachStmtContext) ||
-                (context is XSharpParser.ForStmtContext) ||
-                (context is XSharpParser.RepeatStmtContext) ||
-                (context is XSharpParser.WhileStmtContext) ||
-                (context is XSharpParser.VarLocalDeclContext) ||
-                (context is XSharpParser.LocaldeclContext)
-                )
+                (context is XSharpParser.PropertyAccessorContext))
             {
-                var tokenSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex - context.Start.StartIndex + 1);
-                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpKeywordType));
+                // already done
+                // BEGIN         NAMESPACE .... END NAMESPACE 
                 //
-                if ((context is XSharpParser.Namespace_Context) ||
-                    (context is XSharpParser.Class_Context))
-                {
-                    // already done
-                    // BEGIN         NAMESPACE .... END NAMESPACE 
-                    TagSubTokens(context, new List<int>() { 1, context.ChildCount - 3, context.ChildCount - 2 });
-                    //
-                    TagRegion(context, context.ChildCount - 2 );
-                }
-                else if ((context is XSharpParser.ForeachStmtContext) ||
-                        (context is XSharpParser.WhileStmtContext) ||
-                        (context is XSharpParser.ForStmtContext))
-                {
-                    // already done
-                    // WHILE          END 
-                    TagSubTokens(context, new List<int>() { 1, context.ChildCount - 2 });
-                    //
-                }
-                else if (context is XSharpParser.RepeatStmtContext)
-                {
-                    TagSubTokens(context, new List<int>() { 1, context.ChildCount - 3 });
-                }
+                TagRegion(context, context.ChildCount - 2 );
             }
-            else
+            else if ((context is XSharpParser.FunctionContext) ||
+                    (context is XSharpParser.ProcedureContext) ||
+                    (context is XSharpParser.MethodContext) ||
+                    (context is XSharpParser.ClsctorContext) ||
+                    (context is XSharpParser.ClsdtorContext))
             {
-                if ((context is XSharpParser.LiteralValueContext))
-                {
-                    var tokenSpan = new TextSpan(context.Start.StartIndex, context.Start.StopIndex - context.Start.StartIndex + 1);
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpValueType));
-                    //
-                }
-                //
+                // Put a region up to the end of the Entity
+                TagRegion(context, context.ChildCount - 1);
             }
+			else if (context is XSharpParser.IdentifierContext)
+			{
+				LanguageService.SyntaxTree.IToken sym = context.Start;
+	            TextSpan tokenSpan;
+		        tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+        	    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpIdentifierType));
+			}
         }
 
-        private void TagSubTokens(ParserRuleContext context, List<int> positions)
-        {
-            foreach (int i in positions)
-            {
-                var otherTokens = context.GetChild(i);
-                if (otherTokens is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
-                {
-                    LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)otherTokens).Symbol;
-                    var tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpKeywordType));
-                }
-            }
-            return;
-        }
-
-
-        public override void ExitUsing_([NotNull] XSharpParser.Using_Context context)
-        {
-
-
-        }
-
-        public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
-        {
-            base.ExitEntity(context);
-            //
-        }
+        //public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
+        //{
+        //    base.ExitEntity(context);
+        //    //
+        //}
 
         private void TagRegion(ParserRuleContext context, int endChild)
         {
@@ -123,64 +73,24 @@ namespace XSharpColorizer
             if (endToken is LanguageService.SyntaxTree.Tree.TerminalNodeImpl)
             {
                 LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)endToken).Symbol;
-                var tokenSpan = new TextSpan(context.Start.StartIndex, sym.StopIndex - context.Start.StartIndex + 1);
-                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpRegionType));
+                var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpRegionStartType));
+                tokenSpan = new TextSpan( sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpRegionStopType));
             }
-            //
-        }
-
-        public override void VisitTerminal([NotNull] ITerminalNode node)
-        {
-            LanguageService.SyntaxTree.IToken sym = node.Symbol;
-            TextSpan tokenSpan;
-
-            //
-            switch (sym.Type)
+            else if (endToken is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext)
             {
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.AS:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.IN:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.AUTO:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.GET:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.SET:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.CONSTRUCTOR:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.PROPERTY:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.IF:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.ELSE:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.ELSEIF:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.ENDIF:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.END:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.DO:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.CASE:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.ENDCASE:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.FUNCTION:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.PROCEDURE:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RETURN:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.STATIC:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.VIRTUAL:
-
-                    tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpKeywordType));
-                    break;
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LPAREN:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LCURLY:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LBRKT:
-                    tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceOpenType));
-                    break;
-
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RPAREN:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RCURLY:
-                case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
-                    tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceCloseType));
-                    break;
+                XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
+                var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpRegionStartType));
+                tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);
+                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpRegionStopType));
             }
         }
 
-        public override void VisitErrorNode([NotNull] LanguageService.SyntaxTree.Tree.IErrorNode node)
-        {
-
-        }
+         //public override void VisitErrorNode([NotNull] LanguageService.SyntaxTree.Tree.IErrorNode node)
+        //{
+        //}
 
     }
 }

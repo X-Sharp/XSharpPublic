@@ -37,7 +37,6 @@ namespace XSharp.Build
         public String IncludePaths { get; set; }
         public Boolean NoStandardDefs { get; set; }
         public Boolean NoStandardLib { get; set; }
-        public Boolean Optimize { get; set; }
         public string RootNameSpace{ get; set; }
         public int WarningLevel { get; set; }
         public Boolean VO1 { get; set; }

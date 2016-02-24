@@ -11,8 +11,24 @@ namespace XSharpColorizer
         internal static ClassificationTypeDefinition XSharpKeyword = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpValueFormat)]
-        internal static ClassificationTypeDefinition XSharpValue = null;
+        [Name(Constants.XSharpConstantFormat)]
+        internal static ClassificationTypeDefinition XSharpConstant = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.XSharpStringFormat)]
+        internal static ClassificationTypeDefinition XSharpString = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.XSharpIdentifierFormat)]
+        internal static ClassificationTypeDefinition XSharpIdentifier = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.XSharpCommentFormat)]
+        internal static ClassificationTypeDefinition XSharpComment = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.XSharpOperatorFormat)]
+        internal static ClassificationTypeDefinition XSharpOperator = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(Constants.XSharpBraceOpenFormat)]
@@ -23,8 +39,12 @@ namespace XSharpColorizer
         internal static ClassificationTypeDefinition XSharpBraceCloseFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpRegionFormat)]
-        internal static ClassificationTypeDefinition XSharpRegionFormat = null;
+        [Name(Constants.XSharpRegionStartFormat)]
+        internal static ClassificationTypeDefinition XSharpRegionStartFormat = null;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.XSharpRegionStopFormat)]
+        internal static ClassificationTypeDefinition XSharpRegionStopFormat = null;
 
     }
 }

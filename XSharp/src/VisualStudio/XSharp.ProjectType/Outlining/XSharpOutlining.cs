@@ -51,66 +51,94 @@ namespace XSharpOutlining
 
         //string startHide = "[";     //the characters that start the outlining region
         //string endHide = "]";       //the characters that end the outlining region
-        //string ellipsis = "...";    //the characters that are displayed when the region is collapsed
+        string ellipsis = "...";    //the characters that are displayed when the region is collapsed
         string hoverText = "hover text"; //the contents of the tooltip for the collapsed span
         ITextBuffer buffer;
         ITextSnapshot snapshot;
         //List<Region> regions;
         private readonly IClassifier classifier;
-        private IClassificationType xsharpRegionType;
+        private IClassificationType xsharpRegionStartType;
+        private IClassificationType xsharpRegionStopType;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
-
+        private XSharpTagger xsTagger;
 
         public XSharpOutliningTagger(ITextBuffer buffer, IClassifierAggregatorService AggregatorFactory, IClassificationTypeRegistryService registry)
         {
             this.buffer = buffer;
             this.snapshot = buffer.CurrentSnapshot;
-            //this.regions = new List<Region>();
-            //this.ReParse();
-            //this.buffer.Changed += BufferChanged;
             //
+            xsTagger = new XSharpTagger(registry);
+            xsTagger.Parse(this.snapshot);
+            //
+            this.buffer.Changed += OnBufferChanged;
+
             this.classifier = AggregatorFactory.GetClassifier(buffer);
-            this.xsharpRegionType = registry.GetClassificationType(Constants.XSharpRegionFormat);
+            xsharpRegionStartType = registry.GetClassificationType(Constants.XSharpRegionStartFormat);
+            xsharpRegionStopType = registry.GetClassificationType(Constants.XSharpRegionStopFormat);
+        }
+
+        void OnBufferChanged(object sender, TextContentChangedEventArgs e)
+        {
+            // If this isn't the most up-to-date version of the buffer, then ignore it for now (we'll eventually get another change event).
+            if (e.After != this.buffer.CurrentSnapshot)
+                return;
+            xsTagger.Parse(e.After);
         }
 
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
             //yield break;
-            if (spans.Count == 0) 
+            if (spans.Count == 0)
             {
                 yield break;
             }
             //
             //
             SnapshotSpan Span = new SnapshotSpan(this.snapshot, 0, this.snapshot.Length);
-            IList<ClassificationSpan> classifications = this.classifier.GetClassificationSpans(Span);
+            IList<ClassificationSpan> classifications = this.xsTagger.GetClassifications();
             //
-            SnapshotSpan entire = new SnapshotSpan(spans[0].Start, spans[spans.Count - 1].End).TranslateTo(this.snapshot, SpanTrackingMode.EdgeExclusive);
+            SnapshotSpan fullSpan = new SnapshotSpan(spans[0].Start, spans[spans.Count - 1].End).TranslateTo(this.snapshot, SpanTrackingMode.EdgeExclusive);
+            int startLineNumber = fullSpan.Start.GetContainingLine().LineNumber;
+            int endLineNumber = fullSpan.End.GetContainingLine().LineNumber;
             //
+            Stack<ClassificationSpan> startStack = new Stack<ClassificationSpan>();
+            // Now, let's have a look at all the Classifications we have in the document
             foreach (var tag in classifications)
             {
-                if ( tag.ClassificationType == this.xsharpRegionType)
+                // Is it a Region ?
+                if (tag.ClassificationType.IsOfType(this.xsharpRegionStartType.Classification))
+                {
+                    startStack.Push(tag);
+                }
+                else if (tag.ClassificationType.IsOfType(this.xsharpRegionStopType.Classification) && (startStack.Count > 0))
                 {
                     //
-                    var startLine = tag.Span.Start.GetContainingLine();
+                    var startTag = startStack.Pop();
+                    var startLine = startTag.Span.Start.GetContainingLine();
                     var endLine = tag.Span.End.GetContainingLine();
                     //
-                    SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, endLine.End);
-                    hoverText = sSpan.GetText();
-
-                    // XSHARP : Temporary Solution - Remove Region marking
-                    yield break;
-                    ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
-                    //yield return new TagSpan<IOutliningRegionTag>(
-                    //    new SnapshotSpan(startLine.End, endLine.End),
-                    //    new OutliningRegionTag(false, false, ellipsis, hoverText));
+                    if (startLine.LineNumber <= endLineNumber && endLine.LineNumber >= startLineNumber)
+                    {
+                        SnapshotSpan sSpan = new SnapshotSpan(startLine.Start, endLine.End);
+                        hoverText = sSpan.GetText();
+                        //
+                        sSpan = new SnapshotSpan(startLine.Start, startLine.End);
+                        String lineText = sSpan.GetText();
+                        // XSHARP : Temporary Solution - Remove Region marking
+                        //yield break;
+                        ////the region starts at the beginning of the entity, and goes until the *end* of the line that ends.
+                        yield return new TagSpan<IOutliningRegionTag>(
+                            new SnapshotSpan(startLine.End, endLine.End),
+                            new OutliningRegionTag(false, true, ellipsis, hoverText));
+                    }
                 }
             }
-            
+
         }
 
     }
-
-
 }
+
+
+

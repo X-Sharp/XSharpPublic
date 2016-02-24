@@ -20,7 +20,7 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DebugSymbols>true</DebugSymbols>
     <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
-
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
     <AssemblyReferenceTabs>TAB_ASSEMBLY_ALL</AssemblyReferenceTabs>
 
@@ -35,5 +35,4 @@
   <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <Optimize>true</Optimize>
   </PropertyGroup>
-
 </Project>

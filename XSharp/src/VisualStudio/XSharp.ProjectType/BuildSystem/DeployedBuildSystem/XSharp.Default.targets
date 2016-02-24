@@ -22,58 +22,53 @@
   </ItemGroup>
 
   <ItemGroup>
-		<PropertyPageSchema Include="
-												$(MSBuildThisFileDirectory)Rules\PropertyPage_Application.xaml;
-                        $(MSBuildThisFileDirectory)Rules\PropertyPage_Language.xaml;
-												$(MSBuildThisFileDirectory)Rules\PropertyPage_Build.xaml;
-                        $(MSBuildThisFileDirectory)Rules\XSharpDebugger.xaml 
-												">
+	<PropertyPageSchema Include="
+		$(MSBuildThisFileDirectory)Rules\PropertyPage_Application.xaml;
+		$(MSBuildThisFileDirectory)Rules\PropertyPage_Language.xaml;
+		$(MSBuildThisFileDirectory)Rules\PropertyPage_Build.xaml;
+		$(MSBuildThisFileDirectory)Rules\PropertyPage_Debugger.xaml;
+		$(MSBuildThisFileDirectory)Rules\PropertyPage_Advanced.xaml 
+		">
         <Context>Project</Context>
-		</PropertyPageSchema>
-		<PropertyPageSchema Include="
-												$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;
-												"/>
-    <PropertyPageSchema Include="
-												$(MSBuildThisFileDirectory)Rules\debugger_general.xaml;
-                        ">
-      <Context>Project</Context>
+	</PropertyPageSchema>
+	<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;"/>
+	<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\PropertyPage_Debugger_general.xaml;">
+		<Context>Project</Context>
     </PropertyPageSchema>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_General.xaml">
-      <Context>File</Context>
+
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_General.xaml;">
+        <Context>File</Context>
     </PropertyPageSchema>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_XSharpSource.xaml;" >
-      <Context>File</Context>
+	<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_XSharpSource.xaml;" >
+		<Context>File</Context>
     </PropertyPageSchema>
 
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\scc.xaml">
       <Context>Invisible</Context>
     </PropertyPageSchema>
-
     <PropertyPageSchema Include="
-                        $(MSBuildThisFileDirectory)Rules\folder.xaml;
-                        $(MSBuildThisFileDirectory)Rules\none.xaml;
-                        $(MSBuildThisFileDirectory)Rules\EmbeddedResource.xaml;
-                            ">
-      <Context>File;BrowseObject</Context>
+			$(MSBuildThisFileDirectory)Rules\Folder.xaml;
+			$(MSBuildThisFileDirectory)Rules\None.xaml;
+			$(MSBuildThisFileDirectory)Rules\EmbeddedResource.xaml;
+			">
+		<Context>File;BrowseObject</Context>
     </PropertyPageSchema>
     <PropertyPageSchema Include="
-												$(MSBuildThisFileDirectory)Rules\assemblyreference.xaml;
-												$(MSBuildThisFileDirectory)Rules\comreference.xaml;
-												$(MSBuildThisFileDirectory)Rules\projectreference.xaml;
-												$(MSBuildThisFileDirectory)Rules\sdkreference.xaml;
-                        ">
+		$(MSBuildThisFileDirectory)Rules\Assemblyreference.xaml;
+		$(MSBuildThisFileDirectory)Rules\Comreference.xaml;
+		$(MSBuildThisFileDirectory)Rules\Projectreference.xaml;
+		$(MSBuildThisFileDirectory)Rules\Sdkreference.xaml;
+		">
       <Context>;BrowseObject</Context>
     </PropertyPageSchema>
-
     <PropertyPageSchema Include="
-												$(MSBuildThisFileDirectory)Rules\ResolvedAssemblyReference.xaml;
-												$(MSBuildThisFileDirectory)Rules\ResolvedCOMReference.xaml;
-												$(MSBuildThisFileDirectory)Rules\ResolvedProjectReference.xaml;
-												$(MSBuildThisFileDirectory)Rules\ResolvedSDKReference.xaml;
-                        ">
+			$(MSBuildThisFileDirectory)Rules\ResolvedAssemblyReference.xaml;
+			$(MSBuildThisFileDirectory)Rules\ResolvedCOMReference.xaml;
+			$(MSBuildThisFileDirectory)Rules\ResolvedProjectReference.xaml;
+			$(MSBuildThisFileDirectory)Rules\ResolvedSDKReference.xaml;
+            ">
       <Context>ProjectSubscriptionService;BrowseObject</Context>
     </PropertyPageSchema>
-
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general.browseobject.xaml">
       <Context>BrowseObject</Context>
     </PropertyPageSchema>

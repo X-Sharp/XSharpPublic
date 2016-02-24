@@ -4,6 +4,7 @@
 	DisplayName="Language"
 	PageTemplate="generic"
 	Description="Language Settings"
+    Order="2"
     SwitchPrefix="/"
     xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>
@@ -17,7 +18,7 @@
     </Rule.Categories>
 
     <StringProperty Category="General"       Name="CommandLineOption"   DisplayName="Extra Command Line Options"                  Visible="True" Description="User-Defined Command Line options"/>
-    <BoolProperty   Category="General"       Name="UnSafe"              DisplayName="Allow Unsafe Code"                           Visible="True" ReadOnly="True"  Description="/unsafe"   Default="False"  Switch="unsafe"/>
+    <BoolProperty   Category="General"       Name="UnSafe"              DisplayName="Allow Unsafe Code"                           Visible="True" Description="Allow Unsafe code inside this assembly"   Default="False"  Switch="unsafe"/>
     <BoolProperty   Category="General"       Name="CS"                  DisplayName="Case Sensitive"                              Visible="True" ReadOnly="True"  Description="/cs"  Default="False"  Switch="cs"/>
     <BoolProperty   Category="General"       Name="AZ"                  DisplayName="Use Zero Based Arrays"                       Visible="True" Description="Zero Based Arrays (/az)"  Switch="az"/>
     <BoolProperty   Category="General"       Name="OVF"                 DisplayName="Overflow Exceptions"                         Visible="True" ReadOnly="True"  Description="Check for Overflow and Underflow (like the CHECKED keyword, /ovf)" Default="True"  Switch="ovf"/>

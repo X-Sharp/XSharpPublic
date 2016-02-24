@@ -57,8 +57,16 @@ namespace XSharp.Build
         // Misc. (unknown at that time) CommandLine options
         public string CommandLineOption { get; set; }
 
-       
+        public string BaseAddress { get; set; }
+
+        public string PdbFile { get; set; }
         #endregion
+
+
+        public Xsc(): base()
+        {
+            //ystem.Diagnostics.Debugger.Launch();
+        }
 
         protected override string ToolName
         {
@@ -106,7 +114,6 @@ namespace XSharp.Build
 
         private string FindXsc(string toolName)
         {
-            //System.Diagnostics.Debugger.Launch();
             if (string.IsNullOrEmpty(CompilerPath))
             {
                 // If used after MSI Installer, value should be in the Registry
@@ -191,17 +198,27 @@ namespace XSharp.Build
                 foreach (var it in base.References)
                     commandLine.AppendSwitchIfNotNull("\n/reference:", it.ItemSpec);
             }
-            // Debug ?
-            commandLine.AppendSwitchIfNotNull("\n/debug", this.EmitDebugInformation ? "+" : "-");
+            // target and platform
+            commandLine.AppendSwitch("\n/target:" + this.TargetType);
+            commandLine.AppendSwitchIfNotNull("\n/platform:", this.Platform);
+            commandLine.AppendSwitchIfNotNull("\n/baseaddress:", this.BaseAddress);
+
+            if (String.IsNullOrEmpty(DebugType) || DebugType.ToLower() == "none")
+                commandLine.AppendSwitch("\n/debug-");
+            else
+                commandLine.AppendSwitch("\n/debug:"+ this.DebugType);
+
+            if (!String.IsNullOrEmpty(PdbFile))
+                commandLine.AppendSwitch("\n/pdb:" + this.PdbFile);
             // Default Namespace
             if (NS)
             {
-                commandLine.AppendSwitch("/ns:" + this.RootNameSpace);
+                commandLine.AppendSwitch("\n/ns:" + this.RootNameSpace);
             }
-            else
-            {
-                commandLine.AppendSwitch("/ns:" );
-            }
+            //else
+            //{
+            //    commandLine.AppendSwitch("/ns:" );
+            //}
             if (WarningLevel < 0 || WarningLevel > 4)
             {
                 WarningLevel = 4;
@@ -228,6 +245,7 @@ namespace XSharp.Build
             AppendSwitchIfTrue(commandLine, "/lb", LB);
             AppendSwitchIfTrue(commandLine, "/ovf", OVF);
             AppendSwitchIfTrue(commandLine, "/ppo", PPO);
+            AppendSwitchIfTrue(commandLine, "/unsafe", UnSafe);
             AppendSwitchIfTrue(commandLine, "/vo1", VO1);
             AppendSwitchIfTrue(commandLine, "/vo2", VO2);
             AppendSwitchIfTrue(commandLine, "/vo3", VO3);
@@ -245,7 +263,11 @@ namespace XSharp.Build
             // Output assembly name
             commandLine.AppendSwitchIfNotNull("\n/out:", OutputAssembly);
             // User-defined CommandLine Option (in order to support switches unknown at that time)
-            commandLine.AppendSwitchIfNotNull("\n", this.CommandLineOption);
+            // cannot use appendswitch because it will quote the string when there are embedded spaces
+            if (!String.IsNullOrEmpty(this.CommandLineOption))
+            {
+                commandLine.AppendTextUnquoted("\n"+this.CommandLineOption);
+            }
 
             //
         }

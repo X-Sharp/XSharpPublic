@@ -3,17 +3,17 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.1.7"
-#define ProdBuild       "XSharp Alpha 0.1.7"
+#define ProdVer         "XSharp 0.2.1"
+#define ProdBuild       "XSharp Alpha 0.2.1"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.1.7.1701"
-#define VITextVersion   "0.1.7.1701 (Alpha 7)"
-#define TouchDate       "2016-01-31"
-#define TouchTime       "01:07:00"
-#define SetupExeName    "XSharpSetup017"
+#define VIVersion       "0.2.1.2100"
+#define VITextVersion   "0.2.1.2100 (Alpha 7)"
+#define TouchDate       "2016-02-24"
+#define TouchTime       "02:01:00"
+#define SetupExeName    "XSharpSetup021"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -22,6 +22,7 @@
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
+#define XIDESetup       "XIDE_Set_up_1.01.exe"
 
 #define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
 #define Compression     "lzma2/ultra"
@@ -85,7 +86,6 @@ Name: "vs2015"; Description: "Visual Studio 2015 Integration";        Types: ful
 Name: "xide";   Description: "Include the XIDE files";                Types: full custom;                  
 
 
-
 [Dirs]
 Name: "{app}\Assemblies"
 Name: "{app}\Bin"
@@ -96,7 +96,6 @@ Name: "{app}\Redist"
 Name: "{app}\Uninst"
 Name: "{app}\Xide"
 Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
-;Check: ResetExtensionManager 
 
 
 [Languages]
@@ -136,13 +135,10 @@ Source: "{#DocFolder}\XSharp.chm";                     DestDir: "{app}\Help";   
 
 
 ;XIDE
-Source: "{#XIDEFolder}\XIDE_017.zip";                     DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; Components: Xide
+Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; Components: Xide
 
-;Uninstaller
-;Source: "d:\Xsharp\Dev\XSharp\src\Tools\Inno\XsVsUnInst.exe";DestDir: "{app}\UnInst";    Flags: touch {#StdFlags}; Components: main
 
-;VsProjectSystem
-;Source: "{#BinFolder}XSharp.ProjectSystem.vsix";          DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinFolder}XSharp.ProjectSystem.vsix";          DestDir: "{app}\ProjectSystem";    Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVs2015IdeDir}"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVs2015IdeDir}"; Flags: {#StdFlags}; Components: vs2015
 
@@ -173,7 +169,7 @@ Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPa
 Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "1"; Flags: uninsdeletesection; Components: vs2015;
 
 [Run]
-;Filename:  "{code:GetVs2015IdeDir}\Devenv.exe"; Parameters: "/Setup"; StatusMsg: "Registering X# Project System in Visual Studio (this may take a while...)"; Flags: runhidden;  Components: vs2015 ;
+Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]
 ; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry

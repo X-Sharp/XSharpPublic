@@ -1,24 +1,32 @@
-{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1043\deflangfe1043{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri Light;}{\f1\fswiss\fprq2\fcharset0 Calibri;}{\f2\fnil Calibri;}{\f3\fnil\fcharset0 Calibri;}{\f4\fmodern\fprq1\fcharset0 Consolas;}{\f5\fswiss\fprq2\fcharset0 Arial;}{\f6\fmodern\fprq1\fcharset0 Courier New;}{\f7\fnil\fcharset2 Symbol;}}
-{\colortbl ;\red46\green116\blue181;\red0\green0\blue255;\red0\green0\blue0;\red255\green255\blue255;}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1043\deflangfe1043{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri Light;}{\f1\fswiss\fprq2\fcharset0 Calibri;}{\f2\fnil\fcharset0 Calibri;}{\f3\fnil Calibri;}{\f4\fmodern\fprq1\fcharset0 Consolas;}{\f5\fswiss\fprq2\fcharset0 Arial;}{\f6\fmodern\fprq1\fcharset0 Courier New;}{\f7\fnil\fcharset2 Symbol;}}
+{\colortbl ;\red46\green116\blue181;\red255\green0\blue0;\red0\green0\blue0;\red255\green255\blue255;}
 {\*\listtable 
 {\list\listhybrid
 {\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f7\jclisttab\tx0}
 {\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f7\jclisttab\tx0}\listid1 }}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
 {\stylesheet{ Normal;}{\s1 heading 1;}{\s2 heading 2;}}
-{\*\generator Riched20 10.0.14251}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
-\pard\keep\keepn\widctlpar\s1\sb240\sl252\slmult1\cf1\f0\fs32\lang1033 X# Compiler build 0.1.7\par
+{\*\generator Riched20 10.0.14257}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+\pard\keep\keepn\widctlpar\s1\sb240\sl252\slmult1\cf1\f0\fs32\lang1033 X# Compiler Public Beta build 0.2.1\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\fs26 Introduction\par
 
-\pard\widctlpar\sa160\sl252\slmult1\cf0\f1\fs22 This alpha version of the compiler only supports the \ldblquote Core\rdblquote  language, that means that VO & Vulcan specific datatypes such as DATE, ARRAY, USUAL, SYMBOL, FLOAT etc. are not supported.\par
-Please note that this is a very early build of the compiler. Things will break and errors will throw exceptions, you can be sure of this.\par
-Please report all reproducible errors to {{\field{\*\fldinst{HYPERLINK "mailto:bugreports@xsharp.eu" }}{\fldrslt{\ul\cf2\cf2\ul bugreports@xsharp.eu}}}}\f1\fs22 . Include a reproducible example and a description what you expected to do. \par
+\pard\widctlpar\sa160\sl252\slmult1\cf2\b\f1\fs28 This beta version of the compiler only supports the \ldblquote Core\rdblquote  language, that means that VO & Vulcan specific datatypes such as DATE, ARRAY, USUAL, SYMBOL, FLOAT etc. are not supported yet.\par
+The Visual Studio integration only supports the Edit/Compile/Debug cycle. Only the source code editor is supported. Other editors, such as the WPF editor, Forms Editor and Resource editor are not supported yet.\par
+Please note that this is an early build of the compiler. Things will break and errors will throw exceptions, you can be sure of this.\par
 
-\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.7\par
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\b0\f0\fs26 Changes in 0.2.1\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent195{\pntxtb\'B7}}\keep\keepn\s2\fi-195\li195\sa150\sl252\slmult1\cf3\f2\fs22\lang0 The "ns" (add default namespace to classes without namespace) has been implemented\par
-{\pntext\f7\'B7\tab}The "vo3" compiler option (\f3\lang1033 to make all \f2\lang0 methods virtual ) has been implemented\par
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent195{\pntxtb\'B7}}\keep\keepn\s2\fi-195\li195\sa150\sl252\slmult1\cf3\f2\fs22 Several changes were made to the VS Project System and especially the compiler flags\f3\lang0\par
+{\pntext\f7\'B7\tab}\f2\lang1033 Changed the keyword coloring in the VS Editor. This should not work correctly. Also positional  keywords should now be shown in the identifier color when they are recognized as an identifier\f3\lang0\par
+{\pntext\f7\'B7\tab}\f2\lang1033 Fixed several compatibility options in the compiler. In most cases compiler errors have been demoted to compiler warnings.\f3\lang0\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\lang1033\tab\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1 Changes in 0.1.7\par
+
+\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent195{\pntxtb\'B7}}\keep\keepn\s2\fi-195\li195\sa150\sl252\slmult1\cf3\f3\fs22\lang0 The "ns" (add default namespace to classes without namespace) has been implemented\par
+{\pntext\f7\'B7\tab}The "vo3" compiler option (\f2\lang1033 to make all \f3\lang0 methods virtual ) has been implemented\par
 {\pntext\f7\'B7\tab}Fixed an issue where the send operator on an expression between parentheses was not compiling properly\par
 {\pntext\f7\'B7\tab}Relational operators for strings (>, >=, <, <=) are now supported. They are implemented using the String.Compare() method.\par
 {\pntext\f7\'B7\tab}Fixed a problem with local variables declared on the start line from FOR .. NEXT statements\par
@@ -26,7 +34,7 @@ Please report all reproducible errors to {{\field{\*\fldinst{HYPERLINK "mailto:b
 {\pntext\f7\'B7\tab}Added several properties to the Visual Studio Project properties dialog to allow setting the new compiler options\par
 {\pntext\f7\'B7\tab}Fixed a problem in the Targets files used by MsBuild because some standard macros such as $(TargetPath) were not working properly\par
 {\pntext\f7\'B7\tab}XIDE 0.1.7 is included. This version of XIDE is completely compiled with XSharp !\par
-{\pntext\f7\'B7\tab}\f3\lang1033 The name of some of the MsBuild support files have changed. This may lead to problems loading a VS project if you have used the VS support from the previous build. If that is the case then please edit the xsproj file inside Visual Studio and replace all references of "XSharpProject" with "XSharp" . Then safe the xsproj file and try to reload the project again.\f2\lang0\par
+{\pntext\f7\'B7\tab}\f2\lang1033 The name of some of the MsBuild support files have changed. This may lead to problems loading a VS project if you have used the VS support from the previous build. If that is the case then please edit the xsproj file inside Visual Studio and replace all references of "XSharpProject" with "XSharp" . Then safe the xsproj file and try to reload the project again.\f3\lang0\par
 {\pntext\f7\'B7\tab}The WHILE.. ENDDO (a DO WHILE without the leading DO) is now recognized properly\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\lang1033 Changes in 0.1.6\par

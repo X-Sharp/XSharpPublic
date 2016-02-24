@@ -6,6 +6,33 @@ lexer grammar XSharpLexer;
 
 @lexer::members
 {
+
+        // Several Help methods that can be used for colorizing in an editor
+        public static bool IsKeyword(int iToken)
+        {
+            return iToken > XSharpLexer.FIRST_KEYWORD && iToken < XSharpLexer.LAST_KEYWORD;
+        }
+        public static bool IsOperator(int iToken)
+        {
+            return (iToken > XSharpLexer.FIRST_OPERATOR && iToken < XSharpLexer.LAST_OPERATOR)
+                || iToken == XSharpLexer.PRAGMA || iToken == XSharpLexer.HASHUSING
+                || iToken == XSharpLexer.PP_SYMBOLS || iToken == XSharpLexer.SEMI;
+        }
+        public static bool IsConstant(int iToken)
+        {
+            return (iToken > XSharpLexer.FIRST_CONSTANT && iToken < XSharpLexer.LAST_CONSTANT)
+				|| (iToken > XSharpLexer.FIRST_NULL && iToken < XSharpLexer.LAST_NULL)
+                || iToken == XSharpLexer.MACRO;
+        }
+        public static bool IsIdentifier(int iToken)
+        {
+            return iToken == XSharpLexer.ID || iToken == XSharpLexer.KWID;
+        }
+        public static bool IsComment(int iToken)
+        {
+            return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
+        }
+
 	public const int COMMENT = 1;
 
 	bool _inId = false;
@@ -831,6 +858,7 @@ tokens {
 // AllowFourLetterAbbreviations property of the Lexer, which sets the protected field _Four.
 // New (Vulcan) Keywords only full names
 //
+FIRST_KEYWORD,
 ACCESS,ALIGN,AS,ASSIGN,BEGIN,BREAK,CASE,CAST,CLASS,CLIPPER,DEFINE,DIM,DLL,DO,DOWNTO,ELSE,ELSEIF,END,ENDCASE,ENDDO,ENDIF,EXIT,EXPORT,FASTCALL,FIELD,
 FIELD,FOR,FUNCTION,FUNCTION,GLOBAL,HIDDEN,IF,IIF,INHERIT,INIT1,INIT2,INIT3,INSTANCE,IS,LOCAL,LOOP,MEMBER,MEMVAR,METHOD,NEXT,OTHERWISE,PARAMETERS,PASCAL,
 PRIVATE,PROCEDURE,PROCEDURE,PROTECTED,PROTECTED,PUBLIC,RECOVER,RETURN,SELF,SEQUENCE,SIZEOF,SIZEOF,STATIC,STEP,STRICT,SUPER,THISCALL,TO,TYPEOF,TYPEOF,UNION,
@@ -862,11 +890,16 @@ INT64,UINT64,
 
 // XSharp Types
 DYNAMIC,
+LAST_KEYWORD,
+
 
 // Null values
+FIRST_NULL,
 NIL,NULL,NULL_ARRAY,NULL_CODEBLOCK,NULL_DATE,NULL_OBJECT,NULL_PSZ,NULL_PTR,NULL_STRING,NULL_SYMBOL,
+LAST_NULL,
 
 // Relational operators
+FIRST_OPERATOR,
 LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,
 
 // Prefix and postfix Operators
@@ -894,9 +927,14 @@ LOGIC_AND,LOGIC_OR,LOGIC_NOT,LOGIC_XOR,
 
 // Symbols
 LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,COLONCOLON,
+LAST_OPERATOR,
 
+FIRST_CONSTANT,
 // Consts
 HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,
+
+
+LAST_CONSTANT,
 
 // Pre processor symbols
 PRAGMA,HASHUSING,PP_SYMBOLS,MACRO,

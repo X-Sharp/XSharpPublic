@@ -23,5 +23,5 @@
         <EnumValue Name="8192"  />
     </EnumProperty>
     <StringProperty Category="Build" Name="BaseAddress" DisplayName="DLL Base Address" Description="Sets a base address for the program." />
-        
+
 </Rule>

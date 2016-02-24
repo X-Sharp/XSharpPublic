@@ -37,6 +37,7 @@ namespace XSharp.Build
         public String IncludePaths { get; set; }
         public Boolean NoStandardDefs { get; set; }
         public Boolean NoStandardLib { get; set; }
+        public Boolean Optimize { get; set; }
         public string RootNameSpace{ get; set; }
         public int WarningLevel { get; set; }
         public Boolean VO1 { get; set; }
@@ -202,6 +203,7 @@ namespace XSharp.Build
             commandLine.AppendSwitch("\n/target:" + this.TargetType);
             commandLine.AppendSwitchIfNotNull("\n/platform:", this.Platform);
             commandLine.AppendSwitchIfNotNull("\n/baseaddress:", this.BaseAddress);
+            AppendLogicSwitch(commandLine, "\n/optimize", Optimize);
 
             if (String.IsNullOrEmpty(DebugType) || DebugType.ToLower() == "none")
                 commandLine.AppendSwitch("\n/debug-");
@@ -215,16 +217,12 @@ namespace XSharp.Build
             {
                 commandLine.AppendSwitch("\n/ns:" + this.RootNameSpace);
             }
-            //else
-            //{
-            //    commandLine.AppendSwitch("/ns:" );
-            //}
             if (WarningLevel < 0 || WarningLevel > 4)
             {
                 WarningLevel = 4;
             }
             commandLine.AppendSwitch("/warn:" + WarningLevel.ToString());
-            AppendSwitchIfTrue(commandLine, "/warnaserror", TreatWarningsAsErrors);
+            AppendLogicSwitch(commandLine, "/warnaserror", TreatWarningsAsErrors);
             if (!String.IsNullOrEmpty(DisabledWarnings))
             {
                 string[] warnings = DisabledWarnings.Split(new char[] { ' ', ',', ';' });
@@ -239,26 +237,26 @@ namespace XSharp.Build
                     commandLine.AppendSwitch("/nowarn:" + warninglist);
             }
             // Compatibility
-            AppendSwitchIfTrue(commandLine, "/az", AZ);
-            AppendSwitchIfTrue(commandLine, "/cs", CS);
-            AppendSwitchIfTrue(commandLine, "/ins", INS);
-            AppendSwitchIfTrue(commandLine, "/lb", LB);
-            AppendSwitchIfTrue(commandLine, "/ovf", OVF);
-            AppendSwitchIfTrue(commandLine, "/ppo", PPO);
-            AppendSwitchIfTrue(commandLine, "/unsafe", UnSafe);
-            AppendSwitchIfTrue(commandLine, "/vo1", VO1);
-            AppendSwitchIfTrue(commandLine, "/vo2", VO2);
-            AppendSwitchIfTrue(commandLine, "/vo3", VO3);
-            AppendSwitchIfTrue(commandLine, "/vo4", VO4);
-            AppendSwitchIfTrue(commandLine, "/vo5", VO5);
-            AppendSwitchIfTrue(commandLine, "/vo6", VO6);
-            AppendSwitchIfTrue(commandLine, "/vo7", VO7);
-            AppendSwitchIfTrue(commandLine, "/vo8", VO8);
-            AppendSwitchIfTrue(commandLine, "/vo9", VO9);
-            AppendSwitchIfTrue(commandLine, "/vo10", VO10);
-            AppendSwitchIfTrue(commandLine, "/vo11", VO11);
-            AppendSwitchIfTrue(commandLine, "/vo12", VO12);
-            AppendSwitchIfTrue(commandLine, "/vo13", VO13);
+            AppendLogicSwitch(commandLine, "/az", AZ);
+            AppendLogicSwitch(commandLine, "/cs", CS);
+            AppendLogicSwitch(commandLine, "/ins", INS);
+            AppendLogicSwitch(commandLine, "/lb", LB);
+            AppendLogicSwitch(commandLine, "/ovf", OVF);
+            AppendLogicSwitch(commandLine, "/ppo", PPO);
+            AppendLogicSwitch(commandLine, "/unsafe", UnSafe);
+            AppendLogicSwitch(commandLine, "/vo1", VO1);
+            AppendLogicSwitch(commandLine, "/vo2", VO2);
+            AppendLogicSwitch(commandLine, "/vo3", VO3);
+            AppendLogicSwitch(commandLine, "/vo4", VO4);
+            AppendLogicSwitch(commandLine, "/vo5", VO5);
+            AppendLogicSwitch(commandLine, "/vo6", VO6);
+            AppendLogicSwitch(commandLine, "/vo7", VO7);
+            AppendLogicSwitch(commandLine, "/vo8", VO8);
+            AppendLogicSwitch(commandLine, "/vo9", VO9);
+            AppendLogicSwitch(commandLine, "/vo10", VO10);
+            AppendLogicSwitch(commandLine, "/vo11", VO11);
+            AppendLogicSwitch(commandLine, "/vo12", VO12);
+            AppendLogicSwitch(commandLine, "/vo13", VO13);
 
             // Output assembly name
             commandLine.AppendSwitchIfNotNull("\n/out:", OutputAssembly);
@@ -272,7 +270,7 @@ namespace XSharp.Build
             //
         }
 
-        protected void AppendSwitchIfTrue(CommandLineBuilderExtension commandLine, string Switch, Boolean Option)
+        protected void AppendLogicSwitch(CommandLineBuilderExtension commandLine, string Switch, Boolean Option)
         {
             
             if (Option)

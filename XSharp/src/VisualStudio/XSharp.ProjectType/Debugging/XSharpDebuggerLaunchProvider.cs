@@ -32,7 +32,7 @@ namespace XSharpLanguage
         private ProjectProperties DebuggerProperties { get; set; }
 
         public override async Task<bool> CanLaunchAsync(DebugLaunchOptions launchOptions)
-        {      
+        {
             var properties = await this.DebuggerProperties.GetXSharpDebuggerPropertiesAsync();
             string commandValue = await properties.XSharpDebuggerCommand.GetEvaluatedValueAtEndAsync();
             return !string.IsNullOrEmpty(commandValue);

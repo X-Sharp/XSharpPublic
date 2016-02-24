@@ -10,7 +10,7 @@ namespace XSharpColorizer
     [ClassificationType(ClassificationTypeNames = Constants.XSharpKeywordFormat)]
     [Name(Constants.XSharpKeywordFormat)]
     [UserVisible(true)]
-    [Order(After = Priority.Low)]
+    [Order(After = Priority.Default)]
     internal sealed class XSharpKeywordFormat : ClassificationFormatDefinition
     {
         public XSharpKeywordFormat()
@@ -21,80 +21,23 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpConstantFormat)]
-    [Name(Constants.XSharpConstantFormat)]
+    [ClassificationType(ClassificationTypeNames = Constants.XSharpValueFormat)]
+    [Name(Constants.XSharpValueFormat)]
     [UserVisible(true)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpValueFormat : ClassificationFormatDefinition
     {
         public XSharpValueFormat()
         {
-            this.DisplayName = "XSharp Constant";
+            this.DisplayName = "XSharp Value";
             this.ForegroundColor = Colors.Firebrick;
-        }
-    }
-
-    [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpStringFormat)]
-    [Name(Constants.XSharpStringFormat)]
-    [UserVisible(true)]
-    [Order(After = Priority.Low)]
-    internal sealed class XSharpStringFormat : ClassificationFormatDefinition
-    {
-        public XSharpStringFormat()
-        {
-            this.DisplayName = "XSharp String";
-            this.ForegroundColor = Colors.Magenta;
-        }
-    }
-
-
-    [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpIdentifierFormat)]
-    [Name(Constants.XSharpIdentifierFormat)]
-    [UserVisible(true)]
-    [Order(After = Priority.Default)]
-    internal sealed class XSharpIdentifierFormat : ClassificationFormatDefinition
-    {
-        public XSharpIdentifierFormat()
-        {
-            this.DisplayName = "XSharp Identifier";
-            this.ForegroundColor = Colors.Black;
-        }
-    }
-
-    [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpOperatorFormat)]
-    [Name(Constants.XSharpOperatorFormat)]
-    [UserVisible(true)]
-    [Order(After = Priority.Default)]
-    internal sealed class XSharpOperatorFormat : ClassificationFormatDefinition
-    {
-        public XSharpOperatorFormat()
-        {
-            this.DisplayName = "XSharp Operator";
-            this.ForegroundColor = Colors.Cyan;
-        }
-    }
-
-    [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpCommentFormat)]
-    [Name(Constants.XSharpCommentFormat)]
-    [UserVisible(true)]
-    [Order(After = Priority.High)]
-    internal sealed class XSharpCommentFormat : ClassificationFormatDefinition
-    {
-        public XSharpCommentFormat()
-        {
-            this.DisplayName = "XSharp Comment";
-            this.ForegroundColor = Colors.LawnGreen;
         }
     }
 
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = Constants.XSharpBraceOpenFormat)]
     [Name(Constants.XSharpBraceOpenFormat)]
-    [UserVisible(false)]
+    [UserVisible(true)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpBraceOpenFormat : ClassificationFormatDefinition
     {
@@ -107,7 +50,7 @@ namespace XSharpColorizer
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = Constants.XSharpBraceCloseFormat)]
     [Name(Constants.XSharpBraceCloseFormat)]
-    [UserVisible(false)]
+    [UserVisible(true)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpBraceCloseFormat : ClassificationFormatDefinition
     {
@@ -120,9 +63,8 @@ namespace XSharpColorizer
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = Constants.XSharpRegionStartFormat)]
     [Name(Constants.XSharpRegionStartFormat)]
-    [UserVisible(false)]
+    [UserVisible(true)]
     [Order(After = Priority.Default)]
-
     internal sealed class XSharpRegionStartFormat : ClassificationFormatDefinition
     {
         public XSharpRegionStartFormat()
@@ -134,7 +76,7 @@ namespace XSharpColorizer
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = Constants.XSharpRegionStopFormat)]
     [Name(Constants.XSharpRegionStopFormat)]
-    [UserVisible(false)]
+    [UserVisible(true)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpRegionStopFormat : ClassificationFormatDefinition
     {

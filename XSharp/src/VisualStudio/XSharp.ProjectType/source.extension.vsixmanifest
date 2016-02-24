@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="XSharp.ProjectType" Version="0.2.1.0" Language="en-US" Publisher="XSharp BV" />
+    <Identity Id="XSharp.ProjectType" Version="0.1.7.0" Language="en-US" Publisher="XSharp BV" />
     <DisplayName>XSharp Visual Studio Project System</DisplayName>
     <Description xml:space="preserve">XSharp Visual Studio Project Integration</Description>
     <MoreInfo>http://www.xsharp.info</MoreInfo>
@@ -22,6 +22,5 @@
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="CodeFile" d:TargetPath="|CodeFile;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="ClassLibrary" d:TargetPath="|ClassLibrary;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="ConsoleApplication" d:TargetPath="|ConsoleApplication;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
-    <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="WinFormApp" d:TargetPath="|WinFormApp;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
   </Assets>
 </PackageManifest>

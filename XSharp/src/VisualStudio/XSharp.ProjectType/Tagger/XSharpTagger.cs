@@ -18,12 +18,8 @@ namespace XSharpColorizer
 {
     internal class XSharpTagger
     {
-        //private IClassificationType xsharpKeywordType;
-        private IClassificationType xsharpIdentifierType;
-        //private IClassificationType xsharpCommentType;
-        //private IClassificationType xsharpOperatorType;
-        //private IClassificationType xsharpConstantType;
-        //private IClassificationType xsharpStringType;
+        private IClassificationType xsharpKeywordType;
+        private IClassificationType xsharpValueType;
         private IClassificationType xsharpBraceOpenType;
         private IClassificationType xsharpBraceCloseType;
         private IClassificationType xsharpRegionStartType;
@@ -33,12 +29,8 @@ namespace XSharpColorizer
 
         internal XSharpTagger( IClassificationTypeRegistryService registry)
         {
-            //xsharpKeywordType = registry.GetClassificationType(Constants.XSharpKeywordFormat);
-            xsharpIdentifierType = registry.GetClassificationType(Constants.XSharpIdentifierFormat);
-            //xsharpCommentType = registry.GetClassificationType(Constants.XSharpCommentFormat);
-            //xsharpOperatorType = registry.GetClassificationType(Constants.XSharpOperatorFormat);
-            //xsharpConstantType = registry.GetClassificationType(Constants.XSharpConstantFormat);
-            //xsharpStringType = registry.GetClassificationType(Constants.XSharpStringFormat);
+            xsharpKeywordType = registry.GetClassificationType(Constants.XSharpKeywordFormat);
+            xsharpValueType = registry.GetClassificationType(Constants.XSharpValueFormat);
             xsharpBraceOpenType = registry.GetClassificationType(Constants.XSharpBraceOpenFormat);
             xsharpBraceCloseType = registry.GetClassificationType(Constants.XSharpBraceCloseFormat);
             xsharpRegionStartType = registry.GetClassificationType(Constants.XSharpRegionStartFormat);
@@ -67,68 +59,6 @@ namespace XSharpColorizer
             return classifications;
         }
 
-        /*
-                    this.Snapshot = this.Buffer.CurrentSnapshot;
-            var stream = new AntlrInputStream(this.Snapshot.GetText());
-            var lexer = new XSharpLexer(stream);
-            var token = lexer.NextToken();
-            tags.Clear();
-            
-            while (token.Type != XSharpLexer.Eof)
-            {
-                var tokenType = token.Type;
-                TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
-                if (XSharpLexer.IsKeyword(tokenType))
-                {
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpKeywordType));
-                }
-                else if (XSharpLexer.IsConstant(tokenType))
-                {
-                    if (tokenType == XSharpLexer.STRING_CONST || tokenType == XSharpLexer.ESCAPED_STRING_CONST)
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpStringType));
-                    else
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpConstantType));
-
-                }
-                else if (XSharpLexer.IsOperator(tokenType))
-                {
-                    switch (tokenType)
-                    {
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LPAREN:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LCURLY:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LBRKT:
-                            tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceOpenType));
-                            break;
-
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RPAREN:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RCURLY:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
-                            tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceCloseType));
-                            break;
-                        default:
-                            tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpOperatorType));
-                            break;
-                    }
-                }
-                else if (XSharpLexer.IsIdentifier(tokenType))
-                {
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpIdentifierType));
-                }
-                else if (XSharpLexer.IsComment(tokenType))
-                {
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpCommentType));
-                    if (tokenType == XSharpLexer.ML_COMMENT)
-                    {
-                        tokenSpan = new TextSpan(token.StartIndex, 1);
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpRegionStartType));
-                        tokenSpan = new TextSpan(token.StopIndex, 1);
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpRegionStopType));
-                    }
-                }
-                token = lexer.NextToken();
-            }
-
-        */
         internal void Parse(ITextSnapshot snapshot)
         {
             string source = snapshot.GetText();
@@ -147,18 +77,18 @@ namespace XSharpColorizer
                 discover.Snapshot = snapshot;
                 discover.xsharpBraceCloseType = xsharpBraceCloseType;
                 discover.xsharpBraceOpenType = xsharpBraceOpenType;
-                discover.xsharpIdentifierType = xsharpIdentifierType;
+                discover.xsharpValueType = xsharpValueType;
+                discover.xsharpKeywordType = xsharpKeywordType;
                 discover.xsharpRegionStartType = xsharpRegionStartType;
                 discover.xsharpRegionStopType = xsharpRegionStopType;
                 walker.Walk(discover, xtree);
                 //
-
                 this.tags = discover.tags;
                 //
             }
-            catch (Exception e)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+
             }
             //
         }

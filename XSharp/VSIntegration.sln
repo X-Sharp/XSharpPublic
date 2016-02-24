@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "src\VisualS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication", "src\VisualStudio\ProjectTemplates\Console\ConsoleApplication.csproj", "{B06F938F-F8A1-4FA5-BAF2-97706CC7DCE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormApp", "src\VisualStudio\ProjectTemplates\WinFormApp\WinFormApp.csproj", "{CD800FFF-3777-4D22-805F-0E22EEF7D5A0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,10 +53,6 @@ Global
 		{B06F938F-F8A1-4FA5-BAF2-97706CC7DCE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B06F938F-F8A1-4FA5-BAF2-97706CC7DCE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B06F938F-F8A1-4FA5-BAF2-97706CC7DCE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD800FFF-3777-4D22-805F-0E22EEF7D5A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD800FFF-3777-4D22-805F-0E22EEF7D5A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD800FFF-3777-4D22-805F-0E22EEF7D5A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD800FFF-3777-4D22-805F-0E22EEF7D5A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +62,5 @@ Global
 		{BD3EBF3F-1AE6-4C08-8E7A-C63F8956DA1D} = {2BF1BFDC-0DA1-4401-AF70-BCEA8CF6D6FA}
 		{91C58B0A-68C7-4437-8B82-706C60FFEF86} = {49745B59-A3A0-40A7-9D6F-1924FB5CF9E2}
 		{B06F938F-F8A1-4FA5-BAF2-97706CC7DCE2} = {49745B59-A3A0-40A7-9D6F-1924FB5CF9E2}
-		{CD800FFF-3777-4D22-805F-0E22EEF7D5A0} = {49745B59-A3A0-40A7-9D6F-1924FB5CF9E2}
 	EndGlobalSection
 EndGlobal

@@ -809,5 +809,23 @@
         <caption translate="true">X# Walkthroughs</caption>
       </topicref>
     </topicref>
+    <topicref type="topic" id="424249573402452" build="ALL" modified="2016-02-24T19:47:40.194Z" icon="0" href="X-Examples">
+      <caption translate="true">X# Examples</caption>
+      <topicref type="topic" id="424249979841329" build="ALL" modified="2016-02-24T19:50:00.886Z" icon="0" href="LINQ-Example">
+        <caption translate="true">LINQ Example</caption>
+      </topicref>
+      <topicref type="topic" id="424247612718920" build="ALL" modified="2016-02-24T20:02:34.336Z" icon="0" href="YIELD-Example">
+        <caption translate="true">YIELD Example</caption>
+      </topicref>
+      <topicref type="topic" id="424249105268691" build="ALL" modified="2016-02-24T20:04:41.119Z" icon="0" href="GENERICs-Example">
+        <caption translate="true">GENERICs Example</caption>
+      </topicref>
+      <topicref type="topic" id="42424518616889" build="ALL" modified="2016-02-24T20:09:34.366Z" icon="0" href="Anonymous-Methods2">
+        <caption translate="true">Anonymous Methods</caption>
+      </topicref>
+      <topicref type="topic" id="424248854286636" build="ALL" modified="2016-02-24T20:35:24.071Z" icon="0" href="Vulcan-Runtime-Types-BYOR">
+        <caption translate="true">Vulcan Runtime (BYOR)</caption>
+      </topicref>
+    </topicref>
   </topicref>
 </map>

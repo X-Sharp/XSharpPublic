@@ -13,36 +13,39 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Below is a more specific list of things that are not supported yet or are known problems.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">xBase Specific Data Types and Constants</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">ARRAY</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">DATE</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">FLOAT</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">PSZ</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">PTR</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">SYMBOL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">USUAL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">NIL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">NULL_ARRAY</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">NULL_DATE</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">NULL_SYMBOL</text></para>
-    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">ARRAY</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">DATE</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">FLOAT</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">PSZ</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">PTR</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">SYMBOL</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">USUAL</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">NIL</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">NULL_ARRAY</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">NULL_DATE</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">NULL_SYMBOL</text></li>
+    </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Commands and Keywords</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">DEFINE</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">ACCESS/ASSIGN must be both in same (partial) class. Cannot be spread over 2 parts of the class</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">VOSTRUCT and VOUNION are compiled as a special kind of STRUCTURE but the special AS/IS handling is not supported yet</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Calling convention is ignored</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">BEGIN SEQUENCE… END</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">SWITCH Block may give warnings about unreachable code</text><br/><text styleclass="Normal" translate="true">The compiler macros (__ENTITY__, __VERSION__ , __DEBUG__, etc) are not handled properly</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing arguments in a comma separated list are nor supported. </text></para>
-    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">DEFINE is supported but must have a type clause</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">ACCESS/ASSIGN must be both in same (partial) class. Cannot be spread over 2 parts of the class</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">VOSTRUCT and VOUNION are compiled as a special kind of STRUCTURE but the special AS/IS handling is not supported yet</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Calling convention is ignored</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">BEGIN SEQUENCE… END</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">SWITCH Block may give warnings about unreachable code</text><br/><text styleclass="Normal" translate="true">The compiler macros (__ENTITY__, __VERSION__ , __DEBUG__, etc) are not handled properly</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Missing arguments in a comma separated list are not supported. </text></li>
+    </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Compiler</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Most VO/Vulcan compatible compiler options are not implemented yet. The command line options are recognized but nothing is done with them</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The preprocessor is missing, so #define, #include, and other preprocessor keywords do nothing</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler pragmas (#pragma warnings and #pragma options) do not work</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The XML generation is not working </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Parser errors need improvements</text><br/><text styleclass="Normal" translate="true">Erroneous code may generate compiler runtime errors</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compiler errors may be cryptic every now and then</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compiler error messages are sometimes pointing to incorrect source locations</text><br/><text styleclass="Normal" translate="true">The compiler is case insensitive. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now</text></para>
-    <para styleclass="Body Text"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Most VO/Vulcan compatible compiler options are not implemented yet. The command line options are recognized but nothing is done with them</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The preprocessor is missing, so #define, #include, and other preprocessor keywords do nothing</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The compiler pragmas (#pragma warnings and #pragma options) do not work</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The XML generation is not working </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Parser errors need improvements</text><br/><text styleclass="Normal" translate="true">Erroneous code may generate compiler runtime errors</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Compiler errors may be cryptic every now and then</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Compiler error messages are sometimes pointing to incorrect source locations</text><br/><text styleclass="Normal" translate="true">The compiler is case insensitive. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now</text></li>
+    </list>
     <para styleclass="Body Text"></para>
   </body>
 </topic>

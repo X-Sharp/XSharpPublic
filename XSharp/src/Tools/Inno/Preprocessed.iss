@@ -10,16 +10,22 @@
 
 ;Folders
 
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{32EB192A-B120-4055-800E-74B48B80DA06}
+DisableWelcomePage=no
+DisableStartupPrompt=yes
+DisableReadyMemo=yes
+DisableFinishedPage=no
+InfoBeforeFile=Baggage\ReadmeShort.rtf
 AppName=XSharp
-AppVersion=0.1.7.1701
+AppVersion=0.2.1.2100
 AppCopyright=Copyright © 2015-2016 XSharp B.V.
-AppVerName=XSharp 0.1.7
+AppVerName=XSharp 0.2.1
 AppPublisher=XSharp BV
 AppPublisherURL=http://www.xsharp.info
 AppSupportURL=http://www.xsharp.info
@@ -28,33 +34,35 @@ DefaultDirName={pf}\XSharp
 DefaultGroupName=XSharp
 LicenseFile=Baggage\License.rtf
 OutputDir=D:\XSharp\Dev\XSharp\Binaries\Setup 
-OutputBaseFilename=XSharpSetup017
+OutputBaseFilename=XSharpSetup021
 OutputManifestFile=Setup-Manifest.txt
 SetupIconFile=Baggage\XSharp.ico
-Compression=lzma2/ultra
+Compression=none
 SolidCompression=yes
 SetupLogging=yes
 
 ; Version Info for Installer and uninstaller
-VersionInfoVersion=0.1.7.1701
-VersionInfoDescription=XSharp Alpha 0.1.7
+VersionInfoVersion=0.2.1.2100
+VersionInfoDescription=XSharp Alpha 0.2.1
 VersionInfoCompany=XSharp BV
-VersionInfoTextVersion=0.1.7.1701 (Alpha 7)
+VersionInfoTextVersion=0.2.1.2100 (Alpha 7)
 VersionInfoCopyRight=Copyright © 2015-2016 XSharp B.V.
 VersionInfoProductName=XSharp
-VersionInfoProductVersion=0.1.7.1701
+VersionInfoProductVersion=0.2.1.2100
 Wizardsmallimagefile=Baggage\XSharp_Bmp_Banner.bmp 
 WizardImagefile=Baggage\XSharp_Bmp_Dialog.bmp
 
 ;Uninstaller
 UninstallFilesDir={app}\uninst
-UninstallDisplayName=XSharp Alpha 0.1.7
+UninstallDisplayName=XSharp Alpha 0.2.1
 UninstallDisplayIcon={app}\Images\XSharp.ico;
+UninstallLogMode=overwrite
 
 
-TouchDate=2016-01-31
-TouchTime=01:07:00
-DisableStartupPrompt=yes
+TouchDate=2016-02-24
+TouchTime=02:01:00
+
+
 
 
 ; Make sure they are admins
@@ -69,7 +77,6 @@ Name: "vs2015"; Description: "Visual Studio 2015 Integration";        Types: ful
 Name: "xide";   Description: "Include the XIDE files";                Types: full custom;                  
 
 
-
 [Dirs]
 Name: "{app}\Assemblies"
 Name: "{app}\Bin"
@@ -80,7 +87,6 @@ Name: "{app}\Redist"
 Name: "{app}\Uninst"
 Name: "{app}\Xide"
 Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
-;Check: ResetExtensionManager 
 
 
 [Languages]
@@ -120,13 +126,10 @@ Source: "D:\Xsharp\Dev\XSharp\Binaries\Help\\XSharp.chm";                     De
 
 
 ;XIDE
-Source: "D:\Xsharp\Dev\XSharp\Xide\\XIDE_017.zip";                     DestDir: "{app}\Xide";        Flags: touch touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: Xide
+Source: "D:\Xsharp\Dev\XSharp\Xide\XIDE_Set_up_1.01.exe";   DestDir: "{app}\Xide";        Flags: touch touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: Xide
 
-;Uninstaller
-;Source: "d:\Xsharp\Dev\XSharp\src\Tools\Inno\XsVsUnInst.exe";DestDir: "{app}\UnInst";    Flags: touch {#StdFlags}; Components: main
 
-;VsProjectSystem
-;Source: "{#BinFolder}XSharp.ProjectSystem.vsix";          DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015
+Source: "D:\Xsharp\Dev\XSharp\Binaries\Debug\XSharp.ProjectSystem.vsix";          DestDir: "{app}\ProjectSystem";    Flags: touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: vs2015
 Source: "D:\Xsharp\Dev\XSharp\Binaries\Debug\XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVs2015IdeDir}"; Flags: touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: vs2015
 Source: "D:\Xsharp\Dev\XSharp\Binaries\Debug\XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVs2015IdeDir}"; Flags: touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: vs2015
 
@@ -151,10 +154,13 @@ Name: "{group}\{cm:UninstallProgram,XSharp}"; Filename: "{uninstallexe}";
 Root: HKLM; Subkey: "Software\XSharpBV"; Flags: uninsdeletekeyifempty 
 Root: HKLM; Subkey: "Software\XSharpBV\XSharp"; Flags: uninsdeletekey 
 Root: HKLM; Subkey: "Software\XSharpBV\XSharp"; ValueName: "XSharpPath"; ValueType: string; ValueData: "{app}" ;
-Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\ExtensionManager"; Flags: deletekey uninsdeletekey; Components: vs2015
+;Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\ExtensionManager"; Flags: deletekey uninsdeletekey; Components: vs2015
+
+[Ini]
+Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "1"; Flags: uninsdeletesection; Components: vs2015;
 
 [Run]
-;Filename:  "{code:GetVs2015IdeDir}\Devenv.exe"; Parameters: "/Setup"; StatusMsg: "Registering X# Project System in Visual Studio (this may take a while...)"; Flags: runhidden;  Components: vs2015 ;
+Filename:  "{app}\Xide\XIDE_Set_up_1.01.exe"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]
 ; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry
@@ -165,6 +171,8 @@ Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\ExtensionManager"; Fla
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
+; remove the old uninstaller because the file format has changed
+Type: filesandordirs; Name: "{app}\Uninst"
 
 
 [UninstallDelete]
@@ -175,13 +183,20 @@ Type: filesandordirs; Name: "{app}\Images"                        ; Components: 
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; Components: main
 Type: filesandordirs; Name: "{app}\Redist"                        ; Components: main
 Type: filesandordirs; Name: "{app}\Uninst"                        ; Components: main
-Type: filesandordirs; Name: "{app}\MsBuild\XSharp"            ; Components: main
+Type: filesandordirs; Name: "{pf}\MsBuild\XSharp"            ; Components: main
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015;  
 ;Check: ResetExtensionManager ;
 Type: dirifempty;     Name: "{app}"; 
 ; Template cache and component cache
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
+
+[Messages]
+WelcomeLabel1=Welcom to [name] (X#)
+WelcomeLabel2=This installer will install [name/ver] on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+WizardInfoBefore=Warning
+InfoBeforeLabel=You are about to install Beta software
+InfoBeforeClickLabel=Only continue the installation if you are aware of the following:
 
 
 [Code]
@@ -233,6 +248,12 @@ begin
   end;
   
 end;
-
-
+{
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  if CurPageID == wpInfoBefore then
+  begin
+  
+  end
+end}
 

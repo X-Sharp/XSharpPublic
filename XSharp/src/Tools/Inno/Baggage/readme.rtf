@@ -1,9 +1,9 @@
-{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1043\deflangfe1043{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri Light;}{\f1\fswiss\fprq2\fcharset0 Calibri;}{\f2\fnil\fcharset0 Calibri;}{\f3\fnil Calibri;}{\f4\fmodern\fprq1\fcharset0 Consolas;}{\f5\fswiss\fprq2\fcharset0 Arial;}{\f6\fmodern\fprq1\fcharset0 Courier New;}{\f7\fnil\fcharset2 Symbol;}}
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1043\deflangfe1043{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri Light;}{\f1\fswiss\fprq2\fcharset0 Calibri;}{\f2\fnil Segoe UI;}{\f3\fnil\fcharset0 Segoe UI;}{\f4\fnil Courier New;}{\f5\fnil Calibri;}{\f6\fnil\fcharset0 Calibri;}{\f7\fmodern\fprq1\fcharset0 Consolas;}{\f8\fswiss\fprq2\fcharset0 Arial;}{\f9\fmodern\fprq1\fcharset0 Courier New;}{\f10\fnil\fcharset2 Symbol;}}
 {\colortbl ;\red46\green116\blue181;\red255\green0\blue0;\red0\green0\blue0;\red255\green255\blue255;}
 {\*\listtable 
 {\list\listhybrid
-{\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f7\jclisttab\tx0}
-{\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f7\jclisttab\tx0}\listid1 }}
+{\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f10\jclisttab\tx0}
+{\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f10\jclisttab\tx0}\listid1 }}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
 {\stylesheet{ Normal;}{\s1 heading 1;}{\s2 heading 2;}}
 {\*\generator Riched20 10.0.14257}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
@@ -11,125 +11,133 @@
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\fs26 Introduction\par
 
-\pard\widctlpar\sa160\sl252\slmult1\cf2\b\f1\fs28 This beta version of the compiler only supports the \ldblquote Core\rdblquote  language, that means that VO & Vulcan specific datatypes such as DATE, ARRAY, USUAL, SYMBOL, FLOAT etc. are not supported yet.\par
+\pard\widctlpar\sa160\sl252\slmult1\cf2\f1\fs24 This beta version of the compiler only supports the \ldblquote Core\rdblquote  language, that means that VO & Vulcan specific datatypes such as DATE, ARRAY, USUAL, SYMBOL, FLOAT etc. are not supported yet.\par
 The Visual Studio integration only supports the Edit/Compile/Debug cycle. Only the source code editor is supported. Other editors, such as the WPF editor, Forms Editor and Resource editor are not supported yet.\par
-Please note that this is an early build of the compiler. Things will break and errors will throw exceptions, you can be sure of this.\par
+Please note that this is an early build of the compiler. Some things will NOT work, you can be sure of this.\b\fs28\par
 
-\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\b0\f0\fs26 Changes in 0.2.1\par
+\pard\keepn\cf3\f2\fs24\lang0 Visual Studio Integration\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent195{\pntxtb\'B7}}\keep\keepn\s2\fi-195\li195\sa150\sl252\slmult1\cf3\f2\fs22 Several changes were made to the VS Project System and especially the compiler flags\f3\lang0\par
-{\pntext\f7\'B7\tab}\f2\lang1033 Changed the keyword coloring in the VS Editor. This should not work correctly. Also positional  keywords should now be shown in the identifier color when they are recognized as an identifier\f3\lang0\par
-{\pntext\f7\'B7\tab}\f2\lang1033 Fixed several compatibility options in the compiler. In most cases compiler errors have been demoted to compiler warnings.\f3\lang0\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent195{\pntxtb\'B7}}\fi-195\li195\b0\fs22 Added and improved several project properties\par
+{\pntext\f10\'B7\tab}Fix a problem with the "Additional Compiler Options"\par
+{\pntext\f10\'B7\tab}Improved coloring in the editor for Keywords, Comments etc. You can set the colors from the Tools/Options dialog under Genera\f3\lang1033 l\f2\lang0 /Fonts & Colors. Look for the entries with the name "XSharp Keyword" etc.\par
+{\pntext\f10\'B7\tab}Added Windows Forms Template\par
 
-\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\lang1033\tab\par
+\pard\keepn\b\fs24 Compiler\par
 
-\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1 Changes in 0.1.7\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent195{\pntxtb\'B7}}\fi-195\li195\b0\fs22 Several errors have been demoted to warnings to be more compatible with VO/Vulcan\par
+{\pntext\f10\'B7\tab}Added support for Comment lines that start with an asterisk\par
+{\pntext\f10\'B7\tab}Added support for the DEFINE statement. For now the DEFINE statement MUST have a type  \line\expndtw-15\f4 DEFINE WM_USER := 0x0400 AS DWORD\par
+{\pntext\f10\'B7\tab}\expndtw0\f2 Fixed problem with Single Line Properties with GET and SET reversed\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent195{\pntxtb\'B7}}\keep\keepn\s2\fi-195\li195\sa150\sl252\slmult1\cf3\f3\fs22\lang0 The "ns" (add default namespace to classes without namespace) has been implemented\par
-{\pntext\f7\'B7\tab}The "vo3" compiler option (\f2\lang1033 to make all \f3\lang0 methods virtual ) has been implemented\par
-{\pntext\f7\'B7\tab}Fixed an issue where the send operator on an expression between parentheses was not compiling properly\par
-{\pntext\f7\'B7\tab}Relational operators for strings (>, >=, <, <=) are now supported. They are implemented using the String.Compare() method.\par
-{\pntext\f7\'B7\tab}Fixed a problem with local variables declared on the start line from FOR .. NEXT statements\par
-{\pntext\f7\'B7\tab}Added first version of the documentation in CHM & PDF format\par
-{\pntext\f7\'B7\tab}Added several properties to the Visual Studio Project properties dialog to allow setting the new compiler options\par
-{\pntext\f7\'B7\tab}Fixed a problem in the Targets files used by MsBuild because some standard macros such as $(TargetPath) were not working properly\par
-{\pntext\f7\'B7\tab}XIDE 0.1.7 is included. This version of XIDE is completely compiled with XSharp !\par
-{\pntext\f7\'B7\tab}\f2\lang1033 The name of some of the MsBuild support files have changed. This may lead to problems loading a VS project if you have used the VS support from the previous build. If that is the case then please edit the xsproj file inside Visual Studio and replace all references of "XSharpProject" with "XSharp" . Then safe the xsproj file and try to reload the project again.\f3\lang0\par
-{\pntext\f7\'B7\tab}The WHILE.. ENDDO (a DO WHILE without the leading DO) is now recognized properly\par
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1 Several fixes for Virtual and Non virtual methods in combination with the /VO3 compatibility option\par
+\cf1\f0\fs26\lang1033\tab\par
+Changes in 0.1.7\par
+
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent195{\pntxtb\'B7}}\keep\keepn\s2\fi-195\li195\sa150\sl252\slmult1\cf3\f5\fs22\lang0 The "ns" (add default namespace to classes without namespace) has been implemented\par
+{\pntext\f10\'B7\tab}The "vo3" compiler option (\f6\lang1033 to make all \f5\lang0 methods virtual ) has been implemented\par
+{\pntext\f10\'B7\tab}Fixed an issue where the send operator on an expression between parentheses was not compiling properly\par
+{\pntext\f10\'B7\tab}Relational operators for strings (>, >=, <, <=) are now supported. They are implemented using the String.Compare() method.\par
+{\pntext\f10\'B7\tab}Fixed a problem with local variables declared on the start line from FOR .. NEXT statements\par
+{\pntext\f10\'B7\tab}Added first version of the documentation in CHM & PDF format\par
+{\pntext\f10\'B7\tab}Added several properties to the Visual Studio Project properties dialog to allow setting the new compiler options\par
+{\pntext\f10\'B7\tab}Fixed a problem in the Targets files used by MsBuild because some standard macros such as $(TargetPath) were not working properly\par
+{\pntext\f10\'B7\tab}XIDE 0.1.7 is included. This version of XIDE is completely compiled with XSharp !\par
+{\pntext\f10\'B7\tab}\f6\lang1033 The name of some of the MsBuild support files have changed. This may lead to problems loading a VS project if you have used the VS support from the previous build. If that is the case then please edit the xsproj file inside Visual Studio and replace all references of "XSharpProject" with "XSharp" . Then safe the xsproj file and try to reload the project again.\f5\lang0\par
+{\pntext\f10\'B7\tab}The WHILE.. ENDDO (a DO WHILE without the leading DO) is now recognized properly\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\lang1033 Changes in 0.1.6\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 This version now comes with an installer\par
-{\pntext\f7\'B7\tab}This version includes a first version of the Visual Studio Integration. You can edit, build, run and debug inside Visual Studio. There is no "intellisense" available.\par
-{\pntext\f7\'B7\tab}The compiler now uses 1-based arrays and the \ldblquote az\rdblquote  compiler option has been implemented to switch the compiler to use 0-based arrays. \par
-{\pntext\f7\'B7\tab}The "vo2" compiler option (to initialize string variables with String.Empty) has been implemented\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 This version now comes with an installer\par
+{\pntext\f10\'B7\tab}This version includes a first version of the Visual Studio Integration. You can edit, build, run and debug inside Visual Studio. There is no "intellisense" available.\par
+{\pntext\f10\'B7\tab}The compiler now uses 1-based arrays and the \ldblquote az\rdblquote  compiler option has been implemented to switch the compiler to use 0-based arrays. \par
+{\pntext\f10\'B7\tab}The "vo2" compiler option (to initialize string variables with String.Empty) has been implemented\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li720\sa160\sl252\slmult1 Please note that there is no option in the VS project properties dialog yet for the az and vo2 compiler options.  You can use the "additional compiler options" option to specify these compiler options.\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li720\sa160\sl252\slmult1 Please note that there is no option in the VS project properties dialog yet for the az and vo2 compiler options.  You can use the "additional compiler options" option to specify these compiler options.\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1 The text "this" and "base" in error messages has been changed to "SELF" and "SUPER"\par
-{\pntext\f7\'B7\tab}Error of type \ldblquote visibility\rdblquote  (for example public properties that expose private or internal types) have been changed to warnings\par
-{\pntext\f7\'B7\tab}Fixed a problem with TRY \'85 ENDTRY statements without CATCH clause\par
-{\pntext\f7\'B7\tab}The compiler now has a better resolution for functions that reside in other (X#) assemblies\par
-{\pntext\f7\'B7\tab}Fixed a problem which could lead to an "ambiguous operator" message when mixing different numeric types.\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1 The text "this" and "base" in error messages has been changed to "SELF" and "SUPER"\par
+{\pntext\f10\'B7\tab}Error of type \ldblquote visibility\rdblquote  (for example public properties that expose private or internal types) have been changed to warnings\par
+{\pntext\f10\'B7\tab}Fixed a problem with TRY \'85 ENDTRY statements without CATCH clause\par
+{\pntext\f10\'B7\tab}The compiler now has a better resolution for functions that reside in other (X#) assemblies\par
+{\pntext\f10\'B7\tab}Fixed a problem which could lead to an "ambiguous operator" message when mixing different numeric types.\par
 
-\pard{\*\pn\pnlvlcont\pnf7\pnindent0{\pntxtb\'B7}}\keep\keepn\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.5\par
+\pard{\*\pn\pnlvlcont\pnf10\pnindent0{\pntxtb\'B7}}\keep\keepn\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.5\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 When an error occurs in the parsing stage, X# no longer enters the following stages of the compiler to prevent crashes. In addition to the errors from the parser also an error 9002 is displayed.\par
-{\pntext\f7\'B7\tab}Parser errors now also include the source file name in the error message and have the same format as other error messages. Please note that we are not finished yet with handling these error messages. There will be improvements in the format of these error messages in the upcoming builds.\par
-{\pntext\f7\'B7\tab}The compiler will display a \ldblquote feature not available\rdblquote  (\cf3\highlight4\f4\fs19 8022\highlight0 ) \cf0\f1\fs22 error when a program uses one of the Xbase types (ARRAY, DATE, FLOAT, PSZ, SYMBOL, USUAL).\par
-{\pntext\f7\'B7\tab}Fixed an error with VOSTRUCT and UNION types\par
-{\pntext\f7\'B7\tab}Fixed a problem with the exclamation mark (!) NOT operator \par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 When an error occurs in the parsing stage, X# no longer enters the following stages of the compiler to prevent crashes. In addition to the errors from the parser also an error 9002 is displayed.\par
+{\pntext\f10\'B7\tab}Parser errors now also include the source file name in the error message and have the same format as other error messages. Please note that we are not finished yet with handling these error messages. There will be improvements in the format of these error messages in the upcoming builds.\par
+{\pntext\f10\'B7\tab}The compiler will display a \ldblquote feature not available\rdblquote  (\cf3\highlight4\f7\fs19 8022\highlight0 ) \cf0\f1\fs22 error when a program uses one of the Xbase types (ARRAY, DATE, FLOAT, PSZ, SYMBOL, USUAL).\par
+{\pntext\f10\'B7\tab}Fixed an error with VOSTRUCT and UNION types\par
+{\pntext\f10\'B7\tab}Fixed a problem with the exclamation mark (!) NOT operator \par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.4\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Several changes to allow calculations with integers and enums\par
-{\pntext\f7\'B7\tab}Several changes to allow VO compatible _OR, _AND, _NOT an _XOR operations\par
-{\pntext\f7\'B7\tab}Fix interface/abstract VO properties\par
-{\pntext\f7\'B7\tab}Insert an implicit \ldblquote USING System\rdblquote  only if not explicitly declared\par
-{\pntext\f7\'B7\tab}Error 542 turned to warning (members cannot have the same name as their enclosing type)\par
-{\pntext\f7\'B7\tab}Changes in the .XOR. expression definition\par
-{\pntext\f7\'B7\tab}Fix double quote in CHAR_CONST lexer rule\par
-{\pntext\f7\'B7\tab}Allow namespace declaration in class/struct/etc. name (CLASS Foo.Bar)\par
-{\pntext\f7\'B7\tab}Fix access/assign crash where identifier name was a (positional) keword: ACCESS Value\par
-{\pntext\f7\'B7\tab}Preprocessor keywords were not recognized after spaces, but only at the start of the line. This has been fixed.\par
-{\pntext\f7\'B7\tab}Prevent property GET SET from being parsed as expression body\par
-{\pntext\f7\'B7\tab}Fix default visibility for interface event\par
-{\pntext\f7\'B7\tab}Unsafe errors become warnings with /unsafe option, PTR is void*\par
-{\pntext\f7\'B7\tab}Fix dim array field declaration\par
-{\pntext\f7\'B7\tab}Initial support of VO cast and VO Conversion rules (TYPE(_CAST, Expression) and TYPE(Expression)).  _CAST is always unchecked (LONG(_CAST, dwValue)) and convert follows the checked/unchecked rules (LONG(dwValue))\par
-{\pntext\f7\'B7\tab}Fixed problem with codeblock with empty parameter list\par
-{\pntext\f7\'B7\tab}Fixed problems with GlobalAttributes.\par
-{\pntext\f7\'B7\tab}An AUTO property without GET SET now automatically adds a GET and SET block\par
-{\pntext\f7\'B7\tab}Allow implicit constant double-to-single conversion\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Several changes to allow calculations with integers and enums\par
+{\pntext\f10\'B7\tab}Several changes to allow VO compatible _OR, _AND, _NOT an _XOR operations\par
+{\pntext\f10\'B7\tab}Fix interface/abstract VO properties\par
+{\pntext\f10\'B7\tab}Insert an implicit \ldblquote USING System\rdblquote  only if not explicitly declared\par
+{\pntext\f10\'B7\tab}Error 542 turned to warning (members cannot have the same name as their enclosing type)\par
+{\pntext\f10\'B7\tab}Changes in the .XOR. expression definition\par
+{\pntext\f10\'B7\tab}Fix double quote in CHAR_CONST lexer rule\par
+{\pntext\f10\'B7\tab}Allow namespace declaration in class/struct/etc. name (CLASS Foo.Bar)\par
+{\pntext\f10\'B7\tab}Fix access/assign crash where identifier name was a (positional) keword: ACCESS Value\par
+{\pntext\f10\'B7\tab}Preprocessor keywords were not recognized after spaces, but only at the start of the line. This has been fixed.\par
+{\pntext\f10\'B7\tab}Prevent property GET SET from being parsed as expression body\par
+{\pntext\f10\'B7\tab}Fix default visibility for interface event\par
+{\pntext\f10\'B7\tab}Unsafe errors become warnings with /unsafe option, PTR is void*\par
+{\pntext\f10\'B7\tab}Fix dim array field declaration\par
+{\pntext\f10\'B7\tab}Initial support of VO cast and VO Conversion rules (TYPE(_CAST, Expression) and TYPE(Expression)).  _CAST is always unchecked (LONG(_CAST, dwValue)) and convert follows the checked/unchecked rules (LONG(dwValue))\par
+{\pntext\f10\'B7\tab}Fixed problem with codeblock with empty parameter list\par
+{\pntext\f10\'B7\tab}Fixed problems with GlobalAttributes.\par
+{\pntext\f10\'B7\tab}An AUTO property without GET SET now automatically adds a GET and SET block\par
+{\pntext\f10\'B7\tab}Allow implicit constant double-to-single conversion\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.3\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Change inconsistent field accessibility error to warning and other similar errors\par
-{\pntext\f7\'B7\tab}Added commandline support for Vulcan arguments. These arguments no longer result in an error message, but are not really implemented, unless an equivalent argument exists for the Roslyn (C#) compiler. For example: /ovf and /fovf are both mapped to /checked, /wx is mapped to /warnaserror. /w should not be used because that has a different meaning /warning level). /nowarn:nnnn should be used in stead\par
-{\pntext\f7\'B7\tab}Fixed problem where the PUBLIC modifier was assigned to Interface Members or Destructors\par
-{\pntext\f7\'B7\tab}Prevent expression statements from starting with CONSTRUCTOR() or DESTRUCTOR()\par
-{\pntext\f7\'B7\tab}Added support for ? statement without parameters\par
-{\pntext\f7\'B7\tab}The default return type for assigns is now VOID when not specified\par
-{\pntext\f7\'B7\tab}Added support for \ldblquote old Style\rdblquote  delegate instantiation\par
-{\pntext\f7\'B7\tab}Added support for Enum addition\par
-{\pntext\f7\'B7\tab}Added an implicit empty catch block for TRY .. END TRY without catch and finally\par
-{\pntext\f7\'B7\tab}Added support for the DESCENDING keyword in LINQ statements\par
-{\pntext\f7\'B7\tab}Added support for VIRTUAL and OVERRIDE for Properties and Events\par
-{\pntext\f7\'B7\tab}Prevent implied override insertion for abstract interface members\par
-{\pntext\f7\'B7\tab}Fixed a problem where System.Void could not be resolved\par
-{\pntext\f7\'B7\tab}Fixed problem with Property Generation for ACCESS/ASSIGN\par
-{\pntext\f7\'B7\tab}Fixed problem with Abstract method handling\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Change inconsistent field accessibility error to warning and other similar errors\par
+{\pntext\f10\'B7\tab}Added commandline support for Vulcan arguments. These arguments no longer result in an error message, but are not really implemented, unless an equivalent argument exists for the Roslyn (C#) compiler. For example: /ovf and /fovf are both mapped to /checked, /wx is mapped to /warnaserror. /w should not be used because that has a different meaning /warning level). /nowarn:nnnn should be used in stead\par
+{\pntext\f10\'B7\tab}Fixed problem where the PUBLIC modifier was assigned to Interface Members or Destructors\par
+{\pntext\f10\'B7\tab}Prevent expression statements from starting with CONSTRUCTOR() or DESTRUCTOR()\par
+{\pntext\f10\'B7\tab}Added support for ? statement without parameters\par
+{\pntext\f10\'B7\tab}The default return type for assigns is now VOID when not specified\par
+{\pntext\f10\'B7\tab}Added support for \ldblquote old Style\rdblquote  delegate instantiation\par
+{\pntext\f10\'B7\tab}Added support for Enum addition\par
+{\pntext\f10\'B7\tab}Added an implicit empty catch block for TRY .. END TRY without catch and finally\par
+{\pntext\f10\'B7\tab}Added support for the DESCENDING keyword in LINQ statements\par
+{\pntext\f10\'B7\tab}Added support for VIRTUAL and OVERRIDE for Properties and Events\par
+{\pntext\f10\'B7\tab}Prevent implied override insertion for abstract interface members\par
+{\pntext\f10\'B7\tab}Fixed a problem where System.Void could not be resolved\par
+{\pntext\f10\'B7\tab}Fixed problem with Property Generation for ACCESS/ASSIGN\par
+{\pntext\f10\'B7\tab}Fixed problem with Abstract method handling\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.1.2.1\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Added default expression\par
-{\pntext\f7\'B7\tab}Fixed problem with events\par
-{\pntext\f7\'B7\tab}Fixed some small lexer problems\par
-{\pntext\f7\'B7\tab}Fixed problem with _DLL FUNCTION and _DLL PROCEDURE\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Added default expression\par
+{\pntext\f10\'B7\tab}Fixed problem with events\par
+{\pntext\f10\'B7\tab}Fixed some small lexer problems\par
+{\pntext\f10\'B7\tab}Fixed problem with _DLL FUNCTION and _DLL PROCEDURE\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\par
 Changes in 0.1.2\par
 
-\pard{\pntext\f7\'B7\tab}{\*\pn\pnlvlblt\pnf7\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Fixed problem with handling escape sequences in extended strings\par
-{\pntext\f7\'B7\tab}Fixed issue in FOR.. NEXT statements\par
-{\pntext\f7\'B7\tab}Fixed a problem with SWITCH statements\par
-{\pntext\f7\'B7\tab}Fixed a problem with the sizeof() operator\par
-{\pntext\f7\'B7\tab}Fixed a problem in the REPEAT .. UNTIL statement\par
-{\pntext\f7\'B7\tab}Fixed a problem in TRY .. CATCH .. FINALLY .. END TRY statements. \par
-{\pntext\f7\'B7\tab}Fixed issue in Conditional Access Expression ( Expr  ? Expr)\par
-{\pntext\f7\'B7\tab}Allow bound member access of name with type args\par
-{\pntext\f7\'B7\tab}Fixed problem in LOCAL statement with multiple locals\par
-{\pntext\f7\'B7\tab}Fixed a problem when compiling with debug info for methods without a body\par
-{\pntext\f7\'B7\tab}Optimized the Lexer. This should increase the compile speed a lot\par
-{\pntext\f7\'B7\tab}Fixed a problem in the code that reports that a feature is not supported yet\par
-{\pntext\f7\'B7\tab}Fixed a problem when defining Generic types with a STRUCTURE constraint\par
-{\pntext\f7\'B7\tab}Compilere macros (__ENTITY__, __LINE__ etc) were causing a crash. For now the compiler inserts a literal string with the name of the macro.\par
-{\pntext\f7\'B7\tab}Build 0.1.1 did not contain XSC.RSP\par
-{\pntext\f7\'B7\tab}Fixed a problem where identifiers were not recognized when they were matching a (new) keyword\par
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 Fixed problem with handling escape sequences in extended strings\par
+{\pntext\f10\'B7\tab}Fixed issue in FOR.. NEXT statements\par
+{\pntext\f10\'B7\tab}Fixed a problem with SWITCH statements\par
+{\pntext\f10\'B7\tab}Fixed a problem with the sizeof() operator\par
+{\pntext\f10\'B7\tab}Fixed a problem in the REPEAT .. UNTIL statement\par
+{\pntext\f10\'B7\tab}Fixed a problem in TRY .. CATCH .. FINALLY .. END TRY statements. \par
+{\pntext\f10\'B7\tab}Fixed issue in Conditional Access Expression ( Expr  ? Expr)\par
+{\pntext\f10\'B7\tab}Allow bound member access of name with type args\par
+{\pntext\f10\'B7\tab}Fixed problem in LOCAL statement with multiple locals\par
+{\pntext\f10\'B7\tab}Fixed a problem when compiling with debug info for methods without a body\par
+{\pntext\f10\'B7\tab}Optimized the Lexer. This should increase the compile speed a lot\par
+{\pntext\f10\'B7\tab}Fixed a problem in the code that reports that a feature is not supported yet\par
+{\pntext\f10\'B7\tab}Fixed a problem when defining Generic types with a STRUCTURE constraint\par
+{\pntext\f10\'B7\tab}Compilere macros (__ENTITY__, __LINE__ etc) were causing a crash. For now the compiler inserts a literal string with the name of the macro.\par
+{\pntext\f10\'B7\tab}Build 0.1.1 did not contain XSC.RSP\par
+{\pntext\f10\'B7\tab}Fixed a problem where identifiers were not recognized when they were matching a (new) keyword\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 New Features\par
 
-\pard\brdrb\brdrs\brdrw15\brsp20 \widctlpar\qc\cf0\v\f5\fs16 Top of Form\par
+\pard\brdrb\brdrs\brdrw15\brsp20 \widctlpar\qc\cf0\v\f8\fs16 Top of Form\par
 
 \pard\widctlpar\sb100\sa100\v0\fs24 Below is a list of some of the most visible new language features in the Core language of X#, compared to Visual Objects and Vulcan.\par
 As you can see many new keywords were introduced, but these are positional: they will also be recognized as Identifiers on other places, so there is very little chance that you will have to make changes to avoid naming conflicts.\par
@@ -142,7 +150,7 @@ As you can see many new keywords were introduced, but these are positional: they
 \pard\intbl\widctlpar\sa160\sl252\slmult1 USING STATIC <Name>\cell 
 \pard\intbl\widctlpar\sb100\sa100\fs24 The STATIC modifier for USING (note that the # sign is no longer needed) allows you to name a static class. When you do so you can then use the methods of this class as functions.\line For example:\par
 
-\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f6\fs20 USING STATIC System.Console\line\line FUNCTION Start as VOID\line WriteLine("X# is cool!")\line RETURN\par
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f9\fs20 USING STATIC System.Console\line\line FUNCTION Start as VOID\line WriteLine("X# is cool!")\line RETURN\par
 
 \pard\intbl\widctlpar\sb100\sa100\fs24\~\cell YES\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
 \clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
@@ -160,7 +168,7 @@ As you can see many new keywords were introduced, but these are positional: they
 \clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
 \pard\intbl\widctlpar\sb100\sa100\fs24 CLASS <Id> \b <\b0  <ParamName> \b >\line\b0 WHERE <TypeConstraints> \line\~\~ <Classmembers>\line END [CLASS]\cell Creating Generic classes is now supported in X#, with all the features that C# also has\line For example\par
 
-\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f6\fs20 CLASS MyList<T> WHERE T IS CLASS\line ..\line END CLASS\par
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f9\fs20 CLASS MyList<T> WHERE T IS CLASS\line ..\line END CLASS\par
 
 \pard\intbl\widctlpar\sb100\sa100\fs24 or\par
 
@@ -173,11 +181,11 @@ As you can see many new keywords were introduced, but these are positional: they
 \pard\intbl\widctlpar\sa160\sl252\slmult1 <Expression> IS <Type>\cell Allows to check an expression for a type. Can be used in stead of IsInstanceOf() and will perform better\cell Yes\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
 \clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
 \pard\intbl\widctlpar\sa160\sl252\slmult1 Conditional Access Operator ? <Expression> ? <Expression>\cell 
-\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f6\fs20 Conditional access for properties, methods etc.\line For example\line\line nCount\~ := MyList?:Count\line\line This translates to\~something like:\~\par
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f9\fs20 Conditional access for properties, methods etc.\line For example\line\line nCount\~ := MyList?:Count\line\line This translates to\~something like:\~\par
 VAR temp := MyList\line IF temp\~ != NULL\line\~ nCount := temp:Count\line ENDIF\line\line The expression on the Left hand side of the Questionmark will be evaluated only once !\cell Yes\cell\row\trowd\trgaph15\trleft-60\trbrdrl\brdrdash\brdrw15 \trbrdrt\brdrdash\brdrw15 \trbrdrr\brdrdash\brdrw15 \trbrdrb\brdrdash\brdrw15 \trpaddl15\trpaddr15\trpaddfl3\trpaddfr3
 \clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
 \pard\intbl\widctlpar\sa160\sl252\slmult1\f1\fs22 <Expression> DEFAULT <Expression>\cell 
-\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f6\fs20 The default operator allows you to inline a check for NULL:\line\line lResult := Foo() DEFAULT Bar()\par
+\pard\intbl\widctlpar\tx916\tx1832\tx2748\tx3664\tx4580\tx5496\tx6412\tx7328\tx8244\tx9160\tx10076\tx10992\tx11908\tx12824\tx13740\tx14656\f9\fs20 The default operator allows you to inline a check for NULL:\line\line lResult := Foo() DEFAULT Bar()\par
 This translates to the same as\line\line lResult := Foo()\line IF lResult == NULL\line\~\~ lResult := Bar()\line ENDIF\par
 
 \pard\intbl\widctlpar\sb100\sa100\fs24 Foo() will be evaluated only once. And only when the result is NULL then Bar() will be evaluated.\cell 

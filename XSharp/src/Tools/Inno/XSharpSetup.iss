@@ -25,14 +25,19 @@
 #define XIDESetup       "XIDE_Set_up_1.01.exe"
 
 #define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
-#define Compression     "lzma2/ultra"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{32EB192A-B120-4055-800E-74B48B80DA06}
+DisableWelcomePage=no
+DisableStartupPrompt=yes
+DisableReadyMemo=yes
+DisableFinishedPage=no
+InfoBeforeFile=Baggage\ReadmeShort.rtf
 AppName={#Product}
 AppVersion={#VIVersion}
 AppCopyright={# CopyRight}
@@ -67,11 +72,13 @@ WizardImagefile=Baggage\XSharp_Bmp_Dialog.bmp
 UninstallFilesDir={app}\uninst
 UninstallDisplayName={#=ProdBuild}
 UninstallDisplayIcon={app}\Images\XSharp.ico;
+UninstallLogMode=overwrite
 
 
 TouchDate={#=TouchDate}
 TouchTime={#=TouchTime}
-DisableStartupPrompt=yes
+
+
 
 
 ; Make sure they are admins
@@ -180,6 +187,8 @@ Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: p
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
+; remove the old uninstaller because the file format has changed
+Type: filesandordirs; Name: "{app}\Uninst"
 
 
 [UninstallDelete]
@@ -190,13 +199,20 @@ Type: filesandordirs; Name: "{app}\Images"                        ; Components: 
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; Components: main
 Type: filesandordirs; Name: "{app}\Redist"                        ; Components: main
 Type: filesandordirs; Name: "{app}\Uninst"                        ; Components: main
-Type: filesandordirs; Name: "{app}\MsBuild\{#Product}"            ; Components: main
+Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"            ; Components: main
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015;  
 ;Check: ResetExtensionManager ;
 Type: dirifempty;     Name: "{app}"; 
 ; Template cache and component cache
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
+
+[Messages]
+WelcomeLabel1=Welcom to [name] (X#)
+WelcomeLabel2=This installer will install [name/ver] on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+WizardInfoBefore=Warning
+InfoBeforeLabel=You are about to install Beta software
+InfoBeforeClickLabel=Only continue the installation if you are aware of the following:
 
 
 [Code]
@@ -248,6 +264,13 @@ begin
   end;
   
 end;
-
+{
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  if CurPageID == wpInfoBefore then
+  begin
+  
+  end
+end}
 
 #expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")

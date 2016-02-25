@@ -61,11 +61,11 @@
 	DisplayName="Attach"
         Default="False"
         Description="Specifies whether the debugger should attempt to attach to an existing process when debugging starts." />
-    <BoolProperty 
+    <!--<BoolProperty 
     	Category="Special" 
     	Name="UseVSHostingProcess" 
 	DisplayName="Enable the Visual Studio Hosting Process" 
-	Default="True"/>
+	Default="True"/>-->
     <BoolProperty 
     	Category="Special" 
 	Name="EnableUnmanagedDebugging" 

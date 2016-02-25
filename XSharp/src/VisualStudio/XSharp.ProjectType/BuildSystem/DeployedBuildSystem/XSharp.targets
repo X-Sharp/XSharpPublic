@@ -7,7 +7,7 @@
     <ProjectCapability Include="ReferencesFolder"/>
 
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;"/>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\xsharp.browseobject.xaml;">
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general.browseobject.xaml;">
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
   </ItemGroup>

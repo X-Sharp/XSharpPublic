@@ -16,7 +16,7 @@
                   Description="The debug rule selected as the active debugger.">
   </StringProperty>
 
-  <EnumProperty Name="ImageClrType" Visible="false"
+  <EnumProperty Name="ImageClrType" Visible="false" Default="Managed"
                   Description="The 'hidden' property we pass to debuggers to let them know if this is a managed project.">
     <EnumProperty.DataSource>
       <DataSource Persistence="UserFile" HasConfigurationCondition="false" PersistedName="_TargetImageClrType" />

@@ -50,7 +50,11 @@ namespace XSharpLanguage
             settings.LaunchOperation = DebugLaunchOperation.CreateProcess;
 
             // TODO: Specify the right debugger engine
-            settings.LaunchDebugEngineGuid = DebuggerEngines.ManagedOnlyEngine;
+            var native = await debuggerProperties.EnableUnmanagedDebugging.GetEvaluatedValueAtEndAsync();
+            if (native.ToLower()== "true")
+                settings.LaunchDebugEngineGuid = DebuggerEngines.MixedNativeAndManagedEngine;
+            else
+                settings.LaunchDebugEngineGuid = DebuggerEngines.ManagedOnlyEngine;
 
             return new IDebugLaunchSettings[] { settings };
         }

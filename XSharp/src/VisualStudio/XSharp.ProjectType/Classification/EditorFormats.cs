@@ -35,21 +35,6 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpStringFormat)]
-    [Name(Constants.XSharpStringFormat)]
-    [UserVisible(true)]
-    [Order(After = Priority.Low)]
-    internal sealed class XSharpStringFormat : ClassificationFormatDefinition
-    {
-        public XSharpStringFormat()
-        {
-            this.DisplayName = "XSharp String";
-            this.ForegroundColor = Colors.Magenta;
-        }
-    }
-
-
-    [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = Constants.XSharpIdentifierFormat)]
     [Name(Constants.XSharpIdentifierFormat)]
     [UserVisible(true)]
@@ -73,7 +58,7 @@ namespace XSharpColorizer
         public XSharpOperatorFormat()
         {
             this.DisplayName = "XSharp Operator";
-            this.ForegroundColor = Colors.Cyan;
+            this.ForegroundColor = Colors.DarkGray;
         }
     }
 

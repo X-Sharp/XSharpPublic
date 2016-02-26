@@ -158,6 +158,7 @@
     <Xsc
 	      AdditionalLibPaths="$(AdditionalLibPaths)"
 	      CompilerPath="$(XSharpPath)"
+		  DebugType="$(DebugType)"
 	      DefineConstants="$(DefineConstants)"
 	      DisabledWarnings="$(DisabledWarnings)"
 	      DocumentationFile="@(DocFileItem)"
@@ -169,8 +170,9 @@
 	      NoLogo="$(NoLogo)"
 	      NoStandardDefs="$(NoStandardDefs)"
 	      NoStandardLib="$(NoStandardLib)"
+		  Optimize="@(Optimize)"
         OutputAssembly="@(IntermediateAssembly)"
-        Platform="$(PlatformTarget) "
+        Platform="$(PlatformTarget)"
         References="@(_NonMacroReferencePath)"
 	      Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
         ResponseFiles="$(CompilerResponseFile)"

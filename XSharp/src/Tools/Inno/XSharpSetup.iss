@@ -145,10 +145,11 @@ Source: "{#DocFolder}\XSharp.chm";                     DestDir: "{app}\Help";   
 Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; Components: Xide
 
 
-Source: "{#BinFolder}XSharp.ProjectSystem.vsix";          DestDir: "{app}\ProjectSystem";    Flags: {#StdFlags}; Components: vs2015
+;VsProjectSystem
+Source: "{#BinFolder}XSharp.ProjectSystem.vsix";          DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015
+
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVs2015IdeDir}"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVs2015IdeDir}"; Flags: {#StdFlags}; Components: vs2015
-
 
 Source: "{#BinFolder}Itemtemplates\*.*";                        DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates";     Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}ProjectTemplates\*.*";                     DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
@@ -187,9 +188,9 @@ Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: p
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
-; remove the old uninstaller because the file format has changed
-Type: filesandordirs; Name: "{app}\Uninst"
 
+; remove the old uninstaller because the uninstall file format has changed
+Type: filesandordirs; Name: "{app}\Uninst"
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\Assemblies"                    ; Components: main
@@ -199,13 +200,13 @@ Type: filesandordirs; Name: "{app}\Images"                        ; Components: 
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; Components: main
 Type: filesandordirs; Name: "{app}\Redist"                        ; Components: main
 Type: filesandordirs; Name: "{app}\Uninst"                        ; Components: main
-Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"            ; Components: main
+Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"             ; Components: main
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015;  
-;Check: ResetExtensionManager ;
 Type: dirifempty;     Name: "{app}"; 
+
 ; Template cache and component cache
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
+Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"; 			Components: vs2015
+Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"; 	Components: vs2015
 
 [Messages]
 WelcomeLabel1=Welcom to [name] (X#)
@@ -247,7 +248,6 @@ end;
 
 
 
-
 function InitializeSetup(): Boolean;
 var
   ErrorCode: Integer;
@@ -264,13 +264,4 @@ begin
   end;
   
 end;
-{
-procedure CurPageChanged(CurPageID: Integer);
-begin
-  if CurPageID == wpInfoBefore then
-  begin
-  
-  end
-end}
-
 #expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")

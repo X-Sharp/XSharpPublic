@@ -24,7 +24,7 @@
       <DataSource PersistedName="RootNamespace" Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
     </StringProperty.DataSource>
   </StringProperty>
-  <StringProperty Name="TargetFramework" Visible="True">
+  <StringProperty Name="TargetFramework" Visible="True" ReadOnly="True">
     <StringProperty.DataSource>
       <DataSource Persistence="ProjectFile" PersistedName="TargetFrameworkMoniker" />
     </StringProperty.DataSource>

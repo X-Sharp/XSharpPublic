@@ -7,39 +7,39 @@ namespace XSharpColorizer
     internal static class ClassificationTypes
     {
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpKeywordFormat)]
+        [Name(ColorizerConstants.XSharpKeywordFormat)]
         internal static ClassificationTypeDefinition XSharpKeyword = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpConstantFormat)]
+        [Name(ColorizerConstants.XSharpConstantFormat)]
         internal static ClassificationTypeDefinition XSharpConstant = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpIdentifierFormat)]
+        [Name(ColorizerConstants.XSharpIdentifierFormat)]
         internal static ClassificationTypeDefinition XSharpIdentifier = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpCommentFormat)]
+        [Name(ColorizerConstants.XSharpCommentFormat)]
         internal static ClassificationTypeDefinition XSharpComment = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpOperatorFormat)]
+        [Name(ColorizerConstants.XSharpOperatorFormat)]
         internal static ClassificationTypeDefinition XSharpOperator = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpBraceOpenFormat)]
+        [Name(ColorizerConstants.XSharpBraceOpenFormat)]
         internal static ClassificationTypeDefinition XSharpBraceOpenFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpBraceCloseFormat)]
+        [Name(ColorizerConstants.XSharpBraceCloseFormat)]
         internal static ClassificationTypeDefinition XSharpBraceCloseFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpRegionStartFormat)]
+        [Name(ColorizerConstants.XSharpRegionStartFormat)]
         internal static ClassificationTypeDefinition XSharpRegionStartFormat = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpRegionStopFormat)]
+        [Name(ColorizerConstants.XSharpRegionStopFormat)]
         internal static ClassificationTypeDefinition XSharpRegionStopFormat = null;
 
     }

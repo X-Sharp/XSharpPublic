@@ -64,8 +64,8 @@ namespace XSharpBraceMatching
             this.CurrentChar = null;
             //
             this.classifier = AggregatorFactory.GetClassifier(sourceBuffer);
-            this.xsharpBraceOpenType = registry.GetClassificationType(XSharpColorizer.Constants.XSharpBraceOpenFormat);
-            this.xsharpBraceCloseType = registry.GetClassificationType(XSharpColorizer.Constants.XSharpBraceCloseFormat);
+            this.xsharpBraceOpenType = registry.GetClassificationType(XSharpColorizer.ColorizerConstants.XSharpBraceOpenFormat);
+            this.xsharpBraceCloseType = registry.GetClassificationType(XSharpColorizer.ColorizerConstants.XSharpBraceCloseFormat);
 
             this.View.Caret.PositionChanged += CaretPositionChanged;
             this.View.LayoutChanged += ViewLayoutChanged;

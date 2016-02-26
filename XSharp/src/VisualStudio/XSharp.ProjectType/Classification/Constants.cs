@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace XSharpColorizer
 {
-    public static class Constants
+    public static class ColorizerConstants
     {
         public const String XSharpKeywordFormat = "xsharp.keyword";
         public const String XSharpIdentifierFormat = "xsharp.idenfier";

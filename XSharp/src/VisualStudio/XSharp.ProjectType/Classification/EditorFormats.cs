@@ -7,8 +7,8 @@ using System.Windows;
 namespace XSharpColorizer
 {
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpKeywordFormat)]
-    [Name(Constants.XSharpKeywordFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpKeywordFormat)]
+    [Name(ColorizerConstants.XSharpKeywordFormat)]
     [UserVisible(true)]
     [Order(After = Priority.Low)]
     internal sealed class XSharpKeywordFormat : ClassificationFormatDefinition
@@ -21,8 +21,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpConstantFormat)]
-    [Name(Constants.XSharpConstantFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpConstantFormat)]
+    [Name(ColorizerConstants.XSharpConstantFormat)]
     [UserVisible(true)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpValueFormat : ClassificationFormatDefinition
@@ -35,8 +35,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpIdentifierFormat)]
-    [Name(Constants.XSharpIdentifierFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpIdentifierFormat)]
+    [Name(ColorizerConstants.XSharpIdentifierFormat)]
     [UserVisible(true)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpIdentifierFormat : ClassificationFormatDefinition
@@ -49,8 +49,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpOperatorFormat)]
-    [Name(Constants.XSharpOperatorFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpOperatorFormat)]
+    [Name(ColorizerConstants.XSharpOperatorFormat)]
     [UserVisible(true)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpOperatorFormat : ClassificationFormatDefinition
@@ -63,8 +63,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpCommentFormat)]
-    [Name(Constants.XSharpCommentFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpCommentFormat)]
+    [Name(ColorizerConstants.XSharpCommentFormat)]
     [UserVisible(true)]
     [Order(After = Priority.High)]
     internal sealed class XSharpCommentFormat : ClassificationFormatDefinition
@@ -78,8 +78,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpBraceOpenFormat)]
-    [Name(Constants.XSharpBraceOpenFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpBraceOpenFormat)]
+    [Name(ColorizerConstants.XSharpBraceOpenFormat)]
     [UserVisible(false)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpBraceOpenFormat : ClassificationFormatDefinition
@@ -91,8 +91,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpBraceCloseFormat)]
-    [Name(Constants.XSharpBraceCloseFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpBraceCloseFormat)]
+    [Name(ColorizerConstants.XSharpBraceCloseFormat)]
     [UserVisible(false)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpBraceCloseFormat : ClassificationFormatDefinition
@@ -104,8 +104,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpRegionStartFormat)]
-    [Name(Constants.XSharpRegionStartFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpRegionStartFormat)]
+    [Name(ColorizerConstants.XSharpRegionStartFormat)]
     [UserVisible(false)]
     [Order(After = Priority.Default)]
 
@@ -118,8 +118,8 @@ namespace XSharpColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.XSharpRegionStopFormat)]
-    [Name(Constants.XSharpRegionStopFormat)]
+    [ClassificationType(ClassificationTypeNames = ColorizerConstants.XSharpRegionStopFormat)]
+    [Name(ColorizerConstants.XSharpRegionStopFormat)]
     [UserVisible(false)]
     [Order(After = Priority.Default)]
     internal sealed class XSharpRegionStopFormat : ClassificationFormatDefinition

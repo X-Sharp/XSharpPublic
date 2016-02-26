@@ -6,18 +6,37 @@
 {\listlevel\levelnfc23\leveljc0\levelstartat1{\leveltext\'01\'B7;}{\levelnumbers;}\f10\jclisttab\tx0}\listid1 }}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
 {\stylesheet{ Normal;}{\s1 heading 1;}{\s2 heading 2;}}
-{\*\generator Riched20 10.0.14257}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+{\*\generator Riched20 10.0.14271}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
 \pard\keep\keepn\widctlpar\s1\sb240\sl252\slmult1\cf1\f0\fs32\lang1033 X# Compiler Public Beta build 0.2.1\par
 
 \pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\fs26 Introduction\par
 
-\pard\widctlpar\sa160\sl252\slmult1\cf2\f1\fs24 This beta version of the compiler only supports the \ldblquote Core\rdblquote  language, that means that VO & Vulcan specific datatypes such as DATE, ARRAY, USUAL, SYMBOL, FLOAT etc. are not supported yet.\par
-The Visual Studio integration only supports the Edit/Compile/Debug cycle. Only the source code editor is supported. Other editors, such as the WPF editor, Forms Editor and Resource editor are not supported yet.\par
-Please note that this is an early build of the compiler. Some things will NOT work, you can be sure of this.\b\fs28\par
+\pard\keepn\cf2\f1\fs22 This beta version of the compiler only supports the \ldblquote Core\rdblquote  language, that means that VO & Vulcan specific datatypes such as DATE, ARRAY, USUAL, SYMBOL, FLOAT etc. are not supported yet.\line The Visual Studio integration supports the Edit/Compile/Debug cycle. Only the source code editor is supported. Other editors, such as the WPF editor, Forms Editor and Resource editor are not supported yet. The debugger may stop more often than you would expect.\line Please note that this is an early build of the compiler. Some things will NOT work, you can be sure of this.\par
+\par
 
-\pard\keepn\cf3\f2\fs24\lang0 Visual Studio Integration\par
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Most important known issues in this build.\cf2\f1\fs22\par
 
-\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent195{\pntxtb\'B7}}\fi-195\li195\b0\fs22 Added and improved several project properties\par
+\pard\nowidctlpar\sl240\slmult1\cf0\b Compiler\b0\par
+
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-358\li358\sl240\slmult1 No preprocessor support in the compiler  so no support for #define, #ifdef etc\par
+{\pntext\f10\'B7\tab}No built-in support for XBase datatypes. You can use them but you have to do some extra coding. Please look at the "Bring Your Own Runtime" example\par
+{\pntext\f10\'B7\tab}No support for the "Clipper calling convention" since this requires support for the USUAL type.\par
+{\pntext\f10\'B7\tab}Compiler errors can be cryptic every now and then\par
+{\pntext\f10\'B7\tab}The debugger output contains too many "stops". That makes debugging sometimes a little bit difficult.\par
+{\pntext\f10\'B7\tab}See the list of issues at the end of this document.\par
+
+\pard\nowidctlpar\sl240\slmult1\b Visual Studio Integration\par
+
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent0{\pntxtb\'B7}}\nowidctlpar\fi-358\li358\sl240\slmult1\b0 No "intellisense" support. so no method lists, parameter tips, quick info, snippets etc\par
+{\pntext\f10\'B7\tab}No support for tools that require parsing of or generation of source code, so no support for Form Editor, WPF Editor, Resource editor etc.\par
+
+\pard\keepn\cf2\par
+
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Changes in 0.2.1\cf2\f1\fs22\par
+
+\pard\keepn\cf3\b\f2\fs24\lang0 Visual Studio Integration\par
+
+\pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent195{\pntxtb\'B7}}\fi-195\li195\b0\fs22 Added and improved several project \f3\lang1033 and file \f2\lang0 properties\par
 {\pntext\f10\'B7\tab}Fix a problem with the "Additional Compiler Options"\par
 {\pntext\f10\'B7\tab}Improved coloring in the editor for Keywords, Comments etc. You can set the colors from the Tools/Options dialog under Genera\f3\lang1033 l\f2\lang0 /Fonts & Colors. Look for the entries with the name "XSharp Keyword" etc.\par
 {\pntext\f10\'B7\tab}Added Windows Forms Template\par
@@ -28,9 +47,9 @@ Please note that this is an early build of the compiler. Some things will NOT wo
 {\pntext\f10\'B7\tab}Added support for Comment lines that start with an asterisk\par
 {\pntext\f10\'B7\tab}Added support for the DEFINE statement. For now the DEFINE statement MUST have a type  \line\expndtw-15\f4 DEFINE WM_USER := 0x0400 AS DWORD\par
 {\pntext\f10\'B7\tab}\expndtw0\f2 Fixed problem with Single Line Properties with GET and SET reversed\par
+{\pntext\f10\'B7\tab}Several fixes for Virtual and Non virtual methods in combination with the /VO3 compatibility option\par
 
-\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1 Several fixes for Virtual and Non virtual methods in combination with the /VO3 compatibility option\par
-\cf1\f0\fs26\lang1033\tab\par
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\lang1033\tab\par
 Changes in 0.1.7\par
 
 \pard{\pntext\f10\'B7\tab}{\*\pn\pnlvlblt\pnf10\pnindent195{\pntxtb\'B7}}\keep\keepn\s2\fi-195\li195\sa150\sl252\slmult1\cf3\f5\fs22\lang0 The "ns" (add default namespace to classes without namespace) has been implemented\par
@@ -193,7 +212,8 @@ This translates to the same as\line\line lResult := Foo()\line IF lResult == NUL
 \clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx2641\clvertalc\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx8536\clbrdrl\brdrw15\brdrs\clbrdrt\brdrw15\brdrs\clbrdrr\brdrw15\brdrs\clbrdrb\brdrw15\brdrs \cellx9420 
 \pard\intbl\widctlpar\sb100\sa100\f1\fs24 LINQ Query expressions are now supported:\par
 VAR CustQuery = FROM Cust in Customers WHERE Cust.City = "Athens" ORDER BY Cust.Zipcode Select Cust\cell The full LINQ feature set will be supported by X#:\line FROM\line LET\line WHERE\line JOIN\line ORDER BY\line EQUALS\line INTO\cell Yes\cell\row 
-\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26 Known Issues\par
+\pard\keep\keepn\widctlpar\s2\sb40\sl252\slmult1\cf1\f0\fs26\par
+Known Issues in the compiler\par
 
 \pard 
 {\listtext\f1\u10625?\tab}\ls1\nowidctlpar\fi-360\li360\sa160\sl252\slmult1\cf0\f1\fs22 No preprocessor support, so no support for:\par
@@ -218,15 +238,12 @@ VAR CustQuery = FROM Cust in Customers WHERE Cust.City = "Athens" ORDER BY Cust.
 {\listtext\f1 6\tab}BEGIN SEQUENCE\'85 END\par
 {\listtext\f1 7\tab}SWITCH Block may give warnings about unreachable code\par
 {\listtext\f1 8\tab}TRY statements must have a CATCH block and/or a FINALLY Block. TRY .. END TRY without both blocks is not supported yet\par
-{\listtext\f1 9\tab}Some literal values are not handled properly\par
-{\listtext\f1 10\tab}The compiler macros (__ENTITY__, __VERSION__ , __DEBUG__, etc) are not handled properly\par
-{\listtext\f1 11\tab}XML Doc is not generated\par
-{\listtext\f1 12\tab}Erroneous code may generate compiler runtime errors\par
-{\listtext\f1 13\tab}Compiler errors may be cryptic every now and then\par
-{\listtext\f1 14\tab}Missing arguments in a comma separated list are nor supported. \par
-{\listtext\f1 15\tab}Compiler error messages are sometimes pointing to incorrect source locations\par
-{\listtext\f1 16\tab}The compiler is case insensitive. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now\par
-{\listtext\f1 17\tab}Adding a namespace name to a class name is not working ( CLASS Foo.Bar \'85.. END CLASS)\par
-{\listtext\f1 18\tab}When creating a library (/target:library) you must include at least one function in your code, or else you will get an error message indicating that the Xs$Globals class cannot be found.\par
+{\listtext\f1 9\tab}The compiler macros (__ENTITY__, __VERSION__ , __DEBUG__, etc) are not handled properly\par
+{\listtext\f1 10\tab}XML Doc is not generated\par
+{\listtext\f1 11\tab}Erroneous code may generate compiler runtime errors\par
+{\listtext\f1 12\tab}Compiler errors may be cryptic every now and then\par
+{\listtext\f1 13\tab}Missing arguments in a comma separated list are nor supported. \par
+{\listtext\f1 14\tab}The compiler is case insensitive. There may be a problem with case insensitive matching of interface member names. The case insensitivity cannot be switched off for now\par
+{\listtext\f1 15\tab}When creating a library (/target:library) you must include at least one function in your code, or else you will get an error message indicating that the Xs$Globals class cannot be found.\par
 }
  

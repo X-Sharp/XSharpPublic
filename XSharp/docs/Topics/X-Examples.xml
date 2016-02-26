@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Examples</title>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">X# Examples</title>
   <body>
-    <header><para styleclass="Heading1">X# Examples</para></header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# Examples</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following X# Examples will also be installed as an example solution on your machine in the Users\Public\XSharp\Examples folder.</text></para>
   </body>
 </topic>

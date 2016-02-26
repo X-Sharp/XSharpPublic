@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>ASYNC - AWAIT</title>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">ASYNC - AWAIT</title>
   <body>
-    <header><para styleclass="Heading1">ASYNC - AWAIT</para></header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">ASYNC - AWAIT</text></para>
+    </header>
+    <para styleclass="Normal"><snippet src="ASYNC-Example" inline="false"/></para>
   </body>
 </topic>

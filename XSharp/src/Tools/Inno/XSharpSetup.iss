@@ -11,7 +11,7 @@
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
 #define VIVersion       "0.2.1.2100"
 #define VITextVersion   "0.2.1.2100 (Alpha 7)"
-#define TouchDate       "2016-02-24"
+#define TouchDate       "2016-02-28"
 #define TouchTime       "02:01:00"
 #define SetupExeName    "XSharpSetup021"
 #define InstallPath     "XSharpPath"
@@ -19,14 +19,15 @@
 ;Folders
 #define BinFolder       "D:\Xsharp\Dev\XSharp\Binaries\Debug\"
 #define VSProjectFolder "d:\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
+#define ExamplesFolder  "d:\Xsharp\Dev\XSharp\src\Samples\"
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
 #define XIDESetup       "XIDE_Set_up_1.01.exe"
 
 #define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -159,13 +160,25 @@ Source: "{#BinFolder}extension.vsixmanifest";                   DestDir: "{code:
 Source: "{#BinFolder}XSharp.ico ";                              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
 Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";            Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015 
-;
+
+; Examples
+Source: "{#ExamplesFolder}*.prg";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+;Source: "{#ExamplesFolder}*.vh";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.sln";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.xsprj";                            DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+
+
+
+
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}"; Filename: "{#XSharpURL}";IconFilename:{app}\Images\XSharp.ico;
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
 Name: "{group}\{#Product} Documenation (CHM)"; Filename: "{app}\Help\XSharp.chm"; 
 Name: "{group}\{#Product} Documenation (PDF)"; Filename: "{app}\Help\XSharp.pdf"; 
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
+Name: "{group}\{#Product} Examples"; Filename: "{commondocs}\XSharp\Examples";
+Name: "{app}\Examples";  Filename: "{commondocs}\XSharp\Examples";
+
 
 [Registry]
 Root: HKLM; Subkey: "Software\{#RegCompany}"; Flags: uninsdeletekeyifempty 
@@ -174,7 +187,7 @@ Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPa
 ;Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\ExtensionManager"; Flags: deletekey uninsdeletekey; Components: vs2015
 
 [Ini]
-Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "1"; Flags: uninsdeletesection; Components: vs2015;
+Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vs2015;
 
 [Run]
 Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
@@ -264,4 +277,4 @@ begin
   end;
   
 end;
-#expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")
+

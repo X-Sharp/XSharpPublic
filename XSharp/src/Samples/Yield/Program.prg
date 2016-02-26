@@ -1,16 +1,20 @@
 using System.Collections.Generic
 
+// The Yield return statement allows you to create code that returns a 
+// collection of values without having to create the collection in memory first.
+// The compiler will create code that "remembers" where you were inside the 
+// loop and returns to that spot. 
 FUNCTION Start AS VOID
-FOREACH VAR nValue IN ListOfInt()
-   Console.WriteLine( nValue )
-NEXT
-Console.ReadLine()
+	FOREACH nYear AS INT IN GetAllLeapYears(1896, 2017)
+		? "Year", nYear, "is a leap year."
+	NEXT
+	Console.ReadLine()
 RETURN
 
-FUNCTION ListOfInt AS IEnumerable<Int>
-LOCAL nLoop as LONG
-// This function returns a sequence of numbers
-// Note that there is NEVER a collection in memory
-FOR nLoop := 1 to 1000
-   YIELD RETURN nLoop
-NEXT
+FUNCTION GetAllLeapYears(nMin AS INT, nMax AS INT) AS IEnumerable<INT>
+	FOR LOCAL nYear := nMin AS INT UPTO nMax
+		IF nYear % 4 == 0 .and. (nYear % 100 != 0 .or. nYear % 400 == 0)
+			YIELD RETURN nYear
+		END IF
+	NEXT
+

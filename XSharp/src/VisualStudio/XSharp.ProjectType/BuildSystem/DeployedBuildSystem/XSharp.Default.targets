@@ -13,63 +13,91 @@
     </ProjectConfiguration>
   </ItemGroup>
 
-  <!-- Capabilities for this project.  Conditions should be based on platform|configuration only. -->
+  <!-- Common Project System support -->
+  <PropertyGroup>
+    <XamlResourcesDirectory Condition=" '$(XamlResourcesDirectory)' == '' ">$(MSBuildThisFileDirectory)Rules\</XamlResourcesDirectory>
+  </PropertyGroup>
+
+
+  <!-- Capabilities for this project.  Conditions should be based on platform|configuration only. 
+      Other capabilities are imported from Microsoft.Common.targets and Microsoft.Common.CurrentVersion.targets
+  -->
+  
   <ItemGroup>
-    <ProjectCapability Include="XSharp" />
-    <ProjectCapability Include="AssemblyReferences;COMReferences;ProjectReferences;WinRTReferences;SDKReferences" />
-    <ProjectCapability Include="AllTargetOutputGroups;VisualStudioWellKnownOutputGroups" />
-    <ProjectCapability Include="ProjectConfigurationsDeclaredAsItems" />
+    <ProjectCapability Include="XSharp;Managed" />
+    
+    <ProjectCapability Include="AssemblyReferences;
+                                COMReferences;
+                                ProjectReferences;
+                                SharedProjectReferences;
+                                WinRTReferences;
+                                SDKReferences;
+                                AllTargetOutputGroups;
+                                VisualStudioWellKnownOutputGroups;
+                                SingleFileGenerators;
+                                DeclaredSourceItems;
+                                UserSourceItems;
+                                ProjectConfigurationsDeclaredAsItems" />
   </ItemGroup>
 
   <ItemGroup>
-	<PropertyPageSchema Include="
-		$(MSBuildThisFileDirectory)Rules\PropertyPage_Application.xaml;
-		$(MSBuildThisFileDirectory)Rules\PropertyPage_Language.xaml;
-		$(MSBuildThisFileDirectory)Rules\PropertyPage_Build.xaml;
-		$(MSBuildThisFileDirectory)Rules\PropertyPage_Debugger.xaml;
-		$(MSBuildThisFileDirectory)Rules\PropertyPage_Advanced.xaml 
-		">
+		<PropertyPageSchema Include="
+												$(XamlResourcesDirectory)PropertyPage_Application.xaml;
+                        $(XamlResourcesDirectory)PropertyPage_Language.xaml;
+												$(XamlResourcesDirectory)PropertyPage_Build.xaml;
+                        $(XamlResourcesDirectory)PropertyPage_Debugger.xaml 
+												">
         <Context>Project</Context>
-	</PropertyPageSchema>
-	  <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;"/>
-  	<PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\PropertyPage_Debugger_general.xaml;">
-		<Context>Project</Context>
+		</PropertyPageSchema>
+		<PropertyPageSchema Include="$(XamlResourcesDirectory)ProjectItemsSchema.xaml;"/>
+    <PropertyPageSchema Include="$(XamlResourcesDirectory)XSharp.ProjectItemsSchema.xaml;"/>
+    <PropertyPageSchema Include="$(XamlResourcesDirectory)Debugger_general.xaml;">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(XamlResourcesDirectory)General_File  .xaml">
+      <Context>File</Context>
     </PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_General.xaml;">
-        <Context>File</Context>
-    </PropertyPageSchema>
-     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\File_XSharpSource.xaml;" >
-          <Context>File</Context>
-    </PropertyPageSchema>
-
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\scc.xaml">
+    <PropertyPageSchema Include="$(XamlResourcesDirectory)\Scc.xaml">
       <Context>Invisible</Context>
     </PropertyPageSchema>
+
     <PropertyPageSchema Include="
-			$(MSBuildThisFileDirectory)Rules\Folder.xaml;
-			$(MSBuildThisFileDirectory)Rules\None.xaml;
-			$(MSBuildThisFileDirectory)Rules\EmbeddedResource.xaml;
-			">
-		<Context>File;BrowseObject</Context>
+                        $(XamlResourcesDirectory)Folder.xaml;
+                        $(XamlResourcesDirectory)None.xaml;
+                        $(XamlResourcesDirectory)Content.xaml;
+                        $(XamlResourcesDirectory)XSharp.xaml;
+                        $(XamlResourcesDirectory)EmbeddedResource.xaml;
+                            ">
+      <Context>File;BrowseObject</Context>
     </PropertyPageSchema>
+    
+    <PropertyPageSchema Include="$(XamlResourcesDirectory)SpecialFolder.xaml;">
+        <Context>File;ProjectSubscriptionService</Context>
+    </PropertyPageSchema>
+
     <PropertyPageSchema Include="
-		$(MSBuildThisFileDirectory)Rules\Assemblyreference.xaml;
-		$(MSBuildThisFileDirectory)Rules\Comreference.xaml;
-		$(MSBuildThisFileDirectory)Rules\Projectreference.xaml;
-		$(MSBuildThisFileDirectory)Rules\Sdkreference.xaml;
-		">
+												$(XamlResourcesDirectory)Assemblyreference.xaml;
+												$(XamlResourcesDirectory)Comreference.xaml;
+												$(XamlResourcesDirectory)Projectreference.xaml;
+												$(XamlResourcesDirectory)Sdkreference.xaml;
+                        ">
       <Context>;BrowseObject</Context>
     </PropertyPageSchema>
+
     <PropertyPageSchema Include="
-			$(MSBuildThisFileDirectory)Rules\ResolvedAssemblyReference.xaml;
-			$(MSBuildThisFileDirectory)Rules\ResolvedCOMReference.xaml;
-			$(MSBuildThisFileDirectory)Rules\ResolvedProjectReference.xaml;
-			$(MSBuildThisFileDirectory)Rules\ResolvedSDKReference.xaml;
-      ">
+												$(XamlResourcesDirectory)ResolvedAssemblyReference.xaml;
+												$(XamlResourcesDirectory)ResolvedCOMReference.xaml;
+												$(XamlResourcesDirectory)ResolvedProjectReference.xaml;
+												$(XamlResourcesDirectory)ResolvedSDKReference.xaml;
+                        ">
       <Context>ProjectSubscriptionService;BrowseObject</Context>
     </PropertyPageSchema>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general.browseobject.xaml">
+
+    <PropertyPageSchema Include="$(XamlResourcesDirectory)General.browseobject.xaml">
+      <Context>BrowseObject</Context>
+    </PropertyPageSchema>
+    <PropertyPageSchema Include="$(XamlResourcesDirectory)XSharp.browseobject.xaml">
       <Context>BrowseObject</Context>
     </PropertyPageSchema>
 

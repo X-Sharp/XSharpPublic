@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright, Microsoft Corporation, All rights reserved.-->
 <Rule
     Name="BuildOptions"
 	DisplayName="Build"
 	PageTemplate="generic"
     Order="3"
-    Description="Build options"
+	Description="Build options"
 	xmlns="http://schemas.microsoft.com/build/2009/properties">
     <Rule.DataSource>
         <DataSource Persistence="ProjectFile" HasConfigurationCondition="True" />
     </Rule.DataSource>
     <Rule.Categories>
-        <Category Name="Build" DisplayName="Build"  Description="General"  />
+        <Category Name="Build" DisplayName="Build"  Description="General" />
         <Category Name="Events"  DisplayName="Build Events" Description="Define pre- and post- build events" />
         <Category Name="Warnings"  DisplayName="Warnings" Description="Suppress specific warnings and set warning level" />
     </Rule.Categories>
@@ -20,15 +19,16 @@
     <StringProperty Category="Build" Name="IntermediateOutputPath" DisplayName ="Intermediate Output Path" Subtype="file" />
     <BoolProperty   Category="Build" Name="DocumentationFile" DisplayName="Generate XML doc comments file" Default="False"/>
     <StringProperty Category="Build" Name="TargetPath" DisplayName="Complete Target Path" ReadOnly="True" />
+    <BoolProperty 	Category="Build" Name="Optimize" Description="Should compiler optimize output?" />
     <StringProperty Category="Events" Name="PreBuildEvent"  DisplayName="Pre Build Event"  Description="Pre Build Event Command Line" Subtype="CommandLine"/>
     <StringProperty Category="Events" Name="PostBuildEvent" DisplayName="Post Build Event" Description="Post Build Event Command Line" Subtype="CommandLine" />
-    <EnumProperty Category="Events" Name="RunPostBuildEvent" DisplayName="Run the Post Build Event" Description="When to run the Post Build Event" Default="Always" >
+    <EnumProperty 	Category="Events" Name="RunPostBuildEvent" DisplayName="Run the Post Build Event" Description="When to run the Post Build Event" Default="Always" >
         <EnumValue Name="OnBuildSuccess" DisplayName="On Successful Build" />
         <EnumValue Name="OnOutputUpdated" DisplayName="When the build updates the project output" />
         <EnumValue Name="Always" DisplayName="Always" />
     </EnumProperty>
     <StringListProperty Category="Warnings" Name="DisabledWarnings"  DisplayName="Suppress Warnings"  Description="Specify a list of warnings to suppress (/nowarn)" Subtype="CommandLine"/>
-    <EnumProperty Category="Warnings" Name="WarningLevel" DisplayName="Warning Level" Description="Set the warning level to a value between 0 and 4 (/warn)" Default="4" >
+    <EnumProperty 	Category="Warnings" Name="WarningLevel" DisplayName="Warning Level" Description="Set the warning level to a value between 0 and 4 (/warn)" Default="4" >
         <EnumValue Name="0" DisplayName="0" />
         <EnumValue Name="1" DisplayName="1" />
         <EnumValue Name="2" DisplayName="2" />
@@ -36,7 +36,7 @@
         <EnumValue Name="4" DisplayName="4" />
     </EnumProperty>
 
-    <BoolProperty Category="Warnings" Name="TreatWarningsAsErrors" Description="Treat warnings as errors (/warnaserror)" Default="True" />
+    <BoolProperty 	Category="Warnings" Name="TreatWarningsAsErrors" Description="Treat warnings as errors (/warnaserror)" Default="True" />
 
 
 

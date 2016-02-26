@@ -7,8 +7,9 @@
     <ProjectCapability Include="ReferencesFolder"/>
 
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;"/>
-    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\general.browseobject.xaml;">
-      <Context>BrowseObject</Context>
+
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\debugger_general.xaml;">
+      <Context>Project</Context>
     </PropertyPageSchema>
   </ItemGroup>
  
@@ -35,7 +36,7 @@
         @(EmbeddedResource) - EmbeddedResource items with metadata         
 
 
-    For Vulcan.NET applications the transformation is:
+    For .NET applications the transformation is:
 
         Resources1.resx => RootNamespace.Resources1 => Build into main assembly
         SubFolder\Resources1.resx => RootNamespace.SubFolder.Resources1 => Build into main assembly
@@ -155,55 +156,51 @@
       <_MacroProjectReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) == 'macro'" />
     </ItemGroup>
     <Xsc
-        AdditionalLibPaths="$(AdditionalLibPaths)"
-        BaseAddress="$(BaseAddress)"
-        CompilerPath="$(XSharpPath)"
-        DebugType="$(DebugType)"
-        DefineConstants="$(DefineConstants)"
-        DisabledWarnings="$(DisabledWarnings)"
-        DocumentationFile="@(DocFileItem)"
-        EmitDebugInformation="$(EmitDebugInformation)"
-        GenerateFullPaths="$(GenerateFullPaths)"
-        IncludePaths="$(IncludePaths)"
-        KeyFile="$(AssemblyOriginatorKeyFile)"
-        NoConfig="true"
-        NoLogo="$(NoLogo)"
-        NoStandardDefs="$(NoStandardDefs)"
-        NoStandardLib="$(NoStandardLib)"
-        Optimize="$(Optimize)"
+	      AdditionalLibPaths="$(AdditionalLibPaths)"
+	      CompilerPath="$(XSharpPath)"
+	      DefineConstants="$(DefineConstants)"
+	      DisabledWarnings="$(DisabledWarnings)"
+	      DocumentationFile="@(DocFileItem)"
+	      EmitDebugInformation="$(EmitDebugInformation)"
+	      GenerateFullPaths="$(GenerateFullPaths)"
+	      IncludePaths="$(IncludePaths)"
+	      KeyFile="$(AssemblyOriginatorKeyFile)"
+	      NoConfig="true"
+	      NoLogo="$(NoLogo)"
+	      NoStandardDefs="$(NoStandardDefs)"
+	      NoStandardLib="$(NoStandardLib)"
         OutputAssembly="@(IntermediateAssembly)"
-        Platform="$(PlatformTarget)"
-        PdbFile="$(PdbFile)"
+        Platform="$(PlatformTarget) "
         References="@(_NonMacroReferencePath)"
-        Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
+	      Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
         ResponseFiles="$(CompilerResponseFile)"
-        RootNamespace="$(RootNamespace)"      
+      	RootNamespace="$(RootNamespace)"      
         Sources="@(Compile)"
         TargetType="$(OutputType)"
-        TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
-        WarningLevel="$(WarningLevel)"
-        OVF="$(OVF)"
-        AZ="$(AZ)"
-        CS="$(CS)"
-        LB="$(LB)"
-        INS="$(INS)"
-        NS="$(NS)"
-        PPO="$(PPO)"
-        UnSafe="$(UnSafe)"
+	      TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
+	      WarningLevel="$(WarningLevel)"
+	      OVF="$(OVF)"
+	      AZ="$(AZ)"
+	      CS="$(CS)"
+	      LB="$(LB)"
+	      INS="$(INS)"
+	      NS="$(NS)"
+	      PPO="$(PPO)"
+	      UnSafe="$(UnSafe)"
         VO1="$(VO1)"
-        VO2="$(VO2)"
-        VO3="$(VO3)"
-        VO4="$(VO4)"
-        VO5="$(VO5)"
-        VO6="$(VO6)"
-        VO7="$(VO7)"
-        VO8="$(VO8)"
-        VO9="$(VO9)"
-        VO10="$(VO10)"
-        VO11="$(VO11)"
-        VO12="$(VO12)"
-        VO13="$(VO13)"
-        Win32Resource="@(Win32Resource)"
+	      VO2="$(VO2)"
+	      VO3="$(VO3)"
+	      VO4="$(VO4)"
+	      VO5="$(VO5)"
+	      VO6="$(VO6)"
+	      VO7="$(VO7)"
+	      VO8="$(VO8)"
+	      VO9="$(VO9)"
+	      VO10="$(VO10)"
+	      VO11="$(VO11)"
+	      VO12="$(VO12)"
+	      VO13="$(VO13)"
+	      Win32Resource="@(Win32Resource)"
         CommandLineOption="$(CommandLineOption)"
     />
     <ItemGroup>

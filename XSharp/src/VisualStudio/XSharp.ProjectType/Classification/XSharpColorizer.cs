@@ -69,7 +69,7 @@ namespace XSharpColorizer
         private IClassificationType xsharpConstantType;
         private IClassificationType xsharpBraceOpenType;
         private IClassificationType xsharpBraceCloseType;
-        //private XSharpTagger xsTagger; 
+        private XSharpTagger xsTagger; 
 #pragma warning disable CS0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore CS0067
@@ -80,17 +80,17 @@ namespace XSharpColorizer
             this.Buffer = buffer;
             this.Snapshot = buffer.CurrentSnapshot;
 
-            //xsTagger = new XSharpTagger(registry);
+            xsTagger = new XSharpTagger(registry);
 
             tags = new List<ITagSpan<IClassificationTag>>();
             //
-            xsharpKeywordType = registry.GetClassificationType(Constants.XSharpKeywordFormat);
-            xsharpIdentifierType = registry.GetClassificationType(Constants.XSharpIdentifierFormat);
-            xsharpCommentType = registry.GetClassificationType(Constants.XSharpCommentFormat);
-            xsharpOperatorType = registry.GetClassificationType(Constants.XSharpOperatorFormat);
-            xsharpConstantType = registry.GetClassificationType(Constants.XSharpConstantFormat);
-            xsharpBraceOpenType = registry.GetClassificationType(Constants.XSharpBraceOpenFormat);
-            xsharpBraceCloseType = registry.GetClassificationType(Constants.XSharpBraceCloseFormat);
+            xsharpKeywordType = registry.GetClassificationType(ColorizerConstants.XSharpKeywordFormat);
+            xsharpIdentifierType = registry.GetClassificationType(ColorizerConstants.XSharpIdentifierFormat);
+            xsharpCommentType = registry.GetClassificationType(ColorizerConstants.XSharpCommentFormat);
+            xsharpOperatorType = registry.GetClassificationType(ColorizerConstants.XSharpOperatorFormat);
+            xsharpConstantType = registry.GetClassificationType(ColorizerConstants.XSharpConstantFormat);
+            xsharpBraceOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
+            xsharpBraceCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
 
             this.Buffer.Changed += OnBufferChanged;
             //
@@ -171,11 +171,11 @@ namespace XSharpColorizer
                 token = lexer.NextToken();
             }
             // parse for positional keywords that change the colors
-            //xsTagger.Parse(this.Snapshot);
-            //foreach (var tag in xsTagger.Tags)
-            //{
-            //    tags.Add(tag);
-            //}
+            xsTagger.Parse(this.Snapshot);
+            foreach (var tag in xsTagger.Tags)
+            {
+                tags.Add(tag);
+            }
         }
 
         public IEnumerable<ITagSpan<IClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)

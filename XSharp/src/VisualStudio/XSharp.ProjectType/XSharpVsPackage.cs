@@ -17,6 +17,7 @@ namespace XSharpLanguage
     using Microsoft.VisualStudio.Shell;
     using System.ComponentModel.Composition;
     using Microsoft.VisualStudio.LanguageServices;
+    using Microsoft.VisualStudio.Shell.Interop;
     /// <summary>
     /// This class implements the package exposed by this assembly.
     /// </summary>
@@ -25,7 +26,7 @@ namespace XSharpLanguage
     /// or localized resources for the strings that appear in the New Project and Open Project dialogs.
     /// Creating project extensions or project types does not actually require a VSPackage.
     /// </remarks>
-    [InstalledProductRegistration("#110", "#112", Constants.Version, IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [Description("XSharp project type based on CPS")]
     [Guid(XSharpVsPackage.PackageGuid)]
@@ -53,7 +54,7 @@ namespace XSharpLanguage
         /// </summary>
         internal const string DefaultNamespace = "XSharp";
 
-        [Import(typeof(Microsoft.VisualStudio.LanguageServices.VisualStudioWorkspace))]
+        [Import(typeof(VisualStudioWorkspace))]
         public VisualStudioWorkspace myWorkspace { get; set; }
     }
 }

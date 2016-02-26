@@ -16,7 +16,7 @@ namespace XSharp.Build
     public class Xsc : ManagedCompiler
     {
         // These are settings
-        internal string REG_KEY = @"HKEY_LOCAL_MACHINE\" + Constants.RegistryKey;
+        internal string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
 
         #region The values are set through .targets
         // The  fullpath to Compiler
@@ -120,7 +120,7 @@ namespace XSharp.Build
                 string InstallPath = String.Empty;
                 try
                 {
-                    InstallPath = (string)Registry.GetValue(REG_KEY, Constants.RegistryValue, "");
+                    InstallPath = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
                     
                 }
                 catch (Exception) { }
@@ -202,7 +202,9 @@ namespace XSharp.Build
             commandLine.AppendSwitch("\n/target:" + this.TargetType);
             commandLine.AppendSwitchIfNotNull("\n/platform:", this.Platform);
             commandLine.AppendSwitchIfNotNull("\n/baseaddress:", this.BaseAddress);
-            AppendLogicSwitch(commandLine, "\n/optimize", Optimize);
+            if (this.Optimize) { 
+                commandLine.AppendSwitch("\n/optimize");
+            }
 
             if (String.IsNullOrEmpty(DebugType) || DebugType.ToLower() == "none")
                 commandLine.AppendSwitch("\n/debug-");

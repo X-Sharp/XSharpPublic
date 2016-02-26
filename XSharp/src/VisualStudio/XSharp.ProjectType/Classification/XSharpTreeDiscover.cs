@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LanguageService.SyntaxTree.Tree;
 using Microsoft.VisualStudio.Text;
-/*
+
 namespace XSharpColorizer
 {
     class XSharpTreeDiscover : XSharpBaseListener
@@ -61,12 +61,6 @@ namespace XSharpColorizer
 			}
         }
 
-        //public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
-        //{
-        //    base.ExitEntity(context);
-        //    //
-        //}
-
         private void TagRegion(ParserRuleContext context, int endChild)
         {
             var endToken = context.GetChild(endChild);
@@ -88,10 +82,5 @@ namespace XSharpColorizer
             }
         }
 
-         //public override void VisitErrorNode([NotNull] LanguageService.SyntaxTree.Tree.IErrorNode node)
-        //{
-        //}
-
     }
 }
-*/

@@ -11,7 +11,6 @@ namespace XSharpColorizer
         public const String XSharpKeywordFormat = "xsharp.keyword";
         public const String XSharpIdentifierFormat = "xsharp.idenfier";
         public const String XSharpConstantFormat = "xsharp.constant";
-        public const String XSharpStringFormat = "xsharp.string";
         public const String XSharpCommentFormat = "xsharp.comment";
         public const String XSharpOperatorFormat = "xsharp.operator";
 

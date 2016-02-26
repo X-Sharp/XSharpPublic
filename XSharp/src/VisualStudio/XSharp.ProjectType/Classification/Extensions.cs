@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Text;
+﻿using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;

@@ -22,7 +22,8 @@ namespace XSharpLanguage
             {
                 tree = tree.SetIcon(XSharpImagesMonikers.ProjectIconImageMoniker.ToProjectSystemType());
             }
-            if (tree.Capabilities.Contains(ProjectTreeCapabilities.SourceFile))
+            if (tree.BrowseObjectProperties?.ItemType?.ToLower() == "compile")
+            //if (tree.Capabilities.Contains(ProjectTreeCapabilities.SourceFile))
             {
                 tree = tree.SetIcon(XSharpImagesMonikers.ItemIconImageMoniker.ToProjectSystemType());
             }

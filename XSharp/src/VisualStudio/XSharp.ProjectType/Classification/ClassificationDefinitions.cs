@@ -15,10 +15,6 @@ namespace XSharpColorizer
         internal static ClassificationTypeDefinition XSharpConstant = null;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.XSharpStringFormat)]
-        internal static ClassificationTypeDefinition XSharpString = null;
-
-        [Export(typeof(ClassificationTypeDefinition))]
         [Name(Constants.XSharpIdentifierFormat)]
         internal static ClassificationTypeDefinition XSharpIdentifier = null;
 

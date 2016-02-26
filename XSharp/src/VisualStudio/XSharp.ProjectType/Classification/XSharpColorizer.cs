@@ -1,6 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Classification;
-using Microsoft.CodeAnalysis.Text;
+﻿using LanguageService.CodeAnalysis;
+using LanguageService.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -32,7 +31,23 @@ namespace XSharpColorizer
         [Export]
         [FileExtension(".prg")]
         [ContentType("XSharp")]
-        internal static FileExtensionToContentTypeDefinition XSharpFileType = null;
+        internal static FileExtensionToContentTypeDefinition XSharpPrgFileType = null;
+
+        [Export]
+        [FileExtension(".vh")]
+        [ContentType("XSharp")]
+        internal static FileExtensionToContentTypeDefinition XSharpVhHeader = null;
+
+        [Export]
+        [FileExtension(".xs")]
+        [ContentType("XSharp")]
+        internal static FileExtensionToContentTypeDefinition XSharpXsFileType = null;
+
+        [Export]
+        [FileExtension(".xh")]
+        [ContentType("XSharp")]
+        internal static FileExtensionToContentTypeDefinition XSharpXhHeader = null;
+
 
         [Import]
         internal IClassificationTypeRegistryService ClassificationRegistry = null; // Set via MEF
@@ -52,10 +67,9 @@ namespace XSharpColorizer
         private IClassificationType xsharpCommentType;
         private IClassificationType xsharpOperatorType;
         private IClassificationType xsharpConstantType;
-        private IClassificationType xsharpStringType;
         private IClassificationType xsharpBraceOpenType;
         private IClassificationType xsharpBraceCloseType;
-        private XSharpTagger xsTagger;
+        //private XSharpTagger xsTagger; 
 #pragma warning disable CS0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore CS0067
@@ -66,7 +80,7 @@ namespace XSharpColorizer
             this.Buffer = buffer;
             this.Snapshot = buffer.CurrentSnapshot;
 
-            xsTagger = new XSharpTagger(registry);
+            //xsTagger = new XSharpTagger(registry);
 
             tags = new List<ITagSpan<IClassificationTag>>();
             //
@@ -75,7 +89,6 @@ namespace XSharpColorizer
             xsharpCommentType = registry.GetClassificationType(Constants.XSharpCommentFormat);
             xsharpOperatorType = registry.GetClassificationType(Constants.XSharpOperatorFormat);
             xsharpConstantType = registry.GetClassificationType(Constants.XSharpConstantFormat);
-            xsharpStringType = registry.GetClassificationType(Constants.XSharpStringFormat);
             xsharpBraceOpenType = registry.GetClassificationType(Constants.XSharpBraceOpenFormat);
             xsharpBraceCloseType = registry.GetClassificationType(Constants.XSharpBraceCloseFormat);
 
@@ -124,9 +137,6 @@ namespace XSharpColorizer
                 }
                 else if (XSharpLexer.IsConstant(tokenType))
                 {
-                    if (tokenType == XSharpLexer.STRING_CONST || tokenType == XSharpLexer.ESCAPED_STRING_CONST)
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpStringType));
-                    else
                         tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpConstantType));
 
                 }
@@ -161,11 +171,11 @@ namespace XSharpColorizer
                 token = lexer.NextToken();
             }
             // parse for positional keywords that change the colors
-            xsTagger.Parse(this.Snapshot);
-            foreach (var tag in xsTagger.Tags)
-            {
-                tags.Add(tag);
-            }
+            //xsTagger.Parse(this.Snapshot);
+            //foreach (var tag in xsTagger.Tags)
+            //{
+            //    tags.Add(tag);
+            //}
         }
 
         public IEnumerable<ITagSpan<IClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)

@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Text;
+﻿using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using LanguageService.SyntaxTree;
 using LanguageService.SyntaxTree.Misc;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LanguageService.SyntaxTree.Tree;
 using Microsoft.VisualStudio.Text;
-
+/*
 namespace XSharpColorizer
 {
     class XSharpTreeDiscover : XSharpBaseListener
@@ -94,3 +94,4 @@ namespace XSharpColorizer
 
     }
 }
+*/

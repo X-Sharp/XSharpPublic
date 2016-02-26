@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright, Microsoft Corporation, All rights reserved.-->
 <Rule
     Name="AssemblyReference"
     DisplayName="Assembly Reference"
@@ -29,10 +28,19 @@
 
     <BoolProperty Name="SpecificVersion" 
                   DisplayName="Specific Version"
-                  Description="Indicates whether this assembly can be resolved without regard to multi-targeting rules for assembly resolution." />
+                  Description="Indicates whether this assembly can be resolved without regard to multi-targeting rules for assembly resolution.">
+        <BoolProperty.DataSource>
+            <DataSource Persistence="AssemblyReference" ItemType="Reference" HasConfigurationCondition="False"/>
+        </BoolProperty.DataSource>
+    </BoolProperty>
 
     <StringProperty Name="RequiredTargetFramework" DisplayName="Required Target Framework" Visible="False" />
     <StringProperty Name="HintPath" Visible="false" />
     <StringProperty Name="SDKName" Visible="false" />
     <BoolProperty Name="IsWinMDFile" Visible="false" />
+    <StringProperty Name="ImageRuntime"
+                    DisplayName="Runtime Version"
+                    Description="The CLR runtime version targeted by this assembly."
+                    Visible="False"
+                    ReadOnly="True" />
 </Rule>

@@ -12,22 +12,22 @@
     </Rule.DataSource>
 
     <Rule.Categories>
-        <Category Name="General"        DisplayName="General"/>
-        <Category Name="Compatibility"  DisplayName="VO/Vulcan Compatibility"/>
-        <Category Name="NS"             DisplayName="Namespaces"/>
+      <Category Name="General"       DisplayName="General"/>
+      <Category Name="Compatibility"  DisplayName="VO/Vulcan Compatibility"/>
+      <Category Name="NS"             DisplayName="Namespaces"/>
     </Rule.Categories>
 
     <StringProperty Category="General"       Name="CommandLineOption"   DisplayName="Extra Command Line Options"                  Visible="True" Description="User-Defined Command Line options"/>
     <BoolProperty   Category="General"       Name="UnSafe"              DisplayName="Allow Unsafe Code"                           Visible="True" Description="Allow Unsafe code inside this assembly"   Default="False"  Switch="unsafe"/>
-    <BoolProperty   Category="General"       Name="CS"                  DisplayName="Case Sensitive"                              Visible="True" ReadOnly="True"  Description="/cs"  Default="False"  Switch="cs"/>
+    <BoolProperty   Category="General"       Name="CS"                  DisplayName="Case Sensitive"                              Visible="True" ReadOnly="True"  Description="Enable/Disable case sensitivity (/cs)"  Default="False"  Switch="cs"/>
     <BoolProperty   Category="General"       Name="AZ"                  DisplayName="Use Zero Based Arrays"                       Visible="True" Description="Zero Based Arrays (/az)"  Switch="az"/>
-    <BoolProperty   Category="General"       Name="OVF"                 DisplayName="Overflow Exceptions"                         Visible="True" ReadOnly="True"  Description="Check for Overflow and Underflow (like the CHECKED keyword, /ovf)" Default="True"  Switch="ovf"/>
-    <StringProperty Category="NS"            Name="INS"                 DisplayName="Enable Implicit Namespace lookup"            Visible="True" ReadOnly="True"  Description="/ins"  Default="False"  Switch="ins"/>
+    <BoolProperty   Category="General"       Name="OVF"                 DisplayName="Overflow Exceptions"                         Visible="True" Description="Check for Overflow and Underflow (like the CHECKED keyword, /ovf)" Default="True"  Switch="ovf"/>
+    <StringProperty Category="NS"            Name="INS"                 DisplayName="Enable Implicit Namespace lookup"            Visible="True" ReadOnly="True"  Description="Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)"  Default="False"  Switch="ins"/>
     <BoolProperty   Category="NS"            Name="NS"                  DisplayName="Prefix classes with default Namespace"       Visible="True" Description="Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:&lt;Namespace&gt;)"  Default="False" Switch="ns"/>
     <BoolProperty   Category="Compatibility" Name="LB"                  DisplayName="Allow Late Binding"                          Visible="True" ReadOnly="True"  Description="/lb" Default="False" Switch="lb"/>
-    <BoolProperty   Category="Compatibility" Name="VO1"                 DisplayName="Allow Init&amp;&amp;Axit for Con&amp;&amp;Destructor"  Visible="True" ReadOnly="True"   Description="/vo1" Default="False" Switch="vo1"/>
-    <BoolProperty   Category="Compatibility" Name="VO2"                 DisplayName="Initialize Strings"                          Visible="True" Description="Initialize strings to empty string ( /vo2)" Default="False" Switch="vo2"/>
-    <BoolProperty   Category="Compatibility" Name="VO3"                 DisplayName="All methods virtual"                         Visible="True" Description="Add the virtual modifier to all methods by default (/vo3)" Default="False" Switch="vo3"/>
+    <BoolProperty   Category="Compatibility" Name="VO1"                 DisplayName="Allow Init() and Axit() for Constructor/Destructor"  Visible="True" ReadOnly="True"   Description="/vo1" Default="False" Switch="vo1"/>
+    <BoolProperty   Category="Compatibility" Name="VO2"                 DisplayName="Initialize Strings"                          Visible="True" Description="Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0" Default="False" Switch="vo2"/>
+    <BoolProperty   Category="Compatibility" Name="VO3"                 DisplayName="All methods virtual"                         Visible="True" Description="Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)" Default="False" Switch="vo3"/>
     <BoolProperty   Category="Compatibility" Name="VO4"                 DisplayName="Implicit signed/unsigned conversions"        Visible="True" ReadOnly="True"  Description="Implicit signed/unsigned integer conversions (/vo4)" Default="False" Switch="vo4"/>
     <BoolProperty   Category="Compatibility" Name="VO5"                 DisplayName="Implicit CLIPPER calling convention"         Visible="True" ReadOnly="True"  Description="Methods without parameters and calling convention are compiled as CLIPPER calling convention (/vo5)"  Default="False" Switch="vo5"/>
     <BoolProperty   Category="Compatibility" Name="VO6"                 DisplayName="Implicit pointer conversions "               Visible="True" ReadOnly="True"  Description="Implicit conversions between typed function PTR and PTR (/vo6)"  Default="False" Switch="vo6"/>

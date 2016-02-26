@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright, Microsoft Corporation, All rights reserved.-->
 <Rule
     Name="ResolvedCOMReference"
     DisplayName="Resolved COM Reference"
@@ -120,4 +119,5 @@
     <BoolProperty Name="WinMDFile" Visible="false" ReadOnly="True" Description="Indicates whether the build system ascertained that this is a WinMD (as opposed to an assembly)" />
     <StringProperty Name="OriginalItemSpec" Visible="False" ReadOnly="True" Description="The evaluated item name of the original reference item whose resolution resulted in this resolved reference item." />
     <StringProperty Name="FusionName" Visible="False" ReadOnly="True" />
+    <StringProperty Name="Name" Visible="false" ReadOnly="True" />
 </Rule>

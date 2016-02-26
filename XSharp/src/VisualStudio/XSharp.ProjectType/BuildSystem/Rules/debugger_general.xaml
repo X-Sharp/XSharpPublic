@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--Copyright, Microsoft Corporation, All rights reserved.-->
 <Rule Name="DebuggerGeneralProperties"
       DisplayName="Debugger General Properties"
       Description="General Debugger options"
@@ -16,7 +15,7 @@
                   Description="The debug rule selected as the active debugger.">
   </StringProperty>
 
-  <EnumProperty Name="ImageClrType" Visible="false" Default="Managed"
+  <EnumProperty Name="ImageClrType" Visible="false"
                   Description="The 'hidden' property we pass to debuggers to let them know if this is a managed project.">
     <EnumProperty.DataSource>
       <DataSource Persistence="UserFile" HasConfigurationCondition="false" PersistedName="_TargetImageClrType" />

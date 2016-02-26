@@ -81,9 +81,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Class.prg" />
     <None Include="Class.ico" />
   </ItemGroup>

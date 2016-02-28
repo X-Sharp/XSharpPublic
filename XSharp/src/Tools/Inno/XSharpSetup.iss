@@ -4,13 +4,13 @@
 
 #define Product         "XSharp"
 #define ProdVer         "XSharp 0.2.1"
-#define ProdBuild       "XSharp Alpha 0.2.1"
+#define ProdBuild       "XSharp Beta 1"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.1.2100"
-#define VITextVersion   "0.2.1.2100 (Alpha 7)"
+#define VIVersion       "0.2.1.2101"
+#define VITextVersion   "0.2.1.2101 (Beta 1)"
 #define TouchDate       "2016-02-28"
 #define TouchTime       "02:01:00"
 #define SetupExeName    "XSharpSetup021"
@@ -163,6 +163,7 @@ Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:
 
 ; Examples
 Source: "{#ExamplesFolder}*.prg";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.txt";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 ;Source: "{#ExamplesFolder}*.vh";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.sln";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.xsprj";                            DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
@@ -215,15 +216,17 @@ Type: filesandordirs; Name: "{app}\Redist"                        ; Components: 
 Type: filesandordirs; Name: "{app}\Uninst"                        ; Components: main
 Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"             ; Components: main
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015;  
+Type: filesandordirs; Name: "{commondocs}\XSharp\Examples";
 Type: dirifempty;     Name: "{app}"; 
+Type: dirifempty;     Name: "{commondocs}\XSharp"; 
 
 ; Template cache and component cache
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"; 			Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"; 	Components: vs2015
 
 [Messages]
-WelcomeLabel1=Welcom to [name] (X#)
-WelcomeLabel2=This installer will install [name/ver] on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
+WelcomeLabel1=Welcom to {# Product} (X#)
+WelcomeLabel2=This installer will install {#ProdBuild} on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
 WizardInfoBefore=Warning
 InfoBeforeLabel=You are about to install Beta software
 InfoBeforeClickLabel=Only continue the installation if you are aware of the following:

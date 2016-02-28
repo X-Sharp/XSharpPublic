@@ -42,14 +42,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="VulcanRT">
-      <HintPath>C:\Program Files (x86)\Common Files\GrafX\Vulcan.NET\v4.0.401.0\VulcanRT.dll</HintPath>
       <SpecificVersion>false</SpecificVersion>
-      <Private>true</Private>
     </Reference>
     <Reference Include="VulcanRTFuncs">
-      <HintPath>C:\Program Files (x86)\Common Files\GrafX\Vulcan.NET\v4.0.401.0\VulcanRTFuncs.dll</HintPath>
       <SpecificVersion>false</SpecificVersion>
-      <Private>true</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +55,9 @@
     <Compile Include="Program.prg">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Readme.txt" />
   </ItemGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.targets" />
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->

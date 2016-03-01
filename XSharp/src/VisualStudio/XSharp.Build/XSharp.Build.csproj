@@ -59,6 +59,8 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="CreateXSharpManifestResourceName.cs" />
+    <Compile Include="Culture.cs" />
     <Compile Include="Xsc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

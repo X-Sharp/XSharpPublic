@@ -95,10 +95,11 @@ namespace XSharp.Build
             }
         }
 
-        //protected override string GenerateCommandLineCommands()
-        //{
-        //    return "/shared";
-        //}
+        protected override string GenerateCommandLineCommands()
+        {
+            //return "/shared";
+            return "/noconfig";
+        }
 
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)
@@ -198,6 +199,9 @@ namespace XSharp.Build
                 foreach (var it in base.References)
                     commandLine.AppendSwitchIfNotNull("\n/reference:", it.ItemSpec);
             }
+            // noconfig and fullpaths
+            commandLine.AppendTextUnquoted("\n/fullpaths");
+
             // target and platform
             commandLine.AppendSwitch("\n/target:" + this.TargetType);
             commandLine.AppendSwitchIfNotNull("\n/platform:", this.Platform);

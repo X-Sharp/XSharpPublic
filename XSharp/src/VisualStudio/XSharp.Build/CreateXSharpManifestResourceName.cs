@@ -5,16 +5,35 @@ using Microsoft.Build.Utilities;
 using Microsoft.Build.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace XSharp.Build
 {
-
+    /// <summary>
+    /// Base class for task that determines the appropriate manifest resource name to 
+    /// assign to a given resx or other resource.
+    /// Inspired by https://github.com/Microsoft/msbuild/blob/master/src/XMakeTasks/CreateCSharpManifestResourceName.cs
+    /// </summary>
     public class CreateXSharpManifestResourceName : CreateManifestResourceName
     {
-
-         protected override string CreateManifestName(string fileName, string linkFileName, string rootNamespace, string dependentUponFileName, Stream binaryStream)
+        /// <summary>
+        /// Utility function for creating a C#-style manifest name from 
+        /// a resource name. 
+        /// </summary>
+        /// <param name="fileName">The file name of the dependent (usually a .resx)</param>
+        /// <param name="linkFileName">The file name of the dependent (usually a .resx)</param>
+        /// <param name="rootNamespace">The root namespace (usually from the project file). May be null</param>
+        /// <param name="dependentUponFileName">The file name of the parent of this dependency (usually a .cs file). May be null</param>
+        /// <param name="binaryStream">File contents binary stream, may be null</param>
+        /// <returns>Returns the manifest name</returns>
+        protected override string CreateManifestName
+            (
+                string fileName, 
+                string linkFileName, 
+                string rootNamespace, 
+                string dependentUponFileName, 
+                Stream binaryStream
+            )
         {
             ITaskItem item = null;
             string culture = null;
@@ -22,74 +41,143 @@ namespace XSharp.Build
             {
                 culture = item.GetMetadata("Culture");
             }
-            return CreateManifestNameImpl(fileName, linkFileName, base.PrependCultureAsDirectory, rootNamespace, dependentUponFileName, culture, binaryStream, base.Log);
-        }
+            /*
+                  Actual implementation is in a static method called CreateManifestNameImpl.
+                  The reason is that CreateManifestName can't be static because it is an 
+                  override of a method declared in the base class, but its convenient 
+                  to expose a static version anyway for unittesting purposes.
+              */
 
-        internal string CreateManifestNameImpl(string fileName, string linkFileName, bool prependCultureAsDirectory, string rootNamespace, string dependentUponFileName, string culture, Stream binaryStream, TaskLoggingHelper log)
+            return CreateXSharpManifestResourceName.CreateManifestNameImpl
+                (
+                    fileName, 
+                    linkFileName, 
+                    base.PrependCultureAsDirectory, 
+                    rootNamespace, 
+                    dependentUponFileName, 
+                    culture, 
+                    binaryStream, 
+                    base.Log
+                );
+        }
+        /// <summary>
+        /// Utility function for creating a X#-style manifest name from 
+        /// a resource name. Note that this function is inspired by the similar C# function
+        /// </summary>
+        /// <param name="fileName">The file name of the dependent (usually a .resx)</param>
+        /// <param name="linkFileName">The file name of the dependent (usually a .resx)</param>
+        /// <param name="rootNamespace">The root namespace (usually from the project file). May be null</param>
+        /// <param name="prependCultureAsDirectory">should the culture name be prepended to the manifest name as a path</param>
+        /// <param name="dependentUponFileName">The file name of the parent of this dependency (usually a .cs file). May be null</param>
+        /// <param name="culture">The override culture of this resource, if any</param>
+        /// <param name="binaryStream">File contents binary stream, may be null</param>
+        /// <param name="log">Task's TaskLoggingHelper, for logging warnings or errors</param>
+        /// <returns>Returns the manifest name</returns>
+        internal static string CreateManifestNameImpl
+            (
+                string fileName, 
+                string linkFileName, 
+                bool prependCultureAsDirectory, 
+                string rootNamespace, 
+                string dependentUponFileName, 
+                string culture, 
+                Stream binaryStream, 
+                TaskLoggingHelper log
+            )
         {
-            string str = linkFileName;
-            if ((str == null) || (str.Length == 0))
+            string embeddedFileName = linkFileName;
+            // Use the link file name if there is one, otherwise, fall back to file name.
+
+            if ((embeddedFileName == null) || (embeddedFileName.Length == 0))
             {
-                str = fileName;
+                embeddedFileName = fileName;
             }
-            Culture.ItemCultureInfo itemCultureInfo = Culture.GetItemCultureInfo(str, dependentUponFileName);
+            Culture.ItemCultureInfo info = Culture.GetItemCultureInfo(embeddedFileName, dependentUponFileName);
+            // If the item has a culture override, respect that. 
             if (!string.IsNullOrEmpty(culture))
             {
-                itemCultureInfo.culture = culture;
+                info.culture = culture;
             }
-            StringBuilder builder = new StringBuilder();
+            StringBuilder manifestName = new StringBuilder();
             if (binaryStream != null)
             {
-                ExtractedClassName firstClassNameFullyQualified = GetFirstClassNameFullyQualified(fileName, binaryStream);
-                if (firstClassNameFullyQualified.IsInsideConditionalBlock && (log != null))
+                // Resource depends on a form. Now, get the form's class name fully 
+                // qualified with a namespace.
+
+                ExtractedClassName result = CreateXSharpManifestResourceName.GetFirstClassNameFullyQualified(fileName, binaryStream, log);
+                if (result.IsInsideConditionalBlock && log != null)
                 {
-                    object[] messageArgs = new object[] { dependentUponFileName, str };
-                    log.LogWarningWithCodeFromResources("CreateManifestResourceName.DefinitionFoundWithinConditionalDirective", messageArgs);
+                    log.LogWarningWithCodeFromResources("CreateManifestResourceName.DefinitionFoundWithinConditionalDirective", dependentUponFileName, embeddedFileName);
                 }
-                if ((firstClassNameFullyQualified.Name != null) && (firstClassNameFullyQualified.Name.Length > 0))
+                if ((result.Name != null) && (result.Name.Length > 0))
                 {
-                    builder.Append(firstClassNameFullyQualified.Name);
-                    if ((itemCultureInfo.culture != null) && (itemCultureInfo.culture.Length > 0))
+                    manifestName.Append(result.Name);
+                    if ((info.culture != null) && (info.culture.Length > 0))
                     {
-                        builder.Append(".").Append(itemCultureInfo.culture);
+                        manifestName.Append(".").Append(info.culture);
                     }
                 }
             }
-            if (builder.Length == 0)
+            // If there's no manifest name at this point, then fall back to using the
+            // RootNamespace+Filename_with_slashes_converted_to_dots         
+
+            if (manifestName.Length == 0)
             {
+                // If Rootnamespace was null, then it wasn't set from the project resourceFile.
+                // Empty namespaces are allowed.
                 if ((rootNamespace != null) && (rootNamespace.Length > 0))
                 {
-                    builder.Append(rootNamespace).Append(".");
+                    manifestName.Append(rootNamespace).Append(".");
                 }
-                string str2 = CreateManifestResourceName.MakeValidEverettIdentifier(Path.GetDirectoryName(itemCultureInfo.cultureNeutralFilename));
-                string extension = Path.GetExtension(itemCultureInfo.cultureNeutralFilename);
-                if (((string.Compare(extension, ".resx", StringComparison.OrdinalIgnoreCase) == 0) || (string.Compare(extension, ".restext", StringComparison.OrdinalIgnoreCase) == 0)) || (string.Compare(extension, ".resources", StringComparison.OrdinalIgnoreCase) == 0))
+                // Replace spaces in the directory name with underscores. Needed for compatibility with Everett.
+                // Note that spaces in the file name itself are preserved.
+
+                string everettCompatibleDirectoryName  = CreateManifestResourceName.MakeValidEverettIdentifier(Path.GetDirectoryName(info.cultureNeutralFilename));
+                // only strip extension for .resx and .restext files
+                string sourceExtension = Path.GetExtension(info.cultureNeutralFilename);
+                if (
+                        (0 == String.Compare(sourceExtension, ".resx", StringComparison.OrdinalIgnoreCase))
+                        ||
+                        (0 == String.Compare(sourceExtension, ".restext", StringComparison.OrdinalIgnoreCase))
+                        ||
+                        (0 == String.Compare(sourceExtension, ".resources", StringComparison.OrdinalIgnoreCase))
+                    )
                 {
-                    builder.Append(Path.Combine(str2, Path.GetFileNameWithoutExtension(itemCultureInfo.cultureNeutralFilename)));
-                    builder.Replace(Path.DirectorySeparatorChar, '.');
-                    builder.Replace(Path.AltDirectorySeparatorChar, '.');
-                    if ((itemCultureInfo.culture != null) && (itemCultureInfo.culture.Length > 0))
+
+                    manifestName.Append(Path.Combine(everettCompatibleDirectoryName , Path.GetFileNameWithoutExtension(info.cultureNeutralFilename)));
+                    // Replace all '\' with '.'
+
+                    manifestName.Replace(Path.DirectorySeparatorChar, '.');
+                    manifestName.Replace(Path.AltDirectorySeparatorChar, '.');
+                    // Append the culture if there is one.        
+                    if ((info.culture != null) && (info.culture.Length > 0))
                     {
-                        builder.Append(".").Append(itemCultureInfo.culture);
+                        manifestName.Append(".").Append(info.culture);
                     }
-                    if (string.Equals(extension, ".resources", StringComparison.OrdinalIgnoreCase))
+                    // If the original extension was .resources, add it back
+                    if (string.Equals(sourceExtension, ".resources", StringComparison.OrdinalIgnoreCase))
                     {
-                        builder.Append(extension);
+                        manifestName.Append(sourceExtension);
                     }
                 }
                 else
                 {
-                    builder.Append(Path.Combine(str2, Path.GetFileName(itemCultureInfo.cultureNeutralFilename)));
-                    builder.Replace(Path.DirectorySeparatorChar, '.');
-                    builder.Replace(Path.AltDirectorySeparatorChar, '.');
-                    if ((prependCultureAsDirectory && (itemCultureInfo.culture != null)) && (itemCultureInfo.culture.Length > 0))
+                    manifestName.Append(Path.Combine(everettCompatibleDirectoryName , Path.GetFileName(info.cultureNeutralFilename)));
+                    // Replace all '\' with '.'
+                    manifestName.Replace(Path.DirectorySeparatorChar, '.');
+                    manifestName.Replace(Path.AltDirectorySeparatorChar, '.');
+                    // Prepend the culture as a subdirectory if there is one.        
+                    if (prependCultureAsDirectory)
                     {
-                        builder.Insert(0, Path.DirectorySeparatorChar);
-                        builder.Insert(0, itemCultureInfo.culture);
+                        if (info.culture != null && info.culture.Length > 0)
+                        {
+                            manifestName.Insert(0, Path.DirectorySeparatorChar);
+                            manifestName.Insert(0, info.culture);
+                        }
                     }
                 }
             }
-            return builder.ToString();
+            return manifestName.ToString();
         }
         private const RegexOptions options = RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase;
         private static Regex classRx = new Regex(@"\s*(?:(?:static|partial|private|protect(?:ed)?|internal|hidden|abstract|sealed)\s+)*class\s+(\S+)", options);
@@ -98,17 +186,21 @@ namespace XSharp.Build
         private static Regex namespaceBeginRx = new Regex(@"\s*begin\s+namespace\s+(\S+)", options);
         private static Regex namespaceEndRx = new Regex(@"\s*end\s+namespace", options);
 
-        private ExtractedClassName GetFirstClassNameFullyQualified(string fileName, Stream binaryStream)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName">The file name of the dependent (usually a .resx)</param>
+        /// <param name="binaryStream">File contents binary stream, may be null</param>
+        /// <param name="log">Task's TaskLoggingHelper, for logging warnings or errors</param>
+        /// <returns></returns>
+        private static ExtractedClassName GetFirstClassNameFullyQualified(string fileName, Stream binaryStream,TaskLoggingHelper log)
         {
             Match m = null;
-            string currentNamespace = null;
-            Stack<string> namespaces = null;
+            string currentNamespace = "";
             ExtractedClassName name = new ExtractedClassName();
-            currentNamespace = "";
             int conditionalDepth = 0;
             StreamReader reader = new StreamReader(binaryStream, true); // let the reader determine the encoding
-
-            namespaces = new Stack<string>();
+            var namespaces = new Stack<string>();
             while (! reader.EndOfStream)
             {
                 var line = reader.ReadLine();
@@ -137,7 +229,7 @@ namespace XSharp.Build
                     else
                     {
                         object[] messageArgs = new object[] { fileName };
-                        base.Log.LogError("CreateXSharpManifestResourceName: found 'END NAMESPACE' with no matching 'BEGIN NAMESPACE' in '{0}'", messageArgs);
+                        log.LogError("CreateXSharpManifestResourceName: found 'END NAMESPACE' with no matching 'BEGIN NAMESPACE' in '{0}'", messageArgs);
                     }
                 }
                 // Does the line contain "#IFDEF"
@@ -154,9 +246,16 @@ namespace XSharp.Build
             return name;
         }
 
+        /// <summary>
+        /// Return 'true' if this is a X# source file.
+        /// </summary>
+        /// <param name="fileName">Name of the candidate source file.</param>
+        /// <returns>True, if this is a validate source file.</returns>
         protected override bool IsSourceFile(string fileName)
         {
-            return string.Compare(Path.GetExtension(fileName), ".prg", StringComparison.OrdinalIgnoreCase) == 0;
+            string extension = Path.GetExtension(fileName);
+            return string.Compare(extension, ".prg", StringComparison.OrdinalIgnoreCase) == 0 ||
+                string.Compare(extension, ".xs", StringComparison.OrdinalIgnoreCase) == 0;
         }
     }
 

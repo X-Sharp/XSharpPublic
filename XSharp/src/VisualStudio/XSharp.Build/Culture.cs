@@ -1,13 +1,33 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Globalization;
 
 namespace XSharp.Build
 {
-
+    // <summary>
+    /// Utility functions for dealing with Culture information.
+    /// Source from GitHub: https://github.com/Microsoft/msbuild/blob/master/src/XMakeTasks/Culture.cs
+    /// </summary>
     internal static class Culture
     {
+        /// <summary>
+        /// Culture information about an item.
+        /// </summary>
+        internal struct ItemCultureInfo
+        {
+            internal string culture;
+            internal string cultureNeutralFilename;
+        }
+        /// <summary>
+        /// Given an item's filename, return information about the item including the culture and the culture-neutral filename.
+        /// </summary>
+        /// <remarks>
+        /// We've decided to ignore explicit Culture attributes on items.
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <param name="dependentUponFileName"></param>
+        /// <returns></returns>
+
         internal static ItemCultureInfo GetItemCultureInfo(string name, string dependentUponFilename)
         {
             ItemCultureInfo info;
@@ -18,32 +38,36 @@ namespace XSharp.Build
                 info.cultureNeutralFilename = name;
                 return info;
             }
-            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(name);
-            string extension = Path.GetExtension(fileNameWithoutExtension);
-            bool flag = false;
-            if ((extension != null) && (extension.Length > 1))
+            // Either not dependent on another file, or it has a distinct base filename
+            // If the item is defined as "Strings.en-US.resx", then ...
+            // ... base file name will be "Strings.en-US" ..
+            string baseFileNameWithCulture  = Path.GetFileNameWithoutExtension(name);
+            // ... and cultureName will be ".en-US".
+            string cultureName  = Path.GetExtension(baseFileNameWithCulture );
+            bool validCulture  = false;
+            if ((cultureName  != null) && (cultureName .Length > 1))
             {
-                extension = extension.Substring(1);
-                flag = CultureStringUtilities.IsValidCultureString(extension);
+                // ... strip the "." to make "en-US"
+                cultureName = cultureName.Substring(1);
+                validCulture  = CultureStringUtilities.IsValidCultureString(cultureName );
             }
-            if (flag)
+            if (validCulture)
             {
-                info.culture = extension;
-                string str4 = Path.GetExtension(name);
-                string directoryName = Path.GetDirectoryName(name);
-                string str6 = Path.GetFileNameWithoutExtension(fileNameWithoutExtension) + str4;
-                info.cultureNeutralFilename = Path.Combine(directoryName, str6);
-                return info;
-            }
-            info.cultureNeutralFilename = name;
-            return info;
-        }
+                // A valid culture was found.
+                string extension = Path.GetExtension(name);
+                string baseFileName = Path.GetFileNameWithoutExtension(baseFileNameWithCulture);
+                string baseFolder = Path.GetDirectoryName(name);
+                string fileName = baseFileName + extension;
+                info.cultureNeutralFilename = Path.Combine(baseFolder, fileName);
 
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct ItemCultureInfo
-        {
-            internal string culture;
-            internal string cultureNeutralFilename;
+            }
+            else
+            {
+                // No valid culture was found. In this case, the culture-neutral
+                // name is the just the original file name.
+                info.cultureNeutralFilename = name;
+            }
+            return info;
         }
     }
 

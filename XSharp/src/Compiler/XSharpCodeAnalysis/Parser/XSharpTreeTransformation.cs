@@ -648,15 +648,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax voPropType;
             if (vop.AccessMethodCtx != null)
             {
-                if (vop.AccessMethodCtx.Type != null) { 
-                    voPropType = vop.AccessMethodCtx.Type.Get<TypeSyntax>();
-                }
-                else { 
-                    voPropType = MissingType();
-                }
+                voPropType = vop.AccessMethodCtx.Type?.Get<TypeSyntax>() ?? MissingType();
             }
             else if (vop.AssignMethodCtx != null && vop.AssignMethodCtx.ParamList != null && vop.AssignMethodCtx.ParamList._Params?.Count > 0)
-                voPropType = vop.AssignMethodCtx.ParamList._Params[0].Type.Get<TypeSyntax>();
+                voPropType = vop.AssignMethodCtx.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? MissingType();
             else
                 voPropType = MissingType();
 

@@ -45,6 +45,7 @@
     <ProjectReference Include="..\Core\Scripting.csproj">
       <Project>{12A68549-4E8C-42D6-8703-A09335F97997}</Project>
       <Name>Scripting</Name>
+      <Aliases>global,Scripting</Aliases>
     </ProjectReference>
     <ProjectReference Include="..\CSharp\CSharpScripting.csproj">
       <Project>{066F0DBD-C46C-4C20-AFEC-99829A172625}</Project>
@@ -56,6 +57,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="NuGetPackageResolverTests.cs" />
     <Compile Include="ObjectFormatterTestBase.cs" />
     <Compile Include="ObjectFormatterTests.Fixtures.cs" />
     <Compile Include="RedirectedOutput.cs" />
@@ -63,13 +65,18 @@
     <Compile Include="ScriptingTestHelpers.cs" />
     <Compile Include="ScriptOptionsTests.cs" />
     <Compile Include="ScriptTaskExtensions.cs" />
+    <Compile Include="TestCompilationFactory.cs" />
     <Compile Include="TestConsoleIO.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.Desktop.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.CSharp.UnitTests" />
+    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.CSharp.Scripting.UnitTests" />
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.VisualBasic.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.CSharp.Desktop.UnitTests" />
+    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.CSharp.Scripting.Desktop.UnitTests" />
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.VisualBasic.Desktop.UnitTests" />
   </ItemGroup>
   <ItemGroup>

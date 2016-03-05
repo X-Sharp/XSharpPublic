@@ -45,7 +45,7 @@ namespace Microsoft.CodeAnalysis.Scripting
 
         static ScriptBuilder()
         {
-            s_globalAssemblyNamePrefix = "\u211B*" + Guid.NewGuid().ToString() + "-";
+            s_globalAssemblyNamePrefix = "\u211B*" + Guid.NewGuid().ToString();
         }
 
         public ScriptBuilder(InteractiveAssemblyLoader assemblyLoader)
@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.Scripting
         {
             int id = Interlocked.Increment(ref _submissionIdDispenser);
             string idAsString = id.ToString();
-            assemblyName = _assemblyNamePrefix + idAsString;
+            assemblyName = _assemblyNamePrefix + "-" + idAsString;
             typeName = "Submission#" + idAsString;
             return id;
         }
@@ -152,7 +152,7 @@ namespace Microsoft.CodeAnalysis.Scripting
 
                 peStream.Position = 0;
 
-                var assembly = _assemblyLoader.Load(peStream, pdbStream: null);
+                var assembly = _assemblyLoader.LoadAssemblyFromStream(peStream, pdbStream: null);
                 var runtimeEntryPoint = GetEntryPointRuntimeMethod(entryPoint, assembly, cancellationToken);
 
                 return runtimeEntryPoint.CreateDelegate<Func<object[], Task<T>>>();

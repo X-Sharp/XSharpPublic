@@ -2,27 +2,75 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using Microsoft.CodeAnalysis.Common;
 
 namespace Microsoft.CodeAnalysis.Diagnostics
 {
-    internal class DiagnosticsUpdatedArgs : EventArgs
+    internal class DiagnosticsUpdatedArgs : UpdatedEventArgs
     {
-        public object Id { get; }
-        public Workspace Workspace { get; }
+        public DiagnosticsUpdatedKind Kind { get; }
         public Solution Solution { get; }
-        public ProjectId ProjectId { get; }
-        public DocumentId DocumentId { get; }
         public ImmutableArray<DiagnosticData> Diagnostics { get; }
 
-        public DiagnosticsUpdatedArgs(
-            object id, Workspace workspace, Solution solution, ProjectId projectId, DocumentId documentId, ImmutableArray<DiagnosticData> diagnostics)
+        private DiagnosticsUpdatedArgs(
+            object id,
+            Workspace workspace,
+            Solution solution,
+            ProjectId projectId,
+            DocumentId documentId,
+            ImmutableArray<DiagnosticData> diagnostics,
+            DiagnosticsUpdatedKind kind)
+                : base(id, workspace, projectId, documentId)
         {
-            this.Id = id;
-            this.Workspace = workspace;
-            this.Solution = solution;
-            this.ProjectId = projectId;
-            this.DocumentId = documentId;
-            this.Diagnostics = diagnostics;
+            Solution = solution;
+            Diagnostics = diagnostics;
+            Kind = kind;
+
+            if (kind == DiagnosticsUpdatedKind.DiagnosticsRemoved)
+            {
+                Debug.Assert(diagnostics.IsEmpty);
+            }
         }
+
+        public static DiagnosticsUpdatedArgs DiagnosticsCreated(
+            object id,
+            Workspace workspace,
+            Solution solution,
+            ProjectId projectId,
+            DocumentId documentId,
+            ImmutableArray<DiagnosticData> diagnostics)
+        {
+            return new DiagnosticsUpdatedArgs(id, workspace, solution, projectId, documentId, diagnostics, DiagnosticsUpdatedKind.DiagnosticsCreated);
+        }
+
+        public static DiagnosticsUpdatedArgs DiagnosticsRemoved(
+            object id,
+            Workspace workspace,
+            Solution solution,
+            ProjectId projectId,
+            DocumentId documentId)
+        {
+            return new DiagnosticsUpdatedArgs(id, workspace, solution, projectId, documentId, ImmutableArray<DiagnosticData>.Empty, DiagnosticsUpdatedKind.DiagnosticsRemoved);
+        }
+    }
+
+    internal enum DiagnosticsUpdatedKind
+    {
+        /// <summary>
+        /// Called when the diagnostic analyzer engine decides to remove existing diagnostics.
+        /// For example, this can happen when a document is removed from a solution.  In that
+        /// case the analyzer engine will delete all diagnostics associated with that document.
+        /// Any layers caching diagnostics should listen for these events to know when to 
+        /// delete their cached items entirely.
+        /// </summary>
+        DiagnosticsRemoved,
+
+        /// <summary>
+        /// Called when a new set of (possibly empty) diagnostics have been produced.  This
+        /// happens through normal editing and processing of files as diagnostic analyzers
+        /// produce new diagnostics for documents and projects.
+        /// </summary>
+        DiagnosticsCreated,
     }
 }

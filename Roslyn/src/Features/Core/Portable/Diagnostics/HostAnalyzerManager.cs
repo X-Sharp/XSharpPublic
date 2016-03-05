@@ -79,13 +79,9 @@ namespace Microsoft.CodeAnalysis.Diagnostics
         /// </summary>
         private readonly ConditionalWeakTable<DiagnosticAnalyzer, IReadOnlyCollection<DiagnosticDescriptor>> _descriptorCache;
 
-        /// <summary>
-        /// Loader for VSIX-based analyzers.
-        /// </summary>
-        private static readonly IAnalyzerAssemblyLoader s_assemblyLoader = new LoadContextAssemblyLoader();
-
-        public HostAnalyzerManager(IEnumerable<HostDiagnosticAnalyzerPackage> hostAnalyzerPackages, AbstractHostDiagnosticUpdateSource hostDiagnosticUpdateSource) :
-            this(CreateAnalyzerReferencesFromPackages(hostAnalyzerPackages), hostAnalyzerPackages.ToImmutableArrayOrEmpty(), hostDiagnosticUpdateSource)
+        public HostAnalyzerManager(IEnumerable<HostDiagnosticAnalyzerPackage> hostAnalyzerPackages, IAnalyzerAssemblyLoader hostAnalyzerAssemblyLoader, AbstractHostDiagnosticUpdateSource hostDiagnosticUpdateSource) :
+            this(CreateAnalyzerReferencesFromPackages(hostAnalyzerPackages, new HostAnalyzerReferenceDiagnosticReporter(hostDiagnosticUpdateSource), hostAnalyzerAssemblyLoader),
+                 hostAnalyzerPackages.ToImmutableArrayOrEmpty(), hostDiagnosticUpdateSource)
         {
         }
 
@@ -466,19 +462,27 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             return builder.ToImmutable();
         }
 
-        private static ImmutableArray<AnalyzerReference> CreateAnalyzerReferencesFromPackages(IEnumerable<HostDiagnosticAnalyzerPackage> analyzerPackages)
+        private static ImmutableArray<AnalyzerReference> CreateAnalyzerReferencesFromPackages(
+            IEnumerable<HostDiagnosticAnalyzerPackage> analyzerPackages,
+            HostAnalyzerReferenceDiagnosticReporter reporter,
+            IAnalyzerAssemblyLoader hostAnalyzerAssemblyLoader)
         {
             if (analyzerPackages == null || analyzerPackages.IsEmpty())
             {
                 return ImmutableArray<AnalyzerReference>.Empty;
             }
 
+            Contract.ThrowIfNull(hostAnalyzerAssemblyLoader);
+
             var analyzerAssemblies = analyzerPackages.SelectMany(p => p.Assemblies);
 
             var builder = ImmutableArray.CreateBuilder<AnalyzerReference>();
             foreach (var analyzerAssembly in analyzerAssemblies.Distinct(StringComparer.OrdinalIgnoreCase))
             {
-                builder.Add(new AnalyzerFileReference(analyzerAssembly, s_assemblyLoader));
+                var reference = new AnalyzerFileReference(analyzerAssembly, hostAnalyzerAssemblyLoader);
+                reference.AnalyzerLoadFailed += reporter.OnAnalyzerLoadFailed;
+
+                builder.Add(reference);
             }
 
             return builder.ToImmutable();
@@ -506,54 +510,35 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             return current;
         }
 
-        private class LoadContextAssemblyLoader : IAnalyzerAssemblyLoader
+        private class HostAnalyzerReferenceDiagnosticReporter
         {
-            public void AddDependencyLocation(string fullPath)
+            private readonly AbstractHostDiagnosticUpdateSource _hostUpdateSource;
+
+            public HostAnalyzerReferenceDiagnosticReporter(AbstractHostDiagnosticUpdateSource hostUpdateSource)
             {
+                _hostUpdateSource = hostUpdateSource;
             }
 
-            public Assembly LoadFromPath(string fullPath)
+            public void OnAnalyzerLoadFailed(object sender, AnalyzerLoadFailureEventArgs e)
             {
-                // We want to load the analyzer assembly assets in default context.
-                // Use Assembly.Load instead of Assembly.LoadFrom to ensure that if the assembly is ngen'ed, then the native image gets loaded.
-                return Assembly.Load(GetAssemblyName(fullPath));
-            }
-
-            private AssemblyName GetAssemblyName(string fullPath)
-            {
-                using (var stream = PortableShim.File.OpenRead(fullPath))
+                var reference = sender as AnalyzerFileReference;
+                if (reference == null)
                 {
-                    using (var peReader = new PEReader(stream))
-                    {
-                        var reader = peReader.GetMetadataReader();
-                        var assemblyDef = reader.GetAssemblyDefinition();
-
-                        var name = reader.GetString(assemblyDef.Name);
-
-                        var cultureName = assemblyDef.Culture.IsNil
-                            ? null
-                            : reader.GetString(assemblyDef.Culture);
-
-                        var publicKeyOrToken = reader.GetBlobContent(assemblyDef.PublicKey);
-                        var hasPublicKey = !publicKeyOrToken.IsEmpty;
-
-                        if (publicKeyOrToken.IsEmpty)
-                        {
-                            publicKeyOrToken = default(ImmutableArray<byte>);
-                        }
-
-                        var identity = new AssemblyIdentity(
-                            name: name,
-                            version: assemblyDef.Version,
-                            cultureName: cultureName,
-                            publicKeyOrToken: publicKeyOrToken,
-                            hasPublicKey: hasPublicKey,
-                            isRetargetable: (assemblyDef.Flags & AssemblyFlags.Retargetable) != 0,
-                            contentType: (AssemblyContentType)((int)(assemblyDef.Flags & AssemblyFlags.ContentTypeMask) >> 9));
-
-                        return new AssemblyName(identity.GetDisplayName());
-                    }
+                    return;
                 }
+
+                var diagnostic = AnalyzerHelper.CreateAnalyzerLoadFailureDiagnostic(reference.FullPath, e);
+
+                // diagnostic from host analyzer can never go away
+                var args = DiagnosticsUpdatedArgs.DiagnosticsCreated(
+                    id: Tuple.Create(this, reference.FullPath, e.ErrorCode, e.TypeName),
+                    workspace: PrimaryWorkspace.Workspace,
+                    solution: null,
+                    projectId: null,
+                    documentId: null,
+                    diagnostics: ImmutableArray.Create<DiagnosticData>(diagnostic));
+
+                _hostUpdateSource.RaiseDiagnosticsUpdated(args);
             }
         }
     }

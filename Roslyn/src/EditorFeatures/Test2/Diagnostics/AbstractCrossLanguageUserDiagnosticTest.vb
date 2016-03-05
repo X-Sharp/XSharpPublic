@@ -79,7 +79,7 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 
             For Each diagnostic In diagnostics
                 Dim fixes = New List(Of CodeFix)
-                Dim context = New CodeFixContext(_document, diagnostic, Sub(a, d) fixes.Add(New CodeFix(a, d)), CancellationToken.None)
+                Dim context = New CodeFixContext(_document, diagnostic, Sub(a, d) fixes.Add(New CodeFix(_document.Project, a, d)), CancellationToken.None)
                 providerAndFixer.Item2.RegisterCodeFixesAsync(context).Wait()
                 If fixes.Any() Then
                     Yield Tuple.Create(diagnostic, New CodeFixCollection(fixer, diagnostic.Location.SourceSpan, fixes))
@@ -127,7 +127,7 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 
         Protected Sub TestAddUnresolvedMetadataReference(xmlDefinition As XElement,
                                                          expectedProjectToReceiveReference As String,
-                                                         expectedAssemblyIdentity As AssemblyIdentity,
+                                                         expectedAssemblyIdentity As String,
                                                          Optional index As Integer = 0)
 
             Using workspace = TestWorkspaceFactory.CreateWorkspace(xmlDefinition)
@@ -140,7 +140,7 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 
                 Dim postOp = operations.OfType(Of TestAddMetadataReferenceCodeActionOperationFactoryWorkspaceService.Operation).FirstOrDefault()
                 Assert.NotEqual(Nothing, postOp)
-                Assert.Equal(expectedAssemblyIdentity, postOp.AssemblyIdentity)
+                Assert.Equal(expectedAssemblyIdentity, postOp.AssemblyIdentity.GetDisplayName())
                 Assert.Equal(expectedProjectToReceiveReference, workspace.CurrentSolution.GetProject(postOp.ProjectId).Name)
             End Using
         End Sub

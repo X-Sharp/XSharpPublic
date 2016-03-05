@@ -1,37 +1,40 @@
 // Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Composition;
 using System.Globalization;
+using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeFixes.Suppression;
 using Microsoft.CodeAnalysis.CSharp.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Simplification;
 
 namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.Suppression
 {
     [ExportSuppressionFixProvider(PredefinedCodeFixProviderNames.Suppression, LanguageNames.CSharp), Shared]
     internal class CSharpSuppressionCodeFixProvider : AbstractSuppressionCodeFixProvider
     {
-        protected override SyntaxTriviaList CreatePragmaRestoreDirectiveTrivia(Diagnostic diagnostic, bool needsTrailingEndOfLine)
+        protected override SyntaxTriviaList CreatePragmaRestoreDirectiveTrivia(Diagnostic diagnostic, Func<SyntaxNode, SyntaxNode> formatNode, bool needsLeadingEndOfLine, bool needsTrailingEndOfLine)
         {
             var restoreKeyword = SyntaxFactory.Token(SyntaxKind.RestoreKeyword);
-            return CreatePragmaDirectiveTrivia(restoreKeyword, diagnostic, true, needsTrailingEndOfLine);
+            return CreatePragmaDirectiveTrivia(restoreKeyword, diagnostic, formatNode, needsLeadingEndOfLine, needsTrailingEndOfLine);
         }
 
-        protected override SyntaxTriviaList CreatePragmaDisableDirectiveTrivia(Diagnostic diagnostic, bool needsLeadingEndOfLine)
+        protected override SyntaxTriviaList CreatePragmaDisableDirectiveTrivia(Diagnostic diagnostic, Func<SyntaxNode, SyntaxNode> formatNode, bool needsLeadingEndOfLine, bool needsTrailingEndOfLine)
         {
             var disableKeyword = SyntaxFactory.Token(SyntaxKind.DisableKeyword);
-            return CreatePragmaDirectiveTrivia(disableKeyword, diagnostic, needsLeadingEndOfLine, true);
+            return CreatePragmaDirectiveTrivia(disableKeyword, diagnostic, formatNode, needsLeadingEndOfLine, needsTrailingEndOfLine);
         }
 
-        private SyntaxTriviaList CreatePragmaDirectiveTrivia(SyntaxToken disableOrRestoreKeyword, Diagnostic diagnostic, bool needsLeadingEndOfLine, bool needsTrailingEndOfLine)
+        private SyntaxTriviaList CreatePragmaDirectiveTrivia(SyntaxToken disableOrRestoreKeyword, Diagnostic diagnostic, Func<SyntaxNode, SyntaxNode> formatNode, bool needsLeadingEndOfLine, bool needsTrailingEndOfLine)
         {
             var id = SyntaxFactory.IdentifierName(diagnostic.Id);
             var ids = new SeparatedSyntaxList<ExpressionSyntax>().Add(id);
             var pragmaDirective = SyntaxFactory.PragmaWarningDirectiveTrivia(disableOrRestoreKeyword, ids, true);
-            var pragmaDirectiveTrivia = SyntaxFactory.Trivia(pragmaDirective.WithAdditionalAnnotations(Formatter.Annotation));
+            pragmaDirective = (PragmaWarningDirectiveTriviaSyntax)formatNode(pragmaDirective);
+            var pragmaDirectiveTrivia = SyntaxFactory.Trivia(pragmaDirective);
             var endOfLineTrivia = SyntaxFactory.ElasticCarriageReturnLineFeed;
             var triviaList = SyntaxFactory.TriviaList(pragmaDirectiveTrivia);
 
@@ -89,14 +92,15 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.Suppression
             return token.Kind() == SyntaxKind.EndOfFileToken;
         }
 
-        protected override SyntaxNode AddGlobalSuppressMessageAttribute(SyntaxNode newRoot, ISymbol targetSymbol, Diagnostic diagnostic)
+        protected override SyntaxNode AddGlobalSuppressMessageAttribute(SyntaxNode newRoot, ISymbol targetSymbol, Diagnostic diagnostic, Workspace workspace, CancellationToken cancellationToken)
         {
             var compilationRoot = (CompilationUnitSyntax)newRoot;
             var isFirst = !compilationRoot.AttributeLists.Any();
-            var leadingTriviaForAttributeList = isFirst ?
+            var leadingTriviaForAttributeList = isFirst && !compilationRoot.HasLeadingTrivia ?
                 SyntaxFactory.TriviaList(SyntaxFactory.Comment(GlobalSuppressionsFileHeaderComment)) :
                 default(SyntaxTriviaList);
             var attributeList = CreateAttributeList(targetSymbol, diagnostic, leadingTrivia: leadingTriviaForAttributeList, needsLeadingEndOfLine: !isFirst);
+            attributeList = (AttributeListSyntax)Formatter.Format(attributeList, workspace, cancellationToken: cancellationToken);
             return compilationRoot.AddAttributeLists(attributeList);
         }
 
@@ -107,8 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.Suppression
             bool needsLeadingEndOfLine)
         {
             var attributeArguments = CreateAttributeArguments(targetSymbol, diagnostic);
-            var attribute = SyntaxFactory.Attribute(SyntaxFactory.ParseName(SuppressMessageAttributeName), attributeArguments)
-                .WithAdditionalAnnotations(Simplifier.Annotation);
+            var attribute = SyntaxFactory.Attribute(SyntaxFactory.ParseName(SuppressMessageAttributeName), attributeArguments);
             var attributes = new SeparatedSyntaxList<AttributeSyntax>().Add(attribute);
 
             var targetSpecifier = SyntaxFactory.AttributeTargetSpecifier(SyntaxFactory.Token(SyntaxKind.AssemblyKeyword));
@@ -121,9 +124,7 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.Suppression
                 triviaList = triviaList.Add(endOfLineTrivia);
             }
 
-            return attributeList
-                .WithLeadingTrivia(leadingTrivia.AddRange(triviaList))
-                .WithAdditionalAnnotations(Formatter.Annotation);
+            return attributeList.WithLeadingTrivia(leadingTrivia.AddRange(triviaList));
         }
 
         private AttributeArgumentListSyntax CreateAttributeArguments(ISymbol targetSymbol, Diagnostic diagnostic)
@@ -156,6 +157,43 @@ namespace Microsoft.CodeAnalysis.CSharp.CodeFixes.Suppression
             }
 
             return attributeArgumentList;
+        }
+
+        protected override bool IsSingleAttributeInAttributeList(SyntaxNode attribute)
+        {
+            var attributeSyntax = attribute as AttributeSyntax;
+            if (attributeSyntax != null)
+            {
+                var attributeList = attributeSyntax.Parent as AttributeListSyntax;
+                return attributeList != null && attributeList.Attributes.Count == 1;
+            }
+
+            return false;
+        }
+
+        protected override bool IsAnyPragmaDirectiveForId(SyntaxTrivia trivia, string id, out bool enableDirective, out bool hasMultipleIds)
+        {
+            if (trivia.Kind() == SyntaxKind.PragmaWarningDirectiveTrivia)
+            {
+                var pragmaWarning = (PragmaWarningDirectiveTriviaSyntax)trivia.GetStructure();
+                enableDirective = pragmaWarning.DisableOrRestoreKeyword.Kind() == SyntaxKind.RestoreKeyword;
+                hasMultipleIds = pragmaWarning.ErrorCodes.Count > 1;
+                return pragmaWarning.ErrorCodes.Any(n => n.ToString() == id);
+            }
+
+            enableDirective = false;
+            hasMultipleIds = false;
+            return false;
+        }
+
+        protected override SyntaxTrivia TogglePragmaDirective(SyntaxTrivia trivia)
+        {
+            var pragmaWarning = (PragmaWarningDirectiveTriviaSyntax)trivia.GetStructure();
+            var currentKeyword = pragmaWarning.DisableOrRestoreKeyword;
+            var toggledKeywordKind = currentKeyword.Kind() == SyntaxKind.DisableKeyword ? SyntaxKind.RestoreKeyword : SyntaxKind.DisableKeyword;
+            var toggledToken = SyntaxFactory.Token(currentKeyword.LeadingTrivia, toggledKeywordKind, currentKeyword.TrailingTrivia);
+            var newPragmaWarning = pragmaWarning.WithDisableOrRestoreKeyword(toggledToken);
+            return SyntaxFactory.Trivia(newPragmaWarning);
         }
     }
 }

@@ -1007,33 +1007,6 @@ namespace Microsoft.CodeAnalysis.Editor {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to found 1 reference in 1 file.
-        /// </summary>
-        internal static string FoundReferenceInFile {
-            get {
-                return ResourceManager.GetString("FoundReferenceInFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to found {0} references in 1 file.
-        /// </summary>
-        internal static string FoundReferencesInFile {
-            get {
-                return ResourceManager.GetString("FoundReferencesInFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to found {0} references in {1} files.
-        /// </summary>
-        internal static string FoundReferencesInMultipleFiles {
-            get {
-                return ResourceManager.GetString("FoundReferencesInMultipleFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to from metadata.
         /// </summary>
         internal static string FromMetadata {
@@ -1057,6 +1030,24 @@ namespace Microsoft.CodeAnalysis.Editor {
         internal static string GoToDefinition {
             get {
                 return ResourceManager.GetString("GoToDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locating implementations....
+        /// </summary>
+        internal static string GoToImplementationMessage {
+            get {
+                return ResourceManager.GetString("GoToImplementationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go To Implementation.
+        /// </summary>
+        internal static string GoToImplementationTitle {
+            get {
+                return ResourceManager.GetString("GoToImplementationTitle", resourceCulture);
             }
         }
         
@@ -1151,6 +1142,15 @@ namespace Microsoft.CodeAnalysis.Editor {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modify any highlighted location to begin renaming..
+        /// </summary>
+        internal static string InlineRenameInstructions {
+            get {
+                return ResourceManager.GetString("InlineRenameInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inline Rename Resolved Conflict.
         /// </summary>
         internal static string InlineRenameResolvedConflict {
@@ -1205,15 +1205,6 @@ namespace Microsoft.CodeAnalysis.Editor {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid identifier.
-        /// </summary>
-        internal static string IsNotAValidIdentifier {
-            get {
-                return ResourceManager.GetString("IsNotAValidIdentifier", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Light bulb session is already dismissed..
         /// </summary>
         internal static string LightBulbSessionIsAlreadyDismissed {
@@ -1241,6 +1232,15 @@ namespace Microsoft.CodeAnalysis.Editor {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Navigating....
+        /// </summary>
+        internal static string Navigating {
+            get {
+                return ResourceManager.GetString("Navigating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Navigating to definition....
         /// </summary>
         internal static string NavigatingToDefinition {
@@ -1255,6 +1255,15 @@ namespace Microsoft.CodeAnalysis.Editor {
         internal static string NavigationBars {
             get {
                 return ResourceManager.GetString("NavigationBars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New name: {0}.
+        /// </summary>
+        internal static string NewName1 {
+            get {
+                return ResourceManager.GetString("NewName1", resourceCulture);
             }
         }
         
@@ -1354,6 +1363,15 @@ namespace Microsoft.CodeAnalysis.Editor {
         internal static string Overrides {
             get {
                 return ResourceManager.GetString("Overrides", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste.
+        /// </summary>
+        internal static string Paste {
+            get {
+                return ResourceManager.GetString("Paste", resourceCulture);
             }
         }
         
@@ -1511,7 +1529,7 @@ namespace Microsoft.CodeAnalysis.Editor {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Rename: {0}.
         /// </summary>
         internal static string Rename1 {
             get {
@@ -1601,6 +1619,33 @@ namespace Microsoft.CodeAnalysis.Editor {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rename will update 1 reference in 1 file..
+        /// </summary>
+        internal static string RenameWillUpdateReferenceInFile {
+            get {
+                return ResourceManager.GetString("RenameWillUpdateReferenceInFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename will update {0} references in 1 file..
+        /// </summary>
+        internal static string RenameWillUpdateReferencesInFile {
+            get {
+                return ResourceManager.GetString("RenameWillUpdateReferencesInFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename will update {0} references in {1} files..
+        /// </summary>
+        internal static string RenameWillUpdateReferencesInMultipleFiles {
+            get {
+                return ResourceManager.GetString("RenameWillUpdateReferencesInMultipleFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Renaming anonymous type members is not yet supported..
         /// </summary>
         internal static string RenamingAnonymousTypeMemberNotSupported {
@@ -1682,6 +1727,15 @@ namespace Microsoft.CodeAnalysis.Editor {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The symbol has no implementations..
+        /// </summary>
+        internal static string SymbolHasNoImplementations {
+            get {
+                return ResourceManager.GetString("SymbolHasNoImplementations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text Buffer Change.
         /// </summary>
         internal static string TextBufferChange {
@@ -1714,6 +1768,15 @@ namespace Microsoft.CodeAnalysis.Editor {
         internal static string TheDefinitionOfTheObjectIsHidden {
             get {
                 return ResourceManager.GetString("TheDefinitionOfTheObjectIsHidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The new name is not a valid identifier..
+        /// </summary>
+        internal static string TheNewNameIsNotAValidIdentifier {
+            get {
+                return ResourceManager.GetString("TheNewNameIsNotAValidIdentifier", resourceCulture);
             }
         }
         

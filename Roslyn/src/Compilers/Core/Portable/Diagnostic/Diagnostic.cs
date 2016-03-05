@@ -284,6 +284,26 @@ namespace Microsoft.CodeAnalysis
         public abstract bool IsSuppressed { get; }
 
         /// <summary>
+        /// Gets the <see cref="SuppressionInfo"/> for suppressed diagnostics, i.e. <see cref="IsSuppressed"/> = true.
+        /// Otherwise, returns null.
+        /// </summary>
+        public SuppressionInfo GetSuppressionInfo(Compilation compilation)
+        {
+            if (!IsSuppressed)
+            {
+                return null;
+            }
+
+            AttributeData attribute;
+            if (!SuppressMessageAttributeState.IsDiagnosticSuppressed(this, compilation, out attribute))
+            {
+                attribute = null;
+            }
+
+            return new SuppressionInfo(this.Id, attribute);
+        }
+
+        /// <summary>
         /// Returns true if this diagnostic is enabled by default by the author of the diagnostic.
         /// </summary>
         internal virtual bool IsEnabledByDefault { get { return this.Descriptor.IsEnabledByDefault; } }
@@ -386,15 +406,15 @@ namespace Microsoft.CodeAnalysis
         }
 
         /// <summary>
-        /// Returns true if the diagnostic location (or any additional location) is within the given tree and optional filterSpanWithinTree.
+        /// Returns true if the diagnostic location (or any additional location) is within the given tree and intersects with the filterSpanWithinTree, if non-null.
         /// </summary>
-        internal bool ContainsLocation(SyntaxTree tree, TextSpan? filterSpanWithinTree = null)
+        internal bool HasIntersectingLocation(SyntaxTree tree, TextSpan? filterSpanWithinTree = null)
         {
             var locations = this.GetDiagnosticLocationsWithinTree(tree);
 
             foreach (var location in locations)
             {
-                if (!filterSpanWithinTree.HasValue || filterSpanWithinTree.Value.Contains(location.SourceSpan))
+                if (!filterSpanWithinTree.HasValue || filterSpanWithinTree.Value.IntersectsWith(location.SourceSpan))
                 {
                     return true;
                 }

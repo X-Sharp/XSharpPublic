@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Microsoft.CodeAnalysis.ErrorReporting;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Language.Intellisense.Utilities;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
@@ -34,6 +35,7 @@ namespace Microsoft.VisualStudio.InteractiveWindow
     internal partial class InteractiveWindow : IInteractiveWindow, IInteractiveWindowOperations2
     {
         internal const string ClipboardFormat = "89344A36-9821-495A-8255-99A63969F87D";
+        internal int LanguageBufferCounter = 0;
 
         public event EventHandler<SubmissionBufferAddedEventArgs> SubmissionBufferAdded;
 
@@ -45,6 +47,9 @@ namespace Microsoft.VisualStudio.InteractiveWindow
         /// WARNING: Members of this object should only be accessed from the UI thread.
         /// </remarks>
         private readonly UIThreadOnly _uiOnly;
+                     
+        // Setter for InteractiveWindowClipboard is a test hook.  
+        internal InteractiveWindowClipboard InteractiveWindowClipboard { get; set; } = new SystemClipboard();
 
         #region Initialization
 
@@ -54,11 +59,13 @@ namespace Microsoft.VisualStudio.InteractiveWindow
             ITextBufferFactoryService bufferFactory,
             IProjectionBufferFactoryService projectionBufferFactory,
             IEditorOperationsFactoryService editorOperationsFactory,
+            ITextBufferUndoManagerProvider textBufferUndoManagerProvider,
             ITextEditorFactoryService editorFactory,
             IRtfBuilderService rtfBuilderService,
             IIntellisenseSessionStackMapService intellisenseSessionStackMap,
             ISmartIndentationService smartIndenterService,
-            IInteractiveEvaluator evaluator)
+            IInteractiveEvaluator evaluator,
+            IWaitIndicator waitIndicator)
         {
             if (evaluator == null)
             {
@@ -72,11 +79,13 @@ namespace Microsoft.VisualStudio.InteractiveWindow
                 bufferFactory,
                 projectionBufferFactory,
                 editorOperationsFactory,
+                textBufferUndoManagerProvider,
                 editorFactory,
                 rtfBuilderService,
                 intellisenseSessionStackMap,
                 smartIndenterService,
-                evaluator);
+                evaluator,
+                waitIndicator);
 
             evaluator.CurrentWindow = this;
 
@@ -376,6 +385,16 @@ namespace Microsoft.VisualStudio.InteractiveWindow
         bool IInteractiveWindowOperations.Return()
         {
             return UIThread(uiOnly => uiOnly.Return());
+        }   
+
+        void IInteractiveWindowOperations2.DeleteLine()
+        {
+            UIThread(uiOnly => uiOnly.DeleteLine());
+        }
+
+        void IInteractiveWindowOperations2.CutLine()
+        {
+            UIThread(uiOnly => uiOnly.CutLine());
         }
 
         #endregion
@@ -444,9 +463,9 @@ namespace Microsoft.VisualStudio.InteractiveWindow
             }
         }
 
-#endregion
+        #endregion
 
-#region Output
+        #region Output
 
         Span IInteractiveWindow.Write(string text)
         {
@@ -473,7 +492,7 @@ namespace Microsoft.VisualStudio.InteractiveWindow
             UIThread(uiOnly => uiOnly.Write(element));
         }
 
-#endregion
+        #endregion
 
         #region UI Dispatcher Helpers
 
@@ -532,12 +551,22 @@ namespace Microsoft.VisualStudio.InteractiveWindow
             Dispatcher.PushFrame(frame);
         }
 
-#endregion
+        #endregion
 
-#region Testing
+        #region Testing
 
         internal event Action<State> StateChanged;
 
-#endregion
+        internal void Undo_TestOnly(int count)
+        {
+            UIThread(uiOnly => uiOnly.UndoHistory_TestOnly.Undo(count));
+        }
+
+        internal void Redo_TestOnly(int count)
+        {
+            UIThread(uiOnly => uiOnly.UndoHistory_TestOnly.Redo(count));
+        }
+
+        #endregion
     }
 }

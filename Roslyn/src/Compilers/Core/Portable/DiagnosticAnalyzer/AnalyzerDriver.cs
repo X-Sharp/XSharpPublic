@@ -5,12 +5,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Diagnostics.Telemetry;
 using Roslyn.Utilities;
-using static Microsoft.CodeAnalysis.Diagnostics.Telemetry.AnalyzerTelemetry;
 
 namespace Microsoft.CodeAnalysis.Diagnostics
 {
@@ -169,7 +168,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             }
 
             Func<DiagnosticAnalyzer, object> getAnalyzerGate = analyzer => singleThreadedAnalyzerToGateMap[analyzer];
-            var analyzerExecutor = AnalyzerExecutor.Create(compilation, analysisOptions.AnalyzerOptions ?? AnalyzerOptions.Empty, addDiagnostic, newOnAnalyzerException, IsCompilerAnalyzer,
+            var analyzerExecutor = AnalyzerExecutor.Create(compilation, analysisOptions.Options ?? AnalyzerOptions.Empty, addDiagnostic, newOnAnalyzerException, IsCompilerAnalyzer,
                 analyzerManager, getAnalyzerGate, analysisOptions.LogAnalyzerExecutionTime, addLocalDiagnosticOpt, addNonLocalDiagnosticOpt, cancellationToken);
 
             Initialize(analyzerExecutor, diagnosticQueue, cancellationToken);
@@ -602,7 +601,9 @@ namespace Microsoft.CodeAnalysis.Diagnostics
                         // When the queue is completed with a pending DequeueAsync return then a 
                         // TaskCanceledException will be thrown.  This just signals the queue is 
                         // complete and we should finish processing it.
-                        Debug.Assert(CompilationEventQueue.IsCompleted, "DequeueAsync should never throw unless the AsyncQueue<T> is completed.");
+
+                        // This failure is being tracked by https://github.com/dotnet/roslyn/issues/5962
+                        // Debug.Assert(CompilationEventQueue.IsCompleted, "DequeueAsync should never throw unless the AsyncQueue<T> is completed.");
                         break;
                     }
 
@@ -863,11 +864,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             }, analyzerExecutor.CancellationToken);
         }
 
-        internal async Task<ActionCounts> GetAnalyzerActionCountsAsync(DiagnosticAnalyzer analyzer, CancellationToken cancellationToken)
+        internal async Task<AnalyzerActionCounts> GetAnalyzerActionCountsAsync(DiagnosticAnalyzer analyzer, CancellationToken cancellationToken)
         {
             var executor = analyzerExecutor.WithCancellationToken(cancellationToken);
             var analyzerActions = await analyzerManager.GetAnalyzerActionsAsync(analyzer, executor).ConfigureAwait(false);
-            return ActionCounts.Create(analyzerActions);
+            return AnalyzerActionCounts.Create(analyzerActions);
         }
 
         /// <summary>
@@ -1174,7 +1175,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics
 
             var declaringReferenceSyntax = declaration.GetSyntax(cancellationToken);
             var topmostNodeForAnalysis = semanticModel.GetTopmostNodeForDiagnosticAnalysis(symbol, declaringReferenceSyntax);
-            ComputeDeclarationsInNode(semanticModel, declaringReferenceSyntax, topmostNodeForAnalysis, builder, cancellationToken);
+            ComputeDeclarationsInNode(semanticModel, symbol, declaringReferenceSyntax, topmostNodeForAnalysis, builder, cancellationToken);
             var isPartialDeclAnalysis = analysisScope.FilterSpanOpt.HasValue && !analysisScope.ContainsSpan(topmostNodeForAnalysis.FullSpan);
             var nodesToAnalyze = shouldExecuteSyntaxNodeActions ?
                     GetSyntaxNodesToAnalyze(topmostNodeForAnalysis, symbol, builder, analysisScope, isPartialDeclAnalysis, semanticModel, analyzerExecutor) :
@@ -1188,11 +1189,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             return declarationAnalysisData;
         }
 
-        private static void ComputeDeclarationsInNode(SemanticModel semanticModel, SyntaxNode declaringReferenceSyntax, SyntaxNode topmostNodeForAnalysis, List<DeclarationInfo> builder, CancellationToken cancellationToken)
+        private static void ComputeDeclarationsInNode(SemanticModel semanticModel, ISymbol declaredSymbol, SyntaxNode declaringReferenceSyntax, SyntaxNode topmostNodeForAnalysis, List<DeclarationInfo> builder, CancellationToken cancellationToken)
         {
             // We only care about the top level symbol declaration and its immediate member declarations.
             int? levelsToCompute = 2;
-            var getSymbol = topmostNodeForAnalysis != declaringReferenceSyntax;
+            var getSymbol = topmostNodeForAnalysis != declaringReferenceSyntax || declaredSymbol.Kind == SymbolKind.Namespace;
             semanticModel.ComputeDeclarationsInNode(topmostNodeForAnalysis, getSymbol, builder, cancellationToken, levelsToCompute);
         }
 

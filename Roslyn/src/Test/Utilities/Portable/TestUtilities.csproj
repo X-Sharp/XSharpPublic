@@ -102,8 +102,8 @@
     <InternalsVisibleToTest Include="Roslyn.InteractiveHost.UnitTests" />
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.UnitTests" />
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.Desktop.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.CSharp.UnitTests" />
-    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.CSharp.Desktop.UnitTests" />
+    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.CSharp.Scripting.UnitTests" />
+    <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.CSharp.Scripting.Desktop.UnitTests" />
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.VisualBasic.UnitTests" />
     <InternalsVisibleToTest Include="Microsoft.CodeAnalysis.Scripting.VisualBasic.Desktop.UnitTests" />
     <InternalsVisibleToTest Include="Roslyn.Services.Editor.UnitTests" />
@@ -113,6 +113,7 @@
     <InternalsVisibleToTest Include="Roslyn.Services.UnitTests" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\App.config" />
     <None Include="project.json" />
   </ItemGroup>
   <ImportGroup Label="Targets">

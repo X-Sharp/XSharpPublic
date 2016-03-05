@@ -10,11 +10,13 @@ usage()
     echo "  --os <os>           OS to run (Linux / Darwin)"
 }
 
-XUNIT_VERSION=2.0.0-alpha-build2576
+XUNIT_VERSION=2.1.0
 BUILD_CONFIGURATION=Debug
 OS_NAME=$(uname -s)
 USE_CACHE=true
 MONO_ARGS='--debug=mdb-optimizations --attach=disable'
+
+export MONO_THREADS_PER_CPU=50
 
 # There are some stability issues that are causing Jenkins builds to fail at an 
 # unacceptable rate.  To temporarily work around that we are going to retry the 
@@ -56,36 +58,14 @@ do
     esac
 done
 
-acquire_sem_or_wait()
-{
-    local lockpath="/tmp/${1}.lock.d"
-    echo "Acquiring ${lockpath}"
-    while true; do
-        mkdir "${lockpath}" 2>/dev/null
-        if [ $? -eq 0 ]; then
-            break;
-        fi
-        echo "Waiting for lock $1"
-        sleep 10
-    done
-}
-
-release_sem()
-{
-    rmdir "/tmp/${1}.lock.d"
-}
-
 restore_nuget()
 {
-    acquire_sem_or_wait "restore_nuget"
-
-    local package_name="nuget.11.zip"
+    local package_name="nuget.stabilization.27.zip"
     local target="/tmp/$package_name"
     echo "Installing NuGet Packages $target"
     if [ -f $target ]; then
         if [ "$USE_CACHE" = "true" ]; then
             echo "Already installed"
-            release_sem "restore_nuget"
             return
         fi
     fi
@@ -97,13 +77,11 @@ restore_nuget()
     unzip -uoq $package_name -d ~/
     if [ $? -ne 0 ]; then
         echo "Unable to download NuGet packages"
-        release_sem "restore_nuget"
         exit 1
     fi
 
     popd
 
-    release_sem "restore_nuget"
 }
 
 run_msbuild()
@@ -162,17 +140,6 @@ save_toolset()
 {
     mkdir Binaries/Bootstrap
     cp Binaries/$BUILD_CONFIGURATION/core-clr/* Binaries/Bootstrap
-
-    if [ "$OS_NAME" == "Linux" ]; then
-      # Copy over the CoreCLR runtime
-      ./build/linux/copy-coreclr-runtime.sh Binaries/Bootstrap
-      if [ $? -ne 0 ]; then
-        echo Saving bootstrap binaries failed
-        exit 1
-      fi
-      chmod +x Binaries/Bootstrap/csc
-      chmod +x Binaries/Bootstrap/vbc
-    fi 
 }
 
 # Clean out all existing binaries.  This ensures the bootstrap phase forces
@@ -189,7 +156,7 @@ build_roslyn()
     local bootstrapArg=""
 
     if [ "$OS_NAME" == "Linux" ]; then
-      bootstrapArg="/p:CscToolPath=$(pwd)/Binaries/Bootstrap /p:CscToolExe=csc \
+        bootstrapArg="/p:CscToolPath=$(pwd)/Binaries/Bootstrap /p:CscToolExe=csc \
 /p:VbcToolPath=$(pwd)/Binaries/Bootstrap /p:VbcToolExe=vbc"
     fi
 
@@ -203,12 +170,9 @@ install_mono_toolset()
     local target=/tmp/$1
     echo "Installing Mono toolset $1"
 
-    acquire_sem_or_wait "$1"
-
     if [ -d $target ]; then
         if [ "$USE_CACHE" = "true" ]; then
             echo "Already installed"
-            release_sem "$1"
             return
         fi
     fi
@@ -221,12 +185,10 @@ install_mono_toolset()
     tar -jxf $1.tar.bz2
     if [ $? -ne 0 ]; then
         echo "Unable to download toolset"
-        release_sem "$1"
         exit 1
     fi
 
     popd
-    release_sem "$1"
 }
 
 # This function will update the PATH variable to put the desired
@@ -259,7 +221,7 @@ set_mono_path()
 
 test_roslyn()
 {
-    local xunit_runner=~/.nuget/packages/xunit.runners/$XUNIT_VERSION/tools/xunit.console.x86.exe
+    local xunit_runner=~/.nuget/packages/xunit.runner.console/$XUNIT_VERSION/tools/xunit.console.x86.exe
     local test_binaries=(
         Roslyn.Compilers.CSharp.CommandLine.UnitTests
         Roslyn.Compilers.CSharp.Syntax.UnitTests
@@ -268,9 +230,14 @@ test_roslyn()
         Roslyn.Compilers.VisualBasic.Syntax.UnitTests)
     local any_failed=false
 
+    # Need to copy over the execution dependencies.  This isn't being done correctly
+    # by msbuild at the moment. 
+    cp ~/.nuget/packages/xunit.extensibility.execution/$XUNIT_VERSION/lib/net45/xunit.execution.desktop.* Binaries/$BUILD_CONFIGURATION
+
     for i in "${test_binaries[@]}"
     do
-        mono $MONO_ARGS $xunit_runner Binaries/$BUILD_CONFIGURATION/$i.dll -xml Binaries/$BUILD_CONFIGURATION/$i.TestResults.xml -noshadow
+        mkdir -p Binaries/$BUILD_CONFIGURATION/xUnitResults/
+        mono $MONO_ARGS $xunit_runner Binaries/$BUILD_CONFIGURATION/$i.dll -xml Binaries/$BUILD_CONFIGURATION/xUnitResults/$i.dll.xml -noshadow
         if [ $? -ne 0 ]; then
             any_failed=true
         fi

@@ -52,6 +52,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Interactive
 
             _componentModel = (IComponentModel)GetService(typeof(SComponentModel));
             _interactiveWindowProvider = _componentModel.DefaultExportProvider.GetExportedValue<TVsInteractiveWindowProvider>();
+            KnownUIContexts.ShellInitializedContext.WhenActivated(() =>
+                _componentModel.GetService<HACK_ThemeColorFixer>());
 
             var menuCommandService = (OleMenuCommandService)GetService(typeof(IMenuCommandService));
             InitializeMenuCommands(menuCommandService);
@@ -71,9 +73,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Interactive
         {
             if (rguidPersistenceSlot == ToolWindowId)
             {
-                var result = _interactiveWindowProvider.Create((int)id);
-
-                return (result != null) ? VSConstants.S_OK : VSConstants.E_FAIL;
+                _interactiveWindowProvider.Create((int)id);
+                return VSConstants.S_OK;
             }
 
             return VSConstants.E_FAIL;

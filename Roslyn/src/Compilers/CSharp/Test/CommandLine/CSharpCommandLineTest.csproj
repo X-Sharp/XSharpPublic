@@ -14,8 +14,6 @@
     <AssemblyName>Roslyn.Compilers.CSharp.CommandLine.UnitTests</AssemblyName>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
-    <SolutionDir Condition="'$(SolutionDir)' == '' OR '$(SolutionDir)' == '*Undefined*'">..\..\..\..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup Label="Project References">
@@ -60,7 +58,6 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
@@ -69,7 +66,6 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -80,7 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineDiagnosticFormatterTests.cs" />
-    <Compile Include="CommandLineScriptTests.cs" />
     <Compile Include="CommandLineTests.cs" />
     <Compile Include="CommandLineTestResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -94,6 +89,7 @@
     <None Include="..\..\csc\csc.rsp">
       <Link>csc.rsp</Link>
     </None>
+    <None Include="app.config" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>

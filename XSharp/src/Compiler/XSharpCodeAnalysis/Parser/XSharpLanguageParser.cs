@@ -118,23 +118,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stream = new AntlrInputStream(_text.ToString());
             var lexer = new XSharpLexer(stream);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new XSharpParser(tokens);
+#if DEBUG && DUMP_TIMES
+            DateTime t = DateTime.Now;
+#endif
+            tokens.Fill(); // Required due to the preprocessor
+#if DEBUG && DUMP_TIMES
+            {
+                var ts = DateTime.Now - t;
+                t += ts;
+                Debug.WriteLine("Lexing completed in {0}",ts);
+            }
+#endif
+            var pp = new XSharpPreprocessor(tokens, _options.PreprocessorSymbols);
+            var pp_tokens = new CommonTokenStream(pp);
+            var parser = new XSharpParser(pp_tokens);
 #if DEBUG
             var errorListener = new XSharpErrorListener(_fileName);
             parser.AddErrorListener(errorListener);
 #endif
 #if DEBUG && DUMP_TIMES
-            DateTime t = DateTime.Now;
-#endif
-#if DEBUG && DUMP_TIMES
-            {
-                while (tokens.Fetch(1) > 0) { }
-                tokens.Reset();
-            }
+            pp_tokens.Fill();
             {
                 var ts = DateTime.Now - t;
                 t += ts;
-                Debug.WriteLine("Lexing completed in {0}",ts);
+                Debug.WriteLine("Preprocessing completed in {0}",ts);
             }
 #endif
             parser.ErrorHandler = new XSharpErrorStrategy();
@@ -148,7 +155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #if DEBUG
                 Debug.WriteLine("Antlr: SLL parsing failed. Trying again in LL mode.");
 #endif
-                tokens.Reset();
+                pp_tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 tree = parser.source();

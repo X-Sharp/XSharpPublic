@@ -10,9 +10,9 @@ namespace XSTestCodeAnalysis
     {
         public static int Main(string[] args)
         {
-/*#if (DEBUG)
+#if (DEBUG)
             System.Diagnostics.Debug.Listeners.Add(new System.Diagnostics.ConsoleTraceListener());
-#endif*/
+#endif
             var res = TestExecutor.RunTests(new TestOptions(args));
 
             if (res.Total > 0)

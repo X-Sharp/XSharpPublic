@@ -63,7 +63,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Imports.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\InContainerBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\InMethodBinder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Binder\InteractiveUsingsBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\LocalBinderFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\LocalInProgressBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\LocalScopeBinder.cs" />
@@ -77,6 +76,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\MethodGroupResolution.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\NameofBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\NamespaceOrTypeAndUsingDirective.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Binder\ScriptLocalScopeBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Semantics\AccessCheck.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Semantics\BestTypeInferrer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\Semantics\Conversions\BestIndex.cs" />
@@ -123,7 +123,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Binder\SwitchBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\SimpleLocalScopeBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\TypeofBinder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Binder\UsingsBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\UsingStatementBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\WhileBinder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binder\WithClassTypeParametersBinder.cs" />
@@ -158,13 +157,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\EmitOperators.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\EmitStatement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\Optimizer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CommandLine\CommandLineArguments.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CommandLine\CSharpCommandLineArguments.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLine\CommandLineDiagnosticFormatter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CommandLine\CommandLineParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CommandLine\CSharpCommandLineParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandLine\CSharpCompiler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compilation\AttributeSemanticModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compilation\AwaitExpressionInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compilation\BuiltInOperators.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compilation\CSharpScriptCompilationInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compilation\SyntaxAndDeclarationManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compilation\SyntaxAndDeclarationManager.LazyState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Compilation\CSharpCompilerDiagnosticAnalyzer.cs" />
@@ -677,6 +677,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\DirectiveTriviaSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\ExpressionStatementSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\GenericNameSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\BinaryExpressionSyntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syntax\CSharpSyntaxTree.DebuggerSyntaxTree.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\PropertyDeclarationSyntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\ChildSyntaxList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syntax\InternalSyntax\ChildSyntaxList.Enumerator.cs" />
@@ -771,9 +773,6 @@
     <None Include="$(MSBuildThisFileDirectory)FlowAnalysis\Flow Analysis Design.docx" />
     <None Include="$(MSBuildThisFileDirectory)project.json" />
     <None Include="$(MSBuildThisFileDirectory)Symbols\PublicSymbolTable.cd" />
-    <None Include="$(MSBuildThisFileDirectory)..\CSharpCodeAnalysisRules.ruleset">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <!-- <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CSharpResources.Designer.cs">

@@ -189,7 +189,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
 
                     var syntax = (CSharpSyntaxNode)syntaxRef.GetSyntax();
-                    var syntaxRoot = syntaxTree.GetCompilationUnitRoot();
+                    var syntaxTree = syntaxRef.SyntaxTree;
+                    var syntaxRoot = syntaxRef.SyntaxTree.GetCompilationUnitRoot();
 
                     if (binderFactory == null)
                     {

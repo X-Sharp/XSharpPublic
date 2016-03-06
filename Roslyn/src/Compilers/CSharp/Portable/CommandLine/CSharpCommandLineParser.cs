@@ -14,7 +14,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
-    public class CSharpCommandLineParser : CommandLineParser
+    public partial class CSharpCommandLineParser : CommandLineParser
     {
         public static CSharpCommandLineParser Default { get; } = new CSharpCommandLineParser();
 

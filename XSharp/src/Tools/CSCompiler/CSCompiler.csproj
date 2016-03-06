@@ -57,6 +57,9 @@
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AbstractAnalyzerAssemblyLoader.cs">
       <Link>AbstractAnalyzerAssemblyLoader.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AnalyzerAssemblyLoadUtils.cs">
+      <Link>AnalyzerAssemblyLoadUtils.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\ShadowCopyAnalyzerAssemblyLoader.cs">
       <Link>ShadowCopyAnalyzerAssemblyLoader.cs</Link>
     </Compile>

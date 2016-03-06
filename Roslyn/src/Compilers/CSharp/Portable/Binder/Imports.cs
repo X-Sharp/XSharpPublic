@@ -13,6 +13,18 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+    internal sealed class AliasAndUsingDirectiveComparer : IEqualityComparer<String>
+    {
+        public bool Equals(String x, String y)
+        {
+            return String.Compare(x, y,StringComparison.OrdinalIgnoreCase) == 0;
+        }
+
+        public int GetHashCode(String obj)
+        {
+            return ((string)obj).ToLower().GetHashCode();
+        }
+    }
     /// <summary>
     /// Represents symbols imported to the binding scope via using namespace, using alias, and extern alias.
     /// </summary>
@@ -163,9 +175,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (usingAliases == null)
                             {
 #if XSHARP
-                                usingAliases = new Dictionary<string, AliasAndUsingDirective>(CaseInsensitiveComparison.Comparer);
+                                usingAliases = ImmutableDictionary.CreateBuilder<string, AliasAndUsingDirective>(new AliasAndUsingDirectiveComparer());
 #else
-                                usingAliases = new Dictionary<string, AliasAndUsingDirective>();
+                                usingAliases = ImmutableDictionary.CreateBuilder<string, AliasAndUsingDirective>();
 #endif
                             }
 

@@ -154,6 +154,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     continue;
                 }
 
+#if XSHARP
+                if (ParseXSharpArgument(ref name, ref value, diagnostics))
+                    continue;
+#endif
                 switch (name)
                 {
                     case "?":
@@ -1160,6 +1164,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // add option incompatibility errors if any
             diagnostics.AddRange(options.Errors);
 
+#if XSHARP
+            parseOptions.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions);
+            options.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions);
+#endif
             return new CSharpCommandLineArguments
             {
                 IsScriptRunner = IsScriptRunner,

@@ -1273,5 +1273,145 @@ END CLASS
         }
 
 
+        // 126
+        [Test(Author = "Chris", Id = "C126", Title = "error: no viable alternative at input 'LOCAL'")]
+        public static void BEGIN_USING_LOCAL()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+BEGIN USING LOCAL f1 := System.Windows.Forms.Form{} AS System.Windows.Forms.Form
+	? f1:ToString()
+END
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+        // 127
+        [Test(Author = "Chris", Id = "C127", Title = "error: extraneous input 'f2' expecting...")]
+        public static void BEGIN_USING_VAR()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+BEGIN USING VAR f2 := System.Windows.Forms.Form{}
+	? f2:ToString()
+END
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+        // 128
+        [Test(Author = "Chris", Id = "C128", Title = "error: no viable alternative at input 'YIELD'")]
+        public static void YIELD_BREAK()
+        {
+            var s = ParseSource(@"
+FUNCTION YieldTest() AS System.Collections.IEnumerable
+	FOR LOCAL n := 1 AS INT UPTO 10
+		YIELD RETURN n
+		IF n > 5
+			YIELD BREAK
+		END IF
+	NEXT
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+        // 129
+        [Test(Author = "Chris", Id = "C129", Title = "Assertion failed at BetterConversionExpression...")]
+        public static void Missing_ref_assertion()
+        {
+            var s = ParseSource(@"
+// using REF for the last argument gets rid of the failed assertion
+FUNCTION Start() AS VOID
+LOCAL n,m,k AS INT
+n := 1;m := 1;k := 1
+Math.DivRem( n, m, k )
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+        // 130
+        [Test(Author = "Chris", Id = "C130", Title = "Assertion 'passing args byref should not clone them into temps'")]
+        public static void Literal_ref_assertion()
+        {
+            var s = ParseSource(@"
+// also it compiles without errors, even though 3rd argument must be passed by reference
+FUNCTION Start() AS VOID
+? Math.DivRem( 1, 2, 3 )
+");
+            CompileWithErrors(s);
+        }
+
+
+
+
+        // 131
+        [Test(Author = "Chris", Id = "C131", Title = "Assertion failed with generic method")]
+        public static void Assertion_failed_with_generic_method()
+        {
+            var s = ParseSource(@"
+// at LanguageService.CodeAnalysis.XSharp.Symbols.OverriddenMethodTypeParameterMap.GetOverriddenMethod(SourceMemberMethodSymbol overridingMethod)
+CLASS AssertionClass
+METHOD GenericMethod<T>() AS VOID
+	
+METHOD OriginalReport<T>() AS T WHERE T IS NEW()
+RETURN Default(T) 	
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+
+        // 132
+        [Test(Author = "Chris", Id = "C132", Title = "Assertion failed and compiler crash with nested arrays")]
+        public static void Assertion_and_crash_nested_arrays()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL n AS INT[][]
+n := INT[][]{10}
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+
+        // 133
+        [Test(Author = "Chris", Id = "C133", Title = "No warning on not using assigned value")]
+        public static void No_warning_on_not_using_assigned_value()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL n := 1 AS INT // correct warning XS0219 here
+LOCAL o := System.Collections.ArrayList{} AS OBJECT // no warning
+");
+            CompileWithWarnings(s);
+        }
+
+
+
+        // 134
+        [Test(Author = "Chris", Id = "C134", Title = "error: no viable alternative at input '[System.Runtime.InteropServices.DllImportAttribute('USER32.dll')];\r\n_DLL'")]
+        public static void DLL_Func_with_DllImportAttribute()
+        {
+            var s = ParseSource(@"
+// not sure if this makes sense, but that existed in existing vulcan code
+[System.Runtime.InteropServices.DllImportAttribute(""USER32.dll"")];
+_DLL FUNC SetForegroundWindow(hWnd AS IntPtr) AS LOGIC PASCAL:USER32.SetForegroundWindow
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
     }
 }

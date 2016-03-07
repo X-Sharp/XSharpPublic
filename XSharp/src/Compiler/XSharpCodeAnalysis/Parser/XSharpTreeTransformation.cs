@@ -629,11 +629,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var rawMods = getVisLvl <= setVisLvl ? setMods : getMods;
             var innerMods = _pool.Allocate();
-            for(int i = 0; i < rawMods.Count; i++) {
+            for (int i = 0; i < rawMods.Count; i++) {
                 var t = rawMods[i];
                 if (!outerMods.Any(t.Kind)) {
                     if (!SyntaxFacts.IsAccessibilityModifier(t.Kind))
-                        t = t.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadMemberFlag,t));
+                        t = t.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadMemberFlag, t));
                     innerMods.Add(t);
                 }
             }
@@ -647,9 +647,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             TypeSyntax voPropType;
             if (vop.AccessMethodCtx != null)
-                voPropType = vop.AccessMethodCtx.Type.Get<TypeSyntax>();
+            {
+                voPropType = vop.AccessMethodCtx.Type?.Get<TypeSyntax>() ?? MissingType();
+            }
             else if (vop.AssignMethodCtx != null && vop.AssignMethodCtx.ParamList != null && vop.AssignMethodCtx.ParamList._Params?.Count > 0)
-                voPropType = vop.AssignMethodCtx.ParamList._Params[0].Type.Get<TypeSyntax>();
+                voPropType = vop.AssignMethodCtx.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? MissingType();
             else
                 voPropType = MissingType();
 

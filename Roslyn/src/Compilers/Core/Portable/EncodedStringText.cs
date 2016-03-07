@@ -21,8 +21,8 @@ namespace Microsoft.CodeAnalysis.Text
         /// <summary>
         /// Encoding to use when UTF-8 fails. We try to find the following, in order, if available:
         ///     1. The default ANSI codepage
-       ///      2. CodePage 1252.
-       ///      3. Latin1.
+        ///     2. CodePage 1252.
+        ///     3. Latin1.
         /// </summary>
         private static readonly Encoding s_fallbackEncoding = GetFallbackEncoding();
 
@@ -30,22 +30,17 @@ namespace Microsoft.CodeAnalysis.Text
         {
             try
             {
-                if (CoreClrShim.IsCoreClr)
+                if (CoreClrShim.CodePagesEncodingProvider.Type != null)
                 {
-                    // If we're running on CoreCLR there is no "default" codepage but
-                    // we should be able to grab 1252 from System.Text.Encoding.CodePages
+                    // If we're running on CoreCLR we have to register the CodePagesEncodingProvider
+                    // first
                     CoreClrShim.Encoding.RegisterProvider(CoreClrShim.CodePagesEncodingProvider.Instance);
-                    // We should now have 1252 from the CodePagesEncodingProvider
-                    return PortableShim.Encoding.GetEncoding(1252);
                 }
-                else
-                {
-                    // If we're running on the desktop framework we should be able
-                    // to get the default ANSI code page in the operating system's
-                    // regional and language settings,
-                    return PortableShim.Encoding.GetEncoding(0)
-                        ?? PortableShim.Encoding.GetEncoding(1252);
-                }
+
+                // Try to get the default ANSI code page in the operating system's
+                // regional and language settings, and fall back to 1252 otherwise
+                return PortableShim.Encoding.GetEncoding(0)
+                    ?? PortableShim.Encoding.GetEncoding(1252);
             }
             catch (NotSupportedException)
             {
@@ -72,7 +67,20 @@ namespace Microsoft.CodeAnalysis.Text
         /// <paramref name="defaultEncoding"/> is null and the stream appears to be a binary file.
         /// </exception>
         /// <exception cref="IOException">An IO error occurred while reading from the stream.</exception>
-        internal static SourceText Create(Stream stream, Encoding defaultEncoding = null, SourceHashAlgorithm checksumAlgorithm = SourceHashAlgorithm.Sha1)
+        internal static SourceText Create(Stream stream,
+            Encoding defaultEncoding = null,
+            SourceHashAlgorithm checksumAlgorithm = SourceHashAlgorithm.Sha1)
+        {
+            return Create(stream,
+                () => s_fallbackEncoding,
+                defaultEncoding: defaultEncoding,
+                checksumAlgorithm: checksumAlgorithm);
+        }
+
+        // internal for testing
+        internal static SourceText Create(Stream stream, Func<Encoding> getEncoding,
+            Encoding defaultEncoding = null,
+            SourceHashAlgorithm checksumAlgorithm = SourceHashAlgorithm.Sha1)
         {
             Debug.Assert(stream != null);
             Debug.Assert(stream.CanRead && stream.CanSeek);
@@ -92,12 +100,13 @@ namespace Microsoft.CodeAnalysis.Text
 
             try
             {
-                return Decode(stream, defaultEncoding ?? s_fallbackEncoding, checksumAlgorithm, throwIfBinaryDetected: detectEncoding);
+                return Decode(stream, defaultEncoding ?? getEncoding(), checksumAlgorithm, throwIfBinaryDetected: detectEncoding);
             }
             catch (DecoderFallbackException e)
             {
                 throw new InvalidDataException(e.Message);
             }
+
         }
 
         /// <summary>

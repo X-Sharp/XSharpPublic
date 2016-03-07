@@ -197,6 +197,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal abstract partial class CSharpSyntaxNode
     {
         public IParseTree XNode { get; internal set; }
+        public ITokenStream XTokens { get; internal set; }
     }
 }
 
@@ -213,5 +214,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
     public sealed partial class CompilationUnitSyntax
     {
         public XSharpParser.SourceContext XSource { get { return (XSharpParser.SourceContext)(((InternalSyntax.CompilationUnitSyntax)(this.Green)).XNode); } }
+        public ITokenStream XTokenStream { get { return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).XTokens); } }
     }
 }

@@ -11,8 +11,8 @@
 namespace Microsoft.CodeAnalysis.Scripting {
     using System;
     using System.Reflection;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -80,6 +80,24 @@ namespace Microsoft.CodeAnalysis.Scripting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot set a constant variable.
+        /// </summary>
+        internal static string CannotSetConstantVariable {
+            get {
+                return ResourceManager.GetString("CannotSetConstantVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot set a read-only variable.
+        /// </summary>
+        internal static string CannotSetReadOnlyVariable {
+            get {
+                return ResourceManager.GetString("CannotSetReadOnlyVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t assign &apos;{0}&apos; to &apos;{1}&apos;..
         /// </summary>
         internal static string CantAssignTo {
@@ -121,6 +139,32 @@ namespace Microsoft.CodeAnalysis.Scripting {
         internal static string GlobalVariablesWithoutGlobalType {
             get {
                 return ResourceManager.GetString("GlobalVariablesWithoutGlobalType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type &quot;#help&quot; for more information..
+        /// </summary>
+        internal static string HelpPrompt {
+            get {
+                return ResourceManager.GetString("HelpPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard shortcuts:
+        ///  Enter         If the current submission appears to be complete, evaluate it.  Otherwise, insert a new line.
+        ///  Escape        Clear the current submission.
+        ///  UpArrow       Replace the current submission with a previous submission.
+        ///  DownArrow     Replace the current submission with a subsequent submission (after having previously navigated backwards).
+        ///REPL commands:
+        ///  #help         Display help on available commands and key bindings.
+        ///Script directives:
+        ///  #r            Add a metad [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string HelpText {
+            get {
+                return ResourceManager.GetString("HelpText", resourceCulture);
             }
         }
         

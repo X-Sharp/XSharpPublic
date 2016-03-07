@@ -122,56 +122,59 @@ namespace XSharpColorizer
             // We can probably also get the list of tokens from the parser but I have no idea how to do that at this moment
 
             this.Snapshot = this.Buffer.CurrentSnapshot;
-            ITokenStream TokenStream;
+            ITokenStream TokenStream = null;
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
             xsTagger.Parse(this.Snapshot, out TokenStream);
+            if (TokenStream != null)
+            {
+                for (var iToken = 0; iToken < TokenStream.Size; iToken++)
+                {
+                    var token = TokenStream.Get(iToken);
+                    var tokenType = token.Type;
+                    TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
+                    if (XSharpLexer.IsKeyword(tokenType))
+                    {
+                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpKeywordType));
+                    }
+                    else if (XSharpLexer.IsConstant(tokenType))
+                    {
+                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpConstantType));
+
+                    }
+                    else if (XSharpLexer.IsOperator(tokenType))
+                    {
+                        switch (tokenType)
+                        {
+                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LPAREN:
+                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LCURLY:
+                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LBRKT:
+                                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceOpenType));
+                                break;
+
+                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RPAREN:
+                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RCURLY:
+                            case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
+                                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceCloseType));
+                                break;
+                            default:
+                                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpOperatorType));
+                                break;
+                        }
+                    }
+                    else if (XSharpLexer.IsIdentifier(tokenType))
+                    {
+                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpIdentifierType));
+                    }
+                    else if (XSharpLexer.IsComment(tokenType))
+                    {
+                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpCommentType));
+                    }
+                }
+            }
             foreach (var tag in xsTagger.Tags)
             {
                 tags.Add(tag);
-            }
-            for (var iToken = 0; iToken < TokenStream.Size; iToken++)
-            {
-                var token = TokenStream.Get(iToken); 
-                var tokenType = token.Type;
-                TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
-                if (XSharpLexer.IsKeyword(tokenType))
-                {
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpKeywordType));
-                }
-                else if (XSharpLexer.IsConstant(tokenType))
-                {
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpConstantType));
-
-                }
-                else if (XSharpLexer.IsOperator(tokenType))
-                {
-                    switch (tokenType)
-                    {
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LPAREN:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LCURLY:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LBRKT:
-                            tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceOpenType));
-                            break;
-
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RPAREN:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RCURLY:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
-                            tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceCloseType));
-                            break;
-                        default:
-                            tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpOperatorType));
-                            break;
-                    }
-                }
-                else if (XSharpLexer.IsIdentifier(tokenType))
-                {
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpIdentifierType));
-                }
-                else if (XSharpLexer.IsComment(tokenType))
-                {
-                    tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpCommentType));
-                }
             }
         }
 

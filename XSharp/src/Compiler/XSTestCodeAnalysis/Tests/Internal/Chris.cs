@@ -93,6 +93,38 @@ END CLASS
 
 
 
+        // 32
+        [Test(Author = "Chris", Id = "C32", Title = "compiler crash with TRY")]
+        public static void compiler_crash_with_TRY()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+TRY 
+FINALLY
+END
+
+
+TRY
+CATCH e AS Exception
+END
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 33
+        [Test(Author = "Chris", Id = "C33", Title = "error XS0113: A member 'BasicForm.MyProp' marked as override cannot be marked as new or virtual")]
+        public static void error_XS0113_with_VIRTUAL_PROPERTY()
+        {
+            var s = ParseSource(@"
+CLASS BasicForm
+VIRTUAL PROPERTY MyProp AS INT GET 1
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
         // 34
         [Test(Author = "Chris", Id = "C34", Title = "error XS0119: 'TestClass.MessageBox()' is a method, which is not valid in the given context")]
         public static void error_XS0119_MessageBox_is_a_method_which_is_not_valid_in_the_given_context()
@@ -103,6 +135,78 @@ CLASS TestClass
 	METHOD MessageBox() AS VOID
 		MessageBox.Show(""test"")    
         RETURN
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+        // 35
+        [Test(Author = "Chris", Id = "C35", Title = "error XS1031: Type expected")]
+        public static void error_XS1031_with_access_assign()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	PROTECT o AS OBJECT
+	ACCESS Type AS OBJECT
+	RETURN SELF:o
+	ASSIGN Type (val AS OBJECT)
+		SELF:o := val
+	RETURN
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 36
+        [Test(Author = "Chris", Id = "C36", Title = "error XS0103: The name 'CONSTRUCTOR' does not exist in the current context")]
+        public static void error_XS0103_with_static_constructor()
+        {
+            var s = ParseSource(@"
+CLASS ChildClass
+STATIC CONSTRUCTOR()
+CONSTRUCTOR()
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 37
+        [Test(Author = "Chris", Id = "C37", Title = "compiler crash with question mark")]
+        public static void compiler_crash_with_question_mark()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+// without arguments
+?
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 38
+        [Test(Author = "Chris", Id = "C38", Title = "error XS0119: 'int' is a type, which is not valid in the given context")]
+        public static void error_XS0119_conversion_operator()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL n AS INT
+LOCAL d AS DWORD
+d := 1
+n := (INT)d // ok
+n := INT(d) // error
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 39
+        [Test(Author = "Chris", Id = "C39", Title = "compiler_crash_with_DIM_array")]
+        public static void compiler_crash_with_DIM_array()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PROTECT DIM aTest[100] AS INT
 END CLASS
 ");
             CompileAndLoadWithoutErrors(s);
@@ -185,6 +289,34 @@ endif
 
 
 
+        // 44
+        [Test(Author = "Chris", Id = "C44", Title = "warning XS0165: Use of unassigned local variable 'n'")]
+        public static void Use_of_unassigned_local_variable_warning()
+        {
+            var s = ParseSource(@"
+// I think this should be disabled, at least for now, as it bloats the compiler warning reporting. Vulcan does not report a warning on this.
+FUNCTION Start() AS VOID
+LOCAL n AS INT
+n++
+");
+            CompileWithoutWarnings(s);
+        }
+
+
+        // 45
+        [Test(Author = "Chris", Id = "C45", Title = "error XS0106: The modifier 'public' is not valid for this item")]
+        public static void error_XS0106_with_destructor()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+DESTRUCTOR()
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
         // 46
         // RvdH 20160201: I do not thing this is a bug. There is no need to make a new virtual property in a sealed class
         // The compiler is simply telling the user that there is a design error in his code...
@@ -205,6 +337,240 @@ END CLASS
 
 
 
+        // 47
+        [Test(Author = "Chris", Id = "C47", Title = "compiler crash with assembly attributes")]
+        public static void compiler_crash_with_assembly_attributes()
+        {
+            var s = ParseSource(@"
+#using System.Reflection
+#using System.Runtime.InteropServices
+
+[assembly: AssemblyTitleAttribute( ""FM_Funktionen"" )]
+[assembly: AssemblyDescriptionAttribute( """" )]
+[assembly: AssemblyConfigurationAttribute( """" )]
+[assembly: AssemblyCompanyAttribute( """" )]
+[assembly: AssemblyProductAttribute( ""FM_Funktionen"" )]
+[assembly: AssemblyCopyrightAttribute( ""Copyright © Frank Maraite, Erkelenz, 2000-2015"" )]
+[assembly: AssemblyTrademarkAttribute( ""FM_Funktionen"" )]
+[assembly: AssemblyCultureAttribute( """" )]
+[assembly: AssemblyVersionAttribute( ""1.0.*"" )]
+[assembly: AssemblyFileVersionAttribute( ""1.0.*"" )]
+[assembly: AssemblyInformationalVersionAttribute( ""1.0.*"" )]
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 48
+        [Test(Author = "Chris", Id = "C48", Title = "error XS0200: Property or indexer 'TestClass.Test' cannot be assigned to -- it is read only")]
+        public static void error_XS0200_Auto_property()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+METHOD TestMethod(n AS INT) AS VOID
+SELF:Test := n
+PROPERTY Test AS INT AUTO
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 49
+        [Test(Author = "Chris", Id = "C49", Title = "error XS0106: The modifier 'public' is not valid for this item")]
+        public static void interface_with_event()
+        {
+            var s = ParseSource(@"
+INTERFACE ITest
+	EVENT MyEven AS EventHandler
+END INTERFACE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 50
+        [Test(Author = "Chris", Id = "C50", Title = "error XS0531: 'ITest.RecNo.get': interface members cannot have a definition")]
+        public static void interface_with_property()
+        {
+            var s = ParseSource(@"
+INTERFACE ITest
+	PROPERTY RecNo AS INT GET SET
+END INTERFACE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 51
+        [Test(Author = "Chris", Id = "C51", Title = "compiler crash with StructLayout")]
+        public static void compiler_crash_with_StructLayout()
+        {
+            var s = ParseSource(@"
+#using System.Runtime.InteropServices
+[StructLayout(LayoutKind.Sequential)];
+STRUCT _winSIZE
+   EXPORT cx AS Int32
+   EXPORT cy AS Int32
+END STRUCTURE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 52
+        [Test(Author = "Chris", Id = "C52", Title = "compiler crash (note the whitespace in front of #region)")]
+        public static void crash_with_region()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	#region test
+	#endregion
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 53
+        [Test(Author = "Chris", Id = "C53", Title = "compiler crash (both lines)")]
+        public static void crash_with_ACCESS_and_ASSIGN()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+ACCESS Value AS INT
+ASSIGN Value(n AS INT)
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 54
+        [Test(Author = "Chris", Id = "C54", Title = "error XS1003: Syntax error, 'Class_' expected")]
+        public static void class_witn_namespace_in_name()
+        {
+            var s = ParseSource(@"
+CLASS Test.TestClass
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 55
+        [Test(Author = "Chris", Id = "C55", Title = "error XS0029: Cannot implicitly convert type 'string' to 'char'")]
+        public static void Double_Quotes_inside_Single_Quotes()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL c AS Char
+c := 'a' // ok
+? c == 'a' // ok
+c := '""' // error
+? c == '""' //error
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+        // 56
+        [Test(Author = "Chris", Id = "C56", Title = "error XS0103: The name '_Or' does not exist in the current context")]
+        public static void _Or_Xor_And()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+? _Or(1,2)
+? _Xor(1,2)
+? _And(1,2)
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 57
+        [Test(Author = "Chris", Id = "C57", Title = "error XS0171: Field 'TestStruc.c' must be fully assigned before control is returned to the caller")]
+        public static void Field_must_be_fully_assigned_before_control_is_returned_to_the_caller()
+        {
+            var s = ParseSource(@"
+STRUCTURE TestStruc
+	EXPORT c AS STRING
+	EXPORT i AS INT
+	CONSTRUCTOR(n AS INT)
+END STRUCTURE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 58
+        [Test(Author = "Chris", Id = "C58", Title = "compiler crash with .xor.")]
+        public static void compiler_crash_with_xor()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PROTECT lfield AS LOGIC
+METHOD Test(l AS LOGIC) AS VOID
+	LOCAL ll AS LOGIC
+	ll := SELF:lfield .xor. l
+RETURN
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 59
+        [Test(Author = "Chris", Id = "C59", Title = "error XS1003: Syntax error, 'Namespace_' expected")]
+        public static void error_XS1003_Syntax_error_Namespace__expected()
+        {
+            var s = ParseSource(@"
+BEGIN NAMESPACE Test1.Test2
+	#using System.Collections.Generic
+	CLASS SomeClass
+	END CLASS
+END NAMESPACE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 60
+        [Test(Author = "Chris", Id = "C60", Title = "error XS0542: 'TestClass': member names cannot be the same as their enclosing type")]
+        public static void error_XS0542_member_names_cannot_be_the_same_as_their_enclosing_type()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	CLASS TestClass
+		PROTECT TestClass AS INT
+	END CLASS
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 61
+        [Test(Author = "Chris", Id = "C61", Title = "compiler_crash_with_custom_attribute")]
+        public static void compiler_crash_with_custom_attribute()
+        {
+            var s = ParseSource(@"
+[Test(1)];
+CLASS TestClass
+END CLASS
+
+CLASS TestAttribute INHERIT Attribute
+	CONSTRUCTOR(n AS INT)
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 62
+        [Test(Author = "Chris", Id = "C62", Title = "compiler crash with PRIVATE and STATIC constructor")]
+        public static void compiler_crash_with_PRIVATE_and_STATIC_constructor()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PRIVATE CONSTRUCTOR
+STATIC CONSTRUCTOR
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
         // 63
         [Test(Author = "Chris", Id = "C63", Title = "error XS0246: The type or namespace name 'TestClass' could not be found")]
         public static void error_XS0246_function_inside_namespace()
@@ -223,6 +589,17 @@ END NAMESPACE
 
 
 
+
+        // 64
+        [Test(Author = "Chris", Id = "C64", Title = "warning XS0105: The using directive for 'System' appeared previously in this namespace")]
+        public static void warning_on_using_System()
+        {
+            var s = ParseSource(@"
+#using System
+FUNCTION Start() AS VOID
+");
+            CompileWithoutWarnings(s);
+        }
 
         // 65
         [Test(Author = "Chris", Id = "C65", Title = "compiler crash because of using keywords as names")]
@@ -255,6 +632,19 @@ END CLASS
             var s = ParseSource(@"
 FUNCTION Start() AS VOID
 SomeMethod( , , 1)
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 67
+        [Test(Author = "Chris", Id = "C67", Title = "Crash with abstract access and class")]
+        public static void crash_with_abstract_access_and_class()
+        {
+            var s = ParseSource(@"
+ABSTRACT CLASS TestClass
+	ABSTRACT ACCESS MyProp AS INT
+END CLASS
 ");
             CompileAndLoadWithoutErrors(s);
         }

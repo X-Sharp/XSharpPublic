@@ -327,7 +327,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var isNonGeneric = !_topLevelMethod.IsGenericMethod;
                 if (isNonGeneric)
                 {
-                    _lazyStaticLambdaFrame = CompilationState.staticLambdaFrame;
+                    _lazyStaticLambdaFrame = CompilationState.StaticLambdaFrame;
                 }
 
                 if (_lazyStaticLambdaFrame == null)
@@ -348,7 +348,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // non-generic static lambdas can share the frame
                     if (isNonGeneric)
                     {
-                        CompilationState.staticLambdaFrame = _lazyStaticLambdaFrame;
+                        CompilationState.StaticLambdaFrame = _lazyStaticLambdaFrame;
                     }
 
                     var frame = _lazyStaticLambdaFrame;
@@ -993,7 +993,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var newType = VisitType(node.Type);
                 var newBody = (BoundBlock)Visit(node.Body);
                 node = node.Update(node.Symbol, newBody, node.Diagnostics, node.Binder, newType);
-                var result0 = wasInExpressionLambda ? node : ExpressionLambdaRewriter.RewriteLambda(node, CompilationState, TypeMap, Diagnostics);
+                var result0 = wasInExpressionLambda ? node : ExpressionLambdaRewriter.RewriteLambda(node, CompilationState, TypeMap, RecursionDepth, Diagnostics);
                 _inExpressionLambda = wasInExpressionLambda;
                 return result0;
             }

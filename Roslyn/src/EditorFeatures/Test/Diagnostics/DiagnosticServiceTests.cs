@@ -15,7 +15,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
 {
     public class DiagnosticServiceTests
     {
-        [Fact, Trait(Traits.Feature, Traits.Features.Diagnostics)]
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Diagnostics)]
         public void TestGetDiagnostics1()
         {
             using (var workspace = new TestWorkspace(TestExportProvider.ExportProviderWithCSharpAndVisualBasic))
@@ -24,7 +24,9 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
                 var document = workspace.CurrentSolution.AddProject("TestProject", "TestProject", LanguageNames.CSharp).AddDocument("TestDocument", string.Empty);
 
                 var source = new TestDiagnosticUpdateSource(false, null);
-                var diagnosticService = new DiagnosticService(SpecializedCollections.SingletonCollection(source), AggregateAsynchronousOperationListener.EmptyListeners);
+                var diagnosticService = new DiagnosticService(AggregateAsynchronousOperationListener.EmptyListeners);
+                diagnosticService.Register(source);
+
                 diagnosticService.DiagnosticsUpdated += (s, o) => { set.Set(); };
 
                 var id = Tuple.Create(workspace, document);
@@ -44,7 +46,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
             }
         }
 
-        [Fact, Trait(Traits.Feature, Traits.Features.Diagnostics)]
+        [WpfFact, Trait(Traits.Feature, Traits.Features.Diagnostics)]
         public void TestGetDiagnostics2()
         {
             using (var workspace = new TestWorkspace(TestExportProvider.ExportProviderWithCSharpAndVisualBasic))
@@ -54,7 +56,9 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
                 var document2 = document.Project.AddDocument("TestDocument2", string.Empty);
 
                 var source = new TestDiagnosticUpdateSource(false, null);
-                var diagnosticService = new DiagnosticService(SpecializedCollections.SingletonCollection(source), AggregateAsynchronousOperationListener.EmptyListeners);
+                var diagnosticService = new DiagnosticService(AggregateAsynchronousOperationListener.EmptyListeners);
+                diagnosticService.Register(source);
+
                 diagnosticService.DiagnosticsUpdated += (s, o) => { set.Set(); };
 
                 var id = Tuple.Create(workspace, document);
@@ -93,7 +97,7 @@ namespace Microsoft.CodeAnalysis.Editor.UnitTests.Diagnostics
             var diagnostic = CreateDiagnosticData(workspace, project, document);
 
             source.RaiseUpdateEvent(
-                new DiagnosticsUpdatedArgs(id, workspace, workspace.CurrentSolution, project, document, ImmutableArray.Create(diagnostic)));
+                DiagnosticsUpdatedArgs.DiagnosticsCreated(id, workspace, workspace.CurrentSolution, project, document, ImmutableArray.Create(diagnostic)));
 
             set.WaitOne();
 

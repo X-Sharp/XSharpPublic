@@ -899,7 +899,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;async&apos; modifier can only be used in methods that have a statement body..
+        ///   Looks up a localized string similar to The &apos;async&apos; modifier can only be used in methods that have a body..
         /// </summary>
         internal static string ERR_BadAsyncLacksBody {
             get {
@@ -1048,6 +1048,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_BadAwaitInQuery {
             get {
                 return ResourceManager.GetString("ERR_BadAwaitInQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;await&apos; operator cannot be used in a static script variable initializer..
+        /// </summary>
+        internal static string ERR_BadAwaitInStaticVariableInitializer {
+            get {
+                return ResourceManager.GetString("ERR_BadAwaitInStaticVariableInitializer", resourceCulture);
             }
         }
         
@@ -5246,6 +5255,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The pathmap option was incorrectly formatted..
+        /// </summary>
+        internal static string ERR_InvalidPathMap {
+            get {
+                return ResourceManager.GetString("ERR_InvalidPathMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid preprocessor expression.
         /// </summary>
         internal static string ERR_InvalidPreprocExpr {
@@ -5930,7 +5948,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You cannot declare namespace in script code.
+        ///   Looks up a localized string similar to Cannot declare namespace in script code.
         /// </summary>
         internal static string ERR_NamespaceNotAllowedInScript {
             get {
@@ -7577,15 +7595,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You cannot use &apos;return&apos; in top-level script code.
-        /// </summary>
-        internal static string ERR_ReturnNotAllowedInScript {
-            get {
-                return ResourceManager.GetString("ERR_ReturnNotAllowedInScript", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot modify the return value of &apos;{0}&apos; because it is not a variable.
         /// </summary>
         internal static string ERR_ReturnNotLValue {
@@ -8207,7 +8216,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto-implemented property property &apos;{0}&apos; must be fully assigned before control is returned to the caller..
+        ///   Looks up a localized string similar to Auto-implemented property &apos;{0}&apos; must be fully assigned before control is returned to the caller..
         /// </summary>
         internal static string ERR_UnassignedThisAutoProperty {
             get {
@@ -8635,6 +8644,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_YieldInAnonMeth {
             get {
                 return ResourceManager.GetString("ERR_YieldInAnonMeth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot use &apos;yield&apos; in top-level script code.
+        /// </summary>
+        internal static string ERR_YieldNotAllowedInScript {
+            get {
+                return ResourceManager.GetString("ERR_YieldNotAllowedInScript", resourceCulture);
             }
         }
         
@@ -9779,15 +9797,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string TheStreamCannotBeWritten {
             get {
                 return ResourceManager.GetString("TheStreamCannotBeWritten", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This compilation doesn&apos;t represent an interactive submission..
-        /// </summary>
-        internal static string ThisCompilationNotInteractive {
-            get {
-                return ResourceManager.GetString("ThisCompilationNotInteractive", resourceCulture);
             }
         }
         

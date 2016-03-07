@@ -24,6 +24,7 @@
     <Compile Include="AnalyzerFileReferenceTests.cs" />
     <Compile Include="AssemblyUtilitiesTests.cs" />
     <Compile Include="AsyncQueueTests.cs" />
+    <Compile Include="Collections\ArrayBuilderTests.cs" />
     <Compile Include="Collections\BoxesTest.cs" />
     <Compile Include="Collections\ByteSequenceComparerTests.cs" />
     <Compile Include="Diagnostics\DiagnosticLocalizationTests.cs" />
@@ -34,6 +35,7 @@
     <Compile Include="MetadataReferences\AssemblyIdentityExtensions.cs" />
     <Compile Include="PEWriter\BlobUtilitiesTests.cs" />
     <Compile Include="PEWriter\BlobTests.cs" />
+    <Compile Include="RealParserTests.cs" />
     <Compile Include="SimpleAnalyzerAssemblyLoaderTests.cs" />
     <Compile Include="Text\LargeEncodedTextTests.cs" />
     <Compile Include="Text\SourceTextStreamTests.cs" />
@@ -164,6 +166,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="project.json" />
     <None Include="Resources/default.win32manifest" />
     <None Include="Resources/nativeWithStringIDsAndTypesAndIntTypes.res" />

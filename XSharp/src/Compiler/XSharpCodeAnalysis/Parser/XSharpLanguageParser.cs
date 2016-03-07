@@ -204,6 +204,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings, 
                     treeTransform.GlobalEntities.Attributes, treeTransform.GlobalEntities.Members, eof);
                 result.XNode = (XSharpParser.SourceContext)tree;
+                result.XTokens = tokens;
                 return result;
             }
             finally

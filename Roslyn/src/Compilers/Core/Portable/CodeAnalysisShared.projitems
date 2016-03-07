@@ -9,14 +9,22 @@
     <Import_RootNamespace>Microsoft.CodeAnalysis</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)..\..\Helpers\CoreClrShim.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\..\Helpers\CoreClrShim.cs" >
+      <Link>CoreClrShim.cs</Link>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)AdditionalTextFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Binding\AbstractLookupSymbolsInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CaseInsensitiveComparison.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeGen\ILEmitStyle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Compilation\ScriptCompilationInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalyzerDriver.CompilationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\SuppressMessageInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostic\SuppressionInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InternalUtilities\StackGuard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InternalUtilities\StreamExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RealParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ReferenceManager\MergedAliases.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UnicodeCharacterUtilities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysisResourcesLocalizableErrorArgument.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeGen\ArrayMembers.cs" />
@@ -107,7 +115,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalysisState.StateKind.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalysisState.SyntaxReferenceAnalyzerStateData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalyzerTelemetry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalyzerTelemetry.ActionCounts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalyzerActionCounts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalyzerExecutor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalyzerManager.AnalyzerAndOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DiagnosticAnalyzer\AnalyzerManager.cs" />
@@ -627,19 +635,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)XmlFileResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Xml\XmlCharType.cs" />
   </ItemGroup>
-  <!-- <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysisResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>$(MSBuildThisFileDirectory)CodeAnalysisResources.resx</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)CodeAnalysisResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>$(MSBuildThisFileDirectory)CodeAnalysisResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\default.win32manifest" />
-  </ItemGroup> -->
+
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)..\CodeAnalysisRules.ruleset">
       <SubType>Designer</SubType>

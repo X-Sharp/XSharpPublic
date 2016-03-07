@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.CodeAnalysis.Shared.Extensions;
 using Microsoft.CodeAnalysis.Shared.Utilities;
 using Microsoft.CodeAnalysis.Text;
 
@@ -9,24 +11,48 @@ namespace Microsoft.CodeAnalysis.Completion
 {
     internal class CompletionRules
     {
+        private readonly static char[] s_defaultCommitCharacters = new[]
+            {
+                ' ', '{', '}', '[', ']', '(', ')', '.', ',', ':',
+                ';', '+', '-', '*', '/', '%', '&', '|', '^', '!',
+                '~', '=', '<', '>', '?', '@', '#', '\'', '\"', '\\'
+            };
+
         private readonly object _gate = new object();
         private readonly AbstractCompletionService _completionService;
         private readonly Dictionary<string, PatternMatcher> _patternMatcherMap = new Dictionary<string, PatternMatcher>();
+        private readonly Dictionary<string, PatternMatcher> _fallbackPatternMatcherMap = new Dictionary<string, PatternMatcher>();
+        internal static readonly CultureInfo EnUSCultureInfo = new CultureInfo("en-US");
 
         public CompletionRules(AbstractCompletionService completionService)
         {
             _completionService = completionService;
         }
 
-        protected PatternMatcher GetPatternMatcher(string value)
+        protected PatternMatcher GetPatternMatcher(string value, CultureInfo culture)
         {
             lock (_gate)
             {
                 PatternMatcher patternMatcher;
                 if (!_patternMatcherMap.TryGetValue(value, out patternMatcher))
                 {
-                    patternMatcher = new PatternMatcher(value, verbatimIdentifierPrefixIsWordCharacter: true);
+                    patternMatcher = new PatternMatcher(value, culture, verbatimIdentifierPrefixIsWordCharacter: true);
                     _patternMatcherMap.Add(value, patternMatcher);
+                }
+
+                return patternMatcher;
+            }
+        }
+
+        protected PatternMatcher GetFallbackPatternMatcher(string value)
+        {
+            lock (_gate)
+            {
+                PatternMatcher patternMatcher;
+                if (!_fallbackPatternMatcherMap.TryGetValue(value, out patternMatcher))
+                {
+                    patternMatcher = new PatternMatcher(value, EnUSCultureInfo, verbatimIdentifierPrefixIsWordCharacter: true);
+                    _fallbackPatternMatcherMap.Add(value, patternMatcher);
                 }
 
                 return patternMatcher;
@@ -57,9 +83,31 @@ namespace Microsoft.CodeAnalysis.Completion
                 return false;
             }
 
-            var patternMatcher = this.GetPatternMatcher(_completionService.GetCultureSpecificQuirks(filterText));
+            return GetMatch(item, filterText) != null;
+        }
+
+        protected PatternMatch? GetMatch(CompletionItem item, string filterText)
+        {
+            var patternMatcher = this.GetPatternMatcher(_completionService.GetCultureSpecificQuirks(filterText), CultureInfo.CurrentCulture);
             var match = patternMatcher.GetFirstMatch(_completionService.GetCultureSpecificQuirks(item.FilterText));
-            return match != null;
+
+            if (match != null)
+            {
+                return match;
+            }
+
+            // Start with the culture-specific comparison, and fall back to en-US.
+            if (!CultureInfo.CurrentCulture.Equals(EnUSCultureInfo))
+            {
+                patternMatcher = this.GetFallbackPatternMatcher(_completionService.GetCultureSpecificQuirks(filterText));
+                match = patternMatcher.GetFirstMatch(_completionService.GetCultureSpecificQuirks(item.FilterText));
+                if (match != null)
+                {
+                    return match;
+                }
+            }
+
+            return null;
         }
 
         private static bool IsAllDigits(string filterText)
@@ -81,9 +129,8 @@ namespace Microsoft.CodeAnalysis.Completion
         /// </summary>
         public virtual bool IsBetterFilterMatch(CompletionItem item1, CompletionItem item2, string filterText, CompletionTriggerInfo triggerInfo, CompletionFilterReason filterReason)
         {
-            var patternMatcher = GetPatternMatcher(_completionService.GetCultureSpecificQuirks(filterText));
-            var match1 = patternMatcher.GetFirstMatch(_completionService.GetCultureSpecificQuirks(item1.FilterText));
-            var match2 = patternMatcher.GetFirstMatch(_completionService.GetCultureSpecificQuirks(item2.FilterText));
+            var match1 = GetMatch(item1, _completionService.GetCultureSpecificQuirks(filterText));
+            var match2 = GetMatch(item2, _completionService.GetCultureSpecificQuirks(filterText));
 
             if (match1 != null && match2 != null)
             {
@@ -180,7 +227,7 @@ namespace Microsoft.CodeAnalysis.Completion
 
         protected virtual bool IsCommitCharacterCore(CompletionItem completionItem, char ch, string textTypedSoFar)
         {
-            return false;
+            return s_defaultCommitCharacters.Contains(ch);
         }
 
         /// <summary>

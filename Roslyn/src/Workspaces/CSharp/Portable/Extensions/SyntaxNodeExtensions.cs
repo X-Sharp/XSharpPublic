@@ -176,7 +176,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
             var endOfLine = Match(SyntaxKind.EndOfLineTrivia, "\\n");
             var singleBlankLine = Matcher.Sequence(whitespace, endOfLine);
 
-            var shebangComment = Match(SyntaxKind.ShebangTrivia, "#!");
+            var shebangComment = Match(SyntaxKind.ShebangDirectiveTrivia, "#!");
             var singleLineComment = Match(SyntaxKind.SingleLineCommentTrivia, "//");
             var multiLineComment = Match(SyntaxKind.MultiLineCommentTrivia, "/**/");
             var anyCommentMatcher = Matcher.Choice(shebangComment, singleLineComment, multiLineComment);
@@ -960,25 +960,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Extensions
 
         public static bool IsEmbeddedStatementOwner(this SyntaxNode node)
         {
-            return node is IfStatementSyntax ||
+            return
+                   node is DoStatementSyntax ||
                    node is ElseClauseSyntax ||
-                   node is WhileStatementSyntax ||
-                   node is ForStatementSyntax ||
+                   node is FixedStatementSyntax ||
                    node is ForEachStatementSyntax ||
+                   node is ForStatementSyntax ||
+                   node is IfStatementSyntax ||
+                   node is LabeledStatementSyntax ||
+                   node is LockStatementSyntax ||
                    node is UsingStatementSyntax ||
-                   node is DoStatementSyntax;
+                   node is WhileStatementSyntax;
         }
 
         public static StatementSyntax GetEmbeddedStatement(this SyntaxNode node)
         {
+
             return node.TypeSwitch(
-                (IfStatementSyntax n) => n.Statement,
-                (ElseClauseSyntax n) => n.Statement,
-                (WhileStatementSyntax n) => n.Statement,
-                (ForStatementSyntax n) => n.Statement,
-                (ForEachStatementSyntax n) => n.Statement,
-                (UsingStatementSyntax n) => n.Statement,
                 (DoStatementSyntax n) => n.Statement,
+                (ElseClauseSyntax n) => n.Statement,
+                (FixedStatementSyntax n) => n.Statement,
+                (ForEachStatementSyntax n) => n.Statement,
+                (ForStatementSyntax n) => n.Statement,
+                (IfStatementSyntax n) => n.Statement,
+                (LabeledStatementSyntax n) => n.Statement,
+                (LockStatementSyntax n) => n.Statement,
+                (UsingStatementSyntax n) => n.Statement,
+                (WhileStatementSyntax n) => n.Statement,
                 (SyntaxNode n) => null);
         }
 

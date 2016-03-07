@@ -3,15 +3,12 @@
 Imports Microsoft.CodeAnalysis.Completion
 Imports Microsoft.CodeAnalysis.Completion.Providers
 Imports Microsoft.CodeAnalysis.Options
-Imports Microsoft.CodeAnalysis.Text
 Imports Microsoft.CodeAnalysis.VisualBasic.Completion.Providers
 
 Namespace Microsoft.CodeAnalysis.VisualBasic.Completion
     Partial Friend Class VisualBasicCompletionService
         Private NotInheritable Class VisualBasicCompletionRules
             Inherits CompletionRules
-
-            Private ReadOnly s_commitChars As Char() = {" "c, ";"c, "("c, ")"c, "["c, "]"c, "{"c, "}"c, "."c, ","c, ":"c, "+"c, "-"c, "*"c, "/"c, "\"c, "^"c, "<"c, ">"c, "'"c, "="c, "?"c}
 
             Public Sub New(service As AbstractCompletionService)
                 MyBase.New(service)
@@ -39,6 +36,13 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Completion
                     Return -1
                 End If
 
+                ' Furthermore, preselection is more important than case sensitivity
+                If leftItem.Preselect AndAlso Not rightItem.Preselect Then
+                    Return -1
+                ElseIf rightItem.Preselect AndAlso Not leftItem.Preselect
+                    Return 1
+                End If
+
                 diff = PatternMatch.CompareCase(leftMatch, rightMatch)
                 If diff <> 0 Then
                     Return diff
@@ -61,9 +65,8 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Completion
                 End If
 
                 If TypeOf item2.CompletionProvider Is EnumCompletionProvider Then
-                    Dim patternMatcher = GetPatternMatcher(filterText)
-                    Dim match1 = patternMatcher.GetFirstMatch(item1.FilterText)
-                    Dim match2 = patternMatcher.GetFirstMatch(item2.FilterText)
+                    Dim match1 = GetMatch(item1, filterText)
+                    Dim match2 = GetMatch(item2, filterText)
 
                     If match1.HasValue AndAlso match2.HasValue Then
                         If match1.Value.Kind = PatternMatchKind.Prefix AndAlso match2.Value.Kind = PatternMatchKind.Substring Then
@@ -136,10 +139,6 @@ Namespace Microsoft.CodeAnalysis.VisualBasic.Completion
 
                 Return (item1.Glyph IsNot Nothing AndAlso item2.Glyph IsNot Nothing) AndAlso
                        (item1.Glyph.Value = item2.Glyph.Value)
-            End Function
-
-            Protected Overrides Function IsCommitCharacterCore(completionItem As CompletionItem, ch As Char, textTypedSoFar As String) As Boolean
-                Return s_commitChars.Contains(ch)
             End Function
 
             Protected Overrides Function SendEnterThroughToEditorCore(completionItem As CompletionItem, textTypedSoFar As String, options As OptionSet) As Boolean

@@ -122,13 +122,17 @@ namespace XSharpColorizer
             // We can probably also get the list of tokens from the parser but I have no idea how to do that at this moment
 
             this.Snapshot = this.Buffer.CurrentSnapshot;
-            var stream = new AntlrInputStream(this.Snapshot.GetText());
-            var lexer = new XSharpLexer(stream);
-            var token = lexer.NextToken();
-            tags.Clear();
-            
-            while (token.Type != XSharpLexer.Eof)
+            ITokenStream TokenStream;
+            // parse for positional keywords that change the colors
+            // and get a reference to the tokenstream
+            xsTagger.Parse(this.Snapshot, out TokenStream);
+            foreach (var tag in xsTagger.Tags)
             {
+                tags.Add(tag);
+            }
+            for (var iToken = 0; iToken < TokenStream.Size; iToken++)
+            {
+                var token = TokenStream.Get(iToken); 
                 var tokenType = token.Type;
                 TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
                 if (XSharpLexer.IsKeyword(tokenType))
@@ -168,13 +172,6 @@ namespace XSharpColorizer
                 {
                     tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpCommentType));
                 }
-                token = lexer.NextToken();
-            }
-            // parse for positional keywords that change the colors
-            xsTagger.Parse(this.Snapshot);
-            foreach (var tag in xsTagger.Tags)
-            {
-                tags.Add(tag);
             }
         }
 

@@ -382,6 +382,7 @@ statement           : Decl=localdecl                                            
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO? WHILE Expr=expression EOS
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				#whileStmt
+					| NOP EOS													#nopStmt
 					| FOR 
 						( AssignExpr=expression
 						| (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier ASSIGN_OP Expr=expression
@@ -450,7 +451,6 @@ statement           : Decl=localdecl                                            
 					| {InputStream.La(2) != LPAREN ||
 					   (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
 					  Exprs+=expression (COMMA Exprs+=expression)* EOS			#expressionStmt
-					| NOP														#nopStmt
 					;
 
 ifElseBlock			: Cond=expression EOS StmtBlk=statementBlock

@@ -3085,22 +3085,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitYieldStmt([NotNull] XSharpParser.YieldStmtContext context)
         {
-            if (context.Break == null)  // yield return
-            { 
-                context.Put(_syntaxFactory.YieldStatement( SyntaxKind.YieldReturnStatement,
-                    SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                    context.Expr?.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-            }
-            else                   // yield exit or yield break
+            SyntaxKind kind;
+            ExpressionSyntax arg;
+            SyntaxToken token;
+            if (context.Break != null)  // yield exit or yield break
             {
-                context.Put(_syntaxFactory.YieldStatement(SyntaxKind.YieldBreakStatement,
-                    SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
-                    null,
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                kind = SyntaxKind.YieldBreakStatement;
+                arg = null;
+                token = SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword);
             }
+            else                   // yield return
+            {
+                kind = SyntaxKind.YieldReturnStatement;
+                arg = context.Expr?.Get<ExpressionSyntax>();
+                token = SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword);
+            }
+            context.Put(_syntaxFactory.YieldStatement( kind,SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword), 
+                token, arg, 
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)

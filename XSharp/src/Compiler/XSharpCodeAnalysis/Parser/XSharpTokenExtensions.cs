@@ -712,6 +712,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.SEALED:
                     r = SyntaxFactory.MakeToken(SyntaxKind.SealedKeyword, token.Text);
                     break;
+                case XSharpParser.OVERRIDE:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword, token.Text);
+                    break;
                 case XSharpParser.VIRTUAL:
                     r = SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword, token.Text);
                     break;
@@ -836,6 +839,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //case XSharpParser.INTERNAL:
                 case XSharpParser.LOCK:
                 case XSharpParser.NAMESPACE:
+                case XSharpParser.NOP:
                 //case XSharpParser.NEW:
                 case XSharpParser.OPERATOR:
                 //case XSharpParser.OUT:
@@ -901,8 +905,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxKind.CaseSwitchLabel;
                     break;
                 case XSharpParser.DEFAULT:
-                    r = SyntaxKind.DefaultSwitchLabel;
-                    break;
                 case XSharpParser.OTHERWISE:
                     r = SyntaxKind.DefaultSwitchLabel;
                     break;

@@ -3085,11 +3085,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitYieldStmt([NotNull] XSharpParser.YieldStmtContext context)
         {
-            context.Put(_syntaxFactory.YieldStatement(SyntaxKind.YieldReturnStatement,
-                SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                context.Expr?.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            if (context.Break == null)  // yield return
+            { 
+                context.Put(_syntaxFactory.YieldStatement( SyntaxKind.YieldReturnStatement,
+                    SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
+                    context.Expr?.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            else                   // yield exit or yield break
+            {
+                context.Put(_syntaxFactory.YieldStatement(SyntaxKind.YieldBreakStatement,
+                    SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
+                    null,
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
         }
 
         public override void ExitSwitchStmt([NotNull] XSharpParser.SwitchStmtContext context)
@@ -3203,6 +3214,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.CheckedStatement(context.Ch.StatementKind(),
                 context.Ch.SyntaxKeyword(),
                 context.StmtBlk.Get<BlockSyntax>()));
+        }
+
+        public override void ExitNopStmt([NotNull] XSharpParser.NopStmtContext context)
+        {
+            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitCondAccessExpr([NotNull] XSharpParser.CondAccessExprContext context)

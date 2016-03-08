@@ -1697,14 +1697,21 @@ END
         public static void YIELD_BREAK()
         {
             var s = ParseSource(@"
-FUNCTION YieldTest() AS System.Collections.IEnumerable
-	FOR LOCAL n := 1 AS INT UPTO 10
-		YIELD RETURN n
-		IF n > 5
-			YIELD BREAK
-		END IF
-	NEXT
-");
+USING System.Collections.Generic
+FUNCTION ListOfInt AS IEnumerable<INT>
+LOCAL nLoop AS LONG
+FOR nLoop := 1 TO 1000   
+	IF nLoop < 100
+	   YIELD RETURN nLoop
+	ELSE
+		YIELD BREAK
+	ENDIF
+NEXT
+FUNCTION Start AS VOID
+FOREACH nValue AS INT IN ListOfInt()
+   ? nValue
+NEXT
+RETURN");
             CompileAndRunWithoutExceptions(s);
         }
 

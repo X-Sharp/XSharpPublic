@@ -352,7 +352,7 @@ operator_			: Attributes=attributes? Modifiers=operatorModifiers?
 operatorModifiers	: ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
 					;
 
-memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN) )+
+memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN | OVERRIDE) )+
 					;
 
 attributes			: ( AttrBlk+=attributeBlock )+
@@ -431,6 +431,7 @@ statement           : Decl=localdecl                                            
 					// New XSharp Statements
 					//
 					| YIELD RETURN (VOID | Expr=expression)? EOS				#yieldStmt
+					| YIELD Break=(BREAK|EXIT) EOS								#yieldStmt
 					| SWITCH Expr=expression EOS
 					  (SwitchBlock+=switchBlock)+
 					  END SWITCH?  EOS											#switchStmt
@@ -449,6 +450,7 @@ statement           : Decl=localdecl                                            
 					| {InputStream.La(2) != LPAREN ||
 					   (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
 					  Exprs+=expression (COMMA Exprs+=expression)* EOS			#expressionStmt
+					| NOP														#nopStmt
 					;
 
 ifElseBlock			: Cond=expression EOS StmtBlk=statementBlock
@@ -799,7 +801,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | ORDERBY | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+                              GROUP | INTO | JOIN | LET | MODULE | NOP | ORDERBY | OVERRIDE |SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
 							  MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
 							)
 					;

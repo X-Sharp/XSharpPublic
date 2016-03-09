@@ -126,7 +126,7 @@ namespace Antlr4.Runtime
 
         internal static T Get<T>([NotNull] this IParseTree t) where T : InternalSyntax.CSharpSyntaxNode
         {
-            if (t.CsNode == null)
+            if (t == null || t.CsNode == null)
                 return default(T);
 
             return (T)t.CsNode;

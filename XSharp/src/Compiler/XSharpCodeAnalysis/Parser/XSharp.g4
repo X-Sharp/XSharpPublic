@@ -96,7 +96,7 @@ parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 					;
 
 // Compared with C# PARAMS is not supported. This can be achived by setting [ParamArrayAttribute] on the parameter: [ParamArrayAttribute] args as OBJECT[] 
-parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? Modifiers=parameterDeclMods Type=datatype
+parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? (Modifiers=parameterDeclMods Type=datatype)?
 					;
 
 parameterDeclMods   : Tokens+=(AS | REF | OUT | IS ) Tokens+=CONST?
@@ -305,7 +305,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 classmember			: Member=method										#clsmethod
 					| (Attributes=attributes)?
 					  (Modifiers=constructorModifiers)? 
-					  CONSTRUCTOR (ParamList=parameterList)? EOS 
+					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? EOS 
 					  (Chain=(SELF | SUPER) 
 						LPAREN ArgList=argumentList? RPAREN  EOS)?
 					  StmtBlk=statementBlock							#clsctor
@@ -352,7 +352,7 @@ operator_			: Attributes=attributes? Modifiers=operatorModifiers?
 operatorModifiers	: ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
 					;
 
-memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN) )+
+memberModifiers		: ( Tokens+=(NEW | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | STATIC | VIRTUAL | SEALED | ABSTRACT | ASYNC | UNSAFE | EXTERN | OVERRIDE) )+
 					;
 
 attributes			: ( AttrBlk+=attributeBlock )+
@@ -382,6 +382,7 @@ statement           : Decl=localdecl                                            
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
 					| DO? WHILE Expr=expression EOS
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				#whileStmt
+					| NOP EOS													#nopStmt
 					| FOR 
 						( AssignExpr=expression
 						| (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier ASSIGN_OP Expr=expression
@@ -431,6 +432,7 @@ statement           : Decl=localdecl                                            
 					// New XSharp Statements
 					//
 					| YIELD RETURN (VOID | Expr=expression)? EOS				#yieldStmt
+					| YIELD Break=(BREAK|EXIT) EOS								#yieldStmt
 					| SWITCH Expr=expression EOS
 					  (SwitchBlock+=switchBlock)+
 					  END SWITCH?  EOS											#switchStmt
@@ -799,7 +801,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | ORDERBY | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+                              GROUP | INTO | JOIN | LET | MODULE | NOP | OFF | ON | ORDERBY | OVERRIDE |SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
 							  MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
 							)
 					;

@@ -2475,7 +2475,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.Parameter(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
-                type: context.Type.Get<TypeSyntax>(),
+                type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
                 identifier: context.Id.Get<SyntaxToken>(),
                 @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),

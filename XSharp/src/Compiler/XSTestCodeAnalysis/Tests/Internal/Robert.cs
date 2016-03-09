@@ -24,5 +24,41 @@ RETURN
 ");
             CompileAndLoadWithoutErrors(s);
         }
+        [Test(Author = "Robert", Id = "R2", Title = "On and Off keywords")]
+        public static void On_And_Off_Keywords()
+        {
+            var s = ParseSource(@"
+ENUM Test
+MEMBER On
+MEMBER Off
+END ENUM
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        [Test(Author = "Robert", Id = "R3", Title = "MissingParameterTypes")]
+        public static void MissingParameterTypes()
+        {
+            var s = ParseSource(@"
+CLASS Test
+CONSTRUCTOR(a)
+METHOD Foo(bar) AS LONG
+RETURN 1
+END CLASS
+");
+            CompileWithErrors(s);
+        }
+
+        [Test(Author = "Robert", Id = "R4", Title = "ConstructorCallingConvention")]
+        public static void ConstructorCallingConvention()
+        {
+            var s = ParseSource(@"
+CLASS Test
+CONSTRUCTOR() STRICT
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
     }
 }

@@ -1309,7 +1309,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClassvars([NotNull] XSharpParser.ClassvarsContext context)
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = context.Vars.DataType.Get<TypeSyntax>();
+            var varType = context.Vars?.DataType?.Get<TypeSyntax>() ?? MissingType();
             foreach (var varCtx in context.Vars._Var) {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
@@ -2475,7 +2475,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.Parameter(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
-                type: context.Type.Get<TypeSyntax>(),
+                type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
                 identifier: context.Id.Get<SyntaxToken>(),
                 @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
@@ -3085,10 +3085,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitYieldStmt([NotNull] XSharpParser.YieldStmtContext context)
         {
-            context.Put(_syntaxFactory.YieldStatement(SyntaxKind.YieldReturnStatement,
-                SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                context.Expr?.Get<ExpressionSyntax>(),
+            SyntaxKind kind;
+            ExpressionSyntax arg;
+            SyntaxToken token;
+            if (context.Break != null)  // yield exit or yield break
+            {
+                kind = SyntaxKind.YieldBreakStatement;
+                arg = null;
+                token = SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword);
+            }
+            else                   // yield return
+            {
+                kind = SyntaxKind.YieldReturnStatement;
+                arg = context.Expr?.Get<ExpressionSyntax>();
+                token = SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword);
+            }
+            context.Put(_syntaxFactory.YieldStatement( kind,SyntaxFactory.MakeToken(SyntaxKind.YieldKeyword), 
+                token, arg, 
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
@@ -3203,6 +3216,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.CheckedStatement(context.Ch.StatementKind(),
                 context.Ch.SyntaxKeyword(),
                 context.StmtBlk.Get<BlockSyntax>()));
+        }
+
+        public override void ExitNopStmt([NotNull] XSharpParser.NopStmtContext context)
+        {
+            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitCondAccessExpr([NotNull] XSharpParser.CondAccessExprContext context)
@@ -3557,12 +3575,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else {
                 var e = context._Exprs?[0].Get<ExpressionSyntax>();
-                for (int i = 1; i < context._Exprs?.Count; i++) {
-                    context.Put(_syntaxFactory.BinaryExpression(
-                        kind,
-                        e,
-                        syntax,
-                        context._Exprs[i].Get<ExpressionSyntax>()));
+                if (context._Exprs.Count > 1)
+                { 
+                    for (int i = 1; i < context._Exprs?.Count; i++) {
+                        context.Put(_syntaxFactory.BinaryExpression(
+                            kind,
+                            e,
+                            syntax,
+                            context._Exprs[i].Get<ExpressionSyntax>()));
+                    }
+                }
+                else
+                {
+                    context.Put(e);
+                    context.AddError(new ParseErrorData(context.Op, ErrorCode.ERR_MissingArgument));
                 }
             }
         }

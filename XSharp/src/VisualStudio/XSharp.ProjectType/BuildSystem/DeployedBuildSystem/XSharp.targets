@@ -202,6 +202,7 @@
 	      VO11="$(VO11)"
 	      VO12="$(VO12)"
 	      VO13="$(VO13)"
+	      VO14="$(VO14)"
 	      Win32Resource="@(Win32Resource)"
         CommandLineOption="$(CommandLineOption)"
     />

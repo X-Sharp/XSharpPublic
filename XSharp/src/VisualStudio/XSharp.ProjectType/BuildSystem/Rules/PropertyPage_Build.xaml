@@ -12,6 +12,7 @@
     <Rule.Categories>
         <Category Name="Build" DisplayName="Build"  Description="General" />
         <Category Name="Events"  DisplayName="Build Events" Description="Define pre- and post- build events" />
+        <Category Name="Signing"  DisplayName="Code Signing" Description="Set Codesigning properties" />
         <Category Name="Warnings"  DisplayName="Warnings" Description="Suppress specific warnings and set warning level" />
     </Rule.Categories>
     <StringProperty Category="Build" Name="ApplicationIcon" DisplayName="Application Icon" />
@@ -36,7 +37,10 @@
         <EnumValue Name="4" DisplayName="4" />
     </EnumProperty>
 
-    <BoolProperty 	Category="Warnings" Name="TreatWarningsAsErrors" Description="Treat warnings as errors (/warnaserror)" Default="True" />
+    <BoolProperty 	Category="Warnings" Name="TreatWarningsAsErrors"  DisplayName="Warnings As Errors"  Description="Treat warnings as errors (/warnaserror)" Default="True" />
+    <BoolProperty 	Category="Signing"  Name="SignAssembly"           DisplayName="Sign the output assembly" Description="Sign the assembly  (/sign)" Default="True" />
+    <BoolProperty 	Category="Signing"  Name="DelaySign"              DisplayName="Delayed sign only" Description="Delayed signing (/delaysign)" Default="True" />
+    <StringProperty Category="Signing"  Name="AssemblyOriginatorKeyFile" DisplayName="Code Signing KeyFile" Description="Choose a code signing key file (/keyfile)" Default="" Subtype="File" />
 
 
 

@@ -60,5 +60,44 @@ END CLASS
             CompileAndLoadWithoutErrors(s);
         }
 
+        [Test(Author = "Robert", Id = "R5", Title = "_AND and _OR Operation incorrect")]
+        public static void AndOperationIncorrect()
+        {
+            var s = ParseSource(@"
+FUNCTION Start AS VOID
+ LOCAL iResult as LONG
+ iResult := _OR(1 ==2) 
+ if iResult != 3 
+        THROW Exception{String.Format('Result incorrect',iResult)}
+ endif
+ iResult := _AND(2 == 2)
+ if iResult != 2 
+        THROW Exception{String.Format('Result incorrect',iResult)}
+ endif
+RETURN
+");
+            CompileWithErrors(s);
+        }
+
+        [Test(Author = "Robert", Id = "R6", Title = "_AND and _OR Operation Correct")]
+        public static void AndOperationCorrect()
+        {
+            var s = ParseSource(@"
+FUNCTION Start AS VOID
+ LOCAL iResult as LONG
+ iResult := _OR(1 ,2) 
+ if iResult != 3 
+    THROW Exception{String.Format('Result incorrect: {0} ',iResult)}
+ endif
+ iResult := _AND(2 , 2)
+ if iResult != 2 
+    THROW Exception{String.Format('Result incorrect: {0}',iResult)}
+ endif
+ RETURN
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
     }
 }

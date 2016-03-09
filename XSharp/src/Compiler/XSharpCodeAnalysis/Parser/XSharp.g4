@@ -96,7 +96,7 @@ parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 					;
 
 // Compared with C# PARAMS is not supported. This can be achived by setting [ParamArrayAttribute] on the parameter: [ParamArrayAttribute] args as OBJECT[] 
-parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? Modifiers=parameterDeclMods Type=datatype
+parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? (Modifiers=parameterDeclMods Type=datatype)?
 					;
 
 parameterDeclMods   : Tokens+=(AS | REF | OUT | IS ) Tokens+=CONST?
@@ -305,7 +305,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 classmember			: Member=method										#clsmethod
 					| (Attributes=attributes)?
 					  (Modifiers=constructorModifiers)? 
-					  CONSTRUCTOR (ParamList=parameterList)? EOS 
+					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? EOS 
 					  (Chain=(SELF | SUPER) 
 						LPAREN ArgList=argumentList? RPAREN  EOS)?
 					  StmtBlk=statementBlock							#clsctor
@@ -801,7 +801,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | NOP | ORDERBY | OVERRIDE |SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+                              GROUP | INTO | JOIN | LET | MODULE | NOP | OFF | ON | ORDERBY | OVERRIDE |SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
 							  MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
 							)
 					;

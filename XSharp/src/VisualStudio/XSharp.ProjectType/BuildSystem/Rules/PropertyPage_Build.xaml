@@ -40,7 +40,7 @@
     <BoolProperty 	Category="Warnings" Name="TreatWarningsAsErrors"  DisplayName="Warnings As Errors"  Description="Treat warnings as errors (/warnaserror)" Default="True" />
     <BoolProperty 	Category="Signing"  Name="SignAssembly"           DisplayName="Sign the output assembly" Description="Sign the assembly  (/sign)" Default="True" />
     <BoolProperty 	Category="Signing"  Name="DelaySign"              DisplayName="Delayed sign only" Description="Delayed signing (/delaysign)" Default="True" />
-    <StringProperty Category="Signing"  Name="AssemblyOriginatorKeyFile" DisplayName="Code Signing KeyFile" Description="Choose a code signing key file (/keyfile)" Default="" Subtype="File" />
+    <StringProperty Category="Signing"  Name="AssemblyOriginatorKeyFile" DisplayName="Code Signing KeyFile" Description="Choose a code signing key file (/keyfile)" Default="" Subtype="file" />
 
 
 

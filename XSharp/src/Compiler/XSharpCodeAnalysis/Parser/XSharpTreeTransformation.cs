@@ -1309,7 +1309,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClassvars([NotNull] XSharpParser.ClassvarsContext context)
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = context.Vars.DataType.Get<TypeSyntax>();
+            var varType = context.Vars?.DataType?.Get<TypeSyntax>() ?? MissingType();
             foreach (var varCtx in context.Vars._Var) {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
@@ -3575,12 +3575,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else {
                 var e = context._Exprs?[0].Get<ExpressionSyntax>();
-                for (int i = 1; i < context._Exprs?.Count; i++) {
-                    context.Put(_syntaxFactory.BinaryExpression(
-                        kind,
-                        e,
-                        syntax,
-                        context._Exprs[i].Get<ExpressionSyntax>()));
+                if (context._Exprs.Count > 1)
+                { 
+                    for (int i = 1; i < context._Exprs?.Count; i++) {
+                        context.Put(_syntaxFactory.BinaryExpression(
+                            kind,
+                            e,
+                            syntax,
+                            context._Exprs[i].Get<ExpressionSyntax>()));
+                    }
+                }
+                else
+                {
+                    context.Put(e);
+                    context.AddError(new ParseErrorData(context.Op, ErrorCode.ERR_MissingArgument));
                 }
             }
         }

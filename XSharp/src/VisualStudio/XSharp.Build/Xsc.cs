@@ -28,17 +28,12 @@ namespace XSharp.Build
         public Boolean LB { get; set; }
         public Boolean UnSafe { get; set; }
         public Boolean OVF { get; set; }
-        public String DisabledWarnings { get; set; }
-        public string DocumentationFile { get; set; }
-        public Boolean GenerateFullPaths { get; set; }
         public Boolean PPO { get; set; }
         public Boolean NS { get; set; }
         public Boolean INS { get; set; }
         public String IncludePaths { get; set; }
         public Boolean NoStandardDefs { get; set; }
-        public Boolean NoStandardLib { get; set; }
         public string RootNameSpace{ get; set; }
-        public int WarningLevel { get; set; }
         public Boolean VO1 { get; set; }
         public Boolean VO2 { get; set; }
         public Boolean VO3 { get; set; }
@@ -58,9 +53,55 @@ namespace XSharp.Build
         // Misc. (unknown at that time) CommandLine options
         public string CommandLineOption { get; set; }
 
+
+        // properties copied from the Csc task
+        public string ApplicationConfiguration { get; set; }
         public string BaseAddress { get; set; }
+        public bool CheckForOverflowUnderflow { get; set; }
+        public string DisabledWarnings { get; set; }
+        public string DocumentationFile { get; set; }
+        public bool ErrorEndLocation { get; set; }
+        public string ErrorReport { get; set; }
+        public bool GenerateFullPaths { get; set; }
+        public string LangVersion { get; set; }
+        public string ModuleAssemblyName { get; set; }
+
+
+        public bool NoStandardLib { get; set; }
+
 
         public string PdbFile { get; set; }
+
+
+        public string PreferredUILang { get; set; }
+
+
+        public bool UseHostCompilerIfAvailable { get; set; }
+
+
+        public string VsSessionGuid { get; set; }
+
+
+        public int WarningLevel { get; set; }
+        public string WarningsAsErrors { get; set; }
+        public string WarningsNotAsErrors { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         #endregion
 
 
@@ -273,6 +314,31 @@ namespace XSharp.Build
             {
                 commandLine.AppendTextUnquoted("\n"+this.CommandLineOption);
             }
+
+            // From C# Build tool
+            /*
+            commandLine.AppendSwitchIfNotNull("/lib:", base.AdditionalLibPaths, ",");
+            commandLine.AppendPlusOrMinusSwitch("/checked", base._store, "CheckForOverflowUnderflow");
+            char[] splitOn = new char[] { ';', ',' };
+            commandLine.AppendSwitchWithSplitting("/nowarn:", this.DisabledWarnings, ",", splitOn);
+            commandLine.AppendWhenTrue("/fullpaths", base._store, "GenerateFullPaths");
+            commandLine.AppendSwitchIfNotNull("/langversion:", this.LangVersion);
+            commandLine.AppendSwitchIfNotNull("/moduleassemblyname:", this.ModuleAssemblyName);
+            commandLine.AppendSwitchIfNotNull("/pdb:", this.PdbFile);
+            commandLine.AppendPlusOrMinusSwitch("/nostdlib", base._store, "NoStandardLib");
+            commandLine.AppendSwitchIfNotNull("/platform:", base.PlatformWith32BitPreference);
+            commandLine.AppendSwitchIfNotNull("/errorreport:", this.ErrorReport);
+            commandLine.AppendSwitchIfNotNull("/warn:", this.WarningLevel);
+            commandLine.AppendSwitchIfNotNull("/doc:", this.DocumentationFile);
+            commandLine.AppendSwitchIfNotNull("/baseaddress:", this.BaseAddress);
+            commandLine.AppendSwitchUnquotedIfNotNull("/define:", GetDefineConstantsSwitch(base.DefineConstants, base.Log));
+            commandLine.AppendSwitchIfNotNull("/win32res:", base.Win32Resource);
+            commandLine.AppendSwitchIfNotNull("/main:", base.MainEntryPoint);
+            commandLine.AppendSwitchIfNotNull("/appconfig:", this.ApplicationConfiguration);
+            commandLine.AppendLogicSwitch("/errorendlocation", this.ErrorEndLocation);
+            commandLine.AppendSwitchIfNotNull("/preferreduilang:", this.PreferredUILang);
+            commandLine.AppendPlusOrMinusSwitch("/highentropyva", base._store, "HighEntropyVA");
+            */
 
             //
         }

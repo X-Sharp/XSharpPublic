@@ -1,2 +1,2 @@
 # XSharp/src/Common/
-Common sources and shred projects
+Common sources and shared projects

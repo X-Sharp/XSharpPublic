@@ -12,19 +12,19 @@
       <Context>Project</Context>
     </PropertyPageSchema>
   </ItemGroup>
- 
+
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildExtensionsPath)\XSharp\XSharp.targets</MSBuildAllProjects>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
     <Language>XSharp</Language>
-	<GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
-  </PropertyGroup>   
+    <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
+  </PropertyGroup>
 
-   <ItemGroup>
-      <AvailableItemName Include="NativeResource" />
-   </ItemGroup>
+  <ItemGroup>
+    <AvailableItemName Include="NativeResource" />
+  </ItemGroup>
 
-   <!--
+  <!--
     The CreateManifestResourceNames target create the manifest resource names from the .RESX
     files.
     
@@ -44,89 +44,89 @@
         Resources1.notaculture.resx => RootNamespace.Resources1.notaculture => Build into main assembly
     -->
 
-   <PropertyGroup>
-      <CreateManifestResourceNamesDependsOn></CreateManifestResourceNamesDependsOn>
-   </PropertyGroup>
+  <PropertyGroup>
+    <CreateManifestResourceNamesDependsOn></CreateManifestResourceNamesDependsOn>
+  </PropertyGroup>
 
-      <Target
-          Name="CreateManifestResourceNames"
-          Condition="'@(EmbeddedResource)' != '' "
+  <Target
+      Name="CreateManifestResourceNames"
+      Condition="'@(EmbeddedResource)' != '' "
         >
 
-         <ItemGroup>
-            <_Temporary Remove="@(_Temporary)" />
-         </ItemGroup>
+    <ItemGroup>
+      <_Temporary Remove="@(_Temporary)" />
+    </ItemGroup>
 
-         <!-- Create manifest names for culture and non-culture Resx files, and for non-culture Non-Resx resources -->
-         <CreateXSharpManifestResourceName
-               ResourceFiles="@(EmbeddedResource)"
-               RootNamespace="$(RootNamespace)"
-               Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and ('%(EmbeddedResource.WithCulture)' == 'false' or '%(EmbeddedResource.Type)' == 'Resx')">
+    <!-- Create manifest names for culture and non-culture Resx files, and for non-culture Non-Resx resources -->
+    <CreateXSharpManifestResourceName
+          ResourceFiles="@(EmbeddedResource)"
+          RootNamespace="$(RootNamespace)"
+          Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and ('%(EmbeddedResource.WithCulture)' == 'false' or '%(EmbeddedResource.Type)' == 'Resx')">
 
-            <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
+      <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
 
-         </CreateXSharpManifestResourceName>
+    </CreateXSharpManifestResourceName>
 
-         <!-- Create manifest names for all culture non-resx resources -->
-         <CreateXSharpManifestResourceName
-               ResourceFiles="@(EmbeddedResource)"
-               RootNamespace="$(RootNamespace)"
-               PrependCultureAsDirectory="false"
-               Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and '%(EmbeddedResource.WithCulture)' == 'true' and '%(EmbeddedResource.Type)' == 'Non-Resx'">
+    <!-- Create manifest names for all culture non-resx resources -->
+    <CreateXSharpManifestResourceName
+          ResourceFiles="@(EmbeddedResource)"
+          RootNamespace="$(RootNamespace)"
+          PrependCultureAsDirectory="false"
+          Condition="'%(EmbeddedResource.ManifestResourceName)' == '' and '%(EmbeddedResource.WithCulture)' == 'true' and '%(EmbeddedResource.Type)' == 'Non-Resx'">
 
-            <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
+      <Output TaskParameter="ResourceFilesWithManifestResourceNames" ItemName="_Temporary" />
 
-         </CreateXSharpManifestResourceName>
+    </CreateXSharpManifestResourceName>
 
-         <ItemGroup>
-            <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.ManifestResourceName)' == ''"/>
-            <EmbeddedResource Include="@(_Temporary)" />
-            <_Temporary Remove="@(_Temporary)" />
-         </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="@(EmbeddedResource)" Condition="'%(EmbeddedResource.ManifestResourceName)' == ''"/>
+      <EmbeddedResource Include="@(_Temporary)" />
+      <_Temporary Remove="@(_Temporary)" />
+    </ItemGroup>
 
-      </Target>
+  </Target>
 
-   <PropertyGroup Condition="'$(IntermediateOutputPath)'!=''">
-      <!--
+  <PropertyGroup Condition="'$(IntermediateOutputPath)'!=''">
+    <!--
       If we've set IntermediateOutputPath in the project file, then we want to override the
       setting of BaseIntermediateOutputPath in Microsoft.Common.targets, which sets it to "obj\".
       That causes some stuff to be written to the obj directory even though IntermediateOutputPath
       has been explicitly set by the user.  Setting BaseIntermediateOutputPath here fixes that.
       -->
 
-      <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
-   </PropertyGroup>
+    <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
+  </PropertyGroup>
 
   <ItemGroup>
     <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName).xml" Condition="'$(DocumentationFile)'!=''"/>
   </ItemGroup>
 
 
-   <PropertyGroup>
-      <CoreCompileDependsOn>_ComputeNonExistentFileProperty</CoreCompileDependsOn>
-   </PropertyGroup>
+  <PropertyGroup>
+    <CoreCompileDependsOn>_ComputeNonExistentFileProperty</CoreCompileDependsOn>
+  </PropertyGroup>
 
-   <Target Name="AfterResGen">
+  <Target Name="AfterResGen">
 
-      <GenerateNativeResource
-         Sources="@(NativeResource)"
-         UseSourcePath="$(UseSourcePath)"
-         IncludePaths="$(IncludePaths)"
-         OutputPath="$(IntermediateOutputPath)"
-         TargetFrameworkVersion="$(TargetFrameworkVersion)"
-         EmitDebugInformation="$(EmitDebugInformation)"         
-         Condition="'@(NativeResource)' != ''">
-      </GenerateNativeResource>
+    <GenerateNativeResource
+       Sources="@(NativeResource)"
+       UseSourcePath="$(UseSourcePath)"
+       IncludePaths="$(IncludePaths)"
+       OutputPath="$(IntermediateOutputPath)"
+       TargetFrameworkVersion="$(TargetFrameworkVersion)"
+       EmitDebugInformation="$(EmitDebugInformation)"
+       Condition="'@(NativeResource)' != ''">
+    </GenerateNativeResource>
 
-      <CreateItem Include="$(IntermediateOutputPath)NativeResources.res" Condition="'@(NativeResource)' != ''">
+    <CreateItem Include="$(IntermediateOutputPath)NativeResources.res" Condition="'@(NativeResource)' != ''">
 
-         <Output TaskParameter="Include" ItemName="Win32Resource" />
-         <!-- this causes the .res file to be deleted on a Clean -->
-         <Output TaskParameter="Include" ItemName="FileWrites" />
+      <Output TaskParameter="Include" ItemName="Win32Resource" />
+      <!-- this causes the .res file to be deleted on a Clean -->
+      <Output TaskParameter="Include" ItemName="FileWrites" />
 
-      </CreateItem>
+    </CreateItem>
 
-   </Target>
+  </Target>
 
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
@@ -155,56 +155,99 @@
       <_NonMacroReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) != 'macro'" />
       <_MacroProjectReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) == 'macro'" />
     </ItemGroup>
-    <Xsc
-	      AdditionalLibPaths="$(AdditionalLibPaths)"
-	      CompilerPath="$(XSharpPath)"
-		  DebugType="$(DebugType)"
-	      DefineConstants="$(DefineConstants)"
-	      DisabledWarnings="$(DisabledWarnings)"
-	      DocumentationFile="@(DocFileItem)"
-	      EmitDebugInformation="$(EmitDebugInformation)"
-	      GenerateFullPaths="$(GenerateFullPaths)"
-	      IncludePaths="$(IncludePaths)"
-	      KeyFile="$(AssemblyOriginatorKeyFile)"
-	      NoConfig="true"
-	      NoLogo="$(NoLogo)"
-	      NoStandardDefs="$(NoStandardDefs)"
-	      NoStandardLib="$(NoStandardLib)"
-		  Optimize="@(Optimize)"
-        OutputAssembly="@(IntermediateAssembly)"
-        Platform="$(PlatformTarget)"
-        References="@(_NonMacroReferencePath)"
-	      Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
-        ResponseFiles="$(CompilerResponseFile)"
-      	RootNamespace="$(RootNamespace)"      
-        Sources="@(Compile)"
-        TargetType="$(OutputType)"
-	      TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
-	      WarningLevel="$(WarningLevel)"
-	      OVF="$(OVF)"
-	      AZ="$(AZ)"
-	      CS="$(CS)"
-	      LB="$(LB)"
-	      INS="$(INS)"
-	      NS="$(NS)"
-	      PPO="$(PPO)"
-	      UnSafe="$(UnSafe)"
-        VO1="$(VO1)"
-	      VO2="$(VO2)"
-	      VO3="$(VO3)"
-	      VO4="$(VO4)"
-	      VO5="$(VO5)"
-	      VO6="$(VO6)"
-	      VO7="$(VO7)"
-	      VO8="$(VO8)"
-	      VO9="$(VO9)"
-	      VO10="$(VO10)"
-	      VO11="$(VO11)"
-	      VO12="$(VO12)"
-	      VO13="$(VO13)"
-	      VO14="$(VO14)"
-	      Win32Resource="@(Win32Resource)"
-        CommandLineOption="$(CommandLineOption)"
+    <Xsc Condition=" '%(_CoreCompileResourceInputs.WithCulture)' != 'true' "
+	  AdditionalLibPaths="$(AdditionalLibPaths)"
+	  AddModules="@(AddModules)"
+	  AdditionalFiles="@(AdditionalFiles)"
+	  AllowUnsafeBlocks="$(AllowUnsafeBlocks)"
+	  Analyzers="@(Analyzer)"
+	  ApplicationConfiguration="$(AppConfigForCompiler)"
+	  BaseAddress="$(BaseAddress)"
+	  CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
+	  CodeAnalysisRuleSet="$(ResolvedCodeAnalysisRuleSet)"
+	  CodePage="$(CodePage)"
+	  CommandLineOption="$(CommandLineOption)"
+	  CompilerPath="$(XSharpPath)"
+	  DebugType="$(DebugType)"
+	  DefineConstants="$(DefineConstants)"
+	  DelaySign="$(DelaySign)"
+	  Deterministic="$(Deterministic)"
+	  DisabledWarnings="$(DisabledWarnings)"
+	  DocumentationFile="@(DocFileItem)"
+	  EmitDebugInformation="$(EmitDebugInformation)"
+	  EnvironmentVariables="$(CscEnvironment)"
+	  ErrorEndLocation="$(ErrorEndLocation)"
+	  ErrorLog="$(ErrorLog)"
+	  ErrorReport="$(ErrorReport)"
+	  Features="$(Features)"
+	  FileAlignment="$(FileAlignment)"
+	  GenerateFullPaths="$(GenerateFullPaths)"
+	  HighEntropyVA="$(HighEntropyVA)"
+	  IncludePaths="$(IncludePaths)"
+	  KeyContainer="$(KeyContainerName)"
+	  KeyFile="$(AssemblyOriginatorKeyFile)"
+	  LangVersion="$(LangVersion)"
+	  LinkResources="@(LinkResource)"
+	  MainEntryPoint="$(StartupObject)"
+	  ModuleAssemblyName="$(ModuleAssemblyName)"
+	  NoConfig="true"
+	  NoLogo="$(NoLogo)"
+	  NoStandardDefs="$(NoStandardDefs)"
+	  NoStandardLib="$(NoStandardLib)"
+	  NoWin32Manifest="$(NoWin32Manifest)"
+	  Optimize="@(Optimize)"
+	  OutputAssembly="@(IntermediateAssembly)"
+	  PathMap="$(PathMap)"
+	  PdbFile="$(PdbFile)"
+	  Platform="$(PlatformTarget)"
+	  Prefer32Bit="$(Prefer32Bit)"
+	  PreferredUILang="$(PreferredUILang)"
+	  ProvideCommandLineArgs="$(ProvideCommandLineArgs)"
+	  References="@(_NonMacroReferencePath)"
+	  ReportAnalyzer="$(ReportAnalyzer)"
+	  Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
+	  ResponseFiles="$(CompilerResponseFile)"
+	  RootNamespace="$(RootNamespace)"
+	  SkipCompilerExecution="$(SkipCompilerExecution)"
+	  SubsystemVersion="$(SubsystemVersion)"
+	  Sources="@(Compile)"
+	  TargetType="$(OutputType)"
+	  ToolExe="$(CscToolExe)"
+	  ToolPath="$(CscToolPath)"
+	  TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
+	  UnSafe="$(UnSafe)"
+	  UseHostCompilerIfAvailable="$(UseHostCompilerIfAvailable)"
+	  UseSharedCompilation="$(UseSharedCompilation)"
+	  Utf8Output="$(Utf8Output)"
+	  VsSessionGuid="$(VsSessionGuid)"
+	  WarningsAsErrors="$(WarningsAsErrors)"
+	  WarningLevel="$(WarningLevel)"
+	  WarningsNotAsErrors="$(WarningsNotAsErrors)"
+	  Win32Icon="$(ApplicationIcon)"
+	  Win32Manifest="$(Win32Manifest)"
+	  Win32Resource="@(Win32Resource)"
+	  OVF="$(OVF)"
+	  AZ="$(AZ)"
+	  CS="$(CS)"
+	  LB="$(LB)"
+	  INS="$(INS)"
+	  NS="$(NS)"
+	  PPO="$(PPO)"
+	  VO1="$(VO1)"
+	  VO2="$(VO2)"
+	  VO3="$(VO3)"
+	  VO4="$(VO4)"
+	  VO5="$(VO5)"
+	  VO6="$(VO6)"
+	  VO7="$(VO7)"
+	  VO8="$(VO8)"
+	  VO9="$(VO9)"
+	  VO10="$(VO10)"
+	  VO11="$(VO11)"
+	  VO12="$(VO12)"
+	  VO13="$(VO13)"
+	  VO14="$(VO14)"
+ 
     />
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />

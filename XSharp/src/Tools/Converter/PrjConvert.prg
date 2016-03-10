@@ -282,6 +282,7 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
 		aRename:Add("AllowLateBinding","LB")
 		aRename:Add("UseDefaultNamespace","NS")
 		aRename:Add("CheckForOverflowUnderflow","OVF")
+		aRename:Add("GeneratePreprocessorOutput","PPO")
 		aRename:Add("AllowUnsafeCode","UnSafe")
 		aRename:Add("VOCompatibleStringInit","VO2")
 		aRename:Add("AllMethodsVirtual","VO3")

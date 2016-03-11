@@ -139,7 +139,7 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 					;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
-vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression AS DataType=nativeType  EOS
+vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=nativeType)? EOS
 					;
 
 vostruct			: (Modifiers=votypeModifiers)? 
@@ -147,8 +147,8 @@ vostruct			: (Modifiers=votypeModifiers)?
 					  (Members+=vostructmember)+
 					;
 
-vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype EOS
-					| MEMBER Id=identifier (AS | IS) DataType=datatype EOS
+vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT ((AS | IS) DataType=datatype)? EOS
+					| MEMBER Id=identifier ((AS | IS) DataType=datatype)? EOS
 					;
 
 
@@ -161,8 +161,8 @@ votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
 					;
 
 
-vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (AS | IS) DataType=datatype EOS
-					| MEMBER Id=identifier (AS | IS) DataType=datatype EOS
+vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT ((AS | IS) DataType=datatype)? EOS
+					| MEMBER Id=identifier ((AS | IS) DataType=datatype)? EOS
 					;
 
 namespace_			: BEGIN NAMESPACE Name=name EOS
@@ -225,7 +225,7 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
 					  DELEGATE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
-					  ParamList=parameterList? AS Type=datatype
+					  ParamList=parameterList? (AS Type=datatype)?
 					  (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
 					;
 
@@ -246,13 +246,11 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
 					;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-					   EVENT (ExplicitIface=nameDot)? Id=identifier AS Type=datatype EOS
+					   EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)? EOS
 					;
 
 eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
 					;
-
-
 
 classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList EOS
 					; 
@@ -272,7 +270,7 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
 					;
 
 property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
-					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  AS Type=datatype 
+					  PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)? 
 					  ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? EOS	// Auto
 					  | (LineAccessors+=propertyLineAccessor)+ EOS													// Single Line
 					  | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS									// Multi Line
@@ -346,7 +344,7 @@ conversionOps		: Token=( IMPLICIT | EXPLICIT )
 
 operator_			: Attributes=attributes? Modifiers=operatorModifiers? 
 					  OPERATOR (Operation=overloadedOps | Conversion=conversionOps)
-					  ParamList=parameterList AS Type=datatype EOS StmtBlk=statementBlock
+					  ParamList=parameterList (AS Type=datatype)? EOS StmtBlk=statementBlock
 					;
 
 operatorModifiers	: ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
@@ -386,7 +384,7 @@ statement           : Decl=localdecl                                            
 					| FOR 
 						( AssignExpr=expression
 						| (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier ASSIGN_OP Expr=expression
-						| ForDecl=LOCAL ForIter=identifier ASSIGN_OP Expr=expression AS Type=datatype
+						| ForDecl=LOCAL ForIter=identifier ASSIGN_OP Expr=expression (AS Type=datatype)?
 						)
 					  Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
 					  (STEP Step=expression)? EOS
@@ -465,7 +463,7 @@ caseBlock			: Key=CASE Cond=expression EOS StmtBlk=statementBlock NextCase=caseB
 switchBlock         : (Key=CASE Const=expression | Key=(OTHERWISE|DEFAULT)) EOS StmtBlk=statementBlock			 
 					;
 
-catchBlock			: (Id=identifier AS Type=datatype)? EOS StmtBlk=statementBlock
+catchBlock			: (Id=identifier (AS Type=datatype)?)? EOS StmtBlk=statementBlock
 					;
 
 recoverBlock		: (USING Id=identifier)? EOS StmtBlock=statementBlock

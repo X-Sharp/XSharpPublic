@@ -99,5 +99,36 @@ FUNCTION Start AS VOID
         }
 
 
+    [Test(Author = "Robert", Id = "R7", Title = "MissingTypes")]
+    public static void MissingTypes()
+    {
+        var s = ParseSource(@"
+DEFINE Foo := 10
+FUNCTION Start AS VOID
+ 
+RETURN
+VOSTRUCT MyTest
+    MEMBER Mem1
+
+UNION MyUnion
+    MEMBER Member1
+    MEMBER Member2 
+
+DELEGATE Tester 
+
+CLASS Test
+    EXPORT Name
+    PROPERTY FullName GET Name
+    EVENT OnNameChanged 
+    OPERATOR+(oLeft as Test, oRight as Test)
+        RETURN oLeft
+END CLASS
+");
+            CompileAndRunWithoutExceptions(s);
+
+    }
+
     }
 }
+
+

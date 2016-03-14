@@ -590,7 +590,7 @@ lexer grammar XSharpLexer;
 		}
 		if (t.Channel == TokenConstants.DefaultChannel)
 			_lastToken = type; // nvk: Note that this is the type before any modifications!!!
-		if (_inPp && t.Channel == TokenConstants.DefaultChannel) {
+		if (_inPp && t.Channel == TokenConstants.DefaultChannel && type != Eof) {
 			t.Channel = PREPROCESSOR;
 			if (type == NL && t.Type == EOS)
 				_inPp = false;

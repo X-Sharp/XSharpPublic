@@ -91,13 +91,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        void SkipPp()
+        void SkipToEol()
         {
             IToken t = Lt();
             while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
             {
                 Consume();
-                if (t.Type == XSharpLexer.EOS)
+                if (t.Type == XSharpLexer.EOS && t.Text == ";")
                     break;
                 t = Lt();
             }
@@ -108,13 +108,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             IToken t = Lt();
             while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
             {
-                Consume();
-                if (t.Type == XSharpLexer.EOS)
+                if (t.Type == XSharpLexer.EOS && t.Text == ";")
                     break;
+                Consume();
                 if (t.Channel == XSharpLexer.PREPROCESSOR)
                 {
                     // TODO: Warning
                 }
+                t = Lt();
+            }
+        }
+
+        void SkipInactive()
+        {
+            IToken t = Lt();
+            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
+            {
+                ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
+                Consume();
+                if (t.Type == XSharpLexer.EOS && t.Text == ";")
+                    break;
                 t = Lt();
             }
         }
@@ -134,6 +147,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             currentIndex++;
         }
 
+        bool IsActive()
+        {
+            return defStates.Count == 0 || defStates.Peek();
+        }
+
+        bool IsActiveElseSkip()
+        {
+            if (IsActive())
+                return true;
+            SkipInactive();
+            return false;
+        }
+
         [return: NotNull]
         public IToken NextToken()
         {
@@ -148,7 +174,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         return Lt();
                     case XSharpLexer.PP_DEFINE:
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActiveElseSkip())
                         {
                             Consume();
                             SkipHidden();
@@ -167,12 +193,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 // TODO: Error
                             }
+                            SkipToEol();
                         }
-                        else
-                            SkipPp();
                         break;
                     case XSharpLexer.PP_UNDEF:
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActiveElseSkip())
                         {
                             Consume();
                             SkipHidden();
@@ -191,14 +216,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 // TODO: Error
-                                SkipPp();
                             }
+                            SkipToEol();
                         }
-                        else
-                            SkipPp();
                         break;
                     case XSharpLexer.PP_IFDEF:
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActiveElseSkip())
                         {
                             Consume();
                             SkipHidden();
@@ -212,16 +235,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 // TODO: Error
-                                SkipPp();
                             }
+                            SkipToEol();
                         }
                         else {
                             defStates.Push(false);
-                            SkipPp();
                         }
                         break;
                     case XSharpLexer.PP_IFNDEF:
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActiveElseSkip())
                         {
                             Consume();
                             SkipHidden();
@@ -235,42 +257,52 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 // TODO: Error
-                                SkipPp();
                             }
+                            SkipToEol();
                         }
                         else {
                             defStates.Push(false);
-                            SkipPp();
                         }
                         break;
                     case XSharpLexer.PP_ENDIF:
                         if (defStates.Count > 0)
                         {
-                            Consume();
                             defStates.Pop();
-                            SkipEmpty();
+                            if (IsActiveElseSkip())
+                            {
+                                Consume();
+                                SkipEmpty();
+                                SkipToEol();
+                            }
                         }
                         else
                         {
                             // TODO: error
-                            SkipPp();
+                            SkipToEol();
                         }
                         break;
                     case XSharpLexer.PP_ELSE:
                         if (defStates.Count > 0)
                         {
-                            Consume();
-                            defStates.Push(!defStates.Pop() && (defStates.Count == 0 || defStates.Peek()));
-                            SkipEmpty();
+                            bool a = defStates.Pop();
+                            if (IsActiveElseSkip())
+                            {
+                                Consume();
+                                defStates.Push(!a);
+                                SkipEmpty();
+                                SkipToEol();
+                            }
+                            else
+                                defStates.Push(false);
                         }
                         else
                         {
                             // TODO: error
-                            SkipPp();
+                            SkipToEol();
                         }
                         break;
                     case XSharpLexer.PP_LINE:
-                        if (defStates.Count == 0 || defStates.Peek()) {
+                        if (IsActiveElseSkip()) {
                             Consume();
                             var ln = Lt();
                             if (ln.Type == XSharpLexer.INT_CONST)
@@ -282,14 +314,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 // TODO: error
-                                SkipPp();
                             }
+                            SkipToEol();
                         }
-                        else
-                            SkipPp();
                         break;
                     case XSharpLexer.PP_ERROR:
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActiveElseSkip())
                         {
                             Consume();
                             var ln = Lt();
@@ -302,14 +332,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 // TODO: error
-                                SkipPp();
                             }
+                            SkipToEol();
                         }
-                        else
-                            SkipPp();
                         break;
                     case XSharpLexer.PP_WARNING:
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActiveElseSkip())
                         {
                             Consume();
                             var ln = Lt();
@@ -322,14 +350,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 // TODO: error
-                                SkipPp();
                             }
+                            SkipToEol();
                         }
-                        else
-                            SkipPp();
                         break;
                     case XSharpLexer.PP_INCLUDE:
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActiveElseSkip())
                         {
                             Consume();
                             var ln = Lt();
@@ -342,16 +368,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                             {
                                 // TODO: error
-                                SkipPp();
                             }
+                            SkipToEol();
                         }
-                        else
-                            SkipPp();
                         break;
                     case XSharpLexer.PP_COMMAND:
                     case XSharpLexer.PP_TRANSLATE:
                     case XSharpLexer.PP_ENDREGION:
                     case XSharpLexer.PP_REGION:
+                        if (IsActiveElseSkip())
+                            SkipToEol();
+                        break;
                     default:
                         var t = Lt();
                         Consume();
@@ -359,8 +386,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             ((CommonToken)t).Line = t.Line + lineDiff;
                         }
-                        if (defStates.Count == 0 || defStates.Peek())
+                        if (IsActive())
                             return t;
+                        else
+                            ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
                         break;
                 }
             }

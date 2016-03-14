@@ -20,18 +20,70 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal class XSharpPreprocessor: ITokenSource
     {
+        class InputState
+        {
+            internal ITokenStream Tokens;
+            internal int Index;
+            internal int LineDiff;
+            internal InputState parent;
+
+            internal InputState(ITokenStream tokens)
+            {
+                Tokens = tokens;
+                Index = 0;
+                LineDiff = 0;
+                parent = null;
+            }
+
+            internal int La()
+            {
+                if (Eof() && parent != null)
+                    return parent.La();
+                return Tokens.Get(Index).Type;
+            }
+
+            internal IToken Lt()
+            {
+                if (Eof() && parent != null)
+                    return parent.Lt();
+                return Tokens.Get(Index);
+            }
+
+            internal bool Eof()
+            {
+                return Index >= Tokens.Size || Tokens.Get(Index).Type == IntStreamConstants.Eof;
+            }
+
+            internal bool Consume()
+            {
+                if (Eof())
+                    return false;
+                Index++;
+                return true;
+            }
+        }
+
         ITokenStream _input;
+
+        Encoding _encoding;
+
+        SourceHashAlgorithm _checksumAlgorithm;
+
+        IEnumerable<string> includeDirs;
 
         Dictionary<string, List<IToken>> defines = new Dictionary<string, List<IToken>> (/*CaseInsensitiveComparison.Comparer*/);
 
         Stack<bool> defStates = new Stack<bool> ();
 
-        int currentIndex = 0;
-        int lineDiff = 0;
+        InputState inputs;
 
-        internal XSharpPreprocessor(ITokenStream input, IEnumerable<string> symbols)
+        internal XSharpPreprocessor(ITokenStream input, IEnumerable<string> symbols, IEnumerable<string> IncludeDirs, Encoding encoding, SourceHashAlgorithm checksumAlgorithm)
         {
             _input = input;
+            _encoding = encoding;
+            _checksumAlgorithm = checksumAlgorithm;
+            includeDirs = IncludeDirs;
+            inputs = new InputState(input);
             foreach (var symbol in symbols)
                 defines[symbol] = null;
         }
@@ -134,17 +186,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         int La()
         {
-            return _input.Get(currentIndex).Type;
+            return inputs.La();
         }
 
         IToken Lt()
         {
-            return _input.Get(currentIndex);
+            return inputs.Lt();
         }
 
         void Consume()
         {
-            currentIndex++;
+            while (!inputs.Consume() && inputs.parent != null)
+            {
+                inputs = inputs.parent;
+            }
+        }
+
+        void InsertStream(ITokenStream input)
+        {
+            InputState s = new InputState(input);
+            s.parent = inputs;
+            inputs = s;
         }
 
         bool IsActive()
@@ -308,7 +370,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.INT_CONST)
                             {
                                 Consume();
-                                lineDiff = (int)ln.SyntaxLiteralValue().Value - (ln.Line + 1);
+                                inputs.LineDiff = (int)ln.SyntaxLiteralValue().Value - (ln.Line + 1);
                                 SkipEmpty();
                             }
                             else
@@ -362,14 +424,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {
                                 Consume();
-                                // TODO: load include file
+                                string fn = ln.Text.Substring(1, ln.Text.Length - 2);
+                                string nfp = null;
+                                SourceText text = null;
+                                Exception fileReadException = null;
+                                foreach (var p in includeDirs)
+                                {
+                                    string fp = System.IO.Path.Combine(p, fn);
+                                    try
+                                    {
+                                        using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
+                                        {
+                                            nfp = (string)PortableShim.FileStream.Name.GetValue(data);
+                                            text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        if (fileReadException == null)
+                                            fileReadException = e;
+                                        nfp = null;
+                                    }
+                                }
                                 SkipEmpty();
+                                SkipToEol();
+                                if (nfp != null && text != null)
+                                {
+                                    var stream = new AntlrInputStream(text.ToString());
+                                    var lexer = new XSharpLexer(stream);
+                                    var tokens = new CommonTokenStream(lexer);
+                                    tokens.Fill();
+                                    InsertStream(tokens);
+                                }
+                                else
+                                {
+                                    // TODO: error: include file not found
+                                    //diagnostics.Add(ToFileReadDiagnostics(this.MessageProvider, fileReadException, filePath));
+                                }
                             }
                             else
                             {
                                 // TODO: error
+                                SkipToEol();
                             }
-                            SkipToEol();
                         }
                         break;
                     case XSharpLexer.PP_COMMAND:
@@ -382,9 +480,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     default:
                         var t = Lt();
                         Consume();
-                        if (lineDiff != 0)
                         {
-                            ((CommonToken)t).Line = t.Line + lineDiff;
+                            int lineDiff = inputs.LineDiff;
+                            if (lineDiff != 0)
+                            {
+                                ((CommonToken)t).Line = t.Line + lineDiff;
+                            }
                         }
                         if (IsActive())
                             return t;

@@ -4666,11 +4666,13 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_InvalidPathMap" xml:space="preserve">
     <value>The pathmap option was incorrectly formatted.</value>
   </data>
-  
   <data name="WRN_UnsafeImplied" xml:space="preserve">
     <value>Use of pointers and fixed-size buffers should be marked as unsafe</value>
   </data>
   <data name="ERR_ParserError" xml:space="preserve">
-    <value>Parser error</value>
+    <value>Parser error: {0}</value>
+  </data>
+  <data name="WRN_ParserWarning" xml:space="preserve">
+    <value>Parser warning:{0}</value>
   </data>
 </root>

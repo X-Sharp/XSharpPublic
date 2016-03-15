@@ -136,7 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         void SkipHidden()
         {
             IToken t = Lt();
-            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel && t.Channel != XSharpLexer.PREPROCESSOR && t.Type != XSharpLexer.EOS)
+            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel && t.Channel != XSharpLexer.PREPROCESSOR)
             {
                 Consume();
                 t = Lt();
@@ -149,7 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
             {
                 Consume();
-                if (t.Type == XSharpLexer.EOS && t.Text == ";")
+                if (t.Type == XSharpLexer.EOS && t.Text != ";")
                     break;
                 t = Lt();
             }
@@ -160,7 +160,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             IToken t = Lt();
             while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
             {
-                if (t.Type == XSharpLexer.EOS && t.Text == ";")
+                if (t.Type == XSharpLexer.EOS && t.Text != ";")
                     break;
                 Consume();
                 if (t.Channel == XSharpLexer.PREPROCESSOR)
@@ -178,7 +178,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
                 Consume();
-                if (t.Type == XSharpLexer.EOS && t.Text == ";")
+                if (t.Type == XSharpLexer.EOS && t.Text != ";")
                     break;
                 t = Lt();
             }
@@ -366,6 +366,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_LINE:
                         if (IsActiveElseSkip()) {
                             Consume();
+                            SkipHidden();
                             var ln = Lt();
                             if (ln.Type == XSharpLexer.INT_CONST)
                             {
@@ -384,6 +385,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (IsActiveElseSkip())
                         {
                             Consume();
+                            SkipHidden();
                             var ln = Lt();
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {
@@ -402,6 +404,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (IsActiveElseSkip())
                         {
                             Consume();
+                            SkipHidden();
                             var ln = Lt();
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {
@@ -420,6 +423,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (IsActiveElseSkip())
                         {
                             Consume();
+                            SkipHidden();
                             var ln = Lt();
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {

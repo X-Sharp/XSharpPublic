@@ -1344,5 +1344,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         // X#-only messages
         WRN_UnsafeImplied = 9001,
         ERR_ParserError = 9002,
+        WRN_ParserWarning = 9003,
     }
 }

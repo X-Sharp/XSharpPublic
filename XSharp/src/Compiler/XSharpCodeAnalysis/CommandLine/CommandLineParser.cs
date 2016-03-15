@@ -66,7 +66,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else
                     {
-                        options.IncludePaths = value;
+                        options.IncludePaths = string.IsNullOrEmpty(options.IncludePaths) ? value : options.IncludePaths +';' + value;
                     }
                     break;
                     

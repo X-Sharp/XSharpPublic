@@ -434,7 +434,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 Exception fileReadException = null;
                                 foreach (var p in includeDirs)
                                 {
-                                    string fp = System.IO.Path.Combine(p, fn);
+                                    bool rooted = System.IO.Path.IsPathRooted(fn);
+                                    string fp = rooted ? fn : System.IO.Path.Combine(p, fn);
                                     try
                                     {
                                         using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
@@ -450,6 +451,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                             fileReadException = e;
                                         nfp = null;
                                     }
+                                    if (rooted)
+                                        break;
                                 }
                                 SkipEmpty();
                                 SkipToEol();

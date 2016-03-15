@@ -129,7 +129,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Lexing completed in {0}",ts);
             }
 #endif
-            var pp = new XSharpPreprocessor(tokens, _options.PreprocessorSymbols, new List<string>() { System.IO.Path.GetDirectoryName(_fileName) }, _text.Encoding, _text.ChecksumAlgorithm);
+            var pp = new XSharpPreprocessor(tokens, _options.PreprocessorSymbols, new List<string>(_options.IncludePaths) { System.IO.Path.GetDirectoryName(_fileName) }, _text.Encoding, _text.ChecksumAlgorithm);
             var pp_tokens = new CommonTokenStream(pp);
             var parser = new XSharpParser(pp_tokens);
 #if DEBUG

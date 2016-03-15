@@ -12,12 +12,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public string DefaultNamespace { get; private set; }
 
+        public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
+
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
             {
                 VirtualInstanceMethods = opt.Vo3;
                 DefaultNamespace = opt.NameSpace;
+                IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
             }
         }
 
@@ -25,6 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             VirtualInstanceMethods = opt.VirtualInstanceMethods;
             DefaultNamespace = opt.DefaultNamespace;
+            IncludePaths = opt.IncludePaths;
         }
     }
 }

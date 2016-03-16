@@ -56,6 +56,10 @@ namespace Antlr4.Runtime
             {
                 return new SyntaxDiagnosticInfo(node.GetLeadingTriviaWidth(), node.Width, code, args);
             }*/
+            internal static List<ParseErrorData> NewBag()
+            {
+                return new List<ParseErrorData>();
+            }
         }
 
         public partial interface IParseTree

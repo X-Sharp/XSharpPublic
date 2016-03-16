@@ -69,6 +69,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         SourceHashAlgorithm _checksumAlgorithm;
 
+        IList<ParseErrorData> _parseErrors;
+
         IEnumerable<string> includeDirs;
 
         Dictionary<string, List<IToken>> defines = new Dictionary<string, List<IToken>> (/*CaseInsensitiveComparison.Comparer*/);
@@ -77,11 +79,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         InputState inputs;
 
-        internal XSharpPreprocessor(ITokenStream input, IEnumerable<string> symbols, IEnumerable<string> IncludeDirs, Encoding encoding, SourceHashAlgorithm checksumAlgorithm)
+        internal XSharpPreprocessor(ITokenStream input, IEnumerable<string> symbols, IEnumerable<string> IncludeDirs, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             _input = input;
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
+            _parseErrors = parseErrors;
             includeDirs = IncludeDirs;
             inputs = new InputState(input);
             foreach (var symbol in symbols)

@@ -658,7 +658,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
         private int GetXNodePosition(int position)
         {
-            if (position != 0) {
+            var root = (CSharpSyntaxNode)GetRoot();
+            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            if ( root.XNode != null && eof == null && position != 0 ) {
                 var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
                 while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth))) {
                     var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
@@ -673,7 +675,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private TextSpan GetXNodeSpan(TextSpan span)
         {
-            if (span.Start != 0 && span.End != 0) {
+            var root = (CSharpSyntaxNode)GetRoot();
+            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            if ( root.XNode != null && eof == null && span.Start != 0 && span.End != 0) {
                 var snode = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
                 var enode = snode;
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth)) {

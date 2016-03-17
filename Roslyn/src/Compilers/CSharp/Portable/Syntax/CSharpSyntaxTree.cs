@@ -660,6 +660,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var root = (CSharpSyntaxNode)GetRoot();
             var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
+            if (position >= eofPos && eofPos != null)
+            {
+                return position - (eofPos ?? 0);
+            }
             if ( root.XNode != null && eof == null && position != 0 ) {
                 var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
                 while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth))) {
@@ -677,7 +682,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var root = (CSharpSyntaxNode)GetRoot();
             var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
-            if ( root.XNode != null && eof == null && span.Start != 0 && span.End != 0) {
+            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
+            if (span.Start >= eofPos && eofPos != null) {
+                var start = span.Start - (eofPos ?? 0);
+                var length = span.Length;
+                if (length < 0)
+                    length = 0;
+                return new TextSpan(start, length);
+            }
+            else if ( root.XNode != null && eof == null && span.Start != 0 && span.End != 0 ) {
                 var snode = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
                 var enode = snode;
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth)) {
@@ -699,7 +712,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var length = enode.XNode?.FullWidth ?? 0;
                 if (length < 0)
                     length = 0;
-                return new TextSpan(start,length);
+                return new TextSpan(start, length);
             }
             return span;
         }

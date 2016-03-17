@@ -216,6 +216,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 walker.Walk(treeTransform, tree);
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                if (!parseErrors.IsEmpty())
+                {
+                    eof = AddParserErrors(AddFileAsTrivia(eof), parseErrors);
+                }
                 var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings, 
                     treeTransform.GlobalEntities.Attributes, treeTransform.GlobalEntities.Members, eof);

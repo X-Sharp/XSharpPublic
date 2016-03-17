@@ -30,6 +30,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly SyntaxFactoryContext _syntaxFactoryContext; // Fields are resettable.
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
 
+        private ITokenStream _lexerTokenStream;
+
 #if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
@@ -150,6 +152,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Preprocessing completed in {0}",ts);
             }
 #endif
+            _lexerTokenStream = pp_tokens;
             parser.ErrorHandler = new XSharpErrorStrategy();
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             try
@@ -178,24 +181,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 //#if DEBUG
             /* Temporary solution to prevent crashes with invalid syntax */
-            if (parser.NumberOfSyntaxErrors != 0 || parseErrors.Count != 0)
+            if (parser.NumberOfSyntaxErrors != 0 || (parseErrors.Count != 0 && parseErrors.Contains(p => p.Code != ErrorCode.WRN_ParserWarning)))
             {
                 var failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
-                var eof = AddFileAsTrivia(SyntaxFactory.Token(SyntaxKind.EndOfFileToken));
-                if (parseErrors.Count > 0)
-                {
-                    foreach (var e in parseErrors)
-                    {
-                        if (e.Node != null)
-                            eof = eof.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
-                        else
-                            eof = eof.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Code, e.Args));
-                    }
-                }
-                else
-                {
-                    eof = eof.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
-                }
+                var eof = AddParserErrors(AddFileAsTrivia(SyntaxFactory.Token(SyntaxKind.EndOfFileToken)), parseErrors);
                 eof.XNode = new ErrorNodeImpl(tree.Stop);
                 var result = _syntaxFactory.CompilationUnit(
                     failedTreeTransform.GlobalEntities.Externs,
@@ -230,6 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings, 
                     treeTransform.GlobalEntities.Attributes, treeTransform.GlobalEntities.Members, eof);
+                // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = (XSharpParser.SourceContext)tree;
                 result.XTokens = tokens;
                 return result;
@@ -264,7 +254,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // is available in the PCL
             catch (Exception ex) when (ex.GetType().Name == "InsufficientExecutionStackException")
             {
-                return CreateForGlobalFailure(lexer.TextWindow.Position, createEmptyNodeFunc());
+                return CreateForGlobalFailure(_lexerTokenStream?.Lt(1)?.StartIndex ?? 0, createEmptyNodeFunc());
             }
 #endif
         }
@@ -276,6 +266,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var fileAsTrivia = _syntaxFactory.SkippedTokensTrivia(builder.ToList<SyntaxToken>());
             node = AddLeadingSkippedSyntax(node, fileAsTrivia);
             ForceEndOfFile(); // force the scanner to report that it is at the end of the input.
+            return node;
+        }
+
+        private TNode AddParserErrors<TNode>(TNode node, IEnumerable<ParseErrorData> parseErrors) where TNode : CSharpSyntaxNode
+        {
+            if (!parseErrors.IsEmpty())
+            {
+                foreach (var e in parseErrors)
+                {
+                    if (e.Node != null)
+                        node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                    else
+                        node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Code, e.Args));
+                }
+            }
+            else
+            {
+                node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
+            }
             return node;
         }
 

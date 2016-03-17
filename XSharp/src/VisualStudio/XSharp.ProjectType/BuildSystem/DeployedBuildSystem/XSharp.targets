@@ -2,6 +2,8 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <Import Project="$(MSBuildThisFileDirectory)\XSharp.Default.targets" />
+  <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll"/>
+  <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll"/>
 
   <ItemGroup>
     <ProjectCapability Include="ReferencesFolder"/>
@@ -130,7 +132,6 @@
 
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
 
-  <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpPath)XSharp.Build.dll"/>
 
   <Target
           Name="CoreCompile"
@@ -159,27 +160,22 @@
 	  AdditionalLibPaths="$(AdditionalLibPaths)"
 	  AddModules="@(AddModules)"
 	  AdditionalFiles="@(AdditionalFiles)"
-	  AllowUnsafeBlocks="$(AllowUnsafeBlocks)"
-	  Analyzers="@(Analyzer)"
+	  Unsafe="$(AllowUnsafeBlocks)"
 	  ApplicationConfiguration="$(AppConfigForCompiler)"
 	  BaseAddress="$(BaseAddress)"
 	  CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
-	  CodeAnalysisRuleSet="$(ResolvedCodeAnalysisRuleSet)"
 	  CodePage="$(CodePage)"
 	  CommandLineOption="$(CommandLineOption)"
 	  CompilerPath="$(XSharpPath)"
 	  DebugType="$(DebugType)"
 	  DefineConstants="$(DefineConstants)"
 	  DelaySign="$(DelaySign)"
-	  Deterministic="$(Deterministic)"
 	  DisabledWarnings="$(DisabledWarnings)"
 	  DocumentationFile="@(DocFileItem)"
 	  EmitDebugInformation="$(EmitDebugInformation)"
 	  EnvironmentVariables="$(CscEnvironment)"
 	  ErrorEndLocation="$(ErrorEndLocation)"
-	  ErrorLog="$(ErrorLog)"
 	  ErrorReport="$(ErrorReport)"
-	  Features="$(Features)"
 	  FileAlignment="$(FileAlignment)"
 	  GenerateFullPaths="$(GenerateFullPaths)"
 	  HighEntropyVA="$(HighEntropyVA)"
@@ -197,18 +193,14 @@
 	  NoWin32Manifest="$(NoWin32Manifest)"
 	  Optimize="@(Optimize)"
 	  OutputAssembly="@(IntermediateAssembly)"
-	  PathMap="$(PathMap)"
 	  PdbFile="$(PdbFile)"
 	  Platform="$(PlatformTarget)"
 	  Prefer32Bit="$(Prefer32Bit)"
 	  PreferredUILang="$(PreferredUILang)"
-	  ProvideCommandLineArgs="$(ProvideCommandLineArgs)"
 	  References="@(_NonMacroReferencePath)"
-	  ReportAnalyzer="$(ReportAnalyzer)"
 	  Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile)"
 	  ResponseFiles="$(CompilerResponseFile)"
 	  RootNamespace="$(RootNamespace)"
-	  SkipCompilerExecution="$(SkipCompilerExecution)"
 	  SubsystemVersion="$(SubsystemVersion)"
 	  Sources="@(Compile)"
 	  TargetType="$(OutputType)"
@@ -217,7 +209,6 @@
 	  TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
 	  UnSafe="$(UnSafe)"
 	  UseHostCompilerIfAvailable="$(UseHostCompilerIfAvailable)"
-	  UseSharedCompilation="$(UseSharedCompilation)"
 	  Utf8Output="$(Utf8Output)"
 	  VsSessionGuid="$(VsSessionGuid)"
 	  WarningsAsErrors="$(WarningsAsErrors)"
@@ -246,8 +237,6 @@
 	  VO11="$(VO11)"
 	  VO12="$(VO12)"
 	  VO13="$(VO13)"
-	  VO14="$(VO14)"
- 
     />
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />

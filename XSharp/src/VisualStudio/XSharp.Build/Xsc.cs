@@ -49,6 +49,7 @@ namespace XSharp.Build
         public Boolean VO13 { get; set; }
         public Boolean VO14 { get; set; }
 
+        public string AdditionalFiles { get; set; }
         public string CompilerPath { get; set; }
         // Misc. (unknown at that time) CommandLine options
         public string CommandLineOption { get; set; }
@@ -304,8 +305,7 @@ namespace XSharp.Build
             AppendLogicSwitch(commandLine, "/vo11", VO11);
             AppendLogicSwitch(commandLine, "/vo12", VO12);
             AppendLogicSwitch(commandLine, "/vo13", VO13);
-            AppendLogicSwitch(commandLine, "/vo14", VO14);
-
+            //AppendLogicSwitch(commandLine, "/vo14", VO14);
             // Output assembly name
             commandLine.AppendSwitchIfNotNull("\n/out:", OutputAssembly);
             // User-defined CommandLine Option (in order to support switches unknown at that time)

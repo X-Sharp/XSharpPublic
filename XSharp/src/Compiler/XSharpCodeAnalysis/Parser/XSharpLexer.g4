@@ -312,6 +312,17 @@ lexer grammar XSharpLexer;
 						_textSb.Append((char)c);
 						InputStream.Consume();
 					}
+					else if (c == '*') {
+						_type = EXP;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						c = InputStream.La(1);
+						if (c == '=') {
+							_type = ASSIGN_EXP;
+							_textSb.Append((char)c);
+							InputStream.Consume();
+						}
+					}
 					break;
 				case '?':
 					_type = QMARK;

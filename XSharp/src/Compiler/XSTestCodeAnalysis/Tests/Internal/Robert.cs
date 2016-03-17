@@ -128,6 +128,51 @@ END CLASS
 
     }
 
+        [Test(Author = "Robert", Id = "R8", Title = "** AS alias for Exponent")]
+        public static void StarStarExponent()
+        {
+            var s = ParseStartFunction(@"
+LOCAL r AS REAL8
+r := (int) (2 ** 0)
+IF r != 1
+  THROW Exception{'Exp 0 failed'}
+ENDIF
+r := (int) (2 ** 1)
+IF r != 2
+  THROW Exception{'Exp 1 failed'}
+ENDIF
+r := (int) (2 ** 2)
+IF r != 4
+  THROW Exception{'Exp 2 failed'}
+ENDIF
+r := (int) (2 ** 3)
+IF r != 8
+  THROW Exception{'Exp 3 failed'}
+ENDIF
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+        [Test(Author = "Robert", Id = "R9", Title = "**= and ^= Expression")]
+        public static void ExponentEqualsExponent()
+        {
+            var s = ParseStartFunction(@"
+LOCAL r AS REAL8
+r := 3
+r ^= 2
+IF r != 9
+  THROW Exception{'Exp ^=  failed'}
+ENDIF
+r := 3
+r **= 2
+IF r != 9
+  THROW Exception{'Exp **= failed'}
+ENDIF
+
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
     }
 }
 

@@ -235,7 +235,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case IntStreamConstants.Eof:
                         if (defStates.Count > 0)
                         {
-                            // TODO: Error
+                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "'#endif' expected"));
                         }
                         return Lt();
                     case XSharpLexer.PP_DEFINE:
@@ -256,7 +256,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                // TODO: Error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -280,7 +280,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                // TODO: Error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -299,7 +299,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                // TODO: Error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -321,7 +321,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                // TODO: Error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -342,7 +342,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            // TODO: error
+                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Unexpected #endif"));
                             SkipToEol();
                         }
                         break;
@@ -362,7 +362,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            // TODO: error
+                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Unexpected #else"));
                             SkipToEol();
                         }
                         break;
@@ -379,7 +379,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                // TODO: error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Integer literal expected"));
                             }
                             SkipToEol();
                         }
@@ -393,12 +393,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {
                                 Consume();
-                                // TODO: error
+                                // TODO: show user-defined error
                                 SkipEmpty();
                             }
                             else
                             {
-                                // TODO: error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "String literal expected"));
                             }
                             SkipToEol();
                         }
@@ -412,12 +412,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {
                                 Consume();
-                                // TODO: warning
+                                // TODO: show user-defined warning
                                 SkipEmpty();
                             }
                             else
                             {
-                                // TODO: error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "String literal expected"));
                             }
                             SkipToEol();
                         }
@@ -469,13 +469,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                                 else
                                 {
-                                    // TODO: error: include file not found
-                                    //diagnostics.Add(ToFileReadDiagnostics(this.MessageProvider, fileReadException, filePath));
+                                    _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Include file not found: '"+fn+"'"));
                                 }
                             }
                             else
                             {
-                                // TODO: error
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "String literal expected"));
                                 SkipToEol();
                             }
                         }

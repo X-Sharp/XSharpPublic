@@ -19,8 +19,8 @@
     <StringProperty Category="Build" Name="OutPutPath" DisplayName="Output Path" Subtype="file" />
     <StringProperty Category="Build" Name="IntermediateOutputPath" DisplayName ="Intermediate Output Path" Subtype="file" />
     <BoolProperty   Category="Build" Name="DocumentationFile" DisplayName="Generate XML doc comments file" Default="False"/>
-    <StringProperty Category="Build" Name="TargetPath" DisplayName="Complete Target Path" ReadOnly="True" />
     <BoolProperty 	Category="Build" Name="Optimize" Description="Should compiler optimize output?" />
+    <BoolProperty 	Category="Build" Name="UseSharedCompilation" DisplayName="Use Shared Compiler" Description="Should the shared compiler be used to compile the project? (Faster, but may hide some compiler errors)" Default="True"/>
     <StringProperty Category="Events" Name="PreBuildEvent"  DisplayName="Pre Build Event"  Description="Pre Build Event Command Line" Subtype="CommandLine"/>
     <StringProperty Category="Events" Name="PostBuildEvent" DisplayName="Post Build Event" Description="Post Build Event Command Line" Subtype="CommandLine" />
     <EnumProperty 	Category="Events" Name="RunPostBuildEvent" DisplayName="Run the Post Build Event" Description="When to run the Post Build Event" Default="Always" >

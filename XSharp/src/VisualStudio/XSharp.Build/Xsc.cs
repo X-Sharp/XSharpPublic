@@ -387,7 +387,7 @@ namespace XSharp.Build
 
         public Xsc() : base()
         {
-            System.Diagnostics.Debugger.Launch();
+            //System.Diagnostics.Debugger.Launch();
         }
 
         protected override string ToolName

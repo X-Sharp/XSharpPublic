@@ -18,10 +18,37 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildExtensionsPath)\XSharp\XSharp.targets</MSBuildAllProjects>
     <DefaultLanguageSourceExtension>.prg</DefaultLanguageSourceExtension>
-    <Language>XSharp</Language>
-    <GenerateFullPaths Condition="'$(BuildingInsideVisualStudio)'=='true'">true</GenerateFullPaths>
-  </PropertyGroup>
+    <Language>X#</Language>
+    <TargetRuntime>Managed</TargetRuntime>
+    <AlwaysUseNumericalSuffixInItemNames>true</AlwaysUseNumericalSuffixInItemNames>
+    <DefineCommonItemSchemas Condition=" '$(DefineCommonItemSchemas)' == '' ">true</DefineCommonItemSchemas>
+    <DefineCommonReferenceSchemas Condition=" '$(DefineCommonReferenceSchemas)' == '' ">true</DefineCommonReferenceSchemas>
+    <DefineCommonCapabilities Condition=" '$(DefineCommonCapabilities)' == '' ">true</DefineCommonCapabilities>
+    <SynthesizeLinkMetadata Condition=" '$(SynthesizeLinkMetadata)' == '' and '$(HasSharedItems)' == 'true' ">true</SynthesizeLinkMetadata>
+    <Utf8Output Condition="'$(Utf8Output)' == ''">true</Utf8Output>
+    <!-- NoCompilerStandardLib maps to the compiler's /nostdlib option. By default we always
+           want that switch to be passed to the compiler so that either we or the user
+           provides the references
+           NoStdLib on the other hand indicates that the user doesn't want standard references
+           so only if NoStdLib isn't set to true, will we provide the standard references
+      -->
+    <NoCompilerStandardLib Condition=" '$(NoCompilerStandardLib)' == '' ">true</NoCompilerStandardLib>
 
+    <ErrorEndLocation Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(ErrorEndLocation)' == ''">true</ErrorEndLocation>
+    <!-- When building inside VS, by default use the same language for compiler messages as VS itself does. -->
+    <PreferredUILang Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(PreferredUILang)' == ''">$([System.Globalization.CultureInfo]::CurrentUICulture.Name)</PreferredUILang>
+    <!-- Add any "automatic" compiler references that need to be resolved when NoCompilerStandardLib is set
+         but the user hasn't told us to not include standard references -->
+
+
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(NoCompilerStandardLib)' == 'true' and '$(NoStdLib)' != 'true' ">
+    <!-- Note that unlike VB, C# does not automatically locate System.dll as a "standard library"
+           instead the reference is always passed from the project. Also, for mscorlib.dll 
+           we need to provide the explicit location in order to maintain the correct behaviour
+      -->
+    <_ExplicitReference Include="$(FrameworkPathOverride)\mscorlib.dll" />
+  </ItemGroup>
   <ItemGroup>
     <AvailableItemName Include="NativeResource" />
   </ItemGroup>
@@ -159,7 +186,7 @@
     <PropertyGroup Condition="'$(UseSharedCompilation)' == ''">
       <UseSharedCompilation>true</UseSharedCompilation>
     </PropertyGroup>
-    
+
     <Xsc Condition=" '%(_CoreCompileResourceInputs.WithCulture)' != 'true' "
 	  AdditionalLibPaths="$(AdditionalLibPaths)"
 	  AddModules="@(AddModules)"
@@ -198,7 +225,7 @@
 	  NoConfig="true"
 	  NoLogo="$(NoLogo)"
 	  NoStandardDefs="$(NoStandardDefs)"
-	  NoStandardLib="$(NoStandardLib)"
+	  NoStandardLib="$(NoStdLib)"
 	  NoWin32Manifest="$(NoWin32Manifest)"
 	  Optimize="@(Optimize)"
 	  OutputAssembly="@(IntermediateAssembly)"
@@ -216,8 +243,8 @@
     SubsystemVersion="$(SubsystemVersion)"
 	  Sources="@(Compile)"
 	  TargetType="$(OutputType)"
-	  ToolExe="$(CscToolExe)"
-	  ToolPath="$(CscToolPath)"
+	  ToolExe="$(XscToolExe)"
+	  ToolPath="$(XscToolPath)"
 	  TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
 	  UseSharedCompilation="$(UseSharedCompilation)"
 	  Utf8Output="$(Utf8Output)"

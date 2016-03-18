@@ -270,17 +270,17 @@ lexer grammar XSharpLexer;
 					_textSb.Append((char)c);
 					InputStream.Consume();
 					c = InputStream.La(1);
-					if (c == '>') {
-						_type = RSHIFT;
-						_textSb.Append((char)c);
+					// GreaterThanGreaterThanToken is synthesized in the parser since it is ambiguous (with closing nested type parameter lists)
+					if (c == '>' && InputStream.La(2) == '=')
+					{
+						_textSb.Append((char)c);	// >
 						InputStream.Consume();
-						c = InputStream.La(1);
-						if (c == '=') {
-							_type = ASSIGN_RSHIFT;
-							_textSb.Append((char)c);
-							InputStream.Consume();
-						}
-					}
+						c = InputStream.La(1);		
+						_textSb.Append((char)c);	// = 
+						InputStream.Consume();
+						_type = ASSIGN_RSHIFT;
+						InputStream.Consume();
+					} 
 					else if (c == '=') {
 						_type = GTE;
 						_textSb.Append((char)c);

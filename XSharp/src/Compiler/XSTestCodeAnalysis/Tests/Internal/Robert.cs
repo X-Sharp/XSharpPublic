@@ -99,10 +99,10 @@ FUNCTION Start AS VOID
         }
 
 
-    [Test(Author = "Robert", Id = "R7", Title = "MissingTypes")]
-    public static void MissingTypes()
-    {
-        var s = ParseSource(@"
+        [Test(Author = "Robert", Id = "R7", Title = "MissingTypes")]
+        public static void MissingTypes()
+        {
+            var s = ParseSource(@"
 DEFINE Foo := 10
 FUNCTION Start AS VOID
  
@@ -126,7 +126,7 @@ END CLASS
 ");
             CompileAndRunWithoutExceptions(s);
 
-    }
+        }
 
         [Test(Author = "Robert", Id = "R8", Title = "** AS alias for Exponent")]
         public static void StarStarExponent()
@@ -168,6 +168,38 @@ IF r != 9
   THROW Exception{'Exp **= failed'}
 ENDIF
 
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+        [Test(Author = "Robert", Id = "R10", Title = "> and >> ")]
+        public static void GTandRShift()
+        {
+            var s = ParseStartFunction(@"
+LOCAL x AS LONG
+x := 8
+x := x >> 1
+IF x != 4
+  THROW Exception{'Right shift failed:' +x:ToString()}
+ENDIF
+x >>= 1
+IF x != 2
+  THROW Exception{'Right shift failed' +x:ToString()}
+ENDIF
+
+
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+        [Test(Author = "Robert", Id = "R11", Title = "NestedGeneric List<Tuple<int,int>>")]
+        public static void NestedGeneric()
+        {
+            var s = ParseSource(@"
+using System.Collections.Generic
+FUNCTION Start as int
+var x := List<Tuple<int,int>>{}
+return x:Count
 ");
             CompileAndRunWithoutExceptions(s);
         }

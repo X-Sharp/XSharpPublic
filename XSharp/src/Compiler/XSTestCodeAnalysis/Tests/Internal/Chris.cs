@@ -1810,5 +1810,41 @@ _DLL FUNC SetForegroundWindow(hWnd AS IntPtr) AS LOGIC PASCAL:USER32.SetForegrou
 
 
 
+        // 135
+        [Test(Author = "Chris", Id = "C135", Title = "compiler crash with THROW without arguments")]
+        public static void crash_with_THROW_without_arguments()
+        {
+            var s = ParseSource(@"
+// THROW without arguments re-throws the original exception (in vulcan)
+FUNCTION Start() AS VOID
+LOCAL n:=0 AS INT
+TRY
+	n := n/n
+CATCH
+	THROW
+END TRY
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+        // 136
+        [Test(Author = "Chris", Id = "C136", Title = "error XS0674: Do not use 'System.ParamArrayAttribute'. Use the 'params' keyword instead.")]
+        public static void ParamArrayAttribute_do_not_use_error()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+TestClass.ParamArrayTest(1,2,3)
+CLASS TestClass
+	STATIC METHOD ParamArrayTest([ParamArray] an AS INT[]) AS VOID
+		? an:Length
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
     }
 }

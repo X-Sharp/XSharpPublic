@@ -343,7 +343,7 @@ conversionOps		: Token=( IMPLICIT | EXPLICIT )
 					;
 
 operator_			: Attributes=attributes? Modifiers=operatorModifiers? 
-					  OPERATOR (Operation=overloadedOps | Conversion=conversionOps)
+					  OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
 					  ParamList=parameterList (AS Type=datatype)? EOS StmtBlk=statementBlock
 					;
 
@@ -534,7 +534,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
 					| Left=expression Op=EXP Right=expression					#binaryExpression		// expr ^ expr
 					| Left=expression Op=(MULT | DIV | MOD) Right=expression	#binaryExpression		// expr * expr
 					| Left=expression Op=(PLUS | MINUS) Right=expression		#binaryExpression		// expr +/- expr
-					| Left=expression Op=(LSHIFT| RSHIFT) Right=expression		#binaryExpression		// expr >> expr (shift)
+					| Left=expression Op=(LSHIFT| GT) (Gt=GT) Right=expression	#binaryExpression		// expr >> expr (shift)
 					| Left=expression
 					  Op=( LT | LTE | GT | GTE | EQ | EEQ
 							| SUBSTR | NEQ )

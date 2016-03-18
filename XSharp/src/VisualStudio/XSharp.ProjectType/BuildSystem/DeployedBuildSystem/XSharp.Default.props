@@ -7,14 +7,7 @@
     <ProjectDir>$(MSBuildProjectDirectory)</ProjectDir>
     <ProjectFileName>$(MSBuildProjectFile)</ProjectFileName>
     <ProjectPath>$(ProjectDir)$(ProjectFileName)</ProjectPath>
-
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-
     <TargetPlatformVersion>7.0</TargetPlatformVersion>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <TargetFrameworkMoniker>.NETFramework,Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
   	<UseOSWinMdReferences>true</UseOSWinMdReferences>
     <OutputType>exe</OutputType>
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -23,10 +16,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
     <AssemblyReferenceTabs>TAB_ASSEMBLY_ALL</AssemblyReferenceTabs>
-
     <Name>$(MSBuildProjectName)</Name>
     <RootNamespace>$(Name)</RootNamespace>
     <AssemblyName>$(Name)</AssemblyName>
+    <Dialect>Core</Dialect>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">

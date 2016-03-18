@@ -5,18 +5,18 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>$guid1$</ProjectGuid>
     <OutputType>winexe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>$safeprojectname$</RootNamespace>
     <AssemblyName>$safeprojectname$</AssemblyName>
-    <TargetFrameworkVersion>v$targetframeworkversion$</TargetFrameworkVersion>
-    
+    <TargetFrameworkVersion>$targetframeworkversion$</TargetFrameworkVersion>
+    <TargetFrameworkProfile>$targetframeworkprofile$</TargetFrameworkProfile>
+
     <Name>$safeprojectname$</Name>
     <Nologo>true</Nologo>
-    <GenerateFullPaths>false</GenerateFullPaths>
+    <GenerateFullPaths>true</GenerateFullPaths>
+    <Dialect>Core</Dialect>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">

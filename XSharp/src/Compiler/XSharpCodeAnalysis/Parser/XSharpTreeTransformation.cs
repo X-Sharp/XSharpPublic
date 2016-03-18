@@ -155,6 +155,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        SyntaxToken GetRShiftToken(IToken firstGT, IToken secondGT)
+        {
+            if (secondGT == null)
+                return SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken);
+            int iFirst = firstGT.Column;
+            int iSecond = secondGT.Column;
+            SyntaxToken result;
+            if (iSecond != iFirst + 1) // extra whitespace detected
+                result = SyntaxFactory.MissingToken(SyntaxKind.GreaterThanGreaterThanToken).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UnexpectedToken, "> >"));
+            else
+                result = SyntaxFactory.MakeToken(SyntaxKind.GreaterThanGreaterThanToken);
+
+            return result;
+        }
+
         SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
         {
             var rb = _pool.Allocate();
@@ -1840,16 +1855,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             else
+            { 
+                SyntaxToken opToken;
+                if (context.Operation.Token.Type == XSharpParser.GT && context.Gt != null  ) // right shift
+                {
+                    opToken = GetRShiftToken(context.Operation.Token, context.Gt);
+                }
+                else
+                {
+                    opToken = context.Operation.Get<SyntaxToken>();
+                }
+
                 context.Put(_syntaxFactory.OperatorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
                     returnType: context.Type?.Get<TypeSyntax>() ?? MissingType(),
                     operatorKeyword: SyntaxFactory.MakeToken(SyntaxKind.OperatorKeyword),
-                    operatorToken: context.Operation.Get<SyntaxToken>(),
+                    operatorToken: opToken,
                     parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                     body: context.StmtBlk.Get<BlockSyntax>(),
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
         }
 
         public override void ExitOperatorModifiers([NotNull] XSharpParser.OperatorModifiersContext context)
@@ -3323,6 +3350,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBinaryExpression([NotNull] XSharpParser.BinaryExpressionContext context)
         {
+           
+
             switch (context.Op.Type) {
                 case XSharpParser.EXP:
                     context.Put(_syntaxFactory.InvocationExpression(GenerateQualifiedName("global::System.Math.Pow"), 
@@ -3376,6 +3405,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     _syntaxFactory.Argument(null,null,context.Right.Get<ExpressionSyntax>())), 
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)))));
                     break;
+                case XSharpParser.GT:
+                    if (context.Gt == null)     // Normal Greater than
+                        goto default;
+                    
+                    SyntaxToken token = GetRShiftToken(context.Op, context.Gt);
+                    context.Put(_syntaxFactory.BinaryExpression(
+                        SyntaxKind.RightShiftExpression,
+                        context.Left.Get<ExpressionSyntax>(),
+                        token,
+                        context.Right.Get<ExpressionSyntax>()));
+
+                    break;
+
                 default:
                     context.Put(_syntaxFactory.BinaryExpression(
                         context.Op.ExpressionKindBinaryOp(),

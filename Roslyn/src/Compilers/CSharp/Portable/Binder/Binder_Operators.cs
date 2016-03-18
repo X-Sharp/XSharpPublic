@@ -514,8 +514,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // TODO: (nvk) This should be done in the local rewriter
                 if (left.Type.SpecialType == SpecialType.System_String && right.Type.SpecialType == SpecialType.System_String &&
                     (node.Kind() == SyntaxKind.LessThanExpression || node.Kind() == SyntaxKind.LessThanOrEqualExpression ||
-                    node.Kind() == SyntaxKind.GreaterThanExpression || node.Kind() == SyntaxKind.GreaterThanOrEqualExpression))
+                    node.Kind() == SyntaxKind.GreaterThanExpression || node.Kind() == SyntaxKind.GreaterThanOrEqualExpression
+                    || node.Kind() == SyntaxKind.SubtractExpression))
                 {
+                    if (node.Kind() == SyntaxKind.SubtractExpression)
+                    {
+                        Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInVersion1, node, "Minus Operator for strings");
+                    }
                     MethodSymbol opMeth;
                     TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);
                     var opCall = BoundCall.Synthesized(node, null, opMeth, left, right);

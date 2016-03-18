@@ -164,6 +164,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "vo13":    // VO String comparisons
                     options.Vo13 = positive;
                     break;
+                case "vo14":    // VO FLoat Literals
+                    options.Vo14 = positive;
+                    break;
                 case "wx":       // disable warning
                     name = "warnaserror+";
                     handled = false;

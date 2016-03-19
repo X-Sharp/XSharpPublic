@@ -194,6 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     eof);
                 result.XNode = (XSharpParser.SourceContext)tree;
                 result.XTokens = tokens;
+                result.IncludedFiles = pp.IncludedFiles;
                 return result;
             }
 //#endif
@@ -226,6 +227,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = (XSharpParser.SourceContext)tree;
                 result.XTokens = tokens;
+                result.IncludedFiles = pp.IncludedFiles;
                 return result;
             }
             finally

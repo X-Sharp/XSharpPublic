@@ -24,14 +24,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             internal ITokenStream Tokens;
             internal int Index;
-            internal int LineDiff;
+            internal string SourceFileName;
+            internal string MappedFileName;
+            internal int MappedLineDiff;
             internal InputState parent;
 
             internal InputState(ITokenStream tokens)
             {
                 Tokens = tokens;
                 Index = 0;
-                LineDiff = 0;
+                MappedLineDiff = 0;
+                SourceFileName = null;
                 parent = null;
             }
 
@@ -78,6 +81,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         Stack<bool> defStates = new Stack<bool> ();
 
         InputState inputs;
+
+        internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>();
 
         internal XSharpPreprocessor(ITokenStream input, IEnumerable<string> symbols, IEnumerable<string> IncludeDirs, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
@@ -205,10 +210,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        void InsertStream(ITokenStream input)
+        void InsertStream(string filename, ITokenStream input)
         {
             InputState s = new InputState(input);
             s.parent = inputs;
+            s.SourceFileName = filename;
             inputs = s;
         }
 
@@ -374,7 +380,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.INT_CONST)
                             {
                                 Consume();
-                                inputs.LineDiff = (int)ln.SyntaxLiteralValue().Value - (ln.Line + 1);
+                                inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue().Value - (ln.Line + 1);
+                                SkipHidden();
+                                ln = Lt();
+                                if (ln.Type == XSharpLexer.STRING_CONST)
+                                {
+                                    Consume();
+                                    inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
+
+                                }
+                                else
+                                {
+                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "String literal expected"));
+                                }
                                 SkipEmpty();
                             }
                             else
@@ -445,6 +463,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         {
                                             nfp = (string)PortableShim.FileStream.Name.GetValue(data);
                                             text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                                            if (!IncludedFiles.ContainsKey(nfp))
+                                            {
+                                                IncludedFiles.Add(nfp, text);
+                                            }
                                             break;
                                         }
                                     }
@@ -465,7 +487,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     var lexer = new XSharpLexer(stream);
                                     var tokens = new CommonTokenStream(lexer);
                                     tokens.Fill();
-                                    InsertStream(tokens);
+                                    InsertStream(nfp, tokens);
                                 }
                                 else
                                 {
@@ -490,10 +512,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var t = Lt();
                         Consume();
                         {
-                            int lineDiff = inputs.LineDiff;
+                            int lineDiff = inputs.MappedLineDiff;
                             if (lineDiff != 0)
                             {
-                                ((CommonToken)t).Line = t.Line + lineDiff;
+                                ((CommonToken)t).MappedLine = t.Line + lineDiff;
+                            }
+                            if (!string.IsNullOrEmpty(inputs.SourceFileName))
+                            {
+                                ((CommonToken)t).SourceFileName = inputs.SourceFileName;
                             }
                         }
                         if (IsActive())

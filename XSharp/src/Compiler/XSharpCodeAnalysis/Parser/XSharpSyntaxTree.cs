@@ -67,12 +67,18 @@ namespace Antlr4.Runtime
             object CsNode { get; set;  }
             int Position { get; }
             int FullWidth { get; }
+            string SourceFileName { get; }
+            string MappedFileName { get; }
+            int MappedLine { get; }
         }
         public partial class TerminalNodeImpl: Microsoft.CodeAnalysis.IMessageSerializable
         {
             public object CsNode { get; set; }
             public int Position { get { return Symbol.StartIndex; } }
             public int FullWidth {  get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
+            public string SourceFileName { get { return (Symbol as CommonToken).SourceFileName; } }
+            public string MappedFileName { get { return (Symbol as CommonToken).MappedFileName; } }
+            public int MappedLine { get { return (Symbol as CommonToken).MappedLine; } }
             public override string ToString() { return this.GetText(); }
         }
     }
@@ -86,6 +92,9 @@ namespace Antlr4.Runtime
         public object CsNode { get; set; }
         public virtual int Position { get; }
         public virtual int FullWidth { get; }
+        public virtual string SourceFileName { get; }
+        public virtual string MappedFileName { get; }
+        public virtual int MappedLine { get; }
 
         internal List<ParseErrorData> ErrorData;
 
@@ -106,6 +115,9 @@ namespace Antlr4.Runtime
     {
         public override int Position { get { return Start.StartIndex; } }
         public override int FullWidth { get { return Stop.StopIndex - Start.StartIndex + 1; } }
+        public override string SourceFileName { get { return (Start as CommonToken).SourceFileName; } }
+        public override string MappedFileName { get { return (Start as CommonToken).MappedFileName; } }
+        public override int MappedLine { get { return (Start as CommonToken).MappedLine; } }
         public override string ToString() {
             /*return this.GetText();*/
             var s = this.GetType().ToString();
@@ -115,6 +127,9 @@ namespace Antlr4.Runtime
 
     public partial class CommonToken : Microsoft.CodeAnalysis.IMessageSerializable
     {
+        internal string SourceFileName;
+        internal string MappedFileName;
+        internal int MappedLine = -1;
     }
 
     internal static class RuleExtensions
@@ -202,6 +217,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         public IParseTree XNode { get; internal set; }
         public ITokenStream XTokens { get; internal set; }
+        public Dictionary<string, SourceText> IncludedFiles { get; internal set; }
+
     }
 }
 
@@ -219,5 +236,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
     {
         public XSharpParser.SourceContext XSource { get { return (XSharpParser.SourceContext)(((InternalSyntax.CompilationUnitSyntax)(this.Green)).XNode); } }
         public ITokenStream XTokenStream { get { return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).XTokens); } }
+        internal Dictionary<string, SourceText> IncludedFiles { get { return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).IncludedFiles); } }
     }
 }

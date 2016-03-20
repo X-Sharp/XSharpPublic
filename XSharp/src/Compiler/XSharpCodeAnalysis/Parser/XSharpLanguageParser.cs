@@ -184,7 +184,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (parser.NumberOfSyntaxErrors != 0 || (parseErrors.Count != 0 && parseErrors.Contains(p => p.Code != ErrorCode.WRN_ParserWarning)))
             {
                 var failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
-                var eof = AddParserErrors(AddFileAsTrivia(SyntaxFactory.Token(SyntaxKind.EndOfFileToken)), parseErrors);
+                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                 eof.XNode = new ErrorNodeImpl(tree.Stop);
                 var result = _syntaxFactory.CompilationUnit(
                     failedTreeTransform.GlobalEntities.Externs,
@@ -219,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 if (!parseErrors.IsEmpty())
                 {
-                    eof = AddParserErrors(AddFileAsTrivia(eof), parseErrors);
+                    eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                 }
                 var result = _syntaxFactory.CompilationUnit(
                     treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings, 
@@ -265,33 +266,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
         }
 
-        private TNode AddFileAsTrivia<TNode>(TNode node) where TNode  : CSharpSyntaxNode
+        private SkippedTokensTriviaSyntax FileAsTrivia(SourceText text)
         {
             var builder = new SyntaxListBuilder(1);
-            builder.Add(SyntaxFactory.BadToken(null, _text.ToString(), null));
+            builder.Add(SyntaxFactory.BadToken(null, text.ToString(), null));
             var fileAsTrivia = _syntaxFactory.SkippedTokensTrivia(builder.ToList<SyntaxToken>());
-            node = AddLeadingSkippedSyntax(node, fileAsTrivia);
             ForceEndOfFile(); // force the scanner to report that it is at the end of the input.
-            return node;
+            return fileAsTrivia;
         }
 
-        private TNode AddParserErrors<TNode>(TNode node, IEnumerable<ParseErrorData> parseErrors) where TNode : CSharpSyntaxNode
+        private SkippedTokensTriviaSyntax ParserErrorsAsTrivia(IEnumerable<ParseErrorData> parseErrors, IDictionary<string,SourceText> includes)
         {
+            var builder = new SyntaxListBuilder(1+includes.Count);
+            var textNode = SyntaxFactory.BadToken(null, _text.ToString(), null);
+            Dictionary<string, SyntaxToken> incNodes = new Dictionary<string, SyntaxToken>(includes.Count);
+            foreach (var inc in includes)
+            {
+                var incNode = SyntaxFactory.BadToken(null, inc.Value.ToString(), null);
+                incNodes[inc.Key] = incNode;
+            }
             if (!parseErrors.IsEmpty())
             {
                 foreach (var e in parseErrors)
                 {
                     if (e.Node != null)
-                        node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                    {
+                        SyntaxToken node;
+                        if (!string.IsNullOrEmpty(e.Node.SourceFileName) && incNodes.TryGetValue(e.Node.SourceFileName,out node))
+                            incNodes[e.Node.SourceFileName] = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                        else
+                            textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Node.Position, e.Node.FullWidth, e.Code, e.Args));
+                    }
                     else
-                        node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Code, e.Args));
+                        textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(e.Code, e.Args));
                 }
             }
             else
             {
-                node = node.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
+                textNode = textNode.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ParserError, "Unknown error"));
             }
-            return node;
+            builder.Add(textNode);
+            foreach (var inc in incNodes)
+            {
+                var t = new CommonToken(XSharpLexer.WS);
+                t.SourceFileName = inc.Key;
+                inc.Value.XNode = new ErrorNodeImpl(t);
+                builder.Add(inc.Value);
+            }
+            return _syntaxFactory.SkippedTokensTrivia(builder.ToList<SyntaxToken>());
         }
 
         private TNode CreateForGlobalFailure<TNode>(int position, TNode node) where TNode : CSharpSyntaxNode
@@ -299,7 +321,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Turn the complete input into a single skipped token. This avoids running the lexer, and therefore
             // the preprocessor directive parser, which may itself run into the same problem that caused the
             // original failure.
-            return AddError(AddFileAsTrivia(node), position, 0, ErrorCode.ERR_InsufficientStack);
+            return AddError(AddLeadingSkippedSyntax(node, FileAsTrivia(_text)), position, 0, ErrorCode.ERR_InsufficientStack);
         }
 
     }

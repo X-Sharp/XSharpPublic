@@ -684,13 +684,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private LinePosition GetXNodePosition(int position)
         {
+            var text = this.GetText();
             var root = (CSharpSyntaxNode)GetRoot();
             var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
             var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
             if (position >= eofPos && eofPos != null)
             {
-                int p = position - (eofPos ?? 0);
-                return this.GetText().Lines.GetLinePosition(p);
+                position = position - (eofPos ?? 0);
             }
             if ( root.XNode != null && eof == null && position != 0 ) {
                 var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
@@ -702,28 +702,49 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 position = (position < node.Position + node.FullWidth) ? node.XNode?.Position ?? 0 : node.XNode?.Position + node.XNode?.FullWidth ?? 0;
                 string file = node.XNode?.SourceFileName;
-                SourceText text;
-                if (string.IsNullOrEmpty(file) || !(root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out text))
-                    text = this.GetText();
-                return text.Lines.GetLinePosition(position);
+                SourceText ntext;
+                if (!string.IsNullOrEmpty(file) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out ntext))
+                    text = ntext;
             }
-            return this.GetText().Lines.GetLinePosition(position);
+            return text.Lines.GetLinePosition(position);
         }
 
         private FileLinePositionSpan GetXNodeSpan(TextSpan span)
         {
+            string file = this.FilePath;
+            var text = this.GetText();
             var root = (CSharpSyntaxNode)GetRoot();
             var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
             var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
             if (span.Start >= eofPos && eofPos != null) {
                 var start = span.Start - (eofPos ?? 0);
                 var length = span.Length;
+                if (root is CompilationUnitSyntax)
+                {
+                    foreach (var lead in (root as CompilationUnitSyntax).EndOfFileToken.LeadingTrivia)
+                    {
+                        if (lead.HasStructure)
+                        {
+                            var f = lead.GetStructure().Green.GetFirstTerminal() as InternalSyntax.CSharpSyntaxNode;
+                            if (start > f.FullWidth)
+                            {
+                                start -= f.FullWidth;
+                                continue;
+                            }
+                            string fn = f.XNode?.SourceFileName;
+                            SourceText ntext;
+                            if (!string.IsNullOrEmpty(fn) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(fn, out ntext))
+                            {
+                                text = ntext;
+                                file = fn;
+                            }
+                            break;
+                        }
+                    }
+                }
                 if (length < 0)
                     length = 0;
                 span = new TextSpan(start, length);
-                var s = this.GetText().Lines.GetLinePosition(span.Start);
-                var e = this.GetText().Lines.GetLinePosition(span.End);
-                return new FileLinePositionSpan(this.FilePath, s, e);
             }
             else if ( root.XNode != null && eof == null && span.Start != 0 && span.End != 0 ) {
                 var snode = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
@@ -747,22 +768,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var length = enode.XNode?.FullWidth ?? 0;
                 if (length < 0)
                     length = 0;
-                string file = snode.XNode?.SourceFileName;
-                SourceText text;
-                if (string.IsNullOrEmpty(file) || !(root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out text))
-                    text = this.GetText();
+                string fn = snode.XNode?.SourceFileName;
+                SourceText ntext;
+                if (!string.IsNullOrEmpty(fn) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(fn, out ntext))
+                {
+                    text = ntext;
+                    file = fn;
+                }
                 if (start + length > text.Length)
                     length = text.Length - start;
                 span = new TextSpan(start, length);
-                var s = text.Lines.GetLinePosition(span.Start);
-                var e = text.Lines.GetLinePosition(span.End);
-                return new FileLinePositionSpan(file, s, e);
             }
-            {
-                var s = this.GetText().Lines.GetLinePosition(span.Start);
-                var e = this.GetText().Lines.GetLinePosition(span.End);
-                return new FileLinePositionSpan(this.FilePath, s, e);
-            }
+            var s = text.Lines.GetLinePosition(span.Start);
+            var e = text.Lines.GetLinePosition(span.End);
+            return new FileLinePositionSpan(file, s, e);
         }
 #endif
 

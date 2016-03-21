@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string SourceFileName;
             internal string MappedFileName;
             internal int MappedLineDiff;
+            internal bool isSymbol;
             internal InputState parent;
 
             internal InputState(ITokenStream tokens)
@@ -36,6 +37,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MappedLineDiff = 0;
                 SourceFileName = null;
                 parent = null;
+                isSymbol = false;
             }
 
             internal int La()
@@ -76,13 +78,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         IEnumerable<string> includeDirs;
 
-        Dictionary<string, List<IToken>> defines = new Dictionary<string, List<IToken>> (/*CaseInsensitiveComparison.Comparer*/);
+        Dictionary<string, IList<IToken>> symbolDefines = new Dictionary<string, IList<IToken>> (/*CaseInsensitiveComparison.Comparer*/);
 
         Stack<bool> defStates = new Stack<bool> ();
 
         InputState inputs;
 
+        HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
+
         internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>();
+
+        public int MaxIncludeDepth { get; set; } = 16;
+
+        public int MaxSymbolDepth { get; set; } = 16;
 
         internal XSharpPreprocessor(ITokenStream input, IEnumerable<string> symbols, IEnumerable<string> IncludeDirs, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
@@ -93,7 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             includeDirs = IncludeDirs;
             inputs = new InputState(input);
             foreach (var symbol in symbols)
-                defines[symbol] = null;
+                symbolDefines[symbol] = null;
         }
 
         public int Column
@@ -192,6 +200,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        CommonToken CloneToken(IToken t)
+        {
+            var nt = new CommonToken(t);
+            if (inputs.MappedLineDiff != 0)
+                ((CommonToken)nt).MappedLine = t.Line + inputs.MappedLineDiff;
+            if (!string.IsNullOrEmpty(inputs.MappedFileName))
+                ((CommonToken)nt).MappedFileName = inputs.MappedFileName;
+            if (!string.IsNullOrEmpty(inputs.SourceFileName))
+                ((CommonToken)nt).SourceFileName = inputs.SourceFileName;
+            return nt;
+        }
+
+        IList<IToken> ConsumeList()
+        {
+            IList<IToken> res = null;
+            IToken t = Lt();
+            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
+            {
+                if (t.Type == XSharpLexer.EOS && t.Text != ";")
+                    break;
+                Consume();
+                if (t.Channel == XSharpLexer.PREPROCESSOR)
+                {
+                    if (res == null)
+                        res = new List<IToken> ();
+                    var nt = CloneToken(t);
+                    nt.Channel = TokenConstants.DefaultChannel;
+                    res.Add(nt);
+                }
+                t = Lt();
+            }
+            return res;
+        }
+
         int La()
         {
             return inputs.La();
@@ -210,11 +252,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        void InsertStream(string filename, ITokenStream input)
+        void InsertStream(string filename, ITokenStream input, bool isSymbol = false)
         {
             InputState s = new InputState(input);
             s.parent = inputs;
             s.SourceFileName = filename;
+            s.isSymbol = isSymbol;
             inputs = s;
         }
 
@@ -231,12 +274,60 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
+        int IncludeDepth()
+        {
+            int d = 1;
+            var o = inputs;
+            while (o.parent != null)
+            {
+                if (!o.isSymbol)
+                    d += 1;
+                o = o.parent;
+            }
+            return d;
+        }
+
+        int SymbolDepth()
+        {
+            int d = 0;
+            var o = inputs;
+            while (o.parent != null && o.isSymbol)
+            {
+                d += 1;
+                o = o.parent;
+            }
+            return d;
+        }
+
         [return: NotNull]
         public IToken NextToken()
         {
             while (true)
             {
-                switch (La())
+                var nextType = La();
+                if (inputs.isSymbol)
+                {
+                    switch (nextType)
+                    {
+                        case XSharpLexer.PP_DEFINE:
+                        case XSharpLexer.PP_UNDEF:
+                        case XSharpLexer.PP_IFDEF:
+                        case XSharpLexer.PP_IFNDEF:
+                        case XSharpLexer.PP_ENDIF:
+                        case XSharpLexer.PP_ELSE:
+                        case XSharpLexer.PP_LINE:
+                        case XSharpLexer.PP_ERROR:
+                        case XSharpLexer.PP_WARNING:
+                        case XSharpLexer.PP_INCLUDE:
+                        case XSharpLexer.PP_COMMAND:
+                        case XSharpLexer.PP_TRANSLATE:
+                        case XSharpLexer.PP_ENDREGION:
+                        case XSharpLexer.PP_REGION:
+                            nextType = XSharpLexer.WS;
+                            break;
+                    }
+                }
+                switch (nextType)
                 {
                     case IntStreamConstants.Eof:
                         if (defStates.Count > 0)
@@ -253,12 +344,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
                             {
                                 Consume();
-                                SkipEmpty();
-                                if (defines.ContainsKey(def.Text))
+                                if (symbolDefines.ContainsKey(def.Text))
                                 {
                                     _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_ParserWarning, "Symbol redefined: " + def.Text));
                                 }
-                                defines[def.Text] = null;
+                                symbolDefines[def.Text] = ConsumeList();
                             }
                             else
                             {
@@ -277,8 +367,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 SkipEmpty();
-                                if (defines.ContainsKey(def.Text))
-                                    defines.Remove(def.Text);
+                                if (symbolDefines.ContainsKey(def.Text))
+                                    symbolDefines.Remove(def.Text);
                                 else
                                 {
                                     _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_ParserWarning, "Symbol not defined: " + def.Text));
@@ -301,7 +391,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 SkipEmpty();
-                                defStates.Push(defines.ContainsKey(def.Text));
+                                defStates.Push(symbolDefines.ContainsKey(def.Text));
                             }
                             else
                             {
@@ -323,7 +413,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 SkipEmpty();
-                                defStates.Push(!defines.ContainsKey(def.Text));
+                                defStates.Push(!symbolDefines.ContainsKey(def.Text));
                             }
                             else
                             {
@@ -443,61 +533,68 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_INCLUDE:
                         if (IsActiveElseSkip())
                         {
-                            Consume();
-                            SkipHidden();
-                            var ln = Lt();
-                            if (ln.Type == XSharpLexer.STRING_CONST)
+                            if (IncludeDepth() == MaxIncludeDepth)
                             {
-                                Consume();
-                                string fn = ln.Text.Substring(1, ln.Text.Length - 2);
-                                string nfp = null;
-                                SourceText text = null;
-                                Exception fileReadException = null;
-                                foreach (var p in includeDirs)
-                                {
-                                    bool rooted = System.IO.Path.IsPathRooted(fn);
-                                    string fp = rooted ? fn : System.IO.Path.Combine(p, fn);
-                                    try
-                                    {
-                                        using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
-                                        {
-                                            nfp = (string)PortableShim.FileStream.Name.GetValue(data);
-                                            text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
-                                            if (!IncludedFiles.ContainsKey(nfp))
-                                            {
-                                                IncludedFiles.Add(nfp, text);
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        if (fileReadException == null)
-                                            fileReadException = e;
-                                        nfp = null;
-                                    }
-                                    if (rooted)
-                                        break;
-                                }
-                                SkipEmpty();
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Reached max include depth: " + MaxIncludeDepth));
                                 SkipToEol();
-                                if (nfp != null && text != null)
+                            }
+                            else {
+                                Consume();
+                                SkipHidden();
+                                var ln = Lt();
+                                if (ln.Type == XSharpLexer.STRING_CONST)
                                 {
-                                    var stream = new AntlrInputStream(text.ToString());
-                                    var lexer = new XSharpLexer(stream);
-                                    var tokens = new CommonTokenStream(lexer);
-                                    tokens.Fill();
-                                    InsertStream(nfp, tokens);
+                                    Consume();
+                                    string fn = ln.Text.Substring(1, ln.Text.Length - 2);
+                                    string nfp = null;
+                                    SourceText text = null;
+                                    Exception fileReadException = null;
+                                    foreach (var p in includeDirs)
+                                    {
+                                        bool rooted = System.IO.Path.IsPathRooted(fn);
+                                        string fp = rooted ? fn : System.IO.Path.Combine(p, fn);
+                                        try
+                                        {
+                                            using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
+                                            {
+                                                nfp = (string)PortableShim.FileStream.Name.GetValue(data);
+                                                text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                                                if (!IncludedFiles.ContainsKey(nfp))
+                                                {
+                                                    IncludedFiles.Add(nfp, text);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            if (fileReadException == null)
+                                                fileReadException = e;
+                                            nfp = null;
+                                        }
+                                        if (rooted)
+                                            break;
+                                    }
+                                    SkipEmpty();
+                                    SkipToEol();
+                                    if (nfp != null && text != null)
+                                    {
+                                        var stream = new AntlrInputStream(text.ToString());
+                                        var lexer = new XSharpLexer(stream);
+                                        var tokens = new CommonTokenStream(lexer);
+                                        tokens.Fill();
+                                        InsertStream(nfp, tokens);
+                                    }
+                                    else
+                                    {
+                                        _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "Include file not found: '" + fn + "'"));
+                                    }
                                 }
                                 else
                                 {
-                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "Include file not found: '"+fn+"'"));
+                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "String literal expected"));
+                                    SkipToEol();
                                 }
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "String literal expected"));
-                                SkipToEol();
                             }
                         }
                         break;
@@ -511,19 +608,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     default:
                         var t = Lt();
                         Consume();
+                        if (IsActive())
                         {
-                            int lineDiff = inputs.MappedLineDiff;
-                            if (lineDiff != 0)
+                            IList<IToken> tl;
+                            if ((XSharpLexer.IsIdentifier(t.Type) || XSharpLexer.IsKeyword(t.Type)) && symbolDefines.TryGetValue(t.Text, out tl))
                             {
-                                ((CommonToken)t).MappedLine = t.Line + lineDiff;
+                                if (tl != null)
+                                {
+                                    if (SymbolDepth() == MaxSymbolDepth)
+                                    {
+                                        _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Reached max symbol replacement depth: " + MaxSymbolDepth));
+                                    }
+                                    else if (activeSymbols.Contains(t.Text))
+                                    {
+                                        _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Cyclic symbol replacement: " + t.Text));
+                                    }
+                                    else
+                                    {
+                                        activeSymbols.Add(t.Text);
+                                        InsertStream(null, new CommonTokenStream(new ListTokenSource(tl)), true);
+                                    }
+                                }
                             }
-                            if (!string.IsNullOrEmpty(inputs.SourceFileName))
+                            else
                             {
-                                ((CommonToken)t).SourceFileName = inputs.SourceFileName;
+                                if (inputs.isSymbol)
+                                {
+                                    t = CloneToken(t);
+                                }
+                                else
+                                {
+                                    if (inputs.MappedLineDiff != 0)
+                                        ((CommonToken)t).MappedLine = t.Line + inputs.MappedLineDiff;
+                                    if (!string.IsNullOrEmpty(inputs.MappedFileName))
+                                        ((CommonToken)t).MappedFileName = inputs.MappedFileName;
+                                    if (!string.IsNullOrEmpty(inputs.SourceFileName))
+                                        ((CommonToken)t).SourceFileName = inputs.SourceFileName;
+                                }
+                                return t;
                             }
                         }
-                        if (IsActive())
-                            return t;
                         else
                             ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
                         break;

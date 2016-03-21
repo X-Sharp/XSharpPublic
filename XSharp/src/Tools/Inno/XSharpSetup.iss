@@ -3,17 +3,17 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.1"
-#define ProdBuild       "XSharp Beta 1"
+#define ProdVer         "XSharp 0.2.2"
+#define ProdBuild       "XSharp Beta 2"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.1.2101"
-#define VITextVersion   "0.2.1.2101 (Beta 1)"
-#define TouchDate       "2016-02-28"
-#define TouchTime       "02:01:00"
-#define SetupExeName    "XSharpSetup021"
+#define VIVersion       "0.2.2.2201"
+#define VITextVersion   "0.2.2.2201 (Beta 2)"
+#define TouchDate       "2016-03-20"
+#define TouchTime       "02:02:00"
+#define SetupExeName    "XSharpSetup022"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -26,8 +26,8 @@
 #define XIDESetup       "XIDE_Set_up_1.01.exe"
 
 #define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
-#define Compression     "lzma2/ultra64"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.

@@ -558,9 +558,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                             using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
                                             {
                                                 nfp = (string)PortableShim.FileStream.Name.GetValue(data);
-                                                text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
-                                                if (!IncludedFiles.ContainsKey(nfp))
+                                                if (!IncludedFiles.TryGetValue(nfp, out text))
                                                 {
+                                                    text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
                                                     IncludedFiles.Add(nfp, text);
                                                 }
                                                 break;

@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Consume();
                 if (t.Channel == XSharpLexer.PREPROCESSOR)
                 {
-                    _parseErrors.Add(new ParseErrorData(t, ErrorCode.WRN_ParserWarning, "Ignored input '"+t.Text+"'"));
+                    _parseErrors.Add(new ParseErrorData(t, ErrorCode.WRN_PreProcessorWarning, "Ignored input '"+t.Text+"'"));
                 }
                 t = Lt();
             }
@@ -332,7 +332,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case IntStreamConstants.Eof:
                         if (defStates.Count > 0)
                         {
-                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "'#endif' expected"));
+                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "'#endif' expected"));
                         }
                         return Lt();
                     case XSharpLexer.PP_DEFINE:
@@ -346,13 +346,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 Consume();
                                 if (symbolDefines.ContainsKey(def.Text))
                                 {
-                                    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_ParserWarning, "Symbol redefined: " + def.Text));
+                                    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol redefined: " + def.Text));
                                 }
                                 symbolDefines[def.Text] = ConsumeList();
                             }
                             else
                             {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_ParserError, "Identifier expected"));
+                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -371,12 +371,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     symbolDefines.Remove(def.Text);
                                 else
                                 {
-                                    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_ParserWarning, "Symbol not defined: " + def.Text));
+                                    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol not defined: " + def.Text));
                                 }
                             }
                             else
                             {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_ParserError, "Identifier expected"));
+                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -395,7 +395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_ParserError, "Identifier expected"));
+                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -417,7 +417,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_ParserError, "Identifier expected"));
+                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
                             }
                             SkipToEol();
                         }
@@ -438,7 +438,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Unexpected #endif"));
+                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #endif"));
                             SkipToEol();
                         }
                         break;
@@ -458,7 +458,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Unexpected #else"));
+                            _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Unexpected #else"));
                             SkipToEol();
                         }
                         break;
@@ -481,13 +481,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                                 else
                                 {
-                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "String literal expected"));
+                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
                                 }
                                 SkipEmpty();
                             }
                             else
                             {
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "Integer literal expected"));
+                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Integer literal expected"));
                             }
                             SkipToEol();
                         }
@@ -501,12 +501,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {
                                 Consume();
-                                // TODO: show user-defined error
+                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_UserError, ln.Text.Substring(1,ln.Text.Length-2)));
                                 SkipEmpty();
                             }
                             else
                             {
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "String literal expected"));
+                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
                             }
                             SkipToEol();
                         }
@@ -520,12 +520,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.STRING_CONST)
                             {
                                 Consume();
-                                // TODO: show user-defined warning
+                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_UserWarning, ln.Text.Substring(1, ln.Text.Length - 2)));
                                 SkipEmpty();
                             }
                             else
                             {
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "String literal expected"));
+                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
                             }
                             SkipToEol();
                         }
@@ -535,7 +535,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             if (IncludeDepth() == MaxIncludeDepth)
                             {
-                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Reached max include depth: " + MaxIncludeDepth));
+                                _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
                                 SkipToEol();
                             }
                             else {
@@ -587,12 +587,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     }
                                     else
                                     {
-                                        _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "Include file not found: '" + fn + "'"));
+                                        _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
                                     }
                                 }
                                 else
                                 {
-                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_ParserError, "String literal expected"));
+                                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
                                     SkipToEol();
                                 }
                             }
@@ -617,11 +617,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 {
                                     if (SymbolDepth() == MaxSymbolDepth)
                                     {
-                                        _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Reached max symbol replacement depth: " + MaxSymbolDepth));
+                                        _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max symbol replacement depth: " + MaxSymbolDepth));
                                     }
                                     else if (activeSymbols.Contains(t.Text))
                                     {
-                                        _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_ParserError, "Cyclic symbol replacement: " + t.Text));
+                                        _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Cyclic symbol replacement: " + t.Text));
                                     }
                                     else
                                     {

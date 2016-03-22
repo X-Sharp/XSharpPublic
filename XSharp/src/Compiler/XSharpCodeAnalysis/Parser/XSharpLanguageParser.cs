@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 //#if DEBUG
             /* Temporary solution to prevent crashes with invalid syntax */
-            if (parser.NumberOfSyntaxErrors != 0 || (parseErrors.Count != 0 && parseErrors.Contains(p => p.Code != ErrorCode.WRN_ParserWarning)))
+            if (parser.NumberOfSyntaxErrors != 0 || (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
                 var failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);

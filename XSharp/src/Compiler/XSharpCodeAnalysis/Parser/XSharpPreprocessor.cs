@@ -28,6 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string MappedFileName;
             internal int MappedLineDiff;
             internal bool isSymbol;
+            internal string Symbol;
             internal InputState parent;
 
             internal InputState(ITokenStream tokens)
@@ -248,16 +249,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             while (!inputs.Consume() && inputs.parent != null)
             {
+                if (inputs.isSymbol)
+                    activeSymbols.Remove(inputs.Symbol);
                 inputs = inputs.parent;
             }
         }
 
-        void InsertStream(string filename, ITokenStream input, bool isSymbol = false)
+        void InsertStream(string filename, ITokenStream input, string symbol = null)
         {
             InputState s = new InputState(input);
             s.parent = inputs;
             s.SourceFileName = filename;
-            s.isSymbol = isSymbol;
+            s.Symbol = symbol;
+            s.isSymbol = symbol != null;
+            if (s.isSymbol)
+                activeSymbols.Add(s.Symbol);
             inputs = s;
         }
 
@@ -625,8 +631,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     }
                                     else
                                     {
-                                        activeSymbols.Add(t.Text);
-                                        InsertStream(null, new CommonTokenStream(new ListTokenSource(tl)), true);
+                                        var ts = new CommonTokenStream(new ListTokenSource(tl));
+                                        ts.Fill();
+                                        InsertStream(null, ts, t.Text);
                                     }
                                 }
                             }

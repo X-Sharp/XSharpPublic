@@ -6821,7 +6821,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parser error: {0}.
+        ///   Looks up a localized string similar to Parser: {0}.
         /// </summary>
         internal static string ERR_ParserError {
             get {
@@ -7105,6 +7105,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_PredefinedTypeNotFound {
             get {
                 return ResourceManager.GetString("ERR_PredefinedTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pre-processor: {0}.
+        /// </summary>
+        internal static string ERR_PreProcessorError {
+            get {
+                return ResourceManager.GetString("ERR_PreProcessorError", resourceCulture);
             }
         }
         
@@ -8473,6 +8482,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_UseDefViolationThis {
             get {
                 return ResourceManager.GetString("ERR_UseDefViolationThis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error directive: {0}.
+        /// </summary>
+        internal static string ERR_UserError {
+            get {
+                return ResourceManager.GetString("ERR_UserError", resourceCulture);
             }
         }
         
@@ -12318,15 +12336,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parser warning:{0}.
-        /// </summary>
-        internal static string WRN_ParserWarning {
-            get {
-                return ResourceManager.GetString("WRN_ParserWarning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; does not implement the &apos;{1}&apos; pattern. &apos;{2}&apos; has the wrong signature..
         /// </summary>
         internal static string WRN_PatternBadSignature {
@@ -12413,6 +12422,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_PossibleMistakenNullStatement_Title {
             get {
                 return ResourceManager.GetString("WRN_PossibleMistakenNullStatement_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pre-processor: {0}.
+        /// </summary>
+        internal static string WRN_PreProcessorWarning {
+            get {
+                return ResourceManager.GetString("WRN_PreProcessorWarning", resourceCulture);
             }
         }
         
@@ -13011,6 +13029,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_UnsafeImplied {
             get {
                 return ResourceManager.GetString("WRN_UnsafeImplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning directive: {0}.
+        /// </summary>
+        internal static string WRN_UserWarning {
+            get {
+                return ResourceManager.GetString("WRN_UserWarning", resourceCulture);
             }
         }
         

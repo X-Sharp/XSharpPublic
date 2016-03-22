@@ -78,7 +78,7 @@ namespace XSharpColorizer
         internal XSharpColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry)
         {
             this.Buffer = buffer;
-            this.Snapshot = buffer.CurrentSnapshot;
+            //this.Snapshot = buffer.CurrentSnapshot;
 
             xsTagger = new XSharpTagger(registry);
 
@@ -104,6 +104,7 @@ namespace XSharpColorizer
             if (e.After != Buffer.CurrentSnapshot)
                 return;
             Colorize();
+            
         }
 
 
@@ -121,11 +122,12 @@ namespace XSharpColorizer
             // change some keywords to identifiers.
             // We can probably also get the list of tokens from the parser but I have no idea how to do that at this moment
 
-            this.Snapshot = this.Buffer.CurrentSnapshot;
+            var snapshot = this.Buffer.CurrentSnapshot;
+            Snapshot = snapshot;
             ITokenStream TokenStream = null;
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
-            xsTagger.Parse(this.Snapshot, out TokenStream);
+            xsTagger.Parse(snapshot, out TokenStream);
             if (TokenStream != null)
             {
                 for (var iToken = 0; iToken < TokenStream.Size; iToken++)
@@ -135,11 +137,11 @@ namespace XSharpColorizer
                     TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
                     if (XSharpLexer.IsKeyword(tokenType))
                     {
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpKeywordType));
+                        tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpKeywordType));
                     }
                     else if (XSharpLexer.IsConstant(tokenType))
                     {
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpConstantType));
+                        tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpConstantType));
 
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
@@ -149,26 +151,26 @@ namespace XSharpColorizer
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LPAREN:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LCURLY:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LBRKT:
-                                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceOpenType));
+                                tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpBraceOpenType));
                                 break;
 
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RPAREN:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RCURLY:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
-                                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpBraceCloseType));
+                                tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpBraceCloseType));
                                 break;
                             default:
-                                tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpOperatorType));
+                                tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpOperatorType));
                                 break;
                         }
                     }
                     else if (XSharpLexer.IsIdentifier(tokenType))
                     {
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpIdentifierType));
+                        tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpIdentifierType));
                     }
                     else if (XSharpLexer.IsComment(tokenType))
                     {
-                        tags.Add(tokenSpan.ToTagSpan(Snapshot, xsharpCommentType));
+                        tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpCommentType));
                     }
                 }
             }
@@ -190,8 +192,8 @@ namespace XSharpColorizer
             //
             foreach ( var tag in this.tags )
             {
-                //if ( tag.Span.Start.Position >= entire.Start.Position &&
-                //     tag.Span.End.Position <= entire.End.Position )
+                if ( tag.Span.Start.Position >= entire.Start.Position &&
+                     tag.Span.End.Position <= entire.End.Position )
                 {
                     yield return tag;
                 }

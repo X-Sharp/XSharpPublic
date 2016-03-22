@@ -538,12 +538,7 @@ lexer grammar XSharpLexer;
 		if (type == ID) {
 			int kwtype;
 			if (kwIds.TryGetValue(t.Text,out kwtype)) {
-				if (kwtype == MACRO) {
-					t.Text = '"' + t.Text + '"';
-					t.Type = STRING_CONST;
-				}
-				else
-					t.Type = kwtype;
+				t.Type = kwtype;
 			}
 		}
 		/*else if (type == KWID) {
@@ -864,6 +859,7 @@ lexer grammar XSharpLexer;
 					{"__VERSION__", MACRO},
 					{"__WINDIR__", MACRO},
 					{"__WINDRIVE__", MACRO},
+					{"__XSHARP__", MACRO},
 				};
 				foreach (var text in Keywords.Keys) {
 					var token = Keywords[text];

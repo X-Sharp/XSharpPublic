@@ -137,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             var parseErrors = ParseErrorData.NewBag();
-            var pp = new XSharpPreprocessor(tokens, _options.PreprocessorSymbols, new List<string>(_options.IncludePaths) { System.IO.Path.GetDirectoryName(_fileName) }, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+            var pp = new XSharpPreprocessor(tokens, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
             var parser = new XSharpParser(pp_tokens);
 #if DEBUG

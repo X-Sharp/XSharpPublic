@@ -2,9 +2,6 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">X# Compiler Options By Category</title>
-  <keywords>
-    <keyword translate="true">/vo14</keyword>
-  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# Compiler Options By Category</text></para>
@@ -13,7 +10,7 @@
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">VO/Vulcan Compatibility</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="37" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="33" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -22,14 +19,6 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Purpose</text></para>
         </td>
       </thead>
-      <tr style="vertical-align:top">
-        <td style="width:33%;">
-          <para styleclass="Body Text"><text styleclass="Body Text" style="color:#ff0000;" translate="true">/a</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Generate Abstract Syntax Tree</text></para>
-        </td>
-      </tr>
       <tr style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az" styleclass="Body Text" translate="true">/az</link></para>
@@ -75,15 +64,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-i" styleclass="Normal" translate="true">/i</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Specifies a directory to add to the #include file search path </text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">/ild</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Run IlDasm.exe</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Specifies a directory to add to the #include file search path </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -124,14 +105,6 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies that exceptions will be raised on integer overflows </text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">/pev</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Run PeVerify.exe</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -292,14 +265,6 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">This option is not supported. use </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn" styleclass="Normal" translate="true">/NoWarn</link><text styleclass="Normal" translate="true"> in stead</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">/wp64</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Generate warnings for code that might have problems converting to a 64 bit platform</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

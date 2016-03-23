@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">#else</title>
+  <keywords>
+    <keyword translate="true">#else</keyword>
+    <keyword translate="true">Preprocessor</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">#else</text></para>
+    </header>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">#else lets you create a compound conditional directive, so that, if the expression in the preceding </text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Body Text" translate="true">#ifdef</link><text styleclass="Body Text" translate="true"> directive or </text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Body Text" translate="true">#ifndef</link><text styleclass="Body Text" translate="true"> directive does not evaluate to true, the compiler will evaluate all code between #else and the subsequent </text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif" styleclass="Body Text" translate="true">#endif</link><text styleclass="Body Text" translate="true">.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">For example, the following code will show the string &quot;Debug Version&quot; if the symbol DEBUG is defined on the command line, else it will show the text &quot;Release Version&quot; </text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">// DEBUG may be defined from the command line</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">// ...</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#if DEBUG</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#else</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;Console.WriteLine(&quot;Release version&quot;);</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#endif</text></para>
+  </body>
+</topic>

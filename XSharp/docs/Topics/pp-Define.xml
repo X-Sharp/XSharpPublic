@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">#define</title>
+  <keywords>
+    <keyword translate="true">#define</keyword>
+    <keyword translate="true">Preprocessor</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">#define</text></para>
+    </header>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">#define identifier [token-string]</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">#define lets you define a symbol, such that, by using the symbol as the expression in a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef" styleclass="Body Text" translate="true">#ifdef</link><text styleclass="Body Text" translate="true"> directive, the expression will evaluate to true or in a or </text><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef" styleclass="Body Text" translate="true">#ifndef</link><text styleclass="Body Text" translate="true"> directive the expression will evaluate to false.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">#define also allows you define a symbolic name for a token string, so you can use the symbolic name in your code and the preprocessor will replace all occurences of that name with the token string that you have specified.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">For example:</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#define DEBUG</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">// ...</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#if DEBUG</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;Console.WriteLine(&quot;Debug version&quot;);</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#endif</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">or </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#define VERSION &quot;1.2.0.0&quot;</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#define FILEVERSION &quot;1.2.3.4&quot;</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">// ...</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">[assembly: AssemblyVersion(VERSION)]</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">[assembly: AssemblyFileVersion(FILEVERSION)]</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Please note that </text><text styleclass="Normal" style="font-weight:bold;" translate="true">defines are</text><text styleclass="Normal" translate="true">&#32;</text><text styleclass="Normal" style="font-weight:bold;" translate="true">CASE SENSITIVE</text><text styleclass="Normal" translate="true">, so the following code will work:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#define TEST 123</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">FUNCTION Test() AS INT</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">RETURN TEST</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">but this will NOT compile:</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">#define TEST 123</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">FUNCTION TEST() AS INT</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">RETURN TEST</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">because the preprocessor will replace the name </text><text styleclass="Code Example" translate="true">TEST</text><text styleclass="Body Text" translate="true"> in the FUNCTION line with the value 123 which is not a valid identifier. After preprocessing the code becomes:</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">FUNCTION 123() AS INT</text></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">RETURN 123</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"></para>
+  </body>
+</topic>

@@ -73,7 +73,7 @@
       </styleclass>
       <styleclass name="Code Example" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="para">white-space:nowrap;</style-set>
-        <style-set media="screen" type="text">font-family:'Courier New'; font-size:10pt;</style-set>
+        <style-set media="screen" type="text">font-family:'Courier New'; font-size:12pt;</style-set>
       </styleclass>
       <styleclass name="Comment" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="para">text-align:center;</style-set>

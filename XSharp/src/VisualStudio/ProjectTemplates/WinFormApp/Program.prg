@@ -1,12 +1,12 @@
-#using System
-#using System.Collections.Generic
-$if$ ($targetframeworkversion$ >= 3.5)#using System.Linq
-$endif$#using System.Text
-#using System.Windows.Forms
+USING System
+USING System.Collections.Generic
+$if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
+$endif$USING System.Text
+USING System.Windows.Forms
 
-#using $safeprojectname$
+USING $safeprojectname$
 
-Begin Namespace $safeprojectname$
+BEGIN NAMESPACE $safeprojectname$
 
 [STAThread] ;
 FUNCTION Start() AS INT
@@ -19,6 +19,6 @@ FUNCTION Start() AS INT
    
     RETURN exitCode
 	
-End Namespace
+END NAMESPACE
 
 

@@ -588,6 +588,17 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/az", base.Bag, nameof(AZ));
             commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
+            if (this.IncludePaths?.Length > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var s in this.IncludePaths)
+                {
+                    if (sb.Length > 0)
+                        sb.Append(';');
+                    sb.Append(s);
+                }
+                commandline.AppendTextUnquoted("/i:" + sb.ToString());
+            }
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
             commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));

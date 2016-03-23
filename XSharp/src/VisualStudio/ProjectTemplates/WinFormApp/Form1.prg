@@ -1,11 +1,11 @@
-#using System
-#using System.Collections.Generic
-#using System.ComponentModel
-#using System.Data
-#using System.Drawing
-$if$ ($targetframeworkversion$ >= 3.5)#using System.Linq
-$endif$#using System.Text
-#using System.Windows.Forms
+USING System
+USING System.Collections.Generic
+USING System.ComponentModel
+USING System.Data
+USING System.Drawing
+$if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
+$endif$USING System.Text
+USING System.Windows.Forms
 
 BEGIN NAMESPACE $safeprojectname$
    PARTIAL CLASS Form1 INHERIT System.Windows.Forms.Form

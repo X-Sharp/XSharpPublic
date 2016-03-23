@@ -19,15 +19,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_XSharpIncludeDir == null)
             {
                 _XSharpIncludeDir = String.Empty;
-                string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+                
                 try
                 {
+                    //Todo: Read Registry Key. Can that be done in a Portable Assembly ?
                     string InstallPath = String.Empty;
-                    
-                    InstallPath = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
-                    if (!String.IsNullOrEmpty(InstallPath) && !InstallPath.EndsWith("\\"))
-                        InstallPath += "\\";
-                    _XSharpIncludeDir = InstallPath + "Include\\";
+                    // string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+                    //InstallPath = (string)Microsoft.Win32.Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
+                    //if (!String.IsNullOrEmpty(InstallPath) && !InstallPath.EndsWith("\\"))
+                    //    InstallPath += "\\";
+                    InstallPath = @"c:\Program Files (x86)\XSharp\";
+                    _XSharpIncludeDir = InstallPath + @"Include\";
 
                 }
                 catch (Exception) { }
@@ -126,18 +128,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (! String.IsNullOrEmpty(fileName))
                 includeDirs.Add( System.IO.Path.GetDirectoryName(fileName) );
             // Add standard XSharp Include Path
+            includeDirs.Add(GetXSharpIncludeDir());
 
+            //Todo: Read Environment variable. Can that be done in a Portable Assembly ?
             // Add paths from Include Environment Variable
-            string envVar = System.Environment.GetEnvironmentVariable("INCLUDE");
-            if (! string.IsNullOrEmpty(envVar))
-            {
-                string[] paths = envVar.Split(';', StringSplitOptions.RemoveEmptyEntries);
-                foreach (var path in paths)
-                {
-                    includeDirs.Add(path);
-                }
-             }
-
+            //string envVar = System.Environment.GetEnvironmentVariable("INCLUDE");
+            //if (! string.IsNullOrEmpty(envVar))
+            //{
+            //    string[] paths = envVar.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            //    foreach (var path in paths)
+            //    {
+            //        includeDirs.Add(path);
+            //    }
+            // }
 
             inputs = new InputState(input);
             foreach (var symbol in options.PreprocessorSymbols)
@@ -146,20 +149,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //macroDefines.Add("__CLR2__", () => null);
             //macroDefines.Add("__CLR4__", () => null);
             //macroDefines.Add("__CLRVERSION__", () => null);
-            //macroDefines.Add("__DATE__", () => null);
-            //macroDefines.Add("__DATETIME__", () => null);
+            macroDefines.Add("__DATE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
+            macroDefines.Add("__DATETIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
             if (_options.DebugEnabled)
                 macroDefines.Add("__DEBUG__", () => new CommonToken(XSharpLexer.TRUE_CONST));
             //macroDefines.Add("__ENTITY__", () => null);
             macroDefines.Add("__FILE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+(inputs.SourceFileName ?? fileName)+'"'));
             macroDefines.Add("__LINE__", () => new CommonToken(XSharpLexer.INT_CONST, inputs.Lt().Line.ToString()));
-            //macroDefines.Add("__MODULE__", () => null);
+            macroDefines.Add("__MODULE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"'));
             //macroDefines.Add("__SIG__", () => null);
-            //macroDefines.Add("__SRCLOC__", () => null);
+            macroDefines.Add("__SRCLOC__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line "+ inputs.Lt().Line.ToString() + '"'));
             //macroDefines.Add("__SYSDIR__", () => null);
-            //macroDefines.Add("__TIME__", () => null);
-            //macroDefines.Add("__UTCTIME__", () => null);
-            //macroDefines.Add("__VERSION__", () => null);
+            macroDefines.Add("__TIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToLocalTime().ToString("T") + '"'));
+            macroDefines.Add("__UTCTIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("T") + '"'));
+            macroDefines.Add("__VERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
             //macroDefines.Add("__WINDIR__", () => null);
             //macroDefines.Add("__WINDRIVE__", () => null);
             macroDefines.Add("__XSHARP__", () => new CommonToken(XSharpLexer.TRUE_CONST));
@@ -442,10 +445,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SkipEmpty();
                                 if (symbolDefines.ContainsKey(def.Text))
                                     symbolDefines.Remove(def.Text);
-                                else
-                                {
-                                    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol not defined: " + def.Text));
-                                }
+                                //else
+                                //{
+                                //    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol not defined: " + def.Text));
+                                //}
                             }
                             else
                             {

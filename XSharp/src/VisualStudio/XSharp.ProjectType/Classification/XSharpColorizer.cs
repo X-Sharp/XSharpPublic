@@ -122,15 +122,6 @@ namespace XSharpColorizer
         /// </summary>
         private void Colorize()
         {
-            // RvdH 2016-02-23
-            // This method now uses the Lexer to get the tokens in the buffer and uses some static methods of the lexer to 
-            // distinguish between different types of tokens.
-            // because the (current version of) the parser does not have info about comments anymore as well 
-            // some other tokens, such as preprocessor tokens
-            // Since some keywords can also be used as identifiers we will also parse the source in the parser to 
-            // change some keywords to identifiers.
-            // We can probably also get the list of tokens from the parser but I have no idea how to do that at this moment
-
             var snapshot = this.Buffer.CurrentSnapshot;
             Snapshot = snapshot;
             ITokenStream TokenStream = null;
@@ -146,6 +137,8 @@ namespace XSharpColorizer
 
                 }
             }
+            // Parse the source and get the (Lexer) Tokenstream to locate comments, keywords and other tokens.
+            // The parser will identify (positional) keywords that are used as identifier
             xsTagger.Parse(snapshot, out TokenStream, path);
             if (TokenStream != null)
             {

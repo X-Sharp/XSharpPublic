@@ -538,10 +538,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public override FileLinePositionSpan GetLineSpan(TextSpan span, CancellationToken cancellationToken = default(CancellationToken))
         {
 #if XSHARP
-            span = GetXNodeSpan(span);
-            var s = this.GetText().Lines.GetLinePosition(span.Start);
-            var e = this.GetText().Lines.GetLinePosition(span.End);
-            return new FileLinePositionSpan(this.FilePath, s, e);
+            return GetXNodeSpan(span);
 #else
             return new FileLinePositionSpan(this.FilePath, GetLinePosition(span.Start), GetLinePosition(span.End));
 #endif
@@ -565,30 +562,32 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </returns>
         public override FileLinePositionSpan GetMappedLineSpan(TextSpan span, CancellationToken cancellationToken = default(CancellationToken))
         {
+#if XSHARP
+            return GetXNodeSpan(span);
+#else
             if (_lazyLineDirectiveMap == null)
             {
                 // Create the line directive map on demand.
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
-#if XSHARP
-            span = GetXNodeSpan(span);
-#endif
             return _lazyLineDirectiveMap.TranslateSpan(this.GetText(cancellationToken), this.FilePath, span);
+#endif
         }
 
         public override LineVisibility GetLineVisibility(int position, CancellationToken cancellationToken = default(CancellationToken))
         {
+#if XSHARP
+            return GetXNodeVisibility(position);
+#else
             if (_lazyLineDirectiveMap == null)
             {
                 // Create the line directive map on demand.
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
-#if XSHARP
-            position = GetXNodePosition(position);
-#endif
             return _lazyLineDirectiveMap.GetLineVisibility(this.GetText(cancellationToken), position);
+#endif
         }
 
         /// <summary>
@@ -600,16 +599,18 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <returns>A resulting <see cref="FileLinePositionSpan"/>.</returns>
         internal override FileLinePositionSpan GetMappedLineSpanAndVisibility(TextSpan span, out bool isHiddenPosition)
         {
+#if XSHARP
+            isHiddenPosition = GetXNodeVisibility(span.Start) == LineVisibility.Hidden;
+            return GetXNodeSpan(span);
+#else
             if (_lazyLineDirectiveMap == null)
             {
                 // Create the line directive map on demand.
                 Interlocked.CompareExchange(ref _lazyLineDirectiveMap, new CSharpLineDirectiveMap(this), null);
             }
 
-#if XSHARP
-            span = GetXNodeSpan(span);
-#endif
             return _lazyLineDirectiveMap.TranslateSpanAndVisibility(this.GetText(), this.FilePath, span, out isHiddenPosition);
+#endif
         }
 
         /// <summary>
@@ -650,15 +651,48 @@ namespace Microsoft.CodeAnalysis.CSharp
         private LinePosition GetLinePosition(int position)
         {
 #if XSHARP
-            position = GetXNodePosition(position);
-#endif
+            return GetXNodePosition(position);
+#else
             return this.GetText().Lines.GetLinePosition(position);
+#endif
         }
 
 #if XSHARP
-        private int GetXNodePosition(int position)
+        private LineVisibility GetXNodeVisibility(int position)
         {
-            if (position != 0) {
+            var root = (CSharpSyntaxNode)GetRoot();
+            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
+            if (position >= eofPos && eofPos != null)
+            {
+                return LineVisibility.Visible;
+            }
+            if (root.XNode != null && eof == null && position != 0)
+            {
+                var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
+                while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth)))
+                {
+                    var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
+                    if (n == null || n == node)
+                        break;
+                    node = n;
+                }
+                return string.IsNullOrEmpty(node.XNode?.SourceFileName) ? LineVisibility.Visible : LineVisibility.Hidden;
+            }
+            return LineVisibility.Visible;
+        }
+
+        private LinePosition GetXNodePosition(int position)
+        {
+            var text = this.GetText();
+            var root = (CSharpSyntaxNode)GetRoot();
+            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
+            if (position >= eofPos && eofPos != null)
+            {
+                position = position - (eofPos ?? 0);
+            }
+            if ( root.XNode != null && eof == null && position != 0 ) {
                 var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
                 while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth))) {
                     var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
@@ -667,13 +701,52 @@ namespace Microsoft.CodeAnalysis.CSharp
                     node = n;
                 }
                 position = (position < node.Position + node.FullWidth) ? node.XNode?.Position ?? 0 : node.XNode?.Position + node.XNode?.FullWidth ?? 0;
+                string file = node.XNode?.SourceFileName;
+                SourceText ntext;
+                if (!string.IsNullOrEmpty(file) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out ntext))
+                    text = ntext;
             }
-            return position;
+            return text.Lines.GetLinePosition(position);
         }
 
-        private TextSpan GetXNodeSpan(TextSpan span)
+        private FileLinePositionSpan GetXNodeSpan(TextSpan span)
         {
-            if (span.Start != 0 && span.End != 0) {
+            string file = this.FilePath;
+            var text = this.GetText();
+            var root = (CSharpSyntaxNode)GetRoot();
+            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
+            if (span.Start >= eofPos && eofPos != null) {
+                var start = span.Start - (eofPos ?? 0);
+                var length = span.Length;
+                if (root is CompilationUnitSyntax)
+                {
+                    foreach (var lead in (root as CompilationUnitSyntax).EndOfFileToken.LeadingTrivia)
+                    {
+                        if (lead.HasStructure)
+                        {
+                            var f = lead.GetStructure().Green.GetFirstTerminal() as InternalSyntax.CSharpSyntaxNode;
+                            if (start > f.FullWidth)
+                            {
+                                start -= f.FullWidth;
+                                continue;
+                            }
+                            string fn = f.XNode?.SourceFileName;
+                            SourceText ntext;
+                            if (!string.IsNullOrEmpty(fn) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(fn, out ntext))
+                            {
+                                text = ntext;
+                                file = fn;
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (length < 0)
+                    length = 0;
+                span = new TextSpan(start, length);
+            }
+            else if ( root.XNode != null && eof == null && span.Start != 0 && span.End != 0 ) {
                 var snode = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(span.Start);
                 var enode = snode;
                 while (!snode.Green.IsToken && (span.Start > snode.Position || span.Length < snode.FullWidth)) {
@@ -695,9 +768,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var length = enode.XNode?.FullWidth ?? 0;
                 if (length < 0)
                     length = 0;
-                return new TextSpan(start,length);
+                string fn = snode.XNode?.SourceFileName;
+                SourceText ntext;
+                if (!string.IsNullOrEmpty(fn) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(fn, out ntext))
+                {
+                    text = ntext;
+                    file = fn;
+                }
+                if (start + length > text.Length)
+                    length = text.Length - start;
+                span = new TextSpan(start, length);
             }
-            return span;
+            var s = text.Lines.GetLinePosition(span.Start);
+            var e = text.Lines.GetLinePosition(span.End);
+            return new FileLinePositionSpan(file, s, e);
         }
 #endif
 

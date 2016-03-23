@@ -156,7 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public static SyntaxToken SyntaxIdentifier(this IToken token)
         {
             (token as CommonToken).Type = XSharpParser.ID;
-            var r = SyntaxFactory.Identifier(token.Text);
+            var r = token.Text.StartsWith("@@") ? SyntaxFactory.Identifier(token.Text.Substring(2)) : SyntaxFactory.Identifier(token.Text);
             r.XNode = new TerminalNodeImpl(token);
             return r;
         }
@@ -439,7 +439,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, token.Text));
                     break;
                 default: // nvk: This catches cases where a keyword/identifier is treated as a literal string
-                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS);
+                    (token as CommonToken).Type = XSharpParser.STRING_CONST;
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text.StartsWith("@@") ? token.Text.Substring(2) : token.Text, SyntaxFactory.WS);
                     break;
             }
             r.XNode = new TerminalNodeImpl(token);

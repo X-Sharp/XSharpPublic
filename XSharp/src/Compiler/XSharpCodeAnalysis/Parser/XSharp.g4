@@ -713,12 +713,12 @@ queryContinuation   : INTO Id=identifier Body=queryBody
 
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
-identifier			: Token=ID  
+identifier			: Token=(ID  | KWID)
 					| VnToken=keywordvn 
 					| XsToken=keywordxs
 					;
 
-identifierString	: Token=(ID | STRING_CONST)
+identifierString	: Token=(ID | KWID | STRING_CONST)
 					| VnToken=keywordvn 
 					| XsToken=keywordxs
 					;

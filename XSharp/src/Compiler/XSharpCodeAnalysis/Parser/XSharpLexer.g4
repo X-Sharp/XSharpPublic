@@ -15,8 +15,8 @@ lexer grammar XSharpLexer;
         public static bool IsOperator(int iToken)
         {
             return (iToken > XSharpLexer.FIRST_OPERATOR && iToken < XSharpLexer.LAST_OPERATOR)
-                || iToken == XSharpLexer.PRAGMA || iToken == XSharpLexer.HASHUSING
-                || iToken == XSharpLexer.PP_SYMBOLS || iToken == XSharpLexer.SEMI;
+                || (iToken > XSharpLexer.PP_FIRST && iToken < XSharpLexer.PP_LAST)
+                /*|| iToken == XSharpLexer.PP_SYMBOLS*/ || iToken == XSharpLexer.SEMI;
         }
         public static bool IsConstant(int iToken)
         {
@@ -36,6 +36,7 @@ lexer grammar XSharpLexer;
 	public const int COMMENT = 1;
 
 	bool _inId = false;
+	bool _inPp = false;
 	bool _hasEos = true;
 	private bool isKw(IToken t) {
 		char fc = Char.ToUpper(t.Text?[0] ?? (Char)0);
@@ -537,29 +538,33 @@ lexer grammar XSharpLexer;
 		if (type == ID) {
 			int kwtype;
 			if (kwIds.TryGetValue(t.Text,out kwtype)) {
-				if (kwtype == MACRO) {
-					t.Text = '"' + t.Text + '"';
-					t.Type = STRING_CONST;
-				}
-				else
-					t.Type = kwtype;
+				t.Type = kwtype;
 			}
 		}
-		else if (type == KWID) {
+		/*else if (type == KWID) {
 			t.Type = ID;
+		}*/
+		else if (type == SYMBOL_CONST && LastToken == NL) {
+			int symtype;
+			if (symIds.TryGetValue(t.Text,out symtype)) {
+				t.Type = symtype;
+				if (symtype != PRAGMA && symtype != HASHUSING) {
+					_inPp = true;
+				}
+			}
 		}
 		if (!_inId) {
 			if (isKw(t) && InputStream.La(1) == (int)'.') {
 				t.Type = ID;
 				_inId = true;
 			}
-			else if (type == ID)
+			else if (type == ID || type == KWID)
 				_inId = true;
 		}
 		else {
 			if (isKw(t))
 				t.Type = ID;
-			else if (type != DOT && type != ID)
+			else if (type != DOT && type != ID && type != KWID)
 				_inId = false;
 		}
 		if (type == NL || type == SEMI) {
@@ -580,6 +585,11 @@ lexer grammar XSharpLexer;
 		}
 		if (t.Channel == TokenConstants.DefaultChannel)
 			_lastToken = type; // nvk: Note that this is the type before any modifications!!!
+		if (_inPp && t.Channel == TokenConstants.DefaultChannel) {
+			t.Channel = PREPROCESSOR;
+			if (type == NL || type == Eof)
+				_inPp = false;
+		}
 		return t;
 	}
 	int LastToken
@@ -849,6 +859,7 @@ lexer grammar XSharpLexer;
 					{"__VERSION__", MACRO},
 					{"__WINDIR__", MACRO},
 					{"__WINDRIVE__", MACRO},
+					{"__XSHARP__", MACRO},
 				};
 				foreach (var text in Keywords.Keys) {
 					var token = Keywords[text];
@@ -858,11 +869,55 @@ lexer grammar XSharpLexer;
 			return _kwIds;
 		}
 	}
+
+	System.Collections.Generic.Dictionary<string,int> _symIds;
+
+	System.Collections.Generic.Dictionary<string,int> symIds { 
+		get {
+			if (_symIds == null) {
+				_symIds = new System.Collections.Generic.Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+
+				var PpSymbols = new System.Collections.Generic.Dictionary<string,int>
+				{
+					{"#PRAGMA", PRAGMA},
+					{"#USING", HASHUSING},
+					{"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>  
+					{"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
+					{"#ELSE", PP_ELSE},				// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+					{"#ENDIF", PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+					{"#ENDREGION", PP_ENDREGION},	// #region [description]sourceCode#endregion
+					{"#ERROR", PP_ERROR},			// #error [errorMessage]
+					{"#IFDEF", PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+					{"#IFNDEF", PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
+					{"#INCLUDE", PP_INCLUDE},		// #include "<headerfilename>"
+					{"#LINE", PP_LINE},				// #line <number> [FileName] or #line default
+					{"#REGION", PP_REGION},			// #region [description]sourceCode#endregion
+					{"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern> 
+					{"#UNDEF", PP_UNDEF},			// #undef <identifier>
+					{"#WARNING", PP_WARNING},		// #warning [warningMessage]
+				};
+
+				foreach (var text in PpSymbols.Keys) {
+					var token = PpSymbols[text];
+					_symIds.Add(text,token);
+				}
+			}
+			return _symIds;
+		}
+	}
 }
 
 options	{ 
 			language=CSharp; 
 		}
+
+
+
+channels {
+XMLDOC, 
+DEFOUT,
+PREPROCESSOR
+}
 
 tokens {
 
@@ -950,7 +1005,14 @@ HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRI
 LAST_CONSTANT,
 
 // Pre processor symbols
-PRAGMA,HASHUSING,PP_SYMBOLS,MACRO,
+PP_FIRST,
+PRAGMA,HASHUSING,
+//PP_SYMBOLS,
+PP_COMMAND,PP_DEFINE,PP_ELSE,PP_ENDIF,PP_ENDREGION,PP_ERROR,PP_IFDEF,PP_IFNDEF,PP_INCLUDE,PP_LINE,PP_REGION,PP_TRANSLATE,PP_UNDEF,PP_WARNING,
+PP_LAST,
+
+// PP constant
+MACRO,
 
 // Ids
 ID,KWID,
@@ -980,11 +1042,11 @@ REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( 'e' ( '+' | '
 
 // Preprocessopr symbols handled by the compiler
 // Must precede the SYMBOL rule
-PRAGMA           :  {LastToken == NL }? '#' P R A G M A 
-                 ;
+//PRAGMA           :  {LastToken == NL }? '#' P R A G M A 
+//                 ;
 
-HASHUSING        :  {LastToken == NL }? '#' U S I N G
-                 ;
+//HASHUSING        :  {LastToken == NL }? '#' U S I N G
+//                 ;
 
 // Preprocessor symbols handled by the Lexer
 // Must precede the SYMBOL rule
@@ -992,25 +1054,25 @@ HASHUSING        :  {LastToken == NL }? '#' U S I N G
 // In the future there should probably be a preprocessor lexer that searches and replaces defines in the source and 
 // optionally includes/excludes source lines based on define values
 
-PP_SYMBOLS      : {LastToken == NL }? '#' 
-                  ( C O M M A N D               // #command   <matchPattern> => <resultPattern>  
-                  | D E F I N E                 // #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
-                  | E L S E                     // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-                  | E N D I F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-                  | E N D R E G I O N           // #region [description]sourceCode#endregion
-                  | E R R O R                   // #error [errorMessage]
-                  | I F D E F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-                  | I F N D E F                 // #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
-                  | I N C L U D E               // #include "<headerfilename>"
-                  | L I N E                     // #line <number> [FileName] or #line default
-				  //| P R A G M A					// Handled by the parser
-                  | R E G I O N                 // #region [description]sourceCode#endregion
-                  | T R A N S L A T E           // #translate <matchPattern> => <resultPattern> 
-                  | U N D E F                   // #undef <identifier>
-				  //| U S I N G					// Handled by the parser
-                  | W A R N I N G               // #warning [warningMessage]
-                  ) (~(  '\n' | '\r' ) )* -> channel(HIDDEN) 
-                ;
+//PP_SYMBOLS      : {LastToken == NL }? '#' 
+//                  ( C O M M A N D               // #command   <matchPattern> => <resultPattern>  
+//                  | D E F I N E                 // #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
+//                  | E L S E                     // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+//                  | E N D I F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+//                  | E N D R E G I O N           // #region [description]sourceCode#endregion
+//                  | E R R O R                   // #error [errorMessage]
+//                  | I F D E F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+//                  | I F N D E F                 // #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
+//                  | I N C L U D E               // #include "<headerfilename>"
+//                  | L I N E                     // #line <number> [FileName] or #line default
+//				  //| P R A G M A					// Handled by the parser
+//                  | R E G I O N                 // #region [description]sourceCode#endregion
+//                  | T R A N S L A T E           // #translate <matchPattern> => <resultPattern> 
+//                  | U N D E F                   // #undef <identifier>
+//				  //| U S I N G					// Handled by the parser
+//                  | W A R N I N G               // #warning [warningMessage]
+//                  ) (~(  '\n' | '\r' ) )* -> channel(PREPROCESSOR) 
+//                ;
 
 SYMBOL_CONST     : '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
 
@@ -1076,7 +1138,7 @@ SEMI		: ';'
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
 // the Lexer Property AllowOldStyleComments
 
-DOC_COMMENT :  '/' '/' '/' ( ~(  '\n' | '\r' ) )*	-> channel(1)
+DOC_COMMENT :  '/' '/' '/' ( ~(  '\n' | '\r' ) )*	-> channel(XMLDOC)
 			;
 
 SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
@@ -1093,7 +1155,7 @@ ML_COMMENT  : '/' '*' .*? '*' '/'						-> channel(HIDDEN)
 ID						: ID_PART 
 						;
 
-KWID					: '@' '@' ID_PART {Text = Text.Substring(2, Text.Length-2);}
+KWID					: '@' '@' ID_PART // {Text = Text.Substring(2, Text.Length-2);}
 						;
 
 ORDINAL					: '#' ( DIGIT )+ ;

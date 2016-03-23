@@ -17,7 +17,6 @@
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>

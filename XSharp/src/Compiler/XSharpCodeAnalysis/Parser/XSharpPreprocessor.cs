@@ -1,25 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    internal class XSharpPreprocessor: ITokenSource
+    internal class XSharpPreprocessor : ITokenSource
     {
+
+        static string _XSharpIncludeDir = null;
+        static string GetXSharpIncludeDir()
+        {
+            if (_XSharpIncludeDir == null)
+            {
+                _XSharpIncludeDir = String.Empty;
+                string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
+                try
+                {
+                    string InstallPath = String.Empty;
+                    
+                    InstallPath = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
+                    if (!String.IsNullOrEmpty(InstallPath) && !InstallPath.EndsWith("\\"))
+                        InstallPath += "\\";
+                    _XSharpIncludeDir = InstallPath + "Include\\";
+
+                }
+                catch (Exception) { }
+
+            }
+            return _XSharpIncludeDir;
+
+        }
+
+
         class InputState
         {
             internal ITokenStream Tokens;
@@ -69,6 +87,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        CSharpParseOptions _options;
+
         ITokenStream _input;
 
         Encoding _encoding;
@@ -77,9 +97,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         IList<ParseErrorData> _parseErrors;
 
-        IEnumerable<string> includeDirs;
+        IList<string> includeDirs;
 
         Dictionary<string, IList<IToken>> symbolDefines = new Dictionary<string, IList<IToken>> (/*CaseInsensitiveComparison.Comparer*/);
+
+        Dictionary<string, Func<IToken>> macroDefines = new Dictionary<string, Func<IToken>>(/*CaseInsensitiveComparison.Comparer*/);
 
         Stack<bool> defStates = new Stack<bool> ();
 
@@ -93,16 +115,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public int MaxSymbolDepth { get; set; } = 16;
 
-        internal XSharpPreprocessor(ITokenStream input, IEnumerable<string> symbols, IEnumerable<string> IncludeDirs, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
+        internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
+            _options = options;
             _input = input;
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
-            includeDirs = IncludeDirs;
+            includeDirs = new List<string>(options.IncludePaths);
+            if (! String.IsNullOrEmpty(fileName))
+                includeDirs.Add( System.IO.Path.GetDirectoryName(fileName) );
+            // Add standard XSharp Include Path
+
+            // Add paths from Include Environment Variable
+            string envVar = System.Environment.GetEnvironmentVariable("INCLUDE");
+            if (! string.IsNullOrEmpty(envVar))
+            {
+                string[] paths = envVar.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var path in paths)
+                {
+                    includeDirs.Add(path);
+                }
+             }
+
+
             inputs = new InputState(input);
-            foreach (var symbol in symbols)
+            foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
+            macroDefines.Add("__ARRAYBASE__", () => new CommonToken(XSharpLexer.INT_CONST,_options.ArrayZero ? "0" : "1"));
+            //macroDefines.Add("__CLR2__", () => null);
+            //macroDefines.Add("__CLR4__", () => null);
+            //macroDefines.Add("__CLRVERSION__", () => null);
+            //macroDefines.Add("__DATE__", () => null);
+            //macroDefines.Add("__DATETIME__", () => null);
+            if (_options.DebugEnabled)
+                macroDefines.Add("__DEBUG__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+            //macroDefines.Add("__ENTITY__", () => null);
+            macroDefines.Add("__FILE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+(inputs.SourceFileName ?? fileName)+'"'));
+            macroDefines.Add("__LINE__", () => new CommonToken(XSharpLexer.INT_CONST, inputs.Lt().Line.ToString()));
+            //macroDefines.Add("__MODULE__", () => null);
+            //macroDefines.Add("__SIG__", () => null);
+            //macroDefines.Add("__SRCLOC__", () => null);
+            //macroDefines.Add("__SYSDIR__", () => null);
+            //macroDefines.Add("__TIME__", () => null);
+            //macroDefines.Add("__UTCTIME__", () => null);
+            //macroDefines.Add("__VERSION__", () => null);
+            //macroDefines.Add("__WINDIR__", () => null);
+            //macroDefines.Add("__WINDRIVE__", () => null);
+            macroDefines.Add("__XSHARP__", () => new CommonToken(XSharpLexer.TRUE_CONST));
         }
 
         public int Column
@@ -179,11 +239,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (t.Type == XSharpLexer.EOS && t.Text != ";")
                     break;
-                Consume();
                 if (t.Channel == XSharpLexer.PREPROCESSOR)
                 {
                     _parseErrors.Add(new ParseErrorData(t, ErrorCode.WRN_PreProcessorWarning, "Ignored input '"+t.Text+"'"));
                 }
+                Consume();
                 t = Lt();
             }
         }
@@ -201,16 +261,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        CommonToken CloneToken(IToken t)
+        CommonToken FixToken(IToken t)
         {
-            var nt = new CommonToken(t);
             if (inputs.MappedLineDiff != 0)
-                ((CommonToken)nt).MappedLine = t.Line + inputs.MappedLineDiff;
+                ((CommonToken)t).MappedLine = t.Line + inputs.MappedLineDiff;
             if (!string.IsNullOrEmpty(inputs.MappedFileName))
-                ((CommonToken)nt).MappedFileName = inputs.MappedFileName;
+                ((CommonToken)t).MappedFileName = inputs.MappedFileName;
             if (!string.IsNullOrEmpty(inputs.SourceFileName))
-                ((CommonToken)nt).SourceFileName = inputs.SourceFileName;
-            return nt;
+                ((CommonToken)t).SourceFileName = inputs.SourceFileName;
+            return (CommonToken)t;
         }
 
         IList<IToken> ConsumeList()
@@ -221,15 +280,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (t.Type == XSharpLexer.EOS && t.Text != ";")
                     break;
-                Consume();
                 if (t.Channel == XSharpLexer.PREPROCESSOR)
                 {
                     if (res == null)
                         res = new List<IToken> ();
-                    var nt = CloneToken(t);
+                    var nt = FixToken(new CommonToken(t));
                     nt.Channel = TokenConstants.DefaultChannel;
                     res.Add(nt);
                 }
+                Consume();
                 t = Lt();
             }
             return res;
@@ -263,7 +322,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             s.Symbol = symbol;
             s.isSymbol = symbol != null;
             if (s.isSymbol)
+            {
                 activeSymbols.Add(s.Symbol);
+                s.MappedLineDiff = inputs.MappedLineDiff;
+            }
             inputs = s;
         }
 
@@ -303,6 +365,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 o = o.parent;
             }
             return d;
+        }
+
+        bool IsDefinedMacro(IToken t)
+        {
+            return (t.Type == XSharpLexer.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
         }
 
         [return: NotNull]
@@ -399,6 +466,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 SkipEmpty();
                                 defStates.Push(symbolDefines.ContainsKey(def.Text));
                             }
+                            else if (def.Type == XSharpLexer.MACRO)
+                            {
+                                Consume();
+                                SkipEmpty();
+                                defStates.Push(IsDefinedMacro(def));
+                            }
                             else
                             {
                                 _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
@@ -420,6 +493,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 Consume();
                                 SkipEmpty();
                                 defStates.Push(!symbolDefines.ContainsKey(def.Text));
+                            }
+                            else if (def.Type == XSharpLexer.MACRO)
+                            {
+                                Consume();
+                                SkipEmpty();
+                                defStates.Push(!IsDefinedMacro(def));
                             }
                             else
                             {
@@ -613,14 +692,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     default:
                         var t = Lt();
-                        Consume();
                         if (IsActive())
                         {
                             IList<IToken> tl;
                             if ((XSharpLexer.IsIdentifier(t.Type) || XSharpLexer.IsKeyword(t.Type)) && symbolDefines.TryGetValue(t.Text, out tl))
                             {
+                                Consume();
                                 if (tl != null)
                                 {
+                                    if (XSharpLexer.IsKeyword(t.Type))
+                                    {
+                                        ((CommonToken)t).Type = XSharpLexer.ID;
+                                    }
                                     if (SymbolDepth() == MaxSymbolDepth)
                                     {
                                         _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max symbol replacement depth: " + MaxSymbolDepth));
@@ -639,24 +722,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             else
                             {
+                                if (t.Type == XSharpLexer.MACRO)
+                                {
+                                    Func<IToken> ft;
+                                    if (macroDefines.TryGetValue(t.Text, out ft))
+                                    {
+                                        var nt = ft();
+                                        if (t == null) {
+                                            break;
+                                        }
+                                        ((CommonToken)nt).Line = t.Line;
+                                        ((CommonToken)nt).Column = t.Column;
+                                        ((CommonToken)nt).StartIndex = t.StartIndex;
+                                        ((CommonToken)nt).StopIndex = t.StopIndex;
+                                        t = nt;
+                                    }
+                                    else
+                                    {
+                                        ((CommonToken)t).Type = XSharpLexer.ID;
+                                    }
+                                }
                                 if (inputs.isSymbol)
                                 {
-                                    t = CloneToken(t);
+                                    t = new CommonToken(t);
                                 }
-                                else
-                                {
-                                    if (inputs.MappedLineDiff != 0)
-                                        ((CommonToken)t).MappedLine = t.Line + inputs.MappedLineDiff;
-                                    if (!string.IsNullOrEmpty(inputs.MappedFileName))
-                                        ((CommonToken)t).MappedFileName = inputs.MappedFileName;
-                                    if (!string.IsNullOrEmpty(inputs.SourceFileName))
-                                        ((CommonToken)t).SourceFileName = inputs.SourceFileName;
-                                }
+                                FixToken(t);
+                                Consume();
                                 return t;
                             }
                         }
-                        else
+                        else {
                             ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
+                            Consume();
+                        }
                         break;
                 }
             }

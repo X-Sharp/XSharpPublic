@@ -1167,8 +1167,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             parseOptions.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions);
             options.SetXSharpSpecificOptions(XSharpSpecificCompilationOptions);
-#endif
+
+            var cla = new CSharpCommandLineArguments
+#else
             return new CSharpCommandLineArguments
+#endif
             {
                 IsScriptRunner = IsScriptRunner,
                 InteractiveMode = interactiveMode || IsScriptRunner && sourceFiles.Count == 0,
@@ -1211,6 +1214,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 SqmSessionGuid = sqmSessionGuid,
                 ReportAnalyzer = reportAnalyzer
             };
+#if XSHARP
+            parseOptions.SetOptions(cla);
+            options.SetOptions(cla);
+
+            return cla;
+#endif
         }
 
         private static void ParseAndResolveReferencePaths(string switchName, string switchValue, string baseDirectory, List<string> builder, MessageID origin, List<Diagnostic> diagnostics)

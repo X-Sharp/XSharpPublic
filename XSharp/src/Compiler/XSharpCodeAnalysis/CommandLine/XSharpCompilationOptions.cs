@@ -23,6 +23,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        public void SetOptions(CSharpCommandLineArguments opt)
+        {
+
+        }
+
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
         {
             ArrayZero = opt.ArrayZero;

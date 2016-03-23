@@ -9,8 +9,8 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.2.2201"
-#define VITextVersion   "0.2.2.2201 (Beta 2)"
+#define VIVersion       "0.2.2.2202"
+#define VITextVersion   "0.2.2.2202 (Beta 2)"
 #define TouchDate       "2016-03-23"
 #define TouchTime       "02:02:00"
 #define SetupExeName    "XSharpSetup022"
@@ -26,8 +26,8 @@
 #define XIDESetup       "XIDE_Set_up_1.02.exe"
 
 #define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.

@@ -56,7 +56,7 @@ namespace XSharpColorizer
         }
 
 
-        internal void Parse(ITextSnapshot snapshot, out LanguageService.SyntaxTree.ITokenStream TokenStream)
+        internal void Parse(ITextSnapshot snapshot, out LanguageService.SyntaxTree.ITokenStream TokenStream, string path)
         {
             string source = snapshot.GetText();
             // Currently we "eat" all Exception that might be raised
@@ -64,7 +64,7 @@ namespace XSharpColorizer
             TokenStream = null;
             try
             {
-                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source);
+                LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source, null, path);
                 var syntaxRoot = tree.GetRoot();
                 // Get the antlr4 parse tree root
                 var xtree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;

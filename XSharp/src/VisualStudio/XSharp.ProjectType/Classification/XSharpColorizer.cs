@@ -48,17 +48,19 @@ namespace XSharpColorizer
         [ContentType("XSharp")]
         internal static FileExtensionToContentTypeDefinition XSharpXhHeader = null;
 
+        [Import]
+        ITextDocumentFactoryService factory = null;
 
         [Import]
         internal IClassificationTypeRegistryService ClassificationRegistry = null; // Set via MEF
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
-            return (ITagger<T>)new XSharpColorizer(buffer, ClassificationRegistry);
+            return (ITagger<T>) XSharpColorizer.GetColorizer(buffer, ClassificationRegistry, factory);
         }
     }
 
-    class XSharpColorizer : ITagger<IClassificationTag>
+    class XSharpColorizer : ITagger<IClassificationTag>, IDisposable
     {
         private ITextBuffer Buffer;
         public ITextSnapshot Snapshot { get; set; }
@@ -69,17 +71,21 @@ namespace XSharpColorizer
         private IClassificationType xsharpConstantType;
         private IClassificationType xsharpBraceOpenType;
         private IClassificationType xsharpBraceCloseType;
+        private IClassificationType xsharpRegionStart;
+        private IClassificationType xsharpRegionStop;
         private XSharpTagger xsTagger; 
 #pragma warning disable CS0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore CS0067
         private List<ITagSpan<IClassificationTag>> tags;
 
-        internal XSharpColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry)
+        private ITextDocumentFactoryService txtdocfactory;
+        private int versionNumber = 0;
+        private  XSharpColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
             this.Buffer = buffer;
             //this.Snapshot = buffer.CurrentSnapshot;
-
+            txtdocfactory = factory;
             xsTagger = new XSharpTagger(registry);
 
             tags = new List<ITagSpan<IClassificationTag>>();
@@ -91,7 +97,8 @@ namespace XSharpColorizer
             xsharpConstantType = registry.GetClassificationType(ColorizerConstants.XSharpConstantFormat);
             xsharpBraceOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
             xsharpBraceCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
-
+            xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
+            xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
             this.Buffer.Changed += OnBufferChanged;
             //
             Colorize();
@@ -101,10 +108,12 @@ namespace XSharpColorizer
         void OnBufferChanged(object sender, TextContentChangedEventArgs e)
         {
             // If this isn't the most up-to-date version of the buffer, then ignore it for now (we'll eventually get another change event).
-            if (e.After != Buffer.CurrentSnapshot)
+            if (this.versionNumber == e.After.Version.VersionNumber)
                 return;
             Colorize();
-            
+            this.versionNumber = e.After.Version.VersionNumber;
+
+
         }
 
 
@@ -127,9 +136,20 @@ namespace XSharpColorizer
             ITokenStream TokenStream = null;
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
-            xsTagger.Parse(snapshot, out TokenStream);
+            string path = String.Empty;
+            if (txtdocfactory != null)
+            {
+                ITextDocument doc = null;
+                if (txtdocfactory.TryGetTextDocument(this.Buffer, out doc))
+                {
+                    path = doc.FilePath;
+
+                }
+            }
+            xsTagger.Parse(snapshot, out TokenStream, path);
             if (TokenStream != null)
             {
+                tags.Clear();
                 for (var iToken = 0; iToken < TokenStream.Size; iToken++)
                 {
                     var token = TokenStream.Get(iToken);
@@ -159,7 +179,7 @@ namespace XSharpColorizer
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
                                 tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpBraceCloseType));
                                 break;
-                            default:
+                             default:
                                 tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpOperatorType));
                                 break;
                         }
@@ -173,10 +193,16 @@ namespace XSharpColorizer
                         tags.Add(tokenSpan.ToTagSpan(snapshot, xsharpCommentType));
                     }
                 }
-            }
-            foreach (var tag in xsTagger.Tags)
-            {
-                tags.Add(tag);
+                foreach (var tag in xsTagger.Tags)
+                {
+                    tags.Add(tag);
+                }
+                if (TagsChanged != null)
+                {
+                    TagsChanged(this, new SnapshotSpanEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot,
+                        0, this.Buffer.CurrentSnapshot.Length)));
+                }
+
             }
         }
 
@@ -192,13 +218,58 @@ namespace XSharpColorizer
             //
             foreach ( var tag in this.tags )
             {
-                if ( tag.Span.Start.Position >= entire.Start.Position &&
-                     tag.Span.End.Position <= entire.End.Position )
+                if ( tag.Span.End.Position >= entire.Start.Position &&
+                     tag.Span.Start.Position <= entire.End.Position )
                 {
                     yield return tag;
                 }
             }
         }
 
-     }
+
+        static System.Collections.Generic.Dictionary<ITextBuffer, XSharpColorizer> hashtable;
+        static internal XSharpColorizer GetColorizer(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
+        {
+            if (hashtable == null)
+                hashtable = new System.Collections.Generic.Dictionary<ITextBuffer, XSharpColorizer> ();
+            if (hashtable.ContainsKey(buffer))
+                return hashtable[buffer];
+            var colorizer = new XSharpColorizer(buffer, registry, factory);
+            hashtable.Add(buffer, colorizer);
+            return colorizer;
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (hashtable.ContainsKey(this.Buffer))
+                    {
+                        hashtable.Remove(this.Buffer);
+                    }
+                }
+
+                disposedValue = true;
+            }
+        }
+
+         ~XSharpColorizer()
+        {
+           // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+           Dispose(false);
+         }
+
+        // This code added to correctly implement the disposable pattern.
+        void IDisposable.Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
+    }
 }

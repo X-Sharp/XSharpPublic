@@ -304,7 +304,7 @@
     </Compile>
     <Compile Include="BraceMatching\XSharpBraceMatching.cs" />
     <Compile Include="Classification\ClassificationDefinitions.cs" />
-    <Compile Include="Classification\Constants.cs" />
+    <Compile Include="Classification\ColorizerConstants.cs" />
     <Compile Include="Classification\EditorFormats.cs" />
     <Compile Include="Classification\Extensions.cs" />
     <Compile Include="Classification\IClassifierType.cs" />

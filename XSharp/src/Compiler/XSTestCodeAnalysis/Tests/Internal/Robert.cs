@@ -204,6 +204,53 @@ return x:Count
             CompileAndRunWithoutExceptions(s);
         }
 
+        [Test(Author = "Robert", Id = "R12", Title = "Preprocessor Test")]
+        public static void PPtest()
+        {
+            var s = ParseSource(@"
+#define FOO FALSE    // With compatible PP behaviour (/vo8) this is the same as #undef FOO               
+#undef BAR
+FUNCTION Start() AS INT
+   LOCAL retcode AS INT
+   #ifdef FOO
+    ? 'FOO defined', FOO
+    #else
+    throw Exception{'Error: foo undefined'}
+    #endif
+
+    #ifdef BAR
+        throw Exception{'Error: Bar undefined'}
+    #else
+    ? 'BAR undefined'
+   #endif
+   
+   RETURN retcode
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+        [Test(Author = "Robert", Id = "R13", Title = "Preprocessor Test - /vo8 compatibility")]
+        public static void PPtest2()
+        {
+            var s = ParseSource("/vo8+", @"
+#define FOO FALSE    // With compatible PP behavior (/vo8) this is the same as #undef FOO. 
+#define BAR 0        // With compatible PP behavior (/vo8) this is the same as #undef BAR. 
+FUNCTION Start() AS INT
+   LOCAL retcode AS INT
+   #ifdef FOO
+    throw Exception{'Error: foo should be undefined'}
+    #else
+    ? 'FOO Undefined' 
+    #endif
+   #ifdef BAR
+    throw Exception{'Error: bar should be undefined'}
+    #else
+    ? 'BAR Undefined' 
+    #endif
+
+   RETURN retcode
+");
+            CompileAndRunWithoutExceptions(s);
+        }
 
     }
 }

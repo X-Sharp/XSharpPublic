@@ -145,6 +145,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             inputs = new InputState(input);
             foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
+
+            // Note that Vulcan emits Macros such as __ENTITY__ and  __SIG__ in the code generation phase.
+
             macroDefines.Add("__ARRAYBASE__", () => new CommonToken(XSharpLexer.INT_CONST,_options.ArrayZero ? "0" : "1"));
             //macroDefines.Add("__CLR2__", () => null);
             //macroDefines.Add("__CLR4__", () => null);
@@ -160,12 +163,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //macroDefines.Add("__SIG__", () => null);
             macroDefines.Add("__SRCLOC__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line "+ inputs.Lt().Line.ToString() + '"'));
             //macroDefines.Add("__SYSDIR__", () => null);
-            macroDefines.Add("__TIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToLocalTime().ToString("T") + '"'));
-            macroDefines.Add("__UTCTIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("T") + '"'));
+            macroDefines.Add("__TIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"'));    
+            macroDefines.Add("__UTCTIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"')); 
             macroDefines.Add("__VERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
             //macroDefines.Add("__WINDIR__", () => null);
             //macroDefines.Add("__WINDRIVE__", () => null);
             macroDefines.Add("__XSHARP__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+
+            //Todo: when the compiler NoStdDef is not set: read XSharpDefs.xh from the XSharp Include folder,  and automatically include 
+            // Vulcan has a couple of #command lines, a #translate line and a #define for CRLF 
+
+
+
+
         }
 
         public int Column
@@ -467,6 +477,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 SkipEmpty();
+                                // Todo: Handle /VO8 compiler option:
+                                // When /VO8 is active and the variable is defined and has a value of TRUE or a numeric value != 0 
+                                // Then #ifdef is TRUE
+                                // otherwise #ifdef is FALSE
                                 defStates.Push(symbolDefines.ContainsKey(def.Text));
                             }
                             else if (def.Type == XSharpLexer.MACRO)
@@ -495,6 +509,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 SkipEmpty();
+                                // Todo: Handle /VO8 compiler option:
+                                // When /VO8 is active and the variable is defined and has a value of TRUE or a numeric value != 0 
+                                // then #ifndef is FALSE
+                                // otherwise #ifndef is TRUE
                                 defStates.Push(!symbolDefines.ContainsKey(def.Text));
                             }
                             else if (def.Type == XSharpLexer.MACRO)

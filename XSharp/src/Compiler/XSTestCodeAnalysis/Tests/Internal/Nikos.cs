@@ -53,7 +53,7 @@ a := <INT>{1}
 a[0] := 5
 ? a[0L]
 ");
-            CompileAndRunWithoutExceptions("/az",s);
+            CompileAndRunWithoutExceptions("/az", s);
         }
 
         [Test(Author = "Nikos", Id = "N3", Title = "Do not init string vars to empty string (no /vo2)")]
@@ -268,7 +268,7 @@ ENDIF
             CompileAndRunWithoutExceptions(s);
         }
 
-        [Test(Author = "Nikos", Id = "N10", Title = "Defaulkt namespace (/ns)")]
+        [Test(Author = "Nikos", Id = "N10", Title = "Default namespace (/ns)")]
         public static void DefaultNamespace()
         {
             var s = ParseSource(@"
@@ -287,7 +287,7 @@ END CLASS
 FUNCTION Start() AS VOID
 VAR t := CustomNs.Test{}
 ");
-            CompileAndRunWithoutExceptions("/ns:CustomNs",s);
+            CompileAndRunWithoutExceptions("/ns:CustomNs", s);
 
             s = ParseSource("/ns:CustomNs", @"
 BEGIN NAMESPACE CustomNs
@@ -330,6 +330,27 @@ FUNCTION Start() AS VOID
 VAR t := ns1.ns2.Test{}
 ");
             CompileAndRunWithoutExceptions("/ns:ns1.ns2", s);
+        }
+
+        [Test(Author = "Nikos", Id = "N11", Title = "Preprocessor defines, conditional sections")]
+        public static void PreprocessorDefines()
+        {
+            string args = "/define:TESTING";
+            var s = ParseSource(args, @"
+#ifdef TESTING
+FUNCTION Start() AS VOID
+    VAR o := Test{}
+#else
+FUNCTION Start() AS VOID
+    THROW Exception{}
+#endif
+#undef TESTING
+#ifndef TESTING
+CLASS Test
+END CLASS
+#endif
+");
+            CompileAndRunWithoutExceptions(args, s);
         }
     }
 }

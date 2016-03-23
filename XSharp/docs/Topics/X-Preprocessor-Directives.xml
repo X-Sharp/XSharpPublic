@@ -1,9 +1,31 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>X# Preprocessor Directives</title>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">X# Preprocessor Directives</title>
+  <keywords>
+    <keyword translate="true">Preprocessor</keyword>
+  </keywords>
   <body>
-    <header><para styleclass="Heading1">X# Preprocessor Directives</para></header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# Preprocessor Directives</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The XSharp preprocessor supports the following preprocessor directives</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Define" styleclass="Normal" translate="true">#define</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Undef" styleclass="Normal" translate="true">#undef</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Include" styleclass="Normal" translate="true">#include</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifdef" styleclass="Normal" translate="true">#ifdef</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Ifndef" styleclass="Normal" translate="true">#ifndef</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Else" styleclass="Normal" translate="true">#else</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Endif" styleclass="Normal" translate="true">#endif</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Region" styleclass="Normal" translate="true">#region</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Region" styleclass="Normal" translate="true">#endregion</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">At this moment the following directives are NOT supported:</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Command" styleclass="Normal" translate="true">#command</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Translate" styleclass="Normal" translate="true">#translate</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Line" styleclass="Normal" translate="true">#line</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

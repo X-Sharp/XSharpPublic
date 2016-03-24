@@ -24,6 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_ProtectedInStatic = 1057,
     XS_WRN:ERR_FeatureNotAvailableInVersion1 = 8022,
     XS_WRN:ERR_UseDefViolationProperty = 8079,
+    XS_WRN:ERR_TypeExpected = 1031,
     */
 
     internal enum ErrorCode

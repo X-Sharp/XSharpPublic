@@ -102,7 +102,7 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     keepAlive: keepAlive,
                     libEnvVariable: Environment.GetEnvironmentVariable("LIB")
 #if XSHARP
-                    , includeEnvVariable: includeDir
+                    , includeDir: includeDir
                     , winDir: Environment.GetFolderPath(Environment.SpecialFolder.Windows)
                     , SystemDir: Environment.GetFolderPath(Environment.SpecialFolder.System)
 #endif

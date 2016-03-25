@@ -17,7 +17,21 @@ namespace Microsoft.CodeAnalysis.CSharp
     /// </summary>
     public sealed class XSharpSpecificCompilationOptions 
     {
-
+        static string _defaultIncludeDir;
+        static string _windir;
+        static string _sysdir;
+        public static void SetDefaultIncludeDir (string dir)
+        {
+            _defaultIncludeDir = dir;
+        }
+        public static void SetWinDir(string dir)
+        {
+            _windir = dir;
+        }
+        public static void SetSysDir(string dir)
+        {
+            _sysdir = dir;
+        }
         public XSharpSpecificCompilationOptions()
         {
         }
@@ -25,15 +39,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ArrayZero { get; internal set; } = false;
         public bool CaseSensitive { get; internal set; } = false;
         public bool CompactFramework { get; internal set; } = false;
-
+        public string DefaultIncludeDir { get; internal set; } = _defaultIncludeDir;
+        public string WindowsDir { get; internal set; } = _windir;
+        public string SystemDir { get; internal set; } = _sysdir;
         public string IncludePaths { get; internal set; } = "";
-        public bool IlDasm { get; internal set; } = false;
         public bool ImplicitNameSpace { get; internal set; } = false;
         public bool LateBinding { get; internal set; } = false;
         public bool NoRun { get; internal set; } = true;
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";
-        public bool PeVerify { get; internal set; } = false;
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool SyntaxCheck { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;

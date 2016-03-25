@@ -7,7 +7,9 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-
+#if XSHARP
+using Microsoft.CodeAnalysis.CSharp;
+#endif
 namespace Microsoft.CodeAnalysis.CompilerServer
 {
     /// <summary>
@@ -99,6 +101,20 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                 {
                     libDirectory = arg.Value;
                 }
+#if XSHARP
+                else if (arg.ArgumentId == BuildProtocolConstants.ArgumentId.IncludeDir)
+                {
+                    XSharpSpecificCompilationOptions.SetDefaultIncludeDir(arg.Value);
+                }
+                else if (arg.ArgumentId == BuildProtocolConstants.ArgumentId.WinDir)
+                {
+                    XSharpSpecificCompilationOptions.SetWinDir(arg.Value);
+                }
+                else if (arg.ArgumentId == BuildProtocolConstants.ArgumentId.SystemDir)
+                {
+                    XSharpSpecificCompilationOptions.SetSysDir(arg.Value);
+                }
+#endif
                 else if (arg.ArgumentId == BuildProtocolConstants.ArgumentId.CommandLineArgument)
                 {
                     int argIndex = arg.ArgumentIndex;

@@ -2,12 +2,9 @@
 
 using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using Microsoft.VisualStudio.Shell.Interop;
 using Roslyn.Utilities;
-
+using Microsoft.Win32;
 namespace Microsoft.CodeAnalysis.CSharp.CommandLine
 {
     internal sealed class Xsc : CSharpCompiler
@@ -20,7 +17,28 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
         internal static int Run(string clientDirectory, string sdkDirectory, string[] args, IAnalyzerAssemblyLoader analyzerLoader)
         {
             FatalError.Handler = FailFast.OnFatalException;
-
+            var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
+            string XSharpIncludeDir = String.Empty;
+            try
+            {
+                string key;
+                if (Environment.Is64BitProcess)
+                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey64;
+                else
+                    key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey;
+                XSharpIncludeDir = (string)Registry.GetValue(key, global::XSharp.Constants.RegistryValue, "");
+            }
+            catch (Exception ) { }
+            if (!String.IsNullOrEmpty(XSharpIncludeDir))
+            {
+                if (!XSharpIncludeDir.EndsWith("\\"))
+                    XSharpIncludeDir += @"\";
+                XSharpIncludeDir += @"Include\";
+            }
+            includeDir = includeDir ?? "" + XSharpIncludeDir;
+            XSharpSpecificCompilationOptions.SetDefaultIncludeDir(includeDir);
+            XSharpSpecificCompilationOptions.SetWinDir(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+            XSharpSpecificCompilationOptions.SetSysDir(Environment.GetFolderPath(Environment.SpecialFolder.System));
             var responseFile = Path.Combine(clientDirectory, CSharpCompiler.ResponseFileName);
             Xsc compiler = new Xsc(responseFile, clientDirectory, Directory.GetCurrentDirectory(), sdkDirectory, args, analyzerLoader);
 
@@ -41,6 +59,12 @@ namespace Microsoft.CodeAnalysis.CSharp.CommandLine
             //Project complexity # of source files, # of references
             sqm.SetDatapoint(sqmSession, SqmServiceProvider.DATAID_SQM_ROSLYN_SOURCES, (uint)Arguments.SourceFiles.Length);
             sqm.SetDatapoint(sqmSession, SqmServiceProvider.DATAID_SQM_ROSLYN_REFERENCES, (uint)Arguments.ReferencePaths.Length);
+        }
+
+        public override Compilation CreateCompilation(TextWriter consoleOutput, TouchedFileLogger touchedFilesLogger, ErrorLogger errorLogger)
+        {
+            var result = base.CreateCompilation(consoleOutput, touchedFilesLogger, errorLogger);
+            return result;
         }
     }
 }

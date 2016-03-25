@@ -12,6 +12,9 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         public bool ArrayZero { get; private set; }
 
+        public string DefaultIncludeDir { get; set; }
+        public string WindowsDir { get; set; }
+        public string SystemDir { get; set; }
         public bool InitStringVarsToEmpty { get; private set; }
 
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
@@ -32,6 +35,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             ArrayZero = opt.ArrayZero;
             InitStringVarsToEmpty = opt.InitStringVarsToEmpty;
+            DefaultIncludeDir = opt.DefaultIncludeDir;
+            WindowsDir = opt.WindowsDir;
+            SystemDir = opt.SystemDir;
         }
     }
 }

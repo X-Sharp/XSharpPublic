@@ -13,33 +13,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal class XSharpPreprocessor : ITokenSource
     {
 
-        static string _XSharpIncludeDir = null;
-        static string GetXSharpIncludeDir()
-        {
-            if (_XSharpIncludeDir == null)
-            {
-                _XSharpIncludeDir = String.Empty;
-                
-                try
-                {
-                    //Todo: Read Registry Key. Can that be done in a Portable Assembly ?
-                    string InstallPath = String.Empty;
-                    // string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
-                    //InstallPath = (string)Microsoft.Win32.Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
-                    //if (!String.IsNullOrEmpty(InstallPath) && !InstallPath.EndsWith("\\"))
-                    //    InstallPath += "\\";
-                    InstallPath = @"c:\Program Files (x86)\XSharp\";
-                    _XSharpIncludeDir = InstallPath + @"Include\";
-
-                }
-                catch (Exception) { }
-
-            }
-            return _XSharpIncludeDir;
-
-        }
-
-
         class InputState
         {
             internal ITokenStream Tokens;
@@ -117,6 +90,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public int MaxSymbolDepth { get; set; } = 16;
 
+        public string StdDefs { get; set; } = string.Empty;
+
         internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             _options = options;
@@ -127,20 +102,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             includeDirs = new List<string>(options.IncludePaths);
             if (! String.IsNullOrEmpty(fileName))
                 includeDirs.Add( System.IO.Path.GetDirectoryName(fileName) );
-            // Add standard XSharp Include Path
-            includeDirs.Add(GetXSharpIncludeDir());
+            // Add default IncludeDirs;
+            if (!String.IsNullOrEmpty(options.DefaultIncludeDir))
+            {
+                string[] paths = options.DefaultIncludeDir.Split( new[] { ';' },StringSplitOptions.RemoveEmptyEntries);
+                foreach (var path in paths)
+                {
+                    includeDirs.Add(path);
+                }
+            }
 
-            //Todo: Read Environment variable. Can that be done in a Portable Assembly ?
-            // Add paths from Include Environment Variable
-            //string envVar = System.Environment.GetEnvironmentVariable("INCLUDE");
-            //if (! string.IsNullOrEmpty(envVar))
-            //{
-            //    string[] paths = envVar.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            //    foreach (var path in paths)
-            //    {
-            //        includeDirs.Add(path);
-            //    }
-            // }
 
             inputs = new InputState(input);
             foreach (var symbol in options.PreprocessorSymbols)
@@ -149,30 +120,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Note that Vulcan emits Macros such as __ENTITY__ and  __SIG__ in the code generation phase.
 
             macroDefines.Add("__ARRAYBASE__", () => new CommonToken(XSharpLexer.INT_CONST,_options.ArrayZero ? "0" : "1"));
-            //macroDefines.Add("__CLR2__", () => null);
-            //macroDefines.Add("__CLR4__", () => null);
-            //macroDefines.Add("__CLRVERSION__", () => null);
+            macroDefines.Add("__CLR2__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLR2__\""));
+            macroDefines.Add("__CLR4__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLR4__\""));
+            macroDefines.Add("__CLRVERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLRVERSION__\""));
             macroDefines.Add("__DATE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
             macroDefines.Add("__DATETIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
             if (_options.DebugEnabled)
                 macroDefines.Add("__DEBUG__", () => new CommonToken(XSharpLexer.TRUE_CONST));
-            //macroDefines.Add("__ENTITY__", () => null);
+            macroDefines.Add("__ENTITY__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\""));  // Handled later in Transformation phase
             macroDefines.Add("__FILE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+(inputs.SourceFileName ?? fileName)+'"'));
             macroDefines.Add("__LINE__", () => new CommonToken(XSharpLexer.INT_CONST, inputs.Lt().Line.ToString()));
             macroDefines.Add("__MODULE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"'));
-            //macroDefines.Add("__SIG__", () => null);
+            macroDefines.Add("__SIG__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__SIG__\"")); // Handled later in Transformation phase
             macroDefines.Add("__SRCLOC__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line "+ inputs.Lt().Line.ToString() + '"'));
-            //macroDefines.Add("__SYSDIR__", () => null);
+            macroDefines.Add("__SYSDIR__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+options.SystemDir+'"'));
             macroDefines.Add("__TIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"'));    
             macroDefines.Add("__UTCTIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"')); 
             macroDefines.Add("__VERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
-            //macroDefines.Add("__WINDIR__", () => null);
-            //macroDefines.Add("__WINDRIVE__", () => null);
+            macroDefines.Add("__WINDIR__", () =>  new CommonToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir + '"'));
+            macroDefines.Add("__WINDRIVE__", ()  => new CommonToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir?.Substring(0,2) + '"'));
             macroDefines.Add("__XSHARP__", () => new CommonToken(XSharpLexer.TRUE_CONST));
-
-            //Todo: when the compiler NoStdDef is not set: read XSharpDefs.xh from the XSharp Include folder,  and automatically include 
-            // Vulcan has a couple of #command lines, a #translate line and a #define for CRLF 
-
+            if (! options.NoStdDef)
+            {
+                // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
+                // and automatically include it.
+                // read XsharpDefs.xh
+                StdDefs = "xSharpDefs.xh";
+                //includeFile(null, StdDefs);
+            }
 
 
 
@@ -384,6 +359,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return (t.Type == XSharpLexer.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
         }
+
 
         [return: NotNull]
         public IToken NextToken()
@@ -695,6 +671,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     {
                                         _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
                                     }
+
                                 }
                                 else
                                 {

@@ -18,6 +18,7 @@
 
 ;Folders
 #define BinFolder       "D:\Xsharp\Dev\XSharp\Binaries\Debug\"
+#define CommonFolder    "D:\Xsharp\Dev\XSharp\src\Common\"
 #define VSProjectFolder "d:\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
 #define ExamplesFolder  "d:\Xsharp\Dev\XSharp\src\Samples\"
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
@@ -99,6 +100,7 @@ Name: "{app}\Assemblies"
 Name: "{app}\Bin"
 Name: "{app}\Help"
 Name: "{app}\Images"
+Name: "{app}\Include"
 Name: "{app}\ProjectSystem"
 Name: "{app}\Redist"
 Name: "{app}\Uninst"
@@ -129,6 +131,10 @@ Source: "Baggage\Readme.rtf";                             DestDir: "{app}"    ; 
 Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Images"; Flags: touch {#StdFlags}; Components: main
 Source: "Baggage\License.rtf";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
 Source: "Baggage\License.txt";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
+
+; Include Files
+Source: "{#CommonFolder}*.xh";                    DestDir: "{app}\Include"; Flags: touch {#StdFlags}; Components: main
+
 
 ;MsBuild Files
 Source: "{#VsProjectFolder}BuildSystem\Rules\*.*";                DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main

@@ -122,6 +122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
         internal Stack<SyntaxClassEntities> ClassEntities = new Stack<SyntaxClassEntities> ();
+        internal Stack<ParserRuleContext> Entities = new Stack<ParserRuleContext>();
 
         public XSharpTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
         {
@@ -170,6 +171,184 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
+        bool IsEntity(ParserRuleContext context)
+        {
+            return context is XSharpParser.MethodContext || 
+                context is XSharpParser.ClsctorContext || 
+                context is XSharpParser.ClsdtorContext || 
+                context is XSharpParser.FunctionContext ||
+                context is XSharpParser.ProcedureContext ||
+                context is XSharpParser.Event_Context ||
+                context is XSharpParser.PropertyContext || 
+                context is XSharpParser.Operator_Context ||
+                context is XSharpParser.Delegate_Context ||
+                context is XSharpParser.Class_Context ||
+                context is XSharpParser.Structure_Context;
+        }
+        #region Entitynames
+        string GetNestedName(RuleContext ctx)
+        {
+            string name = "";
+            while (ctx != null)
+            {
+                if (ctx is XSharpParser.Class_Context)
+                {
+                    name = ((XSharpParser.Class_Context)ctx).Id.GetText() + "." + name;
+                }
+                else if (ctx is XSharpParser.Structure_Context)
+                {
+                    name = ((XSharpParser.Structure_Context)ctx).Id.GetText() + "." + name;
+                }
+                else if (ctx is XSharpParser.Namespace_Context)
+                {
+                    name = ((XSharpParser.Namespace_Context)ctx).Name.GetText() + "." + name;
+                }
+                else if (ctx is XSharpParser.Interface_Context)
+                {
+                    name = ((XSharpParser.Interface_Context)ctx).Id.GetText() + "." + name;
+                }
+                ctx = ctx.Parent;
+            }
+            return name;
+            
+        }
+        string GetEntityName(Boolean Full)
+        {
+            string name = "";
+            string suffix = "";
+            ParserRuleContext context = Entities.Peek();
+            if (context == null)
+                return "";
+            XSharpParser.DatatypeContext RetType = null;
+            XSharpParser.ParameterListContext Params = null;
+            name = GetNestedName(context.Parent);
+            if (context is XSharpParser.FunctionContext)
+            {
+                XSharpParser.FunctionContext fc = (XSharpParser.FunctionContext)context;
+                name = GlobalClassName + "." +fc.Id.GetText();
+                RetType = fc.Type;
+                Params = fc.ParamList;
+            }
+            else if (context is XSharpParser.ProcedureContext)
+            {
+                XSharpParser.ProcedureContext pc = (XSharpParser.ProcedureContext)context;
+                name = GlobalClassName + "." + pc.Id.GetText();
+                Params = pc.ParamList;
+            }
+            else if (context is XSharpParser.ClsctorContext)
+            {
+                XSharpParser.ClsctorContext cc = (XSharpParser.ClsctorContext)context;
+                if (name.Length > 0) // Remove the dot
+                    name = name.Substring(0, name.Length - 1);
+                suffix  = "{}";
+                Params = cc.ParamList;
+            }
+            else if (context is XSharpParser.ClsdtorContext)
+            {
+                XSharpParser.ClsdtorContext dc = (XSharpParser.ClsdtorContext)context;
+                name += "Finalize()";
+            }
+            else if (context is XSharpParser.MethodContext)
+            {
+                XSharpParser.MethodContext mc = (XSharpParser.MethodContext)context;
+                if (mc.ClassId != null)
+                    name += mc.ClassId.GetText() + "." + mc.Id.GetText();
+                else
+                {
+                    name += mc.Id.GetText();
+                }
+                RetType = mc.Type;
+                Params = mc.ParamList;
+                switch (mc.T.Token.Type)
+                {
+                    case XSharpParser.ACCESS:
+                        suffix = ":Access";
+                        break;
+                    case XSharpParser.ASSIGN:
+                        suffix = ":Assign";
+                        break;
+                }
+            }
+            else if (context is XSharpParser.PropertyContext)
+            {
+                XSharpParser.PropertyContext pc = (XSharpParser.PropertyContext)context;
+                name += pc.Id.GetText();
+                RetType = pc.Type;
+                suffix = ":Property";
+
+            }
+            else if (context is XSharpParser.Event_Context)
+            {
+                XSharpParser.Event_Context ec = (XSharpParser.Event_Context)context;
+                name += ec.Id.GetText();
+                RetType = ec.Type;
+                suffix = ":Event";
+            }
+            else if (context is XSharpParser.VodllContext)
+            {
+                XSharpParser.VodllContext vdc = (XSharpParser.VodllContext)context;
+                name += vdc.Id.GetText();
+                RetType = vdc.Type;
+                Params = vdc.ParamList;
+                suffix = ":VoDll";
+            }
+            else if (context is XSharpParser.Delegate_Context)
+            {
+                XSharpParser.Delegate_Context dc = (XSharpParser.Delegate_Context)context;
+                name += dc.Id.GetText();
+                RetType = dc.Type;
+                Params = dc.ParamList;
+                suffix = ":Delegate";
+            }
+            else if (context is XSharpParser.Class_Context)
+            {
+                XSharpParser.Class_Context cc = (XSharpParser.Class_Context)context;
+                name += cc.Id.GetText();
+                suffix = ":Class";
+            }
+            else if (context is XSharpParser.Structure_Context)
+            {
+                XSharpParser.Structure_Context sc = (XSharpParser.Structure_Context)context;
+                name += sc.Id.GetText();
+                suffix = ":Structure";
+            }
+            if (Full)
+            {
+                if (RetType != null)
+                {
+                    name = RetType.GetText() + " " + name;
+                }
+                string strParams = "";
+                if (Params != null)
+                {
+                    foreach (XSharpParser.ParameterContext _par in Params._Params)
+                    {
+                        if (strParams?.Length > 0)
+                            strParams += ", ";
+                        if (_par.Type != null)
+                            strParams += _par.Type.GetText();
+                        else
+                            strParams += "USUAL";
+                    }
+                }
+                if (suffix == "{}")
+                {
+                    name += "{ " + strParams + " }";
+                }
+                else
+                {
+                    name += "( " + strParams + " )";
+                    if (!string.IsNullOrEmpty(suffix))
+                        name += suffix;
+                }
+
+            }
+            else
+                name = name.ToUpper();
+            return name;
+
+        }
+        #endregion
         SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
         {
             var rb = _pool.Allocate();
@@ -755,6 +934,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             s = s.Replace("Context","");
             Debug.WriteLine("{0}=> ({1},{2}) {3} [{4}] <{5}>",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text,XSharpParser.DefaultVocabulary.GetSymbolicName(context.Start.Type));
 #endif
+
+            if (IsEntity(context))
+                Entities.Push(context);
+                
         }
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
@@ -774,6 +957,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             s = s.Replace("Context","");
             Debug.WriteLine("{0}<= ({1},{2}) {3} '{4}'",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text);
 #endif
+            if (IsEntity(context))
+                Entities.Pop();
         }
 
         public override void EnterSource([NotNull] XSharpParser.SourceContext context)
@@ -883,7 +1068,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(usings);
             _pool.Free(members);
         }
-
+        
         public override void ExitEntity([NotNull] XSharpParser.EntityContext context)
         {
             var ch = context.children[0];
@@ -4122,37 +4307,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralValue([NotNull] XSharpParser.LiteralValueContext context)
         {
-            //if (context.Token.Type == XSharpParser.MACRO)
-            //{
-            //    // Todo: replace Token with proper value
-            //    switch (context.ToString().ToLowerInvariant())
-            //    {
-            //        case "__arraybase__":
-            //        case "__clr2__":
-            //        case "__clr4__":
-            //        case "__clrversion__":
-            //        case "__datetime__":
-            //        case "__date__":
-            //        case "__debug__":
-            //        case "__entity__":
-            //        case "__file__":
-            //        case "__line__":
-            //        case "__module__":
-            //        case "__sig__":
-            //        case "__srcloc__":
-            //        case "__sysdir__":
-            //        case "__time__":
-            //        case "__utctime__":
-            //        case "__version__":
-            //        case "__windir__":
-            //        case "__windrive__":
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //}
+            string replacement = null;
+            if (context.Token.Type == XSharpParser.STRING_CONST && context.Token.Text.StartsWith("\"__"))
+            {
+                switch (context.Token.Text.ToLowerInvariant())
+                {
+                    case "\"__entity__\"":
+                        replacement = GetEntityName(false);
+                        break;
+                    case "\"__sig__\"":
+                        replacement = GetEntityName(true);
+                        break;
+                    default:
+                        break;
+                }
+                
 
-            context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue()));
+            }
+            if (!String.IsNullOrEmpty(replacement))
+            {
+                context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(),
+                    SyntaxToken.WithValue(SyntaxKind.StringLiteralToken, replacement, replacement )));
+            }
+            else
+                context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue()));
         }
 
         public override void ExitIdentifierString([NotNull] XSharpParser.IdentifierStringContext context)
@@ -4208,8 +4386,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXbaseType([NotNull] XSharpParser.XbaseTypeContext context)
         {
-            context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
-                .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context.Token.Text )));
+            string typeName = null;
+#if DONOTINCLUDE
+            switch (context.Token.Type)
+            {
+                case XSharpParser.ARRAY:
+                    typeName = "Vulcan.__Array";
+                    break;
+                case XSharpParser.CODEBLOCK:
+                    typeName = "Vulcan.Codeblock";
+                    break;
+                case XSharpParser.DATE:
+                    typeName = "Vulcan.__VODate";
+                    break;
+                case XSharpParser.FLOAT:
+                    typeName = "Vulcan.__VOFloat";
+                    break;
+                case XSharpParser.PSZ:
+                    typeName = "Vulcan.__Psz";
+                    break;
+                case XSharpParser.USUAL:
+                    typeName = "Vulcan.__Usual"; ;
+                    break;
+                case XSharpParser.SYMBOL:
+                    typeName = "Vulcan.__Symbol"; ;
+                    break;
+                default:
+                    typeName = null;
+                    break;
+            }
+#endif
+            if (string.IsNullOrEmpty(typeName))
+            {
+                context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
+                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, context.Token.Text)));
+            }
+            else
+            {
+                context.Put(GenerateQualifiedName(typeName));
+            }
         }
 
 

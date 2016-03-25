@@ -44,10 +44,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             switch (name)
             {
-                case "a":   // AST ? Map to analyzer ? (analyzer)
-                    name = "analyzer";
-                    handled = false;
-                    break;
                 case "az":  
                     options.ArrayZero = positive;
                     break;
@@ -70,10 +66,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     break;
                     
-                case "ild": // Ildasm
-                    options.IlDasm = positive;
-                    break;
-
                 case "ins": 
                     options.ImplicitNameSpace = positive;
                     break;
@@ -106,9 +98,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     else
                         name = "checked-";
                     handled = false;
-                    break;
-                case "pev":     
-                    options.PeVerify = positive;
                     break;
                 case "ppo":
                     options.PreProcessorOutput = positive;

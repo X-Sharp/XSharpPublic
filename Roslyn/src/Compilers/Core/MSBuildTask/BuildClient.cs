@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using static Microsoft.CodeAnalysis.BuildTasks.NativeMethods;
 using static Microsoft.CodeAnalysis.CompilerServer.BuildProtocolConstants;
 using static Microsoft.CodeAnalysis.CompilerServer.CompilerServerLogger;
+using Microsoft.Win32;
 
 namespace Microsoft.CodeAnalysis.BuildTasks
 {
@@ -70,6 +71,28 @@ namespace Microsoft.CodeAnalysis.BuildTasks
 
             if (hasShared)
             {
+#if XSHARP
+                var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
+                string XSharpIncludeDir = String.Empty;
+                try
+                {
+                    string key;
+                    if (Environment.Is64BitProcess)
+                        key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey64;
+                    else
+                        key = @"HKEY_LOCAL_MACHINE\" + global::XSharp.Constants.RegistryKey;
+                    XSharpIncludeDir = (string)Registry.GetValue(key, global::XSharp.Constants.RegistryValue, "");
+                }
+                catch (Exception) { }
+                if (!String.IsNullOrEmpty(XSharpIncludeDir))
+                {
+                    if (!XSharpIncludeDir.EndsWith("\\"))
+                        XSharpIncludeDir += @"\";
+                    XSharpIncludeDir += @"Include\";
+                }
+                includeDir = includeDir ?? "" + XSharpIncludeDir;
+#endif
+
                 var responseTask = TryRunServerCompilation(
                     language,
                     clientDir,
@@ -77,7 +100,13 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     parsedArgs,
                     default(CancellationToken),
                     keepAlive: keepAlive,
-                    libEnvVariable: Environment.GetEnvironmentVariable("LIB"));
+                    libEnvVariable: Environment.GetEnvironmentVariable("LIB")
+#if XSHARP
+                    , includeEnvVariable: includeDir
+                    , winDir: Environment.GetFolderPath(Environment.SpecialFolder.Windows)
+                    , SystemDir: Environment.GetFolderPath(Environment.SpecialFolder.System)
+#endif
+                    );
 
                 var response = responseTask.Result;
                 if (response != null)
@@ -172,7 +201,13 @@ namespace Microsoft.CodeAnalysis.BuildTasks
             IList<string> arguments,
             CancellationToken cancellationToken,
             string keepAlive = null,
-            string libEnvVariable = null)
+            string libEnvVariable = null
+#if XSHARP
+            , string includeDir = null
+            , string winDir = null
+            , string SystemDir = null
+#endif
+            )
         {
             try
             {
@@ -225,7 +260,14 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                                                               workingDir,
                                                               arguments,
                                                               keepAlive,
-                                                              libEnvVariable);
+                                                              libEnvVariable
+#if XSHARP
+                                                            , includeDir 
+                                                            , winDir 
+                                                            , SystemDir 
+
+#endif                                                                                                                            
+                                                              );
 
                             return TryCompile(pipe, request, cancellationToken);
                         }

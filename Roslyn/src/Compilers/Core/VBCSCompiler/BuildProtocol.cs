@@ -77,7 +77,13 @@ namespace Microsoft.CodeAnalysis.CompilerServer
                                           string workingDirectory,
                                           IList<string> args,
                                           string keepAlive = null,
-                                          string libDirectory = null)
+                                          string libDirectory = null
+#if XSHARP
+                                        , string includeDir = null
+                                        , string winDir = null
+                                        , string systemDir = null
+#endif
+            )
         {
             Log("Creating BuildRequest");
             Log($"Working directory: {workingDirectory}");
@@ -93,7 +99,14 @@ namespace Microsoft.CodeAnalysis.CompilerServer
 
             if (libDirectory != null)
                 requestArgs.Add(new Argument(ArgumentId.LibEnvVariable, 0, libDirectory));
-
+#if XSHARP
+            if (includeDir != null)
+                requestArgs.Add(new Argument(ArgumentId.IncludeDir, 0, includeDir));
+            if (winDir != null)
+                requestArgs.Add(new Argument(ArgumentId.WinDir, 0, winDir));
+            if (systemDir != null)
+                requestArgs.Add(new Argument(ArgumentId.SystemDir, 0, systemDir));
+#endif
             for (int i = 0; i < args.Count; ++i)
             {
                 var arg = args[i];
@@ -455,6 +468,14 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             LibEnvVariable,
             // Request a longer keep alive time for the server
             KeepAlive,
+#if XSHARP
+            // Include file directory
+            IncludeDir,
+            // Windows directory
+            WinDir,
+            // System directory
+            SystemDir
+#endif
         }
 
         /// <summary>

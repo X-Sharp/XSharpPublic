@@ -1,0 +1,15 @@
+///////////////////////////////////////////////////////////////////////////
+// XSharpDefs.xh
+//
+// XSharp Standard Preprocessor Directives
+//
+// Copyright (c) XSharp BV.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+// This file is automatically included in every source file unless /nostddefs is used.
+//
+// Caution: do not modify this file. It will be overwritten during product updates
+//
+
+#define CRLF e"\r\n"
+

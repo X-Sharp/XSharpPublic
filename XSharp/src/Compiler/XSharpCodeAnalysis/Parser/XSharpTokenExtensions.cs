@@ -432,7 +432,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         case XSharpDialect.VO:
                         case XSharpDialect.Vulcan:
                             // Ok
-                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, "", SyntaxFactory.WS);
+                            if (options.VONullStrings)
+                                r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, "", SyntaxFactory.WS);
+                            else
+                                r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
                             break;
                         default:
                             r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)

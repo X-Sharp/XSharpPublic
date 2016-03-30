@@ -176,18 +176,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.BYTE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ByteKeyword);
                     break;
-                //case XSharpParser.CODEBLOCK:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
-                //    break;
-                //case XSharpParser.DATE:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
-                //    break;
                 case XSharpParser.DWORD:
                     r = SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword);
                     break;
-                //case XSharpParser.FLOAT:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword);
-                //    break;
                 case XSharpParser.SHORTINT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ShortKeyword);
                     break;
@@ -206,12 +197,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.OBJECT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword);
                     break;
-                //case XSharpParser.PSZ:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
-                //    break;
-                //case XSharpParser.PTR:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.);
-                //    break;
                 case XSharpParser.REAL4:
                     r = SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword);
                     break;
@@ -221,13 +206,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.STRING:
                     r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
                     break;
-                //case XSharpParser.SYMBOL:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.StringKeyword);
-                //    break;
-                //case XSharpParser.USUAL:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword);
-                //    break;
-                case XSharpParser.UINT64:
+                 case XSharpParser.UINT64:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword);
                     break;
                 case XSharpParser.WORD:
@@ -239,9 +218,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CHAR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CharKeyword);
                     break;
-                //case XSharpParser.ARRAY:
-                //    r = SyntaxFactory.MakeToken(SyntaxKind.);
-                //    break;
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
@@ -251,7 +227,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        public static SyntaxToken SyntaxLiteralValue(this IToken token)
+        public static SyntaxToken SyntaxLiteralValue(this IToken token, CSharpParseOptions options)
         {
             SyntaxToken r;
             switch (token.Type)
@@ -272,8 +248,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, EscapedStringValue(token.Text), SyntaxFactory.WS);
                     break;
                 case XSharpParser.SYMBOL_CONST:
-                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text.Substring(1).ToUpper(), SyntaxFactory.WS)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "SYMBOL constant ("+token.Text+")" ));
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text.Substring(1).ToUpperInvariant(), SyntaxFactory.WS);
+                    switch (options.Dialect)
+                    {
+                        case XSharpDialect.VO:
+                        case XSharpDialect.Vulcan:
+                            // Ok
+                            break;
+                        default:
+                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
+                            break;
+                    }
                     break;
                 case XSharpParser.HEX_CONST:
                     switch (token.Text.Last()) {
@@ -425,18 +410,65 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.DATE_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, "DATE constant ("+token.Text+")"));
+                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "DATE constant ("+token.Text+")", options.Dialect.ToString()));
                     break;
-                case XSharpParser.NIL:
                 case XSharpParser.NULL_ARRAY:
                 case XSharpParser.NULL_CODEBLOCK:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
+                    switch (options.Dialect)
+                    {
+                        case XSharpDialect.VO:
+                        case XSharpDialect.Vulcan:
+                            // Ok
+                            break;
+                        default:
+                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
+                            break;
+                    }
+                    break;
+                case XSharpParser.NULL_STRING:
+                    switch (options.Dialect)
+                    {
+                        case XSharpDialect.VO:
+                        case XSharpDialect.Vulcan:
+                            // Ok
+                            r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, "", SyntaxFactory.WS);
+                            break;
+                        default:
+                            r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)
+                            .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
+                            break;
+                    }
+                    break;
+                case XSharpParser.NULL_SYMBOL:
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, "", SyntaxFactory.WS);
+                    switch (options.Dialect)
+                    {
+                        case XSharpDialect.VO:
+                        case XSharpDialect.Vulcan:
+                            // Ok
+                            break;
+                        default:
+                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
+                            break;
+                    }
+                    break;
+                case XSharpParser.NIL:
                 case XSharpParser.NULL_DATE:
                 case XSharpParser.NULL_PSZ:
                 case XSharpParser.NULL_PTR:
-                case XSharpParser.NULL_STRING:
-                case XSharpParser.NULL_SYMBOL:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)
-                        .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInVersion1, token.Text));
+                    // Actual expression is generated in the transformer
+                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
+                    switch (options.Dialect)
+                    {
+                        case XSharpDialect.VO:
+                        case XSharpDialect.Vulcan:
+                            // Ok
+                            break;
+                        default:
+                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
+                            break;
+                    }
                     break;
                 default: // nvk: This catches cases where a keyword/identifier is treated as a literal string
                     (token as CommonToken).Type = XSharpParser.STRING_CONST;

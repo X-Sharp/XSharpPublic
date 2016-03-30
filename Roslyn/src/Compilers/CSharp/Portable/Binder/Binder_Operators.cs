@@ -519,7 +519,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (node.Kind() == SyntaxKind.SubtractExpression)
                     {
-                        Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInVersion1, node, "Minus Operator for strings");
+                        Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "Minus Operator for strings");
                     }
                     MethodSymbol opMeth;
                     TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);

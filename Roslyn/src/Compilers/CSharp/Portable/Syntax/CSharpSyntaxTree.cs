@@ -687,8 +687,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (eof == null )
             {
                 var node = GetNode(root, position);
-                if (node != null && node.XNode != null && node.XNode.IsHidden)
-                    return LineVisibility.Hidden;
+                if (node != null)
+                    if (node.XNode == null || node.XNode.IsHidden)
+                        return LineVisibility.Hidden;
                 return string.IsNullOrEmpty(node?.XNode.SourceFileName) ? LineVisibility.Visible : LineVisibility.Hidden;
             }
             return LineVisibility.Visible;

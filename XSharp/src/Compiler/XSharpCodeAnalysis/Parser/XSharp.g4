@@ -34,13 +34,18 @@ grammar XSharp;
 		if (context != null && endtoken != null)
 			context.SetSequencePoint(endtoken.StartIndex);
 	}
-	internal void SetSequencePoint (ParserRuleContext context, int iEndPoint)
+	internal void SetSequencePoint (ParserRuleContext context)
 	{
 		if (context != null )
-			context.SetSequencePoint(iEndPoint);
+		{
+                if (context.Stop != null)
+                    context.SetSequencePoint(context.Stop.StopIndex - context.Start.StartIndex+1);
+                else
+                    context.SetSequencePoint(context.Start.StopIndex - context.Start.StartIndex+1);
+		}
 	}
 
-}
+} 
 
 
 options	{ 
@@ -291,9 +296,11 @@ classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | H
 					;
 
 classVarList		: Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)?
+					   { SetSequencePoint(_localctx); }
 					;
 
 classvar			: (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
+					{ SetSequencePoint(_localctx); }
 					;
 
 arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y
@@ -334,7 +341,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
  				    { SetSequencePoint(_localctx,$end); }
 					;
 
-classmember			: Member=method										#clsmethod
+classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmethod
 					| (Attributes=attributes)?
 					  (Modifiers=constructorModifiers)? 
 					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS 
@@ -345,19 +352,19 @@ classmember			: Member=method										#clsmethod
 					  (Modifiers=destructorModifiers)?
 					  DESTRUCTOR (LPAREN RPAREN)?  end=EOS 
 					  StmtBlk=statementBlock							{ SetSequencePoint(_localctx,$end); } #clsdtor
-					| Member=classvars									#clsvars
-					| Member=property									#clsproperty
-					| Member=operator_									#clsoperator
-					| Member=structure_									#nestedStructure
-					| Member=class_										#nestedClass
-					| Member=delegate_									#nestedDelegate
-					| Member=enum_										#nestedEnum
-					| Member=event_										#nestedEvent
-					| Member=interface_									#nestedInterface
+					| Member=classvars									{ SetSequencePoint(_localctx); } #clsvars
+					| Member=property									{ SetSequencePoint(_localctx); } #clsproperty
+					| Member=operator_									{ SetSequencePoint(_localctx); } #clsoperator
+					| Member=structure_									{ SetSequencePoint(_localctx); } #nestedStructure
+					| Member=class_										{ SetSequencePoint(_localctx); } #nestedClass
+					| Member=delegate_									{ SetSequencePoint(_localctx); } #nestedDelegate
+					| Member=enum_										{ SetSequencePoint(_localctx); } #nestedEnum
+					| Member=event_										{ SetSequencePoint(_localctx); } #nestedEvent
+					| Member=interface_									{ SetSequencePoint(_localctx); } #nestedInterface
 //                    | using_											#nestedUsing	// nvk: C# does not allow using directives within a class!
                     | Pragma=pragma										#nestedPragma
-					| {_ClsFunc}? Member=function						#clsfunction		// Equivalent to method
-					| {_ClsFunc}? Member=procedure						#clsprocedure		// Equivalent to method
+					| {_ClsFunc}? Member=function						{ SetSequencePoint(_localctx); } #clsfunction		// Equivalent to method
+					| {_ClsFunc}? Member=procedure						{ SetSequencePoint(_localctx); } #clsprocedure		// Equivalent to method
 					;
 
 
@@ -526,17 +533,19 @@ recoverBlock		: (USING Id=identifier)? end=EOS StmtBlock=statementBlock
 // then the type of the following element propagates forward until for all elements without type
 
 localdecl          : (Static=STATIC LOCAL? | LOCAL)
-					 LocalVars+=localvar (COMMA LocalVars+=localvar)*						end=EOS   { SetSequencePoint(_localctx,$end); } #commonLocalDecl	// STATIC LOCAL or LOCAL
+					 LocalVars+=localvar (COMMA LocalVars+=localvar)*						end=EOS   { SetSequencePoint(_localctx); } #commonLocalDecl	// STATIC LOCAL or LOCAL
 				   | (Static=STATIC LOCAL? IMPLIED | LOCAL IMPLIED | Static=STATIC? VAR)							// LOCAL IMPLIED
-				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               end=EOS   { SetSequencePoint(_localctx,$end); }  #varLocalDecl		// VAR special for Robert !
+				     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               end=EOS   { SetSequencePoint(_localctx); }  #varLocalDecl		// VAR special for Robert !
  				    
 				   ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
 					 (ASSIGN_OP Expression=expression)? ((AS | IS) DataType=datatype)?
+					 { SetSequencePoint(_localctx); }
 				   ;
 					  
 impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression 
+					 { SetSequencePoint(_localctx); }
 				   ;
 
 

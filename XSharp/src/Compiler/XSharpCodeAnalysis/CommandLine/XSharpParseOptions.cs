@@ -11,11 +11,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool ArrayZero { get; private set; }
 
         public bool DebugEnabled { get; private set; }
+        public XSharpDialect Dialect { get; private set; }
         public string DefaultIncludeDir { get; private set; }
         public string WindowsDir { get; private set; }
         public string SystemDir { get; private set; }
         public bool NoStdDef { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
+        public bool VOFloatConstants { get; private set; }
 
         public string DefaultNamespace { get; private set; }
 
@@ -26,6 +28,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 ArrayZero = opt.ArrayZero;
+                Dialect = opt.Dialect;
                 VirtualInstanceMethods = opt.Vo3;
                 DefaultNamespace = opt.NameSpace;
                 DefaultIncludeDir = opt.DefaultIncludeDir;
@@ -33,6 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
+                VOFloatConstants = opt.Vo14;
             }
         }
 

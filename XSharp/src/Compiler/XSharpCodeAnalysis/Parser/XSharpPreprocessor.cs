@@ -553,7 +553,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.INT_CONST)
                             {
                                 Consume();
-                                inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue().Value - (ln.Line + 1);
+                                inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
                                 SkipHidden();
                                 ln = Lt();
                                 if (ln.Type == XSharpLexer.STRING_CONST)

@@ -18,6 +18,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOFloatConstants { get; private set; }
+        public bool VONullStrings { get; private set; }
 
         public string DefaultNamespace { get; private set; }
 
@@ -37,6 +38,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 NoStdDef = opt.NoStdDef;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
                 VOFloatConstants = opt.Vo14;
+                VONullStrings = opt.Vo2;
             }
         }
 

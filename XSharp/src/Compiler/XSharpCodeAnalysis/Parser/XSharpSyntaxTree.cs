@@ -65,6 +65,7 @@ namespace Antlr4.Runtime
         public partial interface IParseTree
         {
             object CsNode { get; set;  }
+            bool IsHidden { get; } 
             int Position { get; }
             int FullWidth { get; }
             string SourceFileName { get; }
@@ -74,6 +75,7 @@ namespace Antlr4.Runtime
         public partial class TerminalNodeImpl: Microsoft.CodeAnalysis.IMessageSerializable
         {
             public object CsNode { get; set; }
+            public bool IsHidden { get { return false; } }
             public int Position { get { return Symbol.StartIndex; } }
             public int FullWidth {  get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
             public string SourceFileName { get { return (Symbol as CommonToken).SourceFileName; } }
@@ -91,6 +93,7 @@ namespace Antlr4.Runtime
     {
         public object CsNode { get; set; }
         public virtual int Position { get; }
+        public virtual bool IsHidden { get { return false; } }
         public virtual int FullWidth { get; }
         public virtual string SourceFileName { get; }
         public virtual string MappedFileName { get; }
@@ -113,8 +116,18 @@ namespace Antlr4.Runtime
 
     public partial class ParserRuleContext: Microsoft.CodeAnalysis.IMessageSerializable
     {
+        int iBPLength = -1;
+        public override bool IsHidden { get { return iBPLength == -1; } }
         public override int Position { get { return Start.StartIndex; } }
-        public override int FullWidth { get { return Stop.StopIndex - Start.StartIndex + 1; } }
+        public override int FullWidth
+        {
+            get
+            {
+                if (iBPLength > 0)
+                    return iBPLength;
+                return Stop.StopIndex - Start.StartIndex + 1;
+            }
+        }
         public override string SourceFileName { get { return (Start as CommonToken).SourceFileName; } }
         public override string MappedFileName { get { return (Start as CommonToken).MappedFileName; } }
         public override int MappedLine { get { return (Start as CommonToken).MappedLine; } }
@@ -122,6 +135,11 @@ namespace Antlr4.Runtime
             /*return this.GetText();*/
             var s = this.GetType().ToString();
             return s.Substring(s.LastIndexOfAny(".+".ToCharArray()) + 1).Replace("Context", "");
+        }
+        public void SetSequencePoint(int iEndPoint)
+        {
+            if (iEndPoint > 0)
+                iBPLength = iEndPoint - this.Start.StartIndex + 1;
         }
     }
 

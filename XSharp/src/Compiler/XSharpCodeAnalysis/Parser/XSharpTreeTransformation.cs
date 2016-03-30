@@ -3233,7 +3233,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var statements = _pool.Allocate<StatementSyntax>();
             foreach (var exprCtx in context._Exprs)
             {
-                statements.Add(_syntaxFactory.ExpressionStatement(exprCtx.Get<ExpressionSyntax>(), _semicolon));
+                // check because there may already be statements in here, such as the IF statement generated for AltD()
+                var node = exprCtx.CsNode;
+                if (node is StatementSyntax)
+                    statements.Add( (StatementSyntax) node);
+                else
+                    statements.Add(_syntaxFactory.ExpressionStatement(exprCtx.Get<ExpressionSyntax>(), _semicolon));
             }
             var openBrace = SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken);
             var closeBrace = SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken);
@@ -3667,13 +3672,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMethodCall([NotNull] XSharpParser.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
+            // Translate AltD() to 
+            // IF System.Diagnostics.Debugger.IsAttached
+            // System.Diagnostics.Debugger.Break()
+            // ENDIF
+
+            bool bIsAltD = false;
             if (expr is IdentifierNameSyntax)
             {
                 IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
                 if (ins.Identifier.Text.ToUpper() == "ALTD" )
                 {
                     // Change expression to call .NET Debugger
-                    expr = GenerateQualifiedName("System.Diagnostics.Debugger.Break");
+                    bIsAltD = true;
                 }
             }
             ArgumentListSyntax argList;
@@ -3686,7 +3697,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                 argList = _syntaxFactory.ArgumentList(openParen, args, closeParen);
             }
-            context.Put(_syntaxFactory.InvocationExpression(expr, argList));
+            if (bIsAltD)
+            {
+                expr = GenerateQualifiedName("System.Diagnostics.Debugger.Break");
+                expr = _syntaxFactory.InvocationExpression(expr, argList);
+                var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                                GenerateQualifiedName("global::System.Diagnostics.Debugger"),
+                            SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                            _syntaxFactory.IdentifierName(SyntaxToken.Identifier("IsAttached")));
+                var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                var ifstmt = _syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                cond,
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                stmt, null);
+                context.Put(ifstmt);
+            }
+            else
+                context.Put(_syntaxFactory.InvocationExpression(expr, argList));
+
         }
 
 

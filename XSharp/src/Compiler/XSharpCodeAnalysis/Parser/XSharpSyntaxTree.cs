@@ -125,7 +125,11 @@ namespace Antlr4.Runtime
             {
                 if (iBPLength > 0)
                     return iBPLength;
-                return Stop.StopIndex - Start.StartIndex + 1;
+                if (Stop != null)
+                    return Stop.StopIndex - Start.StartIndex + 1;
+                else
+                    return Start.StopIndex - Start.StartIndex + 1;
+
             }
         }
         public override string SourceFileName { get { return (Start as CommonToken).SourceFileName; } }

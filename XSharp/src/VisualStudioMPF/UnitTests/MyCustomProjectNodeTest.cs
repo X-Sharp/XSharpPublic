@@ -143,7 +143,7 @@ namespace XSharp.Project.UnitTests
         [TestMethod()]
         public void GetConfigurationIndependentPropertyPagesTest()
         {
-            Guid[] expected = new Guid[] { typeof(GeneralPropertyPage).GUID };
+            Guid[] expected = new Guid[] { typeof(XSharpGeneralPropertyPage).GUID };
             Guid[] actual;
 
             PrivateType type = new PrivateType(typeof(XSharpProjectNode));
@@ -156,7 +156,7 @@ namespace XSharp.Project.UnitTests
         [TestMethod()]
         public void GetPriorityProjectDesignerPagesTest()
         {
-            Guid[] expected = new Guid[] { typeof(GeneralPropertyPage).GUID };
+            Guid[] expected = new Guid[] { typeof(XSharpGeneralPropertyPage).GUID };
             Guid[] actual;
 
             PrivateType type = new PrivateType(typeof(XSharpProjectNode));

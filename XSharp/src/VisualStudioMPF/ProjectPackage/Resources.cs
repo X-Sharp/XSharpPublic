@@ -63,6 +63,7 @@ namespace XSharp.Project
         internal const string Application = "Application";
         internal const string ApplicationCaption = "ApplicationCaption";
         internal const string GeneralCaption = "GeneralCaption";
+        
         internal const string AssemblyName = "AssemblyName";
         internal const string AssemblyNameDescription = "AssemblyNameDescription";
         internal const string OutputType = "OutputType";
@@ -84,6 +85,11 @@ namespace XSharp.Project
         internal const string TargetFrameworkMonikerDescription = "TargetFrameworkMonikerDescription";
         internal const string NestedProjectFileAssemblyFilter = "NestedProjectFileAssemblyFilter";
         //internal const string MsgFailedToLoadTemplateFile = "Failed to add template file to project";
+
+        internal const string BuildCaption = "BuildCaption";
+        internal const string WarningCaption = "WarningCaption";
+        internal const string WarningCaptionExpanded = "WarningCaptionExpanded";
+        internal const string WarningDescription = "WarningDescription";
         #endregion Constants
 
         #region Fields

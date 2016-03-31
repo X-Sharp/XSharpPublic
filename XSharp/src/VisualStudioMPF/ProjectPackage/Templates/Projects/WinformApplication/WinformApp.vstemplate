@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+   <TemplateData>
+    <Name>WinForm Application</Name>
+    <Description>Basic XSharp WinForm Application.</Description>
+    <Icon>XSharp.ico</Icon>
+    <ProjectType>XSharp</ProjectType>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <SortOrder>1</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>WinFormApplication</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+   </TemplateData>
+   <TemplateContent>
+      <Project File="WinFormApp.xsprj" ReplaceParameters="true">
+         <ProjectItem ReplaceParameters="true">Program.prg</ProjectItem>
+         <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem> 
+         <ProjectItem ReplaceParameters="true" OpenInEditor="true" OpenOrder="10" SubType="Form">WinForm1.prg</ProjectItem>
+         <ProjectItem TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
+         <ProjectItem TargetFileName="Properties\Settings.settings">Settings.settings</ProjectItem>
+      </Project>
+   </TemplateContent>
+</VSTemplate>

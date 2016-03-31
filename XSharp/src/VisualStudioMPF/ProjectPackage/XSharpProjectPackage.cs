@@ -51,6 +51,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Project;
 using XSharp.LanguageService;
+using XSharp.Project.WPF;
 
 namespace XSharp.Project
 {
@@ -71,9 +72,35 @@ namespace XSharp.Project
     /// </remarks>  
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideObject(typeof(GeneralPropertyPage))]
-    [ProvideProjectFactory(typeof(XSharpProjectFactory), "XSharp Project", "XSharp Project Files (*.xsprj);*.xsprj", "xsprj", "xsprj", @"..\..\Templates\Projects\ConsoleApplication", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
-    [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\XSharpProject", 500)]
+    [ProvideObject(typeof(XSharpGeneralPropertyPage))]
+    [ProvideObject(typeof(XSharpBuildPropertyPage))]
+    [ProvideProjectFactory(typeof(XSharpProjectFactory), 
+        XSharpConstants.LanguageName, 
+        XSharpConstants.LanguageName + " Project Files (*." + XSharpConstants.ProjectExtension + ");*." + XSharpConstants.ProjectExtension,
+        XSharpConstants.ProjectExtension, 
+        XSharpConstants.ProjectExtension, 
+        @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
+
+
+    [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
+        null,
+        null,
+        null,
+        null,
+        null,
+        LanguageVsTemplate = XSharpConstants.LanguageName,
+        TemplateGroupIDsVsTemplate = "WPF",
+        ShowOnlySpecifiedTemplatesVsTemplate = false)]
+
+    [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Class", 500)]
+    [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Form", 500)]
+
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), XSharpConstants.FileExtension, 32)]
+    // Attention! These guids are magic numbers provided by Microsoft. Don't change them.
+    //
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
+
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     public sealed class XSharpProjectPackage : ProjectPackage
     {
@@ -86,7 +113,12 @@ namespace XSharp.Project
         {
             base.Initialize();
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
-            //
+
+            // Indicate how to open the different source files : SourceCode or Designer ??
+            this.RegisterEditorFactory(new XSharpEditorFactory(this));
+
+            this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
+
             // Load the language service
             XSharpLanguageService service = GetService(typeof(XSharpLanguageService)) as XSharpLanguageService;
         }

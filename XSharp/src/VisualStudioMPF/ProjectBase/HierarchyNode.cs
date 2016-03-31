@@ -757,7 +757,16 @@ namespace Microsoft.VisualStudio.Project
                 case __VSHPROPID.VSHPROPID_ParentHierarchyItemid:
                     if(parentHierarchy != null)
                     {
+#if XSHARP
+                        // XSHARP - Correction
+                        // ARGH !
+                        // If we don't cast here, we will not been able to open the Project Designer Editor in WPF mode, it will just crash silently
+                        // and we will have no Project Property page...
+                        // ... Please, don't ask me why the original code is buggy ...
+                        result = (uint)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
+#else
                         result = (int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
+#endif
                     }
                     break;
 
@@ -1412,7 +1421,7 @@ namespace Microsoft.VisualStudio.Project
             return shell.ShowContextMenu(0, ref menuGroup, menuId, pnts, (IOleCommandTarget)this);
         }
 
-        #region initiation of command execution
+#region initiation of command execution
         /// <summary>
         /// Handles command execution.
         /// </summary>
@@ -1684,9 +1693,9 @@ namespace Microsoft.VisualStudio.Project
             return returnValue;
         }
 
-        #endregion
+#endregion
 
-        #region query command handling
+#region query command handling
         /// <summary>
         /// Handles menus originating from IOleCommandTarget.
         /// </summary>
@@ -2043,7 +2052,7 @@ namespace Microsoft.VisualStudio.Project
             return queryResult;
         }
 
-        #endregion
+#endregion
         protected virtual bool CanDeleteItem(__VSDELETEITEMOPERATION deleteOperation)
         {
             return this.ProjectMgr.CanProjectDeleteItems;
@@ -2317,9 +2326,9 @@ namespace Microsoft.VisualStudio.Project
         {
             return;
         }
-        #endregion
+#endregion
 
-        #region public methods
+#region public methods
 
         public void OnItemAdded(HierarchyNode parent, HierarchyNode child)
         {
@@ -2537,9 +2546,9 @@ namespace Microsoft.VisualStudio.Project
         }
 
 
-        #endregion
+#endregion
 
-        #region IDisposable
+#region IDisposable
         /// <summary>
         /// The IDispose interface Dispose method for disposing the object determinastically.
         /// </summary>
@@ -2549,9 +2558,9 @@ namespace Microsoft.VisualStudio.Project
             GC.SuppressFinalize(this);
         }
 
-        #endregion
+#endregion
 
-        #region IVsHierarchy methods
+#region IVsHierarchy methods
 
         public virtual int AdviseHierarchyEvents(IVsHierarchyEvents sink, out uint cookie)
         {
@@ -2756,9 +2765,9 @@ namespace Microsoft.VisualStudio.Project
         {
             return VSConstants.E_NOTIMPL;
         }
-        #endregion
+#endregion
 
-        #region IVsUIHierarchy methods
+#region IVsUIHierarchy methods
 
         public virtual int ExecCommand(uint itemId, ref Guid guidCmdGroup, uint nCmdId, uint nCmdExecOpt, IntPtr pvain, IntPtr p)
         {
@@ -2769,9 +2778,9 @@ namespace Microsoft.VisualStudio.Project
         {
             return this.QueryStatusSelection(guidCmdGroup, cCmds, cmds, pCmdText, CommandOrigin.UiHierarchy);
         }
-        #endregion
+#endregion
 
-        #region IVsPersistHierarchyItem2 methods
+#region IVsPersistHierarchyItem2 methods
 
         /// <summary>
         /// Determines whether the hierarchy item changed. 
@@ -2939,12 +2948,12 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public virtual int IgnoreItemFileChanges(uint itemId, int ignoreFlag)
         {
-            #region precondition
+#region precondition
             if(this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return VSConstants.E_FAIL;
             }
-            #endregion
+#endregion
 
             HierarchyNode n = this.ProjectMgr.NodeFromItemId(itemId);
             if(n != null)
@@ -2988,12 +2997,12 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public virtual int ReloadItem(uint itemId, uint reserved)
         {
-            #region precondition
+#region precondition
             if(this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
                 return VSConstants.E_FAIL;
             }
-            #endregion
+#endregion
 
             HierarchyNode n = this.ProjectMgr.NodeFromItemId(itemId);
             if(n != null)
@@ -3003,9 +3012,9 @@ namespace Microsoft.VisualStudio.Project
 
             return VSConstants.S_OK;
         }
-        #endregion
+#endregion
 
-        #region IOleCommandTarget methods
+#region IOleCommandTarget methods
         /// <summary>
         /// CommandTarget.Exec is called for most major operations if they are NOT UI based. Otherwise IVSUInode::exec is called first
         /// </summary>
@@ -3022,9 +3031,9 @@ namespace Microsoft.VisualStudio.Project
         {
             return this.QueryStatusSelection(guidCmdGroup, cCmds, prgCmds, pCmdText, CommandOrigin.OleCommandTarget);
         }
-        #endregion
+#endregion
 
-        #region IVsHierarchyDeleteHandler methods
+#region IVsHierarchyDeleteHandler methods
 
         public virtual int DeleteItem(uint delItemOp, uint itemId)
         {
@@ -3079,9 +3088,9 @@ namespace Microsoft.VisualStudio.Project
 
             return VSConstants.S_OK;
         }
-        #endregion
+#endregion
 
-        #region IVsHierarchyDropDataSource2 methods
+#region IVsHierarchyDropDataSource2 methods
 
         public virtual int GetDropInfo(out uint pdwOKEffects, out Microsoft.VisualStudio.OLE.Interop.IDataObject ppDataObject, out IDropSource ppDropSource)
         {
@@ -3102,9 +3111,9 @@ namespace Microsoft.VisualStudio.Project
             fCancelDrop = 0;
             return VSConstants.E_NOTIMPL;
         }
-        #endregion
+#endregion
 
-        #region IVsHierarchyDropDataTarget methods
+#region IVsHierarchyDropDataTarget methods
 
         public virtual int DragEnter(Microsoft.VisualStudio.OLE.Interop.IDataObject pDataObject, uint grfKeyState, uint itemid, ref uint pdwEffect)
         {
@@ -3125,9 +3134,9 @@ namespace Microsoft.VisualStudio.Project
         {
             return VSConstants.E_NOTIMPL;
         }
-        #endregion
+#endregion
 
-        #region helper methods
+#region helper methods
         internal HierarchyNode FindChild(string name)
         {
             if(String.IsNullOrEmpty(name))
@@ -3233,6 +3242,35 @@ namespace Microsoft.VisualStudio.Project
         {
             this.itemsDraggedOrCutOrCopied = new List<HierarchyNode>();
         }
-        #endregion
+#endregion
+
+
+#if XSHARP
+#region static methods
+        /// <summary>
+        /// Get the outer IVsHierarchy implementation.
+        /// This is used for scenario where a flavor may be modifying the behavior
+        /// Based on Nemerle implementation
+        /// </summary>
+        internal static IVsHierarchy GetOuterHierarchy(HierarchyNode node)
+        {
+            IVsHierarchy hierarchy = null;
+            // The hierarchy of a node is its project node hierarchy
+            IntPtr projectUnknown = Marshal.GetIUnknownForObject(node.projectMgr);
+            try
+            {
+                hierarchy = (IVsHierarchy)Marshal.GetTypedObjectForIUnknown(projectUnknown, typeof(IVsHierarchy));
+            }
+            finally
+            {
+                if (projectUnknown != IntPtr.Zero)
+                {
+                    Marshal.Release(projectUnknown);
+                }
+            }
+            return hierarchy;
+        }
+#endregion
+#endif
     }
 }

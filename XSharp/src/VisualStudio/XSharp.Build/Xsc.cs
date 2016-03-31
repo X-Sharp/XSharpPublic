@@ -154,6 +154,14 @@ namespace XSharp.Build
             get { return (String)base.Bag[nameof(CommandLineOption)]; }
         }
         #endregion
+
+        #region XSharp specific properties
+        public String Dialect
+        {
+            set { base.Bag[nameof(Dialect)] = value; }
+            get { return (String)base.Bag[nameof(Dialect)]; }
+        }
+        #endregion
         #region properties copied from the csc task
 
         public Boolean AllowUnsafeBlocks

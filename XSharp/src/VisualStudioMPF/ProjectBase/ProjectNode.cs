@@ -74,6 +74,7 @@ using MSBuildExecution = Microsoft.Build.Execution;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
+using XSharp.Project;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -2540,17 +2541,28 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="item">msbuild item</param>
         /// <returns>dependent file node</returns>
+#if XSHARP
+        public virtual XSharpDependentFileNode CreateDependentFileNode(ProjectElement item)
+        {
+            return new XSharpDependentFileNode(this, item);
+        }
+#else
         public virtual DependentFileNode CreateDependentFileNode(ProjectElement item)
         {
             return new DependentFileNode(this, item);
         }
+#endif
 
         /// <summary>
         /// Create a dependent file node based on a string.
         /// </summary>
         /// <param name="file">filename of the new dependent file node</param>
         /// <returns>Dependent node added</returns>
+#if XSHARP
+        public virtual XSharpDependentFileNode CreateDependentFileNode(string file)
+#else
         public virtual DependentFileNode CreateDependentFileNode(string file)
+#endif
         {
             ProjectElement item = this.AddFileToMsBuild(file);
             return this.CreateDependentFileNode(item);

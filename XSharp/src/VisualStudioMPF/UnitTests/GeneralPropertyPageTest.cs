@@ -61,7 +61,7 @@ namespace XSharp.Project.UnitTests
     public class GeneralPropertyPageTest : BaseTest
     {
         private XSharpProjectPackage customProjectPackage;
-        private GeneralPropertyPage generalPropertyPage;
+        private XSharpGeneralPropertyPage generalPropertyPage;
         private XSharpProjectFactory customProjectFactory;
         private XSharpProjectNode projectNode;
 
@@ -78,7 +78,7 @@ namespace XSharp.Project.UnitTests
         {
             base.Initialize();
 
-            generalPropertyPage = new GeneralPropertyPage();
+            generalPropertyPage = new XSharpGeneralPropertyPage();
 
             customProjectPackage = new XSharpProjectPackage();
             ((IVsPackage)customProjectPackage).SetSite(serviceProvider);
@@ -103,7 +103,7 @@ namespace XSharp.Project.UnitTests
         [TestMethod()]
         public void ConstructorTest()
         {
-            GeneralPropertyPage page = generalPropertyPage;
+            XSharpGeneralPropertyPage page = generalPropertyPage;
             page.Name = expected;
 
             string actual = page.Name;

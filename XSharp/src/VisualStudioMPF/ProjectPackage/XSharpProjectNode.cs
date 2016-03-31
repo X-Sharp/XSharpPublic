@@ -55,9 +55,13 @@ using EnvDTE;
 using VSLangProj;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Project;
+using Microsoft.Windows.Design.Host;
 
 using System.Collections.Generic;
-
+using Microsoft.VisualStudio.Shell.Interop;
+using XSharp.Project.WPF;
+using Microsoft.VisualStudio.Shell;
+using System.Diagnostics;
 
 namespace XSharp.Project
 {
@@ -69,7 +73,7 @@ namespace XSharp.Project
     public class XSharpProjectNode : ProjectNode
     {
         #region Enum for image list
-        internal enum MyCustomProjectImageName
+        internal enum XSharpProjectImageName
         {
             Project = 0,
         }
@@ -84,6 +88,8 @@ namespace XSharp.Project
         internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
+
+        //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
         #endregion
 
         #region Constructors
@@ -105,7 +111,47 @@ namespace XSharp.Project
 
             InitializeImageList();
 
+            InitializeCATIDs();
+
+            // Used by (at least) the AddFromTemplate in order (for eg) to have Form1.Designer.Prg depending on Form1.prg
+            this.CanFileNodesHaveChilds = true;
+
             this.CanProjectDeleteItems = true;
+
+            // Gets or sets whether the project uses the Project Designer Editor or the property page frame to edit project properties. 
+            // True : New WPF way
+            // False: C++-Like Property pages
+            this.SupportsProjectDesigner = true;
+        }
+
+
+        /// <summary>
+        /// Provide mapping from our browse objects and automation objects to our CATIDs
+        /// CATID (Category ID) objects are used to extend the properties that appear in the Properties window for projects and project items.
+        /// </summary>
+        private void InitializeCATIDs()
+        {
+            // The following properties classes are specific to Nemerle so we can use their GUIDs directly
+            //
+            AddCATIDMapping(typeof(XSharpProjectNodeProperties), typeof(XSharpProjectNodeProperties).GUID);
+            AddCATIDMapping(typeof(XSharpFileNodeProperties), typeof(XSharpFileNodeProperties).GUID);
+            //AddCATIDMapping(typeof(NemerleOAFileItem), typeof(NemerleOAFileItem).GUID);
+
+            //// The following are not specific to Nemerle and as such we need a separate GUID
+            //// (we simply used guidgen.exe to create new guids)
+            ////
+            //AddCATIDMapping(typeof(FolderNodeProperties), new Guid(NemerleConstants.FolderNodePropertiesGuidString));
+
+            // This one we use the same as Nemerle file nodes since both refer to files
+            AddCATIDMapping(typeof(FileNodeProperties), typeof(XSharpFileNodeProperties).GUID);
+
+            // Because our property page pass itself as the object to display in its grid,
+            // we need to make it have the same CATID as the browse object of the project node
+            // so that filtering is possible.
+            AddCATIDMapping(typeof(XSharpGeneralPropertyPage), typeof(XSharpProjectNodeProperties).GUID);
+
+            //// We could also provide CATIDs for references and the references container node, if we wanted to.
+            AddCATIDMapping(typeof(XSharpBuildPropertyPage), typeof(XSharpBuildPropertyPage).GUID);
         }
         #endregion
 
@@ -130,12 +176,33 @@ namespace XSharp.Project
         {
             get
             {
-                if(vsProject == null)
+                if (vsProject == null)
                 {
                     vsProject = new OAVSProject(this);
                 }
 
                 return vsProject;
+            }
+        }
+
+        // Gets the output file name depending on current OutputType.
+        // View GeneralProperyPage
+        public string OutputFile
+        {
+            get
+            {
+                string assemblyName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
+                string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
+                OutputType outputType = (OutputType)Enum.Parse(typeof(OutputType), outputTypeAsString);
+                if (outputType == OutputType.Library)
+                {
+                    assemblyName += ".dll";
+                }
+                else
+                {
+                    assemblyName += ".dll";
+                }
+                return assemblyName;
             }
         }
         #endregion
@@ -168,9 +235,18 @@ namespace XSharp.Project
         {
             get
             {
-                return imageOffset + (int)MyCustomProjectImageName.Project;
+                return imageOffset + (int)XSharpProjectImageName.Project;
             }
         }
+
+        internal override object Object
+        {
+            get
+            {
+                return this.VSProject;
+            }
+        }
+
 
         /// <summary>
         /// Returns an automation object representing this node
@@ -188,34 +264,101 @@ namespace XSharp.Project
         /// <returns></returns>
         public override FileNode CreateFileNode(ProjectElement item)
         {
-            XSharpProjectFileNode node = new XSharpProjectFileNode(this, item);
+            if (item == null)
+            {
+                throw new ArgumentNullException("item");
+            }
 
-            node.OleServiceProvider.AddService(typeof(EnvDTE.Project), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
-            node.OleServiceProvider.AddService(typeof(ProjectItem), node.ServiceCreator, false);
-            node.OleServiceProvider.AddService(typeof(VSProject), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
+            XSharpFileNode node = new XSharpFileNode(this, item);
+
+            var provider = node.OleServiceProvider;
+
+            // Use the CreateServices of the Project
+            provider.AddService(typeof(EnvDTE.Project), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
+            // Use the CreateServices of the Node
+            provider.AddService(typeof(ProjectItem), node.ServiceCreator, false);
+            // Use the CreateServices of the Project
+            provider.AddService(typeof(VSProject), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
+            //provider.AddService(typeof(VSProject), this.VSProject, false);
+
+            string include = item.GetMetadata(ProjectFileConstants.Include);
+            if (!string.IsNullOrEmpty(include) && Path.GetExtension(include).Equals(".xaml", StringComparison.OrdinalIgnoreCase))
+            {
+                //Create a DesignerContext for the XAML designer for this file
+                // Use the CreateServices of the Node
+                provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
+            }
+
+            if (node.IsFormSubType)
+            {
+                // Use the CreateServices of the Node
+                provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
+            }
+
+            if (this.IsCodeFile(include) && item.ItemName == "Compile")
+                provider.AddService(typeof(SVSMDCodeDomProvider), new XSharpVSMDProvider(node), false);
+
 
             return node;
         }
 
         /// <summary>
+        /// Create dependent file node based on an msbuild item
+        /// </summary>
+        /// <param name="item">msbuild item</param>
+        /// <returns>dependent file node</returns>
+        public override XSharpDependentFileNode CreateDependentFileNode(ProjectElement item)
+        {
+            XSharpDependentFileNode newNode = new XSharpDependentFileNode(this, item);
+            string include = item.GetMetadata(ProjectFileConstants.Include);
+
+            var provider = newNode.OleServiceProvider;
+
+            provider.AddService(typeof(EnvDTE.Project), ProjectMgr.GetAutomationObject(), false);
+            provider.AddService(typeof(EnvDTE.ProjectItem), newNode.GetAutomationObject(), false);
+            provider.AddService(typeof(VSLangProj.VSProject), this.VSProject, false);
+
+            if (IsCodeFile(include) && item.ItemName == "Compile")
+                newNode.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider),
+                    new XSharpVSMDProvider(newNode), false);
+
+            return newNode;
+        }
+
+        /// <summary>
         /// Generate new Guid value and update it with GeneralPropertyPage GUID.
+        /// This is the Common Properties Dialog
         /// </summary>
         /// <returns>Returns the property pages that are independent of configuration.</returns>
         protected override Guid[] GetConfigurationIndependentPropertyPages()
         {
-            Guid[] result = new Guid[1];
-            result[0] = typeof(GeneralPropertyPage).GUID;
+            Guid[] result = new Guid[]
+                {
+                typeof(XSharpGeneralPropertyPage).GUID,
+                typeof(XSharpBuildPropertyPage).GUID,
+                };
             return result;
         }
 
+        // These pages have a content which depends on the Configuration Release/Debug
+        protected override Guid[] GetConfigurationDependentPropertyPages()
+        {
+            Guid[] result = new Guid[]
+            {
+            };
+            return result;
+        }
         /// <summary>
         /// Overriding to provide project general property page.
         /// </summary>
         /// <returns>Returns the GeneralPropertyPage GUID value.</returns>
         protected override Guid[] GetPriorityProjectDesignerPages()
         {
-            Guid[] result = new Guid[1];
-            result[0] = typeof(GeneralPropertyPage).GUID;
+            Guid[] result = new Guid[]
+                {
+                typeof(XSharpGeneralPropertyPage).GUID,
+                typeof(XSharpBuildPropertyPage).GUID,
+                };
             return result;
         }
 
@@ -226,7 +369,7 @@ namespace XSharp.Project
         /// <param name="target">The target file.</param>
         public override void AddFileFromTemplate(string source, string target)
         {
-            if(!File.Exists(source))
+            if (!File.Exists(source))
             {
                 throw new FileNotFoundException(string.Format("Template file not found: {0}", source));
             }
@@ -243,10 +386,141 @@ namespace XSharp.Project
 
                 this.FileTemplateProcessor.Reset();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new FileLoadException("Failed to add template file to project", target, e);
             }
+        }
+
+        protected override void AddNewFileNodeToHierarchy(HierarchyNode parentNode, string fileName)
+        {
+            // We have to take care of Dependant Files here
+            // So any .Designer.prg, or .Xaml.Prg is depending from a parent which has the same prefix name
+            // then we must set that parent as parentNode;
+            Dictionary<string, string> Dependencies = new Dictionary<string, string>();
+            Dependencies.Add(".designer.prg", ".prg");
+            Dependencies.Add(".xaml.prg", ".xaml");
+            // Check if we can find the Parent
+            int dotPos = fileName.IndexOf(".");
+            string parentFile = fileName.Substring(0, dotPos);
+            string extension = fileName.Substring(dotPos).ToLower();
+            //
+            if ( Dependencies.ContainsKey(extension) )
+            {
+                // 
+                HierarchyNode newParent = parentNode.FindChild(parentFile + Dependencies[extension]);
+                if (newParent != null)
+                {
+                    parentNode = newParent;
+                    // Ok, is it a XSharp node or something else ?
+                    var xsharpParent = parentNode as XSharpFileNode;
+                    if (xsharpParent != null)
+                    {
+                        xsharpParent.UpdateHasDesigner();
+                    }
+                }
+                //
+            }
+
+            base.AddNewFileNodeToHierarchy(parentNode, fileName);
+        }
+
+        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
+        {
+            ProjectElement newItem;
+
+            string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
+            Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
+
+            string ext = Path.GetExtension(file);
+
+            if (IsCodeFile(itemPath))
+            {
+                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Compile);
+                // HACK
+                //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Form);
+            }
+            else if (this.IsEmbeddedResource(itemPath))
+            {
+                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.EmbeddedResource);
+                newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
+                newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
+            }
+            else if ( this.IsSettings(itemPath) )
+            {
+                newItem = this.CreateMsBuildFileItem(itemPath, "None");
+                newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
+            }
+            else
+            {
+                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Content);
+                newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
+            }
+
+            return newItem;
+        }
+
+        public bool IsSettings(string fileName)
+        {
+            if (String.Compare(Path.GetExtension(fileName), ".settings", StringComparison.OrdinalIgnoreCase) == 0)
+                return true;
+            return false;
+        }
+
+
+        /// <summary>
+        /// Evaluates if a file is an XSharp code file based on is extension
+        /// </summary>
+        /// <param name="strFileName">The filename to be evaluated</param>
+        /// <returns>true if is a code file</returns>
+        public override bool IsCodeFile(string strFileName)
+        {
+            // Don't check errors here
+            if (string.IsNullOrEmpty(strFileName))
+                return false;
+
+            return
+                string.Compare(Path.GetExtension(strFileName), XSharpConstants.FileExtension, StringComparison.OrdinalIgnoreCase) == 0;
+        }
+
+        /// <summary>
+        /// Called by the project to know if the item is a file (that is part of the project)
+        /// or an intermediate file used by the MSBuild tasks/targets
+        /// Override this method if your project has more types or different ones
+        /// </summary>
+        /// <param name="type">Type name</param>
+        /// <returns>True = items of this type should be included in the project</returns>
+        protected override bool IsItemTypeFileType(string type)
+        {
+            if (String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
+                || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
+                )
+            {
+                return true;
+            }
+
+            // we don't know about this type, ask the base class.
+            return base.IsItemTypeFileType( type );
+        }
+
+
+        public override void Load(string filename, string location, string name, uint flags, ref Guid iidProject, out int canceled)
+        {
+            base.Load(filename, location, name, flags, ref iidProject, out canceled);
+            // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
+            this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
+            this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
+
+            //IPythonLibraryManager libraryManager = Site.GetService(typeof(IPythonLibraryManager)) as IPythonLibraryManager;
+            //if (null != libraryManager)
+            //{
+            //    libraryManager.RegisterHierarchy(this.InteropSafeHierarchy);
+            //}
+
+            //If this is a WPFFlavor-ed project, then add a project-level DesignerContext service to provide
+            //event handler generation (EventBindingProvider) for the XAML designer.
+            this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
+
         }
         #endregion
 
@@ -255,7 +529,7 @@ namespace XSharp.Project
         {
             imageOffset = this.ImageHandler.ImageList.Images.Count;
 
-            foreach(Image img in ImageList.Images)
+            foreach (Image img in ImageList.Images)
             {
                 this.ImageHandler.AddImage(img);
             }
@@ -264,18 +538,71 @@ namespace XSharp.Project
         private object CreateServices(Type serviceType)
         {
             object service = null;
-            if(typeof(VSLangProj.VSProject) == serviceType)
+            if (typeof(VSLangProj.VSProject) == serviceType)
             {
                 service = this.VSProject;
             }
-            else if(typeof(EnvDTE.Project) == serviceType)
+            else if (typeof(EnvDTE.Project) == serviceType)
             {
                 service = this.GetAutomationObject();
             }
+            //else if (typeof(SVSMDCodeDomProvider) == serviceType)
+            //{
+            //    service = this.CodeDomProvider;
+            //}
+            //else if (typeof(System.CodeDom.Compiler.CodeDomProvider) == serviceType)
+            //{
+            //    service = this.CodeDomProvider.CodeDomProvider;
+            //}
+            else if (typeof(DesignerContext) == serviceType)
+            {
+                service = this.DesignerContext;
+            }
+
+
             return service;
         }
+
+        private DesignerContext _designerContext;
+        protected internal Microsoft.Windows.Design.Host.DesignerContext DesignerContext
+        {
+            get
+            {
+                if (_designerContext == null)
+                {
+                    _designerContext = new DesignerContext();
+                    //Set the RuntimeNameProvider so the XAML designer will call it when items are added to
+                    //a design surface. Since the provider does not depend on an item context, we provide it at
+                    //the project level.
+                    _designerContext.RuntimeNameProvider = new XSharpRuntimeNameProvider();
+                }
+                return _designerContext;
+            }
+        }
+
+
+        //private XSharpVSMDProvider codeDomProvider;
+        ///// Retrieve the CodeDOM provider
+        ///// </summary>
+        //public Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider CodeDomProvider
+        //{
+        //    get
+        //    {
+        //        if (codeDomProvider == null)
+        //            codeDomProvider = new XSharpVSMDProvider( );
+        //        return codeDomProvider;
+        //    }
+        //}
+
+        protected override NodeProperties CreatePropertiesObject()
+        {
+            //return new XSharpProjectNodeProperties( this );
+            return new ProjectNodeProperties(this);
+        }
+
+
         #endregion
 
-        
+
     }
 }

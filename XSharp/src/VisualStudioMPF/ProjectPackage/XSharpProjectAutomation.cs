@@ -50,6 +50,9 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Project.Automation;
 using Microsoft.VisualStudio.Project;
 
+using EnvDTE;
+
+
 namespace XSharp.Project
 {
     [ComVisible(true)]
@@ -69,7 +72,7 @@ namespace XSharp.Project
 
     [ComVisible(true)]
     [Guid("5DD5CB32-E9C3-4321-891C-1363401CA106")]
-    public class OAXSharpProjectFileItem : OAFileItem
+    public class OAXSharpFileItem : OAFileItem
     {
         #region Constructors
         /// <summary>
@@ -77,10 +80,23 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="project">Automation project.</param>
         /// <param name="node">Custom file node.</param>
-        public OAXSharpProjectFileItem(OAProject project, FileNode node)
+        public OAXSharpFileItem(OAProject project, FileNode node)
             : base(project, node)
         {
         }
         #endregion
+
+        public override Window Open(string viewKind)
+        {
+            if (string.Compare(viewKind, Constants.vsViewKindPrimary) == 0)
+            {
+                // Get the subtype and decide the viewkind based on the result.
+                //
+                if (Node.HasDesigner)
+                    return base.Open(Constants.vsViewKindDesigner);
+            }
+
+            return base.Open(viewKind);
+        }
     }
 }

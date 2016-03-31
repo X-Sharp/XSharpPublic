@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Language Service 2015", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Package 2015.UnitTests", "src\VisualStudioMPF\UnitTests\Project Package 2015.UnitTests.csproj", "{07A3CDE4-390B-40B4-A660-8CA586E255CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "src\VisualStudioMPF\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{07A3CDE4-390B-40B4-A660-8CA586E255CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07A3CDE4-390B-40B4-A660-8CA586E255CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07A3CDE4-390B-40B4-A660-8CA586E255CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

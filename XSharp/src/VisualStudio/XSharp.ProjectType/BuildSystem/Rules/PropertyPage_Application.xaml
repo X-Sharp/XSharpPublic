@@ -41,14 +41,15 @@
         </EnumProperty.DataSource>
     </EnumProperty>
 
-    <EnumProperty Name="Dialect" DisplayName="Dialect" Category="General" Default="Core" ReadOnly="True"
+    <EnumProperty Name="Dialect" DisplayName="Dialect" Category="General" Default="Core" 
     	Description="Select the compiler dialect to use when compiling this project">
         <EnumValue Name="Core"      DisplayName="Core" />
         <EnumValue Name="VO"        DisplayName="Visual Objects" />
         <EnumValue Name="Vulcan"    DisplayName="Vulcan.NET" />
         <EnumValue Name="Harbour"   DisplayName="(x)Harbour" />
-        <EnumValue Name="Foxp"      DisplayName="Microsoft FoxPro" />
-        <EnumValue Name="Xpp"       DisplayName="Alaska Xbase++" />
+        <EnumValue Name="Foxpro"    DisplayName="Microsoft FoxPro" />
+        <EnumValue Name="dBase"     DisplayName="dBase" />
+        <EnumValue Name="XBasepp"   DisplayName="Alaska Xbase++" />
         <!--<EnumProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Configuration" HasConfigurationCondition="false" />
         </EnumProperty.DataSource>-->

@@ -95,11 +95,12 @@ namespace XSharp.Project
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Form", 500)]
 
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), XSharpConstants.FileExtension, 32)]
     // Attention! These guids are magic numbers provided by Microsoft. Don't change them.
     //
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), XSharpConstants.FileExtension, 32)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 32)]
 
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     public sealed class XSharpProjectPackage : ProjectPackage

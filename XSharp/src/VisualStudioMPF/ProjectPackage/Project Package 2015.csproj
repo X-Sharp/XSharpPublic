@@ -10,9 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>XSharp.Project</RootNamespace>
-    <AssemblyName>XSharpProject2013</AssemblyName>
+    <AssemblyName>XSharpProject2015</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>XSharp.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
     <FileUpgradeFlags>
@@ -41,6 +41,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -141,47 +142,18 @@
     <Compile Include="Resources.cs" />
     <Compile Include="XSharpVSMDProvider.cs" />
     <None Include="app.config" />
-    <ZipProject Include="Templates\Projects\WinformApplication\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\WinformApplication\Program.prg" />
-    <ZipProject Include="Templates\Projects\WinformApplication\Settings.settings" />
-    <ZipProject Include="Templates\Projects\WinformApplication\WinForm1.prg" />
-    <ZipProject Include="Templates\Projects\WinformApplication\WinFormApp.xsprj" />
-    <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.xsprj" />
-    <ZipItem Include="Templates\ProjectItems\Class\Class.prg" />
-    <ZipItem Include="Templates\ProjectItems\FormSimple\form.prg" />
-    <ZipItem Include="Templates\ProjectItems\Form\form.designer.prg" />
-    <ZipItem Include="Templates\ProjectItems\Form\form.prg" />
-    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow.xaml.prg" />
-    <ZipProject Include="Templates\Projects\ConsoleApplication\ConsoleApplication.xsprj" />
-    <ZipProject Include="Templates\Projects\ConsoleApplication\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\ConsoleApplication\Program.prg" />
-    <ZipProject Include="Templates\Projects\WPFApplication\App.config" />
-    <ZipProject Include="Templates\Projects\WPFApplication\App.xaml.prg" />
-    <ZipProject Include="Templates\Projects\WPFApplication\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\WPFApplication\Settings.settings" />
-    <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml.prg" />
+    <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <ZipProject Include="Templates\Projects\WPFApplication\Resources.resx" />
-    <ZipProject Include="Templates\Projects\WinformApplication\Resources.resx" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ZipItem Include="Templates\ProjectItems\FormSimple\windowsform.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\Form\Form.ico" />
-    <ZipItem Include="Templates\ProjectItems\Form\windowsform.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\WPF\wpfWindow.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\WPF\__TemplateIcon.ico" />
-    <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\WPFApplication\XSharp.ico" />
-    <ZipProject Include="Templates\Projects\WinformApplication\WinformApp.vstemplate" />
-    <ZipProject Include="Templates\Projects\WinformApplication\XSharp.ico" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -192,11 +164,6 @@
     </Content>
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
     <None Include="source.extension.vsixmanifest" />
-    <ZipItem Include="Templates\ProjectItems\Class\Class.ico" />
-    <ZipItem Include="Templates\ProjectItems\Class\Class.vstemplate" />
-    <ZipProject Include="Templates\Projects\ConsoleApplication\ConsoleApplication.vstemplate" />
-    <ZipProject Include="Templates\Projects\ConsoleApplication\XSharp.ico" />
-    <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -229,31 +196,36 @@
     <ProjectReference Include="..\LanguageService\Language Service 2015.csproj">
       <Project>{0c710c19-19f5-4f4a-9a5d-ec92c23cd2aa}</Project>
       <Name>Language Service 2015</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\XSharpItemTemplates.csproj">
+      <Project>{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46}</Project>
+      <Name>XSharpItemTemplates</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\XSharpProjectTemplates.csproj">
+      <Project>{91C58B0A-68C7-4437-8B82-706C60FFEF86}</Project>
+      <Name>XSharpProjectTemplates</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
     <ProjectReference Include="..\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </ZipItem>
-    <ZipProject Include="Templates\Projects\WPFApplication\App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ZipProject>
-    <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ZipProject>
-  </ItemGroup>
   <ItemGroup />
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <Import Project="..\ProjectBase\ProjectBase.Files" />
   <PropertyGroup>
@@ -277,6 +249,13 @@
   -->
   <PropertyGroup>
     <CopyPkgDefDependsOn>$(CopyPkgDefDependsOn);FixPkgdefTarget</CopyPkgDefDependsOn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(Solutiondir)Binaries\$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <Target Name="FixPkgdefTarget">
     <FixPkgdef PkgdefPath="$(MSBuildProjectDirectory)\$(IntermediateOutputPath)$(TargetName).pkgdef" />

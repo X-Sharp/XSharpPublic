@@ -34,7 +34,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>xsharp.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>XSharp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.Shell.Design, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -48,7 +48,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\..\..\..\Program Files (x86)\XSharp\Bin\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\..\Binaries\Debug\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -65,7 +65,7 @@
     <Compile Include="XSharpTreeDiscover.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="xsharp.pfx" />
+    <None Include="XSharp.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Package 2015.UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "src\VisualStudioMPF\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{B09D6E1A-339C-491F-85E1-D28ED91315E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpItemTemplates", "src\VisualStudioMPF\Templates\XSharpItemTemplates.csproj", "{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpProjectTemplates", "src\VisualStudioMPF\Templates\XSharpProjectTemplates.csproj", "{91C58B0A-68C7-4437-8B82-706C60FFEF86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +45,20 @@ Global
 		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91C58B0A-68C7-4437-8B82-706C60FFEF86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C58B0A-68C7-4437-8B82-706C60FFEF86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C58B0A-68C7-4437-8B82-706C60FFEF86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C58B0A-68C7-4437-8B82-706C60FFEF86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46} = {B09D6E1A-339C-491F-85E1-D28ED91315E9}
+		{91C58B0A-68C7-4437-8B82-706C60FFEF86} = {B09D6E1A-339C-491F-85E1-D28ED91315E9}
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Designers>
+  <DBServer Name="$safeitemrootname$">
+    <classname>$safeitemrootname$</classname>
+    <filename>$safeitemrootname$.dbf</filename>
+    <hlcaption>$safeitemrootname$</hlcaption>
+    <superclass>DBSERVER</superclass>
+    <hldescription>$safeitemrootname$</hldescription>
+    <hlhelpcontext>$safeitemrootname$</hlhelpcontext>
+    <share>
+    </share>
+    <ro>
+    </ro>
+    <rdd>DBFNTX</rdd>
+    <order>0</order>
+    <noaccass>No</noaccass>
+    <Fields>
+    </Fields>
+    <Indexes />
+  </DBServer>
+</Designers>

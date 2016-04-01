@@ -12,6 +12,7 @@ namespace XSharp.LanguageService
     {
         private IVsTextBuffer m_buffer;
         string m_source;
+        
 
         public XSharpScanner(IVsTextBuffer buffer)
         {

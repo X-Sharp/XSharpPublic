@@ -88,12 +88,12 @@ namespace XSharp.Project
 
         public override Window Open(string viewKind)
         {
-            if (string.Compare(viewKind, Constants.vsViewKindPrimary) == 0)
+            if (string.Compare(viewKind, EnvDTE.Constants.vsViewKindPrimary) == 0)
             {
                 // Get the subtype and decide the viewkind based on the result.
                 //
                 if (Node.HasDesigner)
-                    return base.Open(Constants.vsViewKindDesigner);
+                    return base.Open(EnvDTE.Constants.vsViewKindDesigner);
             }
 
             return base.Open(viewKind);

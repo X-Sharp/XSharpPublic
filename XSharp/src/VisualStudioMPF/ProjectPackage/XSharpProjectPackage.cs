@@ -52,6 +52,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Project;
 using XSharp.LanguageService;
 using XSharp.Project.WPF;
+using System.ComponentModel;
 
 namespace XSharp.Project
 {
@@ -70,6 +71,8 @@ namespace XSharp.Project
     /// <para>ProvideProjectFactory: Declares that a package provides a project factory.</para>
     /// <para>ProvideProjectItem: Declares that a package provides a project item.</para> 
     /// </remarks>  
+    [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
+    [Description("XSharp Project System")]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
     [ProvideObject(typeof(XSharpGeneralPropertyPage))]
@@ -95,12 +98,12 @@ namespace XSharp.Project
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Form", 500)]
 
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), XSharpConstants.FileExtension, 32)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 32)]
     // Attention! These guids are magic numbers provided by Microsoft. Don't change them.
     //
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), XSharpConstants.FileExtension, 32)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 32)]
 
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     public sealed class XSharpProjectPackage : ProjectPackage
@@ -108,7 +111,7 @@ namespace XSharp.Project
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
-        /// where you can put all the initilaization code that rely on services provided by VisualStudio.
+        /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
         protected override void Initialize()
         {

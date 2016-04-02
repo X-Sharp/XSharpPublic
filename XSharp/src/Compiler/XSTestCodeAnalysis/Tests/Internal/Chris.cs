@@ -1846,5 +1846,139 @@ END CLASS
 
 
 
+        // 137
+        [Test(Author = "Chris", Id = "C137", Title = "error XS0103: The name 'Xs$Access$Hidden' does not exist in the current context")]
+        public static void error_XS0103_ACCESS_with_at_symbols()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+ACCESS @@Hidden AS INT
+RETURN 0
+ASSIGN @@AnyThing(n AS INT) AS VOID
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 138
+        [Test(Author = "Chris", Id = "C138", Title = "error XS0051: Inconsistent accessibility: parameter type 'IntClass' is less accessible than method 'TestClass.Test(IntClass)'")]
+        public static void error_XS0051_Inconsistent_accessibility_with_internal_param()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PROTECTED METHOD Test(o AS IntClass) AS VOID
+PUBLIC METHOD Test2(o AS IntClass) AS VOID
+END CLASS
+
+INTERNAL CLASS IntClass
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+        // 139
+        [Test(Author = "Chris", Id = "C139", Title = "error XS0050: Inconsistent accessibility: parameter type 'IntClass' is less accessible than method 'TestClass.Test(IntClass)'")]
+        public static void error_XS0050_Inconsistent_accessibility_with_internal_return_type()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+PROTECTED METHOD Test() AS IntClass
+PUBLIC METHOD Test2() AS IntClass
+END CLASS
+
+INTERNAL CLASS IntClass
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 140
+        [Test(Author = "Chris", Id = "C140", Title = "warning XS0549: 'TestClass.Test()' is a new virtual member in sealed class 'TestClass'")]
+        public static void warning_XS0549_SEALED_class_with_vo3()
+        {
+            var s = ParseSource("/vo3" , @"
+// /vo3
+// Instead of warning, method should be emitted as non-VIRTUAL, even though /vo3 is specified
+// No other way for the user to do it..
+SEALED CLASS TestClass
+METHOD Test() AS VOID
+END CLASS
+");
+            CompileWithoutWarnings(s);
+        }
+
+
+        // 141
+        [Test(Author = "Chris", Id = "C141", Title = "error XS0503: The abstract method 'TestClass.Test()' cannot be marked virtual")]
+        public static void error_XS0503_SEALED_method_with_vo3()
+        {
+            var s = ParseSource("/vo3" , @"
+// /vo3
+ABSTRACT CLASS TestClass
+ABSTRACT METHOD Test() AS VOID
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+        // 142
+        [Test(Author = "Chris", Id = "C142", Title = "Problem with virtual methods and /vo3 option")]
+        public static void Problem_with_virtual_methods_and_vo3_option()
+        {
+            var s = ParseSource("/vo3" , @"
+// /vo3
+// without /vo3, ChildClass method gets executed as it should be
+FUNCTION Start() AS VOID
+LOCAL o AS BaseClass
+o := ChildClass{}
+o:Test()
+RETURN
+
+CLASS BaseClass
+VIRTUAL METHOD Test() AS VOID
+	THROW Exception{""Base method called instead of Child""}
+END CLASS
+
+CLASS ChildClass INHERIT BaseClass
+VIRTUAL METHOD Test() AS VOID
+	? ""Correctly called child method""
+END CLASS
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+
+        // 143
+        [Test(Author = "Chris", Id = "C143", Title = "error XS0154: The property or indexer 'ChildClass.Prop' cannot be used in this context because it lacks the get accessor")]
+        public static void error_XS0154_virtual_properties_and_vo3_option()
+        {
+            var s = ParseSource("/vo3" , @"
+// /vo3
+// probably same with C142
+FUNCTION Start() AS VOID
+LOCAL o AS ChildClass
+o := ChildClass{}
+? o:Prop == 0
+
+CLASS BaseClass
+	VIRTUAL PROPERTY @@Prop AS INT GET 1 SET
+END CLASS
+
+CLASS ChildClass INHERIT BaseClass
+	VIRTUAL ASSIGN Prop(n AS INT)
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+
     }
 }

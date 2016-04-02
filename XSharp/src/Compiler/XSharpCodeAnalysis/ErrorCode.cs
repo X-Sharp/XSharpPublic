@@ -5,9 +5,18 @@ namespace Microsoft.CodeAnalysis.CSharp
     // Errors treated as warnings in XSharp!
     // Warning: The following comment is parsed by the error facts generator !!!
     /*
+    XS_WRN:ERR_BadVisReturnType = 50,
+    XS_WRN:ERR_BadVisParamType = 51,
     XS_WRN:ERR_BadVisFieldType = 52,
     XS_WRN:ERR_BadVisPropertyType = 53,
+    XS_WRN:ERR_BadVisIndexerReturn = 54,
+    XS_WRN:ERR_BadVisIndexerParam = 55,
+    XS_WRN:ERR_BadVisOpReturn = 56,
+    XS_WRN:ERR_BadVisOpParam = 57,
+    XS_WRN:ERR_BadVisDelegateReturn = 58,
+    XS_WRN:ERR_BadVisDelegateParam = 59,
     XS_WRN:ERR_BadVisBaseClass = 60,
+    XS_WRN:ERR_BadVisBaseInterface = 61,
     XS_WRN:ERR_UseDefViolation = 165,
     XS_WRN:ERR_UseDefViolationField = 170,
     XS_WRN:ERR_UnassignedThis = 171,

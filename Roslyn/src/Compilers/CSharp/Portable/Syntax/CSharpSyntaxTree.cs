@@ -130,7 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             get { return this.HasCompilationUnitRoot; }
         }
 
-        #region Preprocessor Symbols
+#region Preprocessor Symbols
         private bool _hasDirectives;
         private InternalSyntax.DirectiveStack _directives;
 
@@ -299,9 +299,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableInterlocked.InterlockedInitialize(ref _preprocessorStateChangePositions, positions.ToImmutableAndFree());
         }
 
-        #endregion
+#endregion
 
-        #region Factories
+#region Factories
 
         /// <summary>
         /// Creates a new syntax tree from a syntax node.
@@ -432,9 +432,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
         }
 
-        #endregion
+#endregion
 
-        #region Changes
+#region Changes
 
         /// <summary>
         /// Creates a new syntax based off this tree using a new source text.
@@ -522,9 +522,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return SyntaxDiffer.GetTextChanges(oldTree, this);
         }
 
-        #endregion
+#endregion
 
-        #region LinePositions and Locations
+#region LinePositions and Locations
 
         /// <summary>
         /// Gets the location in terms of path, line and column for a given span.
@@ -658,16 +658,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
 #if XSHARP
-        private LineVisibility GetXNodeVisibility(int position)
+        private CSharpSyntaxNode GetNode(CSharpSyntaxNode root, int position)
         {
-            var root = (CSharpSyntaxNode)GetRoot();
-            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
-            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
-            if (position >= eofPos && eofPos != null)
-            {
-                return LineVisibility.Visible;
-            }
-            if (root.XNode != null && eof == null && position != 0)
+            if (root.XNode != null && position != 0)
             {
                 var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
                 while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth)))
@@ -677,7 +670,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                     node = n;
                 }
-                return string.IsNullOrEmpty(node.XNode?.SourceFileName) ? LineVisibility.Visible : LineVisibility.Hidden;
+                return node;
+            }
+            return null;
+        }
+        private LineVisibility GetXNodeVisibility(int position)
+        {
+            var root = (CSharpSyntaxNode)GetRoot();
+            var eof = ((root as CompilationUnitSyntax)?.EndOfFileToken.Node as InternalSyntax.SyntaxToken)?.XNode;
+            var eofPos = (root as CompilationUnitSyntax)?.EndOfFileToken.Position;
+            if (position >= eofPos && eofPos != null)
+            {
+                return LineVisibility.Hidden;
+            }
+
+            if (eof == null )
+            {
+                var node = GetNode(root, position);
+                if (node != null)
+                    if (node.XNode == null || node.XNode.IsHidden)
+                        return LineVisibility.Hidden;
+                return string.IsNullOrEmpty(node?.XNode.SourceFileName) ? LineVisibility.Visible : LineVisibility.Hidden;
             }
             return LineVisibility.Visible;
         }
@@ -692,15 +705,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 position = position - (eofPos ?? 0);
             }
-            if ( root.XNode != null && eof == null && position != 0 ) {
-                var node = (CSharpSyntaxNode)GetRoot().ChildThatContainsPosition(position);
-                while (!node.Green.IsToken && (position > node.Position || position < (node.Position + node.FullWidth))) {
-                    var n = (CSharpSyntaxNode)node.ChildThatContainsPosition(position);
-                    if (n == null || n == node)
-                        break;
-                    node = n;
-                }
-                position = (position < node.Position + node.FullWidth) ? node.XNode?.Position ?? 0 : node.XNode?.Position + node.XNode?.FullWidth ?? 0;
+            if ( eof == null ) 
+            {
+                var node = GetNode(root, position);
+                position = (position < node.Position + node.FullWidth) ? 
+                                node.XNode?.Position ?? 0 : node.XNode?.Position + node.XNode?.FullWidth ?? 0;
                 string file = node.XNode?.SourceFileName;
                 SourceText ntext;
                 if (!string.IsNullOrEmpty(file) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out ntext))
@@ -793,9 +802,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return new SourceLocation(this, span);
         }
 
-        #endregion
+#endregion
 
-        #region Diagnostics
+#region Diagnostics
 
         /// <summary>
         /// Gets a list of all the diagnostics in the sub tree that has the specified node as its root.
@@ -887,9 +896,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return this.GetDiagnostics(this.GetRoot(cancellationToken));
         }
 
-        #endregion
+#endregion
 
-        #region SyntaxTree
+#region SyntaxTree
 
         protected override SyntaxNode GetRootCore(CancellationToken cancellationToken)
         {
@@ -924,6 +933,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion
+#endregion
     }
 }

@@ -4296,6 +4296,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="IDS_FeatureLambda" xml:space="preserve">
     <value>lambda expression</value>
   </data>
+  <data name="ERR_FeatureNotAvailableInDialect" xml:space="preserve">
+    <value>Feature '{0}' is not available in the selected dialect {1}</value>
+  </data>
   <data name="ERR_FeatureNotAvailableInVersion1" xml:space="preserve">
     <value>Feature '{0}' is not available in X# 1.  </value>
   </data>
@@ -4417,6 +4420,38 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                                form: /d)
  /langversion:&lt;string&gt;         Specify language version mode: ISO-1, ISO-2, 3, 
                                4, 5, 6, or Default
+                        
+                        - VULCAN COMPATIBILITY -
+/az[+|-]                       Use Zero based arrays
+/cs[+|-]                       Case Sensitivity on/off
+/dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour        
+/fovf[+|-]                     Float overflow exceptions(mapped to /checked)
+/ins[+|-]                      Implicit namespace lookup 
+/lb[+|-]                       Allow late binding
+/norun[+|-]                    Do not link to any default runtime
+/ns:&lt;string&gt;                   Default Namespace
+/ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
+/vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
+/vo2[+|-]                      Initialize Strings
+/vo3[+|-]                      All instance methods virtual 
+/vo4[+|-]                      Implicit signed/unsigned conversions 
+/vo5[+|-]                      Implicit CLIPPER calling convention 
+/vo6[+|-]                      Implicit pointer conversions 
+/vo7[+|-]                      Implicit casts and Conversions 
+/vo8[+|-]                      Compatible preprocessor 
+/vo9[+|-]                      Allow Missing Return Statements 
+/vo10[+|-]                     Compatible IIF Behavior 
+/vo11[+|-]                     Compatible numeric conversions 
+/vo12[+|-]                     Compatible integer divisions 
+/vo13[+|-]                     Compatible String Comparisons 
+/vo14[+|-]                     Use Float Literals 
+
+                        - PREPROCESOR -
+
+/i:&lt;path&gt;                        Additional Include path
+/nostddef[+|-]                 Do not include standard defines from XSharpDefs.xh 
+/ppo[+|-]                      Generate preprocessor output
+/showincludes[+|-]             Show names from include files that are processed in the ppo file output
 
                         - SECURITY -
  /delaysign[+|-]               Delay-sign the assembly using only the public 

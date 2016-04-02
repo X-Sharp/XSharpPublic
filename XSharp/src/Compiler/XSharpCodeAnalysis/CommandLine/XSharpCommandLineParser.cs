@@ -1,20 +1,10 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using Microsoft.CodeAnalysis.Emit;
-using Microsoft.CodeAnalysis.Text;
-using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+
     public partial class CSharpCommandLineParser : CommandLineParser
     {
         private XSharpSpecificCompilationOptions options;
@@ -49,6 +39,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "cf":  
                     options.CompactFramework = positive;
+                    break;
+                case "dialect":
+                    XSharpDialect dialect = XSharpDialect.Core;
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), "/dialect:");
+                    }
+                    else if (!TryParseDialect(value, XSharpDialect.Core, out dialect))
+                    {
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_BadCompatMode, value);
+                    }
+                    options.Dialect = dialect;
                     break;
                 case "clr": // CLR
                     break;
@@ -102,17 +104,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "ppo":
                     options.PreProcessorOutput = positive;
                     break;
-                case "s":    
-                    options.SyntaxCheck = positive;
-                    break;
                 case "showincludes":
                     options.ShowIncludes = positive;
-                    break;
-                case "time":
-                    options.Time = positive;
-                    break;
-                case "v":     
-                    options.Verbose = positive;
                     break;
                 case "vo1":     // Init & Axit mapped to .ctor and .dtor
                     options.Vo1 = positive;
@@ -167,5 +160,52 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return handled;
         }
+        private static bool TryParseDialect(string str, XSharpDialect defaultDialect, out XSharpDialect dialect)
+        {
+            if (str == null)
+            {
+                dialect = defaultDialect;
+                return true;
+            }
+
+            switch (str.ToLowerInvariant())
+            {
+                case "core":
+                    dialect = XSharpDialect.Core;
+                    return true;
+
+                case "vo":
+                    dialect = XSharpDialect.VO;
+                    return true;
+
+                case "vulcan":
+                case "vulcan.net":
+                    dialect = XSharpDialect.Vulcan;
+                    return true;
+
+                case "dbase":
+                    dialect = XSharpDialect.dBase;
+                    return true;
+
+                case "foxpro":
+                case "foxbase":
+                case "fox":
+                    dialect = XSharpDialect.FoxPro;
+                    return true;
+
+                case "harbour":
+                case "xharbour":
+                    dialect = XSharpDialect.Harbour;
+                    return true;
+                case "xbase++":
+                case "xbasepp":
+                    dialect = XSharpDialect.XBasePP;
+                    return true;
+                default:
+                    dialect = XSharpDialect.Core;
+                    return false;
+            }
+        }
+
     }
 }

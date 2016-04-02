@@ -208,7 +208,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        void SkipToEol()
+        IToken SkipToEol()
         {
             IToken t = Lt();
             while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
@@ -218,6 +218,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 t = Lt();
             }
+            return t;
         }
 
         void SkipEmpty()
@@ -552,7 +553,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (ln.Type == XSharpLexer.INT_CONST)
                             {
                                 Consume();
-                                inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue().Value - (ln.Line + 1);
+                                inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
                                 SkipHidden();
                                 ln = Lt();
                                 if (ln.Type == XSharpLexer.STRING_CONST)
@@ -577,39 +578,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_ERROR:
                         if (IsActiveElseSkip())
                         {
+                            int iStart = Lt().StopIndex+1;
                             Consume();
                             SkipHidden();
-                            var ln = Lt();
-                            if (ln.Type == XSharpLexer.STRING_CONST)
-                            {
-                                Consume();
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_UserError, ln.Text.Substring(1,ln.Text.Length-2)));
-                                SkipEmpty();
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
-                            }
-                            SkipToEol();
+                            var ln = SkipToEol();
+                            int iEnd = ln.StartIndex;
+                            var text = ln.TokenSource.InputStream.GetText(new Interval(iStart, iEnd - 1));
+                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_UserError, text));
                         }
                         break;
                     case XSharpLexer.PP_WARNING:
                         if (IsActiveElseSkip())
                         {
+                            int iStart = Lt().StopIndex + 1;
                             Consume();
                             SkipHidden();
-                            var ln = Lt();
-                            if (ln.Type == XSharpLexer.STRING_CONST)
-                            {
-                                Consume();
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_UserWarning, ln.Text.Substring(1, ln.Text.Length - 2)));
-                                SkipEmpty();
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "String literal expected"));
-                            }
-                            SkipToEol();
+                            var ln = SkipToEol();
+                            int iEnd = ln.StartIndex;
+                            var text = ln.TokenSource.InputStream.GetText(new Interval(iStart, iEnd - 1));
+                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_UserWarning, text));
                         }
                         break;
                     case XSharpLexer.PP_INCLUDE:

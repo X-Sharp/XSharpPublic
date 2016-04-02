@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050" Version="1.0" Language="en-US" Publisher="Company" />
+    <Identity Id="XSharp.LanguageService" Version="0.2.3" Language="en-US" Publisher="XSharp BV" />
     <DisplayName>XSharp Language Service 2015</DisplayName>
-    <Description>Information about my package</Description>
+    <Description xml:space="preserve">XSharp Visual Studio Language Service</Description>
+    <MoreInfo>http://www.xsharp.info</MoreInfo>
+    <Icon>Resources\XSharp.ico</Icon>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[14.0]" />

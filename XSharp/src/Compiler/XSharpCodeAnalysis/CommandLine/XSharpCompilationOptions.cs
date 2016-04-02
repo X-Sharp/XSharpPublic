@@ -34,6 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         public XSharpSpecificCompilationOptions()
         {
+            // All defaults are set at property level
         }
 
         public bool ArrayZero { get; internal set; } = false;

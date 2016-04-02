@@ -24,12 +24,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 ArrayZero = opt.ArrayZero;
                 InitStringVarsToEmpty = opt.Vo2;
+                Dialect = opt.Dialect;
             }
         }
 
         public void SetOptions(CSharpCommandLineArguments opt)
         {
-
         }
 
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
@@ -39,6 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DefaultIncludeDir = opt.DefaultIncludeDir;
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
+            Dialect = opt.Dialect;
         }
     }
 }

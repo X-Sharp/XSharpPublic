@@ -4564,7 +4564,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(type);
             }
         }
+        /*
+        public override void ExitAliasedExpr([NotNull] XSharpParser.AliasedExprContext context)
+        {
+            // // CUSTOMER->(<Expression>)
+            base.ExitAliasedExpr(context);
+        }
 
-
+        public override void ExitAliasfield([NotNull] XSharpParser.AliasfieldContext context)
+        {
+            //_FIELD->NAME, CUSTOMER-NAME, _FIELD->CUSTOMER->NAME
+            base.ExitAliasfield(context);
+        }
+        public override void ExitAliasedFuncCall([NotNull] XSharpParser.AliasedFuncCallContext context)
+        {
+            // Customer->DoSomething()
+            base.ExitAliasedFuncCall(context);
+        }
+        public override void ExitAliasmethodCall([NotNull] XSharpParser.AliasmethodCallContext context)
+        {
+            // Expr=expression LPAREN ArgList=argumentList? RPAREN 
+            base.ExitAliasmethodCall(context);
+        }
+        public override void ExitExtendedaliasExpr([NotNull] XSharpParser.ExtendedaliasExprContext context)
+        {
+            // (expr) -> ID, (expr) -> (expr), (expr) -> func(..)
+            base.ExitExtendedaliasExpr(context);
+        }
+        */
     }
 }

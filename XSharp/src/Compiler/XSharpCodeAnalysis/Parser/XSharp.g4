@@ -706,25 +706,28 @@ typeName			: NativeType=nativeType
 
 literalArray		: (LT Type=datatype GT)? LCURLY (Exprs+=expression (COMMA Exprs+=expression)*)? RCURLY
 					;
+/*
+aliasmethodCall		: Expr=expression LPAREN ArgList=argumentList? RPAREN
+					;
 
-//aliasedField		:	FIELD ALIAS Id=identifierName									// _FIELD->NAME
-//					|	Left=identifierName ALIAS Right=identifierName					// CUSTOMER->NAME
-//					|   FIELD ALIAS Left=identifierName ALIAS Right=identifierName		// _FIELD->CUSTOMER->NAME
-//					;
+aliasedField		:	FIELD ALIAS Id=identifierName									// _FIELD->NAME
+					|	Left=identifierName ALIAS Right=identifierName					// CUSTOMER->NAME
+					|   FIELD ALIAS Left=identifierName ALIAS Right=identifierName		// _FIELD->CUSTOMER->NAME
+					;
 
-//aliasedExpr			:	Id=identifierName ALIAS LPAREN Expr=expression RPAREN
-//					;
+aliasedExpr			:	Id=identifierName ALIAS LPAREN Expr=expression RPAREN		// CUSTOMER->(<Expression>)
+					;
 
-//aliasedFuncCall		:	i=identifierName a=ALIAS m=staticMethodCall
-//					;
+aliasedFuncCall		:	i=identifierName a=ALIAS m=aliasmethodCall					// Customer->DoSomething()
+					;
 
-//extendedaliasExpr	:	l1=LPAREN e1=expression r1=RPAREN a=ALIAS
-//						( i=identifierName								// (expr) -> ID
-//						| l2=LPAREN e2=expression r2=RPAREN				// (expr) -> (expr)
-//						| m=staticMethodCall							// (expr) -> func(..)
-//						)
-//					;
-
+extendedaliasExpr	:	l1=LPAREN e1=expression r1=RPAREN a=ALIAS
+						( i=identifierName								// (expr) -> ID
+						| l2=LPAREN e2=expression r2=RPAREN				// (expr) -> (expr)
+						| m=aliasmethodCall									// (expr) -> func(..)
+						)
+					;
+*/
 codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE) Expr=expression? RCURLY
 					;
 
@@ -777,9 +780,7 @@ identifierString	: Token=(ID | KWID | STRING_CONST)
 					| XsToken=keywordxs
 					;
 
-// remove Vulcan types for now
-//					
-
+// xBaseTypes are NOT available in the Core dialect and therefore separated here.
 xbaseType			: Token=
 					( ARRAY 
 					| CODEBLOCK

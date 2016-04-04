@@ -663,6 +663,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return m;
 
         }
+
+        private void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, string name, bool bStatic)
+        {
+            bool found = false;
+            for (int i = 0; i < usings.Count; i++)
+            {
+                if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(), name) == 0)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                SyntaxToken tokenStatic = null;
+                if (bStatic)
+                    tokenStatic = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
+
+                usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+                    tokenStatic,
+                    null,
+                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(name)),
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+
+        }
+
         private ClassDeclarationSyntax GenerateClass(string className, SyntaxListBuilder<MemberDeclarationSyntax> members)
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
@@ -1038,30 +1065,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.Dialect == XSharpDialect.VO || _options.Dialect == XSharpDialect.Vulcan)
             {
                 // Add using Vulcan
-                var usingdirective = _syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-                    staticKeyword: null  ,
-                    alias: null ,
-                    name: GenerateQualifiedName("Vulcan"),
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                GlobalEntities.Usings.Add(usingdirective);
+                AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan", false);
 
                 // Add using Static VulcanRTFuncs.Functions
-                usingdirective = _syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-                    staticKeyword: SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
-                    alias: null,
-                    name: GenerateQualifiedName("VulcanRTFuncs.Functions"),
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                GlobalEntities.Usings.Add(usingdirective);
+                AddUsingWhenMissing(GlobalEntities.Usings, "VulcanRTFuncs.Functions", true);
 
-                /*
                 // Add using Vulcan.VO
-                usingdirective = _syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-                    staticKeyword: null,
-                    alias: null,
-                    name: GenerateQualifiedName("Vulcan.VO"),
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                GlobalEntities.Usings.Add(usingdirective);
-                */
+                // AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan.VO",true),
             }
 
             var generated = ClassEntities.Pop();
@@ -1080,37 +1090,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     members: globalMembers,
                     closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-                    null,
-                    null,
-                    GenerateQualifiedName(_options.DefaultNamespace),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+
+                AddUsingWhenMissing(GlobalEntities.Usings, _options.DefaultNamespace, false);
             }
 
             // Add: using static Xs$Globals
-            //if (generated.Members.Count > 0)
-            //{
-            GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-					SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword),
-					null,
-					//GenerateGlobalQualifiedNameFromList(_options.ModuleName,GlobalClassName),
-                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(GlobalClassName)),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-			//}
+            AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true);
 
-			// Add: using System
-            bool alreadyUsingSystem = false;
-            for(int i=0; i<GlobalEntities.Usings.Count; i++) {
-                if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(),"System") == 0)
-                    alreadyUsingSystem = true;
-            }
-            if (!alreadyUsingSystem) {
-			    GlobalEntities.Usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword), 
-                    null,
-                    null,
-                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("System")),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-            }
+            // Add: using System
+            AddUsingWhenMissing(GlobalEntities.Usings, "System",false);
         }
 
         public override void ExitNamespace_([NotNull] XSharpParser.Namespace_Context context)

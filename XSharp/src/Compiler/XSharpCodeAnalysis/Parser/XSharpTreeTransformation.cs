@@ -119,6 +119,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         private XSharpParser _parser;
         private readonly CSharpParseOptions _options;
+        private NameSyntax _usualType;
+        private NameSyntax _floatType;
+        private NameSyntax _arrayType;
+        private NameSyntax _dateType;
+        private NameSyntax _symbolType;
+        private NameSyntax _pszType;
+        private NameSyntax _codeblockType;
+        private NameSyntax _ptrType;
+
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
         internal Stack<SyntaxClassEntities> ClassEntities = new Stack<SyntaxClassEntities> ();
@@ -131,6 +140,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _parser = parser;
             _options = options;
             GlobalEntities = CreateEntities();
+            if (_options.Dialect == XSharpDialect.Vulcan || _options.Dialect == XSharpDialect.VO)
+            {
+                _usualType = GenerateQualifiedName("global::Vulcan.__Usual");
+                _floatType = GenerateQualifiedName("global::Vulcan.__VOFloat");
+                _dateType = GenerateQualifiedName("global::Vulcan.__VODate");
+                _arrayType = GenerateQualifiedName("global::Vulcan.__Array");
+                _symbolType = GenerateQualifiedName("global::Vulcan.__Symbol");
+                _pszType = GenerateQualifiedName("global::Vulcan.__Psz");
+                _codeblockType = GenerateQualifiedName("global::Vulcan.Codeblock");
+                _ptrType = GenerateQualifiedName("global::System.IntPtr");
+            }
         }
 
         internal void Free()
@@ -4386,13 +4406,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     case XSharpParser.NIL:
                         expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                GenerateQualifiedName("global::Vulcan.__Usual"),
+                                _usualType,
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                             _syntaxFactory.IdentifierName(SyntaxToken.Identifier("_NIL")));
                         break;
                     case XSharpParser.NULL_PTR:
                         expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                GenerateQualifiedName("global::System.IntPtr"),
+                                _ptrType,
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                             _syntaxFactory.IdentifierName(SyntaxToken.Identifier("Zero")));
                         break;
@@ -4400,7 +4420,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         arg0 = SyntaxFactory.Argument(null, null, SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(SyntaxFactory.WS, "", "", SyntaxFactory.WS)));
                         expr = _syntaxFactory.ObjectCreationExpression(
                             SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                            GenerateQualifiedName("global::Vulcan.__Psz"),
+                            _pszType,
                             MakeArgumentList(arg0),
                             initializer: null);
                         break;
@@ -4424,7 +4444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 arg2 = SyntaxFactory.Argument(null, null, SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(SyntaxFactory.WS, args[2], day, SyntaxFactory.WS)));
                                 expr = _syntaxFactory.ObjectCreationExpression(
                                     SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                                    GenerateQualifiedName("global::Vulcan.__VODate"),
+                                    _dateType,
                                     MakeArgumentList(arg0, arg1, arg2),
                                     initializer: null); 
                             }
@@ -4434,7 +4454,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         arg0= SyntaxFactory.Argument(null, null, SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
                         expr = _syntaxFactory.ObjectCreationExpression(
                             SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                            GenerateQualifiedName("global::Vulcan.__Symbol"),
+                            _symbolType,
                             MakeArgumentList(arg0),
                             initializer: null);
                         break;
@@ -4452,7 +4472,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 arg2 = SyntaxFactory.Argument(null, null, SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(SyntaxFactory.WS, dec.ToString(), dec, SyntaxFactory.WS)));
                                 expr = _syntaxFactory.ObjectCreationExpression(
                                     SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                                    GenerateQualifiedName("global::Vulcan.__VOFLoat"),
+                                    _floatType,
                                     MakeArgumentList(arg0, arg1, arg2),
                                     initializer: null);
                             }
@@ -4542,46 +4562,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXbaseType([NotNull] XSharpParser.XbaseTypeContext context)
         {
-            string typeName = null;
+            NameSyntax type = null;
             if (_options.Dialect == XSharpDialect.Vulcan || _options.Dialect == XSharpDialect.VO)
             {
                 switch (context.Token.Type)
                 {
                     case XSharpParser.ARRAY:
-                        typeName = "global::Vulcan.__Array";
+                        type = _arrayType;
                         break;
                     case XSharpParser.CODEBLOCK:
-                        typeName = "global::Vulcan.Codeblock";
+                        type = _codeblockType;
                         break;
                     case XSharpParser.DATE:
-                        typeName = "global::Vulcan.__VODate";
+                        type = _dateType;
                         break;
                     case XSharpParser.FLOAT:
-                        typeName = "global::Vulcan.__VOFloat";
+                        type = _floatType;
                         break;
                     case XSharpParser.PSZ:
-                        typeName = "global::Vulcan.__Psz";
+                        type = _pszType;
                         break;
                     case XSharpParser.USUAL:
-                        typeName = "global::Vulcan.__Usual"; ;
+                        type = _usualType ;
                         break;
                     case XSharpParser.SYMBOL:
-                        typeName = "global::Vulcan.__Symbol"; ;
+                        type = _symbolType;
                         break;
                     default:
-                        typeName = null;
+                        type = null;
                         break;
                 }
             }
 
-            if (string.IsNullOrEmpty(typeName))
+            if (type == null)
             {
                 context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
                     .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, context.Token.Text, _options.Dialect.ToString())));
             }
             else
             {
-                context.Put(GenerateQualifiedName(typeName));
+                context.Put(type);
             }
         }
 

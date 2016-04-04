@@ -393,9 +393,11 @@ namespace XSharp.Build
         #endregion
 
 
+        private int errorCount;
         public Xsc() : base()
         {
             //System.Diagnostics.Debugger.Launch();
+            errorCount = 0;
         }
 
         protected override string ToolName
@@ -907,7 +909,11 @@ namespace XSharp.Build
         {
             try
             {
-                base.LogEventsFromTextOutput(singleLine, messageImportance);
+                if (errorCount < 500)
+                {
+                    base.LogEventsFromTextOutput(singleLine, messageImportance);
+                }
+                errorCount++;
             }
             catch (Exception e)
             {

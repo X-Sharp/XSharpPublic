@@ -8450,6 +8450,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Untyped arrays are not available in the selected dialect &apos;{0}&apos;.
+        /// </summary>
+        internal static string ERR_UntypedArrayNotAvailableInDialect {
+            get {
+                return ResourceManager.GetString("ERR_UntypedArrayNotAvailableInDialect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of unassigned local variable &apos;{0}&apos;.
         /// </summary>
         internal static string ERR_UseDefViolation {

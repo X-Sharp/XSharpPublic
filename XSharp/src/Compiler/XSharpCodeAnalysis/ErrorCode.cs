@@ -1358,6 +1358,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_UserError = 9005,
         WRN_UserWarning = 9006,
         ERR_FeatureNotAvailableInDialect = 9007, 
+        ERR_UntypedArrayNotAvailableInDialect = 9008,
 
     }
 }

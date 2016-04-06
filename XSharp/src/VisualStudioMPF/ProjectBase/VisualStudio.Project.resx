@@ -538,4 +538,10 @@ Are you sure you want to change the Target Framework for this project?</value>
   <data name="ReloadPromptOnTargetFxChangedCaption" xml:space="preserve">
     <value>Target Framework Change</value>
   </data>
+  <data name="AppContainerExe" xml:space="preserve">
+    <value>Windows Store app</value>
+  </data>
+  <data name="WinMDObj" xml:space="preserve">
+    <value>WinMD</value>
+  </data>
 </root>

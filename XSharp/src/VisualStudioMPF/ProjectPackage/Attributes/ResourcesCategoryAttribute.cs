@@ -81,7 +81,7 @@ namespace XSharp.Project
         /// if a localized name does not exist.</returns>
         protected override string GetLocalizedString(string categoryName)
         {
-            return Resources.GetString(categoryName);
+            return categoryName;
         }
         #endregion
     }

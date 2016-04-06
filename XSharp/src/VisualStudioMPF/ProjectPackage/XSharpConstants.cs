@@ -9,9 +9,11 @@ namespace XSharp.Project
     public static class XSharpConstants
     {
 
-        public const string FileExtension = ".prg";
+        public const string FileExtension1 = ".prg";
+        public const string FileExtension2 = ".xs";
         public const string LanguageName = "XSharp";
-        public const string ProjectExtension = "xsprj";
+        public const string ProjectExtension = "xsproj";
+        public const string ProjectExtensions = "xsproj;xsprj";
 
         public const string EditorFactoryGuidString = "B4829761-2BFA-44B7-8F8F-D2625EBCF218";
 

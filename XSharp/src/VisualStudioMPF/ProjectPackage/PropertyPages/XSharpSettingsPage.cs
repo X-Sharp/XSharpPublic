@@ -10,14 +10,12 @@ using EnvDTE;
 using EnvDTE80;
 using System.ComponentModel;
 using System.Drawing;
-
+using Microsoft.VisualStudio.OLE.Interop;
 namespace XSharp.Project
 {
-    // abstract, so we don't need to implement BindProperties and ApplyChanges
     [CLSCompliant(false), ComVisible(true)]
     public abstract class XSharpSettingsPage : SettingsPage, IInternalExtenderProvider
     {
-
 
         #region IInternalExtenderProvider Members
         public object GetExtenderNames(string ExtenderCATID, object ExtendeeObject)
@@ -92,7 +90,7 @@ namespace XSharp.Project
         public override void Move(Microsoft.VisualStudio.OLE.Interop.RECT[] arrRect)
         {
             base.Move(arrRect);
-            // Get the Innet panel
+            // Get the Inner panel
             Control innerPanel = Control.FromHandle(new IntPtr(Grid.Handle));
             // Get the Size of the visible surface
             Size s = ThePanel.Size;
@@ -104,6 +102,140 @@ namespace XSharp.Project
             innerPanel.Size = s;
             //
         }
+        internal bool getPrjLogic(String Name,  bool defaultValue = false)
+        {
+            bool property;
+            string value = this.ProjectMgr.GetProjectProperty(Name, true);
+            if (value != null)
+                property = (value.ToLower() == "true");
+            else
+                property = defaultValue;
+            return property;
+        }
+
+        internal bool  getCfgLogic(String Name, bool defaultValue = false)
+        {
+            bool property;
+            string value = this.GetConfigProperty(Name);
+            if (value != null)
+                property = (value.ToLower() == "true");
+            else
+                property = defaultValue;
+            return property;
+        }
+
+
+        internal string getPrjString(String Name, string defaultValue = "")
+        {
+            string property;
+            string value = this.ProjectMgr.GetProjectProperty(Name, true);
+            if (!String.IsNullOrEmpty(value))
+                property = value;
+            else
+                property = defaultValue;
+            return property;
+        }
+        internal string getCfgString(String Name,  string defaultValue = "")
+        {
+            string property;
+            string value = this.GetUnevaluatedConfigProperty(Name);
+            if (!String.IsNullOrEmpty(value))
+                property = value;
+            else
+                property = defaultValue;
+            return property;
+        }
+
+        public string GetUnevaluatedConfigProperty(string propertyName)
+        {
+            if (this.ProjectMgr == null)
+            {
+                return string.Empty;
+            }
+            string str = null;
+            var configs = this.GetProjectConfigurations();
+            try
+            { 
+            for (int i = 0; i < configs.Length; i++)
+            {
+                string unevaluatedConfigurationProperty = configs[i].GetUnevaluatedConfigurationProperty(propertyName);
+                if (unevaluatedConfigurationProperty != null)
+                {
+                    string str3 = unevaluatedConfigurationProperty.Trim();
+                    if (i == 0)
+                    {
+                        str = str3;
+                    }
+                    else if (str != str3)
+                    {
+                        return "";
+                    }
+                }
+            }
+            }
+            catch (Exception)
+            { }
+            return str;
+        }
+
+        internal int getCfgInteger(String Name, int defaultValue)
+        {
+            int property;
+            string value = this.GetConfigProperty(Name);
+            bool ok = false;
+            int result;
+            ok = int.TryParse(value, out result);
+            if (!ok)
+                property = defaultValue;
+            else
+                property = result;
+            return property;
+        }
+        internal int getPrjInteger(String Name, int defaultValue)
+        {
+            int property;
+            string value = this.ProjectMgr.GetProjectProperty(Name,true);
+            bool ok = false;
+            int result;
+            ok = int.TryParse(value, out result);
+            if (!ok)
+                property = defaultValue;
+            else
+                property = result;
+            return property;
+        }
+
+        internal static string AddSlash(string folderName)
+        {
+            if (String.IsNullOrEmpty(folderName))
+                folderName = "";
+            folderName = folderName.TrimEnd();
+            if (folderName != "" && folderName[folderName.Length - 1] != Path.DirectorySeparatorChar)
+            {
+                folderName += Path.DirectorySeparatorChar;
+            }
+            return folderName;
+
+        }
+
     }
 }
 
+/// <summary>
+/// Add method to ProjectConfig to read Unevaluated value of a property
+/// </summary>
+namespace Microsoft.VisualStudio.Project
+{
+    public partial class ProjectConfig 
+    {
+        public virtual string GetUnevaluatedConfigurationProperty(string propertyName)
+        {
+            this.project.SetConfiguration(this.ConfigName);
+            this.project.BuildProject.ReevaluateIfNecessary();
+            this.currentConfig = this.project.BuildProject.CreateProjectInstance();
+            this.project.SetCurrentConfiguration();
+            return this.project.GetProjectPropertyUnevaluated(propertyName);
+        }
+
+    }
+}

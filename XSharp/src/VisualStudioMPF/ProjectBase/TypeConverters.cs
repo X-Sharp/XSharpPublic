@@ -81,6 +81,8 @@ namespace Microsoft.VisualStudio.Project
                 if(str == SR.GetString(SR.Exe, culture)) return OutputType.Exe;
                 if(str == SR.GetString(SR.Library, culture)) return OutputType.Library;
                 if(str == SR.GetString(SR.WinExe, culture)) return OutputType.WinExe;
+                if (str == SR.GetString(SR.WinMDObj, culture)) return OutputType.WinMDObj;
+                if (str == SR.GetString(SR.AppContainerExe, culture)) return OutputType.AppContainerExe;
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -115,7 +117,7 @@ namespace Microsoft.VisualStudio.Project
 
         public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new OutputType[] { OutputType.Exe, OutputType.Library, OutputType.WinExe });
+            return new StandardValuesCollection(new OutputType[] { OutputType.Exe, OutputType.Library, OutputType.WinExe, OutputType.AppContainerExe, OutputType.WinMDObj});
         }
     }
 

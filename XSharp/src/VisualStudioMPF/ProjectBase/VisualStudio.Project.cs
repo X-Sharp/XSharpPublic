@@ -210,6 +210,8 @@ namespace Microsoft.VisualStudio.Project
         internal const string CannotLoadUnknownTargetFrameworkProject = "CannotLoadUnknownTargetFrameworkProject";
         internal const string ReloadPromptOnTargetFxChanged = "ReloadPromptOnTargetFxChanged";
         internal const string ReloadPromptOnTargetFxChangedCaption = "ReloadPromptOnTargetFxChangedCaption";
+        internal const string AppContainerExe = "AppContainerExe";
+        internal const string WinMDObj = "WinMDObj";
 
         static SR loader;
         ResourceManager resources;

@@ -47,7 +47,7 @@ namespace XSharp.Project
         //
         public override object GetIconHandle(bool open)
         {
-            if (FileName.EndsWith( XSharpConstants.FileExtension, StringComparison.InvariantCultureIgnoreCase))
+            if (FileName.EndsWith( XSharpConstants.FileExtension1, StringComparison.InvariantCultureIgnoreCase))
                 return PackageUtilities.GetIntPointerFromImage(
                     XSharpProjectNode.ImageList.Images[(int)XSharpConstants.ImageListIndex.Source]);
 

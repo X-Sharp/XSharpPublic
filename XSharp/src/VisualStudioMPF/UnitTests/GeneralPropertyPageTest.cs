@@ -132,7 +132,7 @@ namespace XSharp.Project.UnitTests
             string actual = generalPropertyPage.AssemblyName;
 
             Assert.AreEqual(expected, actual,
-                "ApplicationIcon value was not initialized by expected value.");
+                "AssemblyName value was not initialized by expected value.");
 
             Assert.IsTrue((VSConstants.S_OK == generalPropertyPage.IsPageDirty()),
                 "IsDirty status was unexpected after changing of the property of the tested object.");
@@ -141,9 +141,9 @@ namespace XSharp.Project.UnitTests
         [TestMethod()]
         public void DefaultNamespaceTest()
         {
-            generalPropertyPage.DefaultNamespace = expected;
+            generalPropertyPage.RootNamespace = expected;
 
-            string actual = generalPropertyPage.DefaultNamespace;
+            string actual = generalPropertyPage.RootNamespace;
 
             Assert.AreEqual(expected, actual,
                 "ApplicationIcon value was not initialized by expected value.");
@@ -161,7 +161,7 @@ namespace XSharp.Project.UnitTests
             OutputType actual = generalPropertyPage.OutputType;
 
             Assert.AreEqual(expected, actual,
-                "ApplicationIcon value was not initialized by expected value.");
+                "OutputType value was not initialized by expected value.");
 
             Assert.IsTrue((VSConstants.S_OK == generalPropertyPage.IsPageDirty()),
                 "IsDirty status was unexpected after changing of the property of the tested object.");
@@ -176,7 +176,7 @@ namespace XSharp.Project.UnitTests
             OutputType actual = generalPropertyPage.OutputType;
 
             Assert.AreEqual(expected, actual,
-                "ApplicationIcon value was not initialized by expected value.");
+                "OutputType value was not initialized by expected value.");
 
             Assert.IsTrue((VSConstants.S_OK == generalPropertyPage.IsPageDirty()),
                 "IsDirty status was unexpected after changing of the property of the tested object.");
@@ -191,7 +191,7 @@ namespace XSharp.Project.UnitTests
             OutputType actual = generalPropertyPage.OutputType;
 
             Assert.AreEqual(expected, actual,
-                "ApplicationIcon value was not initialized by expected value.");
+                "OutputType value was not initialized by expected value.");
 
             Assert.IsTrue((VSConstants.S_OK == generalPropertyPage.IsPageDirty()),
                 "IsDirty status was unexpected after changing of the property of the tested object.");
@@ -229,7 +229,7 @@ namespace XSharp.Project.UnitTests
             string actual = generalPropertyPage.StartupObject;
 
             Assert.AreEqual(expected, actual,
-                "ApplicationIcon value was not initialized by expected value.");
+                "StartupObject value was not initialized by expected value.");
 
             Assert.IsTrue((VSConstants.S_OK == generalPropertyPage.IsPageDirty()),
                 "IsDirty status was unexpected after changing of the property of the tested object.");

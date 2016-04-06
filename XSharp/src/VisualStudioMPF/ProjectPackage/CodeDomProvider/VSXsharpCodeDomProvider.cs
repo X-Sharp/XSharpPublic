@@ -41,7 +41,7 @@ namespace XSharp.Project
         {
             return Path.Combine(Path.GetDirectoryName(_fileNode.GetMkDocument()),
                 Path.GetFileNameWithoutExtension(_fileNode.FileName) +
-                    ".Designer" +XSharpConstants.FileExtension);
+                    ".Designer" +XSharpConstants.FileExtension1);
         }
 
         #endregion

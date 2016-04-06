@@ -65,7 +65,7 @@ using MSBuildConstruction = Microsoft.Build.Construction;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false), ComVisible(true)]
-    public class ProjectConfig :
+    public partial class ProjectConfig :
         IVsCfg,
         IVsProjectCfg,
         IVsProjectCfg2,
@@ -288,6 +288,8 @@ namespace Microsoft.VisualStudio.Project
             }
             return isDirty;
         }
+
+
 
         /// <summary>
         /// If flavored, ask the flavor if it wants to provide an XML fragment

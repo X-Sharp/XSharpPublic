@@ -114,7 +114,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             var sqmSessionGuid = Guid.Empty;
             bool optionsEnded = false;
             bool interactiveMode = false;
-
+            #if XSHARP
+            this.ResetXSharpCommandlineOptions();
+            #endif
             // Process ruleset files first so that diagnostic severity settings specified on the command line via
             // /nowarn and /warnaserror can override diagnostic severity settings specified in the ruleset file.
             if (!IsScriptRunner)

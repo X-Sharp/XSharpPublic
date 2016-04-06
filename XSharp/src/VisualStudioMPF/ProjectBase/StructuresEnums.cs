@@ -95,7 +95,16 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The output type is an executable.
         /// </summary>
-        Exe
+        Exe,
+        /// <summary>
+        /// The output type is an application Container.
+        /// </summary>
+        AppContainerExe,
+        /// <summary>
+        /// The output type is an WinMD Assembly
+        /// </summary>
+        WinMDObj,
+
     }
 
     /// <summary>

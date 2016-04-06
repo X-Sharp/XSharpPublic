@@ -125,10 +125,28 @@
     <Compile Include="Attributes\LocDisplayNameAttribute.cs" />
     <Compile Include="Attributes\ResourcesCategoryAttribute.cs" />
     <Compile Include="Attributes\ResourcesDescriptionAttribute.cs" />
+    <Compile Include="PropertyPages\Enums.cs" />
+    <Compile Include="PropertyPages\XSharpBuildMacroCollection.cs" />
+    <Compile Include="PropertyPages\XSharpMLEPropertyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpMLEPropertyForm.Designer.cs">
+      <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpDebugPropertyPage.cs" />
+    <Compile Include="PropertyPages\XSharpLanguagePropertyPage.cs" />
     <Compile Include="PropertyPages\XSharpBuildPropertyPage.cs" />
     <Compile Include="PropertyPages\XSharpGeneralPropertyPage.cs" />
     <Compile Include="PropertyPages\XSharpProjectNodeProperties.cs" />
+    <Compile Include="PropertyPages\XSharpFileNameEditor.cs" />
     <Compile Include="PropertyPages\XSharpSettingsPage.cs" />
+    <Compile Include="PropertyPages\XSharpSLEPropertyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpSLEPropertyForm.Designer.cs">
+      <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
     <Compile Include="WPF\XSharpRuntimeNameFactory.cs" />
     <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
@@ -148,18 +166,88 @@
     <Compile Include="Resources.cs" />
     <Compile Include="XSharpVSMDProvider.cs" />
     <None Include="app.config" />
+    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.vndbs" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.vnfs" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.vnmnu" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vnfrm" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\ClassLibrary.xsproj" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\packages.config" />
+    <ZipProject Include="Templates\Projects\Console\ConsoleApplication.xsproj" />
+    <ZipProject Include="Templates\Projects\Console\packages.config" />
+    <ZipProject Include="Templates\Projects\WinFormApp\Settings.settings" />
+    <ZipProject Include="Templates\Projects\WinFormApp\WinFormApp.xsproj" />
+    <ZipProject Include="Templates\Projects\WPFApplication\App.config" />
+    <ZipProject Include="Templates\Projects\WPFApplication\Settings.settings" />
+    <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.xsproj" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="PropertyPages\XSharpMLEPropertyForm.resx">
+      <DependentUpon>XSharpMLEPropertyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PropertyPages\XSharpSLEPropertyForm.resx">
+      <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Templates\Projects\WinFormApp\Resources.resx" />
+    <EmbeddedResource Include="Templates\Projects\WPFApplication\Resources.resx" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\Class\Class.ico" />
+    <ZipItem Include="Templates\ProjectItems\Class\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Class\Class.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\CodeFile\CodeFile.ico" />
+    <ZipItem Include="Templates\ProjectItems\CodeFile\Codefile.prg" />
+    <ZipItem Include="Templates\ProjectItems\CodeFile\Codefile.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\FormSimple\Class.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\FormSimple\Codefile.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\FormSimple\form.prg" />
+    <ZipItem Include="Templates\ProjectItems\FormSimple\windowsform.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\FormSimple\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\Form\form.designer.prg" />
+    <ZipItem Include="Templates\ProjectItems\Form\Form.ico" />
+    <ZipItem Include="Templates\ProjectItems\Form\form.prg" />
+    <ZipItem Include="Templates\ProjectItems\Form\windowsform.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Form\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.prg" />
+    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.prg" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.prg" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.rc" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu_Accelerator.rc" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.prg" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.rc" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vh" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\wpfWindow.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPF\__TemplateIcon.ico" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\Class.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\ClassLibrary.vstemplate" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\XSharp.ico" />
+    <ZipProject Include="Templates\Projects\Console\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\Console\ConsoleApplication.vstemplate" />
+    <ZipProject Include="Templates\Projects\Console\Program.prg" />
+    <ZipProject Include="Templates\Projects\Console\XSharp.ico" />
+    <ZipProject Include="Templates\Projects\WinFormApp\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\WinFormApp\Program.prg" />
+    <ZipProject Include="Templates\Projects\WinFormApp\WinForm1.prg" />
+    <ZipProject Include="Templates\Projects\WinFormApp\WinFormApp.vstemplate" />
+    <ZipProject Include="Templates\Projects\WinFormApp\XSharp.ico" />
+    <ZipProject Include="Templates\Projects\WPFApplication\App.xaml.prg" />
+    <ZipProject Include="Templates\Projects\WPFApplication\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.vstemplate" />
+    <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml.prg" />
+    <ZipProject Include="Templates\Projects\WPFApplication\XSharp.ico" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -205,26 +293,25 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3bPkgdefProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\Templates\XSharpItemTemplates.csproj">
-      <Project>{C0ED1D5E-8EEA-4D0F-8923-FF3759EC9C46}</Project>
-      <Name>XSharpItemTemplates</Name>
-      <VSIXSubPath>ItemTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
-    <ProjectReference Include="..\Templates\XSharpProjectTemplates.csproj">
-      <Project>{91C58B0A-68C7-4437-8B82-706C60FFEF86}</Project>
-      <Name>XSharpProjectTemplates</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ZipItem>
+    <ZipProject Include="Templates\Projects\WPFApplication\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ZipProject>
+  </ItemGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -109,7 +109,14 @@ namespace XSharp.Project
 
             set
             {
-                this.XSharpBuildAction = (XSharpBuildAction)Enum.Parse(typeof(XSharpBuildAction), value.ToString());
+                try
+                {
+                    this.XSharpBuildAction = (XSharpBuildAction)Enum.Parse(typeof(XSharpBuildAction), value.ToString());
+                }
+                catch (Exception)
+                {
+                    this.XSharpBuildAction = XSharpBuildAction.None;
+                }
             }
         }
     }

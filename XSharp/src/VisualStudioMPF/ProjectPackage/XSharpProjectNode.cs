@@ -1,50 +1,3 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
 
 using System;
 using System.Drawing;
@@ -137,21 +90,23 @@ namespace XSharp.Project
             AddCATIDMapping(typeof(XSharpFileNodeProperties), typeof(XSharpFileNodeProperties).GUID);
             //AddCATIDMapping(typeof(NemerleOAFileItem), typeof(NemerleOAFileItem).GUID);
 
-            //// The following are not specific to Nemerle and as such we need a separate GUID
+            //// The following are not specific and as such we need a separate GUID
             //// (we simply used guidgen.exe to create new guids)
             ////
             //AddCATIDMapping(typeof(FolderNodeProperties), new Guid(NemerleConstants.FolderNodePropertiesGuidString));
 
-            // This one we use the same as Nemerle file nodes since both refer to files
+            // This one we use the same as file nodes since both refer to files
             AddCATIDMapping(typeof(FileNodeProperties), typeof(XSharpFileNodeProperties).GUID);
 
             // Because our property page pass itself as the object to display in its grid,
             // we need to make it have the same CATID as the browse object of the project node
             // so that filtering is possible.
-            AddCATIDMapping(typeof(XSharpGeneralPropertyPage), typeof(XSharpProjectNodeProperties).GUID);
+            AddCATIDMapping(typeof(XSharpGeneralPropertyPage), typeof(XSharpGeneralPropertyPage).GUID);
 
             //// We could also provide CATIDs for references and the references container node, if we wanted to.
             AddCATIDMapping(typeof(XSharpBuildPropertyPage), typeof(XSharpBuildPropertyPage).GUID);
+            AddCATIDMapping(typeof(XSharpLanguagePropertyPage), typeof(XSharpLanguagePropertyPage).GUID);
+            AddCATIDMapping(typeof(XSharpDebugPropertyPage), typeof(XSharpDebugPropertyPage).GUID);
         }
         #endregion
 
@@ -325,6 +280,9 @@ namespace XSharp.Project
             return newNode;
         }
 
+        private Guid guidPublishPage = Guid.Parse("CC4014F5-B18D-439C-9352-F99D984CCA85");
+        private Guid guidSignPagePage = Guid.Parse("1e78f8db-6c07-4d61-a18f-7514010abd56");
+
         /// <summary>
         /// Generate new Guid value and update it with GeneralPropertyPage GUID.
         /// This is the Common Properties Dialog
@@ -335,7 +293,8 @@ namespace XSharp.Project
             Guid[] result = new Guid[]
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
-                typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpLanguagePropertyPage).GUID,
+                guidSignPagePage
                 };
             return result;
         }
@@ -345,6 +304,8 @@ namespace XSharp.Project
         {
             Guid[] result = new Guid[]
             {
+                typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpDebugPropertyPage).GUID,
             };
             return result;
         }
@@ -357,7 +318,10 @@ namespace XSharp.Project
             Guid[] result = new Guid[]
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
+                typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpDebugPropertyPage).GUID,
+                guidSignPagePage
                 };
             return result;
         }
@@ -479,8 +443,10 @@ namespace XSharp.Project
             if (string.IsNullOrEmpty(strFileName))
                 return false;
 
+            string ext = Path.GetExtension(strFileName);
             return
-                string.Compare(Path.GetExtension(strFileName), XSharpConstants.FileExtension, StringComparison.OrdinalIgnoreCase) == 0;
+                string.Compare(ext, XSharpConstants.FileExtension1, StringComparison.OrdinalIgnoreCase) == 0 ||
+                string.Compare(ext, XSharpConstants.FileExtension2, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
         /// <summary>

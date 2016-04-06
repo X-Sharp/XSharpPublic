@@ -7,10 +7,7 @@ using System.Windows.Forms;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
-using EnvDTE;
-using EnvDTE80;
-using System.ComponentModel;
-
+using System.Linq;
 namespace XSharp.Project
 {
     /// <summary>
@@ -24,10 +21,13 @@ namespace XSharp.Project
         #region Fields
         private string assemblyName;
         private OutputType outputType;
-        private string defaultNamespace;
+        private string rootNamespace;
         private string startupObject;
         private string applicationIcon;
         private FrameworkName targetFrameworkMoniker;
+        private Dialect dialect;
+        private Platform platformtarget;
+
         #endregion Fields
 
         #region Constructors
@@ -41,9 +41,9 @@ namespace XSharp.Project
         #endregion
 
         #region Properties
-        [ResourcesCategoryAttribute(Resources.AssemblyName)]
+        [ResourcesCategory(Resources.AssemblyName)]
         [LocDisplayName(Resources.AssemblyName)]
-        [ResourcesDescriptionAttribute(Resources.AssemblyNameDescription)]
+        [ResourcesDescription(Resources.AssemblyNameDescription)]
         /// <summary>
         /// Gets or sets Assembly Name.
         /// </summary>
@@ -54,9 +54,9 @@ namespace XSharp.Project
             set { this.assemblyName = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategoryAttribute(Resources.Application)]
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.OutputType)]
-        [ResourcesDescriptionAttribute(Resources.OutputTypeDescription)]
+        [ResourcesDescription(Resources.OutputTypeDescription)]
         /// <summary>
         /// Gets or sets OutputType.
         /// </summary>
@@ -67,22 +67,41 @@ namespace XSharp.Project
             set { this.outputType = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategoryAttribute(Resources.Application)]
+        [ResourcesCategory(Resources.Application)]
+        [LocDisplayName("Dialect")]
+        [ResourcesDescription("Select the compiler dialect to use when compiling this project")]
+        public Dialect Dialect
+        {
+            get { return this.dialect; }
+            set { this.dialect = value; this.IsDirty = true; }
+        }
+
+        [ResourcesCategory(Resources.Project)]
+        [LocDisplayName("Platform Target")]
+        [ResourcesDescription("Select the compiler dialect to use when compiling this project")]
+        public Platform PlatformTarget
+        {
+            get { return this.platformtarget; }
+            set { this.platformtarget = value; this.IsDirty = true; }
+        }
+
+
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.DefaultNamespace)]
-        [ResourcesDescriptionAttribute(Resources.DefaultNamespaceDescription)]
+        [ResourcesDescription(Resources.DefaultNamespaceDescription)]
         /// <summary>
         /// Gets or sets Default Namespace.
         /// </summary>
         /// <remarks>IsDirty flag was switched to true.</remarks>
-        public string DefaultNamespace
+        public string RootNamespace
         {
-            get { return this.defaultNamespace; }
-            set { this.defaultNamespace = value; this.IsDirty = true; }
+            get { return this.rootNamespace; }
+            set { this.rootNamespace = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategoryAttribute(Resources.Application)]
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.StartupObject)]
-        [ResourcesDescriptionAttribute(Resources.StartupObjectDescription)]
+        [ResourcesDescription(Resources.StartupObjectDescription)]
         /// <summary>
         /// Gets or sets Startup Object.
         /// </summary>
@@ -93,9 +112,9 @@ namespace XSharp.Project
             set { this.startupObject = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategoryAttribute(Resources.Application)]
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.ApplicationIcon)]
-        [ResourcesDescriptionAttribute(Resources.ApplicationIconDescription)]
+        [ResourcesDescription(Resources.ApplicationIconDescription)]
         /// <summary>
         /// Gets or sets Application Icon.
         /// </summary>
@@ -106,9 +125,9 @@ namespace XSharp.Project
             set { this.applicationIcon = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategoryAttribute(Resources.Project)]
+        [ResourcesCategory(Resources.Project)]
         [LocDisplayName(Resources.ProjectFile)]
-        [ResourcesDescriptionAttribute(Resources.ProjectFileDescription)]
+        [ResourcesDescription(Resources.ProjectFileDescription)]
         /// <summary>
         /// Gets the path to the project file.
         /// </summary>
@@ -118,9 +137,9 @@ namespace XSharp.Project
             get { return Path.GetFileName(this.ProjectMgr.ProjectFile); }
         }
 
-        [ResourcesCategoryAttribute(Resources.Project)]
+        [ResourcesCategory(Resources.Project)]
         [LocDisplayName(Resources.ProjectFolder)]
-        [ResourcesDescriptionAttribute(Resources.ProjectFolderDescription)]
+        [ResourcesDescription(Resources.ProjectFolderDescription)]
         /// <summary>
         /// Gets the path to the project folder.
         /// </summary>
@@ -130,9 +149,9 @@ namespace XSharp.Project
             get { return Path.GetDirectoryName(this.ProjectMgr.ProjectFolder); }
         }
 
-        [ResourcesCategoryAttribute(Resources.Project)]
+        [ResourcesCategory(Resources.Project)]
         [LocDisplayName(Resources.OutputFile)]
-        [ResourcesDescriptionAttribute(Resources.OutputFileDescription)]
+        [ResourcesDescription(Resources.OutputFileDescription)]
         /// <summary>
         /// Gets the output file name depending on current OutputType.
         /// </summary>
@@ -157,9 +176,9 @@ namespace XSharp.Project
             }
         }
 
-        [ResourcesCategoryAttribute(Resources.Project)]
+        [ResourcesCategory(Resources.Project)]
         [LocDisplayName(Resources.TargetFrameworkMoniker)]
-        [ResourcesDescriptionAttribute(Resources.TargetFrameworkMonikerDescription)]
+        [ResourcesDescription(Resources.TargetFrameworkMonikerDescription)]
         [PropertyPageTypeConverter(typeof(FrameworkNameConverter))]
         /// <summary>
         /// Gets or sets Target Platform PlatformType.
@@ -192,11 +211,13 @@ namespace XSharp.Project
                 return;
             }
 
-            this.assemblyName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
+            this.assemblyName = this.ProjectMgr.GetProjectProperty(nameof(AssemblyName), true);
+            string outputType = this.ProjectMgr.GetProjectProperty(nameof(OutputType), false);
+            this.rootNamespace = this.ProjectMgr.GetProjectProperty(nameof(RootNamespace), false);
+            this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
+            this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
 
-            string outputType = this.ProjectMgr.GetProjectProperty("OutputType", false);
-
-            if(outputType != null && outputType.Length > 0)
+            if (outputType != null && outputType.Length > 0)
             {
                 try
                 {
@@ -204,12 +225,20 @@ namespace XSharp.Project
                 }
                 catch(ArgumentException)
                 {
+                    this.outputType = OutputType.Library;
                 }
             }
 
-            this.defaultNamespace = this.ProjectMgr.GetProjectProperty("RootNamespace", false);
-            this.startupObject = this.ProjectMgr.GetProjectProperty("StartupObject", false);
-            this.applicationIcon = this.ProjectMgr.GetProjectProperty("ApplicationIcon", false);
+
+            string platform = this.ProjectMgr.GetProjectProperty(nameof(PlatformTarget), false);
+            try
+            {
+                this.platformtarget = (Platform)Enum.Parse(typeof(Platform), platform);
+            }
+            catch (ArgumentException)
+            {
+                this.platformtarget = Platform.AnyCPU;
+            }
 
             try
             {
@@ -217,6 +246,11 @@ namespace XSharp.Project
             }
             catch (ArgumentException)
             {
+                foreach (var name in new FrameworkNameConverter().GetStandardValues())
+                {
+                    this.targetFrameworkMoniker = (FrameworkName)name;
+                    break;
+                }
             }
         }
 
@@ -234,11 +268,13 @@ namespace XSharp.Project
             IVsPropertyPageFrame propertyPageFrame = (IVsPropertyPageFrame)this.ProjectMgr.Site.GetService((typeof(SVsPropertyPageFrame)));
             bool reloadRequired = this.ProjectMgr.TargetFrameworkMoniker != this.targetFrameworkMoniker;
 
-            this.ProjectMgr.SetProjectProperty("AssemblyName", this.assemblyName);
-            this.ProjectMgr.SetProjectProperty("OutputType", this.outputType.ToString());
-            this.ProjectMgr.SetProjectProperty("RootNamespace", this.defaultNamespace);
-            this.ProjectMgr.SetProjectProperty("StartupObject", this.startupObject);
-            this.ProjectMgr.SetProjectProperty("ApplicationIcon", this.applicationIcon);
+            this.ProjectMgr.SetProjectProperty(nameof(AssemblyName), this.assemblyName);
+            this.ProjectMgr.SetProjectProperty(nameof(OutputType), this.outputType.ToString());
+            this.ProjectMgr.SetProjectProperty(nameof(RootNamespace), this.rootNamespace);
+            this.ProjectMgr.SetProjectProperty(nameof(StartupObject), this.startupObject);
+            this.ProjectMgr.SetProjectProperty(nameof(ApplicationIcon), this.applicationIcon);
+            this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
+            this.ProjectMgr.SetProjectProperty(nameof(PlatformTarget), this.platformtarget.ToString());
 
             if (reloadRequired)
             {

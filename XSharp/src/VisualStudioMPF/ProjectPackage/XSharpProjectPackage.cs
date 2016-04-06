@@ -1,50 +1,3 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
 
 using System;
 using System.Runtime.InteropServices;
@@ -75,13 +28,15 @@ namespace XSharp.Project
     [Description("XSharp Project System")]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\14.0")]
-    [ProvideObject(typeof(XSharpGeneralPropertyPage))]
-    [ProvideObject(typeof(XSharpBuildPropertyPage))]
+    [ProvideObject(typeof(XSharpGeneralPropertyPage))]      // 53651BEA-799A-45EB-B58C-C884F5417219
+    [ProvideObject(typeof(XSharpLanguagePropertyPage))]     // 2652FCA6-1C45-4D25-942D-4C5D5EDE9539
+    [ProvideObject(typeof(XSharpBuildPropertyPage))]        // E994C210-9D6D-4CF4-A061-EBBEA2BC626B
+    [ProvideObject(typeof(XSharpDebugPropertyPage))]        // 2955A638-C389-4675-BB1C-6B2BC173C1E7
     [ProvideProjectFactory(typeof(XSharpProjectFactory), 
         XSharpConstants.LanguageName, 
         XSharpConstants.LanguageName + " Project Files (*." + XSharpConstants.ProjectExtension + ");*." + XSharpConstants.ProjectExtension,
-        XSharpConstants.ProjectExtension, 
-        XSharpConstants.ProjectExtension, 
+        XSharpConstants.ProjectExtension,
+        XSharpConstants.ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
 
@@ -93,15 +48,21 @@ namespace XSharp.Project
         null,
         LanguageVsTemplate = XSharpConstants.LanguageName,
         TemplateGroupIDsVsTemplate = "WPF",
-        ShowOnlySpecifiedTemplatesVsTemplate = false)]
+        ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority =100)]
 
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Form", 500)]
 
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), XSharpConstants.FileExtension, 32)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 32)]
-    // Attention! These guids are magic numbers provided by Microsoft. Don't change them.
-    //
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", Int32.MaxValue,DefaultName = "XSharp Source Code Editor",NameResourceID =109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    // Todo
+    // Add extensions for VO Compatible editors here
+
+
+    // Attention! The LOGVIEWID guids are magic numbers provided by Microsoft. Don't change them.
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Package;
-using Microsoft.VisualStudio.TextManager.Interop;
+using MVTI=Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +11,13 @@ namespace XSharp.LanguageService
 {
     internal class XSharpAuthoringScope : AuthoringScope
     {
-        public override string GetDataTipText(int line, int col, out TextSpan span)
+        public override string GetDataTipText(int line, int col, out MVTI.TextSpan span)
         {
-            span = new TextSpan();
+            span = new MVTI.TextSpan();
             return null;
         }
 
-        public override Declarations GetDeclarations(IVsTextView view,
+        public override Declarations GetDeclarations(MVTI.IVsTextView view,
                                                      int line,
                                                      int col,
                                                      TokenInfo info,
@@ -26,14 +26,14 @@ namespace XSharp.LanguageService
             return null;
         }
 
-        public override string Goto(VSConstants.VSStd97CmdID cmd, IVsTextView textView, int line, int col, out TextSpan span)
+        public override Methods GetMethods(int line, int col, string name)
         {
-            span = new TextSpan();
             return null;
         }
 
-        public override Methods GetMethods(int line, int col, string name)
+        public override string Goto(VSConstants.VSStd97CmdID cmd, MVTI.IVsTextView textView, int line, int col, out MVTI.TextSpan span)
         {
+            span = new MVTI.TextSpan();
             return null;
         }
     }

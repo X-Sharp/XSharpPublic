@@ -3,9 +3,17 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Package;
+using Microsoft.VisualStudio.TextManager.Interop;
+
 using XSharp.LanguageService;
 using XSharp.Project.WPF;
 using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Globalization;
 
 namespace XSharp.Project
 {
@@ -39,7 +47,58 @@ namespace XSharp.Project
         XSharpConstants.ProjectExtensions,
         @".NullPath", LanguageVsTemplate = "XSharp", NewProjectRequireNewFolderVsTemplate = false)]
 
+    [ProvideService(typeof(XSharpLanguageService), ServiceName = "XSharp Language Service")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".prg")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".ppo")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xs")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".xh")]
+    [ProvideLanguageExtension(typeof(XSharpLanguageService), ".vh")]
+    [ProvideLanguageService(typeof(XSharpLanguageService),
+                         "XSharp",
+                         1,                            // resource ID of localized language name
+                         CodeSense = true,             // Supports IntelliSense
+                         RequestStockColors = false,   // Supplies custom colors
+                         EnableCommenting = true,      // Supports commenting out code
+                         EnableAsyncCompletion = true  // Supports background parsing
+                         )]
+    [ProvideLanguageCodeExpansionAttribute(
+         typeof(XSharpLanguageService),
+         "XSharp",  // Name of language used as registry key.
+         1,         // Resource ID of localized name of language service.
+         "XSharp",  // language key used in snippet templates.
+         @"%InstallRoot%\XSharp Language\SnippetsIndex.xml",  // Path to snippets index
+         SearchPaths = @"%InstallRoot%\XSharp Language\Snippets\%LCID%\Snippets\;" +
+                       @"%TestDocs%\Code Snippets\XSharp Language\XSharp Code Snippets"
 
+         )]
+    /*
+        [ProvideLanguageEditorOptionPageAttribute()
+                 "{A2FE74E1-FFFF-3311-4342-123052450768}",  // GUID of property page
+                 "XSharp",  // Registry key name for language
+                 "Options",      // Registry key name for property page
+                 "#242"         // Localized name of property page
+                 )]
+        [ProvideLanguageEditorOptionPageAttribute(
+                 "XSharp",  // Registry key name for language
+                 "Advanced",     // Registry key name for node
+                 "#243"         // Localized name of node
+                 )]
+        [ProvideLanguageEditorOptionPageAttribute(
+            "{A2FE74E2-FFFF-3311-4342-123052450768}",  // GUID of property page     
+            "XSharp",  // Registry key name for language
+                 @"Advanced\Indenting",     // Registry key name for property page
+                 "#244"         // Localized name of property page
+
+                 )]
+
+
+    [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
+        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingStylePage), "CSharp", null, @"Code Style", pageNameResourceId: "#114", keywordListResourceId: 313)]
+        [ProvideLanguageEditorOptionPage(typeof(Options.IntelliSenseOptionPage), "CSharp", null, "IntelliSense", pageNameResourceId: "#103", keywordListResourceId: 312)]
+        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingOptionPage), "CSharp", "Formatting", "General", pageNameResourceId: "#108", keywordListResourceId: 307)]
+        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingIndentationOptionPage), "CSharp", "Formatting", "Indentation", pageNameResourceId: "#109", keywordListResourceId: 308)]
+        [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingWrappingPage), "CSharp", "Formatting", "Wrapping", pageNameResour
+    */
     [ProvideProjectFactory(typeof(XSharpWPFProjectFactory),
         null,
         null,
@@ -67,8 +126,11 @@ namespace XSharp.Project
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
 
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
-    public sealed class XSharpProjectPackage : ProjectPackage
+    public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {
+        private uint m_componentID;
+
+
         #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -84,15 +146,144 @@ namespace XSharp.Project
 
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
-            // Load the language service
-            XSharpLanguageService service = GetService(typeof(XSharpLanguageService)) as XSharpLanguageService;
-        }
+
+            // Register the language service
+            // Add our command handlers for menu (commands must exist in the .vsct file)
+            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (null != mcs)
+            {
+                // Create the command for the menu item.
+                CommandID menuCommandID = new CommandID(GuidList.guidXSharpLanguageServiceCmdSet, (int)PkgCmdIDList.cmdidInsertSnippet);
+                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
+                mcs.AddCommand(menuItem);
+            }
+
+            // Proffer the service.
+            IServiceContainer serviceContainer = this as IServiceContainer;
+            XSharpLanguageService langService = new XSharpLanguageService();
+            langService.SetSite(this);
+            serviceContainer.AddService(typeof(XSharpLanguageService),
+                                        langService,
+                                        true);
+
+            // Register a timer to call our language service during
+            // idle periods.
+            IOleComponentManager mgr = GetService(typeof(SOleComponentManager))
+                                       as IOleComponentManager;
+            if (m_componentID == 0 && mgr != null)
+            {
+                OLECRINFO[] crinfo = new OLECRINFO[1];
+                crinfo[0].cbSize = (uint)Marshal.SizeOf(typeof(OLECRINFO));
+                crinfo[0].grfcrf = (uint)_OLECRF.olecrfNeedIdleTime |
+                                              (uint)_OLECRF.olecrfNeedPeriodicIdleTime;
+                crinfo[0].grfcadvf = (uint)_OLECADVF.olecadvfModal |
+                                              (uint)_OLECADVF.olecadvfRedrawOff |
+                                              (uint)_OLECADVF.olecadvfWarningsOff;
+                crinfo[0].uIdleTimeInterval = 1000;
+                int hr = mgr.FRegisterComponent(this, crinfo, out m_componentID);
+            }
+
+         }
 
         public override string ProductUserContext
         {
             get { return "XSharp"; }
         }
+        private void MenuItemCallback(object sender, EventArgs e)
+        {
+            // Show a Message Box to prove we were here
+            IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
+            Guid clsid = Guid.Empty;
+            int result;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
+                       0,
+                       ref clsid,
+                       "XSharp Language Service",
+                       string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.ToString()),
+                       string.Empty,
+                       0,
+                       OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                       OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
+                       OLEMSGICON.OLEMSGICON_INFO,
+                       0,        // false
+                       out result));
+        }
 
         #endregion
+
+        #region IOleComponent Members
+
+        public int FDoIdle(uint grfidlef)
+        {
+            bool bPeriodic = (grfidlef & (uint)_OLEIDLEF.oleidlefPeriodic) != 0;
+            // Use typeof(TestLanguageService) because we need to
+            // reference the GUID for our language service.
+            Microsoft.VisualStudio.Package.LanguageService service = GetService(typeof(XSharpLanguageService))
+                                      as Microsoft.VisualStudio.Package.LanguageService;
+            if (service != null)
+            {
+                service.OnIdle(bPeriodic);
+            }
+            return 0;
+        }
+
+        public int FContinueMessageLoop(uint uReason,
+                                        IntPtr pvLoopData,
+                                        MSG[] pMsgPeeked)
+        {
+            return 1;
+        }
+
+        public int FPreTranslateMessage(MSG[] pMsg)
+        {
+            return 0;
+        }
+
+        public int FQueryTerminate(int fPromptUser)
+        {
+            return 1;
+        }
+
+        public int FReserved1(uint dwReserved,
+                              uint message,
+                              IntPtr wParam,
+                              IntPtr lParam)
+        {
+            return 1;
+        }
+
+        public IntPtr HwndGetWindow(uint dwWhich, uint dwReserved)
+        {
+            return IntPtr.Zero;
+        }
+
+        public void OnActivationChange(IOleComponent pic,
+                                       int fSameComponent,
+                                       OLECRINFO[] pcrinfo,
+                                       int fHostIsActivating,
+                                       OLECHOSTINFO[] pchostinfo,
+                                       uint dwReserved)
+        {
+        }
+
+        public void OnAppActivate(int fActive, uint dwOtherThreadID)
+        {
+        }
+
+        public void OnEnterState(uint uStateID, int fEnter)
+        {
+        }
+
+        public void OnLoseActivation()
+        {
+        }
+
+        public void Terminate()
+        {
+        }
+
+        #endregion
+
     }
+
 }

@@ -118,14 +118,15 @@ namespace Antlr4.Runtime
 
     public partial class ParserRuleContext: Microsoft.CodeAnalysis.IMessageSerializable
     {
-        [Flags]
+        [FlagsAttribute]
         enum MethodFlags 
         {
             None = 0,
             ClipperCallingConvention = 1,
             MissingReturnType = 2,
             UsesPSZ = 4,
-            MustBeUnsafe = 8
+            MustBeUnsafe = 8,
+            MustHaveReturnType = 16,
         }
         int iBPLength = -1;
         MethodFlags flags = MethodFlags.None;
@@ -149,6 +150,12 @@ namespace Antlr4.Runtime
         {
             get { return (flags & MethodFlags.MustBeUnsafe) == MethodFlags.MustBeUnsafe; }
             set { if (value) flags |= MethodFlags.MustBeUnsafe; else flags &= ~MethodFlags.MustBeUnsafe; }
+        }
+
+        public bool MustHaveReturnType
+        {
+            get { return (flags & MethodFlags.MustHaveReturnType) == MethodFlags.MustHaveReturnType; }
+            set { if (value) flags |= MethodFlags.MustHaveReturnType; else flags &= ~MethodFlags.MustHaveReturnType; }
         }
 
         public override bool IsHidden { get { return iBPLength == -1; } }

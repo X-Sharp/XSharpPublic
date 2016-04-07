@@ -128,6 +128,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private NameSyntax _pszType;
         private NameSyntax _codeblockType;
         private NameSyntax _ptrType;
+        private PredefinedTypeSyntax _objectType;
+        private PredefinedTypeSyntax _voidType;
 
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
@@ -160,6 +162,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pszType = GenerateQualifiedName("global::Vulcan.__Psz");
                 _codeblockType = GenerateQualifiedName("global::Vulcan.Codeblock");
                 _ptrType = GenerateQualifiedName("global::System.IntPtr");
+                _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
+                _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
             }
         }
 
@@ -546,7 +550,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         TypeSyntax VoidType()
         {
-            return _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
+            return _voidType;
         }
 
         TypeSyntax MissingType()
@@ -662,9 +666,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         private void Check4ClipperCC(Antlr4.Runtime.ParserRuleContext context, 
-            XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext ReturnType, bool mustHaveType)
+            XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveType)
         {
             bool isClipper = false;
+            context.MustHaveReturnType = mustHaveType;
+            context.HasMissingReturnType = (returnType == null);
             if (_options.IsDialectVO)
             {
                 if (Convention?.Type == XP.CLIPPER)
@@ -738,6 +744,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  //       $args[1] := oPar2                             .
                  //    ENDIF                                            .
                  // ENDIF                                               <== For Clipper Calling Convention
+            }
+            // Add missing return type when needed. OBJECT or USUAL depending on the dialect.
+            // Of course the return value must be specified as well, but that should be done in the return statement
+            // when /vo9 is enabled.
+            if (context.HasMissingReturnType && context.MustHaveReturnType)
+            {
+                if (_options.IsDialectVO)
+                    dataType = _usualType;
+                else
+                    dataType = _objectType;
             }
         }
 
@@ -1363,7 +1379,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             baseTypes.Add(_syntaxFactory.SimpleBaseType(context.BaseType?.Get<TypeSyntax>() 
-                ?? _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))));
+                ?? _objectType));
             foreach(var iCtx in context._Implements) {
                 baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
@@ -2967,11 +2983,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PrivateKeyword),
-                            _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword)), 
+                            _syntaxFactory.VariableDeclaration(_objectType, 
                                 MakeSeparatedList(_syntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(staticName+StaticLocalLockFieldNameSuffix), null, 
                                     _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), 
-                                        CreateObject(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword)),
-                                            EmptyArgumentList(), null))))),
+                                        CreateObject(_objectType,EmptyArgumentList(), null))))),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                         );
                 }
@@ -3414,8 +3429,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
+            var expr = context.Expr?.Get<ExpressionSyntax>();
+            // when / vo9 is enabled then add missing Expression
+            //if (expr == null)
+            //    dosomething();
             context.Put(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword), 
-                context.Expr?.Get<ExpressionSyntax>(),
+                expr,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
@@ -3649,7 +3668,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBinaryExpression([NotNull] XP.BinaryExpressionContext context)
         {
-           
+           // when /vo12 is used then for the types .DIV add conversion for the LHS and RHS to Double
+
 
             switch (context.Op.Type) {
                 case XP.EXP:
@@ -3729,6 +3749,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAssignmentExpression([NotNull] XP.AssignmentExpressionContext context)
         {
+            // when /vo12 is used then for the types .ASSIGN_DIV add conversion for the LHS and RHS to Double
+
             context.Put(_syntaxFactory.AssignmentExpression(
                 context.Op.ExpressionKindBinaryOp(),
                 context.Left.Get<ExpressionSyntax>(),
@@ -4290,6 +4312,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIif([NotNull] XP.IifContext context)
         {
+            // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
@@ -4705,6 +4728,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (type == null)
             {
+                // Cannot reuse the _objectType here because of the diagnostics
                 context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
                     .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, context.Token.Text, _options.Dialect.ToString())));
             }

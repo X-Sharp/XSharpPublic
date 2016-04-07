@@ -19,9 +19,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOFloatConstants { get; private set; }
         public bool VONullStrings { get; private set; }
+        public bool VOClipperCallingConvention { get; private set; }
 
         public string DefaultNamespace { get; private set; }
-
+        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
+        public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
 
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
@@ -39,6 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
                 VOFloatConstants = opt.Vo14;
                 VONullStrings = opt.Vo2;
+                VOClipperCallingConvention = opt.Vo5;
             }
         }
 

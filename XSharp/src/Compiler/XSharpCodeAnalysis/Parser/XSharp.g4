@@ -588,7 +588,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
 					| Left=expression Op=(MULT | DIV | MOD) Right=expression	#binaryExpression		// expr * expr
 					| Left=expression Op=(PLUS | MINUS) Right=expression		#binaryExpression		// expr +/- expr
 					| Left=expression Op=LSHIFT Right=expression				#binaryExpression		// expr << expr (shift)
-					| Left=expression Op=GT	(Gt=GT) Right=expression			#binaryExpression		// expr >> expr (shift)
+					| Left=expression Op=GT	Gt=GT Right=expression				#binaryExpression		// expr >> expr (shift)
 					| Left=expression
 					  Op=( LT | LTE | GT | GTE | EQ | EEQ
 							| SUBSTR | NEQ )

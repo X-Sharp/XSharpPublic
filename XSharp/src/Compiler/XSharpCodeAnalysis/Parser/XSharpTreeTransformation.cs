@@ -161,10 +161,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _symbolType = GenerateQualifiedName("global::Vulcan.__Symbol");
                 _pszType = GenerateQualifiedName("global::Vulcan.__Psz");
                 _codeblockType = GenerateQualifiedName("global::Vulcan.Codeblock");
-                _ptrType = GenerateQualifiedName("global::System.IntPtr");
-                _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
-                _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
             }
+            _ptrType = GenerateQualifiedName("global::System.IntPtr");
+            _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
+            _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
         }
 
         internal void Free()

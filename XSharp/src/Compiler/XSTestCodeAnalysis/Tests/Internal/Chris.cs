@@ -1884,7 +1884,9 @@ END CLASS
             var s = ParseSource(@"
 CLASS TestClass
 PROTECTED METHOD Test() AS IntClass
+RETURN NULL
 PUBLIC METHOD Test2() AS IntClass
+RETURN NULL
 END CLASS
 
 INTERNAL CLASS IntClass

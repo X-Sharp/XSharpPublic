@@ -491,7 +491,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 (node.Parent == null ||
                  node.Parent.Kind() != SyntaxKind.Attribute && // dynamic not allowed as an attribute type
                  SyntaxFacts.IsInTypeOnlyContext(node)) &&
+#if XSHARP
+                CaseInsensitiveComparison.Compare(node.Identifier.ValueText, "dynamic") == 0 &&
+#else
                 node.Identifier.ValueText == "dynamic" &&
+#endif
                 !IsViableType(result) &&
                 ((CSharpParseOptions)node.SyntaxTree.Options).LanguageVersion >= MessageID.IDS_FeatureDynamic.RequiredVersion())
             {

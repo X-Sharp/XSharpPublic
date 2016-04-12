@@ -4691,6 +4691,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.PTR:
                     context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
                     break;
+                case XP.DYNAMIC:
+                    context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));
+                    break;
                 default:
                     context.Put(_syntaxFactory.PredefinedType(context.Token.SyntaxNativeType()));
                     break;

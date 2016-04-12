@@ -47,7 +47,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string IncludePaths { get; internal set; } = "";
         public bool ImplicitNameSpace { get; internal set; } = false;
         public bool LateBinding { get; internal set; } = false;
-        public bool NoUntyped { get; internal set; } = true;
         public bool NoRun { get; internal set; } = true;
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";

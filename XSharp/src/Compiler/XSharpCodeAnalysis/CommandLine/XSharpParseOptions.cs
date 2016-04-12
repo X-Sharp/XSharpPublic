@@ -15,6 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string DefaultIncludeDir { get; private set; }
         public string WindowsDir { get; private set; }
         public string SystemDir { get; private set; }
+        public bool NoUntyped { get; private set; }
         public bool NoStdDef { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOFloatConstants { get; private set; }
@@ -39,6 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
+                NoUntyped = opt.NoUntyped;
                 VOFloatConstants = opt.Vo14;
                 VONullStrings = opt.Vo2;
                 VOClipperCallingConvention = opt.Vo5;
@@ -63,6 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VirtualInstanceMethods = opt.VirtualInstanceMethods;
             DefaultNamespace = opt.DefaultNamespace;
             IncludePaths = opt.IncludePaths;
+            NoUntyped = opt.NoUntyped;
         }
     }
 }

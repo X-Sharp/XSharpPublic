@@ -120,16 +120,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
         private XSharpParser _parser;
         private readonly CSharpParseOptions _options;
-        private NameSyntax _usualType;
-        private NameSyntax _floatType;
-        private NameSyntax _arrayType;
-        private NameSyntax _dateType;
-        private NameSyntax _symbolType;
-        private NameSyntax _pszType;
-        private NameSyntax _codeblockType;
-        private NameSyntax _ptrType;
-        private PredefinedTypeSyntax _objectType;
-        private PredefinedTypeSyntax _voidType;
+        private TypeSyntax _usualType;
+        private TypeSyntax _floatType;
+        private TypeSyntax _arrayType;
+        private TypeSyntax _dateType;
+        private TypeSyntax _symbolType;
+        private TypeSyntax _pszType;
+        private TypeSyntax _codeblockType;
+        private TypeSyntax _ptrType;
+        private TypeSyntax _objectType;
+        private TypeSyntax _voidType;
 
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
@@ -555,8 +555,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         TypeSyntax MissingType()
         {
-            return _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
-                .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
+            TypeSyntax result;
+            if (_options.IsDialectVO)
+                result = _usualType;
+            else
+                result = _objectType;
+            if (_options.NoUntyped)
+                result = result.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
+            return result;
         }
 
         ParameterListSyntax EmptyParameterList()
@@ -653,7 +659,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ExpressionSyntax CreateObject(TypeSyntax type, ArgumentListSyntax args, InitializerExpressionSyntax init)
         {
             ExpressionSyntax expr;
-            expr = _syntaxFactory.ObjectCreationExpression(
+            expr = _syntaxFactory.ObjectCreationExpression( 
                 SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                 type,args,init);
             return expr;
@@ -671,7 +677,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool isClipper = false;
             context.MustHaveReturnType = mustHaveType;
             context.HasMissingReturnType = (returnType == null);
-            if (_options.IsDialectVO)
+            if (_options.IsDialectVO && ! _options.NoUntyped)
             {
                 if (Convention?.Type == XP.CLIPPER)
                 {
@@ -719,6 +725,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.HasClipperCallingConvention || context.UsesPSZ)
             {
                 ;//  
+                 // Also take into account the _options.NoUntyped commandline parameter
                  // Add Clipper Calling convention attribute, add parameter names to this attribute
                  // ClipperCallingConventionAttribute(string[] parameterNames)
                  // Change the parameters to an compiler generated $args parameter as USUAL[]
@@ -750,10 +757,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // when /vo9 is enabled.
             if (context.HasMissingReturnType && context.MustHaveReturnType)
             {
-                if (_options.IsDialectVO)
-                    dataType = _usualType;
-                else
-                    dataType = _objectType;
+                dataType = MissingType();
             }
         }
 
@@ -4694,7 +4698,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
         {
-            NameSyntax type = null;
+            TypeSyntax type = null;
             if (_options.IsDialectVO)
             {
                 switch (context.Token.Type)
@@ -4728,9 +4732,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (type == null)
             {
-                // Cannot reuse the _objectType here because of the diagnostics
-                context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
-                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, context.Token.Text, _options.Dialect.ToString())));
+                context.Put(_objectType.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, context.Token.Text, _options.Dialect.ToString())));
             }
             else
             {

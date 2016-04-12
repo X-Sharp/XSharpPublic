@@ -426,6 +426,9 @@ namespace XSharp.CodeDom
                     else if (exp.ASSIGN_ADD() != null)
                     {
                         // += Event Handler
+                        // We will decode Left as CodeFieldReferenceExpression, but we need a CodeEventReferenceExpression
+                        CodeEventReferenceExpression cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
+                        stmt = new CodeAttachEventStatement( cere, right);
                     }
                     else if (exp.ASSIGN_SUB() != null)
                     {

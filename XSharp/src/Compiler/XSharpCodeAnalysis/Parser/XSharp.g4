@@ -119,7 +119,7 @@ parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
 parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? (Modifiers=parameterDeclMods Type=datatype)?
 					;
 
-parameterDeclMods   : Tokens+=(AS | REF | OUT | IS ) Tokens+=CONST?
+parameterDeclMods   : Tokens+=(AS | REF | OUT | IS | PARAMS) Tokens+=CONST?
 					;
 
 statementBlock      : (Stmts+=statement)*
@@ -588,7 +588,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
 					| Left=expression Op=(MULT | DIV | MOD) Right=expression	#binaryExpression		// expr * expr
 					| Left=expression Op=(PLUS | MINUS) Right=expression		#binaryExpression		// expr +/- expr
 					| Left=expression Op=LSHIFT Right=expression				#binaryExpression		// expr << expr (shift)
-					| Left=expression Op=GT	(Gt=GT) Right=expression			#binaryExpression		// expr >> expr (shift)
+					| Left=expression Op=GT	Gt=GT Right=expression				#binaryExpression		// expr >> expr (shift)
 					| Left=expression
 					  Op=( LT | LTE | GT | GTE | EQ | EEQ
 							| SUBSTR | NEQ )
@@ -854,7 +854,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | NOP | OFF | ON | ORDERBY | OVERRIDE |SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+                              GROUP | INTO | JOIN | LET | MODULE | NOP | OFF | ON | ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
 							  MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
 							)
 					;

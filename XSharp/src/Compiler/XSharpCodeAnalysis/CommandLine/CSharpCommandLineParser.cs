@@ -16,6 +16,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return options;
             }
         }
+        void ResetXSharpCommandlineOptions()
+        {
+            options = new XSharpSpecificCompilationOptions();
+        }
 
         bool ParseXSharpArgument(ref string name, ref string value, List<Diagnostic> diagnostics)
         {

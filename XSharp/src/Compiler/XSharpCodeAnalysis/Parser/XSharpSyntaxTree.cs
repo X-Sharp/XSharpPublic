@@ -114,9 +114,50 @@ namespace Antlr4.Runtime
         }
     }
 
+ 
+
     public partial class ParserRuleContext: Microsoft.CodeAnalysis.IMessageSerializable
     {
+        [FlagsAttribute]
+        enum MethodFlags 
+        {
+            None = 0,
+            ClipperCallingConvention = 1,
+            MissingReturnType = 2,
+            UsesPSZ = 4,
+            MustBeUnsafe = 8,
+            MustHaveReturnType = 16,
+        }
         int iBPLength = -1;
+        MethodFlags flags = MethodFlags.None;
+        public bool HasClipperCallingConvention
+        {
+            get { return (flags & MethodFlags.ClipperCallingConvention) == MethodFlags.ClipperCallingConvention; }
+            set { if (value) flags |= MethodFlags.ClipperCallingConvention; else flags &= ~MethodFlags.ClipperCallingConvention;  }
+        }
+
+        public bool HasMissingReturnType
+        {
+            get { return (flags & MethodFlags.MissingReturnType) == MethodFlags.MissingReturnType; }
+            set { if (value) flags |= MethodFlags.MissingReturnType; else flags &= ~MethodFlags.MissingReturnType; }
+        }
+        public bool UsesPSZ
+        {
+            get { return (flags & MethodFlags.UsesPSZ) == MethodFlags.UsesPSZ; }
+            set { if (value) flags |= MethodFlags.UsesPSZ; else flags &= ~MethodFlags.UsesPSZ; }
+        }
+        public bool MustBeUnsafe
+        {
+            get { return (flags & MethodFlags.MustBeUnsafe) == MethodFlags.MustBeUnsafe; }
+            set { if (value) flags |= MethodFlags.MustBeUnsafe; else flags &= ~MethodFlags.MustBeUnsafe; }
+        }
+
+        public bool MustHaveReturnType
+        {
+            get { return (flags & MethodFlags.MustHaveReturnType) == MethodFlags.MustHaveReturnType; }
+            set { if (value) flags |= MethodFlags.MustHaveReturnType; else flags &= ~MethodFlags.MustHaveReturnType; }
+        }
+
         public override bool IsHidden { get { return iBPLength == -1; } }
         public override int Position { get { return Start.StartIndex; } }
         public override int FullWidth

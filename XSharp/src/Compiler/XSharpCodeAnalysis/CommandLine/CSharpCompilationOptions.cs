@@ -16,8 +16,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
         public bool InitStringVarsToEmpty { get; private set; }
+        public bool VOClipperCallingConvention { get; private set; }
+        public bool VOFloatConstants { get; private set; }
         public XSharpDialect Dialect { get; private set; }
 
+        public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
+        public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -25,6 +29,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ArrayZero = opt.ArrayZero;
                 InitStringVarsToEmpty = opt.Vo2;
                 Dialect = opt.Dialect;
+                VOClipperCallingConvention = opt.Vo5;
+                VOFloatConstants = opt.Vo14;
             }
         }
 

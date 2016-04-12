@@ -736,6 +736,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.OUT:
                     r = SyntaxFactory.MakeToken(SyntaxKind.OutKeyword, token.Text);
                     break;
+                case XSharpParser.PARAMS:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword, token.Text);
+                    break;
                 case XSharpParser.CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword, token.Text);
                     break;
@@ -879,6 +882,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 //case XSharpParser.NEW:
                 case XSharpParser.OPERATOR:
                 //case XSharpParser.OUT:
+                // case XSharpParser.PARAMS:
                 //case XSharpParser.PARTIAL:
                 case XSharpParser.PROPERTY:
                 case XSharpParser.REPEAT:

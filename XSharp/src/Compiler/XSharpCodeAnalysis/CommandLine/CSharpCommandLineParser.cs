@@ -55,10 +55,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         AddDiagnostic(diagnostics, ErrorCode.ERR_BadCompatMode, value);
                     }
                     options.Dialect = dialect;
-                    if (dialect == XSharpDialect.VO || dialect == XSharpDialect.Vulcan)
-                    {
-                        options.NoUntyped = false;
-                    }
                     break;
                 case "clr": // CLR
                     break;
@@ -83,18 +79,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "lb":  
                     options.LateBinding = positive;
                     break;
-
-
                 case "norun":   
                     options.NoRun = positive;
                     break;
 
                 case "nostddefs":
                     options.NoStdDef = positive;
-                    break;
-
-                case "nountyped":
-                    options.NoUntyped = positive;
                     break;
 
                 case "ns":

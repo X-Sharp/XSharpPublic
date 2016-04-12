@@ -16,7 +16,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
         public bool InitStringVarsToEmpty { get; private set; }
-        public bool NoUntyped { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
         public bool VOFloatConstants { get; private set; }
         public XSharpDialect Dialect { get; private set; }
@@ -32,7 +31,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 VOClipperCallingConvention = opt.Vo5;
                 VOFloatConstants = opt.Vo14;
-                NoUntyped = opt.NoUntyped;
             }
         }
 
@@ -48,7 +46,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
-            NoUntyped = opt.NoUntyped;
         }
     }
 }

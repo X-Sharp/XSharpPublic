@@ -431,13 +431,23 @@ namespace XSharp.CodeDom
                     else if (exp.ASSIGN_ADD() != null)
                     {
                         // += Event Handler
-                        // We will decode Left as CodeFieldReferenceExpression, but we need a CodeEventReferenceExpression
-                        CodeEventReferenceExpression cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
+                        // We will decode Left as CodeFieldReferenceExpression or CodePropertyReferenceExpression, but we need a CodeEventReferenceExpression
+                        CodeEventReferenceExpression cere;
+                        if (left is CodeFieldReferenceExpression)
+                            cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
+                        else
+                            cere = new CodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
                         stmt = new CodeAttachEventStatement( cere, right);
                     }
                     else if (exp.ASSIGN_SUB() != null)
                     {
                         // -= Event Handler
+                        CodeEventReferenceExpression cere;
+                        if (left is CodeFieldReferenceExpression)
+                            cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
+                        else
+                            cere = new CodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
+                        stmt = new CodeRemoveEventStatement(cere, right);
                     }
                 }
                 else if ( context._expression is XSharpParser.MethodCallContext)
@@ -491,108 +501,54 @@ namespace XSharp.CodeDom
             return retValue;
         }
 
-        private MemberAttributes ContextToMethodModifiers(XSharpParser.MemberModifiersContext modifiers)
+        private MemberAttributes decodeMemberAttributes(IList<IToken> tokens)
         {
             MemberAttributes retValue = MemberAttributes.Public;
-            //
-            ITerminalNode[] visibility;
-            //
-            visibility = modifiers.INTERNAL();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Assembly;
-            //
-            visibility = modifiers.HIDDEN();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Private;
-            //
-            visibility = modifiers.PRIVATE();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Private;
-            //
-            visibility = modifiers.PROTECTED();
-            if (visibility.Length > 0)
+            bool bHasProtect = false;
+            bool bHasInternal = false;
+            foreach (var token in tokens)
             {
-                visibility = modifiers.INTERNAL();
-                if (visibility.Length > 0)
-                    retValue = MemberAttributes.FamilyOrAssembly;
-                else
-                    retValue = MemberAttributes.Family;
+                switch (token.Type)
+                {
+                    case XSharpParser.INTERNAL:
+                        bHasInternal = true;
+                        if (bHasProtect)
+                            retValue = MemberAttributes.FamilyOrAssembly;
+                        else
+                            retValue = MemberAttributes.Assembly;
+                        break;
+                    case XSharpParser.PROTECTED:
+                        bHasProtect = true;
+                        if (bHasInternal)
+                            retValue = MemberAttributes.FamilyOrAssembly;
+                        else
+                            retValue = MemberAttributes.Family;
+                        break;
+                    case XSharpParser.PRIVATE:
+                    case XSharpParser.HIDDEN:
+                        retValue = MemberAttributes.Private;
+                        break;
+                    case XSharpParser.EXPORT:
+                    case XSharpParser.PUBLIC:
+                        //
+                        retValue = MemberAttributes.Public;
+                        break;
+                }
             }
-            //
-            visibility = modifiers.EXPORT();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Public;
-            //
             return retValue;
+        }
+        private MemberAttributes ContextToMethodModifiers(XSharpParser.MemberModifiersContext modifiers)
+        {
+            return decodeMemberAttributes(modifiers._Tokens);
         }
         private MemberAttributes ContextToConstructorModifiers(XSharpParser.ConstructorModifiersContext modifiers)
         {
-            MemberAttributes retValue = MemberAttributes.Public;
-            //
-            ITerminalNode[] visibility;
-            //
-            visibility = modifiers.INTERNAL();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Assembly;
-            //
-            visibility = modifiers.HIDDEN();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Private;
-            //
-            visibility = modifiers.PRIVATE();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Private;
-            //
-            visibility = modifiers.PROTECTED();
-            if (visibility.Length > 0)
-            {
-                visibility = modifiers.INTERNAL();
-                if (visibility.Length > 0)
-                    retValue = MemberAttributes.FamilyOrAssembly;
-                else
-                    retValue = MemberAttributes.Family;
-            }
-            //
-            visibility = modifiers.EXPORT();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Public;
-            //
-            return retValue;
+            return decodeMemberAttributes(modifiers._Tokens);
         }
 
         private MemberAttributes ContextToEventModifiers(XSharpParser.EventModifiersContext modifiers)
         {
-            MemberAttributes retValue = MemberAttributes.Public;
-            //
-            ITerminalNode[] visibility;
-            //
-            visibility = modifiers.INTERNAL();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Assembly;
-            //
-            visibility = modifiers.HIDDEN();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Private;
-            //
-            visibility = modifiers.PRIVATE();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Private;
-            //
-            visibility = modifiers.PROTECTED();
-            if (visibility.Length > 0)
-            {
-                visibility = modifiers.INTERNAL();
-                if (visibility.Length > 0)
-                    retValue = MemberAttributes.FamilyOrAssembly;
-                else
-                    retValue = MemberAttributes.Family;
-            }
-            //
-            visibility = modifiers.EXPORT();
-            if (visibility.Length > 0)
-                retValue = MemberAttributes.Public;
-            //
-            return retValue;
+            return decodeMemberAttributes(modifiers._Tokens);
         }
 
         private bool IsEmpty(CodeNamespace nspace)

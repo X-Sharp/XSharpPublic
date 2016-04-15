@@ -432,7 +432,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             // there used to be a bug in VB/C# that would work with 0. To avoid breaking
             // existing automation they are still accepting 0. To be compatible with them
             // we accept it as well.
-			//Debug.Assert(index > 0, "Index is 1 based.");
+            Debug.Assert(index > 0, "Index is 1 based.");
             if(index < 0)
             {
                 throw new ArgumentOutOfRangeException("index");

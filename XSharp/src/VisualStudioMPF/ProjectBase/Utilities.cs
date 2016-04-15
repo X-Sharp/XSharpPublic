@@ -438,18 +438,10 @@ namespace Microsoft.VisualStudio.Project
             string currentConfigName = string.Empty;
             if(automationObject.ConfigurationManager != null)
             {
-                
-                try
+                EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
+                if(activeConfig != null)
                 {
-                    EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
-                    if (activeConfig != null)
-                    {
-                        currentConfigName = activeConfig.ConfigurationName;
-                    }
-                }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    currentConfigName = activeConfig.ConfigurationName;
                 }
             }
             return currentConfigName;
@@ -457,30 +449,6 @@ namespace Microsoft.VisualStudio.Project
         }
 
 
-		/// <summary>
-		/// Gets the active configuration name.
-		/// </summary>
-		/// <param name="automationObject">The automation object.</param>
-		/// <returns>The name of the active configuartion.</returns>
-		internal static string GetActivePlatformName(EnvDTE.Project automationObject)
-		{
-			if (automationObject == null)
-			{
-				throw new ArgumentNullException("automationObject");
-			}
-
-			string currentPlatformName = string.Empty;
-			if (automationObject.ConfigurationManager != null)
-			{
-				EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
-				if (activeConfig != null)
-				{
-					currentPlatformName = activeConfig.PlatformName;
-				}
-			}
-
-			return currentPlatformName;
-		}
         /// <summary>
         /// Verifies that two objects represent the same instance of a COM object.
         /// This essentially compares the IUnkown pointers of the 2 objects.
@@ -748,10 +716,6 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>A loaded msbuild project.</returns>
         internal static MSBuild.Project InitializeMsBuildProject(MSBuild.ProjectCollection buildEngine, string fullProjectPath)
         {
-			if (buildEngine == null)
-			{
-				throw new ArgumentNullException("buildEngine");
-			}
             if(String.IsNullOrEmpty(fullProjectPath))
             {
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "fullProjectPath");

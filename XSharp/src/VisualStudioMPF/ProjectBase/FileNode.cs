@@ -194,9 +194,6 @@ namespace Microsoft.VisualStudio.Project
             extensionIcons.Add(".xml", (int)ProjectNode.ImageName.XMLFile);
             extensionIcons.Add(".pfx", (int)ProjectNode.ImageName.PFX);
             extensionIcons.Add(".snk", (int)ProjectNode.ImageName.SNK);
-			//RvdH Added missing common extensions
-            extensionIcons.Add( ".settings", (int) ProjectNode.ImageName.SettingsFile );
-            extensionIcons.Add( ".cur", (int) ProjectNode.ImageName.Cursor );
         }
 
         /// <summary>

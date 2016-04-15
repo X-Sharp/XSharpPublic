@@ -1247,7 +1247,6 @@ namespace Microsoft.VisualStudio.Project
                 uiFlags = (uint)(__VSADDITEMFLAGS.VSADDITEM_AddNewItems | __VSADDITEMFLAGS.VSADDITEM_SuggestTemplateName | __VSADDITEMFLAGS.VSADDITEM_AllowHiddenTreeView);
             else
                 uiFlags = (uint)(__VSADDITEMFLAGS.VSADDITEM_AddExistingItems | __VSADDITEMFLAGS.VSADDITEM_AllowMultiSelect | __VSADDITEMFLAGS.VSADDITEM_AllowStickyFilter);
-         	uiFlags |= (uint)__VSADDITEMFLAGS.VSADDITEM_ProjectHandlesLinks;
 
             ErrorHandler.ThrowOnFailure(addItemDialog.AddProjectItemDlg(this.hierarchyId, ref projectGuid, project, uiFlags, null, null, ref strBrowseLocations, ref strFilter, out iDontShowAgain)); /*&fDontShowAgain*/
 
@@ -1453,8 +1452,7 @@ namespace Microsoft.VisualStudio.Project
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_DoubleClick:
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_EnterKey:
                         this.DoDefaultAction();
-                  // RvdH return FALSE in stead of OK to prevent a double click to expand the tree
-                  return VSConstants.S_FALSE;
+                        return VSConstants.S_OK;
                 }
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
             }
@@ -2932,10 +2930,8 @@ namespace Microsoft.VisualStudio.Project
                 Trace.WriteLine("Exception :" + e.Message);
                 returnCode = e.ErrorCode;
 
-            // Try to recover
-                // changed from MPFProj:
-                // http://mpfproj10.codeplex.com/WorkItem/View.aspx?WorkItemId=6982
-            if (ff != null && cancelled == 0)
+                // Try to recover
+                if(ff != null)
                 {
                     ErrorHandler.ThrowOnFailure(shell.SaveDocDataToFile(VSSAVEFLAGS.VSSAVE_SilentSave, ff, existingFileMoniker, out docNew, out cancelled));
                 }

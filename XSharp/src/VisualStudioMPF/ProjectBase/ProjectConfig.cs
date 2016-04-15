@@ -524,23 +524,14 @@ namespace Microsoft.VisualStudio.Project
                     info.bstrRemoteMachine = property;
                 }
 
-                property = GetConfigurationProperty("RedirectToOutputWindow", false);
-                if (property != null && string.Compare(property, "true", true, CultureInfo.InvariantCulture) == 0)
-                {
-                   info.fSendStdoutToOutputWindow = 1;
-                }
-                else
-                {
-                   info.fSendStdoutToOutputWindow = 0;
-                }
+                info.fSendStdoutToOutputWindow = 0;
 
                 property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
                 if(property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     //Set the unmanged debugger
                     //TODO change to vsconstant when it is available in VsConstants (guidNativeOnlyEng was the old name, maybe it has got a new name)
-                   info.clsidCustom = new Guid("{92EF0900-2251-11D2-B72E-0000F87572EF}"); // VSConstants2.guidCOMPlusNativeEng;
-                  //  info.clsidCustom = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
+                    info.clsidCustom = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
                 }
                 else
                 {
@@ -813,12 +804,9 @@ namespace Microsoft.VisualStudio.Project
         int IVsProjectFlavorCfg.get_CfgType(ref Guid iidCfg, out IntPtr ppCfg)
         {
             ppCfg = IntPtr.Zero;
-            // Also seen here: IVsProjectCfgDebugTargetSelection// {255b9803-ba83-421b-924e-cde7faaa86a3}
-            // Also seen here: IVsPublishableProjectCfg         // {816b2fbe-5c62-439e-8f67-8f0d5d82bc67}
-            // Also seen here: IVsDeployableProjectCfg          // {358f6c9f-cd65-446a-b79a-30cee094fdc1}
-            // 
+
             // See if this is an interface we support
-            if (iidCfg == typeof(IVsDebuggableProjectCfg).GUID)
+            if(iidCfg == typeof(IVsDebuggableProjectCfg).GUID)
                 ppCfg = Marshal.GetComInterfaceForObject(this, typeof(IVsDebuggableProjectCfg));
             else if(iidCfg == typeof(IVsBuildableProjectCfg).GUID)
             {
@@ -1061,13 +1049,10 @@ namespace Microsoft.VisualStudio.Project
         {
             // Refresh the reference container node for assemblies that could be resolved.
             IReferenceContainer referenceContainer = this.config.ProjectMgr.GetReferenceContainer();
-			if (referenceContainer != null)
-			{
             foreach(ReferenceNode referenceNode in referenceContainer.EnumReferences())
             {
                 referenceNode.RefreshReference();
             }
-         }
         }
         #endregion
     }

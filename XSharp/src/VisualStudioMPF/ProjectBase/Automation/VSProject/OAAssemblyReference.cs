@@ -140,7 +140,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 byte[] publicKeyToken = BaseReferenceNode.ResolvedAssembly.GetPublicKeyToken();
                 for(int i = 0; i < publicKeyToken.Length; i++)
                 {
-					builder.AppendFormat("{0:x2}", publicKeyToken[i]);
+                    builder.AppendFormat("{0:x}", publicKeyToken[i]);
                 }
                 return builder.ToString();
             }

@@ -241,10 +241,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>An Extender object. </returns>
         public virtual object get_Extender(string name)
         {
-         // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695 
-         //return null;
-         return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), name, project.NodeProperties);
-
+            return null;
         }
 
         /// <summary>
@@ -252,10 +249,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual object ExtenderNames
         {
-         // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695 
-         //get { return null; }
-         get { return DTE.ObjectExtenders.GetExtenderNames(project.NodeProperties.ExtenderCATID.ToUpper(), project.NodeProperties); }
-
+            get { return null; }
         }
 
         /// <summary>
@@ -263,10 +257,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual string ExtenderCATID
         {
-         // changed by suggestion on http://mpfproj10.codeplex.com/workitem/9695 
-         //get { return String.Empty; }
-         get { return project.NodeProperties.ExtenderCATID; }
-
+            get { return String.Empty; }
         }
 
         /// <summary>

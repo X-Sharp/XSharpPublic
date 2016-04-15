@@ -288,11 +288,6 @@ namespace Microsoft.VisualStudio.Project
             ErrorHandler.ThrowOnFailure(this.GetGeneratorInformation(progId, out generatesDesignTimeSource, out generatesSharedDesignTimeSource, out useTempPEFlag, out genGuid));
 
             //Create the single file generator and pass it out. Check to see if it is in the cache
-	         if (genGuid.CompareTo(Guid.Empty) == 0)
-	         {
-	            generate = null; 
-	            return VSConstants.S_FALSE;
-	         }
             if(!this.generatorsMap.ContainsKey(progId) || ((this.generatorsMap[progId]).Generator == null))
             {
                 Guid riid = VSConstants.IID_IUnknown;

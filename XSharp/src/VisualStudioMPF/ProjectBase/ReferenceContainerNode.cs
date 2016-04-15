@@ -273,8 +273,6 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
-            //
-            List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
             foreach(string referenceType in SupportedReferenceTypes)
             {
                 IEnumerable<MSBuild.ProjectItem> refererncesGroup = this.ProjectMgr.BuildProject.GetItems(referenceType);
@@ -305,32 +303,14 @@ namespace Microsoft.VisualStudio.Project
                             if(String.Compare(n.Caption, node.Caption, StringComparison.OrdinalIgnoreCase) == 0)
                             {
                                 found = true;
-                                break;
                             }
                         }
+
                         if(!found)
                         {
                             this.AddChild(node);
                         }
-                        else
-                        {
-                            duplicatedNode.Add(node);
-                        }
                     }
-                }
-            }
-            if (duplicatedNode.Count > 0)
-            {
-                // Make a backup first
-                string original = buildProject.FullPath;
-                StreamWriter backup = new StreamWriter( original + ".backup" );
-                buildProject.Save(backup);
-                backup.Close();
-                // User replied Yes to the Auto Correction
-                foreach (ReferenceNode node in duplicatedNode)
-                {
-                    //this.RemoveChild( node );
-                    node.Remove(false);
                 }
             }
         }
@@ -363,7 +343,6 @@ namespace Microsoft.VisualStudio.Project
             ReferenceNode existingNode;
             if (node.IsAlreadyAdded(out existingNode))
             {
-                Trace.WriteLine("Reference already defined : " + existingNode.Caption);
                 return existingNode;
             }
 
@@ -451,10 +430,6 @@ namespace Microsoft.VisualStudio.Project
             if(null == selectorData.bstrFile)
             {
                 throw new ArgumentNullException("selectorData");
-            }
-            if ( selectorData.bstrFile[0] == '*' )
-            {
-               selectorData.bstrFile = selectorData.bstrFile.Substring( 1 );
             }
 
             // We have a path to a file, it could be anything

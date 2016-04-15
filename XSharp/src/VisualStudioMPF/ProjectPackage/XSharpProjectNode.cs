@@ -280,8 +280,8 @@ namespace XSharp.Project
             return newNode;
         }
 
-        //private Guid guidPublishPage = Guid.Parse("CC4014F5-B18D-439C-9352-F99D984CCA85");
-        //private Guid guidSignPagePage = Guid.Parse("1e78f8db-6c07-4d61-a18f-7514010abd56");
+        private Guid guidPublishPage = Guid.Parse("CC4014F5-B18D-439C-9352-F99D984CCA85");
+        private Guid guidSignPagePage = Guid.Parse("1e78f8db-6c07-4d61-a18f-7514010abd56");
 
         /// <summary>
         /// Generate new Guid value and update it with GeneralPropertyPage GUID.
@@ -294,6 +294,7 @@ namespace XSharp.Project
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
+                guidSignPagePage
                 };
             return result;
         }
@@ -320,6 +321,7 @@ namespace XSharp.Project
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID,
+                guidSignPagePage
                 };
             return result;
         }

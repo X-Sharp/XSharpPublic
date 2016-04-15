@@ -84,11 +84,6 @@ namespace Microsoft.VisualStudio.Project
             get { return this.typeName; }
         }
 
-        public virtual string Description
-        {
-            get { return typeName;}
-        }
-
         public override string Url
         {
             get

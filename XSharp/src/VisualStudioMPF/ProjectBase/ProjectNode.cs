@@ -1099,22 +1099,6 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region overridden methods
-      public override int SaveItem(VSSAVEFLAGS saveFlag, string silentSaveAsName, uint itemid, IntPtr docData, out int cancelled)
-      {
-         int ret = base.SaveItem(saveFlag, silentSaveAsName, itemid, docData, out cancelled);
-
-         if (ret == VSConstants.S_OK && cancelled == 0)
-         {
-            FileNode node = NodeFromItemId(itemid) as FileNode;
-
-            if (node != null)
-            {
-               node.RunGenerator();
-            }
-         }
-
-         return ret;
-      }
         protected override NodeProperties CreatePropertiesObject()
         {
             return new ProjectNodeProperties(this);
@@ -2070,15 +2054,7 @@ namespace Microsoft.VisualStudio.Project
             HierarchyNode parent = null;
 
             string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
-	         // RvdH: Note the C# project system does not include a subfolder prefix, and we don't do that too.
-	         // If the current item is in a subfolder, then the item it depends on should be in the same folder
-	         Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
-	          // If the dependentOf value doesn't embed it's path, add the path from the key
-	         if (key.Contains("\\") && !dependentOf.Contains("\\"))
-	         {
-	            dependentOf = key.Substring(0, key.IndexOf('\\') + 1) + dependentOf;
-	         }
-
+            Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
             if (subitems.ContainsKey(dependentOf))
             {
                 // The parent item is an other subitem, so recurse into this method to add the parent first
@@ -3688,7 +3664,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="config">Configuration name</param>
         protected internal virtual void SetConfiguration(string config)
         {
-         if (String.IsNullOrEmpty(config))
+            if (config == null)
             {
                 throw new ArgumentNullException("config");
             }
@@ -4108,7 +4084,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>Unevaluated value of the property.</returns>
         public string GetProjectPropertyUnevaluated(string propertyName)
         {
-            return this.buildProject.GetProperty(propertyName)?.UnevaluatedValue;
+            return this.buildProject.GetProperty(propertyName).UnevaluatedValue;
         }
 
         /// <summary>
@@ -5032,9 +5008,8 @@ namespace Microsoft.VisualStudio.Project
 
             // Notify listeners that items were appended.
             if (actualFilesAddedIndex > 0)
-         	{
                 n.OnItemsAppended(n);
-         	}
+
             //Open files if this was requested through the editorFlags
             bool openFiles = (editorFlags & (uint)__VSSPECIFICEDITORFLAGS.VSSPECIFICEDITOR_DoOpen) != 0;
             if (openFiles && actualFiles.Length <= filesToOpen)
@@ -6134,10 +6109,10 @@ namespace Microsoft.VisualStudio.Project
                 name = this.Caption;
 
             string outputtype = GetProjectProperty(ProjectFileConstants.OutputType, false);
-            outputtype = outputtype.ToLowerInvariant();
 
             if (outputtype == "library")
             {
+                outputtype = outputtype.ToLowerInvariant();
                 name += ".dll";
             }
             else

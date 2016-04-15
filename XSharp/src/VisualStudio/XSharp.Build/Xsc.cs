@@ -892,6 +892,10 @@ namespace XSharp.Build
         {
             XSharpCommandLineBuilder commandLine = (XSharpCommandLineBuilder)cmdline;
             // The managed compiler command line options are called from the cscCompiler options
+            if (this.Dialect?.Length > 0)
+            {
+                cmdline.AppendTextUnquoted(" /dialect:" + this.Dialect);
+            }
             AddCscCompilerCommands(commandLine);
             AddVOCompatibilityCommands(commandLine);
 

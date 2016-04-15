@@ -252,6 +252,18 @@ namespace XSharp.Project
                     break;
                 }
             }
+
+            string strdialect = this.ProjectMgr.GetProjectProperty(nameof(Dialect), false);
+            try
+            {
+                this.dialect = (Dialect)Enum.Parse(typeof(Dialect), strdialect);
+            }
+            catch (ArgumentException)
+            {
+                this.dialect = Dialect.Core;
+            }
+
+
         }
 
         /// <summary>

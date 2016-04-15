@@ -223,17 +223,26 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
 
-            // Check out the project file.
-            if(!this.itemProject.QueryEditProjectFile(false))
-            {
-                throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
-            }
-
-            if(attributeValue == null)
-                item.RemoveMetadata(attributeName);
+            String currentValue = item.GetMetadataValue(attributeName);
+            bool changed;
+            if (String.IsNullOrEmpty(currentValue) && String.IsNullOrEmpty(attributeValue))
+                changed = false;
             else
-                item.SetMetadataValue(attributeName, attributeValue);
-            itemProject.SetProjectFileDirty(true);
+                changed = String.Compare(currentValue, attributeValue) != 0;
+            if (changed)
+            {
+	            // Check out the project file.
+	            if(!this.itemProject.QueryEditProjectFile(false))
+	            {
+	                throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
+	            }
+
+	            if(attributeValue == null)
+	                item.RemoveMetadata(attributeName);
+	            else
+	                item.SetMetadataValue(attributeName, attributeValue);
+	            itemProject.SetProjectFileDirty(true);
+            }
         }
 
         public string GetEvaluatedMetadata(string attributeName)
@@ -277,16 +286,19 @@ namespace Microsoft.VisualStudio.Project
                     return String.Empty;
                 return virtualProperties[attributeName];
             }
+            if (this.item != null)
+            {
+	            // cannot ask MSBuild for Include, so intercept it and return the corresponding property
+	            if(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
+	                return item.EvaluatedInclude;
 
-            // cannot ask MSBuild for Include, so intercept it and return the corresponding property
-            if(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
-                return item.EvaluatedInclude;
+	            // Build Action is the type, not a property, so intercept this one as well
+	            if(String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
+	                return item.ItemType;
 
-            // Build Action is the type, not a property, so intercept this one as well
-            if(String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
-                return item.ItemType;
-
-            return item.GetMetadataValue(attributeName);
+	            return item.GetMetadataValue(attributeName);
+            }
+            return null;
         }
 
         /// <summary>

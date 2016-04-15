@@ -78,17 +78,24 @@ namespace Microsoft.VisualStudio.Project.Automation
                 }
                 if(0 == locale)
                 {
-                    return string.Empty;
+					return "0";
                 }
                 CultureInfo culture = new CultureInfo(locale);
                 return culture.Name;
             }
         }
+      public override string Description
+      {
+         get
+         {
+            return BaseReferenceNode.Description;
+         }
+      }
         public override string Identity
         {
             get
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0}\\{1}", BaseReferenceNode.TypeGuid.ToString("B"), this.Version);
+				return string.Format(CultureInfo.InvariantCulture, "{0}\\{1}\\{2}\\{3}", BaseReferenceNode.TypeGuid.ToString("B"), this.Version, BaseReferenceNode.LCID, BaseReferenceNode.WrapperTool);
             }
         }
         public override int MajorVersion
@@ -103,6 +110,15 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get { return BaseReferenceNode.Caption; }
         }
+      public override string Path
+      {
+         get
+         {
+            return BaseReferenceNode.Url;
+            //return BaseReferenceNode.InstalledFilePath;
+         }
+      }
+
         public override VSLangProj.prjReferenceType Type
         {
             get

@@ -416,6 +416,11 @@ namespace XSharp.CodeDom
                 if (context._expression is XSharpParser.AssignmentExpressionContext)
                 {
                     XSharpParser.AssignmentExpressionContext exp = (XSharpParser.AssignmentExpressionContext)context._expression;
+                    //
+                    //what is the left hand side ?
+                    //    Self  -> check is Right is in the member of CurrentClass --> FieldReference
+                    // else --> always Property
+                    //
                     CodeExpression left = BuildExpression(exp.Left);
                     CodeExpression right = BuildExpression(exp.Right);
                     if (exp.ASSIGN_OP() != null)
@@ -957,6 +962,7 @@ namespace XSharp.CodeDom
             return local;
         }
 
+
         private CodeExpression BuildExpression(XSharpParser.ExpressionContext expression)
         {
             CodeExpression expr = null;
@@ -968,18 +974,35 @@ namespace XSharp.CodeDom
             else if (expression is XSharpParser.AccessMemberContext) // xyz.SimpleName
             {
                 XSharpParser.AccessMemberContext member = (XSharpParser.AccessMemberContext)expression;
-                //CodeTypeReference memberName = BuildSimpleName(member.Name);
-                // We should check the type somewhere here
-                // because it can be a Field or a Property...
-                // XSHARP : This is a very bad HACK :(, just for testing by now
-                if (member.Name.GetText() == "Controls")
+                //what is the left hand side ?
+                //    Self  -> check is Right is in the member of CurrentClass --> FieldReference
+                // else --> always Property
+                bool isMember = false;
+                CodeExpression left = BuildExpression(member.Expr);
+                if (left is CodeThisReferenceExpression)
                 {
-                    expr = new CodePropertyReferenceExpression(BuildExpression(member.Expr), member.Name.GetText());
+                    string fieldCandidate = member.Name.GetText();
+                    foreach (CodeTypeMember cm in this.CurrentClass.Members)
+                    {
+                        if (cm is CodeMemberField)
+                        {
+                            if (String.Compare(fieldCandidate, cm.Name, true) == 0)
+                            {
+                                isMember = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                //
+                if (isMember)
+                {
+                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr), member.Name.GetText());
                 }
                 else
                 {
                     //
-                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr), member.Name.GetText());
+                    expr = new CodePropertyReferenceExpression(BuildExpression(member.Expr), member.Name.GetText());
                 }
             }
             else if (expression is XSharpParser.MethodCallContext)

@@ -67,7 +67,160 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\DeployedBuildSystem\XSharp.Default.props">
+      <Link>Targets\XSharp.Default.props</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\DeployedBuildSystem\XSharp.Default.targets">
+      <Link>Targets\XSharp.Default.targets</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\DeployedBuildSystem\XSharp.props">
+      <Link>Targets\XSharp.props</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\DeployedBuildSystem\XSharp.targets">
+      <Link>Targets\XSharp.targets</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\assemblyreference.xaml">
+      <Link>Xaml\assemblyreference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\comreference.xaml">
+      <Link>Xaml\comreference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\Content.xaml">
+      <Link>Xaml\Content.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\debugger_general.xaml">
+      <Link>Xaml\debugger_general.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\EmbeddedResource.xaml">
+      <Link>Xaml\EmbeddedResource.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\folder.xaml">
+      <Link>Xaml\folder.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\general.browseobject.xaml">
+      <Link>Xaml\general.browseobject.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\general_file.xaml">
+      <Link>Xaml\general_file.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\none.xaml">
+      <Link>Xaml\none.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\ProjectItemsSchema.xaml">
+      <Link>Xaml\ProjectItemsSchema.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\projectreference.xaml">
+      <Link>Xaml\projectreference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\PropertyPage_Advanced.xaml">
+      <Link>Xaml\PropertyPage_Advanced.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\PropertyPage_Application.xaml">
+      <Link>Xaml\PropertyPage_Application.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\PropertyPage_Build.xaml">
+      <Link>Xaml\PropertyPage_Build.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\PropertyPage_Debugger.xaml">
+      <Link>Xaml\PropertyPage_Debugger.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\PropertyPage_Language.xaml">
+      <Link>Xaml\PropertyPage_Language.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\ResolvedAssemblyReference.xaml">
+      <Link>Xaml\ResolvedAssemblyReference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\ResolvedCOMReference.xaml">
+      <Link>Xaml\ResolvedCOMReference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\ResolvedProjectReference.xaml">
+      <Link>Xaml\ResolvedProjectReference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\resolvedsdkreference.xaml">
+      <Link>Xaml\resolvedsdkreference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\scc.xaml">
+      <Link>Xaml\scc.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\sdkreference.xaml">
+      <Link>Xaml\sdkreference.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\SpecialFolder.xaml">
+      <Link>Xaml\SpecialFolder.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\SubProject.xaml">
+      <Link>Xaml\SubProject.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\xsharp.browseobject.xaml">
+      <Link>Xaml\xsharp.browseobject.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\XSharp.ProjectItemsSchema.xaml">
+      <Link>Xaml\XSharp.ProjectItemsSchema.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\XSharp.ProjectType\BuildSystem\Rules\xsharp.xaml">
+      <Link>Xaml\xsharp.xaml</Link>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.14.1.24720\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.1.24720\build\Microsoft.VSSDK.BuildTools.targets')" />

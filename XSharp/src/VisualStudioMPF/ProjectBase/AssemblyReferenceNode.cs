@@ -345,6 +345,10 @@ namespace Microsoft.VisualStudio.Project
                     result += ".dll";
                     this.assemblyPath = result;
                 }
+                else
+                {
+                    this.assemblyPath = result;
+                }
             }
             else
             {

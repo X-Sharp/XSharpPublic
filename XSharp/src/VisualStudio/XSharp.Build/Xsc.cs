@@ -590,7 +590,6 @@ namespace XSharp.Build
         internal void AddVOCompatibilityCommands(XSharpCommandLineBuilder commandline)
         {
             // VO Compatibility switches
-
             if (NS)     // Add Default Namespace
             {
                 commandline.AppendSwitch("\n/ns:" + this.RootNameSpace);
@@ -892,6 +891,8 @@ namespace XSharp.Build
         {
             XSharpCommandLineBuilder commandLine = (XSharpCommandLineBuilder)cmdline;
             // The managed compiler command line options are called from the cscCompiler options
+            if (this.Dialect?.Length > 0)
+                commandLine.AppendTextUnquoted(" /dialect:" + this.Dialect);
             AddCscCompilerCommands(commandLine);
             AddVOCompatibilityCommands(commandLine);
 

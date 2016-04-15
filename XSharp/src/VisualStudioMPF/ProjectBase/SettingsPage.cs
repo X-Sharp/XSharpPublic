@@ -210,6 +210,9 @@ namespace Microsoft.VisualStudio.Project
             return String.Empty;
         }
 
+		// relative to active configuration.
+
+
         /// <summary>
         /// Sets the value of a configuration dependent property.
         /// If the attribute does not exist it is created.  

@@ -773,14 +773,14 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                string copyLocal = this.GetProperty(ProjectFileConstants.Private, "False");
+				string copyLocal = this.GetProperty(ProjectFileConstants.Private, "False");
                 if(copyLocal == null || copyLocal.Length == 0)
                     return true;
                 return bool.Parse(copyLocal);
             }
             set
             {
-                this.SetProperty(ProjectFileConstants.Private, value.ToString());
+				this.SetProperty(ProjectFileConstants.Private, value.ToString());
             }
         }
 

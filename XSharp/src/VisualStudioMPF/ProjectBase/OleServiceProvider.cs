@@ -51,10 +51,11 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project
 {
-    public class OleServiceProvider : IOleServiceProvider, IDisposable
+    public class OleServiceProvider : IOleServiceProvider, IDisposable, IVsBrowseObject
     {
         #region Public Types
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
@@ -70,12 +71,12 @@ namespace Microsoft.VisualStudio.Project
             private bool shouldDispose;
             public ServiceData(Type serviceType, object instance, ServiceCreatorCallback callback, bool shouldDispose)
             {
-                if(null == serviceType)
+                if (null == serviceType)
                 {
                     throw new ArgumentNullException("serviceType");
                 }
 
-                if((null == instance) && (null == callback))
+                if ((null == instance) && (null == callback))
                 {
                     throw new ArgumentNullException("instance");
                 }
@@ -90,7 +91,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 get
                 {
-                    if(null == instance)
+                    if (null == instance)
                     {
                         instance = creator(serviceType);
                     }
@@ -105,10 +106,10 @@ namespace Microsoft.VisualStudio.Project
 
             public void Dispose()
             {
-                if((shouldDispose) && (null != instance))
+                if ((shouldDispose) && (null != instance))
                 {
                     IDisposable disp = instance as IDisposable;
-                    if(null != disp)
+                    if (null != disp)
                     {
                         disp.Dispose();
                     }
@@ -145,12 +146,12 @@ namespace Microsoft.VisualStudio.Project
 
             ServiceData serviceInstance = null;
 
-            if(services != null && services.ContainsKey(guidService))
+            if (services != null && services.ContainsKey(guidService))
             {
                 serviceInstance = services[guidService];
             }
 
-            if(serviceInstance == null)
+            if (serviceInstance == null)
             {
                 return VSConstants.E_NOINTERFACE;
             }
@@ -158,7 +159,7 @@ namespace Microsoft.VisualStudio.Project
             // Now check to see if the user asked for an IID other than
             // IUnknown.  If so, we must do another QI.
             //
-            if(riid.Equals(NativeMethods.IID_IUnknown))
+            if (riid.Equals(NativeMethods.IID_IUnknown))
             {
                 ppvObject = Marshal.GetIUnknownForObject(serviceInstance.ServiceInstance);
             }
@@ -172,7 +173,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 finally
                 {
-                    if(pUnk != IntPtr.Zero)
+                    if (pUnk != IntPtr.Zero)
                     {
                         Marshal.Release(pUnk);
                     }
@@ -216,7 +217,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-            Justification="The services created here will be disposed in the Dispose method of this type.")]
+            Justification = "The services created here will be disposed in the Dispose method of this type.")]
         public void AddService(Type serviceType, ServiceCreatorCallback callback, bool shouldDisposeServiceInstance)
         {
             // Create the description of this service. Note that we don't do any validation
@@ -230,13 +231,13 @@ namespace Microsoft.VisualStudio.Project
         private void AddService(ServiceData data)
         {
             // Make sure that the collection of services is created.
-            if(null == services)
+            if (null == services)
             {
                 services = new Dictionary<Guid, ServiceData>();
             }
 
             // Disallow the addition of duplicate services.
-            if(services.ContainsKey(data.Guid))
+            if (services.ContainsKey(data.Guid))
             {
                 throw new InvalidOperationException();
             }
@@ -249,12 +250,12 @@ namespace Microsoft.VisualStudio.Project
         /// </devdoc>
         public void RemoveService(Type serviceType)
         {
-            if(serviceType == null)
+            if (serviceType == null)
             {
                 throw new ArgumentNullException("serviceType");
             }
 
-            if(services.ContainsKey(serviceType.GUID))
+            if (services.ContainsKey(serviceType.GUID))
             {
                 services.Remove(serviceType.GUID);
             }
@@ -268,17 +269,17 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void Dispose(bool disposing)
         {
             // Everybody can go here.
-            if(!this.isDisposed)
+            if (!this.isDisposed)
             {
                 // Synchronize calls to the Dispose simulteniously.
-                lock(Mutex)
+                lock (Mutex)
                 {
-                    if(disposing)
+                    if (disposing)
                     {
                         // Remove all our services
-                        if(services != null)
+                        if (services != null)
                         {
-                            foreach(ServiceData data in services.Values)
+                            foreach (ServiceData data in services.Values)
                             {
                                 data.Dispose();
                             }
@@ -292,6 +293,47 @@ namespace Microsoft.VisualStudio.Project
             }
         }
         #endregion
+        #region IVsBrowseObject methods
 
+        // The ResxCodeSingleFileGenerator expects to find the IVsBrowseObject interface on this
+        // object.  The NodePropeties object implements IVsBrowseObject, but we have no way to get
+        // the NodeProperties object since we don't have a back reference to the hierarchy node that 
+        // owns this OleServiceProvider instance.  So when a VulcanFileNode object is created, IVsBrowseObject is added
+        // to the list of available services (in VulcanProject.CreateFileNode) and in the service
+        // creator callback in VulcanProject, querying for the IVsBrowseObject service (which isn't really
+        // a service) returns a reference to the NodeProperties object for the node.
+        //
+        // When this object is QI'd for IVsBrowseObject by the ResXCodeFileGenerator it is successful
+        // and then it calls GetProjectItem().  We then get the real IVsBrowseObject implementation
+        // and call GetProjectItem() on it.  It's a bit of a hack, but it gets the ResXSingleFileGenerator
+        // to work, and the only other alternative seems to be adding a property to this class that we 
+        // could store a reference to the owning node's NodeProperties object in.
+        //
+        // If this is ever fixed by the 2008 MPF code, this hack can be removed and replaced with 
+        // whatever they come up with.
+
+        /// <summary>
+        /// Maps back to the hierarchy or project item object corresponding to the browse object.
+        /// </summary>
+        /// <param name="hier">Reference to the hierarchy object.</param>
+        /// <param name="itemid">Reference to the project item.</param>
+        /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
+        public virtual int GetProjectItem(out IVsHierarchy hier, out uint itemid)
+        {
+            ServiceData serviceInstance = services[typeof(IVsBrowseObject).GUID];
+
+            if (serviceInstance != null)
+            {
+                IVsBrowseObject bo = (IVsBrowseObject)serviceInstance.ServiceInstance;
+                return bo.GetProjectItem(out hier, out itemid);
+            }
+            else
+            {
+                hier = null;
+                itemid = 0;
+                return VSConstants.E_NOINTERFACE;
+            }
+        }
+        #endregion
     }
 }

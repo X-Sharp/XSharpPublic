@@ -216,6 +216,7 @@ namespace XSharp.Project
             this.rootNamespace = this.ProjectMgr.GetProjectProperty(nameof(RootNamespace), false);
             this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
             this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
+            
 
             if (outputType != null && outputType.Length > 0)
             {
@@ -252,6 +253,20 @@ namespace XSharp.Project
                     break;
                 }
             }
+            string strDialect = this.ProjectMgr.GetProjectProperty(nameof(Dialect), false);
+            if (strDialect != null && strDialect.Length > 0)
+            {
+                try
+                {
+                    this.dialect = (Dialect)Enum.Parse(typeof(Dialect), strDialect);
+                }
+                catch (ArgumentException)
+                {
+                    this.dialect = Dialect.Core;
+                }
+            }
+
+
         }
 
         /// <summary>

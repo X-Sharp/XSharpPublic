@@ -13,7 +13,7 @@
     <ProvideDefaultName>true</ProvideDefaultName>
    </TemplateData>
    <TemplateContent>
-      <Project File="WPFApplication.xsprj" ReplaceParameters="true">
+      <Project File="WPFApplication.xsproj" ReplaceParameters="true">
          <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
          <ProjectItem ReplaceParameters="false" TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
          <ProjectItem ReplaceParameters="false" TargetFileName="Properties\Settings.settings">Settings.settings</ProjectItem>

@@ -14,7 +14,7 @@
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
   </TemplateData>
   <TemplateContent>
-    <Project File="ClassLibrary.xsprj" ReplaceParameters="true">
+    <Project File="ClassLibrary.xsproj" ReplaceParameters="true">
       <!-- 
       These are the items which will show up when a new project is created using the custom project system.
       Items referenced in here must also be referenced in the project file.

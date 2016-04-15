@@ -14,7 +14,7 @@
     <ProvideDefaultName>true</ProvideDefaultName>
   </TemplateData>
   <TemplateContent>
-    <Project File="WinFormApp.xsprj" ReplaceParameters="true">
+    <Project File="WinFormApp.xsproj" ReplaceParameters="true">
          <ProjectItem ReplaceParameters="true">Program.prg</ProjectItem>
          <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem> 
          <ProjectItem ReplaceParameters="true" OpenInEditor="true" OpenOrder="10" SubType="Form">WinForm1.prg</ProjectItem>

@@ -182,7 +182,7 @@ namespace XSharp.CodeDom
                     {
                         if ((i < (chars.Length - 1)) && (chars[i + 1] == '\n'))
                         {
-                            this.Output.Write("\n");
+                            this.Output.WriteLine("");
                             i++;
                         }
                         this.Output.Write(startLine);
@@ -1531,6 +1531,27 @@ namespace XSharp.CodeDom
             }
         }
 
+        protected override void OutputMemberAccessModifier(MemberAttributes attributes)
+        {
+            switch ((attributes & MemberAttributes.AccessMask))
+            {
+                case MemberAttributes.Public:
+                    this.Output.Write("PUBLIC ");
+                    break;
+                case MemberAttributes.Private:
+                    this.Output.Write("PRIVATE ");
+                    break;
+                case MemberAttributes.Family:
+                    this.Output.Write("PROTECTED ");
+                    break;
+                case MemberAttributes.FamilyOrAssembly:
+                    this.Output.Write("PROTECTED INTERNAL ");
+                    break;
+                case MemberAttributes.Assembly:
+                    this.Output.Write("INTERNAL ");
+                    break;
+            }
+        }
         protected override void OutputMemberScopeModifier(MemberAttributes attributes)
         {
             MemberAttributes attributes2 = attributes & MemberAttributes.VTableMask;
@@ -1553,7 +1574,7 @@ namespace XSharp.CodeDom
                     return;
 
                 case MemberAttributes.Override:
-                    this.Output.Write("virtual ");
+                    this.Output.Write("VIRTUAL ");
                     return;
             }
             switch ((attributes & MemberAttributes.AccessMask))

@@ -300,6 +300,12 @@
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XSharpColorizer\XSharpColorizer.csproj">
+      <Project>{FFA0338A-27ED-42BA-B801-EC5AD32A7395}</Project>
+      <Name>XSharpColorizer</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow.xaml">

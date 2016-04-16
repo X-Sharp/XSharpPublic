@@ -3,23 +3,24 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.2"
-#define ProdBuild       "XSharp Beta 2"
+#define ProdVer         "XSharp 0.2.3"
+#define ProdBuild       "XSharp Beta 3"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.2.2203"
-#define VITextVersion   "0.2.2.2203 (Beta 2)"
-#define TouchDate       "2016-03-24"
-#define TouchTime       "02:02:00"
-#define SetupExeName    "XSharpSetup022"
+#define VIVersion       "0.2.3.2301"
+#define VITextVersion   "0.2.2.2301 (Beta 3)"
+#define TouchDate       "2016-04-18"
+#define TouchTime       "02:03:00"
+#define SetupExeName    "XSharpSetup023"
 #define InstallPath     "XSharpPath"
 
 ;Folders
 #define BinFolder       "D:\Xsharp\Dev\XSharp\Binaries\Debug\"
 #define CommonFolder    "D:\Xsharp\Dev\XSharp\src\Common\"
 #define VSProjectFolder "d:\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
+#define VSProjectOutPut "d:\Xsharp\Dev\XSharp\src\VisualStudioMPF\ProjectPackage\Bin\Debug\"
 #define ExamplesFolder  "d:\Xsharp\Dev\XSharp\src\Samples\"
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
@@ -27,8 +28,8 @@
 #define XIDESetup       "XIDE_Set_up_1.02.exe"
 
 #define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
-#define Compression     "lzma2/ultra64"
-;#define Compression     "none"
+;#define Compression     "lzma2/ultra64"
+#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -135,10 +136,9 @@ Source: "Baggage\License.txt";                            DestDir: "{app}";     
 ; Include Files
 Source: "{#CommonFolder}*.xh";                    DestDir: "{app}\Include"; Flags: touch {#StdFlags}; Components: main
 
-
 ;MsBuild Files
-Source: "{#VsProjectFolder}BuildSystem\Rules\*.*";                DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main
-Source: "{#VsProjectFolder}BuildSystem\DeployedBuildSystem\*.*";  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
+Source: "{#BinFolder}Xaml\*.*";                DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main
+Source: "{#BinFolder}Targets\*.*";             DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
 
 Source: "{#BinFolder}XSharp.Build.dll";               DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
 
@@ -155,14 +155,20 @@ Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide";        Flags: touc
 ;VsProjectSystem
 Source: "{#BinFolder}XSharp.ProjectSystem.vsix";          DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015
 
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVs2015IdeDir}"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVs2015IdeDir}"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinFolder}XSharpCodeDomProvider.dll";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete; StrongAssemblyName: "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21";
+Source: "{#BinFolder}XSharpCodeDomProvider.pdb";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} 
 
-Source: "{#BinFolder}Itemtemplates\*.*";                        DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates";     Flags: recursesubdirs {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}ProjectTemplates\*.*";                     DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharp.ProjectSystem.DLL";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharp.ProjectSystem.pkgdef";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}extension.vsixmanifest";                   DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#VSProjectOutPut}Itemtemplates\*.*";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates";     Flags: recursesubdirs {#StdFlags}; Components: vs2015
+Source: "{#VSProjectOutPut}ProjectTemplates\*.*";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
+
+Source: "{#VSProjectOutPut}XSharpProject2015.dll";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#VSProjectOutPut}XSharpProject2015.dll.config";       DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#VSProjectOutPut}XSharpProject2015.pdb";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#VSProjectOutPut}XSharpProject2015.pkgdef";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#VSProjectOutPut}extension.vsixmanifest";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+
 Source: "{#BinFolder}XSharp.ico ";                              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
 Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";            Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015 
@@ -173,6 +179,18 @@ Source: "{#ExamplesFolder}*.txt";                              DestDir: "{common
 ;Source: "{#ExamplesFolder}*.vh";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.sln";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.xsprj";                            DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+
+
+
+; Switch to installing the project system using registry based installation 
+; copy the files to the Private Assemblies folder
+; get the registry keys from the pkgdef file
+; for now we can update the pkgdef file and adjust the path
+; the current path in the pkgdef file = 
+; "CodeBase"="D:\Xsharp\Dev\XSharp\src\VisualStudioMPF\ProjectPackage\obj\Debug\XSharpProject2015.dll"
+; "D:\Xsharp\Dev\XSharp\src\VisualStudioMPF\ProjectPackage\obj\Debug"
+; it must become
+; "CodeBase"="{code:GetVs2015IdeDir}\Extensions\XSharp\XSharpProject2015.dll"
 
 
 
@@ -207,7 +225,9 @@ Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: p
 ; Template cache, component cache and previous installation of our project system
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
-Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
+Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; 
+Type: files;          Name: "{code:GetVs2015IdeDir}\XSharp.CodeAnalysis.dll";
+Type: files;          Name: "{code:GetVs2015IdeDir}\XSharp.CodeAnalysis.pdb";
 
 ; remove the old uninstaller because the uninstall file format has changed
 Type: filesandordirs; Name: "{app}\Uninst"

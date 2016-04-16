@@ -32,6 +32,7 @@ namespace XSharp.Project
     /// <para>ProvideProjectFactory: Declares that a package provides a project factory.</para>
     /// <para>ProvideProjectItem: Declares that a package provides a project item.</para> 
     /// </remarks>  
+    /// 
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
     [Description("XSharp Project System")]
     [PackageRegistration(UseManagedResourcesOnly = true)]

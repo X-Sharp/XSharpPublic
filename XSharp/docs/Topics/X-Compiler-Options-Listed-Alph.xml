@@ -10,7 +10,7 @@
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">VO/Vulcan Compatibility</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="79" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="80" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -129,6 +129,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Defines preprocessor symbols.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect" styleclass="Normal" translate="true">/dialect</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the dialect to use when compiling. The following values are supported: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour. Work on the VO and Vulcan dialects has started.</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -288,7 +296,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs" styleclass="Normal" translate="true">/nostddefs</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Suppresses preprocessor definitions in VulcanStdDefs.vh </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Suppresses preprocessor definitions in XSharpDefs.xh &#160;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

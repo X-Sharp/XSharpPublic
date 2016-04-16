@@ -41,13 +41,17 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -61,7 +65,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
     <DefineConstants>TRACE;XSHARP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -268,6 +272,19 @@
     <EmbeddedResource Include="Resources\XSharpProjectImageList.bmp" />
     <None Include="source.extension.vsixmanifest" />
   </ItemGroup>
+  <PropertyGroup>
+    <GetVsixSourceItemsDependsOn>$(GetVsixSourceItemsDependsOn);GetVsixTemplateItems</GetVsixSourceItemsDependsOn>
+  </PropertyGroup>
+  <Target Name="GetVsixTemplateItems" DependsOnTargets="ZipProjects;ZipItems">
+    <ItemGroup>
+      <VSIXSourceItem Include="@(IntermediateZipItem)">
+        <VSIXSubPath>ItemTemplates\%(IntermediateZipItem.Language)\%(IntermediateZipItem.OutputSubPath)\%(IntermediateZipItem.Culture)</VSIXSubPath>
+      </VSIXSourceItem>
+      <VSIXSourceItem Include="@(IntermediateZipProject)">
+        <VSIXSubPath>ProjectTemplates\%(IntermediateZipProject.Language)\%(IntermediateZipProject.OutputSubPath)\%(IntermediateZipProject.Culture)</VSIXSubPath>
+      </VSIXSourceItem>
+    </ItemGroup>
+  </Target>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
@@ -300,9 +317,9 @@
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XSharpColorizer\XSharpColorizer.csproj">
+    <ProjectReference Include="..\XSharpColorizer\XSharpColorizer2015.csproj">
       <Project>{FFA0338A-27ED-42BA-B801-EC5AD32A7395}</Project>
-      <Name>XSharpColorizer</Name>
+      <Name>XSharpColorizer2015</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
@@ -357,10 +374,11 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(Solutiondir)Binaries\$(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Target Name="FixPkgdefTarget">
-    <FixPkgdef PkgdefPath="$(MSBuildProjectDirectory)\$(IntermediateOutputPath)$(TargetName).pkgdef" />
+    <FixPkgdef PkgdefPath="$(IntermediateOutputPath)$(TargetName).pkgdef" />
   </Target>
   <UsingTask TaskName="FixPkgdef" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
@@ -372,8 +390,8 @@
       <Code Type="Fragment" Language="cs"><![CDATA[
             // Replace all "$PackageFolder$" with the actual path in the pkgdef
             String content = File.ReadAllText(PkgdefPath);
-            String dllPath = Path.GetDirectoryName(PkgdefPath);
-            content = content.Replace("$PackageFolder$", dllPath);
+            //String dllPath = Path.GetDirectoryName(PkgdefPath);
+            //content = content.Replace("$PackageFolder$", dllPath);
             File.WriteAllText(PkgdefPath, content);
          ]]></Code>
     </Task>

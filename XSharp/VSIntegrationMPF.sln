@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED0EE32E-392F-4848-B0F6-5C13C628A4A9}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharp.Build", "src\VisualStudio\XSharp.Build\XSharp.Build.csproj", "{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpColorizer", "src\VisualStudioMPF\XSharpColorizer\XSharpColorizer.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpColorizer2015", "src\VisualStudioMPF\XSharpColorizer\XSharpColorizer2015.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

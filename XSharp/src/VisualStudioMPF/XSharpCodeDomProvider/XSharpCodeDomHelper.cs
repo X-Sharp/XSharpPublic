@@ -134,7 +134,7 @@ namespace XSharp.CodeDom
             if (e is CodeFieldReferenceExpression)
             {
                 CodeFieldReferenceExpression exp = (CodeFieldReferenceExpression)e;
-                WriteLineIndent(exp.TargetObject.ToString());
+                WriteLineIndent(exp.TargetObject?.ToString());
             }
             else if (e is CodeObjectCreateExpression)
             {
@@ -144,13 +144,13 @@ namespace XSharp.CodeDom
             else if (e is CodeMethodInvokeExpression)
             {
                 CodeMethodInvokeExpression exp = (CodeMethodInvokeExpression)e;
-                WriteLineIndent(exp.Method.TargetObject.ToString());
+                WriteLineIndent(exp.Method.TargetObject?.ToString());
                 WriteLineIndent(exp.Method.MethodName);
             }
             else if (e is CodePropertyReferenceExpression)
             {
                 CodePropertyReferenceExpression exp = (CodePropertyReferenceExpression)e;
-                WriteLineIndent(exp.TargetObject.ToString());
+                WriteLineIndent(exp.TargetObject?.ToString());
                 WriteLineIndent(exp.PropertyName);
             }
             else if (e is CodePrimitiveExpression)

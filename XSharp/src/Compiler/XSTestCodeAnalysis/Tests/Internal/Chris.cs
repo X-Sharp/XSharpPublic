@@ -1837,7 +1837,7 @@ END TRY
 FUNCTION Start() AS VOID
 TestClass.ParamArrayTest(1,2,3)
 CLASS TestClass
-	STATIC METHOD ParamArrayTest([ParamArray] an AS INT[]) AS VOID
+	STATIC METHOD ParamArrayTest(an PARAMS INT[]) AS VOID
 		? an:Length
 END CLASS
 ");

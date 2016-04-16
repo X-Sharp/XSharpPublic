@@ -124,7 +124,7 @@ CLASS Test
         RETURN oLeft
 END CLASS
 ");
-            CompileAndRunWithoutExceptions(s);
+            CompileWithErrors(s);
 
         }
 

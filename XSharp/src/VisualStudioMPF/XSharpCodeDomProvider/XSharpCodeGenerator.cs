@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 // XSharpCodeGenerator
 // Used by Designers (WPF and WinForms at least)
@@ -23,13 +24,15 @@ namespace XSharp.CodeDom
         private bool generatingForLoop;
         private string selector;
         private string staticSelector;
+        private string entrypointCode = null;
 
-        public XSharpCodeGenerator():base()
+        public XSharpCodeGenerator() : base()
         {
             this.selector = ":";
             this.staticSelector = ".";
+            //System.Diagnostics.Debugger.Launch();
         }
-
+ 
         protected override string NullToken
         {
             get
@@ -57,7 +60,6 @@ namespace XSharp.CodeDom
             }
             return value;
         }
-
         protected override void GenerateArgumentReferenceExpression(CodeArgumentReferenceExpression e)
         {
             // Be sure to write a correct string
@@ -145,7 +147,7 @@ namespace XSharp.CodeDom
 
         protected override void GenerateAttributeDeclarationsEnd(CodeAttributeDeclarationCollection attributes)
         {
-            this.Output.Write("]");
+            this.Output.Write("];");
         }
 
         protected override void GenerateAttributeDeclarationsStart(CodeAttributeDeclarationCollection attributes)
@@ -290,19 +292,36 @@ namespace XSharp.CodeDom
 
         protected override void GenerateEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c)
         {
-            this.GenerateCommentStatements(e.Comments);
-
-            if (e.CustomAttributes.Count > 0)
+            // we must collect this and insert it at the end of the unit
+			// so replace the output field in the parent class and restore it later
+            var writer = new StringWriter();
+            FieldInfo field = typeof(CodeGenerator).GetField("output", BindingFlags.Instance | BindingFlags.NonPublic| BindingFlags.FlattenHierarchy);
+            FieldInfo field2 = typeof(IndentedTextWriter).GetField("tabString", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+            IndentedTextWriter oldWriter = (IndentedTextWriter)field.GetValue(this);
+            String tabString = (String) field2.GetValue(oldWriter);
+            IndentedTextWriter newWriter = new IndentedTextWriter(writer, tabString); ;
+            try
             {
-                this.GenerateAttributes(e.CustomAttributes);
+                field.SetValue(this, newWriter);
+                this.GenerateCommentStatements(e.Comments);
+
+                if (e.CustomAttributes.Count > 0)
+                {
+                    this.GenerateAttributes(e.CustomAttributes);
+                }
+                base.Output.Write("FUNCTION Start() AS ");
+                this.OutputType(e.ReturnType);
+                base.Output.WriteLine();
+                this.Indent++;
+                this.GenerateStatements(e.Statements);
+                this.Indent--;
+                base.Output.WriteLine();
             }
-            base.Output.Write("FUNCTION Start() AS");
-            this.OutputType(e.ReturnType);
-            base.Output.WriteLine();
-            this.Indent++;
-            this.GenerateStatements(e.Statements);
-            this.Indent--;
-            base.Output.WriteLine();
+            finally
+            {
+                entrypointCode = writer.GetStringBuilder().ToString();
+                field.SetValue(this, oldWriter);
+            }
         }
 
         protected override void GenerateEvent(CodeMemberEvent e, CodeTypeDeclaration c)
@@ -340,7 +359,6 @@ namespace XSharp.CodeDom
             if (e.TargetObject != null)
             {
                 base.GenerateExpression(e.TargetObject);
-                // XSharp does support "." or ":" as selector
                 base.Output.Write(this.selector);
             }
             this.OutputIdentifier(e.EventName);
@@ -500,7 +518,7 @@ namespace XSharp.CodeDom
                 if (e.PrivateImplementationType != null)
                 {
                     base.Output.Write(e.PrivateImplementationType.BaseType);
-                    base.Output.Write(this.selector);
+                    base.Output.Write(this.staticSelector);
                 }
 
                 this.OutputIdentifier(e.Name);
@@ -565,7 +583,15 @@ namespace XSharp.CodeDom
             }
         }
 
-
+        protected override void GenerateCompileUnitEnd(CodeCompileUnit e)
+        {
+            if (!String.IsNullOrEmpty(entrypointCode))
+            {
+                this.Output.Write(entrypointCode);
+                entrypointCode = null;
+            }
+            base.GenerateCompileUnitEnd(e);
+        }
 
         protected override void GenerateMethodReferenceExpression(CodeMethodReferenceExpression e)
         {
@@ -581,7 +607,7 @@ namespace XSharp.CodeDom
                 {
                     base.GenerateExpression(e.TargetObject);
                 }
-                base.Output.Write(this.selector);
+                base.Output.Write(this.staticSelector);
             }
             this.OutputIdentifier(e.MethodName);
             if (e.TypeArguments.Count > 0)
@@ -592,7 +618,7 @@ namespace XSharp.CodeDom
 
         protected override void GenerateMethodReturnStatement(CodeMethodReturnStatement e)
         {
-            base.Output.Write("return");
+            base.Output.Write("RETURN");
             if (e.Expression != null)
             {
                 base.Output.Write(" ");
@@ -600,6 +626,7 @@ namespace XSharp.CodeDom
             }
             base.Output.WriteLine();
         }
+
 
         protected override void GenerateNamespace(CodeNamespace e)
         {
@@ -626,7 +653,7 @@ namespace XSharp.CodeDom
 
         protected override void GenerateNamespaceImport(CodeNamespaceImport e)
         {
-            base.Output.Write("#using ");
+            base.Output.Write("USING ");
             this.OutputIdentifier(e.Namespace);
             base.Output.WriteLine();
         }
@@ -674,7 +701,7 @@ namespace XSharp.CodeDom
                 if ((e.PrivateImplementationType != null) && !this.IsCurrentInterface)
                 {
                     base.Output.Write(e.PrivateImplementationType.BaseType);
-                    base.Output.Write(this.selector);
+                    base.Output.Write(this.staticSelector);
                 }
                 this.OutputIdentifier(e.Name);
 
@@ -723,12 +750,26 @@ namespace XSharp.CodeDom
 
         protected override void GeneratePropertyReferenceExpression(CodePropertyReferenceExpression e)
         {
+            bool isIdentifier = true;
+
             if (e.TargetObject != null)
             {
                 this.GenerateExpression(e.TargetObject);
-                base.Output.Write(this.selector);
+                if (e.TargetObject is CodeTypeReferenceExpression)
+                {
+                    isIdentifier = false;
+                    this.Output.Write(this.staticSelector);
+                }
+                else
+                {
+                    this.Output.Write(this.selector);
+                }
             }
-            this.OutputIdentifier(e.PropertyName);
+            if (isIdentifier)
+                this.OutputIdentifier(e.PropertyName);
+            else
+                this.Output.Write(e.PropertyName);
+
         }
 
         protected override void GeneratePropertySetValueReferenceExpression(CodePropertySetValueReferenceExpression e)
@@ -1041,54 +1082,54 @@ namespace XSharp.CodeDom
 
             if (baseType.Length == 0)
             {
-                return "Void";
+                return "VOID";
             }
             switch (baseType.ToLower(CultureInfo.InvariantCulture))
             {
                 case "system.int16":
-                    return "System.Int16";
+                    return "SHORT";
 
                 case "system.int32":
-                    return "System.Int32";
+                    return "INT";
 
                 case "system.int64":
-                    return "System.Int64";
+                    return "INT64";
 
                 case "system.string":
-                    return "System.String";
+                    return "STRING";
 
                 case "system.object":
-                    return "System.Object";
+                    return "OBJECT";
 
                 case "system.boolean":
-                    return "System.Boolean";
+                    return "LOGIC";
 
                 case "system.void":
-                    return "System.Void";
+                    return "VOID";
 
                 case "system.char":
-                    return "System.Char";
+                    return "CHAR";
 
                 case "system.byte":
-                    return "System.Byte";
+                    return "BYTE";
 
                 case "system.uint16":
-                    return "System.UInt16";
+                    return "WORD";
 
                 case "system.uint32":
-                    return "System.UInt32";
+                    return "DWORD";
 
                 case "system.uint64":
-                    return "System.UInt64";
+                    return "UINT64";
 
                 case "system.sbyte":
                     return "System.SByte";
 
                 case "system.single":
-                    return "System.Single";
+                    return "REAL4";
 
                 case "system.double":
-                    return "System.Double";
+                    return "REAL8";
 
                 case "system.decimal":
                     return "System.Decimal";
@@ -1397,7 +1438,7 @@ namespace XSharp.CodeDom
                     }
                     else
                     {
-                        base.Output.Write("@");
+                        base.Output.Write("@@");
                     }
                     if (current.AttributeType != null)
                     {
@@ -1501,7 +1542,7 @@ namespace XSharp.CodeDom
         {
             if ((e.Attributes & MemberAttributes.New) != ((MemberAttributes)0))
             {
-                //base.Output.Write("NEW ");
+                //this.Output.Write("NEW ");
             }
             TypeAttributes typeAttributes = e.TypeAttributes;
             switch ((typeAttributes & TypeAttributes.VisibilityMask))

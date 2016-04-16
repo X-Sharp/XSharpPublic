@@ -9,27 +9,6 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
-//
-// Installation :
-// C:\Windows\Microsoft.NET\Framework\v4.0.30319\Config
-//
-// Modify machine.config file and add
-/*
-
-    
-<system.codedom>
-   <compilers>
-      <compiler language="XSharp" extension=".prg"
-          type="XSharp.CodeDom.XSharpCodeDomProvider,XSharpCodeDomProvider,
-          Version=1.0.0.0, Culture=neutral, PublicKeyToken=dba7109e93cd2f0f,
-          ProcessorArchitecture=MSIL"/>
-    </compilers>
-</system.codedom>
-
-*/
-//
-//
-
 namespace XSharp.CodeDom
 {
     [ComVisibleAttribute(true)]
@@ -67,7 +46,7 @@ namespace XSharp.CodeDom
         {
             base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
             //
-#if DEBUG
+#if WRITE2LOGFILE
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             path = Path.Combine(path, "XSharpDumpCodeCompileUnit_generate.log");
             XSharpCodeDomHelper.DumpCodeCompileUnit(compileUnit, path, true);
@@ -79,7 +58,7 @@ namespace XSharp.CodeDom
         {
             CodeCompileUnit compileUnit = base.Parse(codeStream);
             //
-#if DEBUG
+#if WRITE2LOGFILE
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             path = Path.Combine(path, "XSharpDumpCodeCompileUnit_parse.log");
             XSharpCodeDomHelper.DumpCodeCompileUnit(compileUnit, path, true);

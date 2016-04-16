@@ -14,7 +14,6 @@
     <TargetFrameworkProfile />
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,9 +69,13 @@
   <ItemGroup>
     <None Include="XSharp.snk" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ReadMe-MachineConfig.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SDK40ToolsPath)gacutil" /i $(TargetPath) /f</PostBuildEvent>
+    <PostBuildEvent>"$(SDK40ToolsPath)gacutil" /i $(TargetPath) /f
+copy $(TargetPath) "C:\program files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\PrivateAssemblies"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

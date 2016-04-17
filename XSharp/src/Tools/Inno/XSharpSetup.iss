@@ -183,19 +183,9 @@ Source: "{#ExamplesFolder}*.sln";                              DestDir: "{common
 Source: "{#ExamplesFolder}*.xsprj";                            DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 
 
-
-; Switch to installing the project system using registry based installation 
-; copy the files to the Private Assemblies folder
-; get the registry keys from the pkgdef file
-; for now we can update the pkgdef file and adjust the path
-; the current path in the pkgdef file = 
-; "CodeBase"="D:\Xsharp\Dev\XSharp\src\VisualStudioMPF\ProjectPackage\obj\Debug\XSharpProject2015.dll"
-; "D:\Xsharp\Dev\XSharp\src\VisualStudioMPF\ProjectPackage\obj\Debug"
-; it must become
-; "CodeBase"="{code:GetVs2015IdeDir}\Extensions\XSharp\XSharpProject2015.dll"
-
-
-
+; update machine.config
+; XML
+;
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}"; Filename: "{#XSharpURL}";IconFilename:{app}\Images\XSharp.ico;

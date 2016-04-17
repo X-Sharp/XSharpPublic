@@ -203,8 +203,8 @@
     <EmbeddedResource Include="Resources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Templates\Projects\WinFormApp\Resources.resx" />
-    <EmbeddedResource Include="Templates\Projects\WPFApplication\Resources.resx" />
+    <ZipProject Include="Templates\Projects\WinFormApp\Resources.resx" />
+    <ZipProject Include="Templates\Projects\WPFApplication\Resources.resx" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>

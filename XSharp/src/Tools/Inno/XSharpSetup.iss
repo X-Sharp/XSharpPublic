@@ -13,12 +13,13 @@
 #define VITextVersion   "0.2.2.2301 (Beta 3)"
 #define TouchDate       "2016-04-18"
 #define TouchTime       "02:03:00"
-#define SetupExeName    "XSharpSetup023"
+#define SetupExeName    "XSharpSetup023a"
 #define InstallPath     "XSharpPath"
 
 ;Folders
 #define BinFolder       "D:\Xsharp\Dev\XSharp\Binaries\Debug\"
 #define CommonFolder    "D:\Xsharp\Dev\XSharp\src\Common\"
+#define ToolsFolder     "d:\Xsharp\Dev\XSharp\src\Tools\"
 #define VSProjectFolder "d:\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
 #define VSProjectOutPut "d:\Xsharp\Dev\XSharp\src\VisualStudioMPF\ProjectPackage\Bin\Debug\"
 #define ExamplesFolder  "d:\Xsharp\Dev\XSharp\src\Samples\"
@@ -27,9 +28,9 @@
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
 #define XIDESetup       "XIDE_Set_up_1.02.exe"
 
-#define StdFlags        "touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -104,6 +105,7 @@ Name: "{app}\Images"
 Name: "{app}\Include"
 Name: "{app}\ProjectSystem"
 Name: "{app}\Redist"
+Name: "{app}\Tools"
 Name: "{app}\Uninst"
 Name: "{app}\Xide"
 Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
@@ -184,8 +186,7 @@ Source: "{#ExamplesFolder}*.xsprj";                            DestDir: "{common
 
 
 ; update machine.config
-; XML
-;
+Source:"{#ToolsFolder}Various\RegisterProvider.exe";          DestDir: "{app}\Tools";                     Flags: {#StdFlags}
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}"; Filename: "{#XSharpURL}";IconFilename:{app}\Images\XSharp.ico;
@@ -207,6 +208,7 @@ Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPa
 Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vs2015;
 
 [Run]
+Filename: "{app}\Tools\RegisterProvider.exe";
 Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]

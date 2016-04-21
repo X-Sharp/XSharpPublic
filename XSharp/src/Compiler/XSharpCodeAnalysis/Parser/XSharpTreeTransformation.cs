@@ -555,7 +555,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         TypeSyntax MissingType()
         {
-            return _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
+            return _objectType
                 .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
         }
 
@@ -716,7 +716,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ref  SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType )
         {
-            if (context.HasClipperCallingConvention || context.UsesPSZ)
+            if (_options.IsDialectVO && (context.HasClipperCallingConvention || context.UsesPSZ ))
             {
                 ;//  
                  // Add Clipper Calling convention attribute, add parameter names to this attribute
@@ -753,7 +753,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (_options.IsDialectVO)
                     dataType = _usualType;
                 else
-                    dataType = _objectType;
+                    dataType = MissingType();
             }
         }
 

@@ -255,6 +255,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return "";
             XP.DatatypeContext RetType = null;
             XP.ParameterListContext Params = null;
+            XP.PropertyParameterListContext PParams = null;
             name = GetNestedName(context.Parent);
             if (context is XP.FunctionContext)
             {
@@ -306,7 +307,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else if (context is XP.PropertyContext)
             {
                 XP.PropertyContext pc = (XP.PropertyContext)context;
-                name += pc.Id.GetText();
+                if (pc.Id != null)
+                    name += pc.Id.GetText();
+                if (pc.SELF() != null)
+                    name += pc.SELF()?.GetText();
+                PParams = pc.ParamList;
                 RetType = pc.Type;
                 suffix = ":Property";
 
@@ -356,6 +361,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (Params != null)
                 {
                     foreach (XP.ParameterContext _par in Params._Params)
+                    {
+                        if (strParams?.Length > 0)
+                            strParams += ", ";
+                        if (_par.Type != null)
+                            strParams += _par.Type.GetText();
+                        else
+                            strParams += "USUAL";
+                    }
+                }
+                if (PParams != null)
+                {
+                    foreach (XP.ParameterContext _par in PParams._Params)
                     {
                         if (strParams?.Length > 0)
                             strParams += ", ";

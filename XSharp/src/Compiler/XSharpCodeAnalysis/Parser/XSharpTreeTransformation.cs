@@ -3544,10 +3544,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.UsingStatement(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                null, // TODO: (grammar) using variable declarations?
-                context.Expr.Get<ExpressionSyntax>(),
+                context.VarDecl?.Get<VariableDeclarationSyntax>(),
+                context.Expr?.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.Stmtblk.Get<BlockSyntax>()));
+        }
+
+        public override void ExitVariableDeclaration([NotNull] XP.VariableDeclarationContext context)
+        {
+            context.Put(_syntaxFactory.VariableDeclaration(
+                context.Type?.Get<TypeSyntax>() ?? (context.Var != null ? _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(ImpliedTypeName)) : MissingType()),
+                MakeSeparatedList<VariableDeclaratorSyntax>(context._Decl)
+                ));
+        }
+
+        public override void ExitVariableDeclarator([NotNull] XP.VariableDeclaratorContext context)
+        {
+            context.Put(_syntaxFactory.VariableDeclarator(
+                context.Id.Get<SyntaxToken>(), 
+                null, 
+                _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), context.Expr.Get<ExpressionSyntax>())));
         }
 
         public override void ExitQoutStmt([NotNull] XP.QoutStmtContext context)

@@ -393,5 +393,21 @@ FUNCTION Test() AS VOID
     LOCAL o
 "));
         }
+
+        [Test(Author = "Nikos", Id = "N14", Title = "Using statement")]
+        public static void UsingStatement()
+        {
+            CompileAndRunWithoutExceptions(ParseSource(@"
+PROCEDURE Start()
+    VAR ms := System.IO.MemoryStream{}
+    BEGIN USING ms
+    END USING
+"));
+            CompileAndRunWithoutExceptions(ParseSource(@"
+FUNCTION Start() AS VOID
+    BEGIN USING VAR ms := System.IO.MemoryStream{}
+    END USING
+"));
+        }
     }
 }

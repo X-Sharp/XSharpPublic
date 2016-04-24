@@ -728,12 +728,18 @@ extendedaliasExpr	:	l1=LPAREN e1=expression r1=RPAREN a=ALIAS
 						)
 					;
 */
-codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE) Expr=expression? RCURLY
+codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
+					  ( Expr=expression?
+					  | EOS StmtBlk=statementBlock 
+					  | ExprList=codeblockExprList )
+					  RCURLY
 					;
 
 codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 					;
 
+codeblockExprList	: (Exprs+=expression COMMA)+ ReturnExpr=expression
+					;
 
 // LINQ Support
 

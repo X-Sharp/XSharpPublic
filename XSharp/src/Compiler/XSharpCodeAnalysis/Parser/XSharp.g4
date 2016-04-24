@@ -477,7 +477,7 @@ statement           : Decl=localdecl                                            
 					| SWITCH Expr=expression end=EOS
 					  (SwitchBlock+=switchBlock)+
 					  END SWITCH?  EOS											{ SetSequencePoint(_localctx,$end); }#switchStmt
-					| BEGIN USING Expr=expression end=EOS
+					| BEGIN USING ( Expr=expression | VarDecl=variableDeclaration ) end=EOS
 						Stmtblk=statementBlock
 					  END USING? EOS											{ SetSequencePoint(_localctx,$end); }#usingStmt
 					| BEGIN UNSAFE end=EOS
@@ -516,6 +516,13 @@ catchBlock			: (Id=identifier (AS Type=datatype)?)? end=EOS StmtBlk=statementBlo
 
 recoverBlock		: (USING Id=identifier)? end=EOS StmtBlock=statementBlock
  				    { SetSequencePoint(_localctx,$end); }
+					;
+
+variableDeclaration	: (LOCAL? Var=IMPLIED | Var=VAR) Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)*
+					| LOCAL Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)* (AS Type=datatype)?
+					;
+
+variableDeclarator	: Id=identifier ASSIGN_OP Expr=expression
 					;
 
 // Variable declarations

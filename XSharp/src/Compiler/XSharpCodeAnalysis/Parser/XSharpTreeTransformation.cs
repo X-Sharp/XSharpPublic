@@ -2,6 +2,7 @@
 //#define DUMP_TREE
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
@@ -480,18 +481,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
         }
 
-        SyntaxList<T> MakeList<T>(System.Collections.IEnumerable t) where T : InternalSyntax.CSharpSyntaxNode
+        SyntaxList<T> MakeList<T>(IEnumerable<IParseTree> t) where T : InternalSyntax.CSharpSyntaxNode
         {
             if (t == null)
                 return default(SyntaxList<T>);
             var l = _pool.Allocate<T>();
             foreach (var item in t) {
                 if (item != null) {
-                    if (((IParseTree)item).CsNode is SyntaxList<T>)
-                        l.AddRange(((IParseTree)item).GetList<T>());
+                    if (item.CsNode is SyntaxList<T>)
+                        l.AddRange(item.GetList<T>());
                     else
-                        l.Add(((IParseTree)item).Get<T>());
+                        l.Add(item.Get<T>());
                 }
+            }
+            var list = l.ToList();
+            _pool.Free(l);
+            return list;
+        }
+
+        SyntaxList<T> MakeList<T>(IEnumerable<T> t, params T[] items) where T : InternalSyntax.CSharpSyntaxNode
+        {
+            var l = _pool.Allocate<T>();
+            if (t != null)
+            {
+                foreach (var item in t)
+                {
+                    if (item != null)
+                        l.Add(item);
+                }
+            }
+            foreach (var item in items)
+            {
+                if (item != null)
+                    l.Add(item);
             }
             var list = l.ToList();
             _pool.Free(l);
@@ -4401,7 +4423,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 asyncKeyword: null,
                 parameterList: context.CbParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
                 arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken), 
-                body: context.Expr.Get<ExpressionSyntax>()));
+                body: (CSharpSyntaxNode)context.Expr?.Get<ExpressionSyntax>() ?? context.StmtBlk?.Get<BlockSyntax>() ?? context.ExprList?.Get<BlockSyntax>() ?? MakeBlock(MakeList<StatementSyntax>())
+                ));
         }
 
         public override void ExitCodeblockParamList([NotNull] XP.CodeblockParamListContext context)
@@ -4427,6 +4450,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 @params,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
             _pool.Free(@params);
+        }
+
+        public override void ExitCodeblockExprList([NotNull] XP.CodeblockExprListContext context)
+        {
+            context.Put(MakeBlock(MakeList<StatementSyntax>(
+                from ctx in context._Exprs select _syntaxFactory.ExpressionStatement(ctx.Get<ExpressionSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword), context.ReturnExpr.Get<ExpressionSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                )));
         }
 
         public override void ExitQueryExpression([NotNull] XP.QueryExpressionContext context)

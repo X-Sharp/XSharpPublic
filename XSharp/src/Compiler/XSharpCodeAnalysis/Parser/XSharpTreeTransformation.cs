@@ -3939,12 +3939,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else {
                 var type = (context.Type as XP.ArrayDatatypeContext).TypeName.Get<TypeSyntax>();
                 var arrayType = context.Type.Get<ArrayTypeSyntax>();
-                int ranks = 0;
-                foreach(var rankSpec in arrayType.RankSpecifiers) {
-                    ranks += rankSpec.Sizes.Count;
+                var rankSpecifiers = new ArrayRankSpecifierSyntax[arrayType.RankSpecifiers.Count];
+                for(int i = 0; i < rankSpecifiers.Length; i++) {
+                    rankSpecifiers[i] = arrayType.RankSpecifiers[i];
                 }
+                int ranks = rankSpecifiers[0].Sizes.Count;
                 if (ranks != context.ArgList?._Args?.Count)
-                    context.AddError(new ParseErrorData(ErrorCode.ERR_NoConstructors,arrayType));
+                    context.AddError(new ParseErrorData(ErrorCode.ERR_BadCtorArgCount,context.Type.GetText(), context.ArgList?._Args?.Count ?? 0));
                 var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
                 if (context.ArgList?._Args != null) {
                     foreach (var size in context.ArgList?._Args) {
@@ -3957,14 +3958,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         sizes.Add(size.Expr.Get<ExpressionSyntax>());
                     }
                 }
-                context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                    _syntaxFactory.ArrayType(type,
-                        MakeList(_syntaxFactory.ArrayRankSpecifier(
+                rankSpecifiers[0] = _syntaxFactory.ArrayRankSpecifier(
                             SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                             sizes,
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
-                    null));
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                 _pool.Free(sizes);
+                context.Put(_syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                    _syntaxFactory.ArrayType(type, MakeList(rankSpecifiers)),
+                    null));
             }
         }
 

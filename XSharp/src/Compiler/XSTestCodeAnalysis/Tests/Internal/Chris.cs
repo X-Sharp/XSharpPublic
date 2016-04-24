@@ -1786,12 +1786,17 @@ n := INT[][]{10}
         [Test(Author = "Chris", Id = "C133", Title = "No warning on not using assigned value")]
         public static void No_warning_on_not_using_assigned_value()
         {
-            var s = ParseSource(@"
+            CompileWithWarnings(ParseSource(@"
 FUNCTION Start() AS VOID
 LOCAL n := 1 AS INT // correct warning XS0219 here
+"));
+            // nvk: Note that the warning is intentionally suppressed by the C# compiler
+            // in the following case. For justification, see the legthy comment
+            // in DataFlowPass.cs in the NoteWrite() method
+            CompileWithoutWarnings(ParseSource(@"
+FUNCTION Start() AS VOID
 LOCAL o := System.Collections.ArrayList{} AS OBJECT // no warning
-");
-            CompileWithWarnings(s);
+"));
         }
 
 

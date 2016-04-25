@@ -128,6 +128,7 @@ namespace Antlr4.Runtime
             MustBeUnsafe = 8,
             MustHaveReturnType = 16,
             UsesClipperCallingFunction = 32,     // PCOUNT, _GETMPARAM, _GETFPARAM
+            HasTypedParameter = 64,
         }
         int iBPLength = -1;
         MethodFlags flags = MethodFlags.None;
@@ -141,6 +142,11 @@ namespace Antlr4.Runtime
         {
             get { return (flags & MethodFlags.MissingReturnType) == MethodFlags.MissingReturnType; }
             set { if (value) flags |= MethodFlags.MissingReturnType; else flags &= ~MethodFlags.MissingReturnType; }
+        }
+        public bool HasTypedParameter
+        {
+            get { return (flags & MethodFlags.HasTypedParameter) == MethodFlags.HasTypedParameter; }
+            set { if (value) flags |= MethodFlags.HasTypedParameter; else flags &= ~MethodFlags.HasTypedParameter; }
         }
         public bool UsesClipperCallingFunction
         {

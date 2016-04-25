@@ -1359,6 +1359,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_UserWarning = 9006,
         ERR_FeatureNotAvailableInDialect = 9007, 
         ERR_UntypedArrayNotAvailableInDialect = 9008,
-
+        ERR_TypedParametersWithClipperCallingConvention = 9009,
     }
 }

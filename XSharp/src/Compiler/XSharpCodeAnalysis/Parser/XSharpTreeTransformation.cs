@@ -780,47 +780,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void Check4ClipperCC(Antlr4.Runtime.ParserRuleContext context, 
             XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveType)
         {
-            bool isClipper = false;
             bool isEntryPoint = false;
+            bool hasConvention = false;
             if (context is XP.FunctionContext)
             {
                 var fc = context as XP.FunctionContext;
                 isEntryPoint = fc.Id.GetText().ToLower() == "start";
             }
-            
-
             context.MustHaveReturnType = mustHaveType;
             context.HasMissingReturnType = (returnType == null);
+            context.HasTypedParameter = false;
             if (_options.IsDialectVO)
             {
                 if (Convention != null)
                 {
-                    isClipper = (Convention.Type == XP.CLIPPER);
+                    context.HasClipperCallingConvention = (Convention.Type == XP.CLIPPER);
+                    hasConvention = true;
                 }
-                else
+                // Function Foo or Function Foo() without convention
+                if (parameters?._Params?.Count == 0 && !hasConvention )
                 {
-                    // Function Foo or Function Foo()
-                    if (parameters?._Params?.Count == 0)
+                    context.HasClipperCallingConvention = _options.VOClipperCallingConvention && ! isEntryPoint ;
+                }
+                if (parameters != null)
+                {
+                    bool bHasTypedParameter = false;
+                    foreach (XP.ParameterContext par in parameters._Params)
                     {
-                        isClipper = _options.VOClipperCallingConvention && ! isEntryPoint;
-                    }
-                    else 
-                    {
-                        bool bOnlyUntypedParameters = true;
-                        foreach (XP.ParameterContext par in parameters._Params)
+                        if (par.Type != null || par.Self != null)
                         {
-                            if (par.Type != null || par.Self != null)
-                            {
-                                bOnlyUntypedParameters = false;
-                                break;
-                            }
+                            bHasTypedParameter = true;
+                            break;
                         }
-                        isClipper = bOnlyUntypedParameters;
                     }
-                }
-                if (isClipper)
-                {
-                    context.HasClipperCallingConvention = true;
+                    context.HasTypedParameter = bHasTypedParameter;
+                    if (! context.HasClipperCallingConvention && !isEntryPoint && ! hasConvention)
+                        context.HasClipperCallingConvention = !bHasTypedParameter;
                 }
             }
         }
@@ -829,6 +824,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ref  SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType )
         {
+            if (context.HasTypedParameter && context.HasClipperCallingConvention)
+            {
+                parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
+                return;
+            }
             if (_options.IsDialectVO && (context.HasClipperCallingConvention || context.UsesPSZ ))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
@@ -1268,12 +1268,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             TypeSyntax voPropType;
-            if (vop.AccessMethodCtx != null)
+            var AccMet = vop.AccessMethodCtx;
+            var AssMet = vop.AssignMethodCtx;
+            if (AccMet != null)
             {
-                voPropType = vop.AccessMethodCtx.Type?.Get<TypeSyntax>() ?? MissingType();
+                if (AccMet.HasClipperCallingConvention)
+                    voPropType = _usualType;
+                else
+                    voPropType = AccMet.Type?.Get<TypeSyntax>() ?? MissingType();
             }
-            else if (vop.AssignMethodCtx != null && vop.AssignMethodCtx.ParamList != null && vop.AssignMethodCtx.ParamList._Params?.Count > 0)
-                voPropType = vop.AssignMethodCtx.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? MissingType();
+            else if (AssMet!= null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
+            {
+                if (AssMet.HasClipperCallingConvention)
+                    voPropType = _usualType;
+                else
+                    voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? MissingType();
+            }
             else
                 voPropType = MissingType();
 
@@ -2188,7 +2198,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.StmtBlk = null;
             }
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, true);
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
             bool actualDeclaration = true;
             if (context.T.Token.Type != XP.METHOD) {
                 switch (context.T.Token.Type) {
@@ -2476,6 +2486,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+                ArgumentListSyntax parentargs = null;
+                if (context.HasClipperCallingConvention)
+                    parentargs = MakeArgumentList(MakeArgument(GenerateSimpleName(ClipperArgs)));
+                else if (context.Chain != null)
+                    parentargs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
@@ -2488,7 +2504,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                             context.Chain.SyntaxKeyword(), 
-                            context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
+                            parentargs),
                     body: body,
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }

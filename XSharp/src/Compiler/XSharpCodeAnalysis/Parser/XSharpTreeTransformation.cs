@@ -3531,7 +3531,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // TODO: sequence/break/recover are not supported yet
             context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BREAK statement", _options.Dialect)));
+                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BREAK statement", _options.Dialect.ToString())));
         }
 
         public override void ExitThrowStmt([NotNull] XP.ThrowStmtContext context)

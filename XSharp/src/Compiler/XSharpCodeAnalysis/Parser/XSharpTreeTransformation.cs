@@ -610,6 +610,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
         }
 
+        private IfStatementSyntax GenerateIfStatement(ExpressionSyntax condition, StatementSyntax statement, ElseClauseSyntax @else = null) { 
+            return _syntaxFactory.IfStatement(
+                        SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        condition,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        statement, @else);
+        }
+
         private LiteralExpressionSyntax GenerateLiteral(bool value)
         {
             if (value)
@@ -824,7 +833,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var stmts = _pool.Allocate<StatementSyntax>();
                 ExpressionSyntax assignExpr;
                 ExpressionSyntax ifExpr;
-                StatementSyntax ifStmt;
                 StatementSyntax exprStmt;
                 if (context.HasClipperCallingConvention)
                 {
@@ -844,12 +852,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
                             SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression,
                                 SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)));
-                    ifStmt = _syntaxFactory.IfStatement(
-                        SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        ifExpr,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), exprStmt, null);
-                    stmts.Add(ifStmt);
+                    stmts.Add(GenerateIfStatement(ifExpr, exprStmt));
 
 
                     // LOCAL oPar1 as USUAL                <== For Clipper Calling Convention
@@ -906,13 +909,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             ifBody = exprStmt;
                         }
-                        ifStmt = _syntaxFactory.IfStatement(
-                            SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            ifExpr,
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                            ifBody,null);
-                        LastStmt = ifStmt;
+                        LastStmt = GenerateIfStatement(ifExpr, ifBody);
                     }
                     stmts.Add(LastStmt);
                     // Now Change argument to X$Args PARAMS USUAL[]
@@ -3238,18 +3235,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _syntaxFactory.VariableDeclaration(varType, variables),
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                 if (initExpr != null) {
-                    decl.Add(_syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    decl.Add(GenerateIfStatement(
                         GenerateSimpleName(staticName+StaticLocalInitFieldNameSuffix),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        
                         _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
                             SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             GenerateSimpleName(staticName+StaticLocalLockFieldNameSuffix),
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                            _syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                GenerateSimpleName(staticName+StaticLocalInitFieldNameSuffix),
-                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                            GenerateIfStatement(GenerateSimpleName(staticName+StaticLocalInitFieldNameSuffix),
+                                
                                 MakeBlock(MakeList<StatementSyntax>(
                                         GenerateExpressionStatement(
                                             _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
@@ -3261,9 +3255,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 GenerateSimpleName(staticName+StaticLocalInitFieldNameSuffix),
                                                 SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                                                 GenerateLiteral(false)))
-                                        )),
-                                null)),
-                        null));
+                                        ))))));
                 }
                 context.PutList<StatementSyntax>(decl);
                 _pool.Free(decl);
@@ -3477,10 +3469,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIfElseBlock([NotNull] XP.IfElseBlockContext context)
         {
-            context.Put(_syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+            context.Put(GenerateIfStatement(
                 context.Cond.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>(),
                 (context.ElseIfBlock != null) ? 
                     _syntaxFactory.ElseClause(SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword), context.ElseIfBlock.Get<IfStatementSyntax>())
@@ -3500,10 +3490,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Key.Type == XP.OTHERWISE)
                 context.Put(context.StmtBlk.Get<StatementSyntax>());
             else {
-                context.Put(_syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                context.Put(GenerateIfStatement(
                     context.Cond.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                     context.StmtBlk.Get<BlockSyntax>(),
                     (context.NextCase == null) ? null :
                         _syntaxFactory.ElseClause(SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
@@ -4043,12 +4031,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                             GenerateSimpleName("IsAttached"));
                 var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                var ifstmt = _syntaxFactory.IfStatement(SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                cond,
-                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                                stmt, null);
-                context.Put(ifstmt);
+                context.Put(GenerateIfStatement(cond, stmt));
             }
             else if (bIsSlen && argList.Arguments.Count >= 1)
             {

@@ -781,6 +781,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveType)
         {
             bool isClipper = false;
+            bool isEntryPoint = false;
+            if (context is XP.FunctionContext)
+            {
+                var fc = context as XP.FunctionContext;
+                isEntryPoint = fc.Id.GetText().ToLower() == "start";
+            }
+            
+
             context.MustHaveReturnType = mustHaveType;
             context.HasMissingReturnType = (returnType == null);
             if (_options.IsDialectVO)
@@ -792,29 +800,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else
                 {
                     // Function Foo or Function Foo()
-                    if (_options.VOClipperCallingConvention  && (parameters == null || parameters._Params?.Count == 0))
+                    if (parameters?._Params?.Count == 0)
                     {
-                        isClipper = true;
+                        isClipper = _options.VOClipperCallingConvention && ! isEntryPoint;
                     }
                     else 
                     {
-                        // if one or more parameters is typed, then it cannot be Clipper calling convention
-                        // the case where one parameter is typed and the other untyped will be handled elsewhere
-                        // in that case the untyped parameter will be typed as USUAL
-                        if (parameters != null)
+                        bool bOnlyUntypedParameters = true;
+                        foreach (XP.ParameterContext par in parameters._Params)
                         {
-                            bool bUntypedParameters = true;
-                            foreach (XP.ParameterContext par in parameters._Params)
+                            if (par.Type != null || par.Self != null)
                             {
-                                if (par.Type != null || par.Self != null)
-                                {
-                                    bUntypedParameters = false;
-                                    break;
-                                }
+                                bOnlyUntypedParameters = false;
+                                break;
                             }
-                            if (bUntypedParameters)
-                                isClipper = true;
                         }
+                        isClipper = bOnlyUntypedParameters;
                     }
                 }
                 if (isClipper)

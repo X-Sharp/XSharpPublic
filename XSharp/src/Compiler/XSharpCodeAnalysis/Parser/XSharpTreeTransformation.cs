@@ -861,6 +861,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     //    oPar1 := Xs$Args[1]              .
                     // ENDIF                             .
                     var nilExpr = GenerateNIL();
+                    for (int i =0; i < parameters.Parameters.Count ; i++)
+                    {
+                        ParameterSyntax parm = parameters.Parameters[i];
+                        var name = parm.Identifier.Text;
+                        stmts.Add(GenerateLocalDecl(name, _usualType, nilExpr));
+                    }
                     int iAdd = 1;
                     if (_options.ArrayZero)
                         iAdd = 0;
@@ -869,7 +875,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         ParameterSyntax parm = parameters.Parameters[i];
                         var name = parm.Identifier.Text;
-                        stmts.Add(GenerateLocalDecl(name, _usualType, nilExpr));
                         var indices = _pool.AllocateSeparated<ArgumentSyntax>();
                         indices.Add(MakeArgument(GenerateLiteral("", i+iAdd)));
                         assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,

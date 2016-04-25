@@ -1985,6 +1985,19 @@ END CLASS
         }
 
 
+ 
+        // 144
+        [Test(Author = "Chris", Id = "C144", Title = "assertion failed and compiler crash with BREAK")]
+        public static void assertion_failed_and_compiler_crash_with_BREAK()
+        {
+            var s = ParseSource(@"
+// crash in debug version of the compiler only
+FUNCTION Start() AS VOID
+BREAK
+");
+            CompileWithErrors(s);
+        }
+
 
 
     }

@@ -793,9 +793,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.HasMissingReturnType = (returnType == null);
             if (_options.IsDialectVO)
             {
-                if (Convention?.Type == XP.CLIPPER)
+                if (Convention != null)
                 {
-                    isClipper = true;
+                    isClipper = (Convention.Type == XP.CLIPPER);
                 }
                 else
                 {
@@ -837,24 +837,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 StatementSyntax exprStmt;
                 if (context.HasClipperCallingConvention)
                 {
-                    stmts.Add(GenerateLocalDecl(ClipperPCount, _impliedType, GenerateLiteral("0",0)));
-                    assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                            GenerateSimpleName(ClipperPCount),
-                            SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                                        _syntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            GenerateSimpleName(ClipperArgs),
-                                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                            GenerateSimpleName("Length")));
-                    exprStmt = _syntaxFactory.ExpressionStatement(assignExpr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                    ifExpr = _syntaxFactory.BinaryExpression(
-                            SyntaxKind.NotEqualsExpression,
-                            GenerateSimpleName(ClipperArgs),
-                            SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
-                            SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression,
-                                SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)));
-                    stmts.Add(GenerateIfStatement(ifExpr, exprStmt));
-
+                    if (parameters.Parameters.Count > 0 || context.UsesClipperCallingFunction)
+                    {
+                        stmts.Add(GenerateLocalDecl(ClipperPCount, _impliedType, GenerateLiteral("0", 0)));
+                        assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                GenerateSimpleName(ClipperPCount),
+                                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                                            _syntaxFactory.MemberAccessExpression(
+                                                SyntaxKind.SimpleMemberAccessExpression,
+                                                GenerateSimpleName(ClipperArgs),
+                                                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                                GenerateSimpleName("Length")));
+                        exprStmt = _syntaxFactory.ExpressionStatement(assignExpr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                        ifExpr = _syntaxFactory.BinaryExpression(
+                                SyntaxKind.NotEqualsExpression,
+                                GenerateSimpleName(ClipperArgs),
+                                SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
+                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression,
+                                    SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)));
+                        stmts.Add(GenerateIfStatement(ifExpr, exprStmt));
+                    }
 
                     // LOCAL oPar1 as USUAL                <== For Clipper Calling Convention
                     // LOCAL oPar2 as USUAL                .
@@ -3976,6 +3978,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool bIsAltD = false;
             bool bIsSlen = false;
             bool bPszConvert = false;
+            bool bClipCalFunc = false;
             if (expr is IdentifierNameSyntax)
             {
                 IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
@@ -3995,6 +3998,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             bPszConvert = true;
                         }
+                        break;
+                    case "PCOUNT":
+                    case "_GETMPARAM":
+                    case "_GETFPARAM":
+                        CurrentEntity.UsesClipperCallingFunction = true;
+                        bClipCalFunc = true;
                         break;
                     default:
                         break;
@@ -4055,6 +4064,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 context.Put(expr);
                 
+            }
+            else if (bClipCalFunc)
+            {
+                ; //TODO Implement code
             }
             else
                 context.Put(_syntaxFactory.InvocationExpression(expr, argList));

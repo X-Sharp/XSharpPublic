@@ -1999,6 +1999,85 @@ BREAK
         }
 
 
+        // 145
+        [Test(Author = "Chris", Id = "C145", Title = "error XS1031: Type expected with ASSIGN")]
+        public static void error_XS1031_Type_expected_with_ASSIGN()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	ASSIGN MyProp(n AS INT)
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 146
+        [Test(Author = "Chris", Id = "C146", Title = "error XS1737: Optional parameters must appear after all required parameters")]
+        public static void error_XS1737_Optional_parameters_must_appear_after_all_required_parameters()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	METHOD DoTest(n AS INT , m := 1 AS INT,k AS INT) AS VOID
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+/*
+        // 147
+        [Test(Author = "Chris", Id = "C147", Title = "incorrect params passed to super constructor")]
+        public static void incorrect_params_passed_to_super_constructor()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:""C:\Windows\Microsoft.NET\assembly\GAC_32\VulcanRTFuncs\v4.0_3.0.303.0__0e73a8bf006af00c\VulcanRTFuncs.dll""" , @"
+// /dialect:vulcan
+FUNCTION Start() AS VOID
+Child{1,2}
+RETURN
+
+CLASS Parent
+    CONSTRUCTOR(b)
+    	IF b != 2
+    		THROW Exception{""Incorrect param passed""}
+    	END IF
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(a,b)
+        SUPER(b)
+END CLASS 
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+        // 148
+        [Test(Author = "Chris", Id = "C148", Title = "No errors reported on mixing CLIPPER/STRICT members in the same class or inheritance tree")]
+        public static void No_errors_reported_on_mixing_CLIPPER_STRICT_members_in_the_same_class_or_inheritance_tree()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:""C:\Windows\Microsoft.NET\assembly\GAC_32\VulcanRTFuncs\v4.0_3.0.303.0__0e73a8bf006af00c\VulcanRTFuncs.dll""" , @"
+// /dialect:vulcan
+CLASS Parent
+	METHOD Test1() CLIPPER
+	RETURN NIL
+	METHOD Test1() AS VOID STRICT
+
+	VIRTUAL METHOD Test2() AS VOID STRICT
+	VIRTUAL METHOD Test3() CLIPPER
+	RETURN NIL
+	
+END CLASS
+
+CLASS Child INHERIT Parent
+	VIRTUAL METHOD Test2() CLIPPER
+	RETURN NIL
+	VIRTUAL METHOD Test3() AS VOID STRICT
+END CLASS
+");
+            CompileWithErrors(s);
+        }
+*/
+
 
     }
 }

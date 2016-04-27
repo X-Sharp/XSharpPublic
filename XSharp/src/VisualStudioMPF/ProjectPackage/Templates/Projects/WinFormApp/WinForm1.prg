@@ -1,50 +1,45 @@
-﻿#using System
-#using System.Collections.Generic
-#using System.ComponentModel
-#using System.Data
-#using System.Drawing
-$if$ ($targetframeworkversion$ >= 3.5)#using System.Linq
-$endif$#using System.Text
-$if$ ($targetframeworkversion$ >= 4.5)#using System.Threading.Tasks
-$endif$#using System.Windows.Forms
+﻿USING System
+USING System.Collections.Generic
+USING System.ComponentModel
+USING System.Data
+USING System.Drawing
+$if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
+$endif$USING System.Text
+$if$ ($targetframeworkversion$ >= 4.5)USING System.Threading.Tasks
+$endif$USING System.Windows.Forms
 
-begin namespace $safeprojectname$
-
-    public partial class $safeitemrootname$ inherit System.Windows.Forms.Form
+BEGIN NAMESPACE $safeprojectname$
     
-        public CONSTRUCTOR()  //$safeitemrootname$
+    
+    PUBLIC PARTIAL CLASS $safeitemrootname$ INHERIT System.Windows.Forms.Form
+        
+        PRIVATE components AS System.ComponentModel.IContainer
+        
+        PUBLIC CONSTRUCTOR() 
             InitializeComponent()
 			return
-        
-		/// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private components as System.ComponentModel.IContainer
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected method Dispose(disposing as logic) as void
         
+        PROTECTED METHOD Dispose(disposing AS logic) AS void
             if (disposing .AND. (components != null))
                 components:Dispose()
             endif
             Super:Dispose(disposing)
 			return
 
-        #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private method InitializeComponent() as void
-            self:components := System.ComponentModel.Container{}
-            self:AutoScaleMode := System.Windows.Forms.AutoScaleMode.Font
-            self:Text := "$safeitemrootname$"
-			return
+        
+        PRIVATE METHOD InitializeComponent() AS void
+            SELF:SuspendLayout()
+            // 
+            // WinForm1
+            // 
+            SELF:ClientSize := System.Drawing.Size{379, 316}
+            SELF:Name := e"$safeitemrootname$"
+            SELF:Text := e"$safeitemrootname$"
+            SELF:ResumeLayout(false)
+    
+    END CLASS
+END NAMESPACE
 
-        #endregion
-    end class
-end namespace
+

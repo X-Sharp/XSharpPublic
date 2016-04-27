@@ -308,7 +308,7 @@
       <config-value name="insertseealsostyle">-1</config-value>
     </config-group>
     <variables>
-      <variable id="VERSION" type="text" translate="true">0.2.1</variable>
+      <variable id="VERSION" type="text" translate="true">0.2.3</variable>
     </variables>
     <helpcontext-numbers/>
   </config>

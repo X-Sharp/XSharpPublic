@@ -2,15 +2,38 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">X# Compiler Options By Category</title>
+  <keywords>
+    <keyword translate="true">/dialect</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# Compiler Options By Category</text></para>
     </header>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The following compiler options are sorted by category. For an alphabetical list, see : </text><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph" styleclass="Body Text" translate="true">X# Compiler Options Listed Alphabetically</link></para>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">VO/Vulcan Compatibility</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Dialect support</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="33" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="2" colcount="2">
+      <thead style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Purpose</text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:top">
+        <td style="width:33%;">
+          <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-dialect" styleclass="Body Text" translate="true">/dialect</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the dialect to use when compiling. The following values are supported: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour. Work on the VO and Vulcan dialects has started.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">VO/Vulcan Compatibility</text></para>
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="32" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -88,7 +111,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs" styleclass="Normal" translate="true">/nostddefs</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Suppresses preprocessor definitions in VulcanStdDefs.vh </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Suppresses preprocessor definitions in XSharpDefs.xh </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -137,14 +160,6 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Signs assembly with strong name key pair </text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">/time</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Show time taken by various compilation steps</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -256,7 +271,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo14" styleclass="Normal" translate="true">/vo14</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Insert floating point literals as FLOAT</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Insert floating point literals as FLOAT</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

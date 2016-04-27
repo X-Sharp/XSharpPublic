@@ -32,6 +32,7 @@ namespace XSharp.Project
     /// <para>ProvideProjectFactory: Declares that a package provides a project factory.</para>
     /// <para>ProvideProjectItem: Declares that a package provides a project item.</para> 
     /// </remarks>  
+    /// 
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
     [Description("XSharp Project System")]
     [PackageRegistration(UseManagedResourcesOnly = true)]
@@ -109,8 +110,8 @@ namespace XSharp.Project
         TemplateGroupIDsVsTemplate = "WPF",
         ShowOnlySpecifiedTemplatesVsTemplate = false, SortPriority =100)]
 
-    [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Class", 500)]
-    [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"..\..\Templates\ProjectItems\Form", 500)]
+    [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
+    [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
 
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", Int32.MaxValue,DefaultName = "XSharp Source Code Editor",NameResourceID =109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]

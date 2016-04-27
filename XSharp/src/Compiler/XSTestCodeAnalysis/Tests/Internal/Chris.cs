@@ -78,7 +78,7 @@ NEXT
         [Test(Author = "Chris", Id = "C31", Title = "error XS0175: Use of keyword 'SUPER' is not valid in this context")]
         public static void cannot_use_super_in_constructor_body()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan", @"
 CLASS TestClass
 CONSTRUCTOR()
 LOCAL n AS INT
@@ -87,7 +87,7 @@ n := 1
 SUPER()
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors(s, VulcanRuntime());
         }
 
 
@@ -1202,7 +1202,7 @@ END CLASS
         [Test(Author = "Chris", Id = "C99", Title = "Keyword 'this' not available in the current context")]
         public static void Keyword_this_not_available_in_current_context()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan", @"
 //Not sure if this one is the same as 31:
 //99. error XS0027: Keyword 'this' is not available in the current context
 
@@ -1215,7 +1215,7 @@ CONSTRUCTOR()
 SUPER(SELF)
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors(s, VulcanRuntime());
         }
 
         // 100
@@ -1550,7 +1550,7 @@ s := ( n ):ToString()
         [Test(Author = "Chris", Id = "C119", Title = "Constructor chaining in body")]
         public static void Ctor_chain_in_body()
         {
-            var s = ParseStartFunction(@"
+            var s = ParseStartFunction("/dialect:vulcan", @"
 CLASS Test
     CONSTRUCTOR(n AS INT)
     CONSTRUCTOR()
@@ -1559,7 +1559,7 @@ CLASS Test
     RETURN
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors(s, VulcanRuntime());
         }
 
         // 120

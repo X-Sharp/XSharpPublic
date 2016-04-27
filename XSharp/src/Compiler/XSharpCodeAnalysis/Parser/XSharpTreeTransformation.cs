@@ -2485,13 +2485,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
+                ArgumentListSyntax parentargs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+                if (context.Chain != null)
+                {
+                    if (_options.IsDialectVO)
+                    {
+                        var chainExpr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                            context.Chain.Type == XP.SELF ? (ExpressionSyntax)_syntaxFactory.ThisExpression(context.Chain.SyntaxKeyword()) : _syntaxFactory.BaseExpression(context.Chain.SyntaxKeyword()),
+                            SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                            _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+                        body = MakeBlock(MakeList<StatementSyntax>(
+                            _syntaxFactory.ExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, parentargs), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                            body));
+                    }
+                }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                ArgumentListSyntax parentargs = null;
-                if (context.HasClipperCallingConvention)
-                    parentargs = MakeArgumentList(MakeArgument(GenerateSimpleName(ClipperArgs)));
-                else if (context.Chain != null)
-                    parentargs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
-
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
@@ -2500,7 +2508,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                     identifier: parentId,
                     parameterList: parameters,
-                    initializer: context.Chain == null ? null : 
+                    initializer: _options.IsDialectVO || context.Chain == null ? null : 
                         _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                             context.Chain.SyntaxKeyword(), 
@@ -4024,6 +4032,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     default:
                         break;
                 }
+            }
+            else if (_options.IsDialectVO && (expr is ThisExpressionSyntax || expr is BaseExpressionSyntax))
+            {
+                expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
             }
             ArgumentListSyntax argList;
             if (context.ArgList != null)

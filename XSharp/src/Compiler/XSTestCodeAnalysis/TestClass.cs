@@ -60,6 +60,21 @@ namespace XSTestCodeAnalysis
                 );
         }
 
+        public static CSharpSyntaxTree VulcanRuntime()
+        {
+            return ParseSource(@"
+BEGIN NAMESPACE Vulcan
+class __USUAL
+end class
+END NAMESPACE
+BEGIN NAMESPACE VulcanRtFuncs
+static class Functions
+static public dummy as int
+end class
+END NAMESPACE
+");
+        }
+
         private static CSharpCompilation CreateCompilation(string cmdLine, params CSharpSyntaxTree[] sources)
         {
             MetadataReference[] refs = new MetadataReference[]

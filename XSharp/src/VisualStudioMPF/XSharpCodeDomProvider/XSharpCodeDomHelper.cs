@@ -128,6 +128,63 @@ namespace XSharp.CodeDom
             indent--;
         }
 
+        internal static CodeCompileUnit MergeCodeCompileUnit(CodeCompileUnit compileUnit, CodeCompileUnit designerCompileUnit)
+        {
+            // Create the merged CodeCompileUnit
+            CodeCompileUnit mergedCodeCompileUnit = new CodeCompileUnit();
+            //
+            CodeNamespace designerNamespace;
+            CodeTypeDeclaration designerClass = FindDesignerClass(designerCompileUnit, out designerNamespace);
+            if (designerClass != null)
+            {
+                // Do the same with the form
+                CodeNamespace nameSpace;
+                CodeTypeDeclaration className;
+                XSharpCodeDomHelper.HasPartialClass(compileUnit, out nameSpace, out className);
+                // and merge only if ...
+                if ((String.Compare(designerNamespace.Name, nameSpace.Name, true) == 0) &&
+                    (String.Compare(designerClass.Name, className.Name, true) == 0))
+                {
+                    // Ok, same Namespace & same Class : Merge !
+
+                    // So, the "main" class is...
+                    CodeTypeDeclaration mergedType = new CodeTypeDeclaration(designerClass.Name);
+                    // And does inherit from
+                    mergedType.BaseTypes.AddRange(designerClass.BaseTypes);
+                    mergedType.TypeAttributes = designerClass.TypeAttributes;
+                    // Now, read members from each side, and put a stamp on each
+                    foreach (CodeTypeMember member in designerClass.Members)
+                    {
+                        member.UserData["XSharp:FromDesigner"] = true;
+                        mergedType.Members.Add(member);
+                    }
+                    foreach (CodeTypeMember member in className.Members)
+                    {
+                        member.UserData["XSharp:FromDesigner"] = false;
+                        mergedType.Members.Add(member);
+                    }
+                    // A class is always in a NameSpace
+                    CodeNamespace mergedNamespace = new CodeNamespace(designerNamespace.Name);
+                    mergedNamespace.Types.Add(mergedType);
+                    // Now, add it to the CompileUnit
+                    mergedCodeCompileUnit.Namespaces.Clear();
+                    mergedCodeCompileUnit.Namespaces.Add(mergedNamespace);
+                    //
+                }
+                else
+                {
+                    // Something went wrong, return the designer CodeCompileUnit
+                    mergedCodeCompileUnit = designerCompileUnit;
+                }
+            }
+            else
+            {
+                // Sorry, no designer class
+                mergedCodeCompileUnit = designerCompileUnit;
+            }
+            return mergedCodeCompileUnit;
+        }
+
         private static void DumpExpression(CodeExpression e)
         {
             indent++;
@@ -181,6 +238,83 @@ namespace XSharp.CodeDom
                 }
             }
             return rstClass;
+        }
+
+        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName)
+        {
+            namespaceName = null;
+            // We search the first Class that has a Candidate for InitializeComponent
+            foreach (CodeNamespace nameSpace in ccu.Namespaces)
+            {
+                foreach (CodeTypeDeclaration typeElement in nameSpace.Types)
+                {
+                    if (typeElement.IsClass)
+                    {
+                        // Looking for InitializeComponent, returning a void, and with no Parameters
+                        foreach (CodeTypeMember member in typeElement.Members)
+                        {
+                            CodeMemberMethod method = member as CodeMemberMethod;
+                            if ((method != null) &&
+                                (method.Name == "InitializeComponent") &&
+                                (method.ReturnType.BaseType == "System.Void") &&
+                                (method.ReturnType.TypeArguments.Count == 0) &&
+                                (method.Parameters.Count == 0))
+                            {
+                                // This one seems to be ok
+                                // Return where it is
+                                namespaceName = nameSpace;
+                                // and what it is
+                                return typeElement;
+                            }
+                        }
+                    }
+                }
+            }
+            // No way
+            return null;
+        }
+
+        public static bool HasPartialClass(CodeCompileUnit ccu, out CodeNamespace contextNameSpace, out CodeTypeDeclaration contextClass)
+        {
+            bool retValue = false;
+            contextNameSpace = null;
+            contextClass = null;
+            // in all NameSpace, search for Types
+            foreach (CodeNamespace nameSpace in ccu.Namespaces)
+            {
+                // Check if the type is a class
+                foreach (CodeTypeDeclaration typeElement in nameSpace.Types)
+                {
+                    // Ok, so could it be a partial class
+                    if (typeElement.IsClass)
+                    {
+                        //
+                        retValue = typeElement.IsPartial;
+                        if (retValue)
+                        {
+                            contextNameSpace = nameSpace;
+                            contextClass = typeElement;
+                            break;
+                        }
+                    }
+                }
+            }
+            return retValue;
+        }
+
+        public static string BuildDesignerFileName(string prgFile)
+        {
+            // Retrieve path information from the FulPath
+            String prgPath = Path.GetDirectoryName(prgFile);
+            // Strip off the.prg
+            String prg = Path.GetFileNameWithoutExtension(prgFile);
+            // Does the FileName ends with .Designer ?
+            if (!prg.EndsWith(".Designer"))
+                prg += ".Designer";
+            // Add the original file extension
+            String ext = Path.GetExtension(prgFile);
+            //
+            return Path.Combine(prgPath, prg) + ext;
         }
     }
 }

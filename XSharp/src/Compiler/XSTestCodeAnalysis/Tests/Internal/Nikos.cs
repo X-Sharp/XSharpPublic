@@ -432,5 +432,30 @@ CLASS Child INHERIT Parent
 END CLASS
 "), VulcanRuntime);
         }
+
+        [Test(Author = "Nikos", Id = "N16", Title = "Constructor chaining (vulcan dialect)")]
+        public static void CtorChainVulcan()
+        {
+            CompileAndRunWithoutExceptions("/dialect:vulcan", ParseSource("/dialect:vulcan", @"
+CLASS Parent
+    PUBLIC Inits := 0 AS INT
+    CONSTRUCTOR()
+        Inits += 1
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR()
+        SUPER()
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL i AS INT
+    i := Child{}:Inits
+    IF i != 1
+        THROW Exception{'Inits = '+ i}
+    ENDIF
+    RETURN
+"), VulcanRuntime);
+        }
     }
 }

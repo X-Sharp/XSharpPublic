@@ -457,5 +457,18 @@ FUNCTION Start() AS VOID
     RETURN
 "), VulcanRuntime);
         }
+
+        [Test(Author = "Nikos", Id = "N17", Title = "Anonymous types")]
+        public static void AnonTypes()
+        {
+            CompileAndRunWithoutExceptions(ParseSource(@"
+FUNCTION Start() AS VOID
+    VAR o := CLASS { Name := ""test"", Value := ""something"" }
+    IF o:Name != ""test"" || o:Value != ""something""
+        THROW Exception{'Incorrect members'}
+    ENDIF
+    RETURN
+"));
+        }
     }
 }

@@ -622,6 +622,7 @@ primary				: Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
+					| AnonType=anonType											#anonTypeExpression		// { .id := expr [, .id := expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | Query=linqQuery											#queryExpression        // LINQ
 					| Type=datatype LCURLY Obj=expression COMMA
@@ -712,6 +713,12 @@ typeName			: NativeType=nativeType
 					;
 
 literalArray		: (LT Type=datatype GT)? LCURLY (Exprs+=expression (COMMA Exprs+=expression)*)? RCURLY
+					;
+
+anonType			: CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RCURLY
+					;
+
+anonMember			: Name=identifierName ASSIGN_OP Expr=expression
 					;
 /*
 aliasmethodCall		: Expr=expression LPAREN ArgList=argumentList? RPAREN

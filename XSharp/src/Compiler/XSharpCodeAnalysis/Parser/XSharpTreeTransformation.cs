@@ -4562,6 +4562,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.LiteralArray.Get<ExpressionSyntax>());
         }
 
+        public override void ExitAnonTypeExpression([NotNull] XP.AnonTypeExpressionContext context)
+        {
+            context.Put(context.AnonType.Get<AnonymousObjectCreationExpressionSyntax>());
+        }
+
         public override void ExitIif([NotNull] XP.IifContext context)
         {
             // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
@@ -4623,6 +4628,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
                 context.Put<ExpressionSyntax>(expr);
+        }
+
+        public override void ExitAnonType([NotNull] XP.AnonTypeContext context)
+        {
+            context.Put(_syntaxFactory.AnonymousObjectCreationExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                MakeSeparatedList<AnonymousObjectMemberDeclaratorSyntax>(context._Members),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
+        }
+
+        public override void ExitAnonMember([NotNull] XP.AnonMemberContext context)
+        {
+            context.Put(_syntaxFactory.AnonymousObjectMemberDeclarator(
+                _syntaxFactory.NameEquals(context.Name.Get<IdentifierNameSyntax>(),SyntaxFactory.MakeToken(SyntaxKind.EqualsToken)),
+                context.Expr.Get<ExpressionSyntax>()));
         }
 
         public override void ExitCodeblockExpression([NotNull] XP.CodeblockExpressionContext context)

@@ -409,5 +409,53 @@ FUNCTION Start() AS VOID
     END USING
 "));
         }
+
+        [Test(Author = "Nikos", Id = "N15", Title = "Constructor chaining (core dialect)")]
+        public static void CtorChainCore()
+        {
+            CompileAndLoadWithoutErrors(ParseSource(@"
+CLASS Parent
+    CONSTRUCTOR(o AS OBJECT)
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(): SUPER(null)
+END CLASS
+"));
+            CompileWithErrors("/dialect:vulcan", ParseSource("/dialect:vulcan",@"
+CLASS Parent
+    CONSTRUCTOR(o AS OBJECT)
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(): SUPER(null)
+END CLASS
+"), VulcanRuntime);
+        }
+
+        [Test(Author = "Nikos", Id = "N16", Title = "Constructor chaining (vulcan dialect)")]
+        public static void CtorChainVulcan()
+        {
+            CompileAndRunWithoutExceptions("/dialect:vulcan", ParseSource("/dialect:vulcan", @"
+CLASS Parent
+    PUBLIC Inits := 0 AS INT
+    CONSTRUCTOR()
+        Inits += 1
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR()
+        SUPER()
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL i AS INT
+    i := Child{}:Inits
+    IF i != 1
+        THROW Exception{'Inits = '+ i}
+    ENDIF
+    RETURN
+"), VulcanRuntime);
+        }
     }
 }

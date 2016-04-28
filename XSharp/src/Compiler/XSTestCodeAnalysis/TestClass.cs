@@ -67,7 +67,8 @@ end class
 END NAMESPACE
 BEGIN NAMESPACE VulcanRtFuncs
 static class Functions
-static public dummy as int
+    static function AsString(o as object) as string
+	    return o:ToString()
 end class
 END NAMESPACE
 ");

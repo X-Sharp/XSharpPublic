@@ -722,7 +722,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         private BoundExpression BindQualifiedName(QualifiedNameSyntax node, DiagnosticBag diagnostics)
         {
+#if XSHARP
+            return BindMemberAccessWithBoundLeft(node, this.BindNamespaceOrType(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
+#else
             return BindMemberAccessWithBoundLeft(node, this.BindExpression(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
+#endif
         }
 
         private BoundExpression BindParenthesizedExpression(ExpressionSyntax innerExpression, DiagnosticBag diagnostics)
@@ -5158,6 +5162,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 HashSet<DiagnosticInfo> useSiteDiagnostics = null;
                 OverloadResolution.MethodInvocationOverloadResolution(methodGroup.Methods, methodGroup.TypeArguments, actualArguments, overloadResolutionResult, ref useSiteDiagnostics, isMethodGroupConversion, allowRefOmittedArguments);
                 diagnostics.Add(expression, useSiteDiagnostics);
+#if XSHARP
+                if (overloadResolutionResult.Succeeded && overloadResolutionResult.ValidResult.Result.HasAnyRefOmittedArgument && !methodGroup.Receiver.IsExpressionOfComImportType())
+                {
+                    CheckValidRefOmittedArguments(overloadResolutionResult, analyzedArguments, diagnostics);
+                }
+#endif
                 var sealedDiagnostics = diagnostics.ToReadOnlyAndFree();
                 var result = new MethodGroupResolution(methodGroup, null, overloadResolutionResult, actualArguments, methodGroup.ResultKind, sealedDiagnostics);
 
@@ -6036,6 +6046,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.OverloadResolution.PropertyOverloadResolution(propertyGroup, analyzedArguments, overloadResolutionResult, allowRefOmittedArguments, ref useSiteDiagnostics);
             diagnostics.Add(syntax, useSiteDiagnostics);
+#if XSHARP
+            if (overloadResolutionResult.Succeeded && overloadResolutionResult.ValidResult.Result.HasAnyRefOmittedArgument && !receiverOpt.IsExpressionOfComImportType())
+            {
+                CheckValidRefOmittedArguments(overloadResolutionResult, analyzedArguments, diagnostics);
+            }
+#endif
             BoundExpression propertyAccess;
 
             if (analyzedArguments.HasDynamicArgument && overloadResolutionResult.HasAnyApplicableMember)
@@ -6307,9 +6323,47 @@ namespace Microsoft.CodeAnalysis.CSharp
                     methodGroup.Methods, methodGroup.TypeArguments, analyzedArguments,
                     result, ref useSiteDiagnostics, isMethodGroupConversion, allowRefOmittedArguments,
                     inferWithDynamic: inferWithDynamic, allowUnexpandedForm: allowUnexpandedForm);
+#if XSHARP
+                if (result.Succeeded && result.ValidResult.Result.HasAnyRefOmittedArgument && !methodGroup.Receiver.IsExpressionOfComImportType())
+                {
+                    DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                    CheckValidRefOmittedArguments(result, analyzedArguments, diagnostics);
+                    sealedDiagnostics = diagnostics.ToReadOnlyAndFree();
+                }
+#endif
                 return new MethodGroupResolution(methodGroup, null, result, analyzedArguments, methodGroup.ResultKind, sealedDiagnostics);
             }
         }
+
+#if XSHARP
+        private bool CheckValidRefOmittedArguments(OverloadResolutionResult<MethodSymbol> result, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        {
+            for (int i = 0; i < analyzedArguments.Arguments.Count; i++)
+            {
+                if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
+                {
+                    var arg = analyzedArguments.Arguments[i];
+                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private bool CheckValidRefOmittedArguments(OverloadResolutionResult<PropertySymbol> result, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        {
+            for (int i = 0; i < analyzedArguments.Arguments.Count; i++)
+            {
+                if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
+                {
+                    var arg = analyzedArguments.Arguments[i];
+                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
+                        return false;
+                }
+            }
+            return true;
+        }
+#endif
 
         internal static bool ReportDelegateInvokeUseSiteDiagnostic(DiagnosticBag diagnostics, TypeSymbol possibleDelegateType,
             Location location = null, CSharpSyntaxNode node = null)

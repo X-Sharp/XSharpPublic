@@ -212,3 +212,5 @@ _Pvt_Extensions/
 ModelManifest.xml
 XSharp/docs/__history/ACCESS.xml.~33B5A9B8
 /XSharp/src/VisualStudioMPF/ProjectPackage/LanguageServiceMEF
+/XSharp/src/Runtime/functionsMS.prg
+/XSharp/src/Runtime/Functions.zip

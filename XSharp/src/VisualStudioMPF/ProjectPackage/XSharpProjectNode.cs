@@ -146,7 +146,7 @@ namespace XSharp.Project
                         Marshal.Release(unknown);
                 }
                 // Create the logger
-                BuildLogger = new XSharpIdeBuildLogger(output, this.TaskProvider, hierarchy);
+                BuildLogger = new IDEBuildLogger(output, this.TaskProvider, hierarchy);
 
                 // To retrieve the verbosity level, the build logger depends on the registry root 
                 // (otherwise it will used an hard coded default)

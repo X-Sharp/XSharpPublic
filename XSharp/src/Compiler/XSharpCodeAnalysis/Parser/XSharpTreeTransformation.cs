@@ -3863,6 +3863,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
          {
+            if (_options.IsDialectVO && context.Op.Type == XP.DOT)
+            {
+                if (context.Expr.Get<ExpressionSyntax>() is NameSyntax)
+                {
+                    context.Put(_syntaxFactory.QualifiedName(
+                        context.Expr.Get<NameSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        context.Name.Get<SimpleNameSyntax>()));
+                    return;
+                }
+                else
+                {
+                    context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                        context.Expr.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        context.Name.Get<SimpleNameSyntax>())
+                        .WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "equivalency of : and . member access operators", _options.Dialect.ToString()))
+                        );
+                }
+            }
             context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),

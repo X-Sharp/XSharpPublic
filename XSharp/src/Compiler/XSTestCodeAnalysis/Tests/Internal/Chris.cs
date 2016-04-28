@@ -87,7 +87,7 @@ n := 1
 SUPER()
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime());
+            CompileAndLoadWithoutErrors(s, VulcanRuntime);
         }
 
 
@@ -129,15 +129,17 @@ END CLASS
         [Test(Author = "Chris", Id = "C34", Title = "error XS0119: 'TestClass.MessageBox()' is a method, which is not valid in the given context")]
         public static void error_XS0119_MessageBox_is_a_method_which_is_not_valid_in_the_given_context()
         {
-            var s = ParseSource(@"
-#using System.Windows.Forms
+            var s = ParseSource("/dialect:vulcan",@"
+STATIC CLASS MessageBox
+    STATIC METHOD Show(s AS STRING) AS VOID
+END CLASS
 CLASS TestClass
 	METHOD MessageBox() AS VOID
 		MessageBox.Show(""test"")    
         RETURN
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors(s, VulcanRuntime);
         }
 
 
@@ -840,13 +842,13 @@ INTERNAL VOSTRUCT _winPOINT
         [Test(Author = "Chris", Id = "C79", Title = "error XS0119: 'Xs$Globals.Directory()' is a method, which is not valid in the given context")]
         public static void error_XS0119_Directory_CreateDirectory()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan",@"
 #using System.IO
 FUNCTION Directory() AS INT
 Directory.CreateDirectory('')
 RETURN 0
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors(s, VulcanRuntime);
         }
 
 
@@ -1215,7 +1217,7 @@ CONSTRUCTOR()
 SUPER(SELF)
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime());
+            CompileAndLoadWithoutErrors(s, VulcanRuntime);
         }
 
         // 100
@@ -1345,7 +1347,7 @@ c := '123'
         [Test(Author = "Chris", Id = "C108", Title = "Name conflict with '.' static member access")]
         public static void Name_conflict_static_access()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan", @"
 INTERFACE ITest
     METHOD Foo() AS VOID
 END INTERFACE
@@ -1358,7 +1360,7 @@ FUNCTION Start() AS VOID
 LOCAL Test AS ITest
 Test.StaticMethod()
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors(s, VulcanRuntime);
         }
 
         // 109
@@ -1559,7 +1561,7 @@ CLASS Test
     RETURN
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime());
+            CompileAndLoadWithoutErrors(s, VulcanRuntime);
         }
 
         // 120

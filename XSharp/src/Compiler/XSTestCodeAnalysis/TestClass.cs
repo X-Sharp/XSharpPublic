@@ -60,9 +60,7 @@ namespace XSTestCodeAnalysis
                 );
         }
 
-        public static CSharpSyntaxTree VulcanRuntime()
-        {
-            return ParseSource(@"
+        public static CSharpSyntaxTree VulcanRuntime { get; } = ParseSource(@"
 BEGIN NAMESPACE Vulcan
 class __USUAL
 end class
@@ -73,7 +71,6 @@ static public dummy as int
 end class
 END NAMESPACE
 ");
-        }
 
         private static CSharpCompilation CreateCompilation(string cmdLine, params CSharpSyntaxTree[] sources)
         {

@@ -875,7 +875,10 @@ namespace XSharp.Build
             // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
             commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
             commandLine.AppendSwitchIfNotNull("/target:", TargetType);
-            commandLine.AppendPlusOrMinusSwitch("/warnaserror", base.Bag, nameof(TreatWarningsAsErrors));
+            if (TreatWarningsAsErrors)
+            {
+                commandLine.AppendSwitch("/warnaserror");
+            }
             commandLine.AppendWhenTrue("/utf8output", base.Bag, nameof(Utf8Output));
             commandLine.AppendSwitchIfNotNull("/win32icon:", Win32Icon);
             commandLine.AppendSwitchIfNotNull("/win32manifest:", Win32Manifest);

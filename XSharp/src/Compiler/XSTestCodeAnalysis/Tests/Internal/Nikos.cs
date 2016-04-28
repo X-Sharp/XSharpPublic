@@ -422,7 +422,7 @@ CLASS Child INHERIT Parent
     CONSTRUCTOR(): SUPER(null)
 END CLASS
 "));
-            CompileWithErrors(ParseSource("/dialect:vulcan",@"
+            CompileWithErrors("/dialect:vulcan", ParseSource("/dialect:vulcan",@"
 CLASS Parent
     CONSTRUCTOR(o AS OBJECT)
 END CLASS

@@ -8162,6 +8162,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Typed Parameters are not supported in combination with CLIPPER calling convention.
+        /// </summary>
+        internal static string ERR_TypedParametersWithClipperCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_TypedParametersWithClipperCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type expected.
         /// </summary>
         internal static string ERR_TypeExpected {

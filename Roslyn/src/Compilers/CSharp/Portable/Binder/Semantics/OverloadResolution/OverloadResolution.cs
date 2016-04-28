@@ -1751,9 +1751,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // NOTE:    Native compiler does not explicitly implement the above algorithm, but gets it by default. This is due to the fact that the RefKind of a parameter
                 // NOTE:    gets considered while classifying conversions between parameter types when computing better conversion target in the native compiler.
                 // NOTE:    Roslyn correctly follows the specification and ref kinds are not considered while classifying conversions between types, see method BetterConversionTarget.
-
+#if XSHARP
+                Debug.Assert(refKind1 == RefKind.None || refKind1 == RefKind.Ref || refKind1 == RefKind.Out);
+                Debug.Assert(refKind2 == RefKind.None || refKind2 == RefKind.Ref || refKind2 == RefKind.Out);
+#else
                 Debug.Assert(refKind1 == RefKind.None || refKind1 == RefKind.Ref);
                 Debug.Assert(refKind2 == RefKind.None || refKind2 == RefKind.Ref);
+#endif
 
                 if (refKind1 != refKind2)
                 {
@@ -1766,7 +1770,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return conv2.Kind == ConversionKind.Identity ? BetterResult.Right : BetterResult.Neither;
                     }
                 }
+#if XSHARP
+                else if (refKind1 == RefKind.Ref || refKind1 == RefKind.Out)
+#else
                 else if (refKind1 == RefKind.Ref)
+#endif
                 {
                     return BetterResult.Neither;
                 }

@@ -352,5 +352,62 @@ END CLASS
 ");
             CompileAndRunWithoutExceptions(args, s);
         }
+
+        [Test(Author = "Nikos", Id = "N12", Title = "Lamda expressions")]
+        public static void LamdaExpressions()
+        {
+            string args = "";
+            var s = ParseSource(args, @"
+FUNCTION Start() AS VOID
+    LOCAL sq AS System.Func<Double,Double>
+    sq := {|x|x^2}
+    IF sq(2) != 4
+        THROW Exception{}
+    ENDIF
+    sq := {|x|
+        ? 'square of', x
+        RETURN x^2
+        }
+    IF sq(2) != 4
+        THROW Exception{}
+    ENDIF
+    sq := {|x| Console.WriteLine(x), x^2}
+    IF sq(2) != 4
+        THROW Exception{}
+    ENDIF
+    LOCAL empty AS System.Action
+    empty := {||}
+    empty()
+");
+            CompileAndRunWithoutExceptions(args, s);
+        }
+
+        [Test(Author = "Nikos", Id = "N13", Title = "Missing type in X# core should throw error")]
+        public static void MissingTypeCore()
+        {
+            CompileWithErrors(ParseSource(@"
+FUNCTION Test()
+"));
+            CompileWithErrors(ParseSource(@"
+FUNCTION Test() AS VOID
+    LOCAL o
+"));
+        }
+
+        [Test(Author = "Nikos", Id = "N14", Title = "Using statement")]
+        public static void UsingStatement()
+        {
+            CompileAndRunWithoutExceptions(ParseSource(@"
+PROCEDURE Start()
+    VAR ms := System.IO.MemoryStream{}
+    BEGIN USING ms
+    END USING
+"));
+            CompileAndRunWithoutExceptions(ParseSource(@"
+FUNCTION Start() AS VOID
+    BEGIN USING VAR ms := System.IO.MemoryStream{}
+    END USING
+"));
+        }
     }
 }

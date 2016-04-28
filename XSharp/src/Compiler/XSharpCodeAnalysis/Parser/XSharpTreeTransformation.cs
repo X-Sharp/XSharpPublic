@@ -829,7 +829,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
                 return;
             }
-            if (_options.IsDialectVO && (context.HasClipperCallingConvention || context.UsesPSZ ))
+            if (_options.IsDialectVO && body != null && (context.HasClipperCallingConvention || context.UsesPSZ ))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 ExpressionSyntax assignExpr;

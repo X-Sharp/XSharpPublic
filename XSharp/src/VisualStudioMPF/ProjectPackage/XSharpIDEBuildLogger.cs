@@ -23,9 +23,9 @@ namespace XSharp.Project
     /// VS outputwindow and tasklist.
     /// </summary>
     [ComVisible(true)]
-    internal class XSharpIdeBuildLogger : Logger
+    internal class XSharpIDEBuildLogger : Logger
     {
-        #region fields
+         #region fields
         // TODO: Remove these constants when we have a version that supports 
         //   getting the verbosity using automation.
         private string _buildVerbosityRegistryRoot;
@@ -95,7 +95,7 @@ namespace XSharp.Project
         /// <summary>
         /// Constructor.  Inititialize member data.
         /// </summary>
-        public XSharpIdeBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
+        public XSharpIDEBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
             // HACK: We should use VS Automation for retrive root key!
             Regex rx = new Regex(@"/rootsuffix\s+(.+)");
@@ -553,5 +553,4 @@ namespace XSharp.Project
 
         #endregion
     }
-
 }

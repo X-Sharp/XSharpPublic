@@ -652,7 +652,7 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/platform:", Platform);
             commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
             commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));
-            commandLine.AppendSwitchIfNotNull("/doc:", DocumentationFile);
+            //commandLine.AppendSwitchIfNotNull("/doc:", DocumentationFile);
             commandLine.AppendSwitchIfNotNull("/baseaddress:", BaseAddress);
             commandLine.AppendSwitchUnquotedIfNotNull("/define:", Utilities.GetDefineConstantsSwitch(DefineConstants, Log));
             commandLine.AppendSwitchIfNotNull("/win32res:", Win32Resource);

@@ -164,7 +164,7 @@
     <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
     <Compile Include="WPF\XSharpWPFFlavor.cs" />
     <Compile Include="WPF\XSharpWPFProjectFactory.cs" />
-    <Compile Include="XSharpBuildLogger.cs" />
+    <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpConstants.cs" />
     <Compile Include="XSharpDependentFileNode.cs" />
     <Compile Include="XSharpEditorFactory.cs" />

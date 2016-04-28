@@ -2582,6 +2582,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return null;
             }
+#if XSHARP
+            if (Compilation.Options.IsDialectVO)
+            {
+                if ((containingType.TypeKind == TypeKind.Class) && initializerArgumentListOpt == null)
+                {
+                    return null;
+                }
+            }
+#endif
 
             AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
             try

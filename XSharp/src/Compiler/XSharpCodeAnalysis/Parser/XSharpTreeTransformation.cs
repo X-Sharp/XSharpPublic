@@ -829,7 +829,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
                 return;
             }
-            if (_options.IsDialectVO && (context.HasClipperCallingConvention || context.UsesPSZ ))
+            if (_options.IsDialectVO && body != null && (context.HasClipperCallingConvention || context.UsesPSZ ))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 ExpressionSyntax assignExpr;
@@ -2485,19 +2485,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
-                ArgumentListSyntax parentargs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
-                if (context.Chain != null)
+                if (context.Chain != null && _options.IsDialectVO)
                 {
-                    if (_options.IsDialectVO)
-                    {
-                        var chainExpr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            context.Chain.Type == XP.SELF ? (ExpressionSyntax)_syntaxFactory.ThisExpression(context.Chain.SyntaxKeyword()) : _syntaxFactory.BaseExpression(context.Chain.SyntaxKeyword()),
-                            SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                            _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
-                        body = MakeBlock(MakeList<StatementSyntax>(
-                            _syntaxFactory.ExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, parentargs), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                            body));
-                    }
+                    context.AddError(new ParseErrorData(context.Chain, ErrorCode.ERR_FeatureNotAvailableInDialect,"constructor initializer expression", _options.Dialect.ToString()));
+                    context.Chain = null;
                 }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
@@ -2508,11 +2499,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
                     identifier: parentId,
                     parameterList: parameters,
-                    initializer: _options.IsDialectVO || context.Chain == null ? null : 
+                    initializer: context.Chain == null ? null : 
                         _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                            context.Chain.SyntaxKeyword(), 
-                            parentargs),
+                            context.Chain.SyntaxKeyword(),
+                            context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
                     body: body,
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }

@@ -87,7 +87,7 @@ n := 1
 SUPER()
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -139,7 +139,7 @@ CLASS TestClass
         RETURN
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -848,7 +848,7 @@ FUNCTION Directory() AS INT
 Directory.CreateDirectory('')
 RETURN 0
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -1217,7 +1217,7 @@ CONSTRUCTOR()
 SUPER(SELF)
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
         // 100
@@ -1360,7 +1360,7 @@ FUNCTION Start() AS VOID
 LOCAL Test AS ITest
 Test.StaticMethod()
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
         // 109
@@ -1561,7 +1561,7 @@ CLASS Test
     RETURN
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
         // 120

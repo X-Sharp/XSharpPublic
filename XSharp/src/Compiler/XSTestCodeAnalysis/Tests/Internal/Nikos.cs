@@ -409,5 +409,28 @@ FUNCTION Start() AS VOID
     END USING
 "));
         }
+
+        [Test(Author = "Nikos", Id = "N15", Title = "Constructor chaining (core dialect)")]
+        public static void CtorChainCore()
+        {
+            CompileAndLoadWithoutErrors(ParseSource(@"
+CLASS Parent
+    CONSTRUCTOR(o AS OBJECT)
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(): SUPER(null)
+END CLASS
+"));
+            CompileWithErrors(ParseSource("/dialect:vulcan",@"
+CLASS Parent
+    CONSTRUCTOR(o AS OBJECT)
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(): SUPER(null)
+END CLASS
+"), VulcanRuntime);
+        }
     }
 }

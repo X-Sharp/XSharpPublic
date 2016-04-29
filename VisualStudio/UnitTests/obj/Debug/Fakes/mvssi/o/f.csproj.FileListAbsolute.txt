@@ -1,0 +1,2 @@
+D:\Xsharp\Dev\XSharp\src\VisualStudioMPF\UnitTests\obj\Debug\Fakes\mvssi\b\Microsoft.VisualStudio.Shell.Interop.7.1.40304.0.Fakes.xml
+D:\Xsharp\Dev\XSharp\src\VisualStudioMPF\UnitTests\obj\Debug\Fakes\mvssi\o\f.csprojResolveAssemblyReference.cache

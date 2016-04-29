@@ -419,18 +419,20 @@ CLASS Parent
 END CLASS
 
 CLASS Child INHERIT Parent
-    CONSTRUCTOR(): SUPER(null)
+    CONSTRUCTOR()
+        SUPER(null)
 END CLASS
 "));
-            CompileWithErrors("/dialect:vulcan", ParseSource("/dialect:vulcan",@"
+            CompileWithErrors(ParseSource(@"
 CLASS Parent
     CONSTRUCTOR(o AS OBJECT)
 END CLASS
 
 CLASS Child INHERIT Parent
-    CONSTRUCTOR(): SUPER(null)
+    CONSTRUCTOR()
+        SUPER(SELF)
 END CLASS
-"), VulcanRuntime);
+"));
         }
 
         [Test(Author = "Nikos", Id = "N16", Title = "Constructor chaining (vulcan dialect)")]

@@ -344,9 +344,8 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmethod
 					| (Attributes=attributes)?
 					  (Modifiers=constructorModifiers)? 
-					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? 
-					  (COLON Chain=(SELF | SUPER) LPAREN ArgList=argumentList? RPAREN)?
-					  end=EOS 
+					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS 
+					  (Chain=(SELF | SUPER) LPAREN ArgList=argumentList? RPAREN EOS)?
 					  StmtBlk=statementBlock							 { SetSequencePoint(_localctx,$end); } #clsctor
 					| (Attributes=attributes)? 
 					  (Modifiers=destructorModifiers)?

@@ -2487,7 +2487,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 TypeSyntax returntype = null;
                 if (context.Chain != null && _options.IsDialectVO)
                 {
-                    context.AddError(new ParseErrorData(context.Chain, ErrorCode.ERR_FeatureNotAvailableInDialect,"constructor initializer expression", _options.Dialect.ToString()));
+                    var chainArgs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+                    var chainExpr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                        context.Chain.Type == XP.SELF ? (ExpressionSyntax)_syntaxFactory.ThisExpression(context.Chain.SyntaxKeyword()) : _syntaxFactory.BaseExpression(context.Chain.SyntaxKeyword()),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+                    body = MakeBlock(MakeList<StatementSyntax>(
+                        _syntaxFactory.ExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                        body));
                     context.Chain = null;
                 }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);

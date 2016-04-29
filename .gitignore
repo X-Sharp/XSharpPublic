@@ -3,3 +3,11 @@
 ################################################################################
 
 /Binaries/Debug
+/Binaries/Obj/Debug
+/packages
+/Samples/.vs/Examples/v14
+/VisualStudio/Templates/obj/Debug
+/VisualStudio/UnitTests/bin/Debug
+/VisualStudio/XSharpCodeDomProvider/obj/Debug
+/VisualStudio/XSharpColorizer/bin/Debug
+/VisualStudio/XSharpColorizer/obj/Debug

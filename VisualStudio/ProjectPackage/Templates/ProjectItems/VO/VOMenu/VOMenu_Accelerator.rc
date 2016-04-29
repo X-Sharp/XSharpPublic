@@ -1,0 +1,7 @@
+#include "GlobalDefines.vh"
+#include "VOWin32APILibrary.vh"
+
+$safeitemrootname$_Accelerator ACCELERATORS
+BEGIN
+END
+ 

@@ -837,7 +837,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 StatementSyntax exprStmt;
                 if (context.HasClipperCallingConvention)
                 {
-                    if (parameters.Parameters.Count > 0 || context.UsesClipperCallingFunction)
+                    if (parameters.Parameters.Count > 0 )
                     {
                         // VAR Xs$PCount  := 0
                         // IF Xs$Args != NULL
@@ -2180,6 +2180,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
+        public override void EnterMethod([NotNull] XP.MethodContext context)
+        {
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
+        }
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
             var idName = context.Id.Get<SyntaxToken>();
@@ -2209,7 +2213,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.StmtBlk = null;
             }
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
             bool actualDeclaration = true;
             if (context.T.Token.Type != XP.METHOD) {
                 switch (context.T.Token.Type) {
@@ -2479,9 +2482,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 
-        public override void ExitClsctor([NotNull] XP.ClsctorContext context)
+        public override void EnterClsctor([NotNull] XP.ClsctorContext context)
         {
             Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+        }
+        public override void ExitClsctor([NotNull] XP.ClsctorContext context)
+        {
+            
             if (context.Modifiers?._EXTERN != null) {
                 if (context.StmtBlk?._Stmts?.Count > 0) {
                     context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody));
@@ -2799,11 +2806,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Modifiers != null) {
                 context.Modifiers._Tokens.Add(_parser.TokenFactory.Create(XP.EXTERN,""));
             }
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type, true);
         }
 
         public override void ExitVodll([NotNull] XP.VodllContext context)
         {
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type, true);
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: MakeList(
                     _syntaxFactory.AttributeList(
@@ -2999,14 +3006,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MakeSeparatedList<ExpressionSyntax>(context._ArrayIndex),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
         }
-
+        public override void EnterFunction([NotNull] XP.FunctionContext context)
+        {
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, true);
+        }
         public override void ExitFunction([NotNull] XP.FunctionContext context)
         {
             var isInInterface = context.isInInterface();
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
-            Check4ClipperCC(context, context.ParamList,context.CallingConvention?.Convention, context.Type, true);
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
@@ -3029,13 +3038,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
+        public override void EnterProcedure([NotNull] XP.ProcedureContext context)
+        {
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+        }
         public override void ExitProcedure([NotNull] XP.ProcedureContext context)
         {
             var isInInterface = context.isInInterface();
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+            
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
@@ -4057,7 +4070,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case "PCOUNT":
                     case "_GETMPARAM":
                     case "_GETFPARAM":
-                        if (CurrentEntity.UsesClipperCallingFunction)
+                        if (CurrentEntity.HasClipperCallingConvention)
                         {
                             bClipCalFunc = true;
                         }

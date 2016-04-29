@@ -945,20 +945,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.UsesPSZ)
                 {
                     // VAR Xs$PszList := List<IntPtr>{}
-                    /*
-                    var types = _pool.AllocateSeparated<TypeSyntax>();
-                    types.Add(_ptrType);
-                    var type = _syntaxFactory.TypeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),types, SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken));
-                    
-                    var clsname = _syntaxFactory.GenericName(GenerateQualifiedName("global::System.Collections.Generic.List"), type);
-                    var expr = CreateObject()
-                    stmts.Add(GenerateLocalDecl(VoPszList, _impliedType, expr);
-                    */
-                    //var finallyClause = _syntaxFactory.FinallyClause(
-                    //    SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                    //    null);
-                    //    CompilerServices.String2PszRelease(Xs$PszList)
-
+                    var listOfIntPtr = _syntaxFactory.QualifiedName(GenerateQualifiedName("global::System.Collections.Generic"),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier("List"), 
+                            _syntaxFactory.TypeArgumentList(
+                                SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
+                                MakeSeparatedList<TypeSyntax>(_ptrType),
+                                SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
+                                )));
+                    var expr = CreateObject(listOfIntPtr, EmptyArgumentList(), null);
+                    stmts.Add(GenerateLocalDecl(VoPszList, _impliedType, expr));
+                    finallyClause = _syntaxFactory.FinallyClause(
+                        SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                        MakeBlock(MakeList<StatementSyntax>(
+                            GenerateExpressionStatement(
+                                GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2PszRelease",
+                                    MakeArgumentList(MakeArgument(_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VoPszList)))))))));
                 }
                 // TRY
                 //    original body
@@ -968,12 +970,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // END TRY
 
                 // Note: When there is nothing in the finallyClause then the optimizer will remove the try statement which is OK.
-
-                var tryStmt = _syntaxFactory.TryStatement(
+                var tryStmt = finallyClause == null ? (StatementSyntax)body : // nvk: It doesn't hurt to optimize the tree (and avoid unnecessary diagnostics...)
+                    _syntaxFactory.TryStatement(
                     SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                     body,
                     null,
-                    finallyClause);  
+                    finallyClause);
                 stmts.Add(tryStmt);
                 body = MakeBlock(stmts);
                 _pool.Free(stmts);
@@ -4075,7 +4077,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     NameSyntax pszlist = GenerateSimpleName(VoPszList);
                     expr = argList.Arguments[0].Expression;
                     argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
-                    expr = GenerateMethodCall("Vulcan.Internal.CompilerServices.String2Psz", argList);
+                    expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
                     var args = MakeArgumentList(MakeArgument(expr));
                     expr = CreateObject(this._pszType, args, null);
                     context.Put(expr);
@@ -4083,7 +4085,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (bIsAltD)
             {
-                expr = GenerateMethodCall("System.Diagnostics.Debugger.Break", argList);
+                expr = GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList);
                 var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                                 GenerateQualifiedName("global::System.Diagnostics.Debugger"),
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),

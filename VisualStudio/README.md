@@ -1,4 +1,4 @@
-# XSharpPublic
+# XSharpPublic/VisualStudio
 The Visual Studio integration in this version of XSharp is based on the MPF source. That source can be found on CodePlex.
 All the code in the ProjectBase folder comes from this source.
 

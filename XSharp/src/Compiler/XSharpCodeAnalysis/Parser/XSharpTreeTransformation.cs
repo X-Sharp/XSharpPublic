@@ -948,7 +948,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // using the names from the paramNames list
                     // [Vulcan.Internal.ClipperCallingConvention(new string[] { "a", "b" })]
                     // make sure that existing attributes are not removed!
-
+                    var attrs = _pool.Allocate<AttributeListSyntax>();
+                    attrs.AddRange(attributes);
+                    attrs.Add(_syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: null,
+                        attributes: MakeSeparatedList(_syntaxFactory.Attribute(
+                            name: GenerateQualifiedName("global::Vulcan.Internal.ClipperCallingConvention"),
+                            argumentList: _syntaxFactory.AttributeArgumentList(
+                                openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                arguments: MakeSeparatedList(
+                                    _syntaxFactory.AttributeArgument(null, null,
+                                        _syntaxFactory.ImplicitArrayCreationExpression(
+                                            SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                                            SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                                            EmptyList(),
+                                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
+                                            _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                                MakeSeparatedList<ExpressionSyntax>(from name in paramNames select _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,SyntaxFactory.Literal(null,"",name,null))),
+                                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken))))),
+                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)))),
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                    attributes = attrs;
+                    _pool.Free(attrs);
                 }
                 FinallyClauseSyntax finallyClause = null;
                 if (context.UsesPSZ)

@@ -778,7 +778,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
         private void Check4ClipperCC(Antlr4.Runtime.ParserRuleContext context, 
-            XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveType)
+            XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveReturnType)
         {
             bool isEntryPoint = false;
             bool hasConvention = false;
@@ -787,7 +787,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var fc = context as XP.FunctionContext;
                 isEntryPoint = fc.Id.GetText().ToLower() == "start";
             }
-            context.MustHaveReturnType = mustHaveType;
+            context.MustHaveReturnType = mustHaveReturnType;
             context.HasMissingReturnType = (returnType == null);
             context.HasTypedParameter = false;
             if (_options.IsDialectVO)
@@ -802,7 +802,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     context.HasClipperCallingConvention = _options.VOClipperCallingConvention && ! isEntryPoint ;
                 }
-                if (parameters != null)
+                if (parameters != null )
                 {
                     bool bHasTypedParameter = false;
                     foreach (XP.ParameterContext par in parameters._Params)
@@ -950,6 +950,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // make sure that existing attributes are not removed!
                     var attrs = _pool.Allocate<AttributeListSyntax>();
                     attrs.AddRange(attributes);
+                    var names = new List<ExpressionSyntax>();
+                    foreach (var name in paramNames)
+                    {
+                        names.Add(GenerateLiteral(name));
+                    }
+
                     attrs.Add(_syntaxFactory.AttributeList(
                         openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                         target: null,
@@ -959,15 +965,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                 arguments: MakeSeparatedList(
                                     _syntaxFactory.AttributeArgument(null, null,
-                                        _syntaxFactory.ImplicitArrayCreationExpression(
+                                        _syntaxFactory.ArrayCreationExpression(
                                             SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                                            SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                                            EmptyList(),
-                                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
+                                            _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword)),rank),
                                             _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                                                MakeSeparatedList<ExpressionSyntax>(from name in paramNames select _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,SyntaxFactory.Literal(null,"",name,null))),
-                                                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken))))),
+                                                MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
+                                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken))))),
                                 closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)))),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
                     attributes = attrs;
@@ -1304,22 +1308,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax voPropType;
             var AccMet = vop.AccessMethodCtx;
             var AssMet = vop.AssignMethodCtx;
-            if (AccMet != null)
+            if (AssMet != null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
             {
-                if (AccMet.HasClipperCallingConvention)
-                    voPropType = _usualType;
-                else
-                    voPropType = AccMet.Type?.Get<TypeSyntax>() ?? MissingType();
+                voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>();
+                if (voPropType == null)
+                {
+                    if (_options.IsDialectVO)
+                        voPropType = _usualType;
+                    else
+                        voPropType = MissingType();
+                }
             }
-            else if (AssMet!= null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
+            else if (AccMet != null)
             {
-                if (AssMet.HasClipperCallingConvention)
-                    voPropType = _usualType;
-                else
-                    voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? MissingType();
+                voPropType = AccMet.Type?.Get<TypeSyntax>();
+                if (voPropType == null)
+                {
+                    if (_options.IsDialectVO)
+                        voPropType = _usualType;
+                    else
+                        voPropType = MissingType();
+                }
             }
             else
-                voPropType = MissingType();
+            {
+                if (_options.IsDialectVO)
+                    voPropType = _usualType;
+                else
+                    voPropType = MissingType();
+            }
 
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             if (vop.AccessMethodCtx != null) {
@@ -2205,7 +2222,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterMethod([NotNull] XP.MethodContext context)
         {
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
+             Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
+            if (context.T.Token.Type != XP.METHOD && _options.IsDialectVO)
+            {
+                context.HasClipperCallingConvention = false;
+                context.HasTypedParameter = true;          // this will set all missing types to USUAL
+            }
         }
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
@@ -2285,7 +2307,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
-                var returntype = context.Type?.Get<TypeSyntax>() ?? (context.T.Token.Type == XP.ASSIGN ? VoidType() : MissingType());
+                var returntype = context.Type?.Get<TypeSyntax>();
+                if (returntype == null)
+                {
+                    if (context.T.Token.Type == XP.ASSIGN)
+                    {
+                        returntype = VoidType();
+                    }
+                    else  // method and access
+                    {
+                        if (_options.IsDialectVO)
+                            returntype = _usualType;
+                        else
+                            returntype = MissingType();
+                    }
+                }
+
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                     MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                     attributeLists: attributes,
@@ -3126,10 +3163,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitParameter([NotNull] XP.ParameterContext context)
         {
+            TypeSyntax type = context.Type?.Get<TypeSyntax>();
+            if (type == null)
+            {
+                if (CurrentEntity.HasTypedParameter && _options.IsDialectVO)
+                    type = _usualType;
+                else
+                    type = MissingType();
+            }
             context.Put(_syntaxFactory.Parameter(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
-                type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                type: type,
                 identifier: context.Id.Get<SyntaxToken>(),
                 @default: context.Default == null ? null : _syntaxFactory.EqualsValueClause(
                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),

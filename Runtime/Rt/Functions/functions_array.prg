@@ -126,7 +126,7 @@ begin namespace XSharp.Runtime
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayGetPtr(a AS ARRAY,dwEl AS DWORD) AS PTR
+	UNSAFE FUNCTION ArrayGetPtr(a AS ARRAY,dwEl AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN NULL   
 
@@ -246,7 +246,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION OldSpaceFreeArray(a AS ARRAY) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	#endregion
 end namespace

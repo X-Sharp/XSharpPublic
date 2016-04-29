@@ -24,7 +24,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION DoSendMail(hWndOwner AS PTR,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Encode a file for e-mail transfer.
@@ -257,7 +257,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION LabelPush(ptrLabel AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Extract a substring of a certain size from the left of a buffer.
@@ -373,7 +373,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION MemCopyString(ptrDest AS PTR,ptrSrc AS STRING,wCount AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Get a pointer to a matching double word in a memory buffer.
@@ -607,7 +607,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION RegisterKid(ptrKid AS PTR,dwCount AS DWORD,lItem AS LOGIC) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Display a bitmap in a window or control.

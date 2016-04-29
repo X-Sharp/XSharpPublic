@@ -226,7 +226,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Bin2I(c AS STRING) AS SHORT
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 0
 
 	/// <summary>
 	/// Convert a string containing a 32-bit signed integer to a long integer.
@@ -790,7 +790,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION OldSpaceFreeString(c AS STRING) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Change the first character of each word to uppercase

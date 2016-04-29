@@ -408,7 +408,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION SplitPath(pzsPath AS PSZ,pszDrive AS PSZ,pszDir AS PSZ,pszName AS PSZ,pszExt AS PSZ) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Convert a float expression to a PSZ.

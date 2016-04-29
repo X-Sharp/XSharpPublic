@@ -187,7 +187,7 @@
 	  AddModules="@(AddModules)"
 	  AdditionalFiles="@(AdditionalFiles)"
 	  Analyzers="@(Analyzer)"
-    AllowUnsafeBlocks="$(AllowUnsafeBlocks)"
+      AllowUnsafeBlocks="$(Unsafe)"
 	  ApplicationConfiguration="$(AppConfigForCompiler)"
 	  BaseAddress="$(BaseAddress)"
 	  CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"

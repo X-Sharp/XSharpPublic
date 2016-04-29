@@ -29,7 +29,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION FCommit(pHandle AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Determine if the file pointer is positioned at the end-of-file.
@@ -61,7 +61,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION FFlush(phandle AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Unlock a portion of an opened file.
@@ -211,7 +211,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION FRewind(pFile AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// Set the file pointer to a new position, specifying three strongly-typed arguments.

@@ -143,7 +143,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION AllowCollectThread() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// Either determine whether the Debugger can be invoked manually or programmatically define a breakpoint in an application.
@@ -153,7 +153,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION AltD(uMode AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// </summary>
@@ -409,7 +409,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Collect() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// Count the number of garbage collections performed by the system.
@@ -427,7 +427,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION CollectForced() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// </summary>
@@ -536,7 +536,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Default(xRef AS USUAL,x AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// </summary>
@@ -544,7 +544,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION DefaultDirInit() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// Create a descending order key value.
@@ -621,7 +621,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION DynAllocEnd() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// </summary>
@@ -775,7 +775,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION EnforceNumeric(refu AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// Make sure a variable is of a certain type.
@@ -786,7 +786,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION EnforceType(refu AS USUAL,nType AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// </summary>
@@ -794,7 +794,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION EnterCGCSection() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  
 
 	/// <summary>
 	/// Return and optionally change the code block that is executed when a runtime error occurs.
@@ -814,7 +814,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION ErrorBuild(ptrERRINFO AS ERRINFO) AS ERROR
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN  Error{}
 
 	/// <summary>
 	/// Return the number of errors that have occurred during program execution.
@@ -1494,7 +1494,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION KillAtomTable() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Branch out of a BEGIN SEQUENCE...END construct.
@@ -1513,7 +1513,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION LabelPop() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -1521,7 +1521,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION LeaveCGCSection() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Return the length of a string or an array.
@@ -1606,7 +1606,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION LongJmp(strucMark AS _JMP_BUF,n AS INT) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Convert a logical value to a string.
@@ -1632,7 +1632,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MathInit() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Return the larger of 2 values.
@@ -1756,7 +1756,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MyDal() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -1764,7 +1764,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MyDalFloat() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -1772,7 +1772,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MyDalFloatFSTP() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -1780,7 +1780,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MyDalPtr() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -1796,7 +1796,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION NClear() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Detect a concurrency conflict.
@@ -1891,7 +1891,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION OldSpaceFree(u AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -1900,7 +1900,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION OldSpaceFreeObject(o AS OBJECT) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -2066,7 +2066,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION ReDal() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Register an object so that it receives an Axit message before being destroyed by the garbage collector.
@@ -2076,7 +2076,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION RegisterAxit(oSource AS OBJECT) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Get a particular Windows color.
@@ -2391,7 +2391,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION VOEnterCriticalSection(lpCriticalSection AS _WINRTL_CRITICAL_SECTION) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -2400,7 +2400,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION VOLeaveCriticalSection(lpCriticalSection AS _WINRTL_CRITICAL_SECTION) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>

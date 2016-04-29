@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Rt", "Runtime\Rt\XSharp.Rt.xsproj", "{535DFF14-EFB7-43F5-A4E1-71C1C4280040}"
+EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD", "Runtime\Rdd\XSharp.RDD.xsproj", "{E83C6C8C-773F-4B01-A597-3D38398A9362}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{535DFF14-EFB7-43F5-A4E1-71C1C4280040}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E83C6C8C-773F-4B01-A597-3D38398A9362}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

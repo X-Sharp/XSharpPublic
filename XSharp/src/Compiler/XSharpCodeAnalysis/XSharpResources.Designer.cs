@@ -6596,6 +6596,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The function {0} is only supported in functions or methods with CLIPPER calling convention.
+        /// </summary>
+        internal static string ERR_OnlySupportedForClipperCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_OnlySupportedForClipperCallingConvention", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to End-of-file found, &apos;*/&apos; expected.
         /// </summary>
         internal static string ERR_OpenEndedComment {

@@ -114,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string VoPropertyAssignPrefix = "Xs$Assign$";
         const string VoPszList = "Xs$PszList";
         const string ClipperArgs = "Xs$Args";
-        const string ClipperPCount = "Xs$ArgCount";
+        const string ClipperPCount = "Xs$PCount";
         const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         public static SyntaxTree DefaultXSharpSyntaxTree = GenerateDefaultTree();
         private static int _unique = 0;
@@ -839,6 +839,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     if (parameters.Parameters.Count > 0 || context.UsesClipperCallingFunction)
                     {
+                        // VAR Xs$PCount  := 0
+                        // IF Xs$Args != NULL
+                        //    Xs$PCount := Xs$Args.Length
+                        // ENDIF
                         stmts.Add(GenerateLocalDecl(ClipperPCount, _impliedType, GenerateLiteral("0", 0)));
                         assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                                 GenerateSimpleName(ClipperPCount),
@@ -867,20 +871,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     //    oPar1 := Xs$Args[1]              .
                     // ENDIF                             .
                     var nilExpr = GenerateNIL();
+                    var paramNames = new List<String>();
                     for (int i =0; i < parameters.Parameters.Count ; i++)
                     {
                         ParameterSyntax parm = parameters.Parameters[i];
-                        var name = parm.Identifier.Text;
+                        string name = parm.Identifier.Text;
+                        paramNames.Add(name);
                         stmts.Add(GenerateLocalDecl(name, _usualType, nilExpr));
                     }
                     int iAdd = 1;
                     if (_options.ArrayZero)
                         iAdd = 0;
                     StatementSyntax LastStmt = null;
-                    for (int i = parameters.Parameters.Count-1; i >= 0 ; i--)
+                    for (int i = paramNames.Count-1; i >= 0 ; i--)
                     {
-                        ParameterSyntax parm = parameters.Parameters[i];
-                        var name = parm.Identifier.Text;
+                        var name = paramNames[i];
                         var indices = _pool.AllocateSeparated<ArgumentSyntax>();
                         indices.Add(MakeArgument(GenerateLiteral("", i+iAdd)));
                         assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
@@ -940,6 +945,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
                     _pool.Free(param);
                     // Finally add ClipperCallingConventionAttribute to the method
+                    // using the names from the paramNames list
+                    // [Vulcan.Internal.ClipperCallingConvention(new string[] { "a", "b" })]
+                    // make sure that existing attributes are not removed!
+
                 }
                 FinallyClauseSyntax finallyClause = null;
                 if (context.UsesPSZ)
@@ -960,7 +969,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         MakeBlock(MakeList<StatementSyntax>(
                             GenerateExpressionStatement(
                                 GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2PszRelease",
-                                    MakeArgumentList(MakeArgument(_syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VoPszList)))))))));
+                                    MakeArgumentList(MakeArgument(GenerateSimpleName(VoPszList))))))));
                 }
                 // TRY
                 //    original body
@@ -4024,10 +4033,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool bIsSlen = false;
             bool bPszConvert = false;
             bool bClipCalFunc = false;
+            string name = null;
             if (expr is IdentifierNameSyntax)
             {
                 IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
-                string name = ins.Identifier.Text.ToUpper();
+                name = ins.Identifier.Text.ToUpper();
                 switch (name)
                 {
                     case "ALTD":
@@ -4047,8 +4057,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case "PCOUNT":
                     case "_GETMPARAM":
                     case "_GETFPARAM":
-                        CurrentEntity.UsesClipperCallingFunction = true;
-                        bClipCalFunc = true;
+                        if (CurrentEntity.UsesClipperCallingFunction)
+                        {
+                            bClipCalFunc = true;
+                        }
+                        else
+                        {
+                            expr = GenerateLiteral("", 0);
+                            expr = expr.WithAdditionalDiagnostics(
+                                new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
+                            context.Put(expr);
+                            return;
+
+                        }
+
                         break;
                     default:
                         break;
@@ -4081,9 +4103,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var args = MakeArgumentList(MakeArgument(expr));
                     expr = CreateObject(this._pszType, args, null);
                     context.Put(expr);
+                    return;
                 }
             }
-            if (bIsAltD)
+            else if (bIsAltD)
             {
                 expr = GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList);
                 var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
@@ -4092,6 +4115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             GenerateSimpleName("IsAttached"));
                 var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
                 context.Put(GenerateIfStatement(cond, stmt));
+                return;
             }
             else if (bIsSlen && argList.Arguments.Count >= 1)
             {
@@ -4113,11 +4137,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr);
 
                 context.Put(expr);
-                
+                return;
             }
             else if (bClipCalFunc)
             {
-                ; //TODO Implement code
+                if (name == "PCOUNT")
+                {
+                    expr = GenerateSimpleName(ClipperPCount);
+                    context.Put(expr);
+                    return;
+                }
+                else
+                {
+                    // _GETMPARAM or _GETFPARAM
+                    if (argList.Arguments.Count > 0)
+                    {
+                        var indices = _pool.AllocateSeparated<ArgumentSyntax>();
+                        indices.Add(MakeArgument(argList.Arguments[0].Expression));
+
+                        expr = _syntaxFactory.ElementAccessExpression(
+                        GenerateSimpleName(ClipperArgs),
+                        _syntaxFactory.BracketedArgumentList(
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                            indices,
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                        context.Put(expr);
+                        return;
+                    }
+                    else
+                    {
+                        // generate an error
+
+                    }
+
+                }
+
             }
             else
                 context.Put(_syntaxFactory.InvocationExpression(expr, argList));

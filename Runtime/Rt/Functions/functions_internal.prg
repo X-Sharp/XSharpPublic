@@ -46,7 +46,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION __Break() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -72,7 +72,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION __FreeGuruTab(hInst AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -225,7 +225,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _AddESP(dw AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// </summary>
@@ -276,7 +276,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _AsPsz(u AS USUAL) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// </summary>
@@ -341,7 +341,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _DebOut32(pszOut AS PSZ) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -351,7 +351,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _Dec(dwVal AS DWORD,p AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// </summary>
@@ -361,7 +361,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _DecByte(b AS BYTE,p AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN    
 
 	/// <summary>
 	/// </summary>
@@ -371,7 +371,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _DecWord(wVal AS WORD,p AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// </summary>
@@ -380,7 +380,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _DumpKid(pObj AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// </summary>
@@ -421,7 +421,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _DynWipe() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -629,7 +629,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _Hex(dwVal AS DWORD,p AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -639,7 +639,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _HexByte(b AS BYTE,p AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -649,7 +649,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _HexWord(wVal AS WORD,p AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -668,7 +668,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _IError(dw AS DWORD,lExit AS LOGIC,pszInfo AS PSZ) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -759,7 +759,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _LowCase() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -775,7 +775,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _MClear() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -784,7 +784,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _MxRelease(nSymVar AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -824,7 +824,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _NPut(pszBuff AS PSZ,dwPos AS DWORD,b AS BYTE) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -875,7 +875,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PGenRef() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -900,7 +900,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PopTempSelect() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -976,7 +976,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PushDWord(dw AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -985,7 +985,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PushI87Real8(r8 AS REAL8) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -994,7 +994,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PushTempArea(nArea AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1003,7 +1003,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PushTempSelect(sAlias AS SYMBOL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1012,7 +1012,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PushTempUsual(uSelect AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1021,7 +1021,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _PushUsual(x AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1037,7 +1037,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _Quit() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1066,7 +1066,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _RegisterCollect(pCollFunc AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// Register an exit routine to be called when the current application ends.
@@ -1085,7 +1085,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _RegisterFields(ptrFlds AS PTR) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1114,7 +1114,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _RTNumOverErr(x AS USUAL,symFunc AS SYMBOL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1190,7 +1190,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _SetQOutPtr(ptrBuff AS PTR,dwLen AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1228,7 +1228,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _SOrderInit(ptrSField AS PTR,dwFcnt AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1297,7 +1297,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _TypeErrorGen(strucError AS USUAL) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1305,7 +1305,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _UnRegisterFields() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>
@@ -1313,7 +1313,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _UpCase() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// </summary>

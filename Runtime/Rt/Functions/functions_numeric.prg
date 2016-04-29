@@ -202,7 +202,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION ExitVOThread(nRetVal AS INT) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN   
 
 	/// <summary>
 	/// Convert a float to a string containing an 80-bit floating point number.
@@ -541,7 +541,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION OldSpaceFreeFloat(f AS FLOAT) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// </summary>
@@ -653,7 +653,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SwapShort(si AS SHORT) AS SHORT
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 0   
 
 	/// <summary>
 	/// Exchange the right and left halves of a word.

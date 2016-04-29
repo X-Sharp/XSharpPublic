@@ -8,7 +8,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SetAMExt(cExt AS STRING) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
@@ -127,7 +127,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SetDefault(cDefault AS STRING) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Change the setting that determines the location of the error log file.
@@ -137,7 +137,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SetDefaultDir(pszNew AS PSZ) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Return and optionally change the setting that determines whether to ignore or include records that are marked for deletion.
@@ -327,7 +327,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SetPath(cPath AS STRING) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Set the evening extension for time strings in 12-hour format.
@@ -337,7 +337,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SetPMExt(cExt AS STRING) AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN 
 
 	/// <summary>
 	/// Save a numeric value to the Registry.

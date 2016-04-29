@@ -291,7 +291,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBFreeDriver() AS VOID
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN
 
 	/// <summary>
 	/// Return the work area number.

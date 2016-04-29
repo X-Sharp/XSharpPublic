@@ -147,6 +147,7 @@ namespace XSharp.Project
                 }
                 // Create the logger
                 BuildLogger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
+                //BuildLogger = new IDEBuildLogger(output, this.TaskProvider, hierarchy);
 
                 // To retrieve the verbosity level, the build logger depends on the registry root 
                 // (otherwise it will used an hard coded default)
@@ -156,6 +157,7 @@ namespace XSharp.Project
                     string registryRoot;
                     registry.GetLocalRegistryRoot(out registryRoot);
                     XSharpIDEBuildLogger logger = this.BuildLogger as XSharpIDEBuildLogger;
+                    //IDEBuildLogger logger = this.BuildLogger as IDEBuildLogger;
                     if (!String.IsNullOrEmpty(registryRoot) && (null != logger))
                     {
                         logger.BuildVerbosityRegistryRoot = registryRoot;

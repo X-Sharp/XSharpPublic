@@ -472,5 +472,23 @@ FUNCTION Start() AS VOID
     RETURN
 "));
         }
+
+        [Test(Author = "Nikos", Id = "N18", Title = "NameOf operator")]
+        public static void NameOfOperator()
+        {
+            CompileAndRunWithoutExceptions(ParseSource(@"
+class Test
+    property Prop as int auto
+end class
+
+FUNCTION Start() AS VOID
+    LOCAL n AS STRING
+    n := nameof(Test.Prop)
+    IF n != ""Prop""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
+    RETURN
+"));
+        }
     }
 }

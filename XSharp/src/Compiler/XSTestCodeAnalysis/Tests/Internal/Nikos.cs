@@ -479,14 +479,31 @@ FUNCTION Start() AS VOID
             CompileAndRunWithoutExceptions(ParseSource(@"
 class Test
     property Prop as int auto
+    method Meth() as void
+    method Meth(a as int) as void
 end class
 
 FUNCTION Start() AS VOID
     LOCAL n AS STRING
-    n := nameof(Test.Prop)
+    n := nameof(Test.prop)
     IF n != ""Prop""
         THROW Exception{'n == ""'+n+'""'}
     ENDIF
+    n := nameof(Test.meth)
+    IF n != ""Meth""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
+    RETURN
+"));
+            CompileWithErrors(ParseSource(@"
+class Test
+    method Meth() as void
+    method meth(a as int) as void
+end class
+
+FUNCTION Start() AS VOID
+    LOCAL n AS STRING
+    n := nameof(Test.meth)
     RETURN
 "));
         }

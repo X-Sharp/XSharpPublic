@@ -4728,4 +4728,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_OnlySupportedForClipperCallingConvention" xml:space="preserve">
     <value>The function {0} is only supported in functions or methods with CLIPPER calling convention</value>
   </data>
+  <data name="ERR_AmbiguousCase" xml:space="preserve">
+    <value>Ambiguous case between '{0}' and '{1}'</value>
+  </data>
 </root>

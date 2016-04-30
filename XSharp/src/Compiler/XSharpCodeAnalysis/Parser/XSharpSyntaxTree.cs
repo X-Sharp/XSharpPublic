@@ -128,6 +128,7 @@ namespace Antlr4.Runtime
             MustBeUnsafe = 8,
             MustHaveReturnType = 16,
             HasTypedParameter = 32,
+            UsesPCount = 64,
         }
         int iBPLength = -1;
         MethodFlags flags = MethodFlags.None;
@@ -162,6 +163,11 @@ namespace Antlr4.Runtime
         {
             get { return (flags & MethodFlags.MustHaveReturnType) == MethodFlags.MustHaveReturnType; }
             set { if (value) flags |= MethodFlags.MustHaveReturnType; else flags &= ~MethodFlags.MustHaveReturnType; }
+        }
+        public bool UsesPCount
+        {
+            get { return (flags & MethodFlags.UsesPCount) == MethodFlags.UsesPCount; }
+            set { if (value) flags |= MethodFlags.UsesPCount; else flags &= ~MethodFlags.UsesPCount; }
         }
 
         public override bool IsHidden { get { return iBPLength == -1; } }

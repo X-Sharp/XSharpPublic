@@ -797,12 +797,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.HasClipperCallingConvention = (Convention.Type == XP.CLIPPER);
                     hasConvention = true;
                 }
+                int paramCount = 0;
+                if (parameters != null && parameters._Params != null)
+                    paramCount = parameters._Params.Count;
                 // Function Foo or Function Foo() without convention
-                if (parameters?._Params?.Count == 0 && !hasConvention )
+                if ( paramCount == 0 && !hasConvention )
                 {
                     context.HasClipperCallingConvention = _options.VOClipperCallingConvention && ! isEntryPoint ;
                 }
-                if (parameters != null )
+                if (paramCount > 0 )
                 {
                     bool bHasTypedParameter = false;
                     foreach (XP.ParameterContext par in parameters._Params)
@@ -837,7 +840,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 StatementSyntax exprStmt;
                 if (context.HasClipperCallingConvention)
                 {
-                    if (parameters.Parameters.Count > 0 )
+
+                    if (context.UsesPCount || parameters.Parameters.Count > 0  )
                     {
                         // VAR Xs$PCount  := 0
                         // IF Xs$Args != NULL
@@ -4226,6 +4230,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     expr = GenerateSimpleName(ClipperPCount);
                     context.Put(expr);
+                    CurrentEntity.UsesPCount = true;
                     return;
                 }
                 else

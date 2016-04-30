@@ -631,7 +631,7 @@ primary				: Key=SELF													#selfExpression
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
-					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// sizeof( typeORid )
+					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// default( typeORid )
 					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
 					| XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
@@ -873,7 +873,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | NOP | OFF | ON | ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OFF | ON | ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
 							  MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
 							)
 					;

@@ -1113,8 +1113,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     nameofBinder.EnsureNameofExpressionSymbols(methodGroup, diagnostics);
+#if XSHARP
+                    if (!string.IsNullOrEmpty(methodGroup.Methods.First()?.Name))
+                    {
+                        name = methodGroup.Methods.First().Name;
+                        foreach (var m in methodGroup.Methods)
+                        {
+                            if (string.CompareOrdinal(name,m.Name) != 0)
+                            {
+                                diagnostics.Add(ErrorCode.ERR_AmbiguousCase, argument.Location, name, m.Name);
+                                break;
+                            }
+                        }
+                    }
+#endif
                 }
             }
+#if XSHARP
+            else if (!boundArgument.HasAnyErrors && !string.IsNullOrEmpty(boundArgument.ExpressionSymbol?.Name))
+            {
+                name = boundArgument.ExpressionSymbol.Name;
+            }
+#endif
 
             return new BoundNameOfOperator(node, boundArgument, ConstantValue.Create(name), Compilation.GetSpecialType(SpecialType.System_String));
         }

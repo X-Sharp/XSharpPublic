@@ -484,12 +484,21 @@ class Test
 end class
 
 FUNCTION Start() AS VOID
+    VAR o := Test{}
     LOCAL n AS STRING
     n := nameof(Test.prop)
     IF n != ""Prop""
         THROW Exception{'n == ""'+n+'""'}
     ENDIF
+    n := nameof(o:prop)
+    IF n != ""Prop""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
     n := nameof(Test.meth)
+    IF n != ""Meth""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
+    n := nameof(o:meth)
     IF n != ""Meth""
         THROW Exception{'n == ""'+n+'""'}
     ENDIF
@@ -504,6 +513,18 @@ end class
 FUNCTION Start() AS VOID
     LOCAL n AS STRING
     n := nameof(Test.meth)
+    RETURN
+"));
+            CompileWithErrors(ParseSource(@"
+class Test
+    method Meth() as void
+    method meth(a as int) as void
+end class
+
+FUNCTION Start() AS VOID
+    VAR o := Test{}
+    LOCAL n AS STRING
+    n := nameof(o:meth)
     RETURN
 "));
         }

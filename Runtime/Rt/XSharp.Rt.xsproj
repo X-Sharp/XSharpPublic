@@ -78,7 +78,7 @@
     </CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths />
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -138,6 +138,7 @@
     <Compile Include="Functions\functions_set.prg" />
     <Compile Include="Functions\functions_string.prg" />
     <Compile Include="Functions\functions_unsafe.prg" />
+    <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Structures\Various.prg" />
     <Compile Include="Structures\Float.prg" />
     <Compile Include="Structures\Date.prg" />

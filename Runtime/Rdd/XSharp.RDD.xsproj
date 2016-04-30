@@ -6,7 +6,7 @@
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>true</Unsafe>
+    <Unsafe>false</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VO1>false</VO1>
@@ -77,8 +77,8 @@
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths />
-    <DefineConstants>TRACE</DefineConstants>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>

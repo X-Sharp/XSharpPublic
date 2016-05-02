@@ -69,28 +69,28 @@ namespace XSharp.CodeDom
         protected override void GenerateArrayCreateExpression(CodeArrayCreateExpression e)
         {
             CodeExpressionCollection initializers = e.Initializers;
+            // Literal array
             if (initializers.Count > 0)
             {
-                // Currently, implementing the Vulcan.NET Syntax
+                // the syntax is something like <int>{ 10,12,14 }
                 this.Output.Write("<");
-
+                // Is a specific type indicated ?
                 if (e.CreateType.ArrayElementType != null)
                 {
-                    // The CodeDom test suite emits this
                     this.OutputType(e.CreateType.ArrayElementType);
                 }
                 else
                 {
-                    // The Windows Forms Generator emits this
                     this.OutputType(e.CreateType);
                 }
-
+                //
                 this.Output.Write(">{ ");
                 this.OutputExpressionList(initializers, false);
                 this.Output.Write(" }");
             }
             else
             {
+                // Standard Array declaration
                 base.Output.Write(this.GetBaseTypeOutput(e.CreateType));
                 base.Output.Write("[");
                 if (e.SizeExpression != null)

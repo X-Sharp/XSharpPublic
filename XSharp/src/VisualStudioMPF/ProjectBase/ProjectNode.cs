@@ -2148,6 +2148,11 @@ namespace Microsoft.VisualStudio.Project
         internal virtual void BuildAsync(uint vsopts, string config, IVsOutputWindowPane output, string target, Action<MSBuildResult, string> uiThreadCallback)
         {
             this.BuildPrelude(output);
+            // Force SaveAll ooperation
+            // unfortunately, it doesn't save Settings... :(
+            EnvDTE.DTE dte = (EnvDTE.DTE)ProjectMgr.GetService(typeof(EnvDTE.DTE));
+            dte.ExecuteCommand("File.SaveAll", "");
+            //
             this.SetBuildConfigurationProperties(config);
             this.DoMSBuildSubmission(BuildKind.Async, target, uiThreadCallback);
         }

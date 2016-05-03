@@ -1152,7 +1152,9 @@ SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 			;
 
 
-ML_COMMENT  : '/' '*' .*? ('*' '/'| EOF)	-> channel(HIDDEN)
+ML_COMMENT  : ('/' '*' .*? '*' '/'	
+			| '/' '*' .*? EOF		// TODO: Generate an error 'missing End of Comment'
+			)	-> channel(HIDDEN)
 			;
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords

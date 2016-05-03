@@ -62,10 +62,12 @@ namespace XSTestCodeAnalysis
 
         public static CSharpSyntaxTree VulcanRuntime { get; } = ParseSource(@"
 BEGIN NAMESPACE Vulcan
-    CLASS __USUAL
-    END CLASS
+    STRUCTURE __USUAL
+        STATIC _NIL AS __USUAL
+    END STRUCTURE
 END NAMESPACE
 BEGIN NAMESPACE Vulcan.Internal
+    [AttributeUsage(AttributeTargets.Method)];
     CLASS ClipperCallingConventionAttribute INHERIT System.Attribute
         CONSTRUCTOR(names AS STRING[])
     END CLASS

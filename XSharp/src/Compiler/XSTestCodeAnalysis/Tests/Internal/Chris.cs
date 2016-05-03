@@ -2106,6 +2106,9 @@ END NAMESPACE
         {
             var s = ParseSource(@"
 GLOBAL CONST ggg := 1 AS INT
+GLOBAL hhh := 1 AS INT
+INTERNAL GLOBAL iii := 1 AS INT
+STATIC GLOBAL jjj := 1 AS INT
 ");
             CompileAndLoadWithoutErrors(s);
         }

@@ -252,6 +252,28 @@ FUNCTION Start() AS INT
             CompileAndRunWithoutExceptions(s);
         }
 
+        [Test(Author = "Robert", Id = "R14", Title = "Clipper constructors")]
+        public static void ClipperCCConstructors()
+        {
+            CompileAndRunWithoutExceptions("/dialect:vulcan", ParseSource("/dialect:vulcan", @"
+CLASS Parent
+    PUBLIC Value as LONG
+    CONSTRUCTOR(a,b,c)
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(a,b,c)
+        SUPER(a,b,c)
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL i AS INT
+    Child{}
+    RETURN
+"), VulcanRuntime);
+        }
+
+
     }
 }
 

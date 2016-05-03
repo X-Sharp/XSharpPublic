@@ -2026,12 +2026,12 @@ END CLASS
             CompileAndLoadWithoutErrors(s);
         }
 
-/*
+
         // 147
         [Test(Author = "Chris", Id = "C147", Title = "incorrect params passed to super constructor")]
         public static void incorrect_params_passed_to_super_constructor()
         {
-            var s = ParseSource(@"/dialect:vulcan /r:""C:\Windows\Microsoft.NET\assembly\GAC_32\VulcanRTFuncs\v4.0_3.0.303.0__0e73a8bf006af00c\VulcanRTFuncs.dll""" , @"
+            var s = ParseSource(@"/dialect:vulcan" , @"
 // /dialect:vulcan
 FUNCTION Start() AS VOID
 Child{1,2}
@@ -2049,7 +2049,7 @@ CLASS Child INHERIT Parent
         SUPER(b)
 END CLASS 
 ");
-            CompileAndRunWithoutExceptions(s);
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -2057,7 +2057,7 @@ END CLASS
         [Test(Author = "Chris", Id = "C148", Title = "No errors reported on mixing CLIPPER/STRICT members in the same class or inheritance tree")]
         public static void No_errors_reported_on_mixing_CLIPPER_STRICT_members_in_the_same_class_or_inheritance_tree()
         {
-            var s = ParseSource(@"/dialect:vulcan /r:""C:\Windows\Microsoft.NET\assembly\GAC_32\VulcanRTFuncs\v4.0_3.0.303.0__0e73a8bf006af00c\VulcanRTFuncs.dll""" , @"
+            var s = ParseSource(@"/dialect:vulcan" , @"
 // /dialect:vulcan
 CLASS Parent
 	METHOD Test1() CLIPPER
@@ -2076,9 +2076,103 @@ CLASS Child INHERIT Parent
 	VIRTUAL METHOD Test3() AS VOID STRICT
 END CLASS
 ");
-            CompileWithErrors(s);
+            CompileWithErrors("/dialect:vulcan", s, VulcanRuntime);
         }
-*/
+
+ 
+        // 149
+        [Test(Author = "Chris", Id = "C149", Title = "assertion failed and compiler crash with different casing in namespace names")]
+        public static void assertion_failed_and_compiler_crash_with_different_casing_in_namespace_names()
+        {
+            var s = ParseSource(@"
+BEGIN NAMESPACE abc.def
+CLASS Test1
+END CLASS
+END NAMESPACE
+   
+BEGIN NAMESPACE ABC.def
+CLASS Test2 INHERIT System.Collections.ArrayList
+END CLASS
+END NAMESPACE
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+        // 150
+        [Test(Author = "Chris", Id = "C150", Title = "error_XS0504_The_constant_cannot_be_marked_static")]
+        public static void Error_with_GLOBAL_CONST()
+        {
+            var s = ParseSource(@"
+GLOBAL CONST ggg := 1 AS INT
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 151
+        [Test(Author = "Chris", Id = "C151", Title = "error XS0030: Cannot convert type 'int' to 'bool'")]
+        public static void Error_casting_to_LOGIC()
+        {
+            var s = ParseSource(@"
+// works in vulcan, maybe it should be supported only in the vulcan dialect?
+FUNCTION Start() AS VOID
+	LOCAL n := 0 AS INT
+	LOCAL l AS LOGIC
+	l := LOGIC(_CAST , n)
+	IF l
+		THROW Exception{""Result is TRUE""}
+	END IF
+	n := 1
+	l := LOGIC(_CAST , n)
+	IF .not. l
+		THROW Exception{""Result is FALSE""}
+	END IF
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+        // 152
+        [Test(Author = "Chris", Id = "C152", Title = "Operator '??' cannot be applied to operands of type 'bool' and 'bool'")]
+        public static void Error_with_the_dollar_in_string_operator()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL cChar := ""N"" AS STRING
+LOCAL l AS LOGIC
+l := cChar $ ""ANX9#""
+IF .not. l
+	THROW Exception{""Returned FALSE""}
+END IF
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+ 
+        // 153
+        [Test(Author = "Chris", Id = "C153", Title = "error XS0121: The call is ambiguous between the following methods or properties: 'VulcanRTFuncs.Functions.Left(string, uint)' and 'Xs$Globals.Left(string, uint)'")]
+        public static void Problem_overriding_runtime_function_with_custom_one()
+        {
+            var s = ParseSource(@"/dialect:vulcan" , @"
+// /dialect:vulcan
+FUNCTION Left(c AS STRING, n AS DWORD) AS STRING
+RETURN ""local function correctly called""
+
+CLASS Test
+	METHOD Abc() AS VOID
+	? Left(""Asd"",1) // error here
+END CLASS
+
+FUNCTION Start() AS VOID
+	? Left(""Asd"",1) // ok here
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
 
 
     }

@@ -2807,7 +2807,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Modifiers._Tokens.Add(context.Const);
                 else {
                     context.Modifiers = FixPosition(new XP.FuncprocModifiersContext(context,0),context.Start);
-                    context.Modifiers.PutList(TokenList(SyntaxKind.ConstKeyword,SyntaxKind.StaticKeyword,SyntaxKind.PublicKeyword));
+                    context.Modifiers.PutList(TokenList(SyntaxKind.ConstKeyword,SyntaxKind.PublicKeyword));
                 }
             }
         }

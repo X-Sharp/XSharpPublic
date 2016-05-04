@@ -69,13 +69,12 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001</DisabledWarnings>
+    <DisabledWarnings>9001;1591</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>
-    </CommandLineOption>
+    <CommandLineOption>/unsafe</CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>

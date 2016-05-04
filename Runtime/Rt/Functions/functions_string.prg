@@ -12,8 +12,14 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AdjustFName(cName AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local adjusted := null as string
+		if ( !string.IsNullOrEmpty(cName) ) 
+			adjusted := System.IO.Path.GetFileNameWithoutExtension(cName).TrimEnd()
+			if ( cName:IndexOf('.') > 0 ) 
+				adjusted += System.IO.Path.GetExtension(cName)
+			endif
+		endif
+	RETURN adjusted   
 
 	/// <summary>
 	/// Remove spaces from a file name specified as a string, changing the contents of the original file name as well as the returned file name.
@@ -22,28 +28,41 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AdjustFNameA(cName AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		THROW NotImplementedException{}
+	    /// RETURN NULL_STRING   
 
 	/// <summary>
 	/// Remove leading and trailing spaces from a string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string to be trimmed.</param>
 	/// <returns>
+	/// The original string without leading and trailing spaces
 	/// </returns>
 	FUNCTION AllTrim(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	   if ( c == null )
+		  return c
+	   endif
+	   c := c:Trim()
+	RETURN c
 
 	/// <summary>
 	/// Convert a 24-hour military time to a 12-hour clock time.
 	/// </summary>
-	/// <param name="cTime"></param>
+	/// <param name="cTime"> A valid military time in the form hh:mm:ss, where hh is hours in 24-hour format, mm is minutes, and ss is seconds.</param>
 	/// <returns>
+	/// An 11-character string in 12-hour format with either "am" or "pm."  If <cTime> does not represent a valid military time, a NULL_STRING is returned.
 	/// </returns>
 	FUNCTION AmPm(cTime AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local result:=null as string
+		try 
+			result := DateTime.Parse(ctime).ToString("hh:mm:ss")
+			// The following exceptions may appear but will be ignored currently (VO/VN behaviour)
+			// catch ex as FormatException
+			//	  NOP 
+			// catch ex as ArgumentNullException
+			//	  NOP
+		end try
+	RETURN result
 
 	/// <summary>
 	/// Convert a string of ANSI characters to OEM characters.
@@ -72,42 +91,59 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Asc(c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local ascValue := 0 as dword
+		if ( !string.IsNullOrEmpty(c) ) 
+		   local chrBuffer := c:ToCharArray() as char[]
+           local bytBuffer := System.Text.Encoding.GetEncoding(1252).GetBytes(chrBuffer) as byte[]
+		   ascValue := (DWORD) bytBuffer[1]
+		endif
+	RETURN ascValue
 
 	/// <summary>
 	/// Return the position of the first occurrence of a substring within a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">The string to search for.</param>
+	/// <param name="c">The string to search in.</param>
 	/// <returns>
+	/// The position of the first occurrence of <cSearch> within <cTarget>.  If <cSearch> is not found, At() returns 0.
+	/// If cSearch is empty or c is empty, At() returns 0.
 	/// </returns>
 	FUNCTION At(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local position := -1 as int
+		if ( c != null && cSearch != null )
+			position := c:IndexOf(cSearch)
+		endif
+	RETURN (DWORD) position+1  
 
 	/// <summary>
 	/// Return the position of the first occurrence of a substring within a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">The string to search for.</param>
+	/// <param name="c">The string to search in.</param>
 	/// <returns>
+	/// The position of the first occurrence of <cSearch> within <cTarget>.  If <cSearch> is not found, At() returns 0.
+	/// If cSearch is empty or c is empty, At() returns 0.
 	/// </returns>
 	FUNCTION At2(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN At(cSearch,c)
+
 
 	/// <summary>
 	/// Return the position of the first occurrence of a substring within a string, starting at a specified position.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
-	/// <param name="dwOff"></param>
+	/// <param name="cSearch">The string to search for.</param>
+	/// <param name="c">The string to search in.</param>
+	/// <param name="dwOff">The position to begin the search with.</param>
 	/// <returns>
+	/// The position of the first occurrence of <cSearch> within <cTarget> behind the give position.  If <cSearch> is not found, At() returns 0.
+	/// If cSearch is empty or c is empty, At3() returns 0.
 	/// </returns>
 	FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local position := -1 as int
+		if ( c != null && cSearch != null && dwOff <= c:Length )
+			position := c:IndexOf(cSearch,(int)dwOff-1)
+		endif
+	RETURN (DWORD) position+1    
 
 	/// <summary>
 	/// Return the position of the first occurrence of a substring within a string, without regard for case.
@@ -117,8 +153,11 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AtC(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local position := -1 as int
+		if ( c != null && cSearch != null )
+			position := c:IndexOf(cSearch,System.StringComparison.OrdinalIgnoreCase)
+		endif
+	RETURN (DWORD) position+1    
 
 	/// <summary>
 	/// Return the position of the first occurrence of a substring within a string, without regard for case.
@@ -128,8 +167,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AtC2(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN AtC(cSearch,c)  
 
 	/// <summary>
 	/// Return the line number of the first occurrence of a substring within a multiple line string, without regard for case.
@@ -294,12 +332,26 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the even-numbered characters in a string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string from which the even characters shall be extracted.</param>
 	/// <returns>
+	/// A string which is assembled from the even characters in <c>.
 	/// </returns>
 	FUNCTION CharEven(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	    local evenChars:=null as string
+		if ( !string.IsNullOrEmpty(c) ) 
+			//local chars  := c:ToCharArray() as char[]
+			local isEven := false as  logic
+			local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
+
+			foreach ch as char in c//hars 
+				if isEven
+				   sb:Append(ch)
+				endif
+				isEven := !isEven
+			next
+			evenChars := sb:ToString()
+		endif
+	RETURN evenChars
 
 	/// <summary>
 	/// Return a string whose odd-numbered characters and even-numbered characters are from 2 different strings.
@@ -314,13 +366,27 @@ begin namespace XSharp.Runtime
 
 	/// <summary>
 	/// Return the odd-numbered characters in a string.
-	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string from which the odd characters shall be extracted.</param>
 	/// <returns>
+	/// A string which is assembled from the odd characters in <c>.
 	/// </returns>
 	FUNCTION CharOdd(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	    local oddChars:=null as string
+		if ( !string.IsNullOrEmpty(c) ) 
+			//local chars  := c:ToCharArray() as char[]
+			local isOdd  := true as  logic
+			local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
+
+			foreach ch as char in c//chars 
+				if isOdd
+				   sb:Append(ch)
+				endif
+				isOdd := !isOdd
+			next
+			oddChars := sb:ToString()
+		endif
+	RETURN oddChars
+ 
 
 	/// <summary>
 	/// Return a character based on its position in a string.
@@ -606,13 +672,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Extract a substring beginning with the first character in a string.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwLen"></param>
+	/// <param name="c">A string from which the left part should be extracted.</param>
+	/// <param name="dwLen">The length of the substring which should be extracted.</param>
 	/// <returns>
+	/// A string of the left first characters in the given length.
 	/// </returns>
 	FUNCTION Left(c AS STRING,dwLen AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		if ( c==null )
+			return c
+		endif
+	RETURN	c:Substring(0,Math.Min(c:Length,(int)dwLen))   
 
 	/// <summary>
 	/// Convert the uppercase and mixed case characters in a string to lowercase.

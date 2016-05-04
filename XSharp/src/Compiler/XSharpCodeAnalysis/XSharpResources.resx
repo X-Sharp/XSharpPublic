@@ -4731,4 +4731,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_AmbiguousCase" xml:space="preserve">
     <value>Ambiguous case between '{0}' and '{1}'</value>
   </data>
+  <data name="ERR_DuplicateDefine" xml:space="preserve">
+    <value>Duplicate define with different value detected '{0}'</value>
+  </data>
+  <data name="WRN_DuplicateDefine" xml:space="preserve">
+    <value>Duplicate define detected '{0}'</value>
+  </data>
 </root>

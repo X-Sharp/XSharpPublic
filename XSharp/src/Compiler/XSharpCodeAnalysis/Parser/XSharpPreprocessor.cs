@@ -426,9 +426,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     }
 
                                     if (equalDefine)
-                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol redefined: " + def.Text));
+                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefine, def.Text));
                                     else
-                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Symbol redefined with new value: " + def.Text));
+                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_DuplicateDefine, def.Text));
                                 }
                                 symbolDefines[def.Text] = newtokens;
                             }

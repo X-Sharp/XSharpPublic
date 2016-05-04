@@ -1362,5 +1362,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_TypedParametersWithClipperCallingConvention = 9009,
         ERR_OnlySupportedForClipperCallingConvention = 9010,
         ERR_AmbiguousCase = 9011,
+        ERR_DuplicateDefine = 9012,
+        WRN_DuplicateDefine = 9013,
+
     }
 }

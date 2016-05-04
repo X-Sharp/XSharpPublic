@@ -3,26 +3,26 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.3"
-#define ProdBuild       "XSharp Beta 3"
+#define ProdVer         "XSharp 0.2.3.2"
+#define ProdBuild       "XSharp Beta 3b"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.3.2301"
-#define VITextVersion   "0.2.2.2301 (Beta 3)"
-#define TouchDate       "2016-04-18"
-#define TouchTime       "02:03:00"
-#define SetupExeName    "XSharpSetup023a"
+#define VIVersion       "0.2.3.2302"
+#define VITextVersion   "0.2.2.2302 (Beta 3b)"
+#define TouchDate       "2016-05-04"
+#define TouchTime       "02:03:02"
+#define SetupExeName    "XSharpSetup023b"
 #define InstallPath     "XSharpPath"
 
 ;Folders
 #define BinFolder       "D:\Xsharp\Dev\XSharp\Binaries\Debug\"
+#define BinPFolder      "D:\Xsharp\DevPublic\Binaries\Debug\"
 #define CommonFolder    "D:\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder     "d:\Xsharp\Dev\XSharp\src\Tools\"
 #define VSProjectFolder "d:\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
-#define VSProjectOutPut "d:\Xsharp\Dev\XSharp\src\VisualStudioMPF\ProjectPackage\Bin\Debug\"
-#define ExamplesFolder  "d:\Xsharp\Dev\XSharp\src\Samples\"
+#define ExamplesFolder  "D:\Xsharp\DevPublic\Samples\"
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
@@ -139,10 +139,10 @@ Source: "Baggage\License.txt";                            DestDir: "{app}";     
 Source: "{#CommonFolder}*.xh";                    DestDir: "{app}\Include"; Flags: touch {#StdFlags}; Components: main
 
 ;MsBuild Files
-Source: "{#BinFolder}Xaml\*.*";                DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main
-Source: "{#BinFolder}Targets\*.*";             DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
+Source: "{#BinPFolder}Xaml\*.*";                DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main
+Source: "{#BinPFolder}Targets\*.*";             DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
 
-Source: "{#BinFolder}XSharp.Build.dll";               DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
+Source: "{#BinPFolder}XSharp.Build.dll";               DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
 
 
 ;Documentation
@@ -155,25 +155,25 @@ Source: "{#XIDEFolder}{#XIDESetup}";   DestDir: "{app}\Xide";        Flags: touc
 
 
 ;VsProjectSystem
-Source: "{#BinFolder}XSharpProject2015.vsix";     DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject2015.vsix";     DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015
 
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";              DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";              DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharpCodeDomProvider.dll";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete; StrongAssemblyName: "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21";
-Source: "{#BinFolder}XSharpCodeDomProvider.pdb";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} 
-Source: "{#BinFolder}XSharpColorizer2015.dll";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharpColorizer2015.pdb";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpCodeDomProvider.dll";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete; StrongAssemblyName: "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21";
+Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} 
+Source: "{#BinPFolder}XSharpColorizer2015.dll";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpColorizer2015.pdb";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
 
-Source: "{#BinFolder}Itemtemplates\*.*";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates";     Flags: recursesubdirs {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}ProjectTemplates\*.*";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}Itemtemplates\*.*";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates";     Flags: recursesubdirs {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}ProjectTemplates\*.*";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
 
-Source: "{#BinFolder}XSharpProject2015.dll";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharpProject2015.dll.config";       DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharpProject2015.pdb";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharpProject2015.pkgdef";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}extension.vsixmanifest";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject2015.dll";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject2015.dll.config";       DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject2015.pdb";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject2015.pkgdef";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}extension.vsixmanifest";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
 
-Source: "{#BinFolder}XSharp.ico ";                              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharp.ico ";                              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015
 Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";            Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";                   Flags: {#StdFlags}; Components: vs2015 
 

@@ -15,7 +15,7 @@ begin namespace XSharp.Runtime
 		local adjusted := null as string
 		if ( !string.IsNullOrEmpty(cName) ) 
 			adjusted := System.IO.Path.GetFileNameWithoutExtension(cName).TrimEnd()
-			if ( cName.IndexOf('.') > 0 ) 
+			if ( cName:IndexOf('.') > 0 ) 
 				adjusted += System.IO.Path.GetExtension(cName)
 			endif
 		endif
@@ -42,7 +42,8 @@ begin namespace XSharp.Runtime
 	   if ( c == null )
 		  return c
 	   endif
-	RETURN c.Trim() 
+	   c := c:Trim()
+	RETURN c
 
 	/// <summary>
 	/// Convert a 24-hour military time to a 12-hour clock time.
@@ -92,7 +93,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Asc(c AS STRING) AS DWORD
 		local ascValue := 0 as dword
 		if ( !string.IsNullOrEmpty(c) ) 
-		   local chrBuffer := c.ToCharArray() as char[]
+		   local chrBuffer := c:ToCharArray() as char[]
            local bytBuffer := System.Text.Encoding.GetEncoding(1252).GetBytes(chrBuffer) as byte[]
 		   ascValue := (DWORD) bytBuffer[1]
 		endif
@@ -110,7 +111,7 @@ begin namespace XSharp.Runtime
 	FUNCTION At(cSearch AS STRING,c AS STRING) AS DWORD
 		local position := -1 as int
 		if ( c != null && cSearch != null )
-			position := c.IndexOf(cSearch)
+			position := c:IndexOf(cSearch)
 		endif
 	RETURN (DWORD) position+1  
 
@@ -139,8 +140,8 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION At3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 		local position := -1 as int
-		if ( c != null && cSearch != null && dwOff <= c.Length )
-			position := c.IndexOf(cSearch,(int)dwOff-1)
+		if ( c != null && cSearch != null && dwOff <= c:Length )
+			position := c:IndexOf(cSearch,(int)dwOff-1)
 		endif
 	RETURN (DWORD) position+1    
 
@@ -154,7 +155,7 @@ begin namespace XSharp.Runtime
 	FUNCTION AtC(cSearch AS STRING,c AS STRING) AS DWORD
 		local position := -1 as int
 		if ( c != null && cSearch != null )
-			position := c.IndexOf(cSearch,System.StringComparison.OrdinalIgnoreCase)
+			position := c:IndexOf(cSearch,System.StringComparison.OrdinalIgnoreCase)
 		endif
 	RETURN (DWORD) position+1    
 
@@ -338,17 +339,17 @@ begin namespace XSharp.Runtime
 	FUNCTION CharEven(c AS STRING) AS STRING
 	    local evenChars:=null as string
 		if ( !string.IsNullOrEmpty(c) ) 
-			local chars  := c.ToCharArray() as char[]
+			//local chars  := c:ToCharArray() as char[]
 			local isEven := false as  logic
 			local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
 
-			foreach ch as char in chars 
+			foreach ch as char in c//hars 
 				if isEven
-				   sb.Append(ch)
+				   sb:Append(ch)
 				endif
 				isEven := !isEven
 			next
-			evenChars := sb.ToString()
+			evenChars := sb:ToString()
 		endif
 	RETURN evenChars
 
@@ -372,17 +373,17 @@ begin namespace XSharp.Runtime
 	FUNCTION CharOdd(c AS STRING) AS STRING
 	    local oddChars:=null as string
 		if ( !string.IsNullOrEmpty(c) ) 
-			local chars  := c.ToCharArray() as char[]
+			//local chars  := c:ToCharArray() as char[]
 			local isOdd  := true as  logic
 			local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
 
-			foreach ch as char in chars 
+			foreach ch as char in c//chars 
 				if isOdd
-				   sb.Append(ch)
+				   sb:Append(ch)
 				endif
 				isOdd := !isOdd
 			next
-			oddChars := sb.ToString()
+			oddChars := sb:ToString()
 		endif
 	RETURN oddChars
  
@@ -680,7 +681,7 @@ begin namespace XSharp.Runtime
 		if ( c==null )
 			return c
 		endif
-	RETURN	c.Substring(0,Math.Min(c.Length,(int)dwLen))   
+	RETURN	c:Substring(0,Math.Min(c:Length,(int)dwLen))   
 
 	/// <summary>
 	/// Convert the uppercase and mixed case characters in a string to lowercase.

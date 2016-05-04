@@ -37,7 +37,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 	[TestMethod];
 	METHOD AllTrimTest() as void
 
-		local s := "Hello World" as string
+		local s := e" Hello World\t\r\n" as string
 
 		AreEqual("Hello World",AllTrim(s))
 		AreEqual(null,AllTrim(null))

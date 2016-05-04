@@ -2,20 +2,26 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">X# (XSharp)</title>
+  <keywords>
+    <keyword translate="true">Click here for the version history</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# (XSharp)</text></para>
     </header>
     <para styleclass="Heading1 Black" style="text-align:center;"><text styleclass="Heading1 Black" translate="true">Welcome to X# (XSharp) version </text><var styleclass="Heading1 Black">&lt;%VERSION%&gt;</var></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.png" scale="100.00%" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal" style="text-align:center;"><image src="xsharplogo.png" scale="57.54%" width="339" height="267" styleclass="Image Caption"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory" styleclass="Normal" translate="true">Click here for the version history</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues" styleclass="Normal" translate="true">Click here for the list of known issues</link></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">X# is an open source development language for .NET, based on the xBase language.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">It comes in different flavors, such as Core, Visual Objects, Vulcan.NET, xBase++, Harbour, Foxpro and more.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The current version of X# supports the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Core</text><text styleclass="Normal" translate="true"> dialect.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">Please understand that XSharp is still under development.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">YOU CANNOT COMPILE EXISTING Visual Objects/Vulcan or other existing xBase code. That does not work yet, unless you are very lucky.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">Some VO/Vulcan code may be successfully compiled with XSharp. But there are also areas that are not working yet.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">However you can create new code with XSharp for those areas that are missing in Vulcan and use the familiar xBase syntax.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This documentation is also still under development. Most sections in the documentation are incomplete. We have included it so you can see a list of the supported compiler options as well as the version history.</text></para>

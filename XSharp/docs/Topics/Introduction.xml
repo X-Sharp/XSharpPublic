@@ -7,8 +7,10 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Getting Started with X#</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">Please understand that XSharp is still under development.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">YOU CANNOT COMPILE EXISTING Visual Objects/Vulcan or other existing xBase code. That does not work yet, unless you are very lucky.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">Some VO/Vulcan code may be successfully compiled with XSharp. But there are also areas that are not working yet.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">However you can create new code with XSharp for those areas that are missing in Vulcan and use the familiar xBase syntax.</text></para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VersionHistory" styleclass="Normal" translate="true">Click here for the version history</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Known-Issues" styleclass="Normal" translate="true">Click here for the list of known issues</link></para>
   </body>
 </topic>

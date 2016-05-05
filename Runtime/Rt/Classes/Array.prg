@@ -96,15 +96,16 @@ BEGIN NAMESPACE Vulcan
 		public method CloneShallow() as __Array
 			throw NotImplementedException{"__Array.CloneShallow is not implemented yet."}
 
-		public method GetElement(index as dword) as __Usual
-		return self[index]
+		//public method GetElement(index as dword) as __Usual
+		//return self[index]
 
 		public method GetElement(index params dword[]) as __Usual
 			local length := index.Length as int
 			local currentArray := self as __Array
 			local i as int
 
-			for i:=1-__ARRAYBASE__  upto length-__ARRAYBASE__ 
+			for i:=0+__ARRAYBASE__  upto length-2+__ARRAYBASE__ 
+			    local ind := index[i] as dword
 				local u := currentArray[index[i]] as __Usual
 				if u.IsNil
 				   return nil
@@ -114,7 +115,7 @@ BEGIN NAMESPACE Vulcan
 				endif
 				currentArray := (__Array)u
 			next
-		return currentArray[index[length-__ARRAYBASE__ ]]
+		return currentArray[index[length]]
 
 		public method Insert(index as dword,o as object) as void
 			internalList.Insert((int)index-__ARRAYBASE__ ,__Usual{o})

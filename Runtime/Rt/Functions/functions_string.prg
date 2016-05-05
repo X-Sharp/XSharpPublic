@@ -433,8 +433,11 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION CToD(cDate AS STRING) AS DATE
-		/// THROW NotImplementedException{}
-	RETURN (DATE)0   
+		local parsedDate as DateTime
+		if !DateTime.TryParse(cDate,out parsedDate)
+		   parsedDate := DateTime.MinValue
+		endif
+	RETURN __VODate{parsedDate}   
 
 	/// <summary>
 	/// Convert an ANSI date string to date format.
@@ -489,13 +492,25 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the difference between two time strings.
 	/// </summary>
-	/// <param name="cStartTime"></param>
-	/// <param name="cEndTime"></param>
+	/// <param name="cStartTime">The starting time in the form HH:mm:ss.</param>
+	/// <param name="cEndTime">The ending time in the form HH:mm:ss.</param>
 	/// <returns>
+	/// The amount of time that has elapsed from cStartTime to cEndTime as a time string in the format hh:mm:ss.
 	/// </returns>
+	/// <remarks>
+	/// The behaviour is not compatible with VO ! Needs to be refactured.
+	/// </remarks>
 	FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local elapedTime := string.Empty as string
+		/// TODO: VO compatibility 
+		try
+		  elapedTime := DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+				.Subtract(DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+				.ToString()
+		catch ex as Exception
+			nop
+		end try
+	RETURN elapedTime
 
 	/// <summary>
 	/// Evaluate an expression contained in a string.

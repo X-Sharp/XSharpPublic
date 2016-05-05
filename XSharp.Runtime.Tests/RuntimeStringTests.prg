@@ -101,6 +101,12 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		AreEqual(null,CharOdd(null))
 	RETURN
 
+	[TestMethod];
+	METHOD CharPosTest() as void
+		AreEqual("o",CharPos("Hello World",5))
+		AreEqual(String.Empty,CharPos("A1B2C3D4E",33))
+	RETURN
+
 	END CLASS
 
 END NAMESPACE

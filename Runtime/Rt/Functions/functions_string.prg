@@ -391,13 +391,18 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return a character based on its position in a string.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="nStart"></param>
+	/// <param name="c">The strign to be searched</param>
+	/// <param name="nStart">The position of the reuested charachter</param>
 	/// <returns>
+	/// The character at the given position as a string, if position is beyond the length
+	/// of the length of the string null_string is returned.
 	/// </returns>
 	FUNCTION CharPos(c AS STRING,nStart AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local searchedChar := string.Empty as string
+		if ( nStart >= 1 && nStart <= c.Length )
+		   searchedChar := c.SubString((int)nStart-1,1)
+		endif
+	RETURN searchedChar
 
 	/// <summary>
 	/// Encrypt or decrypt a string.

@@ -77,9 +77,11 @@
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RuntimeArrayTests.prg" />
     <Compile Include="RuntimeStringTests.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RuntimeUsualTests.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

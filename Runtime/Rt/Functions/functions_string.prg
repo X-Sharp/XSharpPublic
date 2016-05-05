@@ -239,7 +239,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Bin2Date(c AS STRING) AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Convert a string containing a 32-bit unsigned integer to a double word.
@@ -429,7 +429,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION CToD(cDate AS STRING) AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Convert an ANSI date string to date format.
@@ -439,7 +439,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Decode a file from an e-mail transfer.
@@ -1082,7 +1082,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SToD(cDate AS STRING) AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Allows text substitution in strings entered at runtime.

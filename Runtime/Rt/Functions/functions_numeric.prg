@@ -116,7 +116,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Format a set of numbers representing an hour, minute, and second as a time string.

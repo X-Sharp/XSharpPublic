@@ -25,6 +25,9 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			AreEqual("-11:23:34",elaptime("23:23:34","12:00:00"))	
 			AreEqual("",elaptime("29:23:34","12:00:00"))
 		RETURN
-
+		[TestMethod];
+		METHOD STODTest() as void
+			AreEqual("06.05.2016",STOD("20160506").ToString())
+		RETURN
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

@@ -914,12 +914,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Change the first character of each word to uppercase
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string to be converted.</param>
 	/// <returns>
+	/// The converted string according to the CurrentCulture
 	/// </returns>
 	FUNCTION Proper(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local convertedString:=null as string 
+		if ( !string.IsNullOrEmpty(c) )
+		   convertedString := System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(c)
+		endif
+	RETURN convertedString   
 
 	/// <summary>
 	/// Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
@@ -974,24 +978,30 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the position of the last occurrence of a substring within a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">THe string to be searched.</param>
+	/// <param name="c">The string to be searched in.</param>
 	/// <returns>
+	/// The right most position of the string to be searched inside the searched string.
 	/// </returns>
 	FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local rightMost := 0 as dword
+		try
+			rightMost:= (dword) c.LastIndexOf(cSearch) + 1
+		// catch ex Exception
+		//    nop
+		end try
+	RETURN rightMost
 
 	/// <summary>
 	/// Return the position of the last occurrence of a substring within a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">THe string to be searched.</param>
+	/// <param name="c">The string to be searched in.</param>
 	/// <returns>
+	/// The right most position of the string to be searched inside the searched string.
 	/// </returns>
 	FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN RAt2(cSearch,c) 
 
 	/// <summary>
 	/// Return the position of the last occurrence of a substring within a string.
@@ -1002,8 +1012,13 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local rightMost := 0 as dword
+		try
+			rightMost := RAt(cSearch,c.SubString((int)dwOff-1))+dwOff-1
+		// catch ex as Exception
+		//    nop
+		end try
+	RETURN rightMost   
 
 	/// <summary>
 	/// Return the line number of the last occurrence of a substring within a multiline string.
@@ -1028,36 +1043,53 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
+	/// Repeat a string a specified number of times.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwCount"></param>
+	/// <param name="c">The string to be repeated.</param>
+	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
+	/// A string which consist of dwCount replications of c.
 	/// </returns>
 	FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local replString:=null as string
+        if (!string.IsNullOrEmpty(c))
+            local  builder := System.Text.StringBuilder{c.Length * (int)dwCount} as System.Text.StringBuilder
+			local i as int
+			for i:=1 upto (int)dwCount
+				builder.Append(c)
+			next
+            replString := builder.ToString()
+        endif
+	RETURN replString   
 
 	/// <summary>
 	/// Repeat a string a specified number of times.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwCount"></param>
+	/// <param name="c">The string to be repeated.</param>
+	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
+	/// A string which consist of dwCount replications of c.
 	/// </returns>
 	FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN Repl(c,dwCount)   
 
 	/// <summary>
 	/// Return a substring beginning with the rightmost character.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwLen"></param>
+	/// <param name="c">The string to extract the rightmost characters from.</param>
+	/// <param name="dwLen">The length of the string to extract.</param>
 	/// <returns>
+	/// Returns the right most part in the given length.
 	/// </returns>
 	FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local rightMostPart := null as string
+		try
+			rightMostPart := c.SubString(c.Length-(int)dwLen)
+		// catch ex as Exception
+		//    nop
+		end try
+	return rightMostPart
 
 	/// <summary>
 	/// Remove trailing spaces from a string.
@@ -1066,8 +1098,12 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION RTrim(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local trimmedString := null as string
+		if ( !string.IsNullOrEMpty(c) )
+		   trimmedString := c.TrimEnd()
+		endif
+	RETURN trimmedString  
+  
 
 	/// <summary>
 	/// Convert single-byte kana characters in a string to their double-byte equivalents.
@@ -1082,12 +1118,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Create new character variable with the same characters as the original string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string be cloned.</param>
 	/// <returns>
+	/// A opy of the input string.
 	/// </returns>
 	FUNCTION SClone(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local clonedString := null as string
+		if ( !string.IsNUllOrEMpty(c) )
+		   clonedString := string.Copy(c)
+		endif
+	RETURN clonedString
 
 	/// <summary>
 	/// Return a time as the number of seconds that have elapsed since midnight.
@@ -1102,12 +1142,18 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the length of a strongly typed string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">String which length should be calculated.</param>
 	/// <returns>
+	/// The length of the string.
 	/// </returns>
 	FUNCTION SLen(c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local length := 0 as dword
+		try
+			if (!string.IsNullOrEmpty(c))
+			   length := (dword) c.Length
+			endif
+		end try
+	RETURN length  
 
 	/// <summary>
 	/// Convert a string to Soundex form.
@@ -1126,8 +1172,13 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION SToD(cDate AS STRING) AS DATE
-		/// THROW NotImplementedException{}
-	RETURN (DATE)0   
+		local convertedDate := __VODate{} as __VODate
+		try
+			convertedDate := (__VODate)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+		//catch ex as exeption
+		//   nop
+		end try
+	RETURN convertedDate
 
 	/// <summary>
 	/// Allows text substitution in strings entered at runtime.

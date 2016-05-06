@@ -588,12 +588,12 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Determine if any file matches a given file specification.
 	/// </summary>
-	/// <param name="cFile"></param>
+	/// <param name="cFile">The name oif the file</param>
 	/// <returns>
+	/// True if the file exists, otherwise false
 	/// </returns>
 	FUNCTION File(cFile AS STRING) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	return System.IO.File.Exists(cFile)
 
 	/// <summary>
 	/// Open a file, specifying two strongly-typed arguments.
@@ -651,13 +651,19 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Indicate whether a substring is contained in a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">The string to search for.</param>
+	/// <param name="c">The string to search in.</param>
 	/// <returns>
+	/// True if the searched string is in the string.
 	/// </returns>
 	FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+		local isInString := false as logic
+		try
+			isInString := ( c.IndexOf(cSearch) >= 0 ) 
+		//catch ex as Exception
+			//nop
+		end try
+	RETURN isInString   
 
 	/// <summary>
 	/// Determine if the first character of a string is a kanji character.
@@ -706,12 +712,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Convert the uppercase and mixed case characters in a string to lowercase.
 	/// </summary>
-	/// <param name="cSorce"></param>
+	/// <param name="cSource">THe string to be converted.</param>
 	/// <returns>
+	/// Returns the input string with all characters converted to lowercase.
 	/// </returns>
-	FUNCTION Lower(cSorce AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	FUNCTION Lower(cSource AS STRING) AS STRING
+		local loweredString := null as string
+		if ( !string.IsNullOrEMpty(cSource) )
+		   loweredString := cSource.ToLower()
+		endif
+	RETURN loweredString
 
 	/// <summary>
 	/// Convert the uppercase and mixed case characters in a string to lowercase, changing the contents of the argument as well as the return value.
@@ -726,12 +736,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Remove leading spaces from a string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string from which leading spaces should be cut off.</param>
 	/// <returns>
+	/// The input strings without eading spaces.
 	/// </returns>
 	FUNCTION LTrim(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local trimmedString := null as string
+		if ( !string.IsNullOrEMpty(c) )
+		   trimmedString := c.TrimStart()
+		endif
+	RETURN trimmedString  
 
 	/// <summary>
 	/// Perform an assignment to a variable whose name is stored in a specified string.
@@ -826,24 +840,30 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the number of times a substring occurs in a string.
 	/// </summary>
-	/// <param name="cSrc"></param>
-	/// <param name="c"></param>
+	/// <param name="c">The string to be search in.</param>
+	/// <param name="cSearch">THe string of which its occurance should be counted</param>
 	/// <returns>
+	/// THe number how often the string to be searched for occurs in the original string.
 	/// </returns>
-	FUNCTION Occurs(cSrc AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
+		local countedOccurances:=0 as int
+		try
+			countedOccurances := c.Split(<string>{ cSearch }, StringSplitOptions.None).Length - 1 
+		catch ex as Exception
+			nop
+		end try
+	RETURN (dword)countedOccurances
 
 	/// <summary>
 	/// Return the number of times a substring occurs in a string.
 	/// </summary>
-	/// <param name="cSrc"></param>
-	/// <param name="c"></param>
+	/// <param name="c">The string to be search in.</param>
+	/// <param name="cSearch">THe string of which its occurance should be counted</param>
 	/// <returns>
+	/// THe number how often the string to be searched for occurs in the original string.
 	/// </returns>
-	FUNCTION Occurs2(cSrc AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	FUNCTION Occurs2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN Occurs(cSearch,c)   
 
 	/// <summary>
 	/// Return the number of times a substring occurs in a string, starting at a specified position.
@@ -854,8 +874,13 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffs AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local countedOccurances:=0 as dword
+		try
+			countedOccurances := Occurs(cSrc,c.SubString((int)nOffs-1))
+		// catch ex as Exception
+		// nop
+	    end try
+	RETURN countedOccurances  
 
 	/// <summary>
 	/// Convert a string of OEM characters to ANSI characters.

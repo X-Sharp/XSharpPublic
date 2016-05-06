@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="RuntimeArrayTests.prg" />
     <Compile Include="RuntimeDateTests.prg" />
+    <Compile Include="RuntimeIOTests.prg" />
     <Compile Include="RuntimeStringTests.prg">
       <SubType>Code</SubType>
     </Compile>

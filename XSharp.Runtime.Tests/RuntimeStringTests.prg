@@ -12,22 +12,6 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 	CLASS RuntimeStringTests
 
 	[TestMethod];
-	METHOD LeftTest() as void
-
-		local s := "Hello World" as string
-		local unassigned		 as string		                  
-   			                  
-		AreEqual("",left(s,0))
-		AreEqual("H",left(s,1))
-		AreEqual("Hello World",left(s,99))
-
-		AreEqual(null,left(unassigned,0))
-		AreEqual(null,left(unassigned,1))
-		AreEqual(null,left(unassigned,99))
-	         	
-	RETURN
-
-	[TestMethod];
 	METHOD AdjustFNameTest() as void
 	    AreEqual("    xyz   ddss.dbf",AdjustFName("    xyz   ddss    .dbf"))
 	    AreEqual(null,AdjustFName(null))
@@ -107,6 +91,55 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		AreEqual(String.Empty,CharPos("A1B2C3D4E",33))
 	RETURN
 
+	[TestMethod];
+	METHOD InStrTest() as void
+		AreEqual(true,Instr("o W","Hello World"))
+		AreEqual(false,Instr("o w","Hello World"))
+		AreEqual(false,Instr(null,null))
+		AreEqual(false,Instr("w",null))
+		AreEqual(false,Instr(null,"w"))
+	RETURN
+
+	[TestMethod];
+	METHOD LeftTest() as void
+
+		local s := "Hello World" as string
+		local unassigned		 as string		                  
+   			                  
+		AreEqual("",left(s,0))
+		AreEqual("H",left(s,1))
+		AreEqual("Hello World",left(s,99))
+
+		AreEqual(null,left(unassigned,0))
+		AreEqual(null,left(unassigned,1))
+		AreEqual(null,left(unassigned,99))
+	         	
+	RETURN
+
+	[TestMethod];
+	METHOD LowerTest() as void
+		AreEqual("hello world",Lower("Hello World"))
+		AreEqual(null,Lower(null))
+	RETURN
+
+	[TestMethod];
+	METHOD LTrimTest() as void
+		AreEqual("Hello World",LTrim("    Hello World"))
+		AreEqual(null,Lower(null))
+	RETURN
+
+	[TestMethod];
+	METHOD OccursTest() as void
+		AreEqual((dword)2,Occurs("or","the world according to me"))
+		AreEqual((dword)0,Occurs(null,null))
+		AreEqual((dword)0,Occurs("x",null))
+		AreEqual((dword)0,Occurs(null,"xx"))
+	RETURN
+
+		[TestMethod];
+	METHOD Occurs3Test() as void
+		AreEqual((dword)1,Occurs3("or","the world according to me",7))
+	RETURN
 	END CLASS
 
 END NAMESPACE

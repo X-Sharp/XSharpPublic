@@ -17,6 +17,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string SystemDir { get; set; }
         public bool InitStringVarsToEmpty { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
+        public bool VOCompatibleIIF { get; private set; }
         public bool VOFloatConstants { get; private set; }
         public XSharpDialect Dialect { get; private set; }
 
@@ -30,6 +31,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 InitStringVarsToEmpty = opt.Vo2;
                 Dialect = opt.Dialect;
                 VOClipperCallingConvention = opt.Vo5;
+                VOCompatibleIIF = opt.Vo10;
                 VOFloatConstants = opt.Vo14;
             }
         }

@@ -20,6 +20,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOFloatConstants { get; private set; }
         public bool VONullStrings { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
+        public bool VOCompatibleIIF { get; private set; }
 
         public string DefaultNamespace { get; private set; }
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
@@ -42,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOFloatConstants = opt.Vo14;
                 VONullStrings = opt.Vo2;
                 VOClipperCallingConvention = opt.Vo5;
+                VOCompatibleIIF = opt.Vo10;
             }
         }
 

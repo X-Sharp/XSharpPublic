@@ -115,6 +115,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string VoPszList = "Xs$PszList";
         const string ClipperArgs = "Xs$Args";
         const string ClipperPCount = "Xs$PCount";
+        const string RecoverVarName = "Xs$Obj";
         const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         public static SyntaxTree DefaultXSharpSyntaxTree = GenerateDefaultTree();
         private static int _unique = 0;
@@ -3650,9 +3651,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBreakStmt([NotNull] XP.BreakStmtContext context)
         {
-            // TODO: sequence/break/recover are not supported yet
-            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BREAK statement", _options.Dialect.ToString())));
+            if (_options.IsDialectVO)
+            {
+                ArgumentListSyntax args;
+                if (context.Expr != null)
+                    args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+                else
+                    args = MakeArgumentList(MakeArgument(GenerateNIL()));
+                var expr = CreateObject(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"), args, null);
+                context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                    expr,
+                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            else
+            {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
+                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BREAK statement", _options.Dialect.ToString())));
+            }
+
         }
 
         public override void ExitThrowStmt([NotNull] XP.ThrowStmtContext context)
@@ -3698,16 +3714,172 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitSeqStmt([NotNull] XP.SeqStmtContext context)
         {
-            // TODO: sequence/break/recover are not supported yet
-            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BEGIN SEQUENCE statement", _options.Dialect.ToString())));
+            // This generates 2 try statements:
+            // 1) an inner try that controls the calls to CompilerServices.EnterBeginSequence();
+            //    and CompilerServices.ExitBeginSequence();
+            // 2) an outer try that has the try - catch - finally from the seq statement itself
+            if  (!_options.IsDialectVO)
+            {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
+                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BEGIN SEQUENCE statement", _options.Dialect.ToString())));
+                return;
+            }
+
+            var stmts = _pool.Allocate<StatementSyntax>();
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.EnterBeginSequence",
+                                    EmptyArgumentList())));
+            stmts.Add(MakeBlock(context.StmtBlk.Get<BlockSyntax>()));
+            var tryBlock = MakeBlock(stmts);
+            stmts.Clear();
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.ExitBeginSequence",
+                                    EmptyArgumentList())));
+            var innerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                 tryBlock,
+                 null,
+                 _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                     MakeBlock(stmts)));
+            stmts.Clear();
+            stmts.Add(innerTry);
+            tryBlock = MakeBlock(stmts);
+            stmts.Clear();
+            CatchClauseSyntax catchClause = null;
+            FinallyClauseSyntax finallyClause = null;
+            if (context.RecoverBlock != null)
+            {
+                catchClause = context.RecoverBlock.Get<CatchClauseSyntax>();
+            }
+            else
+            {
+                // generate a default catch block if there is no finally block
+                if (context.FinBlock == null)
+                {
+                    var cb = FixPosition(new XP.CatchBlockContext(context, 0), context.Stop);
+                    cb.StmtBlk = FixPosition(new XP.StatementBlockContext(cb, 0), context.Stop);
+                    this.ExitStatementBlock(cb.StmtBlk);
+                    this.ExitCatchBlock(cb);
+                    catchClause = cb.Get<CatchClauseSyntax>();
+
+                }
+            }
+            if (context.FinBlock != null)
+            {
+                finallyClause = _syntaxFactory.FinallyClause(
+                 SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                 context.FinBlock.Get<BlockSyntax>());
+            }
+            var outerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                  tryBlock,
+                  catchClause,
+                  finallyClause);
+            context.Put(outerTry);
+            _pool.Free(stmts);
+
         }
 
         public override void ExitRecoverBlock([NotNull] XP.RecoverBlockContext context)
         {
-            // TODO: sequence/break/recover are not supported yet
-            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "RECOVER statement", _options.Dialect.ToString())));
+            if (!_options.IsDialectVO)
+            {
+                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
+                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "RECOVER USING block", _options.Dialect.ToString())));
+                return;
+            }
+
+            // The recover block has source code:
+            //RECOVER USING uValue
+            //  statements
+            //
+            // and gets converted to
+            // 
+            // Catch obj as Exception
+            // if obj is VulcanWrappedException                                        // condition 1
+            //   uValue := ((VulcanWrappedException) obj).Value                        // assign 1
+            // else if obj is Exception                                                // condition 2
+            //   // wraps Exception in Vulcan.Error Object
+            //   uValue := (USUAL)  Error._WrapRawException((Exception) obj1))         // assign 2
+            // else
+            //   uValue := obj1                                                        // assign 3
+            // endif
+            var objName = GenerateSimpleName(RecoverVarName);
+            var idName = GenerateSimpleName(context.Id.GetText());
+
+            var condition1 = _syntaxFactory.BinaryExpression(
+                  SyntaxKind.IsExpression,
+                  objName,
+                  SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                  GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"));
+
+            var condition2 = _syntaxFactory.BinaryExpression(
+                SyntaxKind.IsExpression,
+                objName,
+                SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                GenerateQualifiedName("global::System.Exception"));
+
+            var assign1 = GenerateExpressionStatement(
+                _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                idName,
+                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                _syntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                   _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    objName),
+                   SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                     GenerateSimpleName("Value"))));
+            var assign2 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                idName,
+                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                _usualType,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                GenerateMethodCall("global::Vulcan.Error._WrapRawException",
+                MakeArgumentList(MakeArgument(objName))))));
+
+            var assign3= GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                 idName,
+                 SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                 objName));
+
+             var elseClause = _syntaxFactory.ElseClause(
+                SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
+                MakeBlock(assign3));
+
+            // if 2
+            var ifstmt = _syntaxFactory.IfStatement(
+                        SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        condition2,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        MakeBlock(assign2), elseClause);
+            
+            // if 2 is assigned to the else block of if 1
+            elseClause = _syntaxFactory.ElseClause(
+                SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
+                MakeBlock(ifstmt));
+            // if 1
+            ifstmt = _syntaxFactory.IfStatement(
+                        SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        condition1,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        MakeBlock(assign1), elseClause);
+
+            var stmts = _pool.Allocate<StatementSyntax>();
+            stmts.Add(ifstmt);
+            stmts.Add(context.StmtBlock.Get<BlockSyntax>());
+            var catchClause = _syntaxFactory.CatchClause(
+                SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
+                _syntaxFactory.CatchDeclaration(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    GenerateQualifiedName("global::System.Exception"),
+                    SyntaxFactory.Identifier(RecoverVarName),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)),
+                    null,
+                    MakeBlock(stmts));
+
+            context.Put(catchClause);
+            _pool.Free(stmts);
         }
 
         public override void ExitLockStmt([NotNull] XP.LockStmtContext context)
@@ -4719,12 +4891,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIif([NotNull] XP.IifContext context)
         {
             // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
+            ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
+            ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
+            if (_options.VOCompatibleIIF)
+            {
+                TypeSyntax type;
+                if (_options.IsDialectVO)
+                    type = _usualType;
+                else
+                    type = _objectType;
+                left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
+                right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), right);
+
+            }
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                context.TrueExpr.Get<ExpressionSyntax>(),
+                left,
                 SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                context.FalseExpr.Get<ExpressionSyntax>()));
+                right));
         }
 
         public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)

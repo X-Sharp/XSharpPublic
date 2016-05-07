@@ -280,7 +280,7 @@ Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\vtc"; 		
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\ComponentModelCache"; 	Components: vsnext
 
 [Messages]
-WelcomeLabel1=Welcom to {# Product} (X#)
+WelcomeLabel1=Welcome to {# Product} (X#)
 WelcomeLabel2=This installer will install {#ProdBuild} on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
 WizardInfoBefore=Warning
 InfoBeforeLabel=You are about to install Beta software

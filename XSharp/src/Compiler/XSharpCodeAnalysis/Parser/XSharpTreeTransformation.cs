@@ -4895,11 +4895,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
             if (_options.VOCompatibleIIF)
             {
-                TypeSyntax type;
-                if (_options.IsDialectVO)
-                    type = _usualType;
-                else
-                    type = _objectType;
+                var type = (_options.IsDialectVO) ? (TypeSyntax) _usualType : (TypeSyntax) _objectType;
                 left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
                 right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),

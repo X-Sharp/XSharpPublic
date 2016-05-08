@@ -435,7 +435,7 @@ statement           : Decl=localdecl                                            
 					  (END IF? | ENDIF)  EOS									#ifStmt	
 					| DO CASE end=EOS
 					  CaseStmt=caseBlock?
-					  (END CASE? | ENDCASE) end=EOS								{ SetSequencePoint(_localctx,$end); } #caseStmt
+					  (END CASE? | ENDCASE) EOS									{ SetSequencePoint(_localctx,$end); } #caseStmt
 					| EXIT end=EOS												{ SetSequencePoint(_localctx,$end); } #exitStmt
 					| LOOP end=EOS												{ SetSequencePoint(_localctx,$end); } #loopStmt
 					| BREAK Expr=expression? end=EOS							{ SetSequencePoint(_localctx,$end); } #breakStmt
@@ -446,13 +446,13 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock
 					  (RECOVER RecoverBlock=recoverBlock)?
 					  (FINALLY EOS FinBlock=statementBlock)?
-					  END (SEQUENCE)? end=EOS									{ SetSequencePoint(_localctx,$end); } #seqStmt
+					  END (SEQUENCE)? EOS									{ SetSequencePoint(_localctx,$end); } #seqStmt
 					//
 					// New in Vulcan
 					//
 					| REPEAT end=EOS
 					  StmtBlk=statementBlock
-					  UNTIL Expr=expression end=EOS								{ SetSequencePoint(_localctx,$end); }#repeatStmt
+					  UNTIL Expr=expression EOS									{ SetSequencePoint(_localctx,$end); }#repeatStmt
 					| FOREACH
 					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
 					  IN Container=expression end=EOS
@@ -495,7 +495,7 @@ statement           : Decl=localdecl                                            
 					;
 
 ifElseBlock			: Cond=expression end=EOS StmtBlk=statementBlock
-					  (ELSEIF ElseIfBlock=ifElseBlock | ELSE end=EOS ElseBlock=statementBlock)?
+					  (ELSEIF ElseIfBlock=ifElseBlock | ELSE EOS ElseBlock=statementBlock)?
  				    { SetSequencePoint(_localctx,$end); }
 					;
 

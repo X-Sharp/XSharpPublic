@@ -399,8 +399,8 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION CharPos(c AS STRING,nStart AS DWORD) AS STRING
 		local searchedChar := string.Empty as string
-		if ( nStart >= 1 && nStart <= c.Length )
-		   searchedChar := c.SubString((int)nStart-1,1)
+		if ( nStart >= 1 && nStart <= c:Length )
+		   searchedChar := c:SubString((int)nStart-1,1)
 		endif
 	RETURN searchedChar
 
@@ -659,7 +659,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
 		local isInString := false as logic
 		try
-			isInString := ( c.IndexOf(cSearch) >= 0 ) 
+			isInString := ( c:IndexOf(cSearch) >= 0 ) 
 		//catch ex as Exception
 			//nop
 		end try
@@ -676,7 +676,7 @@ begin namespace XSharp.Runtime
 	RETURN FALSE   
 
 	/// <summary>
-	/// Check to see if a typed dynamic object is static.
+	/// Check to see if a typed dynamic object is static:
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
@@ -719,7 +719,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Lower(cSource AS STRING) AS STRING
 		local loweredString := null as string
 		if ( !string.IsNullOrEMpty(cSource) )
-		   loweredString := cSource.ToLower()
+		   loweredString := cSource:ToLower()
 		endif
 	RETURN loweredString
 
@@ -743,7 +743,7 @@ begin namespace XSharp.Runtime
 	FUNCTION LTrim(c AS STRING) AS STRING
 		local trimmedString := null as string
 		if ( !string.IsNullOrEMpty(c) )
-		   trimmedString := c.TrimStart()
+		   trimmedString := c:TrimStart()
 		endif
 	RETURN trimmedString  
 
@@ -848,7 +848,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
 		local countedOccurances:=0 as int
 		try
-			countedOccurances := c.Split(<string>{ cSearch }, StringSplitOptions.None).Length - 1 
+			countedOccurances := c:Split(<string>{ cSearch }, StringSplitOptions.None).Length - 1 
 		catch ex as Exception
 			nop
 		end try
@@ -876,7 +876,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffs AS DWORD) AS DWORD
 		local countedOccurances:=0 as dword
 		try
-			countedOccurances := Occurs(cSrc,c.SubString((int)nOffs-1))
+			countedOccurances := Occurs(cSrc,c:SubString((int)nOffs-1))
 		// catch ex as Exception
 		// nop
 	    end try
@@ -921,7 +921,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Proper(c AS STRING) AS STRING
 		local convertedString:=null as string 
 		if ( !string.IsNullOrEmpty(c) )
-		   convertedString := System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(c)
+		   convertedString := System.Globalization.CultureInfo.CurrentCulture:TextInfo.ToTitleCase(c)
 		endif
 	RETURN convertedString   
 
@@ -986,7 +986,7 @@ begin namespace XSharp.Runtime
 	FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
 		local rightMost := 0 as dword
 		try
-			rightMost:= (dword) c.LastIndexOf(cSearch) + 1
+			rightMost:= (dword) c:LastIndexOf(cSearch) + 1
 		// catch ex Exception
 		//    nop
 		end try
@@ -1014,7 +1014,7 @@ begin namespace XSharp.Runtime
 	FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
 		local rightMost := 0 as dword
 		try
-			rightMost := RAt(cSearch,c.SubString((int)dwOff-1))+dwOff-1
+			rightMost := RAt(cSearch,c:SubString((int)dwOff-1))+dwOff-1
 		// catch ex as Exception
 		//    nop
 		end try
@@ -1048,17 +1048,17 @@ begin namespace XSharp.Runtime
 	/// <param name="c">The string to be repeated.</param>
 	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
-	/// A string which consist of dwCount replications of c.
+	/// A string which consist of dwCount replications of c:
 	/// </returns>
 	FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
 		local replString:=null as string
         if (!string.IsNullOrEmpty(c))
-            local  builder := System.Text.StringBuilder{c.Length * (int)dwCount} as System.Text.StringBuilder
+            local  builder := System.Text.StringBuilder{c:Length * (int)dwCount} as System.Text.StringBuilder
 			local i as int
 			for i:=1 upto (int)dwCount
-				builder.Append(c)
+				builder:Append(c)
 			next
-            replString := builder.ToString()
+            replString := builder:ToString()
         endif
 	RETURN replString   
 
@@ -1068,7 +1068,7 @@ begin namespace XSharp.Runtime
 	/// <param name="c">The string to be repeated.</param>
 	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
-	/// A string which consist of dwCount replications of c.
+	/// A string which consist of dwCount replications of c:
 	/// </returns>
 	FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
@@ -1085,7 +1085,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
 		local rightMostPart := null as string
 		try
-			rightMostPart := c.SubString(c.Length-(int)dwLen)
+			rightMostPart := c:SubString(c:Length-(int)dwLen)
 		// catch ex as Exception
 		//    nop
 		end try
@@ -1100,7 +1100,7 @@ begin namespace XSharp.Runtime
 	FUNCTION RTrim(c AS STRING) AS STRING
 		local trimmedString := null as string
 		if ( !string.IsNullOrEMpty(c) )
-		   trimmedString := c.TrimEnd()
+		   trimmedString := c:TrimEnd()
 		endif
 	RETURN trimmedString  
   
@@ -1150,7 +1150,7 @@ begin namespace XSharp.Runtime
 		local length := 0 as dword
 		try
 			if (!string.IsNullOrEmpty(c))
-			   length := (dword) c.Length
+			   length := (dword) c:Length
 			endif
 		end try
 	RETURN length  

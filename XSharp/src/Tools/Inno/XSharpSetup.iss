@@ -3,17 +3,17 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.4.0"
+#define ProdVer         "XSharp 0.2.4.1"
 #define ProdBuild       "XSharp Beta 4"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.4.2400"
-#define VITextVersion   "0.2.4.2400 (Beta 4)"
+#define VIVersion       "0.2.4.2401"
+#define VITextVersion   "0.2.4.2401 (Beta 4)"
 #define TouchDate       "2016-05-04"
-#define TouchTime       "02:04:00"
-#define SetupExeName    "XSharpSetup024"
+#define TouchTime       "02:04:01"
+#define SetupExeName    "XSharpSetup0241"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -26,7 +26,7 @@
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
-#define XIDESetup       "XIDE_Set_up_1.02.exe"
+#define XIDESetup       "XIDE_Set_up_1.03.exe"
 
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"

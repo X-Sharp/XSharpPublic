@@ -7,21 +7,11 @@ using  System
 using System.Runtime.InteropServices
 using Vulcan
 BEGIN NAMESPACE Vulcan
-	//STRUCTURE __VODate
-		//PRIVATE Value as INT
-		//CONSTRUCTOR(i as INT)
-			//Value := i
-		//OPERATOR IMPLICIT(i as INT) AS ____VODate
-			//RETURN __VODate{}
-		//PROPERTY __Value as Int GET Value
-	//END STRUCTURE
-
 	
     public interface IDate
         property IsEmpty as Logic get
         property Value as System.DateTime get set
     end interface
-
 
     [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
     structure __VODate implements System.IComparable, System.IFormattable, System.IConvertible, IDate
@@ -57,13 +47,13 @@ BEGIN NAMESPACE Vulcan
 
         constructor(year as DWord, month as DWord, day as DWord)
             if (year > 0x7fffffff)
-                throw System.ArgumentOutOfRangeException{"year"}
+                throw System.ArgumentOutOfRangeException{nameof(year)}
             endif
             if (month > 0x7fffffff)
-                throw System.ArgumentOutOfRangeException{"month"}
+                throw System.ArgumentOutOfRangeException{nameof(month)}
             endif
             if (day > 0x7fffffff)
-                throw System.ArgumentOutOfRangeException{"day"}
+                throw System.ArgumentOutOfRangeException{nameof(day)}
             endif
             try
                 _value := System.DateTime{(Long)year , (Long)month , (Long)day }
@@ -177,9 +167,9 @@ BEGIN NAMESPACE Vulcan
         static operator explicit(v as DWord) as __VODate
             local @@date as __VODate
             @@date := __VODate{System.DateTime.MinValue}
-            if ((v >= 0x24db1a) .and. (v <= 0x464b78))
-                v := v - 0x24db1a
-                @@date := __VODate{(System.DateTime{0x76d, 1, 1} + System.TimeSpan{(Long)v , 0, 0, 0})}
+            if ((v >= 0x24db1a) .and. (v <= 0x464b78))					// what are these numbers ?
+                v := v - 0x24db1a										
+                @@date := __VODate{(System.DateTime{1901, 1, 1} + System.TimeSpan{(Long)v , 0, 0, 0})}
             endif
         return @@date
 

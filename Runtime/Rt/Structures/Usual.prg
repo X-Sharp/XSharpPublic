@@ -6,78 +6,73 @@
 using System
 using System.Runtime.InteropServices
 
-//STRUCTURE Vulcan.__Usual
-	//PRIVATE Value  as IntPtr 
-	//STATIC PUBLIC _NIL AS __Usual
-	//CONSTRUCTOR(p as IntPtr)
-		//Value := p
-	//STATIC CONSTRUCTOR
-		//_NIL := __Usual{}
-	//PROPERTY __Value as IntPtr GET Value
-//END STRUCTURE
-
 [StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)];
 structure Vulcan.__Usual implements System.IConvertible,System.IComparable
     #region static fields
 	public static _NIL as __Usual
 	#endregion
     #region private fields
-    private _usualType as UsualDataType
-    private value as Object
-    private valueData as UsualData
+    private flags as UsualFlags				// 4 bytes
+    private value as Object					// 4 bytes
+    private valueData as UsualData			// 8 bytes
 	#endregion
     #region constructors
 	STATIC Constructor()
 		_NIL := __Usual{}
 	return
 
+	internal property _Width		as Byte			 get flags:width		set flags:width := value
+	internal property _UsualType	as UsualDataType get flags:type			set flags:type := value
+	internal property _Decimals		as Byte			 get flags:decimals		set flags:decimals := value
+	internal property _Byref	    as Logic		 get flags:byref != 0	set flags:byref := (byte)iif(value,1,0)
     private  constructor(u as __Usual)
 		self:valueData := UsualData{}
-	    self:value := u
+		self:value := u
+	    self:flags := u:flags
         self:valueData := u:valueData
-        self:_usualType := u:_usualType
+        self:_UsualType := u:_UsualType
 	return
 
     private  constructor(l as Logic)
 		self:valueData := UsualData{}
         self:valueData:l := l
         self:value := null
-        self:_usualType := UsualDataType.LOGIC
+	    self:flags := UsualFlags{UsualDataType.LOGIC}
 	return
 
     private  constructor(a as __Array)
 		self:valueData := UsualData{}
         self:valueData:i64 := 0
         self:value := a
-        self:_usualType := UsualDataType.ARRAY
+		self:flags := UsualFlags{UsualDataType.ARRAY}
 	return
 
     private  constructor(dt as System.DateTime)
 		self:valueData := UsualData{}
         self:valueData:i64 := 0
         self:value := dt
-        self:_usualType := UsualDataType.OBJECT
+	    self:flags := UsualFlags{UsualDataType.OBJECT}
 	return
 
     private  constructor(i as Long)
 		self:valueData := UsualData{}
         self:valueData:i := i
         self:value := null
-        self:_usualType := UsualDataType.INT
+	    self:flags := UsualFlags{UsualDataType.INT}
 	return
 
     private  constructor(i as Int64)
 		self:valueData := UsualData{}
         self:valueData:i64 := i
         self:value := null
-        self:_usualType := UsualDataType.INT64
+	    self:flags := UsualFlags{UsualDataType.INT64}
 	return
 
     private  constructor(p as System.IntPtr)
 		self:valueData := UsualData{}
         self:valueData:p := p
         self:value := null
-        self:_usualType := UsualDataType.PTR
+  	    self:flags := UsualFlags{UsualDataType.PTR}
 	return
 
     public constructor(o as Object)
@@ -86,82 +81,81 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
         local typeCode as System.TypeCode
 		self:valueData := UsualData{}
         self:value := null
-        self:_usualType := UsualDataType.PTR
+        self:flags := UsualFlags{UsualDataType.PTR}
         if (o == null)
-            self:_usualType := UsualDataType.PTR
             self:valueData:p := System.IntPtr.Zero
         else
             if (o:GetType() == typeof(__Usual))
                 //
                 u := (__Usual)o 
-                self:value := u:value
-                self:valueData := u:valueData
-                self:_usualType := u:_usualType
+                self:value		:= u:value
+                self:valueData	:= u:valueData
+				self:flags		:= UsualFlags{u:_UsualType}
             else
                 //
                 @@type := o:GetType()
                 typeCode := System.Type.GetTypeCode(@@type)
                 switch typeCode
                 case  System.TypeCode.DBNull
-                    self:_usualType := UsualDataType.NIL
+                    self:_UsualType := UsualDataType.NIL
                     self:value := null
                 case System.TypeCode.Boolean
-                    self:_usualType := UsualDataType.LOGIC
+                    self:_UsualType := UsualDataType.LOGIC
                     self:valueData:l := (Logic)o 
                 case System.TypeCode.Char
-                    self:_usualType := UsualDataType.INT
+                    self:_UsualType := UsualDataType.INT
                     self:valueData:i := (Char)o 
                 case System.TypeCode.SByte
-                    self:_usualType := UsualDataType.INT
+                    self:_UsualType := UsualDataType.INT
                     self:valueData:i := (SByte)o 
                 case System.TypeCode.Byte
-                    self:_usualType := UsualDataType.INT
+                    self:_UsualType := UsualDataType.INT
                     self:valueData:i := (Byte)o 
                 case System.TypeCode.Int16 
-                    self:_usualType := UsualDataType.INT
+                    self:_UsualType := UsualDataType.INT
                     self:valueData:i := (Short)o 
                 case System.TypeCode.UInt16
-                    self:_usualType := UsualDataType.INT
+                    self:_UsualType := UsualDataType.INT
                     self:valueData:i := (Word)o 
                 case System.TypeCode.Int32
-                    self:_usualType := UsualDataType.INT
+                    self:_UsualType := UsualDataType.INT
                     self:valueData:i := (Long)o 
                 case System.TypeCode.UInt32
                     if ((DWord)o  <= 0x7fffffff)
-                        self:_usualType := UsualDataType.INT
+                        self:_UsualType := UsualDataType.INT
                         self:valueData:i := (Long)(DWord)o  
                     else
-						self:_usualType := UsualDataType.FLOAT
+						self:_UsualType := UsualDataType.FLOAT
 						self:valueData:f := (DWord)o 
                     endif
                 case System.TypeCode.Int64 
-                    self:_usualType := UsualDataType.INT64
+                    self:_UsualType := UsualDataType.INT64
                     self:valueData:i64 := (Int64)o 
                 case System.TypeCode.UInt64 
-                    self:_usualType := UsualDataType.INT64
+                    self:_UsualType := UsualDataType.INT64
                     self:valueData:i64 := (Int64)(UInt64)o  
                 case System.TypeCode.Single  
-                    self:_usualType := UsualDataType.FLOAT
+                    self:_UsualType := UsualDataType.FLOAT
                     self:valueData:f := (real8)o 
                 case System.TypeCode.Double 
-                    self:_usualType := UsualDataType.FLOAT
+                    self:_UsualType := UsualDataType.FLOAT
                     self:valueData:f := (real8)o 
                 case System.TypeCode.Decimal 
-                    self:_usualType := UsualDataType.OBJECT
+                    self:_UsualType := UsualDataType.OBJECT
                     self:value := o
                 case System.TypeCode.DateTime 
-                    self:_usualType := UsualDataType.DATE
+                    self:_UsualType := UsualDataType.DATE
                     self:valueData:d := (System.DateTime)o 
                 case System.TypeCode.String 
-                    self:_usualType := UsualDataType.STRING
+                    self:_UsualType := UsualDataType.STRING
                     self:value := (string)o 
                 end switch
                 if ((typeCode == System.TypeCode.Object) .and. (@@type == typeof(__Array)))
-                    self:_usualType := UsualDataType.ARRAY
+                    self:_UsualType := UsualDataType.ARRAY
                     self:value := o
                 endif
                 if ((typeCode == System.TypeCode.Object) .and. (@@type == typeof(__VODate)))
-                    self:_usualType := UsualDataType.DATE
+                    self:_UsualType := UsualDataType.DATE
                     self:value := o
                 endif
 
@@ -174,101 +168,87 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 		self:valueData := UsualData{}
         self:valueData:i64 := 0
         self:value := s
-        self:_usualType := UsualDataType.STRING
+        self:flags := UsualFlags{UsualDataType.String}
 	return
 	#endregion
 	#region implementation IComparable
     public method CompareTo(o as Object) as Long
-        local _usualType as UsualDataType
+        local typeLHS as UsualDataType
+        local typeRHS as UsualDataType
         local u as __Usual
-        local type2 as UsualDataType
-        local introduced7 as Int64
-        local introduced9 as DWord
-        _usualType := self:_usualType
-        u := (__Usual)o 
-        type2 := u:_usualType
-        if (_usualType == type2)
-            if (self:_usualType == UsualDataType.DATE)
-                return IIF(! (self:valueData:d == u:valueData:d),IIF((self:valueData:d <= u:valueData:d),-1,1),0)
-            endif
-            if (self:_usualType == UsualDataType.FLOAT)
-                return IIF((self:valueData:f != u:valueData:f),IIF((self:valueData:f <= u:valueData:f),-1,1),0)
-            endif
-            if (self:_usualType == UsualDataType.INT)
-                return IIF((self:valueData:i != u:valueData:i),IIF((self:valueData:i <= u:valueData:i),-1,1),0)
-            endif
-            if (self:_usualType == UsualDataType.INT64)
-                return IIF((self:valueData:i64 != u:valueData:i64),IIF((self:valueData:i64 <= u:valueData:i64),-1,1),0)
-            endif
-            if (self:_usualType == UsualDataType.LOGIC)
+        local iPtrValue as Int64
+        local uiDateValue as DWord
+        typeLHS := self:_UsualType
+        u		:= (__Usual)o 
+        typeRHS := u:_UsualType
+        if (typeLHS == typeRHS)
+			Switch (typeLHS)
+            CASE UsualDataType.DATE
+                return (int) (self:valueData:d:Ticks -  u:valueData:d:Ticks)
+            CASE UsualDataType.FLOAT
+                return (int)(self:valueData:f - u:valueData:f)
+            CASE UsualDataType.INT
+                return self:valueData:i - u:valueData:i
+            CASE UsualDataType.INT64
+                return (int) (self:valueData:i64 - u:valueData:i64)
+            CASE UsualDataType.LOGIC
                 return IIF((self:valueData:l != u:valueData:l),IIF(! self:valueData:l,-1,1),0)
-            endif
-            if (self:_usualType == UsualDataType.PTR)
-                introduced7 := self:valueData:p:ToInt64()
-                return IIF((introduced7 != u:valueData:p:ToInt64()),IIF((self:valueData:p:ToInt64() <= u:valueData:p:ToInt64()),-1,1),0)
-            endif
-            if (self:_usualType == UsualDataType.STRING)
+            CASE UsualDataType.PTR
+                return (int) (self:valueData:p:ToInt64() - u:valueData:p:ToInt64())
+            CASE UsualDataType.STRING
                 return String.Compare((string)self:value , (string)u:value , System.StringComparison.CurrentCultureIgnoreCase)
-            endif
+            END SWITCH
             return 0
         endif
-        if (_usualType == UsualDataType.NIL)
+        if (typeLHS == UsualDataType.NIL)
             return -1
         endif
-        if (type2 == UsualDataType.NIL)
+        if (typeRHS == UsualDataType.NIL)
             return 1
         endif
-        if (_usualType != UsualDataType.DATE)
-            do case
-            case ( _usualType == UsualDataType.FLOAT ) 
-                do case
-                case ( type2 == UsualDataType.INT ) 
+        if (typeLHS != UsualDataType.DATE)
+			uiDateValue := self:DateToUInt(self:valueData:d)    
+            SWITCH typeLHS
+            CASE UsualDataType.FLOAT 
+                SWITCH typeRHS
+                CASE UsualDataType.INT 
                     return IIF((self:valueData:f != u:valueData:i),IIF((self:valueData:f >= u:valueData:i),1,-1),0)
-                case ( type2 == UsualDataType.DATE ) 
-                    return IIF((self:valueData:f != self:DateToUInt(u:valueData:d)),IIF((self:valueData:f >= self:DateToUInt(u:valueData:d)),1,-1),0)
-                case ( type2 == UsualDataType.INT64 ) 
+                CASE UsualDataType.DATE 
+                    return IIF((self:valueData:f != uiDateValue),IIF((self:valueData:f >= uiDateValue),1,-1),0)
+                CASE UsualDataType.INT64 
                     return IIF((self:valueData:f != u:valueData:i64),IIF((self:valueData:f >= u:valueData:i64),1,-1),0)
-                endcase
-                return IIF((_usualType >= type2),1,-1)
-            case ( _usualType == UsualDataType.INT ) 
-                do case
-                case ( type2 == UsualDataType.DATE ) 
-                    return IIF((self:valueData:i != self:DateToUInt(u:valueData:d)),IIF((self:valueData:i >= self:DateToUInt(u:valueData:d)),1,-1),0)
-                case ( type2 == UsualDataType.FLOAT ) 
+                end SWITCH
+            CASE UsualDataType.INT 
+                SWITCH typeRHS
+                CASE UsualDataType.DATE 
+                    return IIF((self:valueData:i != uiDateValue),IIF((self:valueData:i >= uiDateValue),1,-1),0)
+                CASE UsualDataType.FLOAT 
                     return IIF((self:valueData:i != u:valueData:f),IIF((self:valueData:i >= u:valueData:f),1,-1),0)
-                case ( type2 == UsualDataType.INT64 ) 
+                CASE UsualDataType.INT64 
                     return IIF((self:valueData:i != u:valueData:i64),IIF((self:valueData:i >= u:valueData:i64),1,-1),0)
-                endcase
-                return IIF((_usualType >= type2),1,-1)
-            case ( _usualType == UsualDataType.INT64 ) 
-                do case
-                case ( type2 == UsualDataType.INT ) 
+                end SWITCH
+            case UsualDataType.INT64 
+                SWITCH typeRHS
+                case UsualDataType.INT 
                     return IIF((self:valueData:i64 != u:valueData:i),IIF((self:valueData:i64 >= u:valueData:i),1,-1),0)
-                case ( type2 == UsualDataType.DATE ) 
-                    return IIF((self:valueData:i64 != self:DateToUInt(u:valueData:d)),IIF((self:valueData:i64 >= self:DateToUInt(u:valueData:d)),1,-1),0)
-                case ( type2 == UsualDataType.FLOAT ) 
+                case UsualDataType.DATE 
+                    return IIF((self:valueData:i64 != uiDateValue),IIF((self:valueData:i64 >= uiDateValue),1,-1),0)
+                case UsualDataType.FLOAT  
                     return IIF((self:valueData:i64 != u:valueData:f),IIF((self:valueData:i64 >= u:valueData:f),1,-1),0)
-                endcase
-                return IIF((_usualType >= type2),1,-1)
-            endcase
-            if (_usualType > type2)
-                return 1
-            endif
-            if (_usualType < type2)
-                return -1
-            endif
-            return 0
+                end SWITCH
+            end SWITCH
+			return (Int) typeLHS - (int) typeRHS
         endif
-        do case
-        case ( type2 == UsualDataType.INT ) 
-            introduced9 := self:DateToUInt(self:valueData:d)
-            return IIF((introduced9 != u:valueData:i),IIF((self:DateToUInt(self:valueData:d) >= u:valueData:i),1,-1),0)
-        case ( type2 == UsualDataType.FLOAT ) 
-            return IIF((self:DateToUInt(self:valueData:d) != u:valueData:f),IIF((self:DateToUInt(self:valueData:d) >= u:valueData:f),1,-1),0)
-        case ( type2 == UsualDataType.INT64 ) 
-            return IIF((self:DateToUInt(self:valueData:d) != u:valueData:i64),IIF((self:DateToUInt(self:valueData:d) >= u:valueData:i64),1,-1),0)
-        endcase
-        return IIF((_usualType >= type2),1,-1)
+		uiDateValue := self:DateToUInt(self:valueData:d)    
+        SWITCH typeRHS
+        case UsualDataType.INT 
+			RETURN uiDateValue - (DWORD) (u:valueData:i)
+        case UsualDataType.FLOAT 
+			RETURN uiDateValue - (DWORD) u:valueData:f
+        case UsualDataType.INT64 
+			RETURN uiDateValue - (DWORD) u:valueData:i64
+        end switch
+		return (Int) typeLHS - (int) typeRHS
 	#endregion
 	#region helper methods
     private method DateToUInt(d as System.DateTime) as DWord
@@ -344,7 +324,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 	#region properties
 	public Property UsualType as UsualDataType
 		get
-			return _usualType
+			return SELF:_UsualType
 		end get
 	end property
     internal property IsArray as Logic
@@ -581,41 +561,41 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 	#region operators
     static operator +(leftOperand as __Usual, rightOperand as __Usual) as __Usual
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         do case
         case ( usualType == UsualDataType.INT ) 
            do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i + rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i + rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i + rightOperand:valueData:i64)
             endcase
         case ( usualType == UsualDataType.FLOAT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f + rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f + rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f + rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for addition", leftOperand, rightOperand)}
         case ( usualType == UsualDataType.STRING ) 
-            if (type2 != UsualDataType.STRING)
+            if (typeRHS != UsualDataType.STRING)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for addition", leftOperand, rightOperand)}
             endif
             return String.Concat((string)leftOperand:value , (string)rightOperand:value )
         case ( usualType == UsualDataType.INT64 ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i64 + rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i64 + rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i64 + rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for addition", leftOperand, rightOperand)}
@@ -624,11 +604,11 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for addition", leftOperand, rightOperand)}
             endif
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return leftOperand:valueData:d:Add(System.TimeSpan.FromDays((real8)rightOperand:valueData:i ))
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return leftOperand:valueData:d:Add(System.TimeSpan.FromDays(rightOperand:valueData:f))
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return leftOperand:valueData:d:Add(System.TimeSpan.FromDays((real8)rightOperand:valueData:i64 ))
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for addition", leftOperand, rightOperand)}
@@ -638,11 +618,11 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
     static operator &(leftOperand as __Usual, rightOperand as __Usual) as __Usual
         local type3 as UsualDataType
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         if (usualType == UsualDataType.INT)
-            type3 := type2
+            type3 := typeRHS
             if (type3 != UsualDataType.INT)
                 if (type3 != UsualDataType.INT64)
                     throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for bitwise and", leftOperand, rightOperand)}
@@ -655,7 +635,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
         if (usualType != UsualDataType.INT64)
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for bitwise and", leftOperand, rightOperand)}
         endif
-        type3 := type2
+        type3 := typeRHS
         if (type3 != UsualDataType.INT)
             if (type3 != UsualDataType.INT64)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for bitwise and", leftOperand, rightOperand)}
@@ -668,11 +648,11 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
     static operator |(leftOperand as __Usual, rightOperand as __Usual) as __Usual
         local type3 as UsualDataType
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         if (usualType == UsualDataType.INT)
-            type3 := type2
+            type3 := typeRHS
             if (type3 != UsualDataType.INT)
                 if (type3 != UsualDataType.INT64)
                     throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for bitwise or", leftOperand, rightOperand)}
@@ -685,7 +665,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
         if (usualType != UsualDataType.INT64)
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for bitwise or", leftOperand, rightOperand)}
         endif
-        type3 := type2
+        type3 := typeRHS
         if (type3 != UsualDataType.INT)
             if (type3 != UsualDataType.INT64)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for bitwise or", leftOperand, rightOperand)}
@@ -712,25 +692,25 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
         local num as Int64
         local num2 as Int64
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         local type3 as UsualDataType
         local num3 as Long
         local num4 as Long
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         type3 := usualType
         if (type3 != UsualDataType.INT)
             if (type3 == UsualDataType.INT64)
                 do case
-                case ( type2 == UsualDataType.INT ) 
+                case ( typeRHS == UsualDataType.INT ) 
                     num := System.Math.DivRem(leftOperand:valueData:i64, (Int64)rightOperand:valueData:i , out num2)
                     if (num2 != 0)
                         return (leftOperand:valueData:i64 / (Int64)rightOperand:valueData:i )
                     endif
                     return num
-                case ( type2 == UsualDataType.FLOAT ) 
+                case ( typeRHS == UsualDataType.FLOAT ) 
                     return ((real8)leftOperand:valueData:i64  / rightOperand:valueData:f)
-                case ( type2 == UsualDataType.INT64 ) 
+                case ( typeRHS == UsualDataType.INT64 ) 
                     num := System.Math.DivRem(leftOperand:valueData:i64, rightOperand:valueData:i64, out num2)
                     if (num2 == 0)
                         return num
@@ -743,25 +723,25 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for multiplication", leftOperand, rightOperand)}
             endif
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f / (real8)rightOperand:valueData:i )
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f / rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f / (real8)rightOperand:valueData:i64 )
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for multiplication", leftOperand, rightOperand)}
         endif
         do case
-        case ( type2 == UsualDataType.INT ) 
+        case ( typeRHS == UsualDataType.INT ) 
             num4 := System.Math.DivRem(leftOperand:valueData:i, rightOperand:valueData:i, out num3)
             if (num3 != 0)
                 return (leftOperand:valueData:i / rightOperand:valueData:i)
             endif
             return num4
-        case ( type2 == UsualDataType.FLOAT ) 
+        case ( typeRHS == UsualDataType.FLOAT ) 
             return ((real8)leftOperand:valueData:i  / rightOperand:valueData:f)
-        case ( type2 == UsualDataType.INT64 ) 
+        case ( typeRHS == UsualDataType.INT64 ) 
             num := System.Math.DivRem((Int64)leftOperand:valueData:i , rightOperand:valueData:i64, out num2)
             if (num2 == 0)
                 return num
@@ -781,42 +761,42 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 
     static operator >(leftOperand as __Usual, rightOperand as __Usual) as Logic
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         do case
         case ( usualType == UsualDataType.INT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i > rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i > rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i > rightOperand:valueData:i64)
             endcase
 
         case ( usualType == UsualDataType.FLOAT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f > rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f > rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f > rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for > comparison", leftOperand, rightOperand)}
         case ( usualType == UsualDataType.STRING ) 
-            if (type2 != UsualDataType.STRING)
+            if (typeRHS != UsualDataType.STRING)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for > comparison", leftOperand, rightOperand)}
             endif
             return (String.CompareOrdinal((string)leftOperand:value , (string)rightOperand:value ) > 0)
         case ( usualType == UsualDataType.INT64 ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i64 > rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i64 > rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i64 > rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for > comparison", leftOperand, rightOperand)}
@@ -824,7 +804,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
             if (usualType != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for > comparison", leftOperand, rightOperand)}
             endif
-            if (type2 != UsualDataType.DATE)
+            if (typeRHS != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for > comparison", leftOperand, rightOperand)}
             endif
             return (leftOperand:valueData:d > rightOperand:valueData:d)
@@ -833,42 +813,42 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 
     static operator >=(leftOperand as __Usual, rightOperand as __Usual) as Logic
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         do case
         case ( usualType == UsualDataType.INT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i >= rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i >= rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i >= rightOperand:valueData:i64)
             endcase
 
         case ( usualType == UsualDataType.FLOAT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f >= rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f >= rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f >= rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for >= comparison", leftOperand, rightOperand)}
         case ( usualType == UsualDataType.STRING ) 
-            if (type2 != UsualDataType.STRING)
+            if (typeRHS != UsualDataType.STRING)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for >= comparison", leftOperand, rightOperand)}
             endif
             return (String.CompareOrdinal((string)leftOperand:value , (string)rightOperand:value ) >= 0)
         case ( usualType == UsualDataType.INT64 ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i64 >= rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i64 >= rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i64 >= rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for >= comparison", leftOperand, rightOperand)}
@@ -876,7 +856,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
             if (usualType != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for >= comparison", leftOperand, rightOperand)}
             endif
-            if (type2 != UsualDataType.DATE)
+            if (typeRHS != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for >= comparison", leftOperand, rightOperand)}
             endif
             return (leftOperand:valueData:d >= rightOperand:valueData:d)
@@ -1230,42 +1210,42 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 
     static operator <(leftOperand as __Usual, rightOperand as __Usual) as Logic
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         do case
         case ( usualType == UsualDataType.INT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i < rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i < rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i < rightOperand:valueData:i64)
             endcase
 
         case ( usualType == UsualDataType.FLOAT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f < rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f < rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f < rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for < comparison", leftOperand, rightOperand)}
         case ( usualType == UsualDataType.STRING ) 
-            if (type2 != UsualDataType.STRING)
+            if (typeRHS != UsualDataType.STRING)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for < comparison", leftOperand, rightOperand)}
             endif
             return (String.CompareOrdinal((string)leftOperand:value , (string)rightOperand:value ) < 0)
         case ( usualType == UsualDataType.INT64 ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i64 < rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i64 < rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i64 < rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for < comparison", leftOperand, rightOperand)}
@@ -1273,7 +1253,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
             if (usualType != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for < comparison", leftOperand, rightOperand)}
             endif
-            if (type2 != UsualDataType.DATE)
+            if (typeRHS != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for < comparison", leftOperand, rightOperand)}
             endif
             return (leftOperand:valueData:d < rightOperand:valueData:d)
@@ -1282,41 +1262,41 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 
     static operator <=(leftOperand as __Usual, rightOperand as __Usual) as Logic
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         do case
         case ( usualType == UsualDataType.INT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i <= rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i <= rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i <= rightOperand:valueData:i64)
             endcase
         case ( usualType == UsualDataType.FLOAT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f <= rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f <= rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f <= rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for <= comparison", leftOperand, rightOperand)}
         case ( usualType == UsualDataType.STRING ) 
-            if (type2 != UsualDataType.STRING)
+            if (typeRHS != UsualDataType.STRING)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for <= comparison", leftOperand, rightOperand)}
 	        endif
             return (String.CompareOrdinal((string)leftOperand:value , (string)rightOperand:value ) <= 0)
         case ( usualType == UsualDataType.INT64 ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i64 <= rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i64 <= rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i64 <= rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for <= comparison", leftOperand, rightOperand)}
@@ -1324,7 +1304,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
             if (usualType != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for <= comparison", leftOperand, rightOperand)}
             endif
-            if (type2 != UsualDataType.DATE)
+            if (typeRHS != UsualDataType.DATE)
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for <= comparison", leftOperand, rightOperand)}
             endif
             return (leftOperand:valueData:d <= rightOperand:valueData:d)
@@ -1342,19 +1322,19 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 
     static operator %(leftOperand as __Usual, rightOperand as __Usual) as __Usual
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         local type3 as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         type3 := usualType
         if (type3 != UsualDataType.INT)
             if (type3 == UsualDataType.INT64)
                 do case
-                case ( type2 == UsualDataType.INT ) 
+                case ( typeRHS == UsualDataType.INT ) 
                     return (leftOperand:valueData:i64 % (Int64)rightOperand:valueData:i )
-                case ( type2 == UsualDataType.FLOAT ) 
+                case ( typeRHS == UsualDataType.FLOAT ) 
                     return ((real8)leftOperand:valueData:i64  % rightOperand:valueData:f)
-                case ( type2 == UsualDataType.INT64 ) 
+                case ( typeRHS == UsualDataType.INT64 ) 
                     return (leftOperand:valueData:i64 % rightOperand:valueData:i64)
                 endcase
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for % operator", leftOperand, rightOperand)}
@@ -1363,40 +1343,40 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for % operator", leftOperand, rightOperand)}
             endif
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f % (real8)rightOperand:valueData:i )
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f % rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f % (real8)rightOperand:valueData:i64 )
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for % operator", leftOperand, rightOperand)}
         endif
         do case
-        case ( type2 == UsualDataType.INT ) 
+        case ( typeRHS == UsualDataType.INT ) 
             return (leftOperand:valueData:i % rightOperand:valueData:i)
-        case ( type2 == UsualDataType.FLOAT ) 
+        case ( typeRHS == UsualDataType.FLOAT ) 
             return ((real8)leftOperand:valueData:i  % rightOperand:valueData:f)
-        case ( type2 == UsualDataType.INT64 ) 
+        case ( typeRHS == UsualDataType.INT64 ) 
             return ((Int64)leftOperand:valueData:i  % rightOperand:valueData:i64)
         endcase
         throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for % operator", leftOperand, rightOperand)}
 
     static operator *(leftOperand as __Usual, rightOperand as __Usual) as __Usual
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         local type3 as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         type3 := usualType
         if (type3 != UsualDataType.INT)
             if (type3 == UsualDataType.INT64)
                 do case
-                case ( type2 == UsualDataType.INT ) 
+                case ( typeRHS == UsualDataType.INT ) 
                     return (leftOperand:valueData:i64 * rightOperand:valueData:i)
-                case ( type2 == UsualDataType.FLOAT ) 
+                case ( typeRHS == UsualDataType.FLOAT ) 
                     return (leftOperand:valueData:i64 * rightOperand:valueData:f)
-                case ( type2 == UsualDataType.INT64 ) 
+                case ( typeRHS == UsualDataType.INT64 ) 
                     return (leftOperand:valueData:i64 * rightOperand:valueData:i64)
                 endcase
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for multiplication", leftOperand, rightOperand)}
@@ -1405,21 +1385,21 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for multiplication", leftOperand, rightOperand)}
             endif
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f * rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f * rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f * rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for multiplication", leftOperand, rightOperand)}
         endif
         do case
-        case ( type2 == UsualDataType.INT ) 
+        case ( typeRHS == UsualDataType.INT ) 
             return (leftOperand:valueData:i * rightOperand:valueData:i)
-        case ( type2 == UsualDataType.FLOAT ) 
+        case ( typeRHS == UsualDataType.FLOAT ) 
             return (leftOperand:valueData:i * rightOperand:valueData:f)
-        case ( type2 == UsualDataType.INT64 ) 
+        case ( typeRHS == UsualDataType.INT64 ) 
             return (leftOperand:valueData:i * rightOperand:valueData:i64)
         endcase
         throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for multiplication", leftOperand, rightOperand)}
@@ -1437,36 +1417,36 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
 
     static operator -(leftOperand as __Usual, rightOperand as __Usual) as __Usual
         local usualType as UsualDataType
-        local type2 as UsualDataType
+        local typeRHS as UsualDataType
         usualType := leftOperand:usualType
-        type2 := rightOperand:usualType
+        typeRHS := rightOperand:usualType
         do case
         case ( usualType == UsualDataType.INT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i - rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i - rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i - rightOperand:valueData:i64)
             endcase
         case ( usualType == UsualDataType.FLOAT ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:f - rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:f - rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:f - rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for substraction", leftOperand, rightOperand)}
         case ( usualType == UsualDataType.INT64 ) 
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return (leftOperand:valueData:i64 - rightOperand:valueData:i)
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return (leftOperand:valueData:i64 - rightOperand:valueData:f)
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return (leftOperand:valueData:i64 - rightOperand:valueData:i64)
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for substraction", leftOperand, rightOperand)}
@@ -1475,11 +1455,11 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
                 throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for substraction", leftOperand, rightOperand)}
             endif
             do case
-            case ( type2 == UsualDataType.INT ) 
+            case ( typeRHS == UsualDataType.INT ) 
                 return leftOperand:valueData:d:Subtract(System.TimeSpan.FromDays((real8)rightOperand:valueData:i ))
-            case ( type2 == UsualDataType.FLOAT ) 
+            case ( typeRHS == UsualDataType.FLOAT ) 
                 return leftOperand:valueData:d:Subtract(System.TimeSpan.FromDays(rightOperand:valueData:f))
-            case ( type2 == UsualDataType.INT64 ) 
+            case ( typeRHS == UsualDataType.INT64 ) 
                 return leftOperand:valueData:d:Subtract(System.TimeSpan.FromDays((real8)rightOperand:valueData:i64 ))
             endcase
             throw System.InvalidOperationException{String.Format("Arguments not compatible {0} {1} for substraction", leftOperand, rightOperand)}
@@ -1545,8 +1525,24 @@ internal structure Vulcan.UsualData
 
 end structure
 
+[StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit, CharSet:=System.Runtime.InteropServices.CharSet.Auto)];
+internal structure UsualFlags
+    [FieldOffset(0)];
+    export type as UsualDataType
+    [FieldOffset(1)];
+    export byref as Byte
+    [FieldOffset(2)];
+    export width as Byte
+    [FieldOffset(3)];
+    export decimals as Byte
+	constructor(t as UsualDataType)
+		type := t
+		decimals := 0
+		width := 0
+		byref := 0
+end structure
 
-public enum UsualDataType as Long
+public enum UsualDataType as Byte
     member @@ARRAY:=5
     member @@CODEBLOCK:=9
     member @@DATE:=2

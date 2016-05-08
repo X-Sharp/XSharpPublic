@@ -23,9 +23,9 @@ DisableReadyMemo=yes
 DisableFinishedPage=no
 InfoBeforeFile=Baggage\ReadmeShort.rtf
 AppName=XSharp
-AppVersion=0.2.4.2400
+AppVersion=0.2.4.2401
 AppCopyright=Copyright © 2015-2016 XSharp B.V.
-AppVerName=XSharp 0.2.4.0
+AppVerName=XSharp 0.2.4.1
 AppPublisher=XSharp BV
 AppPublisherURL=http://www.xsharp.info
 AppSupportURL=http://www.xsharp.info
@@ -34,7 +34,7 @@ DefaultDirName={pf}\XSharp
 DefaultGroupName=XSharp
 LicenseFile=Baggage\License.rtf
 OutputDir=D:\XSharp\Dev\XSharp\Binaries\Setup 
-OutputBaseFilename=XSharpSetup024
+OutputBaseFilename=XSharpSetup0241
 OutputManifestFile=Setup-Manifest.txt
 SetupIconFile=Baggage\XSharp.ico
 Compression=lzma2/ultra64
@@ -42,13 +42,13 @@ SolidCompression=yes
 SetupLogging=yes
 
 ; Version Info for Installer and uninstaller
-VersionInfoVersion=0.2.4.2400
+VersionInfoVersion=0.2.4.2401
 VersionInfoDescription=XSharp Beta 4
 VersionInfoCompany=XSharp BV
-VersionInfoTextVersion=0.2.4.2400 (Beta 4)
+VersionInfoTextVersion=0.2.4.2401 (Beta 4)
 VersionInfoCopyRight=Copyright © 2015-2016 XSharp B.V.
 VersionInfoProductName=XSharp
-VersionInfoProductVersion=0.2.4.2400
+VersionInfoProductVersion=0.2.4.2401
 Wizardsmallimagefile=Baggage\XSharp_Bmp_Banner.bmp 
 WizardImagefile=Baggage\XSharp_Bmp_Dialog.bmp
 
@@ -60,7 +60,7 @@ UninstallLogMode=overwrite
 
 
 TouchDate=2016-05-04
-TouchTime=02:04:00
+TouchTime=02:04:01
 
 
 
@@ -130,7 +130,7 @@ Source: "D:\Xsharp\Dev\XSharp\Binaries\Help\\XSharp.pdf";                       
 Source: "D:\Xsharp\Dev\XSharp\Binaries\Help\\XSharp.chm";                        DestDir: "{app}\Help";        Flags: touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: main
 
 ;XIDE
-Source: "D:\Xsharp\Dev\XSharp\Xide\XIDE_Set_up_1.02.exe";                      DestDir: "{app}\Xide";        Flags: touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: Xide
+Source: "D:\Xsharp\Dev\XSharp\Xide\XIDE_Set_up_1.03.exe";                      DestDir: "{app}\Xide";        Flags: touch ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: Xide
 
 ;VsProjectSystem
 Source: "D:\Xsharp\DevPublic\Binaries\Debug\XSharpProject2015.vsix";            DestDir: "{app}\ProjectSystem"; Flags: ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname; Components: vs2015 or vsnext
@@ -203,12 +203,12 @@ Root: HKLM; Subkey: "Software\XSharpBV\XSharp"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\XSharpBV\XSharp"; ValueName: "XSharpPath"; ValueType: string; ValueData: "{app}" ;
 
 [Ini]
-Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "0.2.4.2400"; Flags: uninsdeletesection; Components: vs2015;
-Filename: "{code:GetVsNextIdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "0.2.4.2400"; Flags: uninsdeletesection; Components: vsnext;
+Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "0.2.4.2401"; Flags: uninsdeletesection; Components: vs2015;
+Filename: "{code:GetVsNextIdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "0.2.4.2401"; Flags: uninsdeletesection; Components: vsnext;
 
 [Run]
 Filename: "{app}\Tools\RegisterProvider.exe";
-Filename:  "{app}\Xide\XIDE_Set_up_1.02.exe"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
+Filename:  "{app}\Xide\XIDE_Set_up_1.03.exe"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]
 ; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry
@@ -256,7 +256,7 @@ Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\vtc"; 		
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\ComponentModelCache"; 	Components: vsnext
 
 [Messages]
-WelcomeLabel1=Welcom to XSharp (X#)
+WelcomeLabel1=Welcome to XSharp (X#)
 WelcomeLabel2=This installer will install XSharp Beta 4 on your computer.%n%nIt is recommended that you close all other applications before continuing, especially all running copies of Visual Studio.
 WizardInfoBefore=Warning
 InfoBeforeLabel=You are about to install Beta software

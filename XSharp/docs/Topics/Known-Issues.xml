@@ -21,7 +21,6 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">DEFINE is supported but must have a type clause</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">ACCESS/ASSIGN must be both in same (partial) class. Cannot be spread over 2 parts of the class</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">VOSTRUCT and VOUNION are compiled as a special kind of STRUCTURE but the special AS/IS handling is not supported yet</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">BEGIN SEQUENCE… END</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">SWITCH Block may give warnings about unreachable code</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Missing arguments in a comma separated list are not supported. </text></li>
     </list>

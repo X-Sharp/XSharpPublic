@@ -560,7 +560,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo10" styleclass="Normal" translate="true">/vo10</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Enables compatible IIF behavior</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Enables compatible IIF behavior</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

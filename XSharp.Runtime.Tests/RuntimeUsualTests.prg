@@ -19,8 +19,8 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			local u   as __Usual
 		    now := (__VODate)System.DateTime.Now 
 			u := __Usual{now}
-			var s := u.ToString()
-			AreEqual(now.ToString(),u.ToString())
+			var s := u:ToString()
+			AreEqual(now:ToString(),u:ToString())
 		RETURN
 
 	END CLASS

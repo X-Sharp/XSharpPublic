@@ -17,7 +17,7 @@ BEGIN NAMESPACE Vulcan
 
 		CONSTRUCTOR(capacity as int)
 			internalList := List<__Usual>{capacity}
-			internalList.AddRange(Enumerable.Repeat(nil,capacity))
+			internalList:AddRange(Enumerable.Repeat(nil,capacity))
 		return 
 
 		CONSTRUCTOR( collection as IEnumerable<__Usual>)
@@ -30,7 +30,7 @@ BEGIN NAMESPACE Vulcan
 				throw ArgumentNullException{"elemenst"}
 			endif
 			foreach element as object in elements
-				internallist.Add(__Usual{element})
+				internallist:Add(__Usual{element})
 			next
 		return
 
@@ -41,30 +41,30 @@ BEGIN NAMESPACE Vulcan
 		#region properties
 		public Property IsEmpty as logic
 			get
-				return (internalList.Count == 0)
+				return (internallist:Count == 0)
 			end get 
 		end property
 
 		public Property Length as dword
 			get
-				return (dword)internalList.Count
+				return (dword)internallist:Count
 			end get
 		end property
 		#endregion
 		#region helper functions
 		public method Add(u as __Usual) as void
-			internalList.Add(u)
+			internallist:Add(u)
 		return
 		#endregion
 		public method GetEnumerator() as IEnumerator<__Usual>
-		return internalList.GetEnumerator()
+		return internallist:GetEnumerator()
 
 		public method IEnumerable.GetEnumerator() as IEnumerator
-		return internalList.GetEnumerator()
+		return internallist:GetEnumerator()
 
 		public static method ArrayNew( dimensions params int[] ) as __Array 
 			local newArray as __Array
-			if dimensions.Length != 0 
+			if dimensions:Length != 0 
 			   newArray := ArrayNewHelper(dimensions,1)
 			else
 			   newArray := __Array{}
@@ -75,18 +75,18 @@ BEGIN NAMESPACE Vulcan
 			local capacity := dimensions[currentDim-1] as int // one based ?
 			local newArray := __Array{capacity} as __Array
 
-			if currentDim != dimensions.Length
+			if currentDim != dimensions:Length
 			  local nextDim := currentDim+1 as int
 			  local index   := 1 as int
 			  do while index <= capacity
-			     newArray.Add(__Usual{ArrayNewHelper(dimensions,nextDIm)})
+			     newArray:Add(__Usual{ArrayNewHelper(dimensions,nextDIm)})
 				 index+=1
 			  enddo
 			  return newArray
 			endif
 			local i as int
 			for i:=1 upto capacity
-				newArray.Add(__Usual{})
+				newArray:Add(__Usual{})
 			next
 		return newArray
 
@@ -100,17 +100,17 @@ BEGIN NAMESPACE Vulcan
 		//return self[index]
 
 		public method GetElement(index params dword[]) as __Usual
-			local length := index.Length as int
+			local length := index:Length as int
 			local currentArray := self as __Array
 			local i as int
 
 			for i:=0+__ARRAYBASE__  upto length-2+__ARRAYBASE__ 
 			    local ind := index[i] as dword
 				local u := currentArray[index[i]] as __Usual
-				if u.IsNil
+				if u:IsNil
 				   return nil
 				endif
-				if u.UsualType !=UsualDataType.ARRAY
+				if u:UsualType !=UsualDataType.ARRAY
 				   throw InvalidOperationException{"out of range error."}
 				endif
 				currentArray := (__Array)u
@@ -118,35 +118,35 @@ BEGIN NAMESPACE Vulcan
 		return currentArray[index[length]]
 
 		public method Insert(index as dword,o as object) as void
-			internalList.Insert((int)index-__ARRAYBASE__ ,__Usual{o})
+			internallist:Insert((int)index-__ARRAYBASE__ ,__Usual{o})
 		return
 
 		public method Insert(index as dword,u as __Usual) as void
-			internalList.Insert((int)index-__ARRAYBASE__ ,u)
+			internallist:Insert((int)index-__ARRAYBASE__ ,u)
 		return
 		public method Insert(position as dword) as __Array
 			self:Insert(position,nil)
 		return self
 		public method RemoveAt(index as dword , count as int) as void
-			internalList.RemoveRange((int)index-__ARRAYBASE__ ,count)
+			internallist:RemoveRange((int)index-__ARRAYBASE__ ,count)
 		return
 
 		public method RemoveAt(index as dword) as void
-			internalList.RemoveRange((int)index-__ARRAYBASE__,1 )
+			internallist:RemoveRange((int)index-__ARRAYBASE__,1 )
 		return
 
 		public method Resize(newSize as dword) as void
 			local count := self:Length as dword
 			if newSize == 0 
-			   internalList.Clear()
+			   internallist:Clear()
 			else
 				if newSize <= count 
-				   internalList.RemoveRange((int)newSize, (int)(count - newSize))
+				   internallist:RemoveRange((int)newSize, (int)(count - newSize))
 				else
 				   count+=1
 				   do while count <= newSize
 					   local u := __Usual{} as __Usual
-					   internalList.Add(u)
+					   internallist:Add(u)
 					   count++
 			       enddo
 				endif
@@ -154,10 +154,10 @@ BEGIN NAMESPACE Vulcan
 		return
 
 		public method ToString() as string
-		return string.Format("{{[{0}]}}",internalList.Count)
+		return string.Format("{{[{0}]}}",internallist:Count)
 
 		public method Sort(startIndex as int, count as int, comparer as IComparer<__Usual>) as void
-			internalList.Sort(startIndex-__ARRAYBASE__ ,count,comparer)
+			internallist:Sort(startIndex-__ARRAYBASE__ ,count,comparer)
 		return
 
 		public method Size(size as dword) as __Array
@@ -190,19 +190,19 @@ BEGIN NAMESPACE Vulcan
 		return u
 
 		public Method SetElement(u as __Usual, index params int[] ) as __Usual
-			local length := index.Length as int
+			local length := index:Length as int
 			local currentArray := self as __Array
 			local i := 1 as int
 
 			do while i <= length-__ARRAYBASE__ 
 			   local uArray := (__Usual)internalList[index[i - __ARRAYBASE__ ]] as __Usual
-			   if !(uArray.UsualType == UsualDataType.ARRAY)
+			   if !(uArray:UsualType == UsualDataType.ARRAY)
 				  throw InvalidOperationException{"Out of range error."}
 			   endif
 			   currentArray := (__Array)uArray
 			   i += 1
 			enddo
-			currentArray.SetElement(u,index[i-1])
+			currentArray:SetElement(u,index[i-1])
 		return u
 
 		public Property self[i as dword] as __Usual
@@ -231,12 +231,12 @@ BEGIN NAMESPACE Vulcan
 			throw NotImplementedException{"__Array.Copy is not implemented yet."}
 
 		public static Method ArrayDelete(arrayToModify as __Array,position as dword)
-			arrayToModify.RemoveAt(position)
-			arrayToModify.Add(__Usual{})
+			arrayToModify:RemoveAt(position)
+			arrayToModify:Add(__Usual{})
 		return arrayToModify	
 
 		public static method ArrayCreate(dimensions params int[] ) as __Array
-			local count := dimensions.Length as int
+			local count := dimensions:Length as int
 			if count <= 0
 			   throw ArgumentException{"No dimensions provided."}
 			endif
@@ -265,8 +265,8 @@ BEGIN NAMESPACE Vulcan
 
 		public static method ArrayFill(arraytoFill as __Array,elementValue as __Usual) as __Array
 			local i as dword
-			if arrayToFill.Length > 0
-				for i:=0+__ARRAYBASE__ upto arrayToFill.Length-1+__ARRAYBASE__
+			if arrayToFill:Length > 0
+				for i:=0+__ARRAYBASE__ upto arrayToFill:Length-1+__ARRAYBASE__
 					arraytoFill[i]:=(__Usual)elementValue
 				next
 			endif
@@ -275,8 +275,8 @@ BEGIN NAMESPACE Vulcan
 		public static method ArrayFill(arraytoFill as __Array,elementValue as __Usual,start as dword) as __Array
 			local i as dword
 			if start >= 0
-				if arrayToFill.Length > 0
-					for i:=start+__ARRAYBASE__  upto arrayToFill.Length-1+__ARRAYBASE__ 
+				if arrayToFill:Length > 0
+					for i:=start+__ARRAYBASE__  upto arrayToFill:Length-1+__ARRAYBASE__ 
 						arraytoFill[i]:=(__Usual)elementValue
 					next
 				endif
@@ -292,7 +292,7 @@ BEGIN NAMESPACE Vulcan
 			if count < 0 
 				throw ArgumentException{"Count index must be greater or equal zero."}
 			endif
-			if arrayToFill.Length > 0
+			if arrayToFill:Length > 0
 				local i as dword
 				for i:=start+__ARRAYBASE__  upto start + count-1+__ARRAYBASE__ 
 					arraytoFill[i]:=(__Usual)elementValue

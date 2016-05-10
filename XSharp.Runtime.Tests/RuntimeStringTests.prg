@@ -12,22 +12,6 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 	CLASS RuntimeStringTests
 
 	[TestMethod];
-	METHOD LeftTest() as void
-
-		local s := "Hello World" as string
-		local unassigned		 as string		                  
-   			                  
-		AreEqual("",left(s,0))
-		AreEqual("H",left(s,1))
-		AreEqual("Hello World",left(s,99))
-
-		AreEqual(null,left(unassigned,0))
-		AreEqual(null,left(unassigned,1))
-		AreEqual(null,left(unassigned,99))
-	         	
-	RETURN
-
-	[TestMethod];
 	METHOD AdjustFNameTest() as void
 	    AreEqual("    xyz   ddss.dbf",AdjustFName("    xyz   ddss    .dbf"))
 	    AreEqual(null,AdjustFName(null))
@@ -100,6 +84,113 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		AreEqual("ABCDE",CharOdd("A1B2C3D4E"))
 		AreEqual(null,CharOdd(null))
 	RETURN
+
+	[TestMethod];
+	METHOD CharPosTest() as void
+		AreEqual("o",CharPos("Hello World",5))
+		AreEqual(String.Empty,CharPos("A1B2C3D4E",33))
+	RETURN
+
+	[TestMethod];
+	METHOD InStrTest() as void
+		AreEqual(true,Instr("o W","Hello World"))
+		AreEqual(false,Instr("o w","Hello World"))
+		AreEqual(false,Instr(null,null))
+		AreEqual(false,Instr("w",null))
+		AreEqual(false,Instr(null,"w"))
+	RETURN
+
+	[TestMethod];
+	METHOD LeftTest() as void
+
+		local s := "Hello World" as string
+		local unassigned		 as string		                  
+   			                  
+		AreEqual("",left(s,0))
+		AreEqual("H",left(s,1))
+		AreEqual("Hello World",left(s,99))
+
+		AreEqual(null,left(unassigned,0))
+		AreEqual(null,left(unassigned,1))
+		AreEqual(null,left(unassigned,99))
+	         	
+	RETURN
+
+	[TestMethod];
+	METHOD LowerTest() as void
+		AreEqual("hello world",Lower("Hello World"))
+		AreEqual(null,Lower(null))
+	RETURN
+
+	[TestMethod];
+	METHOD LTrimTest() as void
+		AreEqual("Hello World",LTrim("    Hello World"))
+		AreEqual(null,Lower(null))
+	RETURN
+
+	[TestMethod];
+	METHOD OccursTest() as void
+		AreEqual((dword)2,Occurs("or","the world according to me"))
+		AreEqual((dword)0,Occurs(null,null))
+		AreEqual((dword)0,Occurs("x",null))
+		AreEqual((dword)0,Occurs(null,"xx"))
+	RETURN
+
+	[TestMethod];
+	METHOD Occurs3Test() as void
+		AreEqual((dword)1,Occurs3("or","the world according to me",7))
+	RETURN
+
+	[TestMethod];
+	METHOD ProperTest() as void
+		AreEqual("Hello World",Proper("hello world"))
+		AreEqual(null,Proper(null))
+	RETURN
+
+	[TestMethod];
+	METHOD RAtTest() as void
+		AreEqual((dword)14,RAt("or","the world according to me"))
+		AreEqual((dword)0,Rat(null,null))
+		AreEqual((dword)0,Rat("or",null))
+		AreEqual((dword)0,Rat(null,"the world"))
+	RETURN
+
+	[TestMethod];
+	METHOD RAt3Test() as void
+		AreEqual((dword)14,RAt3("or","the world according to me",9))
+	RETURN
+
+	[TestMethod];
+	METHOD ReplicateTest() as void
+		AreEqual("dudadudaduda",Replicate("duda",3))
+	RETURN
+
+	[TestMethod];
+	METHOD RTrimTest() as void
+		AreEqual("    Hello World",RTrim("    Hello World     "))
+		AreEqual(null,RTrim(null))
+	RETURN
+
+	[TestMethod];
+	METHOD RightTest() as void
+		AreEqual("World",Right("Hello World",5))
+		AreEqual(null,Right(null,0))
+	RETURN
+
+	[TestMethod];
+	METHOD SCloneTest() as void
+		local s:="Hello World" as string
+		AreEqual(s,SClone(s))
+	RETURN
+
+	[TestMethod];
+	METHOD SLenTest() as void
+		//local s:="Hello World" as string
+		//AreEqual((dword)11,SLen(s))
+		//s:=null
+		//AreEqual((dword)0,SLen(s))
+	RETURN
+
 
 	END CLASS
 

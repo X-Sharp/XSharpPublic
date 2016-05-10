@@ -906,7 +906,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION FDate() AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Get or set the error code for a file operation.
@@ -2298,7 +2298,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Today() AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Convert a number to a word.

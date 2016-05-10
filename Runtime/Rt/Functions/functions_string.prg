@@ -14,7 +14,7 @@ begin namespace XSharp.Runtime
 	FUNCTION AdjustFName(cName AS STRING) AS STRING
 		local adjusted := null as string
 		if ( !string.IsNullOrEmpty(cName) ) 
-			adjusted := System.IO.Path.GetFileNameWithoutExtension(cName).TrimEnd()
+			adjusted := System.IO.Path.GetFileNameWithoutExtension(cName):TrimEnd()
 			if ( cName:IndexOf('.') > 0 ) 
 				adjusted += System.IO.Path.GetExtension(cName)
 			endif
@@ -55,7 +55,7 @@ begin namespace XSharp.Runtime
 	FUNCTION AmPm(cTime AS STRING) AS STRING
 		local result:=null as string
 		try 
-			result := DateTime.Parse(ctime).ToString("hh:mm:ss")
+			result := DateTime.Parse(ctime):ToString("hh:mm:ss")
 			// The following exceptions may appear but will be ignored currently (VO/VN behaviour)
 			// catch ex as FormatException
 			//	  NOP 
@@ -94,7 +94,7 @@ begin namespace XSharp.Runtime
 		local ascValue := 0 as dword
 		if ( !string.IsNullOrEmpty(c) ) 
 		   local chrBuffer := c:ToCharArray() as char[]
-           local bytBuffer := System.Text.Encoding.GetEncoding(1252).GetBytes(chrBuffer) as byte[]
+           local bytBuffer := System.Text.Encoding.GetEncoding(1252):GetBytes(chrBuffer) as byte[]
 		   ascValue := (DWORD) bytBuffer[1]
 		endif
 	RETURN ascValue
@@ -239,7 +239,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Bin2Date(c AS STRING) AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Convert a string containing a 32-bit unsigned integer to a double word.
@@ -391,13 +391,18 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return a character based on its position in a string.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="nStart"></param>
+	/// <param name="c">The strign to be searched</param>
+	/// <param name="nStart">The position of the reuested charachter</param>
 	/// <returns>
+	/// The character at the given position as a string, if position is beyond the length
+	/// of the length of the string null_string is returned.
 	/// </returns>
 	FUNCTION CharPos(c AS STRING,nStart AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local searchedChar := string.Empty as string
+		if ( nStart >= 1 && nStart <= c:Length )
+		   searchedChar := c:SubString((int)nStart-1,1)
+		endif
+	RETURN searchedChar
 
 	/// <summary>
 	/// Encrypt or decrypt a string.
@@ -428,8 +433,11 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION CToD(cDate AS STRING) AS DATE
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local parsedDate as DateTime
+		if !DateTime.TryParse(cDate,out parsedDate)
+		   parsedDate := DateTime.MinValue
+		endif
+	RETURN __VODate{parsedDate}   
 
 	/// <summary>
 	/// Convert an ANSI date string to date format.
@@ -439,7 +447,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION CToDAnsi(cDate AS STRING) AS DATE
 		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (DATE)0   
 
 	/// <summary>
 	/// Decode a file from an e-mail transfer.
@@ -484,13 +492,25 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the difference between two time strings.
 	/// </summary>
-	/// <param name="cStartTime"></param>
-	/// <param name="cEndTime"></param>
+	/// <param name="cStartTime">The starting time in the form HH:mm:ss.</param>
+	/// <param name="cEndTime">The ending time in the form HH:mm:ss.</param>
 	/// <returns>
+	/// The amount of time that has elapsed from cStartTime to cEndTime as a time string in the format hh:mm:ss.
 	/// </returns>
+	/// <remarks>
+	/// The behaviour is not compatible with VO ! Needs to be refactured.
+	/// </remarks>
 	FUNCTION ElapTime(cStartTime AS STRING,cEndTime AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local elapedTime := string.Empty as string
+		/// TODO: VO compatibility 
+		try
+		  elapedTime := DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+				:Subtract(DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+				:ToString()
+		catch ex as Exception
+			nop
+		end try
+	RETURN elapedTime
 
 	/// <summary>
 	/// Evaluate an expression contained in a string.
@@ -568,12 +588,12 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Determine if any file matches a given file specification.
 	/// </summary>
-	/// <param name="cFile"></param>
+	/// <param name="cFile">The name oif the file</param>
 	/// <returns>
+	/// True if the file exists, otherwise false
 	/// </returns>
 	FUNCTION File(cFile AS STRING) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	return System.IO.File.Exists(cFile)
 
 	/// <summary>
 	/// Open a file, specifying two strongly-typed arguments.
@@ -631,13 +651,19 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Indicate whether a substring is contained in a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">The string to search for.</param>
+	/// <param name="c">The string to search in.</param>
 	/// <returns>
+	/// True if the searched string is in the string.
 	/// </returns>
 	FUNCTION Instr(cSearch AS STRING,c AS STRING) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+		local isInString := false as logic
+		try
+			isInString := ( c:IndexOf(cSearch) >= 0 ) 
+		//catch ex as Exception
+			//nop
+		end try
+	RETURN isInString   
 
 	/// <summary>
 	/// Determine if the first character of a string is a kanji character.
@@ -686,12 +712,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Convert the uppercase and mixed case characters in a string to lowercase.
 	/// </summary>
-	/// <param name="cSorce"></param>
+	/// <param name="cSource">THe string to be converted.</param>
 	/// <returns>
+	/// Returns the input string with all characters converted to lowercase.
 	/// </returns>
-	FUNCTION Lower(cSorce AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	FUNCTION Lower(cSource AS STRING) AS STRING
+		local loweredString := null as string
+		if ( !string.IsNullOrEMpty(cSource) )
+		   loweredString := cSource:ToLower()
+		endif
+	RETURN loweredString
 
 	/// <summary>
 	/// Convert the uppercase and mixed case characters in a string to lowercase, changing the contents of the argument as well as the return value.
@@ -706,12 +736,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Remove leading spaces from a string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string from which leading spaces should be cut off.</param>
 	/// <returns>
+	/// The input strings without eading spaces.
 	/// </returns>
 	FUNCTION LTrim(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local trimmedString := null as string
+		if ( !string.IsNullOrEMpty(c) )
+		   trimmedString := c:TrimStart()
+		endif
+	RETURN trimmedString  
 
 	/// <summary>
 	/// Perform an assignment to a variable whose name is stored in a specified string.
@@ -806,24 +840,30 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the number of times a substring occurs in a string.
 	/// </summary>
-	/// <param name="cSrc"></param>
-	/// <param name="c"></param>
+	/// <param name="c">The string to be search in.</param>
+	/// <param name="cSearch">THe string of which its occurance should be counted</param>
 	/// <returns>
+	/// THe number how often the string to be searched for occurs in the original string.
 	/// </returns>
-	FUNCTION Occurs(cSrc AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
+		local countedOccurances:=0 as int
+		try
+			countedOccurances := c:Split(<string>{ cSearch }, StringSplitOptions.None):Length - 1 
+		catch ex as Exception
+			nop
+		end try
+	RETURN (dword)countedOccurances
 
 	/// <summary>
 	/// Return the number of times a substring occurs in a string.
 	/// </summary>
-	/// <param name="cSrc"></param>
-	/// <param name="c"></param>
+	/// <param name="c">The string to be search in.</param>
+	/// <param name="cSearch">THe string of which its occurance should be counted</param>
 	/// <returns>
+	/// THe number how often the string to be searched for occurs in the original string.
 	/// </returns>
-	FUNCTION Occurs2(cSrc AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	FUNCTION Occurs2(cSearch AS STRING,c AS STRING) AS DWORD
+	RETURN Occurs(cSearch,c)   
 
 	/// <summary>
 	/// Return the number of times a substring occurs in a string, starting at a specified position.
@@ -834,8 +874,13 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Occurs3(cSrc AS STRING,c AS STRING,nOffs AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local countedOccurances:=0 as dword
+		try
+			countedOccurances := Occurs(cSrc,c:SubString((int)nOffs-1))
+		// catch ex as Exception
+		// nop
+	    end try
+	RETURN countedOccurances  
 
 	/// <summary>
 	/// Convert a string of OEM characters to ANSI characters.
@@ -869,12 +914,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Change the first character of each word to uppercase
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string to be converted.</param>
 	/// <returns>
+	/// The converted string according to the CurrentCulture
 	/// </returns>
 	FUNCTION Proper(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local convertedString:=null as string 
+		if ( !string.IsNullOrEmpty(c) )
+		   convertedString := System.Globalization.CultureInfo.CurrentCulture:TextInfo:ToTitleCase(c)
+		endif
+	RETURN convertedString   
 
 	/// <summary>
 	/// Capitalize a proper name correctly, changing the contents of the argument as well as the return value.
@@ -929,24 +978,30 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the position of the last occurrence of a substring within a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">THe string to be searched.</param>
+	/// <param name="c">The string to be searched in.</param>
 	/// <returns>
+	/// The right most position of the string to be searched inside the searched string.
 	/// </returns>
 	FUNCTION RAt(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local rightMost := 0 as dword
+		try
+			rightMost:= (dword) c:LastIndexOf(cSearch) + 1
+		// catch ex Exception
+		//    nop
+		end try
+	RETURN rightMost
 
 	/// <summary>
 	/// Return the position of the last occurrence of a substring within a string.
 	/// </summary>
-	/// <param name="cSearch"></param>
-	/// <param name="c"></param>
+	/// <param name="cSearch">THe string to be searched.</param>
+	/// <param name="c">The string to be searched in.</param>
 	/// <returns>
+	/// The right most position of the string to be searched inside the searched string.
 	/// </returns>
 	FUNCTION RAt2(cSearch AS STRING,c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN RAt2(cSearch,c) 
 
 	/// <summary>
 	/// Return the position of the last occurrence of a substring within a string.
@@ -957,8 +1012,13 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION RAt3(cSearch AS STRING,c AS STRING,dwOff AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local rightMost := 0 as dword
+		try
+			rightMost := RAt(cSearch,c:SubString((int)dwOff-1))+dwOff-1
+		// catch ex as Exception
+		//    nop
+		end try
+	RETURN rightMost   
 
 	/// <summary>
 	/// Return the line number of the last occurrence of a substring within a multiline string.
@@ -983,36 +1043,53 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
+	/// Repeat a string a specified number of times.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwCount"></param>
+	/// <param name="c">The string to be repeated.</param>
+	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
+	/// A string which consist of dwCount replications of c.
 	/// </returns>
 	FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local replString:=null as string
+        if (!string.IsNullOrEmpty(c))
+            local  builder := System.Text.StringBuilder{c:Length * (int)dwCount} as System.Text.StringBuilder
+			local i as int
+			for i:=1 upto (int)dwCount
+				builder:Append(c)
+			next
+            replString := builder:ToString()
+        endif
+	RETURN replString   
 
 	/// <summary>
 	/// Repeat a string a specified number of times.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwCount"></param>
+	/// <param name="c">The string to be repeated.</param>
+	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
+	/// A string which consist of dwCount replications of c.
 	/// </returns>
 	FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN Repl(c,dwCount)   
 
 	/// <summary>
 	/// Return a substring beginning with the rightmost character.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwLen"></param>
+	/// <param name="c">The string to extract the rightmost characters from.</param>
+	/// <param name="dwLen">The length of the string to extract.</param>
 	/// <returns>
+	/// Returns the right most part in the given length.
 	/// </returns>
 	FUNCTION Right(c AS STRING,dwLen AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local rightMostPart := null as string
+		try
+			rightMostPart := c:SubString(c:Length-(int)dwLen)
+		// catch ex as Exception
+		//    nop
+		end try
+	return rightMostPart
 
 	/// <summary>
 	/// Remove trailing spaces from a string.
@@ -1021,8 +1098,12 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION RTrim(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local trimmedString := null as string
+		if ( !string.IsNullOrEMpty(c) )
+		   trimmedString := c:TrimEnd()
+		endif
+	RETURN trimmedString  
+  
 
 	/// <summary>
 	/// Convert single-byte kana characters in a string to their double-byte equivalents.
@@ -1037,12 +1118,16 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Create new character variable with the same characters as the original string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">The string be cloned.</param>
 	/// <returns>
+	/// A opy of the input string.
 	/// </returns>
 	FUNCTION SClone(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local clonedString := null as string
+		if ( !string.IsNUllOrEMpty(c) )
+		   clonedString := string.Copy(c)
+		endif
+	RETURN clonedString
 
 	/// <summary>
 	/// Return a time as the number of seconds that have elapsed since midnight.
@@ -1057,12 +1142,18 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Return the length of a strongly typed string.
 	/// </summary>
-	/// <param name="c"></param>
+	/// <param name="c">String which length should be calculated.</param>
 	/// <returns>
+	/// The length of the string.
 	/// </returns>
 	FUNCTION SLen(c AS STRING) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local length := 0 as dword
+		try
+			if (!string.IsNullOrEmpty(c))
+			   length := (dword) c:Length
+			endif
+		end try
+	RETURN length  
 
 	/// <summary>
 	/// Convert a string to Soundex form.
@@ -1081,8 +1172,13 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION SToD(cDate AS STRING) AS DATE
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local convertedDate := __VODate{} as __VODate
+		try
+			convertedDate := (__VODate)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
+		//catch ex as exeption
+		//   nop
+		end try
+	RETURN convertedDate
 
 	/// <summary>
 	/// Allows text substitution in strings entered at runtime.

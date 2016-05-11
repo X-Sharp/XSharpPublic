@@ -356,11 +356,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool invokedAsExtensionMethod = false,
             ThreeState enableCallerInfo = ThreeState.Unknown)
         {
+#if XSHARP
+            // nvk: In XSharp the property may be fake to support ARRAY "indexers"
+            Debug.Assert(((methodOrIndexer.Kind == SymbolKind.Property) /*&& optionalParametersMethod.IsAccessor()*/) ||
+                ReferenceEquals(methodOrIndexer, optionalParametersMethod));
+#else
             // Either the methodOrIndexer is a property, in which case the method used
             // for optional parameters is an accessor of that property (or an overridden
             // property), or the methodOrIndexer is used for optional parameters directly.
             Debug.Assert(((methodOrIndexer.Kind == SymbolKind.Property) && optionalParametersMethod.IsAccessor()) ||
                 ReferenceEquals(methodOrIndexer, optionalParametersMethod));
+#endif
 
             // We need to do a fancy rewrite under the following circumstances:
             // (1) a params array is being used; we need to generate the array.

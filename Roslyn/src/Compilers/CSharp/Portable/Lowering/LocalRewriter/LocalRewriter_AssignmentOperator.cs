@@ -245,7 +245,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     syntax,
                     rewrittenReceiver,
                     setMethod,
+#if XSHARP
+                    setMethod.IsAccessor() ? AppendToPossibleNull(rewrittenArguments, rhsAssignment) :
+                        rewrittenArguments.NullToEmpty().Insert(0, rhsAssignment));
+#else
                     AppendToPossibleNull(rewrittenArguments, rhsAssignment));
+#endif
 
                 return new BoundSequence(
                     syntax,
@@ -260,7 +265,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     syntax,
                     rewrittenReceiver,
                     setMethod,
+#if XSHARP
+                    setMethod.IsAccessor() ? AppendToPossibleNull(rewrittenArguments, rewrittenRight) :
+                        rewrittenArguments.NullToEmpty().Insert(0, rewrittenRight));
+#else
                     AppendToPossibleNull(rewrittenArguments, rewrittenRight));
+#endif
 
                 if (argTemps.IsDefaultOrEmpty)
                 {

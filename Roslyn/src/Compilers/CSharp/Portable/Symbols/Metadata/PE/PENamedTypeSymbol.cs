@@ -1314,6 +1314,67 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             }
         }
 
+#if XSHARP
+        private PropertySymbol _vulcanArrayIndexerOne = null;
+        internal PropertySymbol VulcanArrayIndexerOne
+        {
+            get {
+                if (_vulcanArrayIndexerOne == null)
+                {
+                    EnsureAllMembersAreLoaded();
+
+                    var moduleSymbol = this.ContainingPEModule;
+                    var module = moduleSymbol.Module;
+
+                    var getMethods = GetSimpleNonTypeMembers("__GetElement");
+                    var setMethods = GetSimpleNonTypeMembers("__SetElement");
+
+                    if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
+                    {
+                        var getOne = (from PEMethodSymbol m in getMethods where !m.ParameterTypes[0].IsArray() select m).FirstOrDefault();
+                        var setOne = (from PEMethodSymbol m in setMethods where !m.ParameterTypes[1].IsArray() select m).FirstOrDefault();
+
+                        if (((object)getOne != null) || ((object)setOne != null))
+                        {
+                            PropertyDefinitionHandle h = new PropertyDefinitionHandle();
+                            _vulcanArrayIndexerOne = new PEPropertySymbol(moduleSymbol, this, h, getOne, setOne);
+                        }
+                    }
+                }
+                return _vulcanArrayIndexerOne;
+            }
+        }
+
+        private PropertySymbol _vulcanArrayIndexerMany = null;
+        internal PropertySymbol VulcanArrayIndexerMany
+        {
+            get
+            {
+                if (_vulcanArrayIndexerMany == null)
+                {
+                    EnsureAllMembersAreLoaded();
+
+                    var moduleSymbol = this.ContainingPEModule;
+                    var module = moduleSymbol.Module;
+
+                    var getMethods = GetSimpleNonTypeMembers("__GetElement");
+                    var setMethods = GetSimpleNonTypeMembers("__SetElement");
+
+                    if (getMethods != ImmutableArray<Symbol>.Empty && setMethods != ImmutableArray<Symbol>.Empty)
+                    {
+                        var getMany = (from PEMethodSymbol m in getMethods where m.ParameterTypes[0].IsArray() select m).FirstOrDefault();
+                        var setMany = (from PEMethodSymbol m in setMethods where m.ParameterTypes[1].IsArray() select m).FirstOrDefault();
+                        if (((object)getMany != null) || ((object)setMany != null))
+                        {
+                            PropertyDefinitionHandle h = new PropertyDefinitionHandle();
+                            _vulcanArrayIndexerMany = new PEPropertySymbol(moduleSymbol, this, h, getMany, setMany);
+                        }
+                    }
+                }
+                return _vulcanArrayIndexerMany;
+            }
+        }
+#endif
         internal override ImmutableArray<Symbol> GetSimpleNonTypeMembers(string name)
         {
             EnsureAllMembersAreLoaded();

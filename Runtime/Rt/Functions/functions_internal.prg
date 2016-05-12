@@ -11,9 +11,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __AccessPtr(o AS OBJECT,symMethodName AS SYMBOL) AS PTR
+	FUNCTION __AccessPtr(o AS OBJECT,symMethodName AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -21,9 +21,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __AccessPtrClass(symClassName AS SYMBOL,symMethodName AS SYMBOL) AS PTR
+	FUNCTION __AccessPtrClass(symClassName AS SYMBOL,symMethodName AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -31,9 +31,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __AssignPtr(o AS OBJECT,symMethodName AS SYMBOL) AS PTR
+	FUNCTION __AssignPtr(o AS OBJECT,symMethodName AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -41,9 +41,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __AssignPtrClass(symClassName AS SYMBOL,symMethodName AS SYMBOL) AS PTR
+	FUNCTION __AssignPtrClass(symClassName AS SYMBOL,symMethodName AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -75,7 +75,7 @@ begin namespace XSharp.Runtime
 	/// <param name="hInst"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __FreeGuruTab(hInst AS PTR) AS VOID
+	FUNCTION __FreeGuruTab(hInst AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -86,7 +86,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lpdwValue"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __GetAtomProperty(atom AS SYMBOL,atomPropName AS SYMBOL,lpdwValue AS DWORD PTR) AS LONG
+	FUNCTION __GetAtomProperty(atom AS SYMBOL,atomPropName AS SYMBOL,lpdwValue REF DWORD) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -103,9 +103,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __GetClassPtr(symClassName AS SYMBOL) AS PTR
+	FUNCTION __GetClassPtr(symClassName AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -119,9 +119,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION __LastMethodPtr() AS PTR
+	FUNCTION __LastMethodPtr() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -129,9 +129,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __MethodPtr(o AS OBJECT,symMethodName AS SYMBOL) AS PTR
+	FUNCTION __MethodPtr(o AS OBJECT,symMethodName AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -139,16 +139,16 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __MethodPtrClass(symClassName AS SYMBOL,symMethodName AS SYMBOL) AS PTR
+	FUNCTION __MethodPtrClass(symClassName AS SYMBOL,symMethodName AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="pMod"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __NotifyUnload(pMod AS PTR) AS LOGIC
+	FUNCTION __NotifyUnload(pMod AS IntPtr) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -158,7 +158,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lpClassPtr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION __ObjectCastClassPtr(lpO AS OBJECT,lpClassPtr AS PTR) AS OBJECT
+	FUNCTION __ObjectCastClassPtr(lpO AS OBJECT,lpClassPtr AS IntPtr) AS OBJECT
 		/// THROW NotImplementedException{}
 	RETURN NULL_OBJECT   
 
@@ -221,7 +221,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION __UpperPsz(pszSource AS PSZ) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ   
 
 	/// <summary>
 	/// </summary>
@@ -306,7 +306,7 @@ begin namespace XSharp.Runtime
 	/// <param name="ptrFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _Call(ptrFunc AS PTR) AS USUAL
+	FUNCTION _Call(ptrFunc AS IntPtr) AS USUAL
 		/// THROW NotImplementedException{}
 	RETURN NIL   
 
@@ -326,7 +326,7 @@ begin namespace XSharp.Runtime
 	/// <param name="aArgs"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _CallClipFuncPtr(pFunc AS PTR,aArgs AS ARRAY) AS USUAL
+	FUNCTION _CallClipFuncPtr(pFunc AS IntPtr,aArgs AS ARRAY) AS USUAL
 		/// THROW NotImplementedException{}
 	RETURN NIL   
 
@@ -354,7 +354,7 @@ begin namespace XSharp.Runtime
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _Dec(dwVal AS DWORD,p AS PTR) AS VOID
+	FUNCTION _Dec(dwVal AS DWORD,p AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -364,7 +364,7 @@ begin namespace XSharp.Runtime
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _DecByte(b AS BYTE,p AS PTR) AS VOID
+	FUNCTION _DecByte(b AS BYTE,p AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN    
 
@@ -374,7 +374,7 @@ begin namespace XSharp.Runtime
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _DecWord(wVal AS WORD,p AS PTR) AS VOID
+	FUNCTION _DecWord(wVal AS WORD,p AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -383,7 +383,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pObj"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _DumpKid(pObj AS PTR) AS VOID
+	FUNCTION _DumpKid(pObj AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -479,7 +479,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _GetCmdLine() AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ  
 
 	/// <summary>
 	/// Return a constant specifying how the application window is shown.
@@ -499,7 +499,7 @@ begin namespace XSharp.Runtime
 	/// <param name="dwType"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _GetFirstParam(pptrStart AS USUAL,ptrFirst AS PTR,dwTypeFirst AS DWORD,dwType AS DWORD) AS USUAL
+	FUNCTION _GetFirstParam(pptrStart AS USUAL,ptrFirst AS IntPtr,dwTypeFirst AS DWORD,dwType AS DWORD) AS USUAL
 		/// THROW NotImplementedException{}
 	RETURN NIL   
 
@@ -517,9 +517,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION _GetInst() AS PTR
+	FUNCTION _GetInst() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -554,9 +554,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION _GetPrevInst() AS PTR
+	FUNCTION _GetPrevInst() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -589,7 +589,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _GetStringDXAX(dwRes AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ   
 
 	/// <summary>
 	/// </summary>
@@ -632,7 +632,7 @@ begin namespace XSharp.Runtime
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _Hex(dwVal AS DWORD,p AS PTR) AS VOID
+	FUNCTION _Hex(dwVal AS DWORD,p AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -642,7 +642,7 @@ begin namespace XSharp.Runtime
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _HexByte(b AS BYTE,p AS PTR) AS VOID
+	FUNCTION _HexByte(b AS BYTE,p AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -652,7 +652,7 @@ begin namespace XSharp.Runtime
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _HexWord(wVal AS WORD,p AS PTR) AS VOID
+	FUNCTION _HexWord(wVal AS WORD,p AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -848,7 +848,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _Numeric2Scientific(p AS PSZ) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ  
 
 	/// <summary>
 	/// </summary>
@@ -870,9 +870,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION _PCodeTable() AS DWORD PTR
+	FUNCTION _PCodeTable() AS DWORD[]
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL 
 
 	/// <summary>
 	/// </summary>
@@ -937,9 +937,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION _PrivatePtr() AS PTR
+	FUNCTION _PrivatePtr() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -970,9 +970,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION _PublicPtr() AS PTR
+	FUNCTION _PublicPtr() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -1050,7 +1050,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _RegCollNotifyEnd(ptrFunc AS PTR,lSet AS LOGIC) AS LOGIC
+	FUNCTION _RegCollNotifyEnd(ptrFunc AS IntPtr,lSet AS LOGIC) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1060,7 +1060,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _RegCollNotifyStart(ptrFunc AS PTR,lSet AS LOGIC) AS LOGIC
+	FUNCTION _RegCollNotifyStart(ptrFunc AS IntPtr,lSet AS LOGIC) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1069,7 +1069,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pCollFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _RegisterCollect(pCollFunc AS PTR) AS VOID
+	FUNCTION _RegisterCollect(pCollFunc AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -1079,7 +1079,7 @@ begin namespace XSharp.Runtime
 	/// <param name="ptrFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _RegisterExit(ptrFunc AS PTR) AS LOGIC
+	FUNCTION _RegisterExit(ptrFunc AS IntPtr) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1088,7 +1088,7 @@ begin namespace XSharp.Runtime
 	/// <param name="ptrFlds"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _RegisterFields(ptrFlds AS PTR) AS VOID
+	FUNCTION _RegisterFields(ptrFlds AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -1098,7 +1098,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pMod"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _RegisterWEP(pWEPFunc AS PTR,pMod AS PTR) AS LOGIC
+	FUNCTION _RegisterWEP(pWEPFunc AS IntPtr,pMod AS IntPtr) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1137,7 +1137,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION _Scientific2Numeric(p AS PSZ) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ   
 
 	/// <summary>
 	/// </summary>
@@ -1193,7 +1193,7 @@ begin namespace XSharp.Runtime
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _SetQOutPtr(ptrBuff AS PTR,dwLen AS DWORD) AS VOID
+	FUNCTION _SetQOutPtr(ptrBuff AS IntPtr,dwLen AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -1231,7 +1231,7 @@ begin namespace XSharp.Runtime
 	/// <param name="dwFcnt"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _SOrderInit(ptrSField AS PTR,dwFcnt AS DWORD) AS VOID
+	FUNCTION _SOrderInit(ptrSField AS IntPtr,dwFcnt AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -1333,24 +1333,24 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION _VODBErrInfoPtr() AS PTR
+	FUNCTION _VODBErrInfoPtr() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION _VODBSymbols() AS PTR
+	FUNCTION _VODBSymbols() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="pMod"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _VOFreeLibrary(pMod AS PTR) AS LOGIC
+	FUNCTION _VOFreeLibrary(pMod AS IntPtr) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -1360,9 +1360,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cDLL"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION _VOLoadLibrary(cDLL AS STRING) AS PTR
+	FUNCTION _VOLoadLibrary(cDLL AS STRING) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>

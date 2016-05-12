@@ -13,7 +13,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION AdjustFNamePSZ(pszFileName AS PSZ) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
@@ -25,7 +25,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a value to a static PSZ.
@@ -35,7 +35,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION AsPsz(u AS USUAL) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a string containing an 8-bit logical into a logical value.
@@ -55,7 +55,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION Cast2Psz(cSource AS STRING) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Change the current Windows directory.
@@ -237,7 +237,7 @@ begin namespace XSharp.IO
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemCopyC(pszVal AS PSZ,ptrAny AS PTR,dwLen AS DWORD) AS DWORD
+	FUNCTION ItemCopyC(pszVal AS PSZ,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -255,9 +255,9 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetC(ptrAny AS PTR) AS PSZ
+	FUNCTION ItemGetC(ptrAny AS IntPtr) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// </summary>
@@ -265,9 +265,9 @@ begin namespace XSharp.IO
 	/// <param name="pszDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetDS(ptrAny AS PTR,pszDate AS PSZ) AS PSZ
+	FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS PSZ) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// </summary>
@@ -276,9 +276,9 @@ begin namespace XSharp.IO
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetNS(ptrAny AS PTR,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
+	FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// </summary>
@@ -286,9 +286,9 @@ begin namespace XSharp.IO
 	/// <param name="pszVal"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutC(ptrAny AS PTR,pszVal AS PSZ) AS PTR
+	FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS PSZ) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
@@ -297,9 +297,9 @@ begin namespace XSharp.IO
 	/// <param name="uilen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutCL(ptrAny AS PTR,pszVal AS PSZ,uilen AS DWORD) AS PTR
+	FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS PSZ,uilen AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
@@ -307,9 +307,9 @@ begin namespace XSharp.IO
 	/// <param name="pszDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutDS(ptrAny AS PTR,pszDate AS PSZ) AS PTR
+	FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS PSZ) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
@@ -319,18 +319,18 @@ begin namespace XSharp.IO
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutNS(ptrAny AS PTR,pszVal AS PSZ,dwLen AS DWORD,dwDec AS DWORD) AS PTR
+	FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS PSZ,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
 	/// <param name="pObj"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ObjAsPsz(pObj AS PTR) AS PSZ
+	FUNCTION ObjAsPsz(pObj AS IntPtr) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
@@ -342,7 +342,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION Oem2AnsiBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Return the name of an activated entity.
@@ -352,7 +352,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION ProcName(dwActivation AS USUAL) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.
@@ -370,9 +370,9 @@ begin namespace XSharp.IO
 	/// <param name="ptrSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PszAlloc(ptrSource AS PTR) AS PSZ
+	FUNCTION PszAlloc(ptrSource AS IntPtr) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Return the length of a PSZ.
@@ -399,7 +399,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION ReleaseString() AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Break a path name into its components.
@@ -425,7 +425,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION StrFloat(flSource AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a strongly typed string to a null-terminated string.
@@ -435,7 +435,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION String2Psz(cSource AS STRING) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Copy a string to a newly allocated block of memory and return a PSZ to the memory.
@@ -445,7 +445,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert an integer expression to a PSZ.
@@ -457,7 +457,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a long integer expression to a PSZ.
@@ -469,7 +469,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// Convert a null-terminated string to a symbol and add it to the atom table.
@@ -518,7 +518,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION SysGetAtomName(s AS SYMBOL) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// </summary>
@@ -526,7 +526,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION TimePsz() AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	/// <summary>
 	/// </summary>
@@ -534,7 +534,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION TimePsz24() AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ
 
 	#endregion
 end namespace

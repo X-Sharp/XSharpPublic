@@ -90,7 +90,7 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001</DisabledWarnings>
+    <DisabledWarnings>168</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -98,7 +98,7 @@
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths />
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />

@@ -15,9 +15,9 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		[TestMethod];
 		METHOD DToCTest() as void
 			var u := ctod("03/13/2016")
-			AreEqual("01.01.2016" ,ctod("01/01/2016").ToString())
-			AreEqual("13.02.2016" ,ctod("13/02/2016").ToString())
-			AreEqual("01.01.0001" ,ctod("03/13/2016").ToString())	
+			AreEqual(2016.01.01 ,ctod("01/01/2016"))
+			AreEqual(2016.02.13 ,ctod("13/02/2016"))
+			AreEqual(0001.01.01 ,ctod("03/13/2016"))	
 		RETURN
 		[TestMethod];
 		METHOD ElapTimeTest() as void
@@ -27,7 +27,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		RETURN
 		[TestMethod];
 		METHOD STODTest() as void
-			AreEqual("06.05.2016",STOD("20160506").ToString())
+			AreEqual(2016.05.06,STOD("20160506"))
 		RETURN
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

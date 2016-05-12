@@ -60,8 +60,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>bin\Debug\</OutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <OutputPath>$(Solutiondir)\Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DocumentationFile>false</DocumentationFile>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
@@ -77,7 +77,28 @@
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths />
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>bin\Release\</OutputPath>
+    <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <DocumentationFile>false</DocumentationFile>
+    <Optimize>true</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <DisabledWarnings />
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStdDef>false</NoStdDef>
+    <IncludePaths />
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
   <ItemGroup>

@@ -12,7 +12,7 @@ begin namespace XSharp.IO
 	/// <param name="nOffset"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FChSize(pFile AS PTR,nOffset AS DWORD) AS DWORD
+	FUNCTION FChSize(pFile AS IntPtr,nOffset AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -22,7 +22,7 @@ begin namespace XSharp.IO
 	/// <param name="pFile"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FClose(pFile AS PTR) AS LOGIC
+	FUNCTION FClose(pFile AS IntPtr) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -32,7 +32,7 @@ begin namespace XSharp.IO
 	/// <param name="pHandle"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FCommit(pHandle AS PTR) AS VOID
+	UNSAFE FUNCTION FCommit(pHandle AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -42,7 +42,7 @@ begin namespace XSharp.IO
 	/// <param name="pFILE"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FEof(pFILE AS PTR) AS LOGIC
+	UNSAFE FUNCTION FEof(pFILE AS IntPtr) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -54,7 +54,7 @@ begin namespace XSharp.IO
 	/// <param name="dwLength"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFLock(pHandle AS PTR,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	FUNCTION FFLock(pHandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -64,7 +64,7 @@ begin namespace XSharp.IO
 	/// <param name="phandle"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFlush(phandle AS PTR) AS VOID
+	FUNCTION FFlush(phandle AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -76,7 +76,7 @@ begin namespace XSharp.IO
 	/// <param name="dwLength"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFUnLock(phandle AS PTR,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	FUNCTION FFUnLock(phandle AS IntPtr,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -87,7 +87,7 @@ begin namespace XSharp.IO
 	/// <param name="nBuffLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FGetS2(pFile AS PTR,nBuffLen AS DWORD) AS STRING
+	FUNCTION FGetS2(pFile AS IntPtr,nBuffLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN NULL_STRING   
 
@@ -98,7 +98,7 @@ begin namespace XSharp.IO
 	/// <param name="nDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldVal(ptrBuff AS PTR,nLen AS INT,nDec AS INT) AS FLOAT
+	FUNCTION FieldVal(ptrBuff AS IntPtr,nLen AS INT,nDec AS INT) AS FLOAT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -109,7 +109,7 @@ begin namespace XSharp.IO
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Float2Psz(ptrUsual AS PTR,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
+	FUNCTION Float2Psz(ptrUsual AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
 	RETURN NULL   
 
@@ -121,7 +121,7 @@ begin namespace XSharp.IO
 	/// <param name="nCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FPutS3(pFILE AS PTR,c AS STRING,nCount AS DWORD) AS DWORD
+	FUNCTION FPutS3(pFILE AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -133,7 +133,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRead(pHandle AS PTR,refC AS USUAL,dwCount AS DWORD) AS DWORD
+	FUNCTION FRead(pHandle AS IntPtr,refC AS USUAL,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -145,7 +145,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRead3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	FUNCTION FRead3(pHandle AS IntPtr,ptrBuffer AS IntPtr,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -158,7 +158,7 @@ begin namespace XSharp.IO
 	/// <param name="lAnsi"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRead4(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
+	FUNCTION FRead4(pHandle AS IntPtr,ptrBuffer AS IntPtr,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -169,7 +169,7 @@ begin namespace XSharp.IO
 	/// <param name="nBuffLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadLine2(pFile AS PTR,nBuffLen AS DWORD) AS STRING
+	FUNCTION FReadLine2(pFile AS IntPtr,nBuffLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN NULL_STRING   
 
@@ -180,7 +180,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadStr(pHandle AS PTR,dwCount AS DWORD) AS STRING
+	FUNCTION FReadStr(pHandle AS IntPtr,dwCount AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN NULL_STRING   
 
@@ -192,7 +192,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadText(pHandle AS PTR,refC AS USUAL,dwCount AS DWORD) AS DWORD
+	FUNCTION FReadText(pHandle AS IntPtr,refC AS USUAL,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -204,7 +204,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadText3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	FUNCTION FReadText3(pHandle AS IntPtr,ptrBuffer AS IntPtr,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -214,7 +214,7 @@ begin namespace XSharp.IO
 	/// <param name="pFile"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRewind(pFile AS PTR) AS VOID
+	FUNCTION FRewind(pFile AS IntPtr) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -226,7 +226,7 @@ begin namespace XSharp.IO
 	/// <param name="dwOrigin"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FSeek3(pHandle AS PTR,lOffset AS LONG,dwOrigin AS DWORD) AS LONG
+	FUNCTION FSeek3(pHandle AS IntPtr,lOffset AS LONG,dwOrigin AS DWORD) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -236,7 +236,7 @@ begin namespace XSharp.IO
 	/// <param name="pHandle"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FTell(pHandle AS PTR) AS LONG
+	FUNCTION FTell(pHandle AS IntPtr) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -245,7 +245,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FunctionPtr2Sym(ptrFunc AS PTR) AS SYMBOL
+	FUNCTION FunctionPtr2Sym(ptrFunc AS IntPtr) AS SYMBOL
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -257,7 +257,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWrite3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	FUNCTION FWrite3(pHandle AS IntPtr,ptrBuffer AS IntPtr,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -270,7 +270,7 @@ begin namespace XSharp.IO
 	/// <param name="lAnsi"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWrite4(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
+	FUNCTION FWrite4(pHandle AS IntPtr,ptrBuffer AS IntPtr,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -282,7 +282,7 @@ begin namespace XSharp.IO
 	/// <param name="nCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWriteLine3(pFILE AS PTR,c AS STRING,nCount AS DWORD) AS DWORD
+	FUNCTION FWriteLine3(pFILE AS IntPtr,c AS STRING,nCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -294,7 +294,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWriteText3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	FUNCTION FWriteText3(pHandle AS IntPtr,ptrBuffer AS IntPtr,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

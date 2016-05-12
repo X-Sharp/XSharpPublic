@@ -14,7 +14,7 @@ begin namespace XSharp.Runtime
 	FUNCTION AdjustFName(cName AS STRING) AS STRING
 		local adjusted := null as string
 		if ( !string.IsNullOrEmpty(cName) ) 
-			adjusted := System.IO.Path.GetFileNameWithoutExtension(cName).TrimEnd()
+			adjusted := System.IO.Path.GetFileNameWithoutExtension(cName):TrimEnd()
 			if ( cName:IndexOf('.') > 0 ) 
 				adjusted += System.IO.Path.GetExtension(cName)
 			endif
@@ -55,7 +55,7 @@ begin namespace XSharp.Runtime
 	FUNCTION AmPm(cTime AS STRING) AS STRING
 		local result:=null as string
 		try 
-			result := DateTime.Parse(ctime).ToString("hh:mm:ss")
+			result := DateTime.Parse(ctime):ToString("hh:mm:ss")
 			// The following exceptions may appear but will be ignored currently (VO/VN behaviour)
 			// catch ex as FormatException
 			//	  NOP 
@@ -94,7 +94,7 @@ begin namespace XSharp.Runtime
 		local ascValue := 0 as dword
 		if ( !string.IsNullOrEmpty(c) ) 
 		   local chrBuffer := c:ToCharArray() as char[]
-           local bytBuffer := System.Text.Encoding.GetEncoding(1252).GetBytes(chrBuffer) as byte[]
+           local bytBuffer := System.Text.Encoding.GetEncoding(1252):GetBytes(chrBuffer) as byte[]
 		   ascValue := (DWORD) bytBuffer[1]
 		endif
 	RETURN ascValue
@@ -286,9 +286,9 @@ begin namespace XSharp.Runtime
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Bin2Ptr(c AS STRING) AS PTR
+	FUNCTION Bin2Ptr(c AS STRING) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Convert a string containing a 32-bit floating point number to a Real4 value.
@@ -456,7 +456,7 @@ begin namespace XSharp.Runtime
 	/// <param name="hfOut"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS PTR) AS INT
+	FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS IntPtr) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -505,8 +505,8 @@ begin namespace XSharp.Runtime
 		/// TODO: VO compatibility 
 		try
 		  elapedTime := DateTime.ParseExact(cEndTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-				.Subtract(DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-				.ToString()
+				:Subtract(DateTime.ParseExact(cStartTime, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
+				:ToString()
 		catch ex as Exception
 			nop
 		end try
@@ -540,9 +540,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwAttr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FCreate2(cFile AS STRING,dwAttr AS DWORD) AS PTR
+	FUNCTION FCreate2(cFile AS STRING,dwAttr AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Delete a file from disk.
@@ -602,9 +602,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwMode"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FOpen2(cName AS STRING,dwMode AS DWORD) AS PTR
+	FUNCTION FOpen2(cName AS STRING,dwMode AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Change the name of a file.
@@ -625,9 +625,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cPath"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS PTR
+	FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Replace all soft carriage returns (Chr(141)) in a string with hard carriage returns (Chr(13)).
@@ -676,7 +676,7 @@ begin namespace XSharp.Runtime
 	RETURN FALSE   
 
 	/// <summary>
-	/// Check to see if a typed dynamic object is static:
+	/// Check to see if a typed dynamic object is static.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
@@ -848,7 +848,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Occurs(cSearch AS STRING,c AS STRING) AS DWORD
 		local countedOccurances:=0 as int
 		try
-			countedOccurances := c:Split(<string>{ cSearch }, StringSplitOptions.None).Length - 1 
+			countedOccurances := c:Split(<string>{ cSearch }, StringSplitOptions.None):Length - 1 
 		catch ex as Exception
 			nop
 		end try
@@ -921,7 +921,7 @@ begin namespace XSharp.Runtime
 	FUNCTION Proper(c AS STRING) AS STRING
 		local convertedString:=null as string 
 		if ( !string.IsNullOrEmpty(c) )
-		   convertedString := System.Globalization.CultureInfo.CurrentCulture:TextInfo.ToTitleCase(c)
+		   convertedString := System.Globalization.CultureInfo.CurrentCulture:TextInfo:ToTitleCase(c)
 		endif
 	RETURN convertedString   
 
@@ -1048,7 +1048,7 @@ begin namespace XSharp.Runtime
 	/// <param name="c">The string to be repeated.</param>
 	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
-	/// A string which consist of dwCount replications of c:
+	/// A string which consist of dwCount replications of c.
 	/// </returns>
 	FUNCTION Repl(c AS STRING,dwCount AS DWORD) AS STRING
 		local replString:=null as string
@@ -1068,7 +1068,7 @@ begin namespace XSharp.Runtime
 	/// <param name="c">The string to be repeated.</param>
 	/// <param name="dwCount">The number of replications.</param>
 	/// <returns>
-	/// A string which consist of dwCount replications of c:
+	/// A string which consist of dwCount replications of c.
 	/// </returns>
 	FUNCTION Replicate(c AS STRING,dwCount AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
@@ -1351,7 +1351,7 @@ begin namespace XSharp.Runtime
 	/// <param name="hfOut"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
+	FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

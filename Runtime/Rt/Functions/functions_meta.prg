@@ -60,7 +60,7 @@ begin namespace XSharp.Runtime
 	/// <param name="nArgs"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DeclareMethod(symClass AS SYMBOL,symMeth AS SYMBOL,nType AS DWORD,pFunc AS PTR,nArgs AS DWORD) AS INT
+	FUNCTION DeclareMethod(symClass AS SYMBOL,symMeth AS SYMBOL,nType AS DWORD,pFunc AS IntPtr,nArgs AS DWORD) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -154,9 +154,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FunctionSym2Ptr(symFunc AS SYMBOL) AS PTR
+	FUNCTION FunctionSym2Ptr(symFunc AS SYMBOL) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>

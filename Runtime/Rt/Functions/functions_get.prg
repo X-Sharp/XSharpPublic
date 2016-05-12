@@ -58,9 +58,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION GetDASPtr() AS PTR
+	FUNCTION GetDASPtr() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// Return the current date format.
@@ -126,7 +126,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetFMask(cFileMask AS USUAL) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ   
 
 	/// <summary>
 	/// </summary>
@@ -159,9 +159,9 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION GetPrivPtr() AS PTR
+	FUNCTION GetPrivPtr() AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero   
 
 	/// <summary>
 	/// </summary>
@@ -177,7 +177,7 @@ begin namespace XSharp.Runtime
 	/// <param name="cSubStorage"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION GetStgServer(pStgRoot AS PTR,cSubStorage AS STRING) AS STRING
+	FUNCTION GetStgServer(pStgRoot AS IntPtr,cSubStorage AS STRING) AS STRING
 		/// THROW NotImplementedException{}
 	RETURN NULL_STRING   
 
@@ -188,7 +188,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetStringDXAX(dwRes AS DWORD) AS PSZ
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN NULL_PSZ   
 
 	/// <summary>
 	/// </summary>

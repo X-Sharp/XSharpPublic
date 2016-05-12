@@ -82,7 +82,7 @@ begin namespace XSharp.Runtime
 	/// <param name="ptrBuff"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS ARRAY
+	FUNCTION ArrayInit(dwDim AS DWORD,ptrBuff AS IntPtr) AS ARRAY
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -425,18 +425,18 @@ begin namespace XSharp.Runtime
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemAlloc(cb AS DWORD) AS PTR
+	FUNCTION MemAlloc(cb AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemAllocBlk(cb AS DWORD) AS PTR
+	FUNCTION MemAllocBlk(cb AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Allocate static memory buffers of a specified size.
@@ -445,9 +445,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cbCell"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS PTR
+	FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Allocate a new memory buffer in a group.
@@ -456,9 +456,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemGrpAlloc(dwGroup AS DWORD,cb AS DWORD) AS PTR
+	FUNCTION MemGrpAlloc(dwGroup AS DWORD,cb AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
@@ -467,9 +467,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cbCell"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS PTR
+	FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Close a memory group.
@@ -496,7 +496,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pFunction"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemGrpEnum(dwGroup AS DWORD,pFunction AS PTR) AS LONG
+	FUNCTION MemGrpEnum(dwGroup AS DWORD,pFunction AS IntPtr) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

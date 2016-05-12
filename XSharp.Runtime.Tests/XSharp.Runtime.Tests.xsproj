@@ -23,6 +23,7 @@
     <VO12>false</VO12>
     <VO13>false</VO13>
     <VO14>false</VO14>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.Default.props" />
   <PropertyGroup>
@@ -31,11 +32,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XSharp.Runtime.Tests</RootNamespace>
     <AssemblyName>XSharp.Runtime.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>XSharp.Runtime.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
+    <Dialect>VO</Dialect>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,6 +57,27 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <OutputPath>bin\Debug\</OutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\</IntermediateOutputPath>
+    <DocumentationFile>false</DocumentationFile>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>false</UseSharedCompilation>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <DisabledWarnings>165</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption />
+    <PPO>false</PPO>
+    <NoStdDef>false</NoStdDef>
+    <IncludePaths />
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
   <ItemGroup>

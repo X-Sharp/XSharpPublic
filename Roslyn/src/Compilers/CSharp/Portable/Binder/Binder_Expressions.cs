@@ -5687,11 +5687,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindPointerElementAccess(node, expr, arguments, diagnostics);
 
                 case TypeKind.Class:
+                case TypeKind.Struct:
 #if XSHARP
                     return BindIndexerOrVulcanArrayAccess(node, expr, arguments, diagnostics);
 
 #endif
-                case TypeKind.Struct:
                 case TypeKind.Interface:
                 case TypeKind.TypeParameter:
                     return BindIndexerAccess(node, expr, arguments, diagnostics);
@@ -5917,69 +5917,76 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BoundExpression BindIndexerOrVulcanArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
-            if (Compilation.Options.IsDialectVO && ((NamedTypeSymbol)expr.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Array))
+            if (Compilation.Options.IsDialectVO)
             {
-                ImmutableArray<BoundExpression> args;
-                if (!this.Compilation.Options.ArrayZero)
+                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                 {
-                    ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
-                    foreach (var arg in analyzedArguments.Arguments)
-                    {
-                        var left = arg;
-                        var right = new BoundLiteral(arg.Syntax, ConstantValue.Create(1), arg.Type) { WasCompilerGenerated = true };
-                        int compoundStringLength = 0;
-                        var opKind = left.Type.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
-                            : left.Type.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
-                            : left.Type.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
-                            : BinaryOperatorKind.ULongSubtraction;
-                        var resultConstant = FoldBinaryOperator(arg.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
-                        var sig = this.Compilation.builtInOperators.GetSignature(opKind);
-                        argsBuilder.Add(new BoundBinaryOperator(arg.Syntax, BinaryOperatorKind.Subtraction,
-                            left, right,
-                            resultConstant,
-                            sig.Method,
-                            resultKind: LookupResultKind.Viable,
-                            originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
-                            type: arg.Type,
-                            hasErrors: false)
-                        { WasCompilerGenerated = true });
-                    }
-                    args = argsBuilder.ToImmutableAndFree();
+                    expr = BindCastCore(node, expr, Compilation.GetWellKnownType(WellKnownType.Vulcan___Array), wasCompilerGenerated: true, diagnostics: diagnostics);
                 }
-                else
-                    args = analyzedArguments.Arguments.ToImmutable();
-                if (args.Count() > 1)
+                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Array))
                 {
-                    ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
-                    var exprs = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
-                    foreach (var arg in args)
+                    ImmutableArray<BoundExpression> args;
+                    if (!this.Compilation.Options.ArrayZero)
                     {
-                        if (exprs.Count > 0)
-                            exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
-                        exprs.Add(arg.Syntax as ExpressionSyntax);
+                        ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                        foreach (var arg in analyzedArguments.Arguments)
+                        {
+                            var left = arg;
+                            var right = new BoundLiteral(arg.Syntax, ConstantValue.Create(1), arg.Type) { WasCompilerGenerated = true };
+                            int compoundStringLength = 0;
+                            var opKind = left.Type.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
+                                : left.Type.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
+                                : left.Type.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
+                                : BinaryOperatorKind.ULongSubtraction;
+                            var resultConstant = FoldBinaryOperator(arg.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
+                            var sig = this.Compilation.builtInOperators.GetSignature(opKind);
+                            argsBuilder.Add(new BoundBinaryOperator(arg.Syntax, BinaryOperatorKind.Subtraction,
+                                left, right,
+                                resultConstant,
+                                sig.Method,
+                                resultKind: LookupResultKind.Viable,
+                                originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                                type: arg.Type,
+                                hasErrors: false)
+                            { WasCompilerGenerated = true });
+                        }
+                        args = argsBuilder.ToImmutableAndFree();
                     }
-                    var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
-                    argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
-                        creationSyntax: null,
-                        initSyntax: initSyntax,
-                        type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, Compilation.GetSpecialType(SpecialType.System_Int32), ImmutableArray<CustomModifier>.Empty),
-                        sizes: ImmutableArray<BoundExpression>.Empty,
-                        boundInitExprOpt: args));
-                    args = argsBuilder.ToImmutableAndFree();
+                    else
+                        args = analyzedArguments.Arguments.ToImmutable();
+                    if (args.Count() > 1)
+                    {
+                        ArrayBuilder<BoundExpression> argsBuilder = ArrayBuilder<BoundExpression>.GetInstance();
+                        var exprs = SeparatedSyntaxListBuilder<ExpressionSyntax>.Create();
+                        foreach (var arg in args)
+                        {
+                            if (exprs.Count > 0)
+                                exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
+                            exprs.Add(arg.Syntax as ExpressionSyntax);
+                        }
+                        var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
+                        argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
+                            creationSyntax: null,
+                            initSyntax: initSyntax,
+                            type: ArrayTypeSymbol.CreateCSharpArray(this.Compilation.Assembly, Compilation.GetSpecialType(SpecialType.System_Int32), ImmutableArray<CustomModifier>.Empty),
+                            sizes: ImmutableArray<BoundExpression>.Empty,
+                            boundInitExprOpt: args));
+                        args = argsBuilder.ToImmutableAndFree();
+                    }
+                    return new BoundIndexerAccess(
+                        syntax: node,
+                        receiverOpt: expr,
+                        indexer: analyzedArguments.Arguments.Count == 1 ? (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne
+                            : (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany,
+                        arguments: args,
+                        argumentNamesOpt: default(ImmutableArray<string>),
+                        argumentRefKindsOpt: default(ImmutableArray<RefKind>),
+                        expanded: false,
+                        argsToParamsOpt: default(ImmutableArray<int>),
+                        type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                        hasErrors: false)
+                    { WasCompilerGenerated = true };
                 }
-                return new BoundIndexerAccess(
-                    syntax: node,
-                    receiverOpt: expr,
-                    indexer: analyzedArguments.Arguments.Count == 1 ? (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne
-                        : (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany,
-                    arguments: args,
-                    argumentNamesOpt: default(ImmutableArray<string>),
-                    argumentRefKindsOpt: default(ImmutableArray<RefKind>),
-                    expanded: false,
-                    argsToParamsOpt: default(ImmutableArray<int>),
-                    type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
-                    hasErrors: false)
-                { WasCompilerGenerated = true };
             }
 
             return BindIndexerAccess(node, expr, analyzedArguments, diagnostics);

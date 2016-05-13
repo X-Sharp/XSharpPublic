@@ -1364,6 +1364,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_AmbiguousCase = 9011,
         ERR_DuplicateDefine = 9012,
         WRN_DuplicateDefine = 9013,
-
+        ERR_FeatureRequiresReferenceToRuntime = 9014,
     }
 }

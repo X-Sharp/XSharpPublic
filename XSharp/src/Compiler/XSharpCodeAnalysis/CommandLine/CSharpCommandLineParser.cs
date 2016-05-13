@@ -108,6 +108,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "ppo":
                     options.PreProcessorOutput = positive;
                     break;
+                case "r":
+                case "reference":
+                    if (!string.IsNullOrEmpty(value))
+                    { 
+                        if (value.ToLowerInvariant().Contains("vulcanrtfuncs.dll"))
+                            options.VulcanRTFuncsIncluded = true;
+                        if (value.ToLowerInvariant().Contains("vulcanrt.dll"))
+                            options.VulcanRTIncluded = true;
+                    }
+                    handled = false;
+                    break;
                 case "showincludes":
                     options.ShowIncludes = positive;
                     break;
@@ -152,6 +163,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo14":    // VO FLoat Literals
                     options.Vo14 = positive;
+                    break;
+                case "vo15":    // VO Untyped allowed
+                    options.Vo15 = positive;
                     break;
                 case "wx":       // disable warning
                     name = "warnaserror+";

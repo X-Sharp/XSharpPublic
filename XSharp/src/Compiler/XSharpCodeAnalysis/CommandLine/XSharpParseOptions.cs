@@ -26,7 +26,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
-
+        public bool VulcanRTFuncsIncluded { get; private set; } = false;
+        public bool VulcanRTIncluded { get; private set; } = false;
+        public bool VOUntypedAllowed { get; private set; } = true;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -44,6 +46,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VONullStrings = opt.Vo2;
                 VOClipperCallingConvention = opt.Vo5;
                 VOCompatibleIIF = opt.Vo10;
+                VOUntypedAllowed = opt.Vo15;
+                VulcanRTFuncsIncluded = opt.VulcanRTFuncsIncluded;
+                VulcanRTIncluded = opt.VulcanRTIncluded;
             }
         }
 

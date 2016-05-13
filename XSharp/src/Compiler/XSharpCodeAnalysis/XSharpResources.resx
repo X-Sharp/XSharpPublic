@@ -4737,4 +4737,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_DuplicateDefine" xml:space="preserve">
     <value>Duplicate define detected '{0}'</value>
   </data>
+  <data name="ERR_FeatureRequiresReferenceToRuntime" xml:space="preserve">
+    <value>The feature {0} requires a reference to the runtime DLL {1}.</value>
+  </data>
 </root>

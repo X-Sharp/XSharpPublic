@@ -4130,7 +4130,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The feature {0} requires a reference to the runtime DLL {1}..
+        ///   Looks up a localized string similar to The feature &apos;{0}&apos; requires a reference to the runtime DLL &apos;{1}&apos;..
         /// </summary>
         internal static string ERR_FeatureRequiresReferenceToRuntime {
             get {
@@ -6623,7 +6623,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The function {0} is only supported in functions or methods with CLIPPER calling convention.
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; is only supported in functions or methods with CLIPPER calling convention.
         /// </summary>
         internal static string ERR_OnlySupportedForClipperCallingConvention {
             get {

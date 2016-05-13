@@ -4432,7 +4432,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 /ns:&lt;string&gt;                   Default Namespace
 /ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
 /vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
-/vo2[+|-]                      Initialize Strings
+/vo2[+|-]                      Initialize Strings 
 /vo3[+|-]                      All instance methods virtual 
 /vo4[+|-]                      Implicit signed/unsigned conversions 
 /vo5[+|-]                      Implicit CLIPPER calling convention 
@@ -4445,6 +4445,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 /vo12[+|-]                     Compatible integer divisions 
 /vo13[+|-]                     Compatible String Comparisons 
 /vo14[+|-]                     Use Float Literals 
+/vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 
                         - PREPROCESOR -
 

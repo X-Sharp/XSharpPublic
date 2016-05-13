@@ -19,6 +19,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOClipperCallingConvention { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOFloatConstants { get; private set; }
+        public bool VOUntypedAllowed { get; private set; }
         public XSharpDialect Dialect { get; private set; }
 
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
@@ -33,6 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOClipperCallingConvention = opt.Vo5;
                 VOCompatibleIIF = opt.Vo10;
                 VOFloatConstants = opt.Vo14;
+                VOUntypedAllowed = opt.Vo15;
             }
         }
 
@@ -48,6 +50,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
+            VOUntypedAllowed = opt.VOUntypedAllowed;
+            VOCompatibleIIF = opt.VOCompatibleIIF;
+            VOFloatConstants = opt.VOFloatConstants;
         }
     }
 }

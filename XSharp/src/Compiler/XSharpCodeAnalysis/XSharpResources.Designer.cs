@@ -4130,6 +4130,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The feature {0} requires a reference to the runtime DLL {1}..
+        /// </summary>
+        internal static string ERR_FeatureRequiresReferenceToRuntime {
+            get {
+                return ResourceManager.GetString("ERR_FeatureRequiresReferenceToRuntime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Field or property cannot be of type &apos;{0}&apos;.
         /// </summary>
         internal static string ERR_FieldCantBeRefAny {

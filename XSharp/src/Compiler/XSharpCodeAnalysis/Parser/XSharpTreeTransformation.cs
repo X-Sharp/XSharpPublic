@@ -186,6 +186,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        internal CSharpSyntaxNode GenerateNoRuntimeError(CSharpSyntaxNode node, string Name, string DLL)
+        {
+            node = node.WithAdditionalDiagnostics(
+                new SyntaxDiagnosticInfo(
+                    ErrorCode.ERR_FeatureRequiresReferenceToRuntime, Name, DLL));
+            return node;
+        }
+        internal CSharpSyntaxNode NoUsual(CSharpSyntaxNode node)
+        {
+            return NoRtFuncs(node,"USUAL");
+        }
+        internal CSharpSyntaxNode NoRtFuncs(CSharpSyntaxNode node, string type)
+        {
+            return GenerateNoRuntimeError(node, type, "VulcanRTFuncs.DLL");
+        }
+
+        internal CSharpSyntaxNode NoRt(CSharpSyntaxNode node, string type)
+        {
+            return GenerateNoRuntimeError(node, type, "VulcanRT.DLL");
+        }
+
         internal void Free()
         {
             GlobalEntities.Free();
@@ -788,8 +809,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private ExpressionSyntax GenerateNIL()
         {
+            TypeSyntax type = _usualType;
+            if (!_options.VulcanRTFuncsIncluded)
+            {
+                type = (TypeSyntax)NoUsual(type);
+            }
             return _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            _usualType,
+                            type,
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                             GenerateSimpleName("_NIL"));
 
@@ -822,7 +848,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Function Foo or Function Foo() without convention
                 if ( paramCount == 0 && !hasConvention )
                 {
-                    context.HasClipperCallingConvention = _options.VOClipperCallingConvention && ! isEntryPoint ;
+                    context.HasClipperCallingConvention = _options.VOClipperCallingConvention && !isEntryPoint;
                 }
                 if (paramCount > 0 )
                 {
@@ -836,7 +862,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                     }
                     context.HasTypedParameter = bHasTypedParameter;
-                    if (! context.HasClipperCallingConvention && !isEntryPoint && ! hasConvention)
+                    if (!context.HasClipperCallingConvention && !isEntryPoint && !hasConvention)
                         context.HasClipperCallingConvention = !bHasTypedParameter;
                 }
             }
@@ -953,6 +979,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                     _pool.Free(sizes);
                     var atype = _syntaxFactory.ArrayType(_usualType, rank) ;
+                    if (!_options.VulcanRTFuncsIncluded)
+                    {
+                        atype = (ArrayTypeSyntax) NoUsual(atype);
+                    }
                     SyntaxListBuilder modifiers = _pool.Allocate();
                     modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
                     var par = _syntaxFactory.Parameter(
@@ -967,6 +997,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         param.ToList(),
                         SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
                     _pool.Free(param);
+                    if (!_options.VulcanRTIncluded)
+                    {
+                        parameters = (ParameterListSyntax)NoRt(parameters, "Clipper Calling Convention");
+                    }
                     // Finally add ClipperCallingConventionAttribute to the method
                     // using the names from the paramNames list
                     // [Vulcan.Internal.ClipperCallingConvention(new string[] { "a", "b" })]
@@ -1045,9 +1079,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.HasMissingReturnType && context.MustHaveReturnType)
             {
                 if (_options.IsDialectVO && _options.VOUntypedAllowed)
+                {
                     dataType = _usualType;
+                    if (!_options.VulcanRTFuncsIncluded)
+                    {
+                        dataType = (TypeSyntax)NoUsual(dataType);
+                    }
+                }
                 else
                     dataType = MissingType();
+
             }
         }
 
@@ -1274,6 +1315,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var outerMods = _pool.Allocate();
             int getVisLvl;
             int setVisLvl;
+            bool lUsual= false;
             if (vop.AccessMethodCtx != null) {
                 if (vop.AccessMethodCtx.Modifiers != null)
                     getMods.AddRange(vop.AccessMethodCtx.Modifiers.GetList<SyntaxToken>());
@@ -1337,9 +1379,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (voPropType == null)
                 {
                     if (_options.IsDialectVO && _options.VOUntypedAllowed)
+                    {
                         voPropType = _usualType;
+                        lUsual = true;
+                    }
                     else
+                    {
                         voPropType = MissingType();
+                    }
                 }
             }
             else if (AccMet != null)
@@ -1348,17 +1395,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (voPropType == null)
                 {
                     if (_options.IsDialectVO && _options.VOUntypedAllowed)
+                    {
                         voPropType = _usualType;
+                        lUsual = true;
+                    }
                     else
+                    {
                         voPropType = MissingType();
+                    }
                 }
             }
             else
             {
                 if (_options.IsDialectVO && _options.VOUntypedAllowed)
+                {
                     voPropType = _usualType;
+                    lUsual = true;
+                }
                 else
+                {
                     voPropType = MissingType();
+                }
+            }
+            if (lUsual && !_options.VulcanRTFuncsIncluded)
+            {
+                voPropType = (TypeSyntax)NoUsual(voPropType);
             }
 
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
@@ -2340,7 +2401,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else  // method and access
                     {
                         if (_options.IsDialectVO && _options.VOUntypedAllowed)
+                        {
                             returntype = _usualType;
+                            if (!_options.VulcanRTFuncsIncluded)
+                            {
+                                returntype = (TypeSyntax)NoUsual(returntype);
+                            }
+                        }
                         else
                             returntype = MissingType();
                     }
@@ -3190,7 +3257,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (type == null)
             {
                 if (CurrentEntity.HasTypedParameter && _options.IsDialectVO && _options.VOUntypedAllowed)
+                {
                     type = _usualType;
+                    if (!_options.VulcanRTFuncsIncluded)
+                    {
+                        type = (TypeSyntax)NoUsual(type);
+                    }
+                }
                 else
                     type = MissingType();
             }
@@ -3316,9 +3389,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 if (_options.IsDialectVO && _options.VOUntypedAllowed)
+                {
                     varType = _usualType;
+                    if (!_options.VulcanRTFuncsIncluded)
+                    {
+                        varType = (TypeSyntax)NoUsual(varType);
+                    }
+                }
                 else
                     varType = MissingType();
+
             }
             var initExpr = context.Expression?.Get<ExpressionSyntax>();
             if (isDim) {
@@ -3694,9 +3774,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                        WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureRequiresReferenceToRuntime, "BREAK statement", "VulcanRT.dll")));
-                    return;
+                    context.Put(NoRt(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),"BREAK statement"));
                 }
             }
             else
@@ -3762,8 +3840,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (!_options.VulcanRTIncluded)
             {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureRequiresReferenceToRuntime, "BEGIN SEQUENCE statement", "VulcanRT.dll" )));
+                context.Put(NoRt(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                    "BEGIN SEQUENCE statement"));
                 return;
             }
 
@@ -4097,7 +4175,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // And the ? operator is for these dialects 
                         expr = eCtx.Get<ExpressionSyntax>();
                         arg = MakeArgument(expr);
-                        if (_options.IsDialectVO)
+                        if (_options.IsDialectVO && _options.VulcanRTFuncsIncluded)
                         {
                             arg = MakeArgument(GenerateMethodCall("AsString", MakeArgumentList(arg)));
                         }
@@ -4442,8 +4520,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    context.Put(GenerateLiteral("").
-                        WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureRequiresReferenceToRuntime, name, "VulcanRT.dll")));
+                    context.Put(NoRt(GenerateLiteral(""),name));
                     return;
                 }
             }
@@ -4484,8 +4561,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (!_options.VulcanRTFuncsIncluded)
                 {
-                    expr = GenerateLiteral(0).
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureRequiresReferenceToRuntime, name, "VulcanRTFuncs.dll"));
+                    expr = (ExpressionSyntax) NoRtFuncs(GenerateLiteral(0),name);
                     context.Put(expr);
                     return;
                 }
@@ -4990,7 +5066,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
             if (_options.VOCompatibleIIF)
             {
-                var type = (_options.IsDialectVO) ? (TypeSyntax) _usualType : (TypeSyntax) _objectType;
+                var type = (_options.IsDialectVO && _options.VulcanRTFuncsIncluded)
+                    ? (TypeSyntax) _usualType : (TypeSyntax) _objectType;
                 left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
                 right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -5021,8 +5098,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 type = _usualType;
                 bVOArray = true;
+                if (!_options.VulcanRTFuncsIncluded)
+                {
+                    type = (TypeSyntax) NoUsual(type);
+                }
             }
-            
+
 
             var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, 
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken), 
@@ -5433,20 +5514,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             }
-            if (!_options.VulcanRTFuncsIncluded && type != null)
-            {
-                type = type.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureRequiresReferenceToRuntime, context.Token.Text, "VulcanRTFuncs.dll"));
-            }
             if (type == null)
             {
-                // Cannot reuse the _objectType here because of the diagnostics
-                context.Put(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword))
-                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, context.Token.Text, _options.Dialect.ToString())));
+                type = _objectType.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, context.Token.Text, _options.Dialect.ToString()));
             }
-            else
+            else if (!_options.VulcanRTFuncsIncluded )
             {
-                context.Put(type);
+                type = (TypeSyntax) NoRtFuncs(type,context.Token.Text);
             }
+            context.Put(type);
         }
         /*
         public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)

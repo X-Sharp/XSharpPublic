@@ -1546,19 +1546,19 @@ internal structure Vulcan.UsualData
 end structure
 
 
-public enum UsualDataType as Long
-    member @@ARRAY:=5
-    member @@CODEBLOCK:=9
-    member @@DATE:=2
-    member @@FLOAT:=3
-    member @@INT:=1
-    member @@INT64:=0x16
-    member @@LOGIC:=8
-    member @@NIL:=0
-    member @@OBJECT:=6
-    member @@PSZ:=0x11
-    member @@PTR:=0x12
-    member @@STRING:=7
-    member @@SYMBOL:=10
-end enum
+	public enum UsualDataType as Long
+		member @@ARRAY:=5
+		member @@CODEBLOCK:=9
+		member @@DATE:=2
+		member @@FLOAT:=3
+		member @@INT:=1
+		member @@INT64:=0x16
+		member @@LOGIC:=8
+		member @@NIL:=0
+		member @@OBJECT:=6
+		member @@PSZ:=0x11
+		member @@PTR:=0x12
+		member @@STRING:=7
+		member @@SYMBOL:=10
+	end enum
 

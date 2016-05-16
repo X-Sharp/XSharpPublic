@@ -2587,11 +2587,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return null;
             }
 #if XSHARP
+            bool voDefaultCtorCall = false;
             if (Compilation.Options.IsDialectVO)
             {
-                if ((containingType.TypeKind == TypeKind.Class) && initializerArgumentListOpt == null)
+                if ((containingType.TypeKind == TypeKind.Class) && initializerArgumentListOpt == null && !constructor.IsImplicitConstructor)
                 {
-                    return null;
+                    foreach (var ctorRef in constructor.DeclaringSyntaxReferences)
+                    {
+                        if (ctorRef.GetSyntax() is ConstructorDeclarationSyntax)
+                        {
+                            var ctor = (ConstructorDeclarationSyntax)ctorRef.GetSyntax();
+                            if (ctor.Body != null)
+                            {
+                                if (!ctor.DescendantNodes().OfType<ExpressionStatementSyntax>()
+                                    .Where(x => ((x.Expression as InvocationExpressionSyntax)?.Expression as MemberAccessExpressionSyntax)?.Name.Identifier.Text == ".ctor" ).IsEmpty())
+                                {
+                                    return null;
+                                }
+                            }
+                        }
+                    }
+                    voDefaultCtorCall = true;
                 }
             }
 #endif
@@ -2727,6 +2743,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     ReportDiagnosticsIfObsolete(diagnostics, resultMember, nonNullSyntax, hasBaseReceiver: isBaseConstructorInitializer);
 
+#if XSHARP
+                    if (voDefaultCtorCall)
+                    {
+                        diagnostics.Add(ErrorCode.WRN_ImplicitParentConstructorInitializer, nonNullSyntax.GetLocation());
+                    }
+#endif
                     return new BoundCall(
                         nonNullSyntax,
                         receiver,

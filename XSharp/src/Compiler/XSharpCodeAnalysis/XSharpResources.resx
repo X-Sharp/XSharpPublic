@@ -4741,4 +4741,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_FeatureRequiresReferenceToRuntime" xml:space="preserve">
     <value>The feature '{0}' requires a reference to the runtime DLL '{1}'.</value>
   </data>
+  <data name="WRN_ImplicitParentConstructorInitializer" xml:space="preserve">
+    <value>No explicit constructor chaining; generating implicit call to super constructor.</value>
+  </data>
 </root>

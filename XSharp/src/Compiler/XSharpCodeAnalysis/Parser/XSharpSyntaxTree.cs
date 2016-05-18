@@ -115,6 +115,20 @@ namespace Antlr4.Runtime
     }
 
  
+    internal class MemVarFieldInfo
+    {
+        
+        internal string Name { get; private set; }
+        internal string Alias { get; private set; }
+        internal bool IsField { get; private set; }
+        internal MemVarFieldInfo(string name, string alias, bool field)
+        {
+            Name = name;
+            Alias = alias;
+            IsField = field;
+        }
+    }
+
 
     public partial class ParserRuleContext: Microsoft.CodeAnalysis.IMessageSerializable
     {
@@ -197,6 +211,25 @@ namespace Antlr4.Runtime
         {
             if (iEndPoint > 0)
                 iBPLength = iEndPoint - this.Start.StartIndex + 1;
+        }
+        private  List<MemVarFieldInfo> Fields;
+        internal void AddField(string Name, string Alias, bool Field)
+        {
+            if (Fields == null)
+                Fields = new List<MemVarFieldInfo>();
+            Fields.Add(new MemVarFieldInfo(Name, Alias, Field));
+        }
+        internal MemVarFieldInfo GetField(string Name)
+        {
+            if (Fields != null)
+            {
+                foreach (var field in Fields)
+                {
+                    if (string.Compare(Name, field.Name, StringComparison.OrdinalIgnoreCase) == 0)
+                        return field;
+                }
+            }
+            return null;
         }
     }
 

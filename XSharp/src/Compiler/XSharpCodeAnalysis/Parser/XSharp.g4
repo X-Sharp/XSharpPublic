@@ -420,7 +420,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
-					| fielddecl													#fieldStmt
+					| Decl=fielddecl													#fieldStmt
 					| DO? WHILE Expr=expression end=EOS
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				{ SetSequencePoint(_localctx,$end); } #whileStmt
 					| NOP end=EOS												{ SetSequencePoint(_localctx,$end); } #nopStmt
@@ -556,7 +556,7 @@ impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expressio
 				   ;
 
 
-fielddecl		   : FIELD Fields+=identifier (COMMA Fields+=identifier)* (IN Alias=identifier)? end=EOS       
+fielddecl		   : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=EOS       
 				   ;
 
 // Old Style xBase declarations
@@ -565,7 +565,7 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 					  |PUBLIC												// PUBLIC  Foo, Bar
 					  |MEMVAR												// MEMVAR  Foo, Bar
 					  |PARAMETERS											// PARAMETERS Foo, Bar
-					 )   Vars+=identifier (COMMA Vars+=identifier)* end=EOS       
+					 )   Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS       
  				    { SetSequencePoint(_localctx,$end); }
 				 ;
  

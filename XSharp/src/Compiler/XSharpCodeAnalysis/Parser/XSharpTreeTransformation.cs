@@ -201,12 +201,63 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return GenerateNoRuntimeError(node, type, "VulcanRTFuncs.DLL");
         }
+        internal CSharpSyntaxNode NotInDialect(string feature)
+        {
+            CSharpSyntaxNode node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            return NotInDialect(node, feature);
+        }
+        internal CSharpSyntaxNode NotInDialect(CSharpSyntaxNode node, string feature)
+        {
+            return node.WithAdditionalDiagnostics(
+                new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, feature, _options.Dialect.ToString()));
+        }
 
         internal CSharpSyntaxNode NoRt(CSharpSyntaxNode node, string type)
         {
             return GenerateNoRuntimeError(node, type, "VulcanRT.DLL");
         }
 
+        internal CSharpSyntaxNode NoRt(string type)
+        {
+            CSharpSyntaxNode node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            return NoRt(node, type);
+        }
+
+
+        internal ExpressionSyntax GenerateFieldGet(string alias, string field)
+        {
+            string method = "global::VulcanRTFuncs.Functions.__FieldGetWa";
+            var arg1 = MakeArgument(GenerateLiteral(alias));
+            var arg2 = MakeArgument(GenerateLiteral(field));
+            var args = MakeArgumentList(arg1, arg2);
+            var expr = GenerateMethodCall(method, args);
+            if (!_options.IsDialectVO)
+            {
+                expr = (ExpressionSyntax)NotInDialect(expr, "FIELD");
+            }
+            else if (!_options.VulcanRTFuncsIncluded)
+            {
+                expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
+            }
+            return expr;
+        }
+
+        internal ExpressionSyntax GenerateFieldGet(string field)
+        {
+            var method = "global::VulcanRTFuncs.Functions.__FieldGet";
+            var arg = MakeArgument(GenerateLiteral(field));
+            var args = MakeArgumentList(arg);
+            var expr = GenerateMethodCall(method, args);
+            if (!_options.IsDialectVO)
+            {
+                expr = (ExpressionSyntax)NotInDialect(expr, "FIELD");
+            }
+            else if (!_options.VulcanRTFuncsIncluded)
+            {
+                expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
+            }
+            return expr;
+        }
         internal void Free()
         {
             GlobalEntities.Free();
@@ -3521,9 +3572,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitXbasedecl([NotNull] XP.XbasedeclContext context)
         {
-            context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect,  context.T.Text+" statement" ,_options.Dialect.ToString())));
+            context.Put(NotInDialect(context.T.Text+" statement" ));
         }
+
+        public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
+        {
+            // declare memvars
+            if (context.T.Type == XP.MEMVAR)
+            {
+                foreach (var memvar in context._Vars)
+                {
+                    CurrentEntity.AddField(memvar.Id.GetText(), "M", false);
+                }
+
+            }
+        }
+
 
         public override void ExitWhileStmt([NotNull] XP.WhileStmtContext context)
         {
@@ -3774,13 +3838,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    context.Put(NoRt(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),"BREAK statement"));
+                    context.Put(NoRt("BREAK statement"));
                 }
             }
             else
             {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BREAK statement", _options.Dialect.ToString())));
+                context.Put(NotInDialect("BREAK statement"));
             }
 
         }
@@ -3834,14 +3897,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // 2) an outer try that has the try - catch - finally from the seq statement itself
             if  (!_options.IsDialectVO)
             {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "BEGIN SEQUENCE statement", _options.Dialect.ToString())));
+                context.Put(NotInDialect("BEGIN SEQUENCE statement"));
                 return;
             }
             else if (!_options.VulcanRTIncluded)
             {
-                context.Put(NoRt(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                    "BEGIN SEQUENCE statement"));
+                context.Put(NoRt("BEGIN SEQUENCE statement"));
                 return;
             }
 
@@ -3900,8 +3961,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (!_options.IsDialectVO)
             {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)).
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "RECOVER USING block", _options.Dialect.ToString())));
+                context.Put(NotInDialect(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),"RECOVER USING block"));
                 return;
             }
 
@@ -4328,9 +4388,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                         context.Expr.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        context.Name.Get<SimpleNameSyntax>())
-                        .WithAdditionalDiagnostics(
-                            new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "equivalency of : and . member access operators", _options.Dialect.ToString()))
+                        (SimpleNameSyntax) NotInDialect(context.Name.Get<SimpleNameSyntax>(),"equivalency of : and . member access operators"))
                         );
                 }
             }
@@ -4749,7 +4807,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
         {
             // Todo: Check to see if the name is a field, registered with the FIELD statement
-            context.Put(context.Name.Get<NameSyntax>());
+            string Name = context.Name.GetText();
+            ExpressionSyntax expr = context.Name.Get<NameSyntax>();
+            var fieldInfo = CurrentEntity.GetField(Name);
+            if (fieldInfo != null )
+            {
+                if (fieldInfo.IsField)
+                {
+                    if (fieldInfo.Alias?.Length > 0)
+                    {
+                        expr = GenerateFieldGet(fieldInfo.Alias, fieldInfo.Name);
+                    }
+                    else
+                    {
+                        expr = GenerateFieldGet(fieldInfo.Name);
+                    }
+                    context.Put(expr);
+
+                }
+                else
+                {
+                    // Memvar not implemented yet
+                    expr = (ExpressionSyntax) NotInDialect(expr, "MEMVAR");
+                }
+            }
+            context.Put(expr);
         }
 
         public override void ExitTypeExpression([NotNull] XP.TypeExpressionContext context)
@@ -5548,7 +5630,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (type == null)
             {
-                type = _objectType.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, context.Token.Text, _options.Dialect.ToString()));
+                type = (TypeSyntax) NotInDialect(_objectType,context.Token.Text);
             }
             else if (!_options.VulcanRTFuncsIncluded )
             {
@@ -5556,11 +5638,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(type);
         }
+        public override void ExitFieldStmt([NotNull] XP.FieldStmtContext context)
+        {
+            context.Put(context.Decl.Get<StatementSyntax>());
+        }
         public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
+        {
+            var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            if (!_options.VulcanRTFuncsIncluded)
+            {
+                stmt = (EmptyStatementSyntax) NoRtFuncs(stmt, "FIELD");
+            }
+            context.Put(stmt);
+            return;
+        }
+        public override void EnterFielddecl([NotNull] XP.FielddeclContext context)
         {
             // register field names with current entity
             // so we can check for the field name in the ExitNameExpr method
-            base.ExitFielddecl(context);
+            string Alias = "";
+            if (context.Alias != null)
+                Alias = context.Alias.GetText();
+            foreach (var field in context._Fields)
+            {
+                CurrentEntity.AddField(field.Id.GetText(), Alias, true);
+            }
         }
 
         public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
@@ -5591,29 +5693,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // or __FieldGet(cField)
             if (!_options.IsDialectVO)
             {
-                context.Put(GenerateLiteral("alias").
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Alias(->) operator", _options.Dialect.ToString())));
+                context.Put(NotInDialect(GenerateLiteral("alias"),"ALIAS(->) operator"));
                 return;
             }
             if (!_options.VulcanRTFuncsIncluded)
             {
-                context.Put(NoRtFuncs(GenerateLiteral("alias"), "Alias(->) operator"));
+                context.Put(NoRtFuncs(GenerateLiteral("alias"), "ALIAS(->) operator"));
                 return;
             }
             ExpressionSyntax expr;
-            ArgumentListSyntax args;
-            string method;
             if (context.Alias != null){
-                method = "global::VulcanRTFuncs.Functions.__FieldGetWa";
-                var arg1 = MakeArgument(GenerateLiteral(context.Alias.GetText()));
-                var arg2 = MakeArgument(GenerateLiteral(context.Field.GetText()));
-                args = MakeArgumentList(arg1, arg2);
-            } else {
-                method = "global::VulcanRTFuncs.Functions.__FieldGet";
-                var arg = MakeArgument(GenerateLiteral(context.Field.GetText()));
-                args = MakeArgumentList(arg);
+                string alias = context.Alias.GetText();
+                string field = context.Field.GetText();
+                if (alias.ToUpper() == "M") { 
+                    // M->FIELD
+                    expr = (ExpressionSyntax)NotInDialect(GenerateLiteral(field), "MEMVAR");
+                } else {
+                    expr = GenerateFieldGet(alias, field);
+                }
             }
-            expr = GenerateMethodCall(method, args);
+            else {
+                string field = context.Field.GetText();
+                expr = GenerateFieldGet(field);
+            }
             context.Put(expr);
             return;
         }
@@ -5629,12 +5731,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // expr2
             // popWorkarea()
             if (!_options.IsDialectVO) {
-                context.Put(GenerateLiteral("alias").
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Alias(->) operator", _options.Dialect.ToString())));
+                context.Put(NotInDialect(GenerateLiteral("alias"), "ALIAS(->) operator"));
                 return;
             }
             if (!_options.VulcanRTFuncsIncluded) {
-                context.Put(NoRtFuncs(GenerateLiteral("alias"), "Alias(->) operator"));
+                context.Put(NoRtFuncs(GenerateLiteral("alias"), "ALIAS(->) operator"));
                 return;
             }
             if (context.Id != null) {
@@ -5660,12 +5761,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {
             if (!_options.IsDialectVO) {
-                context.Put(GenerateLiteral("macro").
-                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Runtime Macro compiler", _options.Dialect.ToString())));
+                context.Put(NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
                 return;
             }
             if (!_options.VulcanRTFuncsIncluded) {
-                context.Put(NoRtFuncs(GenerateLiteral("macro"), "Runtime Macro Compiler"));
+                context.Put(NoRtFuncs(GenerateLiteral("macro"), "MACRO Compiler"));
                 return;
             }
             ExpressionSyntax expr;

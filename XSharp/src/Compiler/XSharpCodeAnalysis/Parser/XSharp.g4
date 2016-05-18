@@ -420,6 +420,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
+					| fielddecl													#fieldStmt
 					| DO? WHILE Expr=expression end=EOS
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				{ SetSequencePoint(_localctx,$end); } #whileStmt
 					| NOP end=EOS												{ SetSequencePoint(_localctx,$end); } #nopStmt
@@ -555,6 +556,9 @@ impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expressio
 				   ;
 
 
+fielddecl		   : FIELD Fields+=identifier (COMMA Fields+=identifier)* (IN Alias=identifier)? end=EOS       
+				   ;
+
 // Old Style xBase declarations
 
 xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
@@ -643,12 +647,15 @@ primary				: Key=SELF													#selfExpression
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 					| Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
 					  (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
-//					| aliasedField												#aliasfield				//  ALIAS->FIELD
-//					| aliasedExpr												#aliasexpr				// ALIAS->(expr)
-//					| aliasedFuncCall											#aliasfunccall			//  foo->bar()
-//					| extendedaliasExpr											#aliasextended			// (expr) -> ...
-//					| AMP LPAREN expression RPAREN								#macroexpr				// &( expr )
-//					| AMP identifierName										#macrovar				// &id
+					| FIELD_ ALIAS (Alias=identifierName ALIAS)? Field=identifierName #aliasedField		// _FIELD->CUSTOMER->NAME or _FIELD->NAME
+					| Alias=identifierName ALIAS Field=identifierName			#aliasedField			// CUSTOMER->NAME												
+					| Id=identifierName ALIAS LPAREN Expr=expression RPAREN		#aliasedExpr			// CUSTOMER->(<Expression>)											
+					| LPAREN Alias=expression RPAREN ALIAS
+						( Id=identifierName																// (expr) -> ID
+						| (LPAREN Expr=expression RPAREN)													// (expr) -> (expr)
+						)														#extendedaliasExpr											
+					| AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
+					| AMP Id=identifierName										#macro					// &id
 					;
 
 boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new
@@ -719,28 +726,11 @@ anonType			: CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RC
 
 anonMember			: Name=identifierName ASSIGN_OP Expr=expression
 					;
-/*
-aliasmethodCall		: Expr=expression LPAREN ArgList=argumentList? RPAREN
-					;
 
-aliasedField		:	FIELD ALIAS Id=identifierName									// _FIELD->NAME
-					|	Left=identifierName ALIAS Right=identifierName					// CUSTOMER->NAME
-					|   FIELD ALIAS Left=identifierName ALIAS Right=identifierName		// _FIELD->CUSTOMER->NAME
-					;
 
-aliasedExpr			:	Id=identifierName ALIAS LPAREN Expr=expression RPAREN		// CUSTOMER->(<Expression>)
-					;
 
-aliasedFuncCall		:	i=identifierName a=ALIAS m=aliasmethodCall					// Customer->DoSomething()
-					;
 
-extendedaliasExpr	:	l1=LPAREN e1=expression r1=RPAREN a=ALIAS
-						( i=identifierName								// (expr) -> ID
-						| l2=LPAREN e2=expression r2=RPAREN				// (expr) -> (expr)
-						| m=aliasmethodCall									// (expr) -> func(..)
-						)
-					;
-*/
+
 codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
 					  ( Expr=expression?
 					  | EOS StmtBlk=statementBlock 

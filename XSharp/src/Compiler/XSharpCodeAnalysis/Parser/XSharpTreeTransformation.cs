@@ -4153,6 +4153,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // todo: If dialect VO and VulcanRTFuncs included
             // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
             // and pass list of expressions as argument
+            if (_options.IsDialectVO && _options.VulcanRTFuncsIncluded)
+            {
+                string methodName;
+                if (context.Q.Type == XP.QQMARK)
+                    methodName = "global::VulcanRTFuncs.Functions.QQOut";
+                else
+                    methodName = "global::VulcanRTFuncs.Functions.QOut";
+
+                ArgumentListSyntax args;
+                if (context._Exprs != null && context._Exprs.Count > 0)
+                {
+                    var arglist = _pool.AllocateSeparated<ArgumentSyntax>();
+                    foreach (var eCtx in context._Exprs)
+                    {
+                        arg = MakeArgument(eCtx.Get<ExpressionSyntax>());
+                        arglist.Add(arg);
+                    }
+                    args = _syntaxFactory.ArgumentList(
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            arglist,
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    _pool.Free(arglist);
+                }
+                else
+                {
+                    args = EmptyArgumentList();
+                }
+                expr = GenerateMethodCall(methodName, args);
+                context.Put(_syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                return;
+            }
             if (context.Q.Type == XP.QQMARK && !(context._Exprs?.Count > 0)) {
                 context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
@@ -4717,6 +4748,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
         {
+            // Todo: Check to see if the name is a field, registered with the FIELD statement
             context.Put(context.Name.Get<NameSyntax>());
         }
 
@@ -5524,33 +5556,128 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(type);
         }
-        /*
-        public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
+        public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
         {
-            // // CUSTOMER->(<Expression>)
-            base.ExitAliasedExpr(context);
+            // register field names with current entity
+            // so we can check for the field name in the ExitNameExpr method
+            base.ExitFielddecl(context);
         }
 
-        public override void ExitAliasfield([NotNull] XP.AliasfieldContext context)
+        public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
+        {
+            // CUSTOMER->(<Expression>)
+            // translate to 
+            // pushWorkarea(CUSTOMER)
+            // expr2
+            // popWorkarea()
+            var exprs = _pool.Allocate<ExpressionSyntax>();
+            ExpressionSyntax expr;
+            expr = GenerateLiteral(context.Id.GetText());
+            var args = MakeArgumentList(MakeArgument(expr));
+            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", args);
+            exprs.Add(expr);
+            exprs.Add(context.Expr.Get<ExpressionSyntax>());
+            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList());
+            exprs.Add(expr);
+            context.Put(exprs.ToListNode());
+            _pool.Free(exprs);
+
+        }
+
+        public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
         {
             //_FIELD->NAME, CUSTOMER-NAME, _FIELD->CUSTOMER->NAME
-            base.ExitAliasfield(context);
-        }
-        public override void ExitAliasedFuncCall([NotNull] XP.AliasedFuncCallContext context)
-        {
-            // Customer->DoSomething()
-            base.ExitAliasedFuncCall(context);
-        }
-        public override void ExitAliasmethodCall([NotNull] XP.AliasmethodCallContext context)
-        {
-            // Expr=expression LPAREN ArgList=argumentList? RPAREN 
-            base.ExitAliasmethodCall(context);
+            // translate to either __FieldGetWa(cArea,cField)
+            // or __FieldGet(cField)
+            if (!_options.IsDialectVO)
+            {
+                context.Put(GenerateLiteral("alias").
+                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Alias(->) operator", _options.Dialect.ToString())));
+                return;
+            }
+            if (!_options.VulcanRTFuncsIncluded)
+            {
+                context.Put(NoRtFuncs(GenerateLiteral("alias"), "Alias(->) operator"));
+                return;
+            }
+            ExpressionSyntax expr;
+            ArgumentListSyntax args;
+            string method;
+            if (context.Alias != null){
+                method = "global::VulcanRTFuncs.Functions.__FieldGetWa";
+                var arg1 = MakeArgument(GenerateLiteral(context.Alias.GetText()));
+                var arg2 = MakeArgument(GenerateLiteral(context.Field.GetText()));
+                args = MakeArgumentList(arg1, arg2);
+            } else {
+                method = "global::VulcanRTFuncs.Functions.__FieldGet";
+                var arg = MakeArgument(GenerateLiteral(context.Field.GetText()));
+                args = MakeArgumentList(arg);
+            }
+            expr = GenerateMethodCall(method, args);
+            context.Put(expr);
+            return;
         }
         public override void ExitExtendedaliasExpr([NotNull] XP.ExtendedaliasExprContext context)
         {
-            // (expr) -> ID, (expr) -> (expr), (expr) -> func(..)
-            base.ExitExtendedaliasExpr(context);
+            // (e1) -> ID
+            // or
+            // (e1) -> (e2)
+            // first is translated to 
+            // __FieldGetWa(expr, ID)
+            // second is translated to 
+            // pushWorkarea(expr1)
+            // expr2
+            // popWorkarea()
+            if (!_options.IsDialectVO) {
+                context.Put(GenerateLiteral("alias").
+                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Alias(->) operator", _options.Dialect.ToString())));
+                return;
+            }
+            if (!_options.VulcanRTFuncsIncluded) {
+                context.Put(NoRtFuncs(GenerateLiteral("alias"), "Alias(->) operator"));
+                return;
+            }
+            if (context.Id != null) {
+                string method = "global::VulcanRTFuncs.Functions.__FieldGetWa";
+                var arg1 = MakeArgument(context.Alias.Get<ExpressionSyntax>());
+                var arg2 = MakeArgument(GenerateLiteral(context.Id.GetText()));
+                var args = MakeArgumentList(arg1, arg2);
+                context.Put(GenerateMethodCall(method, args));
+            } else {
+                var exprs = _pool.Allocate<ExpressionSyntax>();
+                ExpressionSyntax expr;
+                expr = context.Alias.Get<ExpressionSyntax>();
+                var args = MakeArgumentList(MakeArgument(expr));
+                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", args);
+                exprs.Add(expr);
+                exprs.Add(context.Expr.Get<ExpressionSyntax>());
+                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList());
+                exprs.Add(expr);
+                context.Put(exprs.ToListNode());
+                _pool.Free(exprs);
+            }
         }
-        */
+        public override void ExitMacro([NotNull] XP.MacroContext context)
+        {
+            if (!_options.IsDialectVO) {
+                context.Put(GenerateLiteral("macro").
+                    WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "Runtime Macro compiler", _options.Dialect.ToString())));
+                return;
+            }
+            if (!_options.VulcanRTFuncsIncluded) {
+                context.Put(NoRtFuncs(GenerateLiteral("macro"), "Runtime Macro Compiler"));
+                return;
+            }
+            ExpressionSyntax expr;
+            if (context.Id != null) {
+                expr = context.Id.Get<IdentifierNameSyntax>();
+            } else { 
+                expr = context.Expr.Get<ExpressionSyntax>();
+            }
+            var args = MakeArgumentList(MakeArgument(expr));
+            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.Evaluate", args);
+            context.Put(expr);
+            return;
+        }
     }
 }

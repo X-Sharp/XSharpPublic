@@ -600,8 +600,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
 					| Left=expression Op=LSHIFT Right=expression				#binaryExpression		// expr << expr (shift)
 					| Left=expression Op=GT	Gt=GT Right=expression				#binaryExpression		// expr >> expr (shift)
 					| Left=expression
-					  Op=( LT | LTE | GT | GTE | EQ | EEQ
-							| SUBSTR | NEQ )
+					  Op=( LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ )
 					  Right=expression											#binaryExpression		// expr >= expr (relational)
 					| Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
@@ -616,7 +615,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
 							| ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
-					  Right=expression											#assignmentExpression	// expr := expr
+					  Right=expression											#assignmentExpression	// expr := expr, also expr += expr etc.
 					| Expr=primary												#primaryExpression
 					;
 
@@ -652,7 +651,7 @@ primary				: Key=SELF													#selfExpression
 					| Id=identifierName ALIAS LPAREN Expr=expression RPAREN		#aliasedExpr			// CUSTOMER->(<Expression>)											
 					| LPAREN Alias=expression RPAREN ALIAS
 						( Id=identifierName																// (expr) -> ID
-						| (LPAREN Expr=expression RPAREN)													// (expr) -> (expr)
+						| Expr=expression																// (expr) -> expr			// expr includes (expr)
 						)														#extendedaliasExpr											
 					| AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
 					| AMP Id=identifierName										#macro					// &id

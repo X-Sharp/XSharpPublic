@@ -223,11 +223,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return NoRt(node, type);
         }
 
-        internal ExpressionSyntax GenerateMemVarPut(string memvar, XP.ExpressionContext right)
+        internal ExpressionSyntax GenerateMemVarPut(string memvar, ExpressionSyntax right)
         {
             string method = "global::VulcanRTFuncs.Functions.__MemVarPut";
             var arg1 = MakeArgument(GenerateLiteral(memvar));
-            var arg2 = MakeArgument(right.Get<ExpressionSyntax>());
+            var arg2 = MakeArgument(right);
             var args = MakeArgumentList(arg1, arg2);
             var expr = GenerateMethodCall(method, args);
             expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
@@ -242,24 +242,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-        internal ExpressionSyntax GenerateFieldPut(string alias, string field, XP.ExpressionContext right)
+        internal ExpressionSyntax GenerateMemVarGet(string memvar)
+        {
+            string method = "global::VulcanRTFuncs.Functions.__MemVarGet";
+            var arg1 = MakeArgument(GenerateLiteral(memvar));
+            var args = MakeArgumentList(arg1);
+            var expr = GenerateMethodCall(method, args);
+            expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
+            //todo: Implement MemVarGet
+            //if (!_options.IsDialectVO)
+            //{
+            //    expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
+            //}
+            //else if (!_options.VulcanRTFuncsIncluded)
+            //{
+            //    expr = (ExpressionSyntax)NoRtFuncs(expr, "MEMVAR");
+            //}
+            return expr;
+        }
+
+        internal ExpressionSyntax GenerateFieldSet(string alias, string field, ExpressionSyntax right)
         {
             string method = "";
             ArgumentListSyntax args;
+            var argField = MakeArgument(GenerateLiteral(field));
+            var argValue = MakeArgument(right);
             if (!String.IsNullOrEmpty(alias))
             {
                 method= "global::VulcanRTFuncs.Functions.__FieldSetWa";
-                var arg1 = MakeArgument(GenerateLiteral(alias));
-                var arg2 = MakeArgument(GenerateLiteral(field));
-                var arg3 = MakeArgument(right.Get<ExpressionSyntax>());
-                args = MakeArgumentList(arg1, arg2, arg3);
+                var argWA = MakeArgument(GenerateLiteral(alias));
+                args = MakeArgumentList(argWA, argField, argValue);
             }
             else
             {
                 method = "global::VulcanRTFuncs.Functions.__FieldSet";
-                var arg1 = MakeArgument(GenerateLiteral(field));
-                var arg2 = MakeArgument(right.Get<ExpressionSyntax>());
-                args = MakeArgumentList(arg1, arg2);
+                args = MakeArgumentList(argField, argValue);
             }
             var expr = GenerateMethodCall(method, args);
             if (!_options.IsDialectVO)
@@ -275,27 +292,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal ExpressionSyntax GenerateFieldGet(string alias, string field)
         {
-            string method = "global::VulcanRTFuncs.Functions.__FieldGetWa";
-            var arg1 = MakeArgument(GenerateLiteral(alias));
-            var arg2 = MakeArgument(GenerateLiteral(field));
-            var args = MakeArgumentList(arg1, arg2);
-            var expr = GenerateMethodCall(method, args);
-            if (!_options.IsDialectVO)
+            string method ;
+            ArgumentListSyntax args;
+            var argField= MakeArgument(GenerateLiteral(field));
+            if (string.IsNullOrEmpty(alias))
             {
-                expr = (ExpressionSyntax)NotInDialect(expr, "FIELD");
+                method = "global::VulcanRTFuncs.Functions.__FieldGet";
+                args = MakeArgumentList(argField);
             }
-            else if (!_options.VulcanRTFuncsIncluded)
+            else
             {
-                expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
+                method = "global::VulcanRTFuncs.Functions.__FieldGetWa";
+                var argWA = MakeArgument(GenerateLiteral(alias));
+                args = MakeArgumentList(argWA, argField);
             }
-            return expr;
-        }
 
-        internal ExpressionSyntax GenerateFieldGet(string field)
-        {
-            var method = "global::VulcanRTFuncs.Functions.__FieldGet";
-            var arg = MakeArgument(GenerateLiteral(field));
-            var args = MakeArgumentList(arg);
             var expr = GenerateMethodCall(method, args);
             if (!_options.IsDialectVO)
             {
@@ -305,24 +316,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
             }
-            return expr;
-        }
-        internal ExpressionSyntax GenerateMemVarGet(string memvar)
-        {
-            string method = "global::VulcanRTFuncs.Functions.__MemVarGet";
-            var arg1 = MakeArgument(GenerateLiteral(memvar));
-            var args = MakeArgumentList(arg1);
-            var expr = GenerateMethodCall(method, args);
-            expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
-            //todo: Implement MemVarGet
-            //if (!_options.IsDialectVO)
-            //{
-            //    expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
-            //}
-            //else if (!_options.VulcanRTFuncsIncluded)
-            //{
-            //    expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
-            //}
             return expr;
         }
 
@@ -4568,14 +4561,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // when /vo12 is used then for the types .ASSIGN_DIV add conversion for the LHS and RHS to Double
             // Check for Field or MemVar assignments
             ExpressionSyntax left = context.Left.Get<ExpressionSyntax>();
-            if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext) left.XNode).Expr is  XP.AliasedFieldContext)
+            ExpressionSyntax right = context.Right.Get<ExpressionSyntax>();
+            if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)left.XNode).Expr is XP.AliasedFieldContext)
             {
                 XP.AliasedFieldContext fieldNode = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.AliasedFieldContext;
                 //ToDo
                 // Convert _FIELD->NAME += 1 to _FIELD->NAME := _FIELD->NAME + 1
-                var expr = GenerateFieldPut(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), context.Right);
-                if (context.Op.Type != XP.ASSIGN_OP)
-                    expr = (ExpressionSyntax) NotInDialect(expr, "Complex Field assignment");
+
+                ExpressionSyntax expr;
+                if (context.Op.Type == XP.ASSIGN_OP)
+                {
+                    expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), right);
+                }
+                else
+                {
+                    // AREA->NAME+= 1 gets converted to
+                    // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1) 
+                    // left already has the FieldGet
+                    var op = context.Op.ComplexToSimpleBinaryOp();
+                    var token = context.Op.ComplexToSimpleToken();
+                    if (op == SyntaxKind.EmptyStatement ) 
+                    {
+                        expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), right);
+                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                    }
+                    else
+                    {
+                        expr = _syntaxFactory.BinaryExpression(op,left,token,right);
+                        expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), expr);
+                    }
+
+                }
                 context.Put(expr);
                 return;
 
@@ -4585,27 +4601,68 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 XP.NameExpressionContext namecontext = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.NameExpressionContext;
                 string name = namecontext.Name.GetText();
                 var fieldInfo = CurrentEntity.GetField(name);
-                if (fieldInfo != null )
+                if (fieldInfo != null)
                 {
                     ExpressionSyntax expr;
                     if (fieldInfo.IsField)
-                        expr = GenerateFieldPut(fieldInfo.Alias, fieldInfo.Name, context.Right);
+                    {
+                        if (context.Op.Type == XP.ASSIGN_OP)
+                        {
+                            expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, right);
+                        }
+                        else
+                        {
+                            var op = context.Op.ComplexToSimpleBinaryOp();
+                            var token = context.Op.ComplexToSimpleToken();
+                            if (op == SyntaxKind.EmptyStatement  )
+                            {
+                                expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, right);
+                                expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                            }
+                            else
+                            {
+
+                                // AREA->NAME+= 1 gets converted to
+                                // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1) 
+                                // left already has the FieldGet
+                                expr = _syntaxFactory.BinaryExpression(op, left, token, right);
+                                expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, expr);
+                            }
+                        }
+                    }
                     else
-                        expr = GenerateMemVarPut(fieldInfo.Name, context.Right);
-                    if (context.Op.Type != XP.ASSIGN_OP)
-                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex Field assignment");
-                    context.Put(expr);
+                        if (context.Op.Type == XP.ASSIGN_OP)
+                    {
+                        expr = GenerateMemVarPut(fieldInfo.Name, right);
+                    }
+                    else
+                    {
+                        var op = context.Op.ComplexToSimpleBinaryOp();
+                        var token = context.Op.ComplexToSimpleToken();
+                        if (op == SyntaxKind.EmptyStatement)
+                        {
+                            expr = GenerateMemVarPut(fieldInfo.Name, right);
+                            expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                        }
+                        else
+                        {
+
+                            // NAME+= 1 gets converted to MemVarPut("Name", MemVarGet("Name") + 1)
+                            // left already has the MemVarGet
+                            // MemVarPut( "Name", __MemVarGet("Name") + 1) 
+                            expr = _syntaxFactory.BinaryExpression(op, left, token, right);
+                            expr = GenerateMemVarPut(fieldInfo.Name, expr);
+                        }
+                    }
+                     context.Put(expr);
                     return;
                 }
             }
-            else
-            {
-                context.Put(_syntaxFactory.AssignmentExpression(
-                    context.Op.ExpressionKindBinaryOp(),
-                    context.Left.Get<ExpressionSyntax>(),
-                    context.Op.SyntaxOp(),
-                    context.Right.Get<ExpressionSyntax>()));
-            }
+            context.Put(_syntaxFactory.AssignmentExpression(
+                context.Op.ExpressionKindBinaryOp(),
+                context.Left.Get<ExpressionSyntax>(),
+                context.Op.SyntaxOp(),
+                context.Right.Get<ExpressionSyntax>()));
         }
 
         public override void ExitPrimaryExpression([NotNull] XP.PrimaryExpressionContext context)
@@ -4916,14 +4973,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (fieldInfo.IsField)
                 {
-                    if (fieldInfo.Alias?.Length > 0)
-                    {
-                        expr = GenerateFieldGet(fieldInfo.Alias, fieldInfo.Name);
-                    }
-                    else
-                    {
-                        expr = GenerateFieldGet(fieldInfo.Name);
-                    }
+                    expr = GenerateFieldGet(fieldInfo.Alias, fieldInfo.Name);
                     
                 }
                 else
@@ -5802,19 +5852,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return;
             }
             ExpressionSyntax expr;
-            if (context.Alias != null){
-                string alias = context.Alias.GetText();
-                string field = context.Field.GetText();
-                if (alias.ToUpper() == "M") {
-                    // M->FIELD
-                    expr = GenerateMemVarGet(field);
-                } else {
-                    expr = GenerateFieldGet(alias, field);
-                }
-            }
-            else {
-                string field = context.Field.GetText();
-                expr = GenerateFieldGet(field);
+            string alias = context.Alias?.GetText();
+            string field = context.Field.GetText();
+            if (!String.IsNullOrEmpty(alias) && alias.ToUpper() == "M") {
+                // M->FIELD
+                expr = GenerateMemVarGet(field);
+            } else {
+                expr = GenerateFieldGet(alias, field);
             }
             context.Put(expr);
             return;

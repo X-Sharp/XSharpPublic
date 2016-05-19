@@ -2177,6 +2177,19 @@ FUNCTION Start() AS VOID
 
 
 
+        // 154
+        [Test(Author = "Chris", Id = "C154", Title = "compiler crash with bad statement (reported by Karl Faller)")]
+        public static void compiler_crash_with_bad_statement()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL c AS STRING
+c = System.Console.WriteLine
+");
+            CompileWithErrors(s);
+        }
+
+
 
     }
 }

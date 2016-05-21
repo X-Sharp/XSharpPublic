@@ -1222,7 +1222,7 @@
     <value>The type name '{0}' does not exist in the type '{1}'</value>
   </data>
   <data name="ERR_MethGrpToNonDel" xml:space="preserve">
-    <value>Cannot convert method group '{0}' to non-delegate type '{1}'. Did you intend to invoke the method?</value>
+    <value>'{0}' is a method and cannot be converted to '{1}'. Did you forget the parenthesis?</value>
   </data>
   <data name="ERR_BadExternAlias" xml:space="preserve">
     <value>The extern alias '{0}' was not specified in a /reference option</value>

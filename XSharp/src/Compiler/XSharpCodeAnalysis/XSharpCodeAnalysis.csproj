@@ -295,6 +295,7 @@
     <Compile Include="Parser\XSharpPreprocessor.cs" />
     <Compile Include="Parser\XSharpSyntaxTree.cs" />
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
+    <Compile Include="Parser\XSharpVOTreeTransformation .cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XSharpResources.Designer.cs">

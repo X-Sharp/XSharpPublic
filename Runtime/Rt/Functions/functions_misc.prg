@@ -1547,7 +1547,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lWrap"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION LineLen(ptrLine AS BYTE PTR,nLen AS DWORD,nLimit AS DWORD,nTabSize AS DWORD,lWrap AS LOGIC) AS DWORD
+	FUNCTION LineLen(ptrLine AS BYTE[],nLen AS DWORD,nLimit AS DWORD,nTabSize AS DWORD,lWrap AS LOGIC) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

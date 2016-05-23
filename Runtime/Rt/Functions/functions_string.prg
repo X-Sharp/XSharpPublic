@@ -286,9 +286,9 @@ begin namespace XSharp.Runtime
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Bin2Ptr(c AS STRING) AS PTR
+	FUNCTION Bin2Ptr(c AS STRING) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Convert a string containing a 32-bit floating point number to a Real4 value.
@@ -456,7 +456,7 @@ begin namespace XSharp.Runtime
 	/// <param name="hfOut"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS PTR) AS INT
+	FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS IntPtr) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -540,9 +540,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwAttr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FCreate2(cFile AS STRING,dwAttr AS DWORD) AS PTR
+	FUNCTION FCreate2(cFile AS STRING,dwAttr AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Delete a file from disk.
@@ -602,9 +602,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwMode"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FOpen2(cName AS STRING,dwMode AS DWORD) AS PTR
+	FUNCTION FOpen2(cName AS STRING,dwMode AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Change the name of a file.
@@ -625,9 +625,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cPath"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS PTR
+	FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS IntPtr
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Replace all soft carriage returns (Chr(141)) in a string with hard carriage returns (Chr(13)).
@@ -1351,7 +1351,7 @@ begin namespace XSharp.Runtime
 	/// <param name="hfOut"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
+	FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS IntPtr) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

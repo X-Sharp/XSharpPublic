@@ -230,7 +230,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
                 return;
             }
-            if (_options.IsDialectVO && body != null && (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ ))
+            if (body != null && (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ ))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
                 ExpressionSyntax assignExpr;
@@ -431,7 +431,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // when /vo9 is enabled.
             if (context.Data.HasMissingReturnType && context.Data.MustHaveReturnType)
             {
-                if (_options.IsDialectVO && _options.VOUntypedAllowed)
+                if ( _options.VOUntypedAllowed)
                 {
                     dataType = _usualType;
                     if (!_options.VulcanRTFuncsIncluded)
@@ -444,9 +444,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
         }
-
-
-
 
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
@@ -466,8 +463,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
-            
-            if (context.Modifiers?._EXTERN != null) {
+            // This method does NOT call the parent. Code is duplicated here.
+
+            if(context.Modifiers?._EXTERN != null) {
                 if (context.StmtBlk?._Stmts?.Count > 0) {
                     context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody));
                 }
@@ -481,7 +479,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
-                if (context.Chain != null && _options.IsDialectVO)
+                if (context.Chain != null )
                 {
                     var chainArgs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                     var chainExpr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
@@ -1100,7 +1098,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
             if (_options.VOCompatibleIIF)
             {
-                var type = (_options.IsDialectVO && _options.VulcanRTFuncsIncluded)
+                var type =  _options.VulcanRTFuncsIncluded
                     ? (TypeSyntax) _usualType : (TypeSyntax) _objectType;
                 left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);

@@ -2281,18 +2281,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
-                if (context.Chain != null && _options.IsDialectVO)
-                {
-                    var chainArgs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
-                    var chainExpr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        context.Chain.Type == XP.SELF ? (ExpressionSyntax)_syntaxFactory.ThisExpression(context.Chain.SyntaxKeyword()) : _syntaxFactory.BaseExpression(context.Chain.SyntaxKeyword()),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
-                    body = MakeBlock(MakeList<StatementSyntax>(
-                        _syntaxFactory.ExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                        body));
-                    context.Chain = null;
-                }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
@@ -3579,14 +3567,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             arg = MakeArgument(expr);
                             block.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.Write", MakeArgumentList(arg))));
                         }
-                        // For VO and Vulcan we call AssString on all arguments. This takes care of numeric formatting
                         // And the ? operator is for these dialects 
                         expr = eCtx.Get<ExpressionSyntax>();
                         arg = MakeArgument(expr);
-                        if (_options.IsDialectVO && _options.VulcanRTFuncsIncluded)
-                        {
-                            arg = MakeArgument(GenerateMethodCall("AsString", MakeArgumentList(arg)));
-                        }
                         expr = GenerateMethodCall("global::System.Console.Write", MakeArgumentList(arg));
                         block.Add(GenerateExpressionStatement(expr));
                         first = false;

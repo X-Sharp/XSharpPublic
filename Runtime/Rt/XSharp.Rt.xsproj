@@ -37,7 +37,7 @@
     <Name>XSharp.Rt</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Vulcan</Dialect>
+    <Dialect>VO</Dialect>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,7 +69,7 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001;1591;0168</DisabledWarnings>
+    <DisabledWarnings>168;</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -90,7 +90,7 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <DisabledWarnings>9001</DisabledWarnings>
+    <DisabledWarnings>168</DisabledWarnings>
     <WarningLevel>4</WarningLevel>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
@@ -98,7 +98,7 @@
     <CommandLineOption />
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths />
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />

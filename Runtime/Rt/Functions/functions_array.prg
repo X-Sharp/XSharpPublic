@@ -155,8 +155,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ArrayPut(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
-		/// THROW NotImplementedException{}
-	RETURN NIL   
+		a:__SetElement(u, (int)dwEl -1)
+	RETURN u
 
 	/// <summary>
 	/// Store an array to a buffer.
@@ -166,7 +166,7 @@ begin namespace XSharp.Runtime
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayStore(a AS ARRAY,Buff AS PTR,dwLen AS DWORD) AS DWORD
+	UNSAFE FUNCTION ArrayStore(a AS ARRAY,Buff AS PTR,dwLen AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -179,8 +179,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
-		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN a:Swap(dwEl, u)
 
 	/// <summary>
 	/// Scan a sorted array until a value is found or a code block returns 0.

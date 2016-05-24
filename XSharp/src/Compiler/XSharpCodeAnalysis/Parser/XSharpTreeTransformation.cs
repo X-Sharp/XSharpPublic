@@ -761,12 +761,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-        protected virtual void  Check4ClipperCC(XP.IEntityContext context, 
-            XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveReturnType)
-        {
-            return;
-        }
-
         protected virtual void ImplementClipperAndPSZ(XP.IEntityContext context,
             ref  SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType )
@@ -1946,11 +1940,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
-        public override void EnterMethod([NotNull] XP.MethodContext context)
-        {
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
-        }
-        public override void ExitMethod([NotNull] XP.MethodContext context)
+         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
             var idName = context.Id.Get<SyntaxToken>();
             var isInInterface = context.isInInterface();
@@ -2042,7 +2032,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                    MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
+
+                MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                     attributeLists: attributes,
                     modifiers: mods,
                     returnType: returntype,
@@ -2056,20 +2047,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     body:  body,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                if (context.ClassId != null) {
-                    m = _syntaxFactory.ClassDeclaration(
-                        attributeLists: EmptyList<AttributeListSyntax>(),
-                        modifiers: TokenList(SyntaxKind.PartialKeyword),
-                        keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                        identifier: context.ClassId.Get<SyntaxToken>(),
-                        typeParameterList: default(TypeParameterListSyntax),
-                        baseList: default(BaseListSyntax),
-                        constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        members: MakeList<MemberDeclarationSyntax>(m),
-                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                        semicolonToken: null);
-                    if (context.Namespace != null) {
+
+                if(context.ClassId != null) {
+                    bool GenClass = true;
+                    if(context.isInClass()) {
+                        string parentName;
+                        XP.Class_Context parent = null;
+                        if(context.Parent is XP.Class_Context) {
+                            parent = context.Parent as XP.Class_Context;
+                        } else if(context.Parent.Parent is XP.Class_Context) {
+                            parent = context.Parent.Parent as XP.Class_Context;
+                        }
+                        if(parent != null) {
+                            parentName = parent.Id.GetText();
+                            if(parent.Namespace != null)
+                                parentName = parent.Namespace.GetText() + parentName;
+                            string className;
+                            className = context.ClassId.GetText();
+                            if(context.Namespace != null)
+                                className = context.Namespace.GetText() + className;
+                            if(String.Compare(parentName, className, StringComparison.OrdinalIgnoreCase) != 0) {
+                                m = m.WithAdditionalDiagnostics(
+                                new SyntaxDiagnosticInfo(
+                                        ErrorCode.ERR_NestedMethodMustHaveSameNameAsParentClass, className, parentName));
+                            } else
+                                GenClass = false;
+
+                                
+                        }
+                    }
+                    if(!m.ContainsDiagnostics && GenClass) {
+                        m = _syntaxFactory.ClassDeclaration(
+                            attributeLists: EmptyList<AttributeListSyntax>(),
+                            modifiers: TokenList(SyntaxKind.PartialKeyword),
+                            keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                            identifier: context.ClassId.Get<SyntaxToken>(),
+                            typeParameterList: default(TypeParameterListSyntax),
+                            baseList: default(BaseListSyntax),
+                            constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                            openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                            members: MakeList<MemberDeclarationSyntax>(m),
+                            closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                            semicolonToken: null);
+                    }
+                    if(context.Namespace != null) {
                         m = AddNameSpaceToMember(context.Namespace, m);
                     }
                 }
@@ -2260,10 +2281,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 
-        public override void EnterClsctor([NotNull] XP.ClsctorContext context)
-        {
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
-        }
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
             
@@ -2572,7 +2589,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Modifiers != null) {
                 context.Modifiers._Tokens.Add(_parser.TokenFactory.Create(XP.EXTERN,""));
             }
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type, true);
         }
 
         public override void ExitVodll([NotNull] XP.VodllContext context)
@@ -2772,10 +2788,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MakeSeparatedList<ExpressionSyntax>(context._ArrayIndex),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
         }
-        public override void EnterFunction([NotNull] XP.FunctionContext context)
-        {
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, true);
-        }
         public override void ExitFunction([NotNull] XP.FunctionContext context)
         {
             var isInInterface = context.isInInterface();
@@ -2802,11 +2814,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body: body,
                 expressionBody: null,
                 semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-        }
-
-        public override void EnterProcedure([NotNull] XP.ProcedureContext context)
-        {
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
         }
         public override void ExitProcedure([NotNull] XP.ProcedureContext context)
         {
@@ -3442,6 +3449,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.StmtBlk.Get<BlockSyntax>());
         }
 
+
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
             var expr = context.Expr?.Get<ExpressionSyntax>();
@@ -3799,79 +3807,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
         }
 
-        public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
-        {
+        public override void ExitMethodCall([NotNull] XP.MethodCallContext context) {
             var expr = context.Expr.Get<ExpressionSyntax>();
-            // Translate AltD() to 
-            // IF System.Diagnostics.Debugger.IsAttached
-            // System.Diagnostics.Debugger.Break()
-            // ENDIF
-
-            bool bIsAltD = false;
-            bool bIsSlen = false;
-            string name = null;
-            if (expr is IdentifierNameSyntax)
-            {
-                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
-                name = ins.Identifier.Text.ToUpper();
-                switch (name)
-                {
-                    case "ALTD":
-                        // Change expression to call .NET Debugger
-                        bIsAltD = true;
-                        break;
-                    case "SLEN":
-                        bIsSlen = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
             ArgumentListSyntax argList;
-            if (context.ArgList != null)
+            if(context.ArgList != null) {
                 argList = context.ArgList.Get<ArgumentListSyntax>();
-            else
-            {
+            } else {
                 argList = EmptyArgumentList();
             }
-            if (bIsAltD)
-            {
-                expr = GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList);
-                var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                GenerateQualifiedName("global::System.Diagnostics.Debugger"),
-                            SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                            GenerateSimpleName("IsAttached"));
-                var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                context.Put(GenerateIfStatement(cond, stmt));
-                return;
-            }
-            else if (bIsSlen && argList.Arguments.Count >= 1)
-            {
-                var stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
-                expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    stringType,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    argList.Arguments[0].Expression);
-                expr = _syntaxFactory.ConditionalAccessExpression(
-                                        expr,
-                                        SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                                        _syntaxFactory.MemberBindingExpression(
-                                            SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                            GenerateSimpleName("Length")
-                                            ));
-                expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    expr);
-
-                context.Put(expr);
-                return;
-            }
-            else
-                context.Put(_syntaxFactory.InvocationExpression(expr, argList));
-
+            context.Put(_syntaxFactory.InvocationExpression(expr, argList));
         }
-
 
         public override void ExitCtorCall([NotNull] XP.CtorCallContext context)
         {

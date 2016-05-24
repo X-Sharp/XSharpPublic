@@ -37,7 +37,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private TypeSyntax _symbolType;
         private TypeSyntax _pszType;
         private TypeSyntax _codeblockType;
- 
+        private TypeSyntax _stringType;
+
         public XSharpVOTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, ContextAwareSyntax syntaxFactory) : 
             base(parser, options, pool, syntaxFactory)
         {
@@ -53,14 +54,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                _usualType = _objectType;
-                _floatType = _objectType;
-                _dateType = _objectType;
-                _arrayType = _objectType;
-                _symbolType = _objectType;
-                _pszType = _objectType;
-                _codeblockType = _objectType;
+                _usualType = (TypeSyntax) NoRtFuncs(_objectType,"USUAL");
+                _floatType = (TypeSyntax)NoRtFuncs(_objectType, "FLOAT");
+                _dateType = (TypeSyntax)NoRtFuncs(_objectType, "DATE");
+                _arrayType = (TypeSyntax)NoRtFuncs(_objectType, "ARRAY");
+                _symbolType = (TypeSyntax)NoRtFuncs(_objectType, "SYMBOL");
+                _pszType = (TypeSyntax)NoRtFuncs(_objectType, "PSZ");
+                _codeblockType = (TypeSyntax)NoRtFuncs(_objectType, "CODEBLOCK");
             }
+            _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
         }
 
         internal CSharpSyntaxNode NoUsual(CSharpSyntaxNode node)
@@ -93,7 +95,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
             // if (!_options.VulcanRTFuncsIncluded)
             //{
-            //    expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
+            //    expr = (ExpressionSyntax)NoRtFuncs(expr, "MEMVAR");
             //}
             return expr;
         }
@@ -166,10 +168,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private ExpressionSyntax GenerateNIL()
         {
             TypeSyntax type = _usualType;
-            if (!_options.VulcanRTFuncsIncluded)
-            {
-                type = (TypeSyntax)NoUsual(type);
-            }
             return _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                             type,
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
@@ -177,8 +175,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-
-        protected override void Check4ClipperCC(XP.IEntityContext context, 
+        private void Check4ClipperCC(XP.IEntityContext context, 
             XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveReturnType)
         {
             bool isEntryPoint = false;
@@ -266,10 +263,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                     // LOCAL oPar1 as USUAL                <== For Clipper Calling Convention
                     // LOCAL oPar2 as USUAL                .
-                    // IF Xs$ArgCount > 0                .
+                    // IF Xs$PCount > 0                .
                     //   oPar1 := Xs$Args[0]                 .
                     // ENDIF                               <== For Clipper Calling Convention
-                    // IF Xs$ArgCount > 1              .
+                    // IF Xs$PCount > 1              .
                     //    oPar1 := Xs$Args[1]              .
                     // ENDIF                             .
                     var nilExpr = GenerateNIL();
@@ -377,7 +374,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     _syntaxFactory.AttributeArgument(null, null,
                                         _syntaxFactory.ArrayCreationExpression(
                                             SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                                            _syntaxFactory.ArrayType(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword)),rank),
+                                            _syntaxFactory.ArrayType(_stringType,rank),
                                             _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                                 MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
@@ -429,19 +426,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Add missing return type when needed. OBJECT or USUAL depending on the dialect.
             // Of course the return value must be specified as well, but that should be done in the return statement
             // when /vo9 is enabled.
-            if (context.Data.HasMissingReturnType && context.Data.MustHaveReturnType)
-            {
-                if ( _options.VOUntypedAllowed)
-                {
+            if(context.Data.HasMissingReturnType && context.Data.MustHaveReturnType) {
+                if(_options.VOUntypedAllowed) 
                     dataType = _usualType;
-                    if (!_options.VulcanRTFuncsIncluded)
-                    {
-                        dataType = (TypeSyntax)NoUsual(dataType);
-                    }
-                }
                 else
                     dataType = MissingType();
-
             }
         }
 
@@ -526,12 +515,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected override TypeSyntax _getParameterType([NotNull] XP.ParameterContext context) {
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
             if(type == null) {
-                if(CurrentEntity.Data.HasTypedParameter && _options.VOUntypedAllowed) {
+                if(CurrentEntity.Data.HasTypedParameter && _options.VOUntypedAllowed) 
                     type = _usualType;
-                    if(!_options.VulcanRTFuncsIncluded) {
-                        type = (TypeSyntax)NoUsual(type);
-                    }
-                } else
+                 else
                     type = MissingType();
             }
             return type;
@@ -539,12 +525,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected override TypeSyntax _getMissingLocalType() {
             TypeSyntax varType;
-            if(_options.VOUntypedAllowed) {
+            if(_options.VOUntypedAllowed) 
                 varType = _usualType;
-                if(!_options.VulcanRTFuncsIncluded) {
-                    varType = (TypeSyntax)NoUsual(varType);
-                }
-            } else
+             else
                 varType = MissingType();
             return varType;
         }
@@ -556,6 +539,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasClipperCallingConvention = false;
                 context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
             }
+            else
+                Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
         }
 
 
@@ -959,114 +944,200 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitAssignmentExpression(context);
         }
 
-
-
-        public override void ExitMethodCall([NotNull] XP.MethodCallContext context) {
-            var expr = context.Expr.Get<ExpressionSyntax>();
-            bool bPszConvert = false;
-            bool bClipCalFunc = false;
-            string name = null;
-            if(expr is IdentifierNameSyntax) {
-                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
-                name = ins.Identifier.Text.ToUpper();
-                switch(name) {
-                    case "STRING2PSZ":
-                    case "CAST2PSZ":
-                        bPszConvert = true;
-                        break;
-                    case "PCOUNT":
-                    case "_GETMPARAM":
-                    case "_GETFPARAM":
-                        if(CurrentEntity.Data.HasClipperCallingConvention) {
-                            bClipCalFunc = true;
-                        } else {
-                            expr = GenerateLiteral("", 0);
-                            expr = expr.WithAdditionalDiagnostics(
-                                new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
-                            context.Put(expr);
-                            return;
-
-                        }
-
-                        break;
-                    default:
-                        break;
-                }
-            } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
-                expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
-            }
-            if(!bPszConvert && !bClipCalFunc) {
-                base.ExitMethodCall(context);
-                return;
-            }
+        private bool GenerateAltD(XP.MethodCallContext context) {
+            // Pseudo function AltD()
             ArgumentListSyntax argList;
             if(context.ArgList != null) {
                 argList = context.ArgList.Get<ArgumentListSyntax>();
             } else {
                 argList = EmptyArgumentList();
             }
-            if(bPszConvert) {
-                // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
-                // and the reference to the String2Psz() in the Vulcan Runtime.
-                if(_options.VulcanRTIncluded) {
-                    if(CurrentEntity != null && argList.Arguments.Count > 0) {
+            var expr = GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList);
+            var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                            GenerateQualifiedName("global::System.Diagnostics.Debugger"),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        GenerateSimpleName("IsAttached"));
+            var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            context.Put(GenerateIfStatement(cond, stmt));
+            return true;
+        }
+
+        private bool GenerateSLen(XP.MethodCallContext context) {
+            // Pseudo function SLen
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            } else {
+                return false;
+            }
+
+            expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                _stringType,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                argList.Arguments[0].Expression);
+
+            expr = _syntaxFactory.ConditionalAccessExpression( expr,
+                                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                    _syntaxFactory.MemberBindingExpression(
+                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                        GenerateSimpleName("Length")
+                                        ));
+            expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                expr);
+
+            context.Put(expr);
+            return true;
+        }
+        private bool GenerateString2Psz(XP.MethodCallContext context, string name) {
+            // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
+            // and the reference to the String2Psz() in the Vulcan Runtime.
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            } else {
+                argList = EmptyArgumentList();
+            }
+            if(_options.VulcanRTIncluded) {
+                if(CurrentEntity != null ) {
+                    // Add reference to compiler generated List<IntPtr> to the argList
+                    if (argList.Arguments.Count != 1) {
+                        expr = GenerateNIL().WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+                    }
+                    else {
                         CurrentEntity.Data.UsesPSZ = true;
-                        // Add reference to compiler generated List<IntPtr> to the argList
                         NameSyntax pszlist = GenerateSimpleName(VoPszList);
                         expr = argList.Arguments[0].Expression;
                         argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
                         expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
                         var args = MakeArgumentList(MakeArgument(expr));
                         expr = CreateObject(this._pszType, args, null);
-                        context.Put(expr);
-                        return;
                     }
-                } else {
-                    context.Put(NoRt(GenerateLiteral(""), name));
-                    return;
-                }
-            } else if(bClipCalFunc) {
-                if(!_options.VulcanRTFuncsIncluded) {
-                    expr = (ExpressionSyntax)NoRtFuncs(GenerateLiteral(0), name);
                     context.Put(expr);
-                    return;
+                    return true;
                 }
-                if(name == "PCOUNT") {
-                    expr = GenerateSimpleName(ClipperPCount);
-                    context.Put(expr);
-                    CurrentEntity.Data.UsesPCount = true;
-                    return;
-                } else {
-                    // _GETMPARAM or _GETFPARAM
-                    if(argList.Arguments.Count > 0) {
-                        var indices = _pool.AllocateSeparated<ArgumentSyntax>();
-                        indices.Add(MakeArgument(argList.Arguments[0].Expression));
-
-                        expr = _syntaxFactory.ElementAccessExpression(
-                        GenerateSimpleName(ClipperArgs),
-                        _syntaxFactory.BracketedArgumentList(
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                            indices,
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
-                        context.Put(expr);
-                        return;
-                    } else {
-                        // generate an error: missing argument
-                        expr = GenerateLiteral(0).
-                        WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_MissingArgument));
-                        context.Put(expr);
-                        return;
-
-                    }
-
+                else {
+                    return false;
                 }
-
-
+            } else {
+                context.Put(NoRt(GenerateLiteral(""), name));
+                return true;
             }
         }
 
+        private bool GenerateClipCallFunc(XP.MethodCallContext context, string name) {
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            } else {
+                argList = EmptyArgumentList();
+            }
+            if(!_options.VulcanRTFuncsIncluded) {
+                expr = (ExpressionSyntax)NoRtFuncs(GenerateLiteral(0), name);
+                context.Put(expr);
+                return true;
+            }
+            if(name == "PCOUNT") {
+                expr = GenerateSimpleName(ClipperPCount);
+                if(argList.Arguments.Count != 0) {
+                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount,name, argList.Arguments.Count));
+                }
+                context.Put(expr);
+                CurrentEntity.Data.UsesPCount = true;
+                return true;
+            } else { 
+                if(argList.Arguments.Count != 1) {
+                    expr = GenerateNIL().WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+                    context.Put(expr);
+                    return true;
+                }
 
+                // _GETMPARAM or _GETFPARAM
+                var indices = _pool.AllocateSeparated<ArgumentSyntax>();
+                indices.Add(MakeArgument(argList.Arguments[0].Expression));
+
+                expr = _syntaxFactory.ElementAccessExpression(
+                GenerateSimpleName(ClipperArgs),
+                _syntaxFactory.BracketedArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    indices,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                context.Put(expr);
+                return true;
+            } 
+        }
+        public override void ExitMethodCall([NotNull] XP.MethodCallContext context) {
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            string name = null;
+            if(expr is IdentifierNameSyntax) {
+                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
+                name = ins.Identifier.Text.ToUpper();
+                switch(name) {
+                    case "ALTD":
+                        if (GenerateAltD(context))
+                            return;
+                        break;
+                    case "SLEN":
+                        if (GenerateSLen(context))
+                            return;
+                        break;
+                    case "STRING2PSZ":
+                    case "CAST2PSZ":
+                        if (GenerateString2Psz(context,name))
+                            return;
+                        break;
+                    case "PCOUNT":
+                    case "_GETMPARAM":
+                    case "_GETFPARAM":
+                        if(CurrentEntity.Data.HasClipperCallingConvention) {
+                            if(GenerateClipCallFunc(context, name))
+                                return;
+                        }
+                        expr = GenerateLiteral("", 0).WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
+                        context.Put(expr);
+                        return;
+                        
+                    default:
+                        break;
+                }
+            } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
+                expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+                context.Put(expr);
+                return;
+            }
+            // all other method names or syntaxes
+            base.ExitMethodCall(context);
+            return;
+        }
+
+
+        public override void EnterFunction([NotNull] XP.FunctionContext context) {
+            base.EnterFunction(context);
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, true);
+        }
+
+        public override void EnterProcedure([NotNull] XP.ProcedureContext context) {
+            base.EnterProcedure(context);
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+        }
+
+        public override void EnterClsctor([NotNull] XP.ClsctorContext context) {
+            base.EnterClsctor(context);
+            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+        }
+
+        public override void EnterVodll([NotNull] XP.VodllContext context) {
+            base.EnterVodll(context);
+           Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type, true);
+        }
 
         public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
         {
@@ -1128,11 +1199,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             type = _usualType;
             bVOArray = true;
-            if (!_options.VulcanRTFuncsIncluded)
-            {
-                type = (TypeSyntax) NoUsual(type);
-            }
-
 
             var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, 
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken), 
@@ -1268,10 +1334,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (type == null) {
                 type = (TypeSyntax)NotInDialect(_objectType, context.Token.Text);
-            }
-            else if (!_options.VulcanRTFuncsIncluded )
-            {
-                type = (TypeSyntax) NoRtFuncs(type,context.Token.Text);
             }
             context.Put(type);
         }

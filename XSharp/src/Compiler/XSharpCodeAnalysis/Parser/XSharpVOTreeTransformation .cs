@@ -63,12 +63,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _codeblockType = (TypeSyntax)NoRtFuncs(_objectType, "CODEBLOCK");
             }
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+            
         }
 
-        internal CSharpSyntaxNode NoUsual(CSharpSyntaxNode node)
-        {
-            return NoRtFuncs(node,"USUAL");
-        }
         internal CSharpSyntaxNode NoRtFuncs(CSharpSyntaxNode node, string type)
         {
             return GenerateNoRuntimeError(node, type, "VulcanRTFuncs.DLL");
@@ -329,10 +326,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                     _pool.Free(sizes);
                     var atype = _syntaxFactory.ArrayType(_usualType, rank) ;
-                    if (!_options.VulcanRTFuncsIncluded)
-                    {
-                        atype = (ArrayTypeSyntax) NoUsual(atype);
-                    }
                     SyntaxListBuilder modifiers = _pool.Allocate();
                     modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
                     var par = _syntaxFactory.Parameter(

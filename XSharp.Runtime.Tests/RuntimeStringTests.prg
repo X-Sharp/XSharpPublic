@@ -185,13 +185,54 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 	[TestMethod];
 	METHOD SLenTest() as void
-		//local s:="Hello World" as string
-		//AreEqual((dword)11,SLen(s))
-		//s:=null
-		//AreEqual((dword)0,SLen(s))
+		local s:="Hello World" as string
+		var l := SLen(s)
+		AreEqual((dword)11,SLen(s))
 	RETURN
 
+	[TestMethod];
+	[ExpectedException(typeof(InvalidOperationException))];
+	METHOD SLenExceptionTest() as void
+		local s as string
+		s:=null_string
+		AreEqual((dword)0,SLen(s))
+	RETURN
 
+	[TestMethod];
+	METHOD StuffTest() as void
+		local s:="Hello World" as string
+		AreEqual("Hello Kiel",Stuff(s,7,5,"Kiel"))
+		AreEqual("Kiel",Stuff(null,7,5,"Kiel"))
+		AreEqual("Hello ",Stuff(s,7,5,""))
+		AreEqual("Hello WorldKiel",Stuff(s,12,5,"Kiel"))
+	RETURN
+
+	[TestMethod];
+	METHOD SubStr2Test() as void
+		local s:="Hello World" as string
+		AreEqual("World",SubStr2(s,7))
+		AreEqual("",SubStr2(s,20))
+		AreEqual(null,SubStr2(null,5))
+	RETURN
+	[TestMethod];
+	METHOD SubStr3Test() as void
+		local s:="Hello World" as string
+		AreEqual("World",SubStr3(s,7,5))
+		AreEqual("",SubStr3(s,20,5))
+		AreEqual(null,SubStr3(null,5,2))
+	RETURN
+	[TestMethod];
+	METHOD TrimTest() as void
+		local s:="Hello World   " as string
+		AreEqual("Hello World",Trim(s))
+		AreEqual(null,Trim(null))
+	RETURN
+	[TestMethod];
+	METHOD UpperTest() as void
+		local s:="Hello World" as string
+		AreEqual("HELLO WORLD",Upper(s))
+		AreEqual(null,Upper(null))
+	RETURN
 	END CLASS
 
 END NAMESPACE

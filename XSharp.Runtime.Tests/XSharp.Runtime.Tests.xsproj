@@ -128,6 +128,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RuntimeUsualTests.prg" />
+    <Compile Include="Usual.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

@@ -12,8 +12,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AbsFloat(f AS FLOAT) AS FLOAT
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN Float{Math.Abs(f:Value)}
 
 	/// <summary>
 	/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -22,8 +21,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AbsInt(i AS LONGINT) AS LONG
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN Math.Abs(i)
 
 	/// <summary>
 	/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -32,8 +30,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AbsLong(li AS LONGINT) AS LONG
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN Math.Abs(li)
 
 	/// <summary>
 	/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -42,8 +39,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AbsReal4(r4 AS REAL4) AS REAL4
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN Math.Abs(r4)
 
 	/// <summary>
 	/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -52,8 +48,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AbsReal8(r8 AS REAL8) AS REAL8
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN Math.Abs(r8)
 
 	/// <summary>
 	/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -62,8 +57,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AbsShort(si AS SHORT) AS LONG
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN Math.Abs(si)
 
 	/// <summary>
 	/// Create an uninitialized, one-dimensional array.
@@ -103,8 +97,9 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION CHR(dwChar AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local buf := byte[]{1} as byte[]
+		buf[0+__ARRAYBASE__] := (byte) dwChar
+	RETURN System.Text.Encoding:ASCII:GetString(buf)
 
 	/// <summary>
 	/// Format a set of numbers representing a year, month, and day as a date.
@@ -115,8 +110,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
-		/// THROW NotImplementedException{}
-	RETURN (DATE)0   
+	RETURN __VODate{dwY,dwM,dwDay}   
 
 	/// <summary>
 	/// Format a set of numbers representing an hour, minute, and second as a time string.
@@ -127,8 +121,9 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ConTime(dwHour AS DWORD,dwMinute AS DWORD,dwSeconds AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local ts as TimeSpan
+		ts := TimeSpan.FromSeconds(dwHour*60*60+dwMinute*60+dwSeconds)		
+	RETURN ts:ToString()   
 
 	/// <summary>
 	/// </summary>
@@ -226,8 +221,14 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Fact(n AS DWORD) AS FLOAT
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local result := 1 as double
+		if  n > 0
+		    local i as dword
+		    for i := 1 upto n
+			    result := result * i
+			next
+		endif
+	RETURN (float)result    
 
 	/// <summary>
 	/// Display file attributes as a string.

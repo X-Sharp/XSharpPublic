@@ -4744,4 +4744,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_ImplicitParentConstructorInitializer" xml:space="preserve">
     <value>No explicit constructor chaining; generating implicit call to super constructor.</value>
   </data>
+  <data name="ERR_NestedMethodMustHaveSameNameAsParentClass" xml:space="preserve">
+    <value>Class name {0} for method differs from parent class name {1}</value>
+  </data>
 </root>

@@ -1366,5 +1366,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_DuplicateDefine = 9013,
         ERR_FeatureRequiresReferenceToRuntime = 9014,
         WRN_ImplicitParentConstructorInitializer = 9015,
+        ERR_NestedMethodMustHaveSameNameAsParentClass=9016,
     }
 }

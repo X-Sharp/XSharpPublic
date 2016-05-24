@@ -198,6 +198,10 @@ namespace Antlr4.Runtime {
                 || (context.Parent is XSharpParser.Interface_Context);
         }
 
+        internal static bool isInClass([NotNull] this RuleContext context) {
+            return ((context.Parent is XSharpParser.ClassmemberContext) && (context.Parent.Parent is XSharpParser.Class_Context))
+                || (context.Parent is XSharpParser.Class_Context);
+        }
     }
 }
 

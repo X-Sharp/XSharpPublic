@@ -14,8 +14,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AAdd(a AS ARRAY,x AS USUAL) AS USUAL
-		/// THROW NotImplementedException{}
-	RETURN NIL   
+		a:Add(x)
+	RETURN x 
 
 	/// <summary>
 	/// Duplicate a multidimensional array.
@@ -45,8 +45,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ADel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+		a:RemoveAt(dwEl)  
+	RETURN a
 
 	/// <summary>
 	/// </summary>
@@ -74,8 +74,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AIns(a AS ARRAY,dwEl AS DWORD) AS ARRAY
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+		a:Insert(dwEl)
+	RETURN a
 
 	/// <summary>
 	/// Return the number of elements in an array.
@@ -84,8 +84,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ALen(a AS ARRAY) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN a:Length
 
 	/// <summary>
 	/// </summary>
@@ -211,8 +210,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ASize(a AS ARRAY,dwDim AS DWORD) AS ARRAY
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+		a:Resize(dwDim) 
+	RETURN a  
 
 	/// <summary>
 	/// Return the highest numbered element of an array.
@@ -221,8 +220,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ATail(a AS ARRAY) AS USUAL
-		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN a:Tail()
 
 	/// <summary>
 	/// Copy a typed dynamic object to static allocated memory.

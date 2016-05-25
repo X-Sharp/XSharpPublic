@@ -222,7 +222,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 (object)boundExpression.Type != null && 
                 (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
             {
-                result = BindDynamicInvocation(node, boundExpression, analyzedArguments, ImmutableArray<MethodSymbol>.Empty, diagnostics, queryClause);
+                ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
+                bool hasErrors = ReportBadDynamicArguments(node, argArray, diagnostics, queryClause);
+                result = new BoundDynamicInvocation(
+                    node,
+                    boundExpression,
+                    argArray,
+                    analyzedArguments.GetNames(),
+                    analyzedArguments.RefKinds.ToImmutableOrNull(),
+                    ImmutableArray<MethodSymbol>.Empty,
+                    Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                    hasErrors);
             }
 #endif
             else if (boundExpression.Kind == BoundKind.MethodGroup)

@@ -219,7 +219,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 #if XSHARP
             else if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
-                (object)boundExpression.Type != null && 
+                boundExpression.Kind != BoundKind.MethodGroup && (object)boundExpression.Type != null && 
                 (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
             {
                 ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);

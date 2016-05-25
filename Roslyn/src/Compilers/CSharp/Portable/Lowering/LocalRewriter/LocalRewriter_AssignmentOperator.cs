@@ -47,6 +47,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // dyn.m = expr
                         var memberAccess = (BoundDynamicMemberAccess)left;
                         var loweredReceiver = VisitExpression(memberAccess.Receiver);
+#if XSHARP
+                        if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+                        {
+                            return MakeVODynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight);
+                        }
+#endif
                         return _dynamicFactory.MakeDynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight).ToExpression();
                     }
 
@@ -96,6 +102,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case BoundKind.DynamicMemberAccess:
                     var memberAccess = (BoundDynamicMemberAccess)rewrittenLeft;
+#if XSHARP
+                    if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !memberAccess.Receiver.HasDynamicType())
+                    {
+                        return MakeVODynamicSetMember(memberAccess.Receiver, memberAccess.Name, rewrittenRight);
+                    }
+#endif
                     return _dynamicFactory.MakeDynamicSetMember(
                         memberAccess.Receiver,
                         memberAccess.Name,

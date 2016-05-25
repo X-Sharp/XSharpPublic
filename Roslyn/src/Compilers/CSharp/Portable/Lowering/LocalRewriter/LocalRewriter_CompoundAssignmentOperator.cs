@@ -34,6 +34,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             bool isPossibleEventHandlerOperation = node.Left.Kind == BoundKind.DynamicMemberAccess &&
                 (binaryOperator == BinaryOperatorKind.Addition || binaryOperator == BinaryOperatorKind.Subtraction);
+#if XSHARP
+            if (isPossibleEventHandlerOperation && _compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !node.Left.HasDynamicType())
+            {
+                isPossibleEventHandlerOperation = false;
+            }
+#endif
 
             // save RHS to a temp, we need to use it twice:
             if (isPossibleEventHandlerOperation && CanChangeValueBetweenReads(loweredRight))

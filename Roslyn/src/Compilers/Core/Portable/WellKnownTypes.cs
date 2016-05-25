@@ -247,6 +247,7 @@ namespace Microsoft.CodeAnalysis
         System_IFormatProvider,
 
 #if XSHARP
+        VulcanRTFuncs_Functions,
         Vulcan___Usual,
         Vulcan___Array,
 #endif
@@ -492,6 +493,7 @@ namespace Microsoft.CodeAnalysis
             "System.IFormatProvider"
 #if XSHARP
             ,
+            "VulcanRTFuncs.Functions",
             "Vulcan.__Usual",
             "Vulcan.__Array"
 #endif

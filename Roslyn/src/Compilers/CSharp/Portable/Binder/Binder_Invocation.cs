@@ -217,6 +217,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // invocation and let the lowering pass sort it out.
                 result = BindDynamicInvocation(node, boundExpression, analyzedArguments, ImmutableArray<MethodSymbol>.Empty, diagnostics, queryClause);
             }
+#if XSHARP
+            else if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
+                (object)boundExpression.Type != null && 
+                (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
+            {
+                result = BindDynamicInvocation(node, boundExpression, analyzedArguments, ImmutableArray<MethodSymbol>.Empty, diagnostics, queryClause);
+            }
+#endif
             else if (boundExpression.Kind == BoundKind.MethodGroup)
             {
                 result = BindMethodGroupInvocation(node, expression, methodName, (BoundMethodGroup)boundExpression, analyzedArguments, diagnostics, queryClause, allowUnexpandedForm: allowUnexpandedForm);

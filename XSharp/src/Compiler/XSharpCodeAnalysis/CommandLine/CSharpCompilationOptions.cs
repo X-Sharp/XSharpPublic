@@ -21,6 +21,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOFloatConstants { get; private set; }
         public bool VOUntypedAllowed { get; private set; }
         public XSharpDialect Dialect { get; private set; }
+        public bool LateBinding { get; private set; }
 
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
@@ -35,6 +36,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOCompatibleIIF = opt.Vo10;
                 VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
+                LateBinding = opt.LateBinding;
             }
         }
 
@@ -53,6 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOUntypedAllowed = opt.VOUntypedAllowed;
             VOCompatibleIIF = opt.VOCompatibleIIF;
             VOFloatConstants = opt.VOFloatConstants;
+            LateBinding = opt.LateBinding;
         }
     }
 }

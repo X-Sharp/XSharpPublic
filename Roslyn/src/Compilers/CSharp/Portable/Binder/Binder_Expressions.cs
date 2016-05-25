@@ -4523,6 +4523,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return BindDynamicMemberAccess(node, boundLeft, right, invoked, indexed, diagnostics);
             }
 
+#if XSHARP
+            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
+                right.Kind() != SyntaxKind.GenericName &&
+                (object)leftType != null && 
+                (leftType.IsObjectType() || ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
+            {
+                /*var rightName = right.Identifier.ValueText;
+                var rightArity = right.Arity;
+                var siteDiagnostics = DiagnosticBag.GetInstance();
+                var boundResult = BindInstanceMemberAccess(node, right, boundLeft, rightName, rightArity, default(SeparatedSyntaxList<TypeSyntax>), default(ImmutableArray<TypeSymbol>), invoked, siteDiagnostics);
+                if (!siteDiagnostics.HasAnyErrors())
+                {
+                    return boundResult;
+                }
+                else*/
+                {
+                    return new BoundDynamicMemberAccess(
+                        syntax: node,
+                        receiver: boundLeft,
+                        typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                        name: right.Identifier.ValueText,
+                        invoked: invoked,
+                        indexed: indexed,
+                        type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                        hasErrors: false);
+                }
+            }
+
+#endif
             // No member accesses on void
             if ((object)leftType != null && leftType.SpecialType == SpecialType.System_Void)
             {

@@ -73,6 +73,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 default:
                     // delegate invocation
                     var loweredExpression = VisitExpression(node.Expression);
+#if XSHARP
+                    if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredExpression.HasDynamicType())
+                    {
+                        return MakeVODynamicInvokeMember(loweredExpression, "Invoke", loweredArguments);
+                    }
+#endif
                     return _dynamicFactory.MakeDynamicInvocation(loweredExpression, loweredArguments, node.ArgumentNamesOpt, node.ArgumentRefKindsOpt, resultDiscarded).ToExpression();
             }
 

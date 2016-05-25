@@ -1186,38 +1186,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // detect typed arrays.
             // <LONG> {...} indicates an array of type LONG
             // when no type is specified and the dialect VO or Vulcan the type is USUAL
-            if (context.Type != null)
-            {
+            if(context.Type != null) {
                 type = context.Type.Get<TypeSyntax>();
+            } else {
+                type = _usualType;
+                bVOArray = true;
             }
-            type = _usualType;
-            bVOArray = true;
 
             var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, 
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken), 
                 (context._Exprs?.Count ?? 0) == 0 ? default(SeparatedSyntaxList<ExpressionSyntax>)
                     : MakeSeparatedList<ExpressionSyntax>(context._Exprs), 
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-            if (type != null)
-            {
-                expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                    _syntaxFactory.ArrayType(type,
-                    MakeList(_syntaxFactory.ArrayRankSpecifier(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        MakeSeparatedList<ExpressionSyntax>(
-                            _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
-                    initializer);
-            }
-            else
-            {
-                expr = _syntaxFactory.ImplicitArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+            expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                _syntaxFactory.ArrayType(type,
+                MakeList(_syntaxFactory.ArrayRankSpecifier(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    EmptyList(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken),
-                    initializer)
-                    .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_UntypedArrayNotAvailableInDialect, _options.Dialect.ToString()));
-            }
+                    MakeSeparatedList<ExpressionSyntax>(
+                        _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
+                initializer);
             if (bVOArray)
             {
                 context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr)), null));

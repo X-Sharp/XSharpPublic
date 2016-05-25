@@ -164,9 +164,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax GenerateNIL()
         {
-            TypeSyntax type = _usualType;
             return _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            type,
+                            _usualType,
                             SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                             GenerateSimpleName("_NIL"));
 
@@ -355,7 +354,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         names.Add(GenerateLiteral(name));
                     }
-
                     attrs.Add(_syntaxFactory.AttributeList(
                         openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                         target: null,
@@ -767,33 +765,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
         public override void ExitQoutStmt([NotNull] XP.QoutStmtContext context) {
+            // If dialect VO and VulcanRTFuncs included
+            // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
+            // and pass list of expressions as argument
+            // Otherwise call parent method that builds a list of write and writeline calls
             if(!_options.VulcanRTFuncsIncluded) {
                 base.ExitQoutStmt(context);
                 return;
             }
             ArgumentSyntax arg;
             ExpressionSyntax expr;
-            // todo: If dialect VO and VulcanRTFuncs included
-            // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
-            // and pass list of expressions as argument
             string methodName;
             if(context.Q.Type == XP.QQMARK)
                 methodName = "global::VulcanRTFuncs.Functions.QQOut";
             else
                 methodName = "global::VulcanRTFuncs.Functions.QOut";
-
             ArgumentListSyntax args;
             if(context._Exprs != null && context._Exprs.Count > 0) {
-                var arglist = _pool.AllocateSeparated<ArgumentSyntax>();
+                var al = new List<ArgumentSyntax>();
                 foreach(var eCtx in context._Exprs) {
                     arg = MakeArgument(eCtx.Get<ExpressionSyntax>());
-                    arglist.Add(arg);
+                    al.Add(arg);
                 }
                 args = _syntaxFactory.ArgumentList(
                         SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        arglist,
+                        MakeSeparatedList<ArgumentSyntax>(al.ToArray()),
                         SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                _pool.Free(arglist);
             } else {
                 args = EmptyArgumentList();
             }

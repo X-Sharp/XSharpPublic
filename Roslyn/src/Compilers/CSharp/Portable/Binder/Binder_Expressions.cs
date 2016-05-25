@@ -4527,7 +4527,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
                 right.Kind() != SyntaxKind.GenericName &&
                 (object)leftType != null && 
-                (leftType.IsObjectType() || ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
+                (leftType.IsObjectType() ||  
+                    leftType is NamedTypeSymbol 
+                    && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
             {
                 /*var rightName = right.Identifier.ValueText;
                 var rightArity = right.Arity;
@@ -4553,7 +4555,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #endif
             // No member accesses on void
-            if ((object)leftType != null && leftType.SpecialType == SpecialType.System_Void)
+            if((object)leftType != null && leftType.SpecialType == SpecialType.System_Void)
             {
                 DiagnosticInfo diagnosticInfo = new CSDiagnosticInfo(ErrorCode.ERR_BadUnaryOp, SyntaxFacts.GetText(operatorToken.Kind()), leftType);
                 diagnostics.Add(new CSDiagnostic(diagnosticInfo, operatorToken.GetLocation()));

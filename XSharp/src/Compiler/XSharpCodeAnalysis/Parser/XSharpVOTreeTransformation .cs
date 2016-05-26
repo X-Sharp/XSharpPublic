@@ -1155,6 +1155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIif([NotNull] XP.IifContext context)
         {
             // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
+
             ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
             ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
             if (_options.VOCompatibleIIF)

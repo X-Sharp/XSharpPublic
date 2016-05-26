@@ -17,23 +17,7 @@
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Core</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Vulcan</text></para>
-    <list id="30" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Will bind the xBase data types to the vulcan specific types such as &quot;Vulcan.__Usual&quot;, &quot;</text><text styleclass="Normal" translate="true">Vulcan.__VOFloat&quot; and &quot;Vulcan.__Array&quot;</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Will support literals NULL_DATE, NULL_STRING, NULL_ARRAY etc</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Will bind literal arrays to the ARRAY type</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Will support Date literals (YYYY.MM.DD) Symbol literals (#SomeSymbol) and will support Float Literals (with /vo14)</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Will support untyped functions and methods (defaults to USUAL in that case)</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Will support untyped parameters (but no clipper calling convention yet)</text></li>
-    </list>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">VO</text></para>
-    <list id="31" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Same options as Vulcan</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Will support MEMVAR (in the future)</text></li>
-    </list>
+    <para styleclass="Heading3"><link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects" styleclass="Heading3" style="font-weight:normal;" translate="true">See the dialect topic for differences between dialects</link></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

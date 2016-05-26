@@ -33,7 +33,7 @@
     </table></para>
     <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">VO/Vulcan Compatibility</text></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="32" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="33" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -272,6 +272,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Insert floating point literals as FLOAT</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15" styleclass="Normal" translate="true">/vo15</link></para>
+        </td>
+        <td>
+          <para style="text-indent:-13px; margin-left:13px;"><text styleclass="Body Text" translate="true">Allow untyped Locals and return types</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

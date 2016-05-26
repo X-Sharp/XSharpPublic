@@ -12,7 +12,6 @@
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="Publish as HTM" format="HTM">

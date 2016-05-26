@@ -6,13 +6,12 @@
     <Description>A WPF Window</Description>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>10</SortOrder>
-    <TemplateGroupID>WPF</TemplateGroupID>
     <Icon>__TemplateIcon.ico</Icon>
   </TemplateData>
   <TemplateContent>
     		<References>
 			<Reference>
-				<Assembly>PresentationCore</Assembly>
+				<Assembly>PresentationCode</Assembly>
 			</Reference>
 			<Reference>
 				<Assembly>PresentationFramework</Assembly>
@@ -21,7 +20,7 @@
 				<Assembly>WindowsBase</Assembly>
 			</Reference>
 		</References>
-    <ProjectItem CustomTool="MSBuild:Compile" TargetFileName="$fileinputname$.xaml" ReplaceParameters="true">WPFWindow.xaml</ProjectItem>
+    <ProjectItem SubType="Page" TargetFileName="$fileinputname$.xaml" ReplaceParameters="true">WPFWindow.xaml</ProjectItem>
     <ProjectItem SubType="Code" TargetFileName="$fileinputname$.xaml.prg" ReplaceParameters="true">WPFWindow.xaml.prg</ProjectItem>
   </TemplateContent>
 </VSTemplate>

@@ -189,4 +189,11 @@
   <data name="WarningCaptionExpanded" xml:space="preserve">
     <value>Warnings As Errors</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+
 </root>

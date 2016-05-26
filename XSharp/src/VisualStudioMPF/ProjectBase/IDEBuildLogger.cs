@@ -91,7 +91,7 @@ namespace Microsoft.VisualStudio.Project
         private bool haveCachedVerbosity = false;
 
         // Queues to manage Tasks and Error output plus message logging
-        private ConcurrentQueue<Func<ErrorTask>> taskQueue;
+        protected ConcurrentQueue<Func<ErrorTask>> taskQueue;   // changed to protected so subclass cann access it
         private ConcurrentQueue<string> outputQueue;
 
         #endregion
@@ -425,7 +425,8 @@ namespace Microsoft.VisualStudio.Project
 
         #region task queue
 
-        protected void QueueTaskEvent(BuildEventArgs errorEvent)
+        // changed to virtual so it can be overwritten in the subclass
+        protected virtual void  QueueTaskEvent(BuildEventArgs errorEvent)
         {
             this.taskQueue.Enqueue(() =>
             {
@@ -457,7 +458,7 @@ namespace Microsoft.VisualStudio.Project
                 return task;
             });
 
-            // NOTE: Unlike output we dont want to interactively report the tasks. So we never queue
+            // NOTE: Unlike output we don't want to interactively report the tasks. So we never queue
             // call ReportQueuedTasks here. We do this when the build finishes.
         }
 
@@ -509,7 +510,7 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// This method takes a MessageImportance and returns true if messages
-        /// at importance i should be loggeed.  Otherwise return false.
+        /// at importance i should be logged.  Otherwise return false.
         /// </summary>
         private bool LogAtImportance(MessageImportance importance)
         {

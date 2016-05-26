@@ -407,11 +407,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
                             {
                                 Consume();
+                                var newtokens = ConsumeList();
                                 if (symbolDefines.ContainsKey(def.Text))
                                 {
-                                    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol redefined: " + def.Text));
+                                    // check to see if this is a new definition or a duplicate definition
+                                    var oldtokens = symbolDefines[def.Text];
+                                    bool equalDefine = (oldtokens.Count == newtokens.Count);
+                                    if (equalDefine)
+                                    {
+                                        for (int i = 0; i < oldtokens.Count; i++)
+                                        {
+                                            if (String.Compare(oldtokens[i].Text, newtokens[i].Text) != 0)
+                                            {
+                                                equalDefine = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (equalDefine)
+                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol redefined: " + def.Text));
+                                    else
+                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Symbol redefined with new value: " + def.Text));
                                 }
-                                symbolDefines[def.Text] = ConsumeList();
+                                symbolDefines[def.Text] = newtokens;
                             }
                             else
                             {

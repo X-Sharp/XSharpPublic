@@ -42,6 +42,8 @@ namespace XSharp.Project
                 
         internal const string WarningCaptionExpanded = "WarningCaptionExpanded";
         internal const string WarningDescription = "WarningDescription";
+        internal const string Warning = "Warning";
+        internal const string Error = "Error";
         // Language Page
         #endregion Constants
 

@@ -168,6 +168,7 @@
     <Compile Include="XSharpDependentFileNode.cs" />
     <Compile Include="XSharpEditorFactory.cs" />
     <Compile Include="XSharpFileNodeProperties.cs" />
+    <Compile Include="XSharpIDEBuildLogger.cs" />
     <Compile Include="XSharpProjectAutomation.cs" />
     <Compile Include="XSharpProjectFactory.cs" />
     <Compile Include="XSharpFileNode.cs" />

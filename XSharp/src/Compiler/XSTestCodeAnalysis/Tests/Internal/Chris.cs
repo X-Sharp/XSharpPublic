@@ -78,7 +78,7 @@ NEXT
         [Test(Author = "Chris", Id = "C31", Title = "error XS0175: Use of keyword 'SUPER' is not valid in this context")]
         public static void cannot_use_super_in_constructor_body()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan", @"
 CLASS TestClass
 CONSTRUCTOR()
 LOCAL n AS INT
@@ -87,7 +87,7 @@ n := 1
 SUPER()
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -129,15 +129,17 @@ END CLASS
         [Test(Author = "Chris", Id = "C34", Title = "error XS0119: 'TestClass.MessageBox()' is a method, which is not valid in the given context")]
         public static void error_XS0119_MessageBox_is_a_method_which_is_not_valid_in_the_given_context()
         {
-            var s = ParseSource(@"
-#using System.Windows.Forms
+            var s = ParseSource("/dialect:vulcan",@"
+STATIC CLASS MessageBox
+    STATIC METHOD Show(s AS STRING) AS VOID
+END CLASS
 CLASS TestClass
 	METHOD MessageBox() AS VOID
 		MessageBox.Show(""test"")    
         RETURN
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -840,13 +842,13 @@ INTERNAL VOSTRUCT _winPOINT
         [Test(Author = "Chris", Id = "C79", Title = "error XS0119: 'Xs$Globals.Directory()' is a method, which is not valid in the given context")]
         public static void error_XS0119_Directory_CreateDirectory()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan",@"
 #using System.IO
 FUNCTION Directory() AS INT
 Directory.CreateDirectory('')
 RETURN 0
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -1202,7 +1204,7 @@ END CLASS
         [Test(Author = "Chris", Id = "C99", Title = "Keyword 'this' not available in the current context")]
         public static void Keyword_this_not_available_in_current_context()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan", @"
 //Not sure if this one is the same as 31:
 //99. error XS0027: Keyword 'this' is not available in the current context
 
@@ -1215,7 +1217,7 @@ CONSTRUCTOR()
 SUPER(SELF)
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
         // 100
@@ -1345,7 +1347,7 @@ c := '123'
         [Test(Author = "Chris", Id = "C108", Title = "Name conflict with '.' static member access")]
         public static void Name_conflict_static_access()
         {
-            var s = ParseSource(@"
+            var s = ParseSource("/dialect:vulcan", @"
 INTERFACE ITest
     METHOD Foo() AS VOID
 END INTERFACE
@@ -1358,7 +1360,7 @@ FUNCTION Start() AS VOID
 LOCAL Test AS ITest
 Test.StaticMethod()
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
         // 109
@@ -1550,7 +1552,7 @@ s := ( n ):ToString()
         [Test(Author = "Chris", Id = "C119", Title = "Constructor chaining in body")]
         public static void Ctor_chain_in_body()
         {
-            var s = ParseStartFunction(@"
+            var s = ParseStartFunction("/dialect:vulcan", @"
 CLASS Test
     CONSTRUCTOR(n AS INT)
     CONSTRUCTOR()
@@ -1559,7 +1561,7 @@ CLASS Test
     RETURN
 END CLASS 
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
         }
 
         // 120
@@ -1786,12 +1788,17 @@ n := INT[][]{10}
         [Test(Author = "Chris", Id = "C133", Title = "No warning on not using assigned value")]
         public static void No_warning_on_not_using_assigned_value()
         {
-            var s = ParseSource(@"
+            CompileWithWarnings(ParseSource(@"
 FUNCTION Start() AS VOID
 LOCAL n := 1 AS INT // correct warning XS0219 here
+"));
+            // nvk: Note that the warning is intentionally suppressed by the C# compiler
+            // in the following case. For justification, see the legthy comment
+            // in DataFlowPass.cs in the NoteWrite() method
+            CompileWithoutWarnings(ParseSource(@"
+FUNCTION Start() AS VOID
 LOCAL o := System.Collections.ArrayList{} AS OBJECT // no warning
-");
-            CompileWithWarnings(s);
+"));
         }
 
 
@@ -1980,6 +1987,98 @@ END CLASS
         }
 
 
+ 
+        // 144
+        [Test(Author = "Chris", Id = "C144", Title = "assertion failed and compiler crash with BREAK")]
+        public static void assertion_failed_and_compiler_crash_with_BREAK()
+        {
+            var s = ParseSource(@"
+// crash in debug version of the compiler only
+FUNCTION Start() AS VOID
+BREAK
+");
+            CompileWithErrors(s);
+        }
+
+
+        // 145
+        [Test(Author = "Chris", Id = "C145", Title = "error XS1031: Type expected with ASSIGN")]
+        public static void error_XS1031_Type_expected_with_ASSIGN()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	ASSIGN MyProp(n AS INT)
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+        // 146
+        [Test(Author = "Chris", Id = "C146", Title = "error XS1737: Optional parameters must appear after all required parameters")]
+        public static void error_XS1737_Optional_parameters_must_appear_after_all_required_parameters()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	METHOD DoTest(n AS INT , m := 1 AS INT,k AS INT) AS VOID
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+/*
+        // 147
+        [Test(Author = "Chris", Id = "C147", Title = "incorrect params passed to super constructor")]
+        public static void incorrect_params_passed_to_super_constructor()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:""C:\Windows\Microsoft.NET\assembly\GAC_32\VulcanRTFuncs\v4.0_3.0.303.0__0e73a8bf006af00c\VulcanRTFuncs.dll""" , @"
+// /dialect:vulcan
+FUNCTION Start() AS VOID
+Child{1,2}
+RETURN
+
+CLASS Parent
+    CONSTRUCTOR(b)
+    	IF b != 2
+    		THROW Exception{""Incorrect param passed""}
+    	END IF
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(a,b)
+        SUPER(b)
+END CLASS 
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+        // 148
+        [Test(Author = "Chris", Id = "C148", Title = "No errors reported on mixing CLIPPER/STRICT members in the same class or inheritance tree")]
+        public static void No_errors_reported_on_mixing_CLIPPER_STRICT_members_in_the_same_class_or_inheritance_tree()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:""C:\Windows\Microsoft.NET\assembly\GAC_32\VulcanRTFuncs\v4.0_3.0.303.0__0e73a8bf006af00c\VulcanRTFuncs.dll""" , @"
+// /dialect:vulcan
+CLASS Parent
+	METHOD Test1() CLIPPER
+	RETURN NIL
+	METHOD Test1() AS VOID STRICT
+
+	VIRTUAL METHOD Test2() AS VOID STRICT
+	VIRTUAL METHOD Test3() CLIPPER
+	RETURN NIL
+	
+END CLASS
+
+CLASS Child INHERIT Parent
+	VIRTUAL METHOD Test2() CLIPPER
+	RETURN NIL
+	VIRTUAL METHOD Test3() AS VOID STRICT
+END CLASS
+");
+            CompileWithErrors(s);
+        }
+*/
 
 
     }

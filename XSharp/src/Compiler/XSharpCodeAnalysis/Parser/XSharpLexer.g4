@@ -1151,7 +1151,7 @@ SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 			;
 
 
-ML_COMMENT  : '/' '*' .*? '*' '/'						-> channel(HIDDEN)
+ML_COMMENT  : '/' '*' .*? ('*' '/'| EOF)	-> channel(HIDDEN)
 			;
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords

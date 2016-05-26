@@ -352,5 +352,110 @@ END CLASS
 ");
             CompileAndRunWithoutExceptions(args, s);
         }
+
+        [Test(Author = "Nikos", Id = "N12", Title = "Lamda expressions")]
+        public static void LamdaExpressions()
+        {
+            string args = "";
+            var s = ParseSource(args, @"
+FUNCTION Start() AS VOID
+    LOCAL sq AS System.Func<Double,Double>
+    sq := {|x|x^2}
+    IF sq(2) != 4
+        THROW Exception{}
+    ENDIF
+    sq := {|x|
+        ? 'square of', x
+        RETURN x^2
+        }
+    IF sq(2) != 4
+        THROW Exception{}
+    ENDIF
+    sq := {|x| Console.WriteLine(x), x^2}
+    IF sq(2) != 4
+        THROW Exception{}
+    ENDIF
+    LOCAL empty AS System.Action
+    empty := {||}
+    empty()
+");
+            CompileAndRunWithoutExceptions(args, s);
+        }
+
+        [Test(Author = "Nikos", Id = "N13", Title = "Missing type in X# core should throw error")]
+        public static void MissingTypeCore()
+        {
+            CompileWithErrors(ParseSource(@"
+FUNCTION Test()
+"));
+            CompileWithErrors(ParseSource(@"
+FUNCTION Test() AS VOID
+    LOCAL o
+"));
+        }
+
+        [Test(Author = "Nikos", Id = "N14", Title = "Using statement")]
+        public static void UsingStatement()
+        {
+            CompileAndRunWithoutExceptions(ParseSource(@"
+PROCEDURE Start()
+    VAR ms := System.IO.MemoryStream{}
+    BEGIN USING ms
+    END USING
+"));
+            CompileAndRunWithoutExceptions(ParseSource(@"
+FUNCTION Start() AS VOID
+    BEGIN USING VAR ms := System.IO.MemoryStream{}
+    END USING
+"));
+        }
+
+        [Test(Author = "Nikos", Id = "N15", Title = "Constructor chaining (core dialect)")]
+        public static void CtorChainCore()
+        {
+            CompileAndLoadWithoutErrors(ParseSource(@"
+CLASS Parent
+    CONSTRUCTOR(o AS OBJECT)
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(): SUPER(null)
+END CLASS
+"));
+            CompileWithErrors("/dialect:vulcan", ParseSource("/dialect:vulcan",@"
+CLASS Parent
+    CONSTRUCTOR(o AS OBJECT)
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR(): SUPER(null)
+END CLASS
+"), VulcanRuntime);
+        }
+
+        [Test(Author = "Nikos", Id = "N16", Title = "Constructor chaining (vulcan dialect)")]
+        public static void CtorChainVulcan()
+        {
+            CompileAndRunWithoutExceptions("/dialect:vulcan", ParseSource("/dialect:vulcan", @"
+CLASS Parent
+    PUBLIC Inits := 0 AS INT
+    CONSTRUCTOR()
+        Inits += 1
+END CLASS
+
+CLASS Child INHERIT Parent
+    CONSTRUCTOR()
+        SUPER()
+END CLASS
+
+FUNCTION Start() AS VOID
+    LOCAL i AS INT
+    i := Child{}:Inits
+    IF i != 1
+        THROW Exception{'Inits = '+ i}
+    ENDIF
+    RETURN
+"), VulcanRuntime);
+        }
     }
 }

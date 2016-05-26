@@ -75,14 +75,14 @@ namespace Microsoft.VisualStudio.Project
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             string str = value as string;
-
+            
             if(str != null)
             {
-                if(str == SR.GetString(SR.Exe, culture)) return OutputType.Exe;
-                if(str == SR.GetString(SR.Library, culture)) return OutputType.Library;
-                if(str == SR.GetString(SR.WinExe, culture)) return OutputType.WinExe;
-                if (str == SR.GetString(SR.WinMDObj, culture)) return OutputType.WinMDObj;
-                if (str == SR.GetString(SR.AppContainerExe, culture)) return OutputType.AppContainerExe;
+                if(String.Compare(str,SR.GetString(SR.Exe, culture), true) == 0) return OutputType.Exe;
+                if(String.Compare(str, SR.GetString(SR.Library, culture), true) == 0) return OutputType.Library;
+                if(String.Compare(str, SR.GetString(SR.WinExe, culture), true) == 0) return OutputType.WinExe;
+                if (String.Compare(str, SR.GetString(SR.WinMDObj, culture), true) == 0) return OutputType.WinMDObj;
+                if (String.Compare(str, SR.GetString(SR.AppContainerExe, culture),true) == 0) return OutputType.AppContainerExe;
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -142,11 +142,11 @@ namespace Microsoft.VisualStudio.Project
 
             if(str != null)
             {
-                if(str == SR.GetString(SR.Program, culture)) return DebugMode.Program;
+                if (String.Compare(str ,SR.GetString(SR.Program, culture),true) == 0) return DebugMode.Program;
 
-                if(str == SR.GetString(SR.Project, culture)) return DebugMode.Project;
+                if(String.Compare(str, SR.GetString(SR.Project, culture), true) == 0) return DebugMode.Project;
 
-                if(str == SR.GetString(SR.URL, culture)) return DebugMode.URL;
+                if(String.Compare(str, SR.GetString(SR.URL, culture), true) == 0) return DebugMode.URL;
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -207,13 +207,13 @@ namespace Microsoft.VisualStudio.Project
 
             if(str != null)
             {
-                if(str == SR.GetString(SR.Compile, culture)) return BuildAction.Compile;
+                if(String.Compare(str, SR.GetString(SR.Compile, culture), true) == 0) return BuildAction.Compile;
 
-                if(str == SR.GetString(SR.Content, culture)) return BuildAction.Content;
+                if(String.Compare(str, SR.GetString(SR.Content, culture), true) == 0) return BuildAction.Content;
 
-                if(str == SR.GetString(SR.EmbeddedResource, culture)) return BuildAction.EmbeddedResource;
+                if(String.Compare(str, SR.GetString(SR.EmbeddedResource, culture), true) == 0) return BuildAction.EmbeddedResource;
 
-                if(str == SR.GetString(SR.None, culture)) return BuildAction.None;
+                if(String.Compare(str, SR.GetString(SR.None, culture),true) == 0) return BuildAction.None;
             }
 
             return base.ConvertFrom(context, culture, value);

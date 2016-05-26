@@ -344,9 +344,9 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmethod
 					| (Attributes=attributes)?
 					  (Modifiers=constructorModifiers)? 
-					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS 
-					  (Chain=(SELF | SUPER) 
-						LPAREN ArgList=argumentList? RPAREN  EOS)?
+					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? 
+					  (COLON Chain=(SELF | SUPER) LPAREN ArgList=argumentList? RPAREN)?
+					  end=EOS 
 					  StmtBlk=statementBlock							 { SetSequencePoint(_localctx,$end); } #clsctor
 					| (Attributes=attributes)? 
 					  (Modifiers=destructorModifiers)?
@@ -477,7 +477,7 @@ statement           : Decl=localdecl                                            
 					| SWITCH Expr=expression end=EOS
 					  (SwitchBlock+=switchBlock)+
 					  END SWITCH?  EOS											{ SetSequencePoint(_localctx,$end); }#switchStmt
-					| BEGIN USING Expr=expression end=EOS
+					| BEGIN USING ( Expr=expression | VarDecl=variableDeclaration ) end=EOS
 						Stmtblk=statementBlock
 					  END USING? EOS											{ SetSequencePoint(_localctx,$end); }#usingStmt
 					| BEGIN UNSAFE end=EOS
@@ -516,6 +516,13 @@ catchBlock			: (Id=identifier (AS Type=datatype)?)? end=EOS StmtBlk=statementBlo
 
 recoverBlock		: (USING Id=identifier)? end=EOS StmtBlock=statementBlock
  				    { SetSequencePoint(_localctx,$end); }
+					;
+
+variableDeclaration	: (LOCAL? Var=IMPLIED | Var=VAR) Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)*
+					| LOCAL Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)* (AS Type=datatype)?
+					;
+
+variableDeclarator	: Id=identifier ASSIGN_OP Expr=expression
 					;
 
 // Variable declarations
@@ -728,12 +735,18 @@ extendedaliasExpr	:	l1=LPAREN e1=expression r1=RPAREN a=ALIAS
 						)
 					;
 */
-codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE) Expr=expression? RCURLY
+codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
+					  ( Expr=expression?
+					  | EOS StmtBlk=statementBlock 
+					  | ExprList=codeblockExprList )
+					  RCURLY
 					;
 
 codeblockParamList	: Ids+=identifier (COMMA Ids+=identifier)*
 					;
 
+codeblockExprList	: (Exprs+=expression COMMA)+ ReturnExpr=expression
+					;
 
 // LINQ Support
 

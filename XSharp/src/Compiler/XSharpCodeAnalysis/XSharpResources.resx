@@ -4722,4 +4722,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_UntypedArrayNotAvailableInDialect" xml:space="preserve">
     <value>Untyped arrays are not available in the selected dialect '{0}'</value>
   </data>
+  <data name="ERR_TypedParametersWithClipperCallingConvention" xml:space="preserve">
+    <value>Typed Parameters are not supported in combination with CLIPPER calling convention</value>
+  </data>
 </root>

@@ -3864,7 +3864,7 @@ namespace Microsoft.VisualStudio.Project
             IPersistXMLFragment outerHierarchy = this.InteropSafeIVsHierarchy as IPersistXMLFragment;
             if (outerHierarchy != null)
             {
-                this.LoadXmlFragment(outerHierarchy, null);
+                this.LoadXmlFragment(outerHierarchy, null, null);
             }
         }
 
@@ -4445,7 +4445,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="iPersistXMLFragment">Object that support being initialized with an XML fragment</param>
         /// <param name="configName">Name of the configuration being initialized, null if it is the project</param>
-        protected internal void LoadXmlFragment(IPersistXMLFragment persistXmlFragment, string configName)
+ /*       protected internal void LoadXmlFragment(IPersistXMLFragment persistXmlFragment, string configName)
         {
             if (persistXmlFragment == null)
             {
@@ -4514,6 +4514,89 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
         }
+*/
+
+        /// <summary>
+        /// Initialize an object with an XML fragment.
+        /// </summary>
+        /// <param name="iPersistXMLFragment">Object that support being initialized with an XML fragment</param>
+        /// <param name="configName">Name of the configuration being initialized, null if it is the project</param>
+        /// <param name="platformName">Name of the platform being initialized, null is ok</param>
+        protected internal void LoadXmlFragment(IPersistXMLFragment persistXmlFragment, string configName, string platformName)
+        {
+            if (persistXmlFragment == null)
+            {
+                throw new ArgumentNullException("persistXmlFragment");
+            }
+
+            if (xmlFragments == null)
+            {
+                // Retrieve the xml fragments from MSBuild
+                xmlFragments = new XmlDocument();
+
+                string fragments = GetProjectExtensions()[ProjectFileConstants.VisualStudio];
+                fragments = String.Format(CultureInfo.InvariantCulture, "<root>{0}</root>", fragments);
+                xmlFragments.LoadXml(fragments);
+            }
+
+            // We need to loop through all the flavors
+            string flavorsGuid;
+            ErrorHandler.ThrowOnFailure(((IVsAggregatableProject)this).GetAggregateProjectTypeGuids(out flavorsGuid));
+            foreach (Guid flavor in Utilities.GuidsArrayFromSemicolonDelimitedStringOfGuids(flavorsGuid))
+            {
+                // Look for a matching fragment
+                string flavorGuidString = flavor.ToString("B");
+                string fragment = null;
+                XmlNode node = null;
+                foreach (XmlNode child in xmlFragments.FirstChild.ChildNodes)
+                {
+                    if (child.Attributes.Count > 0)
+                    {
+                        string guid = String.Empty;
+                        string configuration = String.Empty;
+                        string platform = String.Empty;
+                        if (child.Attributes[ProjectFileConstants.Guid] != null)
+                            guid = child.Attributes[ProjectFileConstants.Guid].Value;
+                        if (child.Attributes[ProjectFileConstants.Configuration] != null)
+                            configuration = child.Attributes[ProjectFileConstants.Configuration].Value;
+                        if (child.Attributes[ProjectFileConstants.Platform] != null)
+                            platform = child.Attributes[ProjectFileConstants.Platform].Value;
+
+                        if (String.Compare(child.Name, ProjectFileConstants.FlavorProperties, StringComparison.OrdinalIgnoreCase) == 0
+                                && String.Compare(guid, flavorGuidString, StringComparison.OrdinalIgnoreCase) == 0
+                                && ((String.IsNullOrEmpty(configName) && String.IsNullOrEmpty(configuration))
+                                    || (String.Compare(configuration, configName, StringComparison.OrdinalIgnoreCase) == 0))
+                                && ((String.IsNullOrEmpty(platformName) && String.IsNullOrEmpty(platform))
+                                    || (String.Compare(platform, platformName, StringComparison.OrdinalIgnoreCase) == 0)))
+                        {
+                            // we found the matching fragment
+                            fragment = child.InnerXml;
+                            node = child;
+                            break;
+                        }
+                    }
+                }
+
+                Guid flavorGuid = flavor;
+                if (String.IsNullOrEmpty(fragment))
+                {
+                    // the fragment was not found so init with default values
+                    ErrorHandler.ThrowOnFailure(persistXmlFragment.InitNew(ref flavorGuid, (uint)_PersistStorageType.PST_PROJECT_FILE));
+                    // While we don't yet support user files, our flavors might, so we will store that in the project file until then
+                    // TODO: Refactor this code when we support user files
+                    ErrorHandler.ThrowOnFailure(persistXmlFragment.InitNew(ref flavorGuid, (uint)_PersistStorageType.PST_USER_FILE));
+                }
+                else
+                {
+                    ErrorHandler.ThrowOnFailure(persistXmlFragment.Load(ref flavorGuid, (uint)_PersistStorageType.PST_PROJECT_FILE, fragment));
+                    // While we don't yet support user files, our flavors might, so we will store that in the project file until then
+                    // TODO: Refactor this code when we support user files
+                    if (node.NextSibling != null && node.NextSibling.Attributes[ProjectFileConstants.User] != null)
+                        ErrorHandler.ThrowOnFailure(persistXmlFragment.Load(ref flavorGuid, (uint)_PersistStorageType.PST_USER_FILE, node.NextSibling.InnerXml));
+                }
+            }
+        }
+
 
         /// <summary>
         /// Retrieve all XML fragments that need to be saved from the flavors and store the information in msbuild.

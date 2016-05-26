@@ -89,6 +89,7 @@ namespace Microsoft.VisualStudio.Project
         private IProjectConfigProperties configurationProperties;
         private IVsProjectFlavorCfg flavoredCfg;
         private BuildableProjectConfig buildableCfg;
+        private string platformName;
         #endregion
 
         #region properties
@@ -109,6 +110,18 @@ namespace Microsoft.VisualStudio.Project
             set
             {
                 this.configName = value;
+            }
+        }
+
+        public string PlatformName
+        {
+            get
+            {
+                return platformName;
+            }
+            set
+            {
+                platformName = value;
             }
         }
 
@@ -158,7 +171,26 @@ namespace Microsoft.VisualStudio.Project
         public ProjectConfig(ProjectNode project, string configuration)
         {
             this.project = project;
-            this.configName = configuration;
+
+            if (configuration.Contains("|"))
+            { 
+                // If configuration is in the form "<Configuration>|<Platform>"
+                string[] configStrArray = configuration.Split('|');
+                if (2 == configStrArray.Length)
+                {
+                    this.configName = configStrArray[0];
+                    this.platformName = configStrArray[1];
+                }
+                else
+                {
+                    throw new Exception(string.Format(CultureInfo.InvariantCulture, "Invalid configuration format: {0}", configuration));
+                }
+            }
+            else
+            { 
+                // If configuration is in the form "<Configuration>"          
+                this.configName = configuration;
+            }
 
             // Because the project can be aggregated by a flavor, we need to make sure
             // we get the outer most implementation of that interface (hence: project --> IUnknown --> Interface)
@@ -179,7 +211,7 @@ namespace Microsoft.VisualStudio.Project
             IPersistXMLFragment persistXML = flavoredCfg as IPersistXMLFragment;
             if(null != persistXML)
             {
-                this.project.LoadXmlFragment(persistXML, this.DisplayName);
+                this.project.LoadXmlFragment(persistXML, this.configName, platformName);
             }
         }
         #endregion
@@ -401,7 +433,9 @@ namespace Microsoft.VisualStudio.Project
 
         public virtual int get_CanonicalName(out string name)
         {
-            return ((IVsCfg)this).get_DisplayName(out name);
+            name = configName;
+            return VSConstants.S_OK;
+            //return ((IVsCfg)this).get_DisplayName(out name);
         }
 
         public virtual int get_IsPackaged(out int pkgd)

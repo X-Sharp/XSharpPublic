@@ -16,12 +16,9 @@ namespace XSharp.CodeDom
 
         public XSharpCodeParser()
         {
-            this.FileName = "";
-            this.TabSize = 1;       
+            this.FileName = "";            
         }
         public string FileName { get; set; }
-
-        public int TabSize { get; set; }
 
         public override CodeCompileUnit Parse(TextReader codeStream)
         {
@@ -50,10 +47,6 @@ namespace XSharp.CodeDom
             //
             try
             {
-                // Tab replace, in order to have the good position of Memebers (Line/col)
-                String TabSpace = new String(' ', TabSize);
-                source = source.Replace("\t", TabSpace);
-                //
                 LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source);
                 var syntaxRoot = tree.GetRoot();
                 // Get the antlr4 parse tree root

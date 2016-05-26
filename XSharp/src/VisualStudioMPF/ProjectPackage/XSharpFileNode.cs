@@ -36,9 +36,7 @@ namespace XSharp.Project
         {
             //
             this.UpdateHasDesigner();
-            this.UpdateItemType();
         }
-
         #endregion
 
         #region Overriden implementation
@@ -48,7 +46,7 @@ namespace XSharp.Project
         /// <returns></returns>
         public override object GetAutomationObject()
         {
-            if (automationObject == null)
+            if(automationObject == null)
             {
                 automationObject = new OAXSharpFileItem(this.ProjectMgr.GetAutomationObject() as OAProject, this);
             }
@@ -86,7 +84,7 @@ namespace XSharp.Project
         private object CreateServices(Type serviceType)
         {
             object service = null;
-            if (typeof(EnvDTE.ProjectItem) == serviceType)
+            if(typeof(EnvDTE.ProjectItem) == serviceType)
             {
                 service = GetAutomationObject();
             }
@@ -105,27 +103,7 @@ namespace XSharp.Project
             {
                 if (_codeDomProvider == null)
                 {
-                    int tabSize = 1;
-                    try
-                    {
-                        EnvDTE.DTE dte = (EnvDTE.DTE)ProjectMgr.GetService(typeof(EnvDTE.DTE));
-                        EnvDTE.Properties props;
-                        props = dte.Properties["TextEditor", "XSharp"];
-                        foreach (EnvDTE.Property temp in props)
-                        {
-                            if (temp.Name.ToLower() == "tabsize")
-                            {
-                                tabSize = (int)temp.Value;
-                            }
-                        }
-                    }
-                    catch
-                    {
-
-                    }
-                    //
-                    _codeDomProvider = new VSXSharpCodeDomProvider(this);
-                    _codeDomProvider.TabSize = tabSize;
+                    _codeDomProvider = new VSXSharpCodeDomProvider( this );
                 }
                 return _codeDomProvider;
             }
@@ -139,11 +117,11 @@ namespace XSharp.Project
             {
                 if (_designerContext == null)
                 {
-                    XSharpFileNode xsFile = Parent.FindChild(this.Url.Replace(".xaml", ".xaml.prg")) as XSharpFileNode;
+                    XSharpFileNode xsFile = Parent.FindChild( this.Url.Replace(".xaml", ".xaml.prg") ) as XSharpFileNode;
                     _designerContext = new DesignerContext();
                     //Set the EventBindingProvider for this XAML file so the designer will call it
                     //when event handlers need to be generated
-                    _designerContext.EventBindingProvider = new XSharpEventBindingProvider(xsFile);
+                    _designerContext.EventBindingProvider = new XSharpEventBindingProvider( xsFile );
                 }
 
                 return _designerContext;
@@ -168,26 +146,6 @@ namespace XSharp.Project
             }
         }
 
-
-        private void UpdateItemType()
-        {
-            string ext = Path.GetExtension(this.FileName).ToLower();
-            string itemType = this.ItemNode.ItemName;
-            //
-            if (ext == ".xaml")
-            {
-                if ((String.Compare(itemType, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) != 0)
-                  || (String.Compare(itemType, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) != 0))
-                {
-                    this.ItemNode.ItemName = ProjectFileConstants.Page;
-                }
-            }
-            else if (ext == ".prg" && String.IsNullOrEmpty(itemType))
-            {
-                this.ItemNode.ItemName = SR.Compile;
-            }
-            //
-        }
         /// <summary>
         /// Returns the SubType of an XSharp FileNode. It is 
         /// </summary>
@@ -267,49 +225,5 @@ namespace XSharp.Project
             //
             return ret;
         }
-
-
-
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        /*
-        public override int SetProperty(int propid, object value)
-        {
-            int result;
-            __VSHPROPID id = (__VSHPROPID)propid;
-            switch (id)
-            {
-                case __VSHPROPID.VSHPROPID_ItemSubType:
-                    this.SubType = (string)value;
-                    result = VSConstants.S_OK;
-                    break;
-
-                default:
-                    result = base.SetProperty(propid, value);
-                    break;
-            }
-
-            return result;
-        }
-
-        public override object GetProperty(int propId)
-        {
-            __VSHPROPID id = (__VSHPROPID)propId;
-            switch (id)
-            {
-                case __VSHPROPID.VSHPROPID_ItemSubType:
-                    return this.SubType;
-            }
-
-            return base.GetProperty(propId);
-        }
-
-    */
-
-
     }
 }

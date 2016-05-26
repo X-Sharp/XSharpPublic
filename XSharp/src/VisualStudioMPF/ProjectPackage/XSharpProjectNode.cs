@@ -126,57 +126,6 @@ namespace XSharp.Project
                 imageList = value;
             }
         }
-        protected override void SetOutputLogger(IVsOutputWindowPane output)
-        {
-            //base.SetOutputLogger(output);
-            // Create our logger, if it was not specified
-            if (BuildLogger == null)
-            {
-                // Because we may be aggregated, we need to make sure to get the outer IVsHierarchy
-                IntPtr unknown = IntPtr.Zero;
-                IVsHierarchy hierarchy = null;
-                try
-                {
-                    unknown = Marshal.GetIUnknownForObject(this);
-                    hierarchy = Marshal.GetTypedObjectForIUnknown(unknown, typeof(IVsHierarchy)) as IVsHierarchy;
-                }
-                finally
-                {
-                    if (unknown != IntPtr.Zero)
-                        Marshal.Release(unknown);
-                }
-                // Create the logger
-                BuildLogger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
-                //BuildLogger = new IDEBuildLogger(output, this.TaskProvider, hierarchy);
-
-                // To retrieve the verbosity level, the build logger depends on the registry root 
-                // (otherwise it will used an hard coded default)
-                ILocalRegistry2 registry = this.GetService(typeof(SLocalRegistry)) as ILocalRegistry2;
-                if (null != registry)
-                {
-                    string registryRoot;
-                    registry.GetLocalRegistryRoot(out registryRoot);
-                    XSharpIDEBuildLogger logger = this.BuildLogger as XSharpIDEBuildLogger;
-                    //IDEBuildLogger logger = this.BuildLogger as IDEBuildLogger;
-                    if (!String.IsNullOrEmpty(registryRoot) && (null != logger))
-                    {
-                        logger.BuildVerbosityRegistryRoot = registryRoot;
-                        logger.ErrorString = this.ErrorString;
-                        logger.WarningString = this.WarningString;
-                    }
-                }
-            }
-            else
-            {
-                ((XSharpIDEBuildLogger)this.BuildLogger).OutputWindowPane = output;
-            }
-
-            if (BuildEngine != null)
-            {
-                BuildEngine.UnregisterAllLoggers();
-                BuildEngine.RegisterLogger(BuildLogger);
-            }
-        }
 
         protected internal VSLangProj.VSProject VSProject
         {
@@ -468,8 +417,8 @@ namespace XSharp.Project
             }
             else
             {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.None);
-                //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
+                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Content);
+                newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
             }
 
             return newItem;

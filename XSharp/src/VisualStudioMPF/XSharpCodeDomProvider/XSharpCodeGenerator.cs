@@ -32,7 +32,7 @@ namespace XSharp.CodeDom
             this.staticSelector = ".";
             //System.Diagnostics.Debugger.Launch();
         }
-
+ 
         protected override string NullToken
         {
             get
@@ -293,12 +293,12 @@ namespace XSharp.CodeDom
         protected override void GenerateEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c)
         {
             // we must collect this and insert it at the end of the unit
-            // so replace the output field in the parent class and restore it later
+			// so replace the output field in the parent class and restore it later
             var writer = new StringWriter();
-            FieldInfo field = typeof(CodeGenerator).GetField("output", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+            FieldInfo field = typeof(CodeGenerator).GetField("output", BindingFlags.Instance | BindingFlags.NonPublic| BindingFlags.FlattenHierarchy);
             FieldInfo field2 = typeof(IndentedTextWriter).GetField("tabString", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
             IndentedTextWriter oldWriter = (IndentedTextWriter)field.GetValue(this);
-            String tabString = (String)field2.GetValue(oldWriter);
+            String tabString = (String) field2.GetValue(oldWriter);
             IndentedTextWriter newWriter = new IndentedTextWriter(writer, tabString); ;
             try
             {
@@ -631,7 +631,7 @@ namespace XSharp.CodeDom
         protected override void GenerateNamespace(CodeNamespace e)
         {
             this.GenerateCommentStatements(e.Comments);
-            // Generate Imports BEFORE the NameSpace
+            // Generate Imports BEFORE the NameSapce
             this.GenerateNamespaceImports(e);
             this.Output.WriteLine("");
             //
@@ -1037,7 +1037,7 @@ namespace XSharp.CodeDom
             }
             //
             this.OutputIdentifier(e.Name);
-            switch (e.Direction)
+            switch ( e.Direction )
             {
                 case FieldDirection.In:
                     base.Output.Write(" AS ");
@@ -1089,26 +1089,14 @@ namespace XSharp.CodeDom
                 case "system.int16":
                     return "SHORT";
 
-                case "system.uint16":
-                    return "WORD";
-
                 case "system.int32":
                     return "INT";
-
-                case "system.uint32":
-                    return "DWORD";
 
                 case "system.int64":
                     return "INT64";
 
-                case "system.uint64":
-                    return "UINT64";
-
                 case "system.string":
                     return "STRING";
-
-                case "system.char":
-                    return "CHAR";
 
                 case "system.object":
                     return "OBJECT";
@@ -1119,8 +1107,20 @@ namespace XSharp.CodeDom
                 case "system.void":
                     return "VOID";
 
+                case "system.char":
+                    return "CHAR";
+
                 case "system.byte":
                     return "BYTE";
+
+                case "system.uint16":
+                    return "WORD";
+
+                case "system.uint32":
+                    return "DWORD";
+
+                case "system.uint64":
+                    return "UINT64";
 
                 case "system.sbyte":
                     return "System.SByte";
@@ -1134,7 +1134,7 @@ namespace XSharp.CodeDom
                 case "system.decimal":
                     return "System.Decimal";
             }
-            // 
+            // We need to return a String, so use a StringBuilder
             StringBuilder sb = new StringBuilder(baseType.Length + 10);
             string str3 = typeRef.BaseType;
             int startIndex = 0;
@@ -1162,7 +1162,7 @@ namespace XSharp.CodeDom
                                 length = (length * 10) + (str3[i] - '0');
                                 i++;
                             }
-                            // Generic Type like System.Int`ValueType : so, ignore  ValueType
+                            // We can have something like System.Double`ValueType...ignore the ValueType
                             if (length > 0)
                             {
                                 sb.Append(this.BuildGenericArguments(typeRef.TypeArguments, start, length));
@@ -1182,7 +1182,18 @@ namespace XSharp.CodeDom
             }
             if (startIndex < str3.Length)
             {
-                sb.Append(str3.Substring(startIndex));
+                // we don't want to escape anything other than simple id's
+                bool isSimpleIdentifier = str3.IndexOfAny(new char[] { '+', '.', '`' }) == -1;
+
+                if (isSimpleIdentifier)
+                {
+                    //sb.Append(this.CreateEscapedIdentifier(str3.Substring(startIndex)));
+                    sb.Append(str3.Substring(startIndex));
+                }
+                else
+                {
+                    sb.Append(str3.Substring(startIndex));
+                }
             }
             return sb.ToString();
         }
@@ -1256,20 +1267,20 @@ namespace XSharp.CodeDom
                     this.Output.Write("==");
                     return;
 
-                case CodeBinaryOperatorType.BitwiseAnd:
-                    this.Output.Write("&");
-                    return;
-
                 case CodeBinaryOperatorType.BitwiseOr:
                     this.Output.Write("|");
                     return;
 
-                case CodeBinaryOperatorType.BooleanAnd:
-                    this.Output.Write("&&");
+                case CodeBinaryOperatorType.BitwiseAnd:
+                    this.Output.Write("&");
                     return;
 
                 case CodeBinaryOperatorType.BooleanOr:
                     this.Output.Write("||");
+                    return;
+
+                case CodeBinaryOperatorType.BooleanAnd:
+                    this.Output.Write("&&");
                     return;
 
                 case CodeBinaryOperatorType.LessThan:
@@ -1345,9 +1356,9 @@ namespace XSharp.CodeDom
                         break;
 
                     default:
+
                         if (ch < 32)
                         {
-                            // Hexa code
                             sb.Append(String.Format("\\x{0:x4}", (int)ch));
                         }
                         else

@@ -122,6 +122,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="RuntimeArrayTests.prg" />
+    <Compile Include="RuntimeByteTests.prg" />
     <Compile Include="RuntimeDateTests.prg" />
     <Compile Include="RuntimeIOTests.prg" />
     <Compile Include="RuntimeNumericTest.prg" />

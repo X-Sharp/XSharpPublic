@@ -26,5 +26,20 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		METHOD FracTest() as void
 			AreEqual((float)120,Fact((dword)5))
 		RETURN
+
+		[TestMethod];
+		METHOD DW2BINTest() as void
+			AreEqual("    ",DW2Bin((dword) 32*256*256*256+32*256*256+32*256+32))
+		RETURN
+
+		[TestMethod];
+		METHOD NToCDoWTest() as void
+			AreEqual("Freitag",NToCDoW(DOW(CTOD("27/05/2016"))))
+		RETURN
+
+		[TestMethod];
+		METHOD NToCMonthTest() as void
+			AreEqual("Juni",NToCMonth((dword)6))
+		RETURN		 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

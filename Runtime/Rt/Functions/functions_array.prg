@@ -122,8 +122,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ArrayGet(a AS ARRAY,dwEl AS DWORD) AS USUAL
-		/// THROW NotImplementedException{}
-	RETURN NIL   
+	return a[dwEl]
 
 	/// <summary>
 	/// </summary>

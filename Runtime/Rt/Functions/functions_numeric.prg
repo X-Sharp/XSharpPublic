@@ -62,12 +62,12 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Create an uninitialized, one-dimensional array.
 	/// </summary>
-	/// <param name="dwDim"></param>
+	/// <param name="dwDim">The number of elements in the new array.</param>
 	/// <returns>
+	/// An uninitialized of the given length.
 	/// </returns>
 	FUNCTION ArrayCreate(dwDim AS DWORD) AS ARRAY
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+	RETURN __Array{(int)dwDim}
 
 	/// <summary>
 	/// Create an initialized array.
@@ -152,8 +152,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION DW2Bin(n AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local byteArray := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)
 
 	/// <summary>
 	/// Resize the dynamic memory pool to a specific number of pages.
@@ -212,7 +212,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION F2Bin(f AS FLOAT) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN null_string
 
 	/// <summary>
 	/// Calculate the factorial of a number.
@@ -330,8 +330,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION HiByte(dw AS WORD) AS BYTE
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local upper := Convert.ToByte(dw >> 8) AS byte
+	RETURN (byte) upper   
 
 	/// <summary>
 	/// Return the high-order (leftmost) word in a number.
@@ -340,8 +340,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION HiWord(dw AS DWORD) AS WORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		local upper := Convert.ToByte(dw >> 16) AS word
+	RETURN (WORD) upper
 
 	/// <summary>
 	/// Convert a short integer to a string containing a 16-bit signed integer.
@@ -350,8 +350,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION I2Bin(n AS SHORT) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local byteArray := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)  
 
 	/// <summary>
 	/// Check to see if a typed dynamic object is static.
@@ -397,8 +397,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION L2Bin(n AS LONG) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local byteArray := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)     
 
 	/// <summary>
 	/// Return the low-order (rightmost) byte in a number.
@@ -407,8 +407,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION LoByte(dw AS WORD) AS BYTE
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (byte) (dw & 0x00FF)
 
 	/// <summary>
 	/// Return the low-order (rightmost) word in a number.
@@ -417,8 +416,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION LoWord(dw AS DWORD) AS WORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN (WORD) (dw & 0xFFFF) 
 
 	/// <summary>
 	/// Allocate a static memory buffer of a specified size.
@@ -527,8 +525,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION NToCDoW(dwDay AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local culture := System.Globalization.CultureInfo.CurrentCulture as System.Globalization.CultureInfo
+	RETURN culture:DateTimeFormat:GetDayName((System.DayOfWeek)dwDay)
 
 	/// <summary>
 	/// Convert the number that identifies a month into the name of the month.
@@ -537,8 +535,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION NToCMonth(dwMonth AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local culture := System.Globalization.CultureInfo.CurrentCulture as System.Globalization.CultureInfo
+	RETURN culture:DateTimeFormat:GetMonthName((int)dwMonth)   
 
 	/// <summary>
 	/// </summary>
@@ -565,8 +563,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Real42Bin(n AS REAL4) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local byteArray := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)        
 
 	/// <summary>
 	/// Convert a Real8 value to a string containing an 8-byte floating point number.
@@ -575,8 +573,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Real82Bin(n AS REAL8) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local byteArray := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)        
 
 	/// <summary>
 	/// Create a string of spaces.
@@ -585,8 +583,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Space(dwSize AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string{' ',(int)dwSize}
 
 	/// <summary>
 	/// Convert a numeric expression to a string.
@@ -628,8 +625,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION SwapDWord(li AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	return (dword)((dword)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))   
 
 	/// <summary>
 	/// Exchange the right and left halves of an integer.
@@ -638,8 +634,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION SwapInt(li AS LONG) AS LONG
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN SwapLong(li) 
 
 	/// <summary>
 	/// Exchange the right and left halves of a long integer.
@@ -648,8 +643,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION SwapLong(li AS LONG) AS LONG
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	return (long)((long)((li & 0x0000ffff) << 16) | ((li >> 16) & 0x0000ffff))
 
 	/// <summary>
 	/// Exchange the right and left halves of a short integer.
@@ -658,8 +652,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION SwapShort(si AS SHORT) AS SHORT
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	return 0 // (short)((short)((si & 0x00ff) << 8) | ((si >> 8) & 0x00ff))
 
 	/// <summary>
 	/// Exchange the right and left halves of a word.
@@ -668,8 +661,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION SwapWord(w AS WORD) AS WORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	return (word)((word)((w & 0x00ff) << 8) | ((w >> 8) & 0x00ff))
 
 	/// <summary>
 	/// Sound a speaker tone for a specified frequency and duration.
@@ -679,7 +671,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Tone(dwFreq AS DWORD,dwDur AS DWORD) AS USUAL
-		/// THROW NotImplementedException{}
+		System.Media.SystemSounds.Beep:Play()
 	RETURN NIL   
 
 	/// <summary>
@@ -698,8 +690,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION W2Bin(n AS WORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local byteArray := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byteArray)    
 
 	/// <summary>
 	/// </summary>

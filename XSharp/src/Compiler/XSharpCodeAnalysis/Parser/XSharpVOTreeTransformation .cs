@@ -317,7 +317,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     stmts.Add(LastStmt);
                     // Now Change argument to X$Args PARAMS USUAL[]
                     var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
-                    var omittedArraySizeExpressionInstance = _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken));
+                    var omittedArraySizeExpressionInstance = 
+                        _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken));
                     sizes.Add(omittedArraySizeExpressionInstance);
                     var rank = _syntaxFactory.ArrayRankSpecifier(
                         SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
@@ -1155,25 +1156,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIif([NotNull] XP.IifContext context)
         {
             // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
-
-            ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
-            ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
-            if (_options.VOCompatibleIIF)
-            {
-                var type =  _options.VulcanRTFuncsIncluded
-                    ? (TypeSyntax) _usualType : (TypeSyntax) _objectType;
+            if(_options.VulcanRTFuncsIncluded && _options.VOCompatibleIIF) {
+                ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
+                ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
                 left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
+                    _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
                 right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), right);
+                    _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), right);
 
-            }
-            context.Put(_syntaxFactory.ConditionalExpression(
-                context.Cond.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                left,
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                right));
+                context.Put(_syntaxFactory.ConditionalExpression(
+                    context.Cond.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                    left,
+                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                    right));
+            } else
+                base.ExitIif(context);
         }
 
         public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)

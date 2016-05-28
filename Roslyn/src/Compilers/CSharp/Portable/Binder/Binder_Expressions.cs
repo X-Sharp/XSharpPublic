@@ -4524,33 +4524,34 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
-                right.Kind() != SyntaxKind.GenericName &&
-                (object)leftType != null && 
-                (leftType.IsObjectType() ||  
+            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding){
+                bool earlyBoundUsualProperty = false;
+                bool leftNodeUsual = false;
+                string propName ="";
+                if ((object)leftType != null && 
                     leftType is NamedTypeSymbol 
-                    && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
-            {
-                /*var rightName = right.Identifier.ValueText;
-                var rightArity = right.Arity;
-                var siteDiagnostics = DiagnosticBag.GetInstance();
-                var boundResult = BindInstanceMemberAccess(node, right, boundLeft, rightName, rightArity, default(SeparatedSyntaxList<TypeSyntax>), default(ImmutableArray<TypeSymbol>), invoked, siteDiagnostics);
-                if (!siteDiagnostics.HasAnyErrors())
+                    && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                 {
-                    return boundResult;
+                    leftNodeUsual = true;
+                    if(right.Kind() != SyntaxKind.GenericName) {
+                        propName = right.Identifier.ValueText;
+                    }
+                    earlyBoundUsualProperty = String.Compare(propName, "_NIL",StringComparison.OrdinalIgnoreCase) == 0;
+                    earlyBoundUsualProperty |= String.Compare(propName, "Value",StringComparison.OrdinalIgnoreCase) == 0;
                 }
-                else*/
-                {
-                    return new BoundDynamicMemberAccess(
-                        syntax: node,
-                        receiver: boundLeft,
-                        typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
-                        name: right.Identifier.ValueText,
-                        invoked: invoked,
-                        indexed: indexed,
-                        type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
-                        hasErrors: false);
-                }
+                if ( right.Kind() != SyntaxKind.GenericName &&
+                    ! earlyBoundUsualProperty &&  (object) leftType != null && (leftType.IsObjectType() ||  leftNodeUsual))
+                    {
+                        return new BoundDynamicMemberAccess(
+                            syntax: node,
+                            receiver: boundLeft,
+                            typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                            name: propName,
+                            invoked: invoked,
+                            indexed: indexed,
+                            type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                            hasErrors: false);
+                    }
             }
 
 #endif

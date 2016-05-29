@@ -21,7 +21,7 @@
 				<Assembly>WindowsBase</Assembly>
 			</Reference>
 		</References>
-    <ProjectItem CustomTool="MSBuild:Compile" TargetFileName="$fileinputname$.xaml" ReplaceParameters="true">WPFWindow.xaml</ProjectItem>
+    <ProjectItem SubType="Page" TargetFileName="$fileinputname$.xaml" ReplaceParameters="true">WPFWindow.xaml</ProjectItem>
     <ProjectItem SubType="Code" TargetFileName="$fileinputname$.xaml.prg" ReplaceParameters="true">WPFWindow.xaml.prg</ProjectItem>
   </TemplateContent>
 </VSTemplate>

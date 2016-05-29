@@ -27,7 +27,6 @@ namespace XSharp.Build
 
         #region VO Compatible properties
 
-        // Todo: store the values in base.bag
         public Boolean AZ
         {
             set { base.Bag[nameof(AZ)] = value; }
@@ -146,6 +145,10 @@ namespace XSharp.Build
             get { return base.GetBoolParameterWithDefault(nameof(VO14), false); }
         }
 
+        public Boolean VO15 {
+            set { base.Bag[nameof(VO15)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(VO15), false); }
+        }
 
         public String CompilerPath
         {
@@ -631,9 +634,10 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo12", base.Bag, nameof(VO12));
             commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
+            commandline.AppendPlusOrMinusSwitch("/vo15", base.Bag, nameof(VO15));
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
-            if (!String.IsNullOrEmpty(this.CommandLineOption))
+            if(!String.IsNullOrEmpty(this.CommandLineOption))
             {
                 commandline.AppendTextUnquoted("\n" + this.CommandLineOption);
             }
@@ -725,7 +729,7 @@ namespace XSharp.Build
             {
                 return;
             }
-            // Todo: Implement
+            // Todo: Implement /features commandline option
             //foreach (var feature in CompilerOptionParseUtilities.ParseFeatureFromMSBuild(features))
             //{
             //    commandLine.AppendSwitchIfNotNull("/features:", feature.Trim());

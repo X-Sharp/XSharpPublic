@@ -1,6 +1,6 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-      <_ProjectSystemFilesLocation Condition="$(_ProjectSystemFilesLocation) == ''">$(BuildRoot)\Common\Product\SharedProject</_ProjectSystemFilesLocation>
+      <_ProjectSystemFilesLocation Condition="$(_ProjectSystemFilesLocation) == ''">$(Solutiondir)VisualStudio\SharedProject</_ProjectSystemFilesLocation>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(_ProjectSystemFilesLocation)\Navigation\SourceLocation.cs">
@@ -631,6 +631,10 @@
     </Compile>
     <Compile Include="$(_ProjectSystemFilesLocation)\VsExtensions.cs">
       <Link>SharedProject\VsExtensions.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
+    <Compile Include="$(_ProjectSystemFilesLocation)\SettingsPage.cs">
+      <Link>SharedProject\SettingsPage.cs</Link>
       <Visible>true</Visible>
     </Compile>
     <Compile Include="$(_ProjectSystemFilesLocation)\SolutionEventsListener.cs">

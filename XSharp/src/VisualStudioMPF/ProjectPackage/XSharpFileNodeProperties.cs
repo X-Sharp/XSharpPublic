@@ -91,6 +91,21 @@ namespace XSharp.Project
         }
 
         [Browsable(false)]
+        public string ItemType
+        {
+            get
+            {
+                return XSharpBuildAction.ToString();
+            }
+
+            set
+            {
+                this.Node.ItemNode.ItemName = value;
+            }
+
+        }
+
+        [Browsable(false)]
         public override BuildAction BuildAction
         {
             get

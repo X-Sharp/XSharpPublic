@@ -16,6 +16,36 @@ using System;
 using System.ComponentModel;
 
 namespace Microsoft.VisualStudioTools.Project {
+    /// <summary>
+    /// Defines a type converter.
+    /// </summary>
+    /// <remarks>This is needed to get rid of the type TypeConverter type that could not give back the Type we were passing to him.
+    /// We do not want to use reflection to get the type back from the  ConverterTypeName. Also the GetType methos does not spwan converters from other assemblies.</remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments"), AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Property | AttributeTargets.Field)]
+    public sealed class PropertyPageTypeConverterAttribute : Attribute
+    {
+        #region fields
+        Type converterType;
+        #endregion
+
+        #region ctors
+        public PropertyPageTypeConverterAttribute(Type type)
+        {
+            this.converterType = type;
+        }
+        #endregion
+
+        #region properties
+        public Type ConverterType
+        {
+            get
+            {
+                return this.converterType;
+            }
+        }
+        #endregion
+    }
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     internal sealed class SRDisplayNameAttribute : DisplayNameAttribute {
         string _name;

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+     <Name>VOFieldSpec</Name>
+     <Description>An empty FieldSpec container file</Description>
+     <Icon Package="{E8D067DD-5A12-4d49-9AB1-7D7D429C293B}" ID="1073" />
+     <TemplateID>XSharp.VOFieldSpec</TemplateID>
+     <ProjectType>XSharp</ProjectType>
+     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+     <DefaultName>Fieldspecs.prg</DefaultName>
+     <SortOrder>203</SortOrder>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>VulcanVOSystemClasses</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.prg">VOFieldSpec.prg</ProjectItem>
+    <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.FieldSpecs.vnfs">VOFieldSpec.vnfs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

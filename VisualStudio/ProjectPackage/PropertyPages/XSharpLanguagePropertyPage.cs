@@ -42,6 +42,7 @@ namespace XSharp.Project
         internal const string VO12Caption = "Compatible integer divisions";
         internal const string VO13Caption = "Compatible String Comparisons";
         internal const string VO14Caption = "Use Float Literals";
+        internal const string VO15Caption = "Treat missing types as USUAL";
         internal const string VO1Description = "Allow Init() and Axit() for Constructor/Destructor (/vo1)";
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
@@ -56,6 +57,7 @@ namespace XSharp.Project
         internal const string VO12Description = "Compatible integer divisions, integer divisions may return a float  (/vo12)";
         internal const string VO13Description = "Compatible string comparisons, respects SetExact and collation table (/vo13)";
         internal const string VO14Description = "Store floating point literals as FLOAT and not as System.Double (REAL8)  (/vo14)";
+        internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE  (/vo15)";
         internal const string CMDCaption = "Extra Command Line Options";
         internal const string AZCaption = "Use Zero Based Arrays";
         internal const string CSCaption = "Case Sensitive";
@@ -99,6 +101,7 @@ namespace XSharp.Project
         private bool vo12;
         private bool vo13;
         private bool vo14;
+        private bool vo15;
         #endregion Fields
 
         #region Constructors
@@ -257,6 +260,12 @@ namespace XSharp.Project
             get { return this.vo14; }
             set { this.vo14 = value; this.IsDirty = true; }
         }
+        [Category(CatCompatibility), DisplayName(VO15Caption), Description(VO15Description)]
+        public bool VO15 {
+            get { return this.vo15; }
+            set { this.vo15 = value; this.IsDirty = true; }
+        }
+
         #endregion
         #region Overriden Implementation
         /// <summary>
@@ -304,6 +313,7 @@ namespace XSharp.Project
             vo12=getPrjLogic(nameof(VO12),  false);
             vo13=getPrjLogic(nameof(VO13),  false);
             vo14=getPrjLogic(nameof(VO14),  false);
+            vo15=getPrjLogic(nameof(VO15), true);
         }
 
         /// <summary>
@@ -343,6 +353,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(VO12), this.vo12.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO13), this.vo13.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO14), this.vo14.ToString().ToLower());
+            this.ProjectMgr.SetProjectProperty(nameof(VO15), this.vo15.ToString().ToLower());
 
             this.IsDirty = false;
 

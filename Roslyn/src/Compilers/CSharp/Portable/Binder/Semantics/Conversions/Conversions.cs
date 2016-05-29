@@ -905,5 +905,19 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return new Conversion(ConversionKind.MethodGroup, method, methodGroup.IsExtensionMethodGroup);
         }
+#if XSHARP
+        override public bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
+
+            if (!result && _binder.Compilation.Options.IsDialectVO && destination != null && source is NamedTypeSymbol)
+            {
+                if (((NamedTypeSymbol)source).ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual) && destination.IsReferenceType)
+                    result = true;
+            }
+
+            return result;
+        }
+#endif
     }
 }

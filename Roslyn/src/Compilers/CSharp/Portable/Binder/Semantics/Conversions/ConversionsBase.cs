@@ -1587,6 +1587,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return false;
         }
 
+#if XSHARP
+        virtual
+#endif
         public bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert((object)source != null);

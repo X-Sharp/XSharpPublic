@@ -175,7 +175,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         && ((NamedTypeSymbol)rewrittenOperand.Type).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                     {
                         rewrittenOperand = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", rewrittenOperand);
-                        conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : ConversionKind.ImplicitReference;
+                        conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
                     }
 #endif
                     if (!_inExpressionLambda)

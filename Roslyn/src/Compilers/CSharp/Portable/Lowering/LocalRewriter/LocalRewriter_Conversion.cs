@@ -170,6 +170,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case ConversionKind.Boxing:
 
+#if XSHARP
+                    if (_compilation.Options.IsDialectVO
+                        && ((NamedTypeSymbol)rewrittenOperand.Type).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    {
+                        rewrittenOperand = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", rewrittenOperand);
+                        conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : ConversionKind.ImplicitReference;
+                    }
+#endif
                     if (!_inExpressionLambda)
                     {
                         // We can perform some optimizations if we have a nullable value type

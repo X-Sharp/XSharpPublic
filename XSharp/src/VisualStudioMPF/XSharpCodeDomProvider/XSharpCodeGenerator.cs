@@ -1412,6 +1412,14 @@ namespace XSharp.CodeDom
             return false;
         }
 
+
+        // in XSharp, continuing on the next line is done using a semi-colon !
+        protected override void ContinueOnNewLine(string st)
+        {
+            this.Output.Write(st);
+            this.Output.WriteLine( ";" );
+        }
+
         private void GenerateAttributes(CodeAttributeDeclarationCollection attributes)
         {
             this.GenerateAttributes(attributes, null, false);

@@ -912,10 +912,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!result && _binder.Compilation.Options.IsDialectVO && destination != null && source is NamedTypeSymbol)
             {
-                if (((NamedTypeSymbol)source).ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual) && destination.IsReferenceType 
-                    && !destination.IsStringType()
-                    && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array))
-                    result = true;
+                if (((NamedTypeSymbol)source).ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                {
+                    if (destination.IsReferenceType) {
+                        result = !destination.IsStringType()
+                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array)
+                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock);
+                    }
+                }
             }
 
             return result;

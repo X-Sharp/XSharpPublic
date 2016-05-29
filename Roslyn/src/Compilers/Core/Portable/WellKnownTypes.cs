@@ -248,6 +248,7 @@ namespace Microsoft.CodeAnalysis
 
 #if XSHARP
         VulcanRTFuncs_Functions,
+        Vulcan_Codeblock,
         Vulcan___Usual,
         Vulcan___Array,
 #endif
@@ -494,6 +495,7 @@ namespace Microsoft.CodeAnalysis
 #if XSHARP
             ,
             "VulcanRTFuncs.Functions",
+            "Vulcan.Codeblock",
             "Vulcan.__Usual",
             "Vulcan.__Array"
 #endif

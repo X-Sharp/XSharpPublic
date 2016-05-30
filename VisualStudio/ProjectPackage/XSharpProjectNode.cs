@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.Project.WPF;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
 using System.Diagnostics;
 
 namespace XSharp.Project
@@ -365,6 +366,97 @@ namespace XSharp.Project
             };
             return result;
         }
+
+        /// <summary>
+        /// Allows you to query the project for special files and optionally create them. 
+        /// </summary>
+        /// <param name="fileId">__PSFFILEID of the file</param>
+        /// <param name="flags">__PSFFLAGS flags for the file</param>
+        /// <param name="itemid">The itemid of the node in the hierarchy</param>
+        /// <param name="fileName">The file name of the special file.</param>
+        /// <returns></returns>
+        public override int GetFile(int fileId, uint flags, out uint itemid, out string fileName) {
+            bool fCreateInPropertiesFolder = false;
+
+            switch(fileId) {
+                case (int)__PSFFILEID.PSFFILEID_AppConfig:
+                    fileName = "app.config";
+                    break;
+                case (int)__PSFFILEID.PSFFILEID_Licenses:
+                    fileName = "licenses.licx";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_WebSettings:
+                    fileName = "web.config";
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AppManifest:
+                    fileName = "app.manifest";
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AppSettings:
+                    fileName = "Settings.settings";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AssemblyResource:
+                    fileName = "Resources.resx";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AssemblyInfo:
+                    fileName = "AssemblyInfo.prg";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID3.PSFFILEID_AppXaml:
+                    fileName = "App.Xaml";
+                    break;
+                case (int)__PSFFILEID4.PSFFILEID_WcfServiceReferencesConfig:
+                    fileName = "ServiceReference.config";
+                    break;
+                //case (int)__PSFFILEID5.PSFFILEID_AppxManifest:
+                //    fileName = "App.manifest";
+                //    break;
+                default:
+                    return base.GetFile(fileId, flags, out itemid, out fileName);
+            }
+
+            if(fCreateInPropertiesFolder) {
+                string sPropFolder = ProjectFolder + "\\Properties";
+                if(!System.IO.Directory.Exists(sPropFolder)){
+                    System.IO.Directory.CreateDirectory(sPropFolder);
+                }
+                fileName = "Properties\\" + fileName;
+            }
+
+            HierarchyNode fileNode = FindChild(fileName);
+            string fullPath = Path.Combine(ProjectFolder, fileName);
+            if (fCreateInPropertiesFolder) {
+                fullPath = Path.Combine(ProjectFolder , fileName);
+                }
+
+            if(fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0) {
+                // Create a zero-length file if does not exist already.
+                //
+                if(!File.Exists(fullPath))
+                    File.WriteAllText(fullPath, string.Empty);
+
+                fileNode = CreateFileNode(fileName);
+                if (fCreateInPropertiesFolder) {
+                    var PropsFolder = FindChild("Properties");
+                    if(PropsFolder == null) {
+                        PropsFolder = CreateFolderNode("Properties");
+                        AddChild(PropsFolder);
+                    }
+                    PropsFolder.AddChild(fileNode);
+                }
+                else {
+                    AddChild(fileNode);
+                }
+            }
+
+            itemid = fileNode != null ? fileNode.ID : 0;
+             if((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
+                fileName = fullPath;
+
+            return VSConstants.S_OK;
+        }
         /// <summary>
         /// Overriding to provide project general property page.
         /// </summary>
@@ -445,8 +537,7 @@ namespace XSharp.Project
             base.AddNewFileNodeToHierarchy(parentNode, fileName);
         }
 
-        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
-        {
+        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file) {
             ProjectElement newItem;
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
@@ -454,29 +545,21 @@ namespace XSharp.Project
 
             string ext = Path.GetExtension(file);
 
-            if (IsCodeFile(itemPath))
-            {
+            if(IsCodeFile(itemPath)) {
                 newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Compile);
                 // HACK
                 //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Form);
-            }
-            else if (this.IsEmbeddedResource(itemPath))
-            {
+            } else if(this.IsEmbeddedResource(itemPath)) {
                 newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.EmbeddedResource);
                 newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
                 newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
-            }
-            else if ( this.IsSettings(itemPath) )
-            {
+            } else if(this.IsSettings(itemPath)) {
                 newItem = this.CreateMsBuildFileItem(itemPath, "None");
                 newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
+            } else {
+                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.None);
+                //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
             }
-            else
-            {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Content);
-                newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
-            }
-
             return newItem;
         }
 
@@ -487,6 +570,11 @@ namespace XSharp.Project
             return false;
         }
 
+        public bool IsXaml(string fileName) {
+            if(String.Compare(Path.GetExtension(fileName), ".xaml", StringComparison.OrdinalIgnoreCase) == 0)
+                return true;
+            return false;
+        }
 
         /// <summary>
         /// Evaluates if a file is an XSharp code file based on is extension

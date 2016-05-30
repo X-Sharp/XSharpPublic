@@ -465,17 +465,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
-                if (context.Chain != null )
-                {
-                    var chainArgs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+                ArgumentListSyntax parentargs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+                if(context.Chain != null) {
                     var chainExpr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                         context.Chain.Type == XP.SELF ? (ExpressionSyntax)_syntaxFactory.ThisExpression(context.Chain.SyntaxKeyword()) : _syntaxFactory.BaseExpression(context.Chain.SyntaxKeyword()),
                         SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                         _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
                     body = MakeBlock(MakeList<StatementSyntax>(
-                        _syntaxFactory.ExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                        _syntaxFactory.ExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, parentargs), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
                         body));
-                    context.Chain = null;
                 }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
@@ -490,7 +488,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                             context.Chain.SyntaxKeyword(),
-                            context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
+                            parentargs),
                     body: body,
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
@@ -1141,9 +1139,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
+                ArgumentListSyntax argList;
+                if(context.ArgList != null)
+                    argList = context.ArgList.Get<ArgumentListSyntax>();
+                else {
+                    argList = EmptyArgumentList();
+                }
                 expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                     _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
-                context.Put(expr);
+                context.Put(_syntaxFactory.InvocationExpression(expr, argList));
                 return;
             }
             // all other method names or syntaxes

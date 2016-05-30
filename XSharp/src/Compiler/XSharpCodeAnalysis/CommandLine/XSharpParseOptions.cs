@@ -8,6 +8,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     public sealed partial class CSharpParseOptions
     {
+
+        // Options that can be set from the outside
+
         public bool ArrayZero { get; private set; }
 
         public bool DebugEnabled { get; private set; }

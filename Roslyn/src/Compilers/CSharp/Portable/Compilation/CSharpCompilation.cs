@@ -672,7 +672,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 			if (Options.OutputKind.IsApplication())
             {
 				if (String.IsNullOrEmpty(Options.MainTypeName) )
-						Options.MainTypeName =Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName;
+						Options.MainTypeName =Syntax.InternalSyntax.XSharpTreeTransformation.CurrentGlobalClassName;
             }
 
             if (!externalSyntaxTrees.Contains(Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree))
@@ -680,7 +680,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree });
             }
 #endif
-			externalSyntaxTrees.Free();
+            externalSyntaxTrees.Free();
 
             if (this.IsSubmission && i > 1)
             {

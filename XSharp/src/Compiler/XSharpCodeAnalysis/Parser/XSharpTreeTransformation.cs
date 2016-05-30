@@ -101,7 +101,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public const string GlobalClassName = "Xs$Globals";
+        public const string strDefaultGlobalClassName = "Xs$Globals";
+        public static string CurrentGlobalClassName = strDefaultGlobalClassName;
+        public string GlobalClassName = strDefaultGlobalClassName;
         const string ImpliedTypeName = "Xs$var";
         const string ForStartNamePrefix = "Xs$ForStart$";
         const string ForEndNamePrefix = "Xs$ForEnd$";
@@ -150,6 +152,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
             _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
             _impliedType = GenerateSimpleName(ImpliedTypeName);
+            CurrentGlobalClassName = strDefaultGlobalClassName;
+            DefaultXSharpSyntaxTree = GetDefaultTree();
         }
 
         internal CSharpSyntaxNode GenerateNoRuntimeError(CSharpSyntaxNode node, string Name, string DLL)
@@ -1122,16 +1126,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return prop;
         }
 
-        public static SyntaxTree GenerateDefaultTree()
-        {
-            var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()));
 
-            t.GlobalEntities.Members.Add(t.GenerateGlobalClass(GlobalClassName));
+        protected SyntaxTree GetDefaultTree() {
 
             var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
             return CSharpSyntaxTree.Create(
-                (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                    t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
+                (Syntax.CompilationUnitSyntax)this._syntaxFactory.CompilationUnit(
+                    this.GlobalEntities.Externs, this.GlobalEntities.Usings, this.GlobalEntities.Attributes, this.GlobalEntities.Members, eof).CreateRed());
+
+        }
+        public static SyntaxTree GenerateDefaultTree()
+        {
+            var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()));
+            return t.GetDefaultTree();
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)

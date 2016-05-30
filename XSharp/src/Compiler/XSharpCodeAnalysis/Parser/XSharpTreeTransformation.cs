@@ -272,7 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 XP.ClsctorContext cc = (XP.ClsctorContext)context;
                 if (name.Length > 0) // Remove the dot
                     name = name.Substring(0, name.Length - 1);
-                suffix  = "{}";
+                suffix= ".CTOR";
                 Params = cc.ParamList;
             }
             else if (context is XP.ClsdtorContext)
@@ -354,6 +354,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     name = RetType.GetText() + " " + name;
                 }
+                else {
+                    name = "VOID " + name;
+                }
                 string strParams = "";
                 if (Params != null)
                 {
@@ -379,9 +382,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             strParams += "USUAL";
                     }
                 }
-                if (suffix == "{}")
+                if (String.Compare(suffix, ".CTOR", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     name += "{ " + strParams + " }";
+                    suffix = "";
                 }
                 else
                 {
@@ -392,7 +396,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             }
             else
-                name = name.ToUpper();
+                name = name.ToUpper()+suffix;
             return name;
 
         }
@@ -2305,6 +2309,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
+                ArgumentListSyntax parentargs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
@@ -2318,7 +2323,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
                             context.Chain.SyntaxKeyword(),
-                            context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
+                            parentargs),
                     body: body,
                     semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }

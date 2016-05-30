@@ -917,7 +917,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (destination.IsReferenceType) {
                         result = !destination.IsStringType()
                             && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array)
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock);
+                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock)
+                            && (destination as NamedTypeSymbol)?.ConstructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), true, ref useSiteDiagnostics) != true;
                     }
                     else
                     {

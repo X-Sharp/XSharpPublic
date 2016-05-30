@@ -759,7 +759,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
-        protected ExpressionSyntax GenerateMethodCall(string MethodName, ArgumentListSyntax args)
+        protected ExpressionSyntax GenerateStaticMethodCall(string MethodName, ArgumentListSyntax args)
         {
             ExpressionSyntax expr = _syntaxFactory.InvocationExpression(GenerateQualifiedName(MethodName), args);
             return expr;
@@ -967,7 +967,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken), 
                         arguments: default(SeparatedSyntaxList<ArgumentSyntax>), 
                         closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                    statements.Add(GenerateExpressionStatement(GenerateMethodCall(startMethodName, argList)));
+                    statements.Add(GenerateExpressionStatement(GenerateStaticMethodCall(startMethodName, argList)));
                 }
                 blockBody = MakeBlock(statements);
                 _pool.Free(statements);
@@ -1082,7 +1082,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null
                         : MakeBlock(
                             MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                                GenerateMethodCall(VoPropertyAccessPrefix+vop.idName.Text,MakeArgumentList()),
+                                GenerateStaticMethodCall(VoPropertyAccessPrefix+vop.idName.Text,MakeArgumentList()),
                                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)))
                             ),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
@@ -1097,7 +1097,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null
                         : MakeBlock(
                             MakeList<StatementSyntax>(GenerateExpressionStatement(
-                                GenerateMethodCall(VoPropertyAssignPrefix+vop.idName.Text,
+                                GenerateStaticMethodCall(VoPropertyAssignPrefix+vop.idName.Text,
                                     MakeArgumentList(MakeArgument(GenerateSimpleName("value"))))))
                             ),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
@@ -3571,7 +3571,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var block = _pool.Allocate<StatementSyntax>();
                 if (context.Q.Type == XP.QMARK)
                     block.Add(GenerateExpressionStatement(
-                        GenerateMethodCall("global::System.Console.WriteLine",EmptyArgumentList()
+                        GenerateStaticMethodCall("global::System.Console.WriteLine",EmptyArgumentList()
                         )));
                 bool first = true;
                 if (context._Exprs != null) {
@@ -3580,12 +3580,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         {
                             expr = GenerateLiteral(" ");
                             arg = MakeArgument(expr);
-                            block.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.Write", MakeArgumentList(arg))));
+                            block.Add(GenerateExpressionStatement(GenerateStaticMethodCall("global::System.Console.Write", MakeArgumentList(arg))));
                         }
                         // And the ? operator is for these dialects 
                         expr = eCtx.Get<ExpressionSyntax>();
                         arg = MakeArgument(expr);
-                        expr = GenerateMethodCall("global::System.Console.Write", MakeArgumentList(arg));
+                        expr = GenerateStaticMethodCall("global::System.Console.Write", MakeArgumentList(arg));
                         block.Add(GenerateExpressionStatement(expr));
                         first = false;
                     }
@@ -3717,7 +3717,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             switch (context.Op.Type) {
                 case XP.EXP:
-                    context.Put(GenerateMethodCall("global::System.Math.Pow", 
+                    context.Put(GenerateStaticMethodCall("global::System.Math.Pow", 
                         _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             MakeSeparatedList(MakeArgument(context.Left.Get<ExpressionSyntax>()),
                                 MakeArgument(context.Right.Get<ExpressionSyntax>())),
@@ -3762,7 +3762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxKind.SimpleAssignmentExpression,
                         context.Left.Get<ExpressionSyntax>(),
                         SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                        GenerateMethodCall("global::System.Math.Pow", 
+                        GenerateStaticMethodCall("global::System.Math.Pow", 
                             _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                 MakeSeparatedList(MakeArgument(context.Left.Get<ExpressionSyntax>()),
                                     MakeArgument(context.Right.Get<ExpressionSyntax>())),

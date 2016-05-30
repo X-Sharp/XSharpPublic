@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg1 = MakeArgument(GenerateLiteral(memvar));
             var arg2 = MakeArgument(right);
             var args = MakeArgumentList(arg1, arg2);
-            var expr = GenerateMethodCall(method, args);
+            var expr = GenerateStaticMethodCall(method, args);
             expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
             // if (!_options.VulcanRTFuncsIncluded)
             //{
@@ -107,7 +107,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string method = "global::VulcanRTFuncs.Functions.__MemVarGet";
             var arg1 = MakeArgument(GenerateLiteral(memvar));
             var args = MakeArgumentList(arg1);
-            var expr = GenerateMethodCall(method, args);
+            var expr = GenerateStaticMethodCall(method, args);
             expr = (ExpressionSyntax)NotInDialect(expr, "MEMVAR");
             //todo: Implement MemVarGet
             // if (!_options.VulcanRTFuncsIncluded)
@@ -134,7 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 method = "global::VulcanRTFuncs.Functions.__FieldSet";
                 args = MakeArgumentList(argField, argValue);
             }
-            var expr = GenerateMethodCall(method, args);
+            var expr = GenerateStaticMethodCall(method, args);
             if (!_options.VulcanRTFuncsIncluded)
             {
                 expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
@@ -159,7 +159,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 args = MakeArgumentList(argWA, argField);
             }
 
-            var expr = GenerateMethodCall(method, args);
+            var expr = GenerateStaticMethodCall(method, args);
             if (!_options.VulcanRTFuncsIncluded)
             {
                 expr = (ExpressionSyntax)NoRtFuncs(expr, "FIELD");
@@ -399,7 +399,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                         MakeBlock(MakeList<StatementSyntax>(
                             GenerateExpressionStatement(
-                                GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2PszRelease",
+                                GenerateStaticMethodCall("global::Vulcan.Internal.CompilerServices.String2PszRelease",
                                     MakeArgumentList(MakeArgument(GenerateSimpleName(VoPszList))))))));
                 }
                 // TRY
@@ -590,12 +590,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var stmts = _pool.Allocate<StatementSyntax>();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.EnterBeginSequence",
+            stmts.Add(GenerateExpressionStatement(GenerateStaticMethodCall("global::Vulcan.Internal.CompilerServices.EnterBeginSequence",
                                     EmptyArgumentList())));
             stmts.Add(MakeBlock(context.StmtBlk.Get<BlockSyntax>()));
             var tryBlock = MakeBlock(stmts);
             stmts.Clear();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.ExitBeginSequence",
+            stmts.Add(GenerateExpressionStatement(GenerateStaticMethodCall("global::Vulcan.Internal.CompilerServices.ExitBeginSequence",
                                     EmptyArgumentList())));
             var innerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                  tryBlock,
@@ -707,7 +707,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 _usualType,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                GenerateMethodCall("global::Vulcan.Error._WrapRawException",
+                GenerateStaticMethodCall("global::Vulcan.Error._WrapRawException",
                 MakeArgumentList(MakeArgument(objName))))));
 
             var assign4= GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
@@ -800,7 +800,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             } else {
                 args = EmptyArgumentList();
             }
-            expr = GenerateMethodCall(methodName, args);
+            expr = GenerateStaticMethodCall(methodName, args);
             context.Put(_syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             return;
         }
@@ -948,7 +948,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             } else {
                 argList = EmptyArgumentList();
             }
-            var expr = GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList);
+            var expr = GenerateStaticMethodCall("global::System.Diagnostics.Debugger.Break", argList);
             var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                             GenerateQualifiedName("global::System.Diagnostics.Debugger"),
                         SyntaxFactory.MakeToken(SyntaxKind.DotToken),
@@ -984,7 +984,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     GenerateSimpleName("Module"));
             var arg = MakeArgument(expr);
             argList = MakeArgumentList(arg);
-            expr = GenerateMethodCall("global::System.Runtime.InteropServices.Marshal.GetHINSTANCE", argList);
+            expr = GenerateStaticMethodCall("global::System.Runtime.InteropServices.Marshal.GetHINSTANCE", argList);
             context.Put(expr);
             return true;
         }
@@ -1041,7 +1041,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         NameSyntax pszlist = GenerateSimpleName(VoPszList);
                         expr = argList.Arguments[0].Expression;
                         argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
-                        expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
+                        expr = GenerateStaticMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
                         var args = MakeArgumentList(MakeArgument(expr));
                         expr = CreateObject(this._pszType, args, null);
                     }
@@ -1275,7 +1275,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expr = CreateObject(_pszType, MakeArgumentList(arg0), null);
                     break;
                 case XP.NULL_DATE:
-                    expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
+                    expr = GenerateStaticMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
                     break;
                 case XP.DATE_CONST:
                     args = context.Token.Text.Split('.');
@@ -1390,10 +1390,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax expr;
             expr = GenerateLiteral(context.Id.GetText());
             var args = MakeArgumentList(MakeArgument(expr));
-            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", args);
+            expr = GenerateStaticMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", args);
             exprs.Add(expr);
             exprs.Add(context.Expr.Get<ExpressionSyntax>());
-            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__popWorkarea", EmptyArgumentList());
+            expr = GenerateStaticMethodCall("global::VulcanRTFuncs.Functions.__popWorkarea", EmptyArgumentList());
             exprs.Add(expr);
             context.Put(exprs.ToListNode());
             _pool.Free(exprs);
@@ -1442,16 +1442,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var arg1 = MakeArgument(context.Alias.Get<ExpressionSyntax>());
                 var arg2 = MakeArgument(GenerateLiteral(context.Id.GetText()));
                 var args = MakeArgumentList(arg1, arg2);
-                context.Put(GenerateMethodCall(method, args));
+                context.Put(GenerateStaticMethodCall(method, args));
             } else {
                 var exprs = _pool.Allocate<ExpressionSyntax>();
                 ExpressionSyntax expr;
                 expr = context.Alias.Get<ExpressionSyntax>();
                 var args = MakeArgumentList(MakeArgument(expr));
-                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", args);
+                expr = GenerateStaticMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", args);
                 exprs.Add(expr);
                 exprs.Add(context.Expr.Get<ExpressionSyntax>());
-                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__popWorkarea", EmptyArgumentList());
+                expr = GenerateStaticMethodCall("global::VulcanRTFuncs.Functions.__popWorkarea", EmptyArgumentList());
                 exprs.Add(expr);
                 context.Put(exprs.ToListNode());
                 _pool.Free(exprs);
@@ -1470,7 +1470,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = context.Expr.Get<ExpressionSyntax>();
             }
             var args = MakeArgumentList(MakeArgument(expr));
-            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.Evaluate", args);
+            expr = GenerateStaticMethodCall("global::VulcanRTFuncs.Functions.Evaluate", args);
             context.Put(expr);
             return;
         }

@@ -554,8 +554,10 @@ namespace XSharp.Project
                 newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
                 newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
             } else if(this.IsSettings(itemPath)) {
-                newItem = this.CreateMsBuildFileItem(itemPath, "None");
+                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.None);
                 newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
+            } else if(this.IsXaml(itemPath)) {
+                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Page);
             } else {
                 newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.None);
                 //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
@@ -569,7 +571,6 @@ namespace XSharp.Project
                 return true;
             return false;
         }
-
         public bool IsXaml(string fileName) {
             if(String.Compare(Path.GetExtension(fileName), ".xaml", StringComparison.OrdinalIgnoreCase) == 0)
                 return true;

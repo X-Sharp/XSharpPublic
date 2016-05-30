@@ -240,9 +240,6 @@
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.rc" />
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vh" />
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\WPF\wpfWindow.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow.xaml.prg" />
-    <ZipItem Include="Templates\ProjectItems\WPF\__TemplateIcon.ico" />
     <ZipProject Include="Templates\Projects\ClassLibrary\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\ClassLibrary\Class.prg" />
     <ZipProject Include="Templates\Projects\ClassLibrary\ClassLibrary.vstemplate" />
@@ -262,6 +259,14 @@
     <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml.prg" />
     <ZipProject Include="Templates\Projects\WPFApplication\XSharp.ico" />
     <Content Include="LanguageService\LanguageService.vsct" />
+    <ZipItem Include="Templates\ProjectItems\WPFPage\WPFPage.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPFUserControl\WPFUserControl.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPFWindow\wpfWindow.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPFPage\Page1.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPFPage\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\WPFUserControl\UserControl1.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPFWindow\WPFWindow.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPFWindow\__TemplateIcon.ico" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -326,10 +331,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ZipItem>
     <ZipProject Include="Templates\Projects\WPFApplication\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -338,6 +339,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipProject>
+  </ItemGroup>
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\WPFPage\Page1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\WPFUserControl\UserControl1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\WPFWindow\WPFWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ZipItem>
   </ItemGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>

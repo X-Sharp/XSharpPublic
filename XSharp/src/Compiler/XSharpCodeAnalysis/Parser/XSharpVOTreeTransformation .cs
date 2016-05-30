@@ -63,7 +63,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _codeblockType = (TypeSyntax)NoRtFuncs(_objectType, "CODEBLOCK");
             }
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
-            
+            GlobalClassName = "Foo_Functions";
+            CurrentGlobalClassName = GlobalClassName;
+            // regenerate default tree with new name
+            DefaultXSharpSyntaxTree = GetDefaultTree();
+            //options.MainTypeName = GlobalClassName;
+
         }
 
         internal CSharpSyntaxNode NoRtFuncs(CSharpSyntaxNode node, string type)
@@ -953,6 +958,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
+
+        private bool GenerateGetInst(XP.MethodCallContext context) {
+            // Pseudo function _GetInst()
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+                if(argList.Arguments.Count != 0) {
+                    context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, "_getInst", argList.Arguments.Count)));
+                    return true;
+                }
+            }
+
+            TypeSyntax globaltype = GenerateQualifiedName(GlobalClassName);
+            expr = _syntaxFactory.TypeOfExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                globaltype,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+
+            expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                                        expr,
+                                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                    GenerateSimpleName("Module"));
+            var arg = MakeArgument(expr);
+            argList = MakeArgumentList(arg);
+            expr = GenerateMethodCall("global::System.Runtime.InteropServices.Marshal.GetHINSTANCE", argList);
+            context.Put(expr);
+            return true;
+        }
+
+
         private bool GenerateSLen(XP.MethodCallContext context) {
             // Pseudo function SLen
             ArgumentListSyntax argList;
@@ -1094,7 +1131,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
                         context.Put(expr);
                         return;
-                        
+
+                    case "_GETINST":
+                        if(GenerateGetInst(context))
+                            return;
+                        break;
+
                     default:
                         break;
                 }
@@ -1341,17 +1383,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // CUSTOMER->(<Expression>)
             // translate to 
-            // pushWorkarea(CUSTOMER)
+            // __pushWorkarea(CUSTOMER)
             // expr2
-            // popWorkarea()
+            // __popWorkarea()
             var exprs = _pool.Allocate<ExpressionSyntax>();
             ExpressionSyntax expr;
             expr = GenerateLiteral(context.Id.GetText());
             var args = MakeArgumentList(MakeArgument(expr));
-            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", args);
+            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", args);
             exprs.Add(expr);
             exprs.Add(context.Expr.Get<ExpressionSyntax>());
-            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList());
+            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__popWorkarea", EmptyArgumentList());
             exprs.Add(expr);
             context.Put(exprs.ToListNode());
             _pool.Free(exprs);
@@ -1388,9 +1430,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // first is translated to 
             // __FieldGetWa(expr, ID)
             // second is translated to 
-            // pushWorkarea(expr1)
+            // __pushWorkarea(expr1)
             // expr2
-            // popWorkarea()
+            // __popWorkarea()
             if (!_options.VulcanRTFuncsIncluded) {
                 context.Put(NoRtFuncs(GenerateLiteral("alias"), "ALIAS(->) operator"));
                 return;
@@ -1406,10 +1448,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ExpressionSyntax expr;
                 expr = context.Alias.Get<ExpressionSyntax>();
                 var args = MakeArgumentList(MakeArgument(expr));
-                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", args);
+                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", args);
                 exprs.Add(expr);
                 exprs.Add(context.Expr.Get<ExpressionSyntax>());
-                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList());
+                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.__popWorkarea", EmptyArgumentList());
                 exprs.Add(expr);
                 context.Put(exprs.ToListNode());
                 _pool.Free(exprs);

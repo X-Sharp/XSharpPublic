@@ -194,6 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
                         }
 
+                        
 #if XSHARP
                         if (string.Compare(usingDirective.Name.ToString(),Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
                         {

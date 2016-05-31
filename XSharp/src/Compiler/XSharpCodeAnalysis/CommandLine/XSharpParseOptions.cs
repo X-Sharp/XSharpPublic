@@ -8,6 +8,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     public sealed partial class CSharpParseOptions
     {
+
+        // Options that can be set from the outside
+
         public bool ArrayZero { get; private set; }
 
         public bool DebugEnabled { get; private set; }
@@ -20,11 +23,17 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOFloatConstants { get; private set; }
         public bool VONullStrings { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
+        public bool VOCompatibleIIF { get; private set; }
 
         public string DefaultNamespace { get; private set; }
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
+        public bool VulcanRTFuncsIncluded { get; private set; } = false;
+        public bool VulcanRTIncluded { get; private set; } = false;
+        public bool VOUntypedAllowed { get; private set; } = true;
+
+        public CSharpCommandLineArguments CommandLineArguments { get; private set; }
 
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
@@ -42,6 +51,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOFloatConstants = opt.Vo14;
                 VONullStrings = opt.Vo2;
                 VOClipperCallingConvention = opt.Vo5;
+                VOCompatibleIIF = opt.Vo10;
+                VOUntypedAllowed = opt.Vo15;
+                VulcanRTFuncsIncluded = opt.VulcanRTFuncsIncluded;
+                VulcanRTIncluded = opt.VulcanRTIncluded;
             }
         }
 
@@ -50,6 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 DebugEnabled = opt.EmitPdb;
+                CommandLineArguments = opt;
             }
         }
 

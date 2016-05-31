@@ -47,6 +47,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // dyn.m = expr
                         var memberAccess = (BoundDynamicMemberAccess)left;
                         var loweredReceiver = VisitExpression(memberAccess.Receiver);
+#if XSHARP
+                        if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+                        {
+                            return MakeVODynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight);
+                        }
+#endif
                         return _dynamicFactory.MakeDynamicSetMember(loweredReceiver, memberAccess.Name, loweredRight).ToExpression();
                     }
 
@@ -96,6 +102,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 case BoundKind.DynamicMemberAccess:
                     var memberAccess = (BoundDynamicMemberAccess)rewrittenLeft;
+#if XSHARP
+                    if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !memberAccess.Receiver.HasDynamicType())
+                    {
+                        return MakeVODynamicSetMember(memberAccess.Receiver, memberAccess.Name, rewrittenRight);
+                    }
+#endif
                     return _dynamicFactory.MakeDynamicSetMember(
                         memberAccess.Receiver,
                         memberAccess.Name,
@@ -245,7 +257,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     syntax,
                     rewrittenReceiver,
                     setMethod,
+#if XSHARP
+                    setMethod.IsAccessor() ? AppendToPossibleNull(rewrittenArguments, rhsAssignment) :
+                        rewrittenArguments.NullToEmpty().Insert(0, rhsAssignment));
+#else
                     AppendToPossibleNull(rewrittenArguments, rhsAssignment));
+#endif
 
                 return new BoundSequence(
                     syntax,
@@ -260,7 +277,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     syntax,
                     rewrittenReceiver,
                     setMethod,
+#if XSHARP
+                    setMethod.IsAccessor() ? AppendToPossibleNull(rewrittenArguments, rewrittenRight) :
+                        rewrittenArguments.NullToEmpty().Insert(0, rewrittenRight));
+#else
                     AppendToPossibleNull(rewrittenArguments, rewrittenRight));
+#endif
 
                 if (argTemps.IsDefaultOrEmpty)
                 {

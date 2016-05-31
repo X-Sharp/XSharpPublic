@@ -7,8 +7,23 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo10</text></para>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo10</text><tab /><text styleclass="Heading1" translate="true">Compatible IIF Behavior </text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When an IIF expression contains expressions of a different type then the compiler will issue a warning. The /vo10 compiler option will add a cast to the expression to remove this warning. For example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">LOCAL x as LOGIC</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">x := TRUE</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">? IIF( x, 1, &quot;Sunday&quot;)</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you use the /vo10 compiler option then the compiler will convert this to:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">? IIF( x, (USUAL)1, &#160;(USUAL) &quot;Sunday&quot;)</text><tab /><tab /><text styleclass="Normal" translate="true">// for the VO and Vulcan dialect</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">or </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">? IIF( x, (OBJECT)1, &#160;(OBJECT) &quot;Sunday&quot;)</text><tab /><tab /><text styleclass="Normal" translate="true">// for the code dialect</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

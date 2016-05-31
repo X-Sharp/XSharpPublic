@@ -16,10 +16,11 @@
           </export-task>
           <export-task name="Publish as HTM" format="HTM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\Binaries\Help\HTML\index.html</task-config-value>
               <task-config-value name="skin">$(HMSYS)Templates\HTML Skins\Webhelp, iFrames Responsive, Grey.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
+              <task-config-value name="outputfile">..\Binaries\Help\HTML\index.html</task-config-value>
+              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="VS Help" format="HXS">
@@ -140,7 +141,7 @@
       <config-value name="copyright" translate="true">© &lt;%YEAR%&gt; &lt;%AUTHOR%&gt;</config-value>
       <config-value name="versionmajor">0</config-value>
       <config-value name="versionminor">2</config-value>
-      <config-value name="versionbuild">4</config-value>
+      <config-value name="versionbuild">1</config-value>
       <config-value name="lcid" translate="true">en-us</config-value>
       <config-value name="charset" translate="true">ANSI_CHARSET</config-value>
       <config-value name="deffont">font-family:Tahoma; font-size:10pt; color:#000000; </config-value>
@@ -154,8 +155,6 @@
       <config-value name="make4include">PDF</config-value>
       <config-value name="make4status">*</config-value>
       <config-value name="bidimode">0</config-value>
-      <config-value name="make3include">HTML</config-value>
-      <config-value name="make3status">*</config-value>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -184,46 +183,7 @@
       <config-value name="title" translate="true">&lt;%TITLE%&gt;</config-value>
       <config-value name="copyright" translate="true">&lt;%COPYRIGHT%&gt;</config-value>
       <config-value name="copyrighturl" translate="true">www.xsharp.info</config-value>
-      <config-value name="copyrightpublicdomain"><![CDATA[<%DOCTYPE%>
-<html>
-<head>
-   <title><%TOPIC_TITLE%></title>
-   <meta name="generator" content="Help &amp; Manual" />
-   <meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
-   <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
-   <IF_CHM><meta http-equiv="X-UA-Compatible" content="IE=8" /></IF_CHM>
-   <IF_HTML><meta http-equiv="X-UA-Compatible" content="IE=edge" /></IF_HTML>
-   <meta name="description" content="<%TOPIC_DESCRIPTION%>" />
-   <meta name="picture" content="<%TOPIC_PICTURE%>" />
-   <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
-   <style type="text/css">
-     body { margin: 0px; background: #FFFFFF; }
-   </style>
-</head>
-<body>
-
-<IF_TOPIC_HEADER>
-<table style="width:100%; border:none; border-spacing:0px; padding:5px; background:#4D4D4D">
-  <tr style="vertical-align:middle">
-    <td style="text-align:left">
-      <%TOPIC_HEADER%>
-    </td>
-    <td style="text-align:right">
-     <a href="<%HREF_DEFAULT_PAGE%>">Top</a>&nbsp;
-     <IF_PREVIOUS_PAGE><a href="<%HREF_PREVIOUS_PAGE%>">Previous</a>&nbsp;</IF_PREVIOUS_PAGE>
-     <IF_NEXT_PAGE><a href="<%HREF_NEXT_PAGE%>">Next</a></IF_NEXT_PAGE>
-    </td>
-  </tr>
-</table>
-</IF_TOPIC_HEADER>
-
-<!-- Placeholder for topic body. -->
-<table style="width:100%;border:none;border-spacing:0px"><tr style="vertical-align:top"><td style="text-align:left;padding:5px">
-<%TOPIC_TEXT%>
-</td></tr></table>
-
-</body>
-</html>]]></config-value>
+      <config-value name="copyrightpublicdomain">0</config-value>
     </config-group>
     <config-group name="html">
       <config-value name="defaultext">.html</config-value>
@@ -298,12 +258,11 @@
 </html>]]></config-value>
       </config-group>
       <config-value name="skin">$(HMSYS)Templates\HTML Skins\Webhelp, iFrames Responsive, Grey.hmskin</config-value>
-      <config-value name="outputfile">..\Binaries\Help\HTML\index.html</config-value>
     </config-group>
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">3</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
     </config-group>

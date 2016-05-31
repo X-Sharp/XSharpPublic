@@ -39,11 +39,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private TypeSyntax _codeblockType;
         private TypeSyntax _stringType;
 
-        public XSharpVOTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, ContextAwareSyntax syntaxFactory) : 
-            base(parser, options, pool, syntaxFactory)
-        {
-            if (_options.VulcanRTFuncsIncluded)
-            {
+        public XSharpVOTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, ContextAwareSyntax syntaxFactory, string fileName) :
+            base(parser, options, pool, syntaxFactory,fileName) {
+            if(_options.VulcanRTFuncsIncluded) {
                 _usualType = GenerateQualifiedName("global::Vulcan.__Usual");
                 _floatType = GenerateQualifiedName("global::Vulcan.__VOFloat");
                 _dateType = GenerateQualifiedName("global::Vulcan.__VODate");
@@ -51,10 +49,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _symbolType = GenerateQualifiedName("global::Vulcan.__Symbol");
                 _pszType = GenerateQualifiedName("global::Vulcan.__Psz");
                 _codeblockType = GenerateQualifiedName("global::Vulcan.Codeblock");
-            }
-            else
-            {
-                _usualType = (TypeSyntax) NoRtFuncs(_objectType,"USUAL");
+            } else {
+                _usualType = (TypeSyntax)NoRtFuncs(_objectType, "USUAL");
                 _floatType = (TypeSyntax)NoRtFuncs(_objectType, "FLOAT");
                 _dateType = (TypeSyntax)NoRtFuncs(_objectType, "DATE");
                 _arrayType = (TypeSyntax)NoRtFuncs(_objectType, "ARRAY");
@@ -63,12 +59,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _codeblockType = (TypeSyntax)NoRtFuncs(_objectType, "CODEBLOCK");
             }
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
-            GlobalClassName = "Foo_Functions";
-            CurrentGlobalClassName = GlobalClassName;
-            // regenerate default tree with new name
-            DefaultXSharpSyntaxTree = GetDefaultTree();
-            //options.MainTypeName = GlobalClassName;
 
+            // calculate the global class name;
+            string name = options.CommandLineArguments.CompilationOptions.ModuleName;
+            bool isFirstSource = false;
+            string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
+            if(String.IsNullOrEmpty(name)) {
+                name = firstSource;
+            }
+            if(string.Compare(fileName, firstSource, StringComparison.OrdinalIgnoreCase) == 0) {
+                isFirstSource = true;
+            }
+
+            if(!String.IsNullOrEmpty(name)) {
+                string filename = PathUtilities.GetFileName(name);
+                filename = PathUtilities.RemoveExtension(filename);
+                OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
+                if(kind != OutputKind.DynamicallyLinkedLibrary && kind != OutputKind.NetModule && kind != OutputKind.WindowsRuntimeMetadata)
+
+                    GlobalClassName = filename + "_Exe_Functions";
+                else
+                    GlobalClassName = filename + "_Functions";
+            } else {
+                GlobalClassName = strDefaultGlobalClassName;
+            }
+            // regenerate default tree with new name
+            CurrentGlobalClassName = GlobalClassName;
+            DefaultXSharpSyntaxTree = GetDefaultTree();
+
+            if(isFirstSource && _options.VulcanRTIncluded) {
+                // Add global attribute 
+
+                var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
+                var attributes = _pool.AllocateSeparated<AttributeSyntax>();
+
+                arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral(GlobalClassName)));
+                arguments.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral("")));
+
+                attributes.Add(_syntaxFactory.Attribute(
+                    name: GenerateQualifiedName("global::Vulcan.Internal.VulcanClassLibraryAttribute"),
+                    argumentList: _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        arguments,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                
+                var target = _syntaxFactory.AttributeTargetSpecifier(SyntaxFactory.Identifier("assembly"),SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
+                var attrlist = _syntaxFactory.AttributeList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    target,
+                    attributes,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+
+                GlobalEntities.Attributes.Add(attrlist);
+                _pool.Free(arguments);
+                _pool.Free(attributes);
+
+            }
         }
 
         internal CSharpSyntaxNode NoRtFuncs(CSharpSyntaxNode node, string type)
@@ -938,55 +984,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitAssignmentExpression(context);
         }
 
-        private bool GenerateAltD(XP.MethodCallContext context) {
-            // Pseudo function AltD()
-            ArgumentListSyntax argList;
-            if(context.ArgList != null) {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            } else {
-                argList = EmptyArgumentList();
-            }
-            var expr = GenerateStaticMethodCall("global::System.Diagnostics.Debugger.Break", argList);
-            var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            GenerateQualifiedName("global::System.Diagnostics.Debugger"),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        GenerateSimpleName("IsAttached"));
-            var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            context.Put(GenerateIfStatement(cond, stmt));
-            return true;
-        }
-
-
-        private bool GenerateGetInst(XP.MethodCallContext context) {
-            // Pseudo function _GetInst()
-            ArgumentListSyntax argList;
-            ExpressionSyntax expr;
-            if(context.ArgList != null) {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-                if(argList.Arguments.Count != 0) {
-                    context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, "_getInst", argList.Arguments.Count)));
-                    return true;
-                }
-            }
-
-            TypeSyntax globaltype = GenerateQualifiedName(GlobalClassName);
-            expr = _syntaxFactory.TypeOfExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                globaltype,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-
-            expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                        expr,
-                                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                    GenerateSimpleName("Module"));
-            var arg = MakeArgument(expr);
-            argList = MakeArgumentList(arg);
-            expr = GenerateStaticMethodCall("global::System.Runtime.InteropServices.Marshal.GetHINSTANCE", argList);
-            context.Put(expr);
-            return true;
-        }
-
+ 
 
         private bool GenerateSLen(XP.MethodCallContext context) {
             // Pseudo function SLen
@@ -1102,13 +1100,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr.Get<ExpressionSyntax>();
             string name = null;
             if(expr is IdentifierNameSyntax) {
+                // Intrinsic functions that depend on Vulcan types
                 IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
                 name = ins.Identifier.Text.ToUpper();
                 switch(name) {
-                    case "ALTD":
-                        if (GenerateAltD(context))
-                            return;
-                        break;
                     case "SLEN":
                         if (GenerateSLen(context))
                             return;
@@ -1129,16 +1124,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
                         context.Put(expr);
                         return;
-
-                    case "_GETINST":
-                        if(GenerateGetInst(context))
-                            return;
-                        break;
-
+                        
                     default:
                         break;
                 }
             } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
+                // SUPER(..) and SELF(..)
                 ArgumentListSyntax argList;
                 if(context.ArgList != null)
                     argList = context.ArgList.Get<ArgumentListSyntax>();

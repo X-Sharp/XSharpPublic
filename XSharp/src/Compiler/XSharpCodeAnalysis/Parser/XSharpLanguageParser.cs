@@ -185,9 +185,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 XSharpTreeTransformation failedTreeTransform = null;
                 if (_options.IsDialectVO) {
-                    failedTreeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory);
+                    failedTreeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
                 } else {
-                    failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
+                    failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
                 }
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
@@ -219,9 +219,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             XSharpTreeTransformation treeTransform;
             if (_options.IsDialectVO) {
-                treeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory);
+                treeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             } else {
-                treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
+                treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
             }
             try {
                 walker.Walk(treeTransform, tree);

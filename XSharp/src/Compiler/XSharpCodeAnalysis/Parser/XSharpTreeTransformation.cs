@@ -126,6 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected TypeSyntax _objectType;
         protected TypeSyntax _voidType;
         protected TypeSyntax _impliedType;
+        protected string _fileName;
 
         internal SyntaxEntities GlobalEntities;
         internal SyntaxClassEntities GlobalClassEntities;
@@ -141,12 +142,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return null;
             }
         }
-        public XSharpTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, ContextAwareSyntax syntaxFactory)
+        public XSharpTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, ContextAwareSyntax syntaxFactory, string fileName)
         {
             _pool = pool;
             _syntaxFactory = syntaxFactory;
             _parser = parser;
             _options = options;
+            _fileName = fileName;
             GlobalEntities = CreateEntities();
             _ptrType = GenerateQualifiedName("global::System.IntPtr");
             _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
@@ -886,7 +888,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var r = /*GenerateNamespace(_options.ModuleName, MakeList<MemberDeclarationSyntax>(*/
+
+            string ns = null;
+            if (className.Contains(".")) {
+                ns = className.Substring(0, className.LastIndexOf("."));
+                className = className.Substring(className.LastIndexOf(".")+1);
+            }
+
+            MemberDeclarationSyntax r = 
                 _syntaxFactory.ClassDeclaration(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
@@ -901,6 +910,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken) ) /*))*/;
             _pool.Free(attributeLists);
             _pool.Free(modifiers);
+
+            if (ns != null) {
+                r = GenerateNamespace(ns, MakeList<MemberDeclarationSyntax>(r));
+            }
+
             return r;
         }
 
@@ -908,29 +922,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder<MemberDeclarationSyntax> globalClassMembers = _pool.Allocate<MemberDeclarationSyntax>();
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-            if (members.Length == 0) {
+            string ns = null;
+            if(className.Contains(".")) {
+                ns = className.Substring(0, className.LastIndexOf("."));
+                className = className.Substring(className.LastIndexOf(".")+1);
+            }
+
+            if(members.Length == 0) {
                 members = new MemberDeclarationSyntax[] {
                     _syntaxFactory.FieldDeclaration(EmptyList<AttributeListSyntax>(),
                         TokenList(SyntaxKind.ConstKeyword,SyntaxKind.PublicKeyword),
-                        _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)), 
+                        _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)),
                             MakeSeparatedList<VariableDeclaratorSyntax>(
                                 GenerateVariable("Xs$Dummy",GenerateLiteral("", 0))
                                 )),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                 };
-                GenerateAttributeList(attributeLists,
-                    CompilerGenerated,
+                GenerateAttributeList(attributeLists, CompilerGenerated,
                     "global::System.Runtime.CompilerServices.CompilerGlobalScope");
-            }
-            if (members.Length > 0) {
-                foreach(var m in members)
-                    globalClassMembers.Add(m);
+                 if (members.Length > 0) {
+                    foreach(var m in members)
+                        globalClassMembers.Add(m);
+                    }
             }
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var r = /*GenerateNamespace(_options.ModuleName, MakeList<MemberDeclarationSyntax>(*/
+            MemberDeclarationSyntax r = 
                 _syntaxFactory.ClassDeclaration(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
@@ -946,6 +965,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(attributeLists);
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
+            if(ns != null) {
+                r = GenerateNamespace(ns, MakeList<MemberDeclarationSyntax>(r));
+            }
             return r;
         }
 
@@ -1141,7 +1163,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public static SyntaxTree GenerateDefaultTree()
         {
-            var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()));
+            var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()),"");
             return t.GetDefaultTree();
         }
 
@@ -3819,6 +3841,55 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
         }
 
+        private bool GenerateAltD(XP.MethodCallContext context) {
+            // Pseudo function AltD()
+            ArgumentListSyntax argList;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            } else {
+                argList = EmptyArgumentList();
+            }
+            var expr = GenerateStaticMethodCall("global::System.Diagnostics.Debugger.Break", argList);
+            var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                            GenerateQualifiedName("global::System.Diagnostics.Debugger"),
+                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                        GenerateSimpleName("IsAttached"));
+            var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            context.Put(GenerateIfStatement(cond, stmt));
+            return true;
+        }
+
+        private bool GenerateGetInst(XP.MethodCallContext context) {
+            // Pseudo function _GetInst()
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+                if(argList.Arguments.Count != 0) {
+                    context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, "_getInst", argList.Arguments.Count)));
+                    return true;
+                }
+            }
+
+            TypeSyntax globaltype = GenerateQualifiedName(GlobalClassName);
+            expr = _syntaxFactory.TypeOfExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                globaltype,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+
+            expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                                        expr,
+                                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                    GenerateSimpleName("Module"));
+            var arg = MakeArgument(expr);
+            argList = MakeArgumentList(arg);
+            expr = GenerateStaticMethodCall("global::System.Runtime.InteropServices.Marshal.GetHINSTANCE", argList);
+            context.Put(expr);
+            return true;
+        }
+
+
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context) {
             var expr = context.Expr.Get<ExpressionSyntax>();
             ArgumentListSyntax argList;
@@ -3826,6 +3897,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 argList = context.ArgList.Get<ArgumentListSyntax>();
             } else {
                 argList = EmptyArgumentList();
+            }
+            string name = null;
+            if(expr is IdentifierNameSyntax) {
+                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
+                name = ins.Identifier.Text.ToUpper();
+                if(name == "ALTD" && GenerateAltD(context))
+                    return;
+                if(name == "_GETINST" && GenerateGetInst(context))
+                    return;
             }
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
         }

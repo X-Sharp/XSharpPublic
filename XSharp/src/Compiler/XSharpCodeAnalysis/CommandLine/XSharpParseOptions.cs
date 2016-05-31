@@ -32,6 +32,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VulcanRTFuncsIncluded { get; private set; } = false;
         public bool VulcanRTIncluded { get; private set; } = false;
         public bool VOUntypedAllowed { get; private set; } = true;
+
+        public CSharpCommandLineArguments CommandLineArguments { get; private set; }
+
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -60,6 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 DebugEnabled = opt.EmitPdb;
+                CommandLineArguments = opt;
             }
         }
 

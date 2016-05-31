@@ -494,10 +494,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.VulcanRTFuncsIncluded)
             {
                 // Add using Vulcan
-                AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan", false);
+//                AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan", false);
 
                 // Add using Static VulcanRTFuncs.Functions
-                AddUsingWhenMissing(GlobalEntities.Usings, "VulcanRTFuncs.Functions", true);
+//                AddUsingWhenMissing(GlobalEntities.Usings, "VulcanRTFuncs.Functions", true);
 
                 // Add using Vulcan.VO
                 // AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan.VO",true),

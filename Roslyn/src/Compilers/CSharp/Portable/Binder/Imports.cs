@@ -214,6 +214,79 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     }
                                 }
                             }
+                            if (!compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute).IsErrorType()
+                                || !compilation.GetWellKnownType(WellKnownType.Vulcan___Usual).IsErrorType())
+                            {
+                                var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
+                                var _diagnostics = DiagnosticBag.GetInstance();
+                                string[] defNs = {"Vulcan", "VulcanRTFuncs.Functions", "Vulcan.VO"};
+                                foreach (var n in defNs)
+                                {
+                                    var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
+                                    var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
+                                    if (_imported.Kind == SymbolKind.Namespace)
+                                    {
+                                        if (!uniqueUsings.Contains(_imported))
+                                        {
+                                            uniqueUsings.Add(_imported);
+                                            usings.Add(new NamespaceOrTypeAndUsingDirective(_imported, usingDirective));
+                                        }
+                                    }
+                                    else if (_imported.Kind == SymbolKind.NamedType)
+                                    {
+                                        var importedType = (NamedTypeSymbol)_imported;
+                                        if (!uniqueUsings.Contains(importedType))
+                                        {
+                                            uniqueUsings.Add(importedType);
+                                            usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
+                                        }
+                                    }
+                                }
+                                var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
+                                var refMan = compilation.GetBoundReferenceManager();
+                                foreach (var r in refMan.ReferencedAssemblies)
+                                {
+                                    foreach (var attr in r.GetAttributes())
+                                    {
+                                        if (attr.AttributeClass.ConstructedFrom == vcla)
+                                        {
+                                            var args = attr.CommonConstructorArguments;
+                                            if (args.Length == 2)
+                                            {
+                                                var globalClassName = args[0].Value.ToString();
+                                                if (!string.IsNullOrEmpty(globalClassName))
+                                                {
+                                                    var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(globalClassName);
+                                                    var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
+                                                    if (_imported.Kind == SymbolKind.NamedType)
+                                                    {
+                                                        var importedType = (NamedTypeSymbol)_imported;
+                                                        if (!uniqueUsings.Contains(importedType))
+                                                        {
+                                                            uniqueUsings.Add(importedType);
+                                                            usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
+                                                        }
+                                                    }
+                                                }
+                                                var defaultNamespace = args[1].Value.ToString();
+                                                if (!string.IsNullOrEmpty(defaultNamespace))
+                                                {
+                                                    var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
+                                                    var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
+                                                    if (_imported.Kind == SymbolKind.Namespace)
+                                                    {
+                                                        if (!uniqueUsings.Contains(_imported))
+                                                        {
+                                                            uniqueUsings.Add(_imported);
+                                                            usings.Add(new NamespaceOrTypeAndUsingDirective(_imported, usingDirective));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             continue;
                         }
 #endif

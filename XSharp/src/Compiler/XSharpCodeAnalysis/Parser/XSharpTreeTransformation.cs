@@ -720,6 +720,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        internal static Syntax.NameSyntax ExtGenerateQualifiedName(string name)
+        {
+            string[] ids = name.Split('.');
+            string idName = ids[0];
+            string alias = null;
+            int cc = idName.IndexOf("::");
+            if (cc >= 0)
+            {
+                alias = idName.Substring(0, cc);
+                idName = idName.Substring(cc + 2);
+            }
+            Syntax.NameSyntax r = CSharp.SyntaxFactory.IdentifierName(idName);
+            if (alias != null)
+            {
+                if (string.Compare(alias, "global", StringComparison.OrdinalIgnoreCase) == 0)
+                    r = CSharp.SyntaxFactory.AliasQualifiedName(
+                        CSharp.SyntaxFactory.IdentifierName(CSharp.SyntaxFactory.Token(SyntaxKind.GlobalKeyword)),
+                        CSharp.SyntaxFactory.Token(SyntaxKind.ColonColonToken),
+                        (Syntax.SimpleNameSyntax)r);
+                else
+                    r = CSharp.SyntaxFactory.AliasQualifiedName(
+                        CSharp.SyntaxFactory.IdentifierName(alias),
+                        CSharp.SyntaxFactory.Token(SyntaxKind.ColonColonToken),
+                        (Syntax.SimpleNameSyntax)r);
+            }
+            for (int i = 1; i < ids.Length; i++)
+            {
+                r = CSharp.SyntaxFactory.QualifiedName(
+                    r,
+                    CSharp.SyntaxFactory.Token(SyntaxKind.DotToken),
+                    CSharp.SyntaxFactory.IdentifierName(ids[i]));
+            }
+            return r;
+        }
+
         protected NameSyntax GenerateGlobalQualifiedNameFromList(string name, params string[] dotNames)
         {
             NameSyntax r = GenerateSimpleName(name);

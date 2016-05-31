@@ -419,18 +419,20 @@ CLASS Parent
 END CLASS
 
 CLASS Child INHERIT Parent
-    CONSTRUCTOR(): SUPER(null)
+    CONSTRUCTOR()
+        SUPER(null)
 END CLASS
 "));
-            CompileWithErrors("/dialect:vulcan", ParseSource("/dialect:vulcan",@"
+            CompileWithErrors(ParseSource(@"
 CLASS Parent
     CONSTRUCTOR(o AS OBJECT)
 END CLASS
 
 CLASS Child INHERIT Parent
-    CONSTRUCTOR(): SUPER(null)
+    CONSTRUCTOR()
+        SUPER(SELF)
 END CLASS
-"), VulcanRuntime);
+"));
         }
 
         [Test(Author = "Nikos", Id = "N16", Title = "Constructor chaining (vulcan dialect)")]
@@ -456,6 +458,75 @@ FUNCTION Start() AS VOID
     ENDIF
     RETURN
 "), VulcanRuntime);
+        }
+
+        [Test(Author = "Nikos", Id = "N17", Title = "Anonymous types")]
+        public static void AnonTypes()
+        {
+            CompileAndRunWithoutExceptions(ParseSource(@"
+FUNCTION Start() AS VOID
+    VAR o := CLASS { Name := ""test"", Value := ""something"" }
+    IF o:Name != ""test"" || o:Value != ""something""
+        THROW Exception{'Incorrect members'}
+    ENDIF
+    RETURN
+"));
+        }
+
+        [Test(Author = "Nikos", Id = "N18", Title = "NameOf operator")]
+        public static void NameOfOperator()
+        {
+            CompileAndRunWithoutExceptions(ParseSource(@"
+class Test
+    property Prop as int auto
+    method Meth() as void
+    method Meth(a as int) as void
+end class
+
+FUNCTION Start() AS VOID
+    VAR o := Test{}
+    LOCAL n AS STRING
+    n := nameof(Test.prop)
+    IF n != ""Prop""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
+    n := nameof(o:prop)
+    IF n != ""Prop""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
+    n := nameof(Test.meth)
+    IF n != ""Meth""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
+    n := nameof(o:meth)
+    IF n != ""Meth""
+        THROW Exception{'n == ""'+n+'""'}
+    ENDIF
+    RETURN
+"));
+            CompileWithErrors(ParseSource(@"
+class Test
+    method Meth() as void
+    method meth(a as int) as void
+end class
+
+FUNCTION Start() AS VOID
+    LOCAL n AS STRING
+    n := nameof(Test.meth)
+    RETURN
+"));
+            CompileWithErrors(ParseSource(@"
+class Test
+    method Meth() as void
+    method meth(a as int) as void
+end class
+
+FUNCTION Start() AS VOID
+    VAR o := Test{}
+    LOCAL n AS STRING
+    n := nameof(o:meth)
+    RETURN
+"));
         }
     }
 }

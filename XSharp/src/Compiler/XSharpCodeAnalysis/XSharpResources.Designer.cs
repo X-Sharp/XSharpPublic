@@ -404,6 +404,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ambiguous case between &apos;{0}&apos; and &apos;{1}&apos;.
+        /// </summary>
+        internal static string ERR_AmbiguousCase {
+            get {
+                return ResourceManager.GetString("ERR_AmbiguousCase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot use ref or out parameter &apos;{0}&apos; inside an anonymous method, lambda expression, or query expression.
         /// </summary>
         internal static string ERR_AnonDelegateCantUse {
@@ -3302,6 +3311,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate define with different value detected &apos;{0}&apos;.
+        /// </summary>
+        internal static string ERR_DuplicateDefine {
+            get {
+                return ResourceManager.GetString("ERR_DuplicateDefine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The parameter name &apos;{0}&apos; conflicts with an automatically-generated parameter name.
         /// </summary>
         internal static string ERR_DuplicateGeneratedName {
@@ -4108,6 +4126,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_FeatureNotValidInExpressionTree {
             get {
                 return ResourceManager.GetString("ERR_FeatureNotValidInExpressionTree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The feature &apos;{0}&apos; requires a reference to the runtime DLL &apos;{1}&apos;..
+        /// </summary>
+        internal static string ERR_FeatureRequiresReferenceToRuntime {
+            get {
+                return ResourceManager.GetString("ERR_FeatureRequiresReferenceToRuntime", resourceCulture);
             }
         }
         
@@ -5642,7 +5669,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot convert method group &apos;{0}&apos; to non-delegate type &apos;{1}&apos;. Did you intend to invoke the method?.
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a method and cannot be converted to &apos;{1}&apos;. Did you forget the parenthesis?.
         /// </summary>
         internal static string ERR_MethGrpToNonDel {
             get {
@@ -5989,6 +6016,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_NegativeStackAllocSize {
             get {
                 return ResourceManager.GetString("ERR_NegativeStackAllocSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class name {0} for method differs from parent class name {1}.
+        /// </summary>
+        internal static string ERR_NestedMethodMustHaveSameNameAsParentClass {
+            get {
+                return ResourceManager.GetString("ERR_NestedMethodMustHaveSameNameAsParentClass", resourceCulture);
             }
         }
         
@@ -6592,6 +6628,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_OnlyClassesCanContainDestructors {
             get {
                 return ResourceManager.GetString("ERR_OnlyClassesCanContainDestructors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The function &apos;{0}&apos; is only supported in functions or methods with CLIPPER calling convention.
+        /// </summary>
+        internal static string ERR_OnlySupportedForClipperCallingConvention {
+            get {
+                return ResourceManager.GetString("ERR_OnlySupportedForClipperCallingConvention", resourceCulture);
             }
         }
         
@@ -11268,6 +11313,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate define detected &apos;{0}&apos;.
+        /// </summary>
+        internal static string WRN_DuplicateDefine {
+            get {
+                return ResourceManager.GetString("WRN_DuplicateDefine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to XML comment has a duplicate param tag for &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_DuplicateParamTag {
@@ -11716,6 +11770,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_IllegalPragma_Title {
             get {
                 return ResourceManager.GetString("WRN_IllegalPragma_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No explicit constructor chaining; generating implicit call to super constructor..
+        /// </summary>
+        internal static string WRN_ImplicitParentConstructorInitializer {
+            get {
+                return ResourceManager.GetString("WRN_ImplicitParentConstructorInitializer", resourceCulture);
             }
         }
         

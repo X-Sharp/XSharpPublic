@@ -196,12 +196,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         
 #if XSHARP
-                        if (string.Compare(usingDirective.Name.ToString(),Syntax.InternalSyntax.XSharpTreeTransformation.CurrentGlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
+                        if (string.Compare(usingDirective.Name.ToString(),Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             var result = LookupResult.GetInstance();
                             LookupOptions options = LookupOptions.AllNamedTypesOnArityZero;
                             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                            usingsBinder.LookupSymbolsSimpleName(result, null, Syntax.InternalSyntax.XSharpTreeTransformation.CurrentGlobalClassName, 0, basesBeingResolved, options, false, useSiteDiagnostics: ref useSiteDiagnostics);
+                            usingsBinder.LookupSymbolsSimpleName(result, null, Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName, 0, basesBeingResolved, options, false, useSiteDiagnostics: ref useSiteDiagnostics);
                             foreach (var sym in result.Symbols)
                             {
                                 if (sym.Kind == SymbolKind.NamedType)

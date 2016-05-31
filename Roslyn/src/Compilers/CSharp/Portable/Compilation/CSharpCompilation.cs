@@ -672,12 +672,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 			if (Options.OutputKind.IsApplication())
             {
 				if (String.IsNullOrEmpty(Options.MainTypeName) )
-						Options.MainTypeName =Syntax.InternalSyntax.XSharpTreeTransformation.CurrentGlobalClassName;
+						Options.MainTypeName =Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName;
             }
-
-            if (!externalSyntaxTrees.Contains(Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree))
+            SyntaxTree def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
+            if (!externalSyntaxTrees.Contains(def))
             {
-                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree });
+                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
             }
 #endif
             externalSyntaxTrees.Free();

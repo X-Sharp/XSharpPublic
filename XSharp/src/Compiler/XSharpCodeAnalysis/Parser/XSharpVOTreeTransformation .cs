@@ -67,8 +67,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // calculate the global class name;
             string name = options.CommandLineArguments.CompilationOptions.ModuleName;
+            string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
+            if (String.IsNullOrEmpty(name))
+            {
+                name = firstSource;
+            }
 
-            if(!String.IsNullOrEmpty(name)) {
+            if (!String.IsNullOrEmpty(name)) {
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
                 OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;

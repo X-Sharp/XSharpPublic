@@ -216,6 +216,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     }
                                 }
                             }
+                            if (compilation.Options.IsDialectVO)
+                            {
+                                var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
+                                var _diagnostics = DiagnosticBag.GetInstance();
+                                string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(((CSharpSyntaxTree)usingDirective.SyntaxTree).Options);
+                                var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
+                                var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
+                                if (_imported.Kind == SymbolKind.NamedType)
+                                {
+                                    var importedType = (NamedTypeSymbol)_imported;
+                                    if (!uniqueUsings.Contains(importedType))
+                                    {
+                                        uniqueUsings.Add(importedType);
+                                        usings.Add(new NamespaceOrTypeAndUsingDirective(importedType, usingDirective));
+                                    }
+                                }
+                            }
                             if (!compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute).IsErrorType() &&
                                 !compilation.GetWellKnownType(WellKnownType.Vulcan_VulcanImplicitNamespaceAttribute).IsErrorType()
                                 && !compilation.GetWellKnownType(WellKnownType.Vulcan___Usual).IsErrorType())

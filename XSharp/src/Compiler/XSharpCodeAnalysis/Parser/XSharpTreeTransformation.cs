@@ -1346,7 +1346,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var ch = context.children[0];
             bool bProcess = false;
-            bool bProcess = false;
             IList<IToken> tokens = null;
             if(ch is XP.FunctionContext) {
                 bProcess = true;

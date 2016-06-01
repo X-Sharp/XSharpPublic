@@ -215,8 +215,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     }
                                 }
                             }
-                            if (!compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute).IsErrorType()
-                                || !compilation.GetWellKnownType(WellKnownType.Vulcan___Usual).IsErrorType())
+                            if (!compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute).IsErrorType() &&
+                                !compilation.GetWellKnownType(WellKnownType.Vulcan_VulcanImplicitNamespaceAttribute).IsErrorType()
+                                && !compilation.GetWellKnownType(WellKnownType.Vulcan___Usual).IsErrorType())
                             {
                                 var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                                 var _diagnostics = DiagnosticBag.GetInstance();
@@ -244,16 +245,37 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     }
                                 }
                                 var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
+                                var vins = compilation.GetWellKnownType(WellKnownType.Vulcan_VulcanImplicitNamespaceAttribute);
                                 var refMan = compilation.GetBoundReferenceManager();
                                 foreach (var r in refMan.ReferencedAssemblies)
                                 {
                                     foreach (var attr in r.GetAttributes())
                                     {
-                                        if (attr.AttributeClass.ConstructedFrom == vcla)
+                                        // Check for VulcanImplicitNameSpace attribute
+                                        if(attr.AttributeClass.ConstructedFrom == vins) {
+                                            var args = attr.CommonConstructorArguments;
+                                            if(args.Length == 1) {
+                                                // only one argument, must be default namespace
+                                                var defaultNamespace = args[0].Value.ToString();
+                                                if(!string.IsNullOrEmpty(defaultNamespace)) {
+                                                    var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
+                                                    var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
+                                                    if(_imported.Kind == SymbolKind.Namespace) {
+                                                        if(!uniqueUsings.Contains(_imported)) {
+                                                            uniqueUsings.Add(_imported);
+                                                            usings.Add(new NamespaceOrTypeAndUsingDirective(_imported, usingDirective));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // Check for VulcanClasslibrary  attribute
+                                        else if(attr.AttributeClass.ConstructedFrom == vcla)
                                         {
                                             var args = attr.CommonConstructorArguments;
                                             if (args.Length == 2)
                                             {
+                                                // first element is the Functions class
                                                 var globalClassName = args[0].Value.ToString();
                                                 if (!string.IsNullOrEmpty(globalClassName))
                                                 {
@@ -269,6 +291,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                         }
                                                     }
                                                 }
+                                                // second element is the default namespace
                                                 var defaultNamespace = args[1].Value.ToString();
                                                 if (!string.IsNullOrEmpty(defaultNamespace))
                                                 {

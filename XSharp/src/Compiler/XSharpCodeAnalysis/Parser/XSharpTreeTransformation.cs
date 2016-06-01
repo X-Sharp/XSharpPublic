@@ -101,8 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public const string defGlobalClassName = "Xs$Globals";
-        public static string GlobalClassName = defGlobalClassName;
+        public const string XSharpGlobalClassName = "Xs$Globals";
         const string ImpliedTypeName = "Xs$var";
         const string ForStartNamePrefix = "Xs$ForStart$";
         const string ForEndNamePrefix = "Xs$ForEnd$";
@@ -115,6 +114,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string VoPropertyAssignPrefix = "Xs$Assign$";
         const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         private static int _unique = 0;
+
+        protected string GlobalClassName = XSharpGlobalClassName;
 
         internal SyntaxListPool _pool;
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
@@ -1196,13 +1197,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return prop;
         }
 
-        protected static SyntaxTree _defTree;
+        private static SyntaxTree _defTree;
         public static SyntaxTree DefaultXSharpSyntaxTree()
         {
             if (_defTree == null) {
                 var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(GlobalClassName));
+                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName));
 
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 _defTree = CSharpSyntaxTree.Create(
@@ -1305,7 +1306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             // Add: using static Xs$Globals
-            AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, XSharpGlobalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System",false);

@@ -194,15 +194,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                             continue;
                         }
 
-                        
+
 #if XSHARP
                         // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here 
-                        if (string.Compare(usingDirective.Name.ToString().Replace(" ",""),Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
+                        // nvk: usingDirective.Name.ToString() ONLY has spaces if it is nested. This is not supposed to be nested, as it is "Xs$Globals" even for the non-core dialects !!!
+                        if (string.Compare(usingDirective.Name.ToString()/*.Replace(" ","")*/,Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             var result = LookupResult.GetInstance();
                             LookupOptions options = LookupOptions.AllNamedTypesOnArityZero;
                             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                            usingsBinder.LookupSymbolsSimpleName(result, null, Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName, 0, basesBeingResolved, options, false, useSiteDiagnostics: ref useSiteDiagnostics);
+                            usingsBinder.LookupSymbolsSimpleName(result, null, Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName, 0, basesBeingResolved, options, false, useSiteDiagnostics: ref useSiteDiagnostics);
                             foreach (var sym in result.Symbols)
                             {
                                 if (sym.Kind == SymbolKind.NamedType)

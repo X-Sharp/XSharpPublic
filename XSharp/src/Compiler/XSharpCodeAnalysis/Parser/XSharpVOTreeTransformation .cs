@@ -82,9 +82,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
                 if(kind != OutputKind.DynamicallyLinkedLibrary && kind != OutputKind.NetModule && kind != OutputKind.WindowsRuntimeMetadata)
 
-                    GlobalClassName = filename + "_Exe_Functions";
+                    GlobalClassName = filename + ".Exe.Functions";
                 else
-                    GlobalClassName = filename + "_Functions";
+                    GlobalClassName = filename + ".Functions";
             } else {
                 GlobalClassName = defGlobalClassName;
             }

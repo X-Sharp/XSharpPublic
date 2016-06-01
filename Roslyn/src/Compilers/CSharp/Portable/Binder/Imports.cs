@@ -196,7 +196,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         
 #if XSHARP
-                        if (string.Compare(usingDirective.Name.ToString(),Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
+                        // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here 
+                        if (string.Compare(usingDirective.Name.ToString().Replace(" ",""),Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             var result = LookupResult.GetInstance();
                             LookupOptions options = LookupOptions.AllNamedTypesOnArityZero;

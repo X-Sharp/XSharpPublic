@@ -669,15 +669,32 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-			if (Options.OutputKind.IsApplication())
+            if (!trees.IsEmpty())
             {
-				if (String.IsNullOrEmpty(Options.MainTypeName) )
-						Options.MainTypeName =Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName;
-            }
-            SyntaxTree def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
-            if (!externalSyntaxTrees.Contains(def))
-            {
-                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
+                if (Options.IsDialectVO)
+                {
+                    if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
+                    {
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
+                    }
+                    if (externalSyntaxTrees.Select(t => ((CSharpSyntaxTree)t).GetCompilationUnitRoot().XSource == null).IsEmpty())
+                    {
+                        SyntaxTree def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options);
+                        syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
+                    }
+                }
+                else /* core dialect */
+                {
+                    if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
+                    {
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
+                    }
+                    SyntaxTree def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
+                    if (!externalSyntaxTrees.Contains(def))
+                    {
+                        syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
+                    }
+                }
             }
 #endif
             externalSyntaxTrees.Free();

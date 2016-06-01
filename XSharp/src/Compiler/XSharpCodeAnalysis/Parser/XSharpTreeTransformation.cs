@@ -261,14 +261,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context is XP.FunctionContext)
             {
                 XP.FunctionContext fc = (XP.FunctionContext)context;
-                name = GlobalClassName + "." +fc.Id.GetText();
+                if (name.Length == 0)
+                    name = GlobalClassName + "." +fc.Id.GetText();
+                else
+                    name += fc.Id.GetText();
+                
                 RetType = fc.Type;
                 Params = fc.ParamList;
             }
             else if (context is XP.ProcedureContext)
             {
                 XP.ProcedureContext pc = (XP.ProcedureContext)context;
-                name = GlobalClassName + "." + pc.Id.GetText();
+                if(name.Length == 0)
+                    name = GlobalClassName + "." + pc.Id.GetText();
+                else
+                    name += pc.Id.GetText();
                 Params = pc.ParamList;
             }
             else if (context is XP.ClsctorContext)
@@ -1339,8 +1346,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var ch = context.children[0];
             bool bProcess = false;
+            bool bProcess = false;
             IList<IToken> tokens = null;
-            if (ch is XP.FunctionContext) {
+            if(ch is XP.FunctionContext) {
                 bProcess = true;
                 tokens = ((XP.FunctionContext)ch).Modifiers?._Tokens;
             }
@@ -1348,7 +1356,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bProcess = true;
                 tokens = ((XP.ProcedureContext)ch).Modifiers?._Tokens;
             }
-            if (ch is XP.VoglobalContext) {
+            if(ch is XP.VoglobalContext) {
                 bProcess = true;
                 tokens = ((XP.VoglobalContext)ch).Modifiers?._Tokens;
             }
@@ -1359,18 +1367,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bProcess = true;
                 tokens = ((XP.VodllContext)ch).Modifiers?._Tokens;
             }
-            if (bProcess) {
+            if(bProcess) {
                 string className = GlobalClassName;
                 bool bStatic = false;
                 if(tokens != null) {
-                    foreach (var token in tokens) {
+                    foreach(var token in tokens) {
                         if(token.Type == XP.STATIC) {
                             bStatic = true;
                             break;
                         }
                     }
                 }
-                if (bStatic) {
+                if(bStatic) {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
                     className = className.Replace(".Functions", ".$" + filename + "$.Functions");
@@ -1378,7 +1386,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, ch.Get<MemberDeclarationSyntax>()));
             }
-            else {
+             else {
                 context.Put(ch.Get<CSharpSyntaxNode>());
             }
         }

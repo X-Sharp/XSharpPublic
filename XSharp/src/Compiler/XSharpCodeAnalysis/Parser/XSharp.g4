@@ -420,7 +420,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
-					| Decl=fielddecl													#fieldStmt
+					| Decl=fielddecl											#fieldStmt
 					| DO? WHILE Expr=expression end=EOS
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				{ SetSequencePoint(_localctx,$end); } #whileStmt
 					| NOP end=EOS												{ SetSequencePoint(_localctx,$end); } #nopStmt

@@ -22,6 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOUntypedAllowed { get; private set; }
         public XSharpDialect Dialect { get; private set; }
         public bool LateBinding { get; private set; }
+        public bool HasDefaultTree { get; set; } = false;
 
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }

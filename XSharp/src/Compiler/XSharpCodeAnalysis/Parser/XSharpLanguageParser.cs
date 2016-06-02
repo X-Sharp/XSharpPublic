@@ -124,6 +124,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ParserRuleContext tree;
             var stream = new AntlrInputStream(_text.ToString());
             var lexer = new XSharpLexer(stream);
+            if(_options.Dialect == XSharpDialect.VO) {
+                lexer.AllowFourLetterAbbreviations = true;
+                lexer.AllowOldStyleComments = true;
+            } else {
+                lexer.AllowFourLetterAbbreviations = false;
+                lexer.AllowOldStyleComments = false;
+            }
+
             var tokens = new CommonTokenStream(lexer);
 #if DEBUG && DUMP_TIMES
             DateTime t = DateTime.Now;
@@ -140,6 +148,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var pp = new XSharpPreprocessor(tokens, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
             var parser = new XSharpParser(pp_tokens);
+            parser.VOSyntax = _options.IsDialectVO;     // VO & Vulcan
+            parser.AllowFunctionInsideClass = true;     // always for now
+            if(_options.Dialect == XSharpDialect.VO) {
+                parser.AllowXBaseVariables = true;
+            }
+            else {                                      // memvar and private statements are not recognized in Vulcan
+                parser.AllowXBaseVariables = false;
+            }
 #if DEBUG
             var errorListener = new XSharpErrorListener(_fileName, parseErrors);
             parser.AddErrorListener(errorListener);

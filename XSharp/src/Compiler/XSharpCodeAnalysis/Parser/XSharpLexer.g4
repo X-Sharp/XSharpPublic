@@ -16,7 +16,7 @@ lexer grammar XSharpLexer;
         {
             return (iToken > XSharpLexer.FIRST_OPERATOR && iToken < XSharpLexer.LAST_OPERATOR)
                 || (iToken > XSharpLexer.PP_FIRST && iToken < XSharpLexer.PP_LAST)
-                /*|| iToken == XSharpLexer.PP_SYMBOLS*/ || iToken == XSharpLexer.SEMI;
+                || iToken == XSharpLexer.SEMI;
         }
         public static bool IsConstant(int iToken)
         {
@@ -1012,7 +1012,6 @@ LAST_CONSTANT,
 // Pre processor symbols
 PP_FIRST,
 PRAGMA,HASHUSING,
-//PP_SYMBOLS,
 PP_COMMAND,PP_DEFINE,PP_ELSE,PP_ENDIF,PP_ENDREGION,PP_ERROR,PP_IFDEF,PP_IFNDEF,PP_INCLUDE,PP_LINE,PP_REGION,PP_TRANSLATE,PP_UNDEF,PP_WARNING,
 PP_LAST,
 
@@ -1045,39 +1044,7 @@ INT_CONST	:  ( DIGIT )+ ( U | L )? ;
 DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? '.' DIGIT ( DIGIT )? '.' DIGIT ( DIGIT )?;			// 2015.07.15
 REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( 'e' ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
 
-// Preprocessopr symbols handled by the compiler
-// Must precede the SYMBOL rule
-//PRAGMA           :  {LastToken == NL }? '#' P R A G M A 
-//                 ;
-
-//HASHUSING        :  {LastToken == NL }? '#' U S I N G
-//                 ;
-
-// Preprocessor symbols handled by the Lexer
-// Must precede the SYMBOL rule
-// These symbols are IGNORED for now.
-// In the future there should probably be a preprocessor lexer that searches and replaces defines in the source and 
-// optionally includes/excludes source lines based on define values
-
-//PP_SYMBOLS      : {LastToken == NL }? '#' 
-//                  ( C O M M A N D               // #command   <matchPattern> => <resultPattern>  
-//                  | D E F I N E                 // #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
-//                  | E L S E                     // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-//                  | E N D I F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-//                  | E N D R E G I O N           // #region [description]sourceCode#endregion
-//                  | E R R O R                   // #error [errorMessage]
-//                  | I F D E F                   // #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-//                  | I F N D E F                 // #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
-//                  | I N C L U D E               // #include "<headerfilename>"
-//                  | L I N E                     // #line <number> [FileName] or #line default
-//				  //| P R A G M A					// Handled by the parser
-//                  | R E G I O N                 // #region [description]sourceCode#endregion
-//                  | T R A N S L A T E           // #translate <matchPattern> => <resultPattern> 
-//                  | U N D E F                   // #undef <identifier>
-//				  //| U S I N G					// Handled by the parser
-//                  | W A R N I N G               // #warning [warningMessage]
-//                  ) (~(  '\n' | '\r' ) )* -> channel(PREPROCESSOR) 
-//                ;
+// Preprocessor symbols are in the handwritten part above as well as #pragma and #using
 
 SYMBOL_CONST     : '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
 
@@ -1192,7 +1159,7 @@ fragment IDStartChar	: 'A'..'Z' | 'a'..'z'
 						| '\u037F'..'\u1FFF'
 						| '\u200C'..'\u200D'
 						;
-
+// these are no longer used for keywords but are still used in the escape sequence rules 
 fragment A	: 'a' | 'A';
 fragment B	: 'b' | 'B';
 fragment C	: 'c' | 'C';

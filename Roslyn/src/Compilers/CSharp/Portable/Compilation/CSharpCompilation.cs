@@ -669,19 +669,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (!trees.IsEmpty())
+            if (!trees.IsEmpty() && ! Options.HasDefaultTree)
             {
+                SyntaxTree def = null ;
                 if (Options.IsDialectVO)
                 {
                     if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
                     {
                         Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
                     }
-                    if (externalSyntaxTrees.Select(t => ((CSharpSyntaxTree)t).GetCompilationUnitRoot().XSource == null).IsEmpty())
-                    {
-                        SyntaxTree def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options);
-                        syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
-                    }
+                    def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options);
                 }
                 else /* core dialect */
                 {
@@ -689,12 +686,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
                     }
-                    SyntaxTree def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
-                    if (!externalSyntaxTrees.Contains(def))
-                    {
-                        syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
-                    }
+                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
+                    syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 }
+                syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
+                Options.HasDefaultTree = true;
             }
 #endif
             externalSyntaxTrees.Free();

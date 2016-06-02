@@ -1,17 +1,17 @@
 ; Please note that the "deregistering" of the XSharp association is done in a script step at the end of this file
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.4.1"
-#define ProdBuild       "XSharp Beta 4"
+#define ProdVer         "XSharp 0.2.5"
+#define ProdBuild       "XSharp Beta 5"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.4.2401"
-#define VITextVersion   "0.2.4.2401 (Beta 4)"
-#define TouchDate       "2016-05-04"
-#define TouchTime       "02:04:01"
-#define SetupExeName    "XSharpSetup0241"
+#define VIVersion       "0.2.5.2500"
+#define VITextVersion   "0.2.5.2500 (Beta 5)"
+#define TouchDate       "2016-06-04"
+#define TouchTime       "02:05:00"
+#define SetupExeName    "XSharpSetup025"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -31,8 +31,8 @@
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
 #define ImmutableVersion "System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define MetadataVersion  "System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -54,7 +54,7 @@ AppSupportURL={#XSharpURL}
 AppUpdatesURL={#XSharpURL}
 DefaultDirName={pf}\{#Product}
 DefaultGroupName={#Product}
-LicenseFile=Baggage\License.rtf
+LicenseFile=Baggage\License.txt
 OutputDir={#OutPutFolder} 
 OutputBaseFilename={#SetupExeName}
 OutputManifestFile=Setup-Manifest.txt
@@ -136,8 +136,9 @@ Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; 
 
 ; Support files
 Source: "Baggage\Readme.rtf";                             DestDir: "{app}"    ; Flags: isreadme {#StdFlags}; Components: main
+Source: "Baggage\Redist.txt";                             DestDir: "{app}\Redist" ; Flags: {#StdFlags}; Components: main
 Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Images"; Flags: touch {#StdFlags}; Components: main
-Source: "Baggage\License.rtf";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
+;Source: "Baggage\License.rtf";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
 Source: "Baggage\License.txt";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
 
 ; Include Files
@@ -238,8 +239,11 @@ Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: p
 ;Filename: "{app}\uninst\XsVsUnInst.exe"; Flags: runhidden;  Components: vs2015 ;
 
 [InstallDelete]
+; The old License.rtf file.
 ; Template cache, component cache and previous installation of our project system
 ; vs2015
+Type: files;          Name: "{app}\License.rtf"; 
+
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
 Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       Components: vs2015
@@ -252,7 +256,7 @@ Type: filesandordirs; Name: "{code:GetVsNextIdeDir}\Extensions\XSharp";       Co
 Type: files;          Name: "{code:GetVsNextIdeDir}\XSharp.CodeAnalysis.dll"; Components: vsnext
 Type: files;          Name: "{code:GetVsNextIdeDir}\XSharp.CodeAnalysis.pdb"; Components: vsnext
 
-; remove the old uninstaller because the uninstall file format has changed
+; remove the old uninstaller because the uninstall file format has changed in one of the previous builds
 Type: filesandordirs; Name: "{app}\Uninst"
 
 [UninstallDelete]
@@ -289,6 +293,7 @@ InfoBeforeClickLabel=Only continue the installation if you are aware of the foll
 [Code]
 Program setup;
 var
+  PrintButton: TButton;
   Vs2015Path : String;
   Vs2015Installed: Boolean;
   Vs2015BaseDir: String;
@@ -298,6 +303,15 @@ var
   VulcanPrgAssociation: Boolean;
   VulcanGuid : String;
 
+procedure PrintButtonClick(Sender: TObject);
+var ResultCode :integer;
+begin
+ExtractTemporaryFile('license.txt');
+if not ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
+     '', '', SW_SHOW, ewNoWait, ResultCode) then
+//if not ShellExec('', ExpandConstant('{tmp}\license.txt'),
+//     '', '', SW_SHOW, ewNoWait, ResultCode) then
+end;
 procedure DetectVS();
 begin
   Vs2015Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','14.0',Vs2015BaseDir) ;
@@ -350,7 +364,21 @@ begin
   result := VsNextPath;
 end;
 
+Procedure CurPageChanged(CurPage: Integer);
 
+begin
+  PrintButton.Visible := CurPage = wpLicense;
+end;
+
+procedure InitializeWizard();
+begin
+    PrintButton := TButton.Create(WizardForm);
+    PrintButton.Caption := '&Print...';
+    PrintButton.Left := WizardForm.InfoAfterPage.Left + 96;
+    PrintButton.Top := WizardForm.InfoAfterPage.Height + 88;
+    PrintButton.OnClick := @PrintButtonClick;
+    PrintButton.Parent := WizardForm.NextButton.Parent;
+end;
 
 function InitializeSetup(): Boolean;
 var
@@ -385,12 +413,12 @@ begin
         DeleteIniSection(section,pkgdeffile);
         DeleteIniSection(section,pkgdeffile);
         DeleteIniSection(section,pkgdeffile);
-        { Another section is in there 5 times. We can remove 4 of them }
-        section := '$RootKey$\Editors\{b4829761-2bfa-44b7-8f8f-d2625ebcf218}';
-        {DeleteIniSection(section,pkgdeffile);
-        DeleteIniSection(section,pkgdeffile);
-        DeleteIniSection(section,pkgdeffile);
-        DeleteIniSection(section,pkgdeffile);}
+        //{ Another section is in there 5 times. We can remove 4 of them }
+        //section := '$RootKey$\Editors\{b4829761-2bfa-44b7-8f8f-d2625ebcf218}';
+        //DeleteIniSection(section,pkgdeffile);
+        //DeleteIniSection(section,pkgdeffile);
+        //DeleteIniSection(section,pkgdeffile);
+        //DeleteIniSection(section,pkgdeffile);
 
   end;
 end;

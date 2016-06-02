@@ -101,8 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public const string defGlobalClassName = "Xs$Globals";
-        public static string GlobalClassName = defGlobalClassName;
+        public const string XSharpGlobalClassName = "Xs$Globals";
         const string ImpliedTypeName = "Xs$var";
         const string ForStartNamePrefix = "Xs$ForStart$";
         const string ForEndNamePrefix = "Xs$ForEnd$";
@@ -115,6 +114,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string VoPropertyAssignPrefix = "Xs$Assign$";
         const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         private static int _unique = 0;
+
+        protected string GlobalClassName = XSharpGlobalClassName;
 
         internal SyntaxListPool _pool;
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
@@ -261,14 +262,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context is XP.FunctionContext)
             {
                 XP.FunctionContext fc = (XP.FunctionContext)context;
-                name = GlobalClassName + "." +fc.Id.GetText();
+                if (name.Length == 0)
+                    name = GlobalClassName + "." +fc.Id.GetText();
+                else
+                    name += fc.Id.GetText();
+                
                 RetType = fc.Type;
                 Params = fc.ParamList;
             }
             else if (context is XP.ProcedureContext)
             {
                 XP.ProcedureContext pc = (XP.ProcedureContext)context;
-                name = GlobalClassName + "." + pc.Id.GetText();
+                if(name.Length == 0)
+                    name = GlobalClassName + "." + pc.Id.GetText();
+                else
+                    name += pc.Id.GetText();
                 Params = pc.ParamList;
             }
             else if (context is XP.ClsctorContext)
@@ -720,6 +728,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        internal static Syntax.NameSyntax ExtGenerateQualifiedName(string name)
+        {
+            string[] ids = name.Split('.');
+            string idName = ids[0];
+            string alias = null;
+            int cc = idName.IndexOf("::");
+            if (cc >= 0)
+            {
+                alias = idName.Substring(0, cc);
+                idName = idName.Substring(cc + 2);
+            }
+            Syntax.NameSyntax r = CSharp.SyntaxFactory.IdentifierName(idName);
+            if (alias != null)
+            {
+                if (string.Compare(alias, "global", StringComparison.OrdinalIgnoreCase) == 0)
+                    r = CSharp.SyntaxFactory.AliasQualifiedName(
+                        CSharp.SyntaxFactory.IdentifierName(CSharp.SyntaxFactory.Token(SyntaxKind.GlobalKeyword)),
+                        CSharp.SyntaxFactory.Token(SyntaxKind.ColonColonToken),
+                        (Syntax.SimpleNameSyntax)r);
+                else
+                    r = CSharp.SyntaxFactory.AliasQualifiedName(
+                        CSharp.SyntaxFactory.IdentifierName(alias),
+                        CSharp.SyntaxFactory.Token(SyntaxKind.ColonColonToken),
+                        (Syntax.SimpleNameSyntax)r);
+            }
+            for (int i = 1; i < ids.Length; i++)
+            {
+                r = CSharp.SyntaxFactory.QualifiedName(
+                    r,
+                    CSharp.SyntaxFactory.Token(SyntaxKind.DotToken),
+                    CSharp.SyntaxFactory.IdentifierName(ids[i]));
+            }
+            return r;
+        }
+
         protected NameSyntax GenerateGlobalQualifiedNameFromList(string name, params string[] dotNames)
         {
             NameSyntax r = GenerateSimpleName(name);
@@ -819,9 +862,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, string name, bool bStatic)
         {
             bool found = false;
+            NameSyntax usingName = GenerateQualifiedName(name);
             for (int i = 0; i < usings.Count; i++)
             {
-                if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(), name) == 0)
+                if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(), usingName.ToString()) == 0)
                 {
                     found = true;
                     break;
@@ -836,7 +880,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
                     tokenStatic,
                     null,
-                    GenerateQualifiedName(name),
+                    usingName,
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
 
@@ -871,7 +915,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
             var usings = _pool.Allocate<UsingDirectiveSyntax>();
             var r = _syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
-                name: GenerateSimpleName(name),
+                name: GenerateQualifiedName(name),
                 openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                 externs: externs,
                 usings: usings,
@@ -883,14 +927,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        private void splitClassNameAndNamespace( ref string className, out string nameSpace) {
+            nameSpace = "";
+            if(className.Contains(".")) {
+                nameSpace = className.Substring(0, className.LastIndexOf("."));
+                className = className.Substring(className.LastIndexOf(".") + 1);
+            }
+        }
+
         protected MemberDeclarationSyntax GenerateGlobalClass(string className, SyntaxList<MemberDeclarationSyntax> members)
         {
+            string nameSpace ;
+            splitClassNameAndNamespace(ref className, out nameSpace);
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var r = 
+            MemberDeclarationSyntax r = 
                 _syntaxFactory.ClassDeclaration(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
@@ -905,6 +959,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken) ) /*))*/;
             _pool.Free(attributeLists);
             _pool.Free(modifiers);
+            if(nameSpace.Length > 0) {
+                r = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(r));
+           }
             return r;
         }
 
@@ -912,6 +969,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             SyntaxListBuilder<MemberDeclarationSyntax> globalClassMembers = _pool.Allocate<MemberDeclarationSyntax>();
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
+            string nameSpace;
+            splitClassNameAndNamespace(ref className, out nameSpace);
             if(members.Length == 0) {
                 members = new MemberDeclarationSyntax[] {
                     _syntaxFactory.FieldDeclaration(EmptyList<AttributeListSyntax>(),
@@ -934,7 +993,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var r = 
+            MemberDeclarationSyntax r = 
                 _syntaxFactory.ClassDeclaration(
                 attributeLists: attributeLists,
                 modifiers: modifiers.ToTokenList(),
@@ -950,7 +1009,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(attributeLists);
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
+            if (nameSpace.Length > 0) {
+                r = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(r));
+            }
             return r;
+
         }
 
         protected MethodDeclarationSyntax GenerateMainMethod(string startMethodName)
@@ -1134,13 +1197,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return prop;
         }
 
-        protected static SyntaxTree _defTree;
+        private static SyntaxTree _defTree;
         public static SyntaxTree DefaultXSharpSyntaxTree()
         {
             if (_defTree == null) {
                 var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(GlobalClassName));
+                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName));
 
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 _defTree = CSharpSyntaxTree.Create(
@@ -1243,7 +1306,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             // Add: using static Xs$Globals
-            AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, XSharpGlobalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System",false);
@@ -1283,13 +1346,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
             var ch = context.children[0];
-            if (ch is XP.FunctionContext || ch is XP.ProcedureContext || ch is XP.VoglobalContext
-                 || ch is XP.VodefineContext || ch is XP.VodllContext) {
-                if (ch.CsNode != null)
-                    GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, ch.Get<MemberDeclarationSyntax>()));
+            bool bProcess = false;
+            IList<IToken> tokens = null;
+            if(ch is XP.FunctionContext) {
+                bProcess = true;
+                tokens = ((XP.FunctionContext)ch).Modifiers?._Tokens;
             }
-            else
+            if(ch is XP.ProcedureContext) {
+                bProcess = true;
+                tokens = ((XP.ProcedureContext)ch).Modifiers?._Tokens;
+            }
+            if(ch is XP.VoglobalContext) {
+                bProcess = true;
+                tokens = ((XP.VoglobalContext)ch).Modifiers?._Tokens;
+            }
+            if(ch is XP.VodefineContext) {
+                bProcess = true;
+            }
+            if(ch is XP.VodllContext) {
+                bProcess = true;
+                tokens = ((XP.VodllContext)ch).Modifiers?._Tokens;
+            }
+            if(bProcess) {
+                string className = GlobalClassName;
+                bool bStatic = false;
+                if(tokens != null) {
+                    foreach(var token in tokens) {
+                        if(token.Type == XP.STATIC) {
+                            bStatic = true;
+                            break;
+                        }
+                    }
+                }
+                if(bStatic) {
+                    string filename = PathUtilities.GetFileName(_fileName);
+                    filename = PathUtilities.RemoveExtension(filename);
+                    className = className.Replace(".Functions", ".$" + filename + "$.Functions");
+                    AddUsingWhenMissing(GlobalEntities.Usings, className, true);
+                }
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, ch.Get<MemberDeclarationSyntax>()));
+            }
+             else {
                 context.Put(ch.Get<CSharpSyntaxNode>());
+            }
         }
 
         public override void ExitUsing_([NotNull] XP.Using_Context context)

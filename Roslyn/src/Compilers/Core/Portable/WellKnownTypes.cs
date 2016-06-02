@@ -247,6 +247,8 @@ namespace Microsoft.CodeAnalysis
         System_IFormatProvider,
 
 #if XSHARP
+        Vulcan_Internal_VulcanClassLibraryAttribute,
+        Vulcan_VulcanImplicitNamespaceAttribute,
         VulcanRTFuncs_Functions,
         Vulcan_Codeblock,
         Vulcan___VOFloat,
@@ -498,6 +500,8 @@ namespace Microsoft.CodeAnalysis
             "System.IFormatProvider"
 #if XSHARP
             ,
+            "Vulcan.Internal.VulcanClassLibraryAttribute",
+            "Vulcan.VulcanImplicitNamespaceAttribute",
             "VulcanRTFuncs.Functions",
             "Vulcan.Codeblock",
             "Vulcan.__VOFloat",

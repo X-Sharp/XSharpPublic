@@ -67,33 +67,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // calculate the global class name;
             string name = options.CommandLineArguments.CompilationOptions.ModuleName;
-            bool isFirstSource = false;
             string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
-            if(String.IsNullOrEmpty(name)) {
+            if (String.IsNullOrEmpty(name))
+            {
                 name = firstSource;
             }
-            if(string.Compare(fileName, firstSource, StringComparison.OrdinalIgnoreCase) == 0) {
-                isFirstSource = true;
-            }
 
-            if(!String.IsNullOrEmpty(name)) {
+            if (!String.IsNullOrEmpty(name)) {
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
                 OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
                 if(kind != OutputKind.DynamicallyLinkedLibrary && kind != OutputKind.NetModule && kind != OutputKind.WindowsRuntimeMetadata)
 
-                    GlobalClassName = filename + "_Exe_Functions";
+                    GlobalClassName = filename + ".Exe.Functions";
                 else
-                    GlobalClassName = filename + "_Functions";
+                    GlobalClassName = filename + ".Functions";
             } else {
-                GlobalClassName = defGlobalClassName;
+                GlobalClassName = XSharpGlobalClassName;
             }
-            _defTree = null;
             // regenerate default tree with new name
             //CurrentGlobalClassName = GlobalClassName;
             //DefaultXSharpSyntaxTree = GetDefaultTree();
+        }
 
-            if(isFirstSource && _options.VulcanRTIncluded) {
+        private SyntaxTree GenerateDefaultSyntaxTree()
+        {
+            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName));
+
+            if (_options.VulcanRTIncluded)
+            {
                 // Add global attributes 
 
                 var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
@@ -101,7 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // VulcanClassLibrary
                 arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral(GlobalClassName)));
                 arguments.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral(options.DefaultNamespace)));
+                arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral(_options.DefaultNamespace)));
 
                 attributes.Add(_syntaxFactory.Attribute(
                     name: GenerateQualifiedName("global::Vulcan.Internal.VulcanClassLibraryAttribute"),
@@ -110,7 +112,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
                 arguments.Clear();
                 // VulcanVersion
-                arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral("X# "+global::XSharp.Constants.Version)));
+                arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral("X# " + global::XSharp.Constants.Version)));
                 attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 attributes.Add(_syntaxFactory.Attribute(
                     name: GenerateQualifiedName("global::Vulcan.Internal.VulcanCompilerVersion"),
@@ -127,6 +129,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(arguments);
                 _pool.Free(attributes);
             }
+
+            var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+            return CSharpSyntaxTree.Create(
+                (Syntax.CompilationUnitSyntax)_syntaxFactory.CompilationUnit(
+                    GlobalEntities.Externs, GlobalEntities.Usings, GlobalEntities.Attributes, GlobalEntities.Members, eof).CreateRed());
+        }
+
+        public static SyntaxTree DefaultVOSyntaxTree(CSharpParseOptions options)
+        {
+            var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            return t.GenerateDefaultSyntaxTree();
+        }
+
+        public static string VOGlobalClassName(CSharpParseOptions options)
+        {
+            var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            return t.GlobalClassName;
         }
 
         internal CSharpSyntaxNode NoRtFuncs(CSharpSyntaxNode node, string type)
@@ -494,10 +513,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_options.VulcanRTFuncsIncluded)
             {
                 // Add using Vulcan
-                AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan", false);
+//                AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan", false);
 
                 // Add using Static VulcanRTFuncs.Functions
-                AddUsingWhenMissing(GlobalEntities.Usings, "VulcanRTFuncs.Functions", true);
+//                AddUsingWhenMissing(GlobalEntities.Usings, "VulcanRTFuncs.Functions", true);
 
                 // Add using Vulcan.VO
                 // AddUsingWhenMissing(GlobalEntities.Usings, "Vulcan.VO",true),

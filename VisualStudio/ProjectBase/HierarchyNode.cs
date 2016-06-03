@@ -298,7 +298,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [System.ComponentModel.BrowsableAttribute(false)]
-        public ProjectNode ProjectMgr
+        internal ProjectNode ProjectMgr
         {
             get
             {
@@ -518,7 +518,7 @@ namespace Microsoft.VisualStudio.Project
             this.IsExpanded = true;
         }
 
-        protected HierarchyNode(ProjectNode root, ProjectElement element)
+        internal HierarchyNode(ProjectNode root, ProjectElement element)
         {
             if (root == null)
             {
@@ -535,7 +535,7 @@ namespace Microsoft.VisualStudio.Project
         /// Overloaded ctor. 
         /// </summary>
         /// <param name="root"></param>
-        protected HierarchyNode(ProjectNode root)
+        internal HierarchyNode(ProjectNode root)
         {
             if (root == null)
             {
@@ -1265,7 +1265,7 @@ namespace Microsoft.VisualStudio.Project
         /// Handles the exclude from project command.
         /// </summary>
         /// <returns></returns>
-        protected virtual int ExcludeFromProject()
+        internal virtual int ExcludeFromProject()
         {
             Debug.Assert(this.ProjectMgr != null, "The project item " + this.ToString() + " has not been initialised correctly. It has a null ProjectMgr");
             this.Remove(false);
@@ -1344,7 +1344,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <returns>null object, since a hierarchy node does not know its kind of document</returns>
         /// <remarks>Must be overriden by derived node classes if a document manager is needed</remarks>
-        protected internal virtual DocumentManager GetDocumentManager()
+        internal virtual DocumentManager GetDocumentManager()
         {
             return null;
         }
@@ -1434,7 +1434,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Cmdexecopt")]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "n")]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "pva")]
-        protected virtual int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        internal virtual int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             if(this.projectMgr == null || this.projectMgr.IsClosed)
             {
@@ -1801,7 +1801,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="result">An out parameter specifying the QueryStatusResult of the command.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "p")]
-        protected virtual int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        internal virtual int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
             if(cmdGroup == VsMenus.guidStandardCommandSet2K)
             {
@@ -2052,8 +2052,8 @@ namespace Microsoft.VisualStudio.Project
             return queryResult;
         }
 
-#endregion
-        protected virtual bool CanDeleteItem(__VSDELETEITEMOPERATION deleteOperation)
+        #endregion
+        internal virtual bool CanDeleteItem(__VSDELETEITEMOPERATION deleteOperation)
         {
             return this.ProjectMgr.CanProjectDeleteItems;
         }

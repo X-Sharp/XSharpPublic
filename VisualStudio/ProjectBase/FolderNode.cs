@@ -73,7 +73,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="root">Root node of the hierarchy</param>
         /// <param name="relativePath">relative path from root i.e.: "NewFolder1\\NewFolder2\\NewFolder3</param>
         /// <param name="element">Associated project element</param>
-        public FolderNode(ProjectNode root, string relativePath, ProjectElement element)
+        internal FolderNode(ProjectNode root, string relativePath, ProjectElement element)
             : base(root, element)
         {
             if (relativePath == null)
@@ -289,7 +289,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        internal override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
             if(cmdGroup == VsMenus.guidStandardCommandSet97)
             {
@@ -324,7 +324,7 @@ namespace Microsoft.VisualStudio.Project
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
 
-        protected override bool CanDeleteItem(__VSDELETEITEMOPERATION deleteOperation)
+        internal override bool CanDeleteItem(__VSDELETEITEMOPERATION deleteOperation)
         {
             if(deleteOperation == __VSDELETEITEMOPERATION.DELITEMOP_DeleteFromStorage)
             {

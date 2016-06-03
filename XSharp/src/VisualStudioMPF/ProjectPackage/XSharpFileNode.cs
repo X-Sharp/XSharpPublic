@@ -125,7 +125,7 @@ namespace XSharp.Project
                     }
                     //
                     _codeDomProvider = new VSXSharpCodeDomProvider(this);
-                    _codeDomProvider.TabSize = tabSize;
+                    XSharpCodeDomProvider.TabSize = tabSize;
                 }
                 return _codeDomProvider;
             }

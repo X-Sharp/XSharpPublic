@@ -687,7 +687,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
                     }
                     def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
-                    syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;

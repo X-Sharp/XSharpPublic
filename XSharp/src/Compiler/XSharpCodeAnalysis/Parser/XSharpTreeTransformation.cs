@@ -1381,7 +1381,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if(bStatic) {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
-                    className = className.Replace(".Functions", ".$" + filename + "$.Functions");
+                    if (className.Contains(".Functions"))
+                        className = className.Replace(".Functions", ".$" + filename + "$.Functions");
+                    else
+                        className = className.Replace("$Globals", "$" + filename + "$Globals");
                     AddUsingWhenMissing(GlobalEntities.Usings, className, true);
                 }
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, ch.Get<MemberDeclarationSyntax>()));

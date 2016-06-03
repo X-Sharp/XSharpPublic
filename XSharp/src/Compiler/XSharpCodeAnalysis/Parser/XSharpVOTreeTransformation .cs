@@ -76,6 +76,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!String.IsNullOrEmpty(name)) {
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
+                filename = filename.Replace('.', '_');
                 OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
                 if(kind != OutputKind.DynamicallyLinkedLibrary && kind != OutputKind.NetModule && kind != OutputKind.WindowsRuntimeMetadata)
 

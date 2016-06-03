@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# compiler can run in different dialects. The table below shows the differences between these dialects.</text><br/><text styleclass="Normal" translate="true">You can use the /dialect compiler option to select the dialect that you want to use. The </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Core dialect</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> is default.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="24" colcount="5">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="27" colcount="5">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Feature</text></para>
@@ -381,7 +381,7 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;AltD()</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 6</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 6</text></para>
@@ -395,16 +395,60 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">_GetInst()</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Other information</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Function class name</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Xs$Globals</text><br/><text styleclass="Normal" translate="true">X$&lt;ModuleName&gt;$Globals for static functions and globals</text></para>
+        </td>
+        <td colspan="2">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">&lt;AssemblyName&gt;.Functions (DLLs) </text><br/><text styleclass="Normal" translate="true">&lt;AssemblyName&gt;.Exe.Functions &#160;(EXEs)</text><br/><text styleclass="Normal" translate="true">&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions for static functions and globals</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">VOSTRUCT </text><text styleclass="Normal" style="font-weight:normal;" translate="true">and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">AS/IS </text><text styleclass="Normal" style="font-weight:normal;" translate="true">syntax</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No 10</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">UNION </text><text styleclass="Normal" style="font-weight:normal;" translate="true">and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">AS/IS </text><text styleclass="Normal" style="font-weight:normal;" translate="true">syntax</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No 10</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
@@ -422,6 +466,7 @@
       <li><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">In the core dialect each of the expressions is casted to OBJECT. In the VO/Vulcan dialect the expression is cast to USUAL when VulcanRTFuncs is included. Otherwise it is casted to OBJECT.</text></li>
       <li><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:</text><br/><text styleclass="Code Example" style="font-size:10pt;" translate="true">{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Typed literal arrays are prefixed with &lt;Type&gt; like this:</text><br/><text styleclass="Code Example" style="font-size:10pt;" translate="true">&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">This becomes a literal string array</text></li>
       <li><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</text></li>
+      <li><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit) attribute on the structure and the FieldOffSet attribute on each field to explicitly define the location of the fields. </text></li>
     </list>
   </body>
 </topic>

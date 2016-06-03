@@ -91,7 +91,10 @@
       <Link>ProjectBase\UIThread.cs</Link>
       <Visible>true</Visible>
     </Compile>
-
+    <Compile Include="$(ProjectBasePath)UIThreadBase.cs">
+      <Link>ProjectBase\UIThreadBase.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
     <Compile Include="$(ProjectBasePath)AssemblyReferenceNode.cs">
       <Link>ProjectBase\AssemblyReferenceNode.cs</Link>
       <Visible>true</Visible>
@@ -451,6 +454,10 @@
     </Compile>
     <Compile Include="$(ProjectBasePath)ProjectDocumentsListener.cs">
       <Link>ProjectBase\ProjectDocumentsListener.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
+    <Compile Include="$(ProjectBasePath)VsExtensions.cs">
+      <Link>ProjectBase\VsExtensions.cs</Link>
       <Visible>true</Visible>
     </Compile>
   </ItemGroup>

@@ -201,7 +201,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="root">Root of the hierarchy</param>
         /// <param name="e">Associated project element</param>
-        public FileNode(ProjectNode root, ProjectElement element)
+        internal FileNode(ProjectNode root, ProjectElement element)
             : base(root, element)
         {
             if(this.ProjectMgr.NodeHasDesigner(this.ItemNode.GetMetadata(ProjectFileConstants.Include)))
@@ -434,7 +434,7 @@ namespace Microsoft.VisualStudio.Project
         /// Returns a specific Document manager to handle files
         /// </summary>
         /// <returns>Document manager object</returns>
-        protected internal override DocumentManager GetDocumentManager()
+        internal override DocumentManager GetDocumentManager()
         {
             return new FileDocumentManager(this);
         }
@@ -459,7 +459,7 @@ namespace Microsoft.VisualStudio.Project
             return handlerNode;
         }
 
-        protected override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        internal override int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             if(this.ProjectMgr == null || this.ProjectMgr.IsClosed)
             {
@@ -512,7 +512,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
 
-        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        internal override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
             if(cmdGroup == VsMenus.guidStandardCommandSet97)
             {
@@ -858,7 +858,7 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        protected override bool CanDeleteItem(__VSDELETEITEMOPERATION deleteOperation)
+        internal override bool CanDeleteItem(__VSDELETEITEMOPERATION deleteOperation)
         {
             if(deleteOperation == __VSDELETEITEMOPERATION.DELITEMOP_DeleteFromStorage)
             {

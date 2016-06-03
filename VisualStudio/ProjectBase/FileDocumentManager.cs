@@ -59,7 +59,7 @@ namespace Microsoft.VisualStudio.Project
     /// This class handles opening, saving of file items in the hierarchy.
     /// </summary>
     [CLSCompliant(false)]
-    public class FileDocumentManager : DocumentManager
+    internal class FileDocumentManager : DocumentManager
     {
         #region ctors
 

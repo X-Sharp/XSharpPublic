@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation. 
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
+ * copy of the license can be found in the License.html file at the root of this distribution. If 
+ * you cannot locate the Apache License, Version 2.0, please send an email to 
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -53,8 +19,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
 
-namespace Microsoft.VisualStudio.Project
-{
+namespace Microsoft.VisualStudio.Project {
 
     /// <summary>
     /// This interface defines the rules for handling build dependency on a project container.
@@ -62,13 +27,11 @@ namespace Microsoft.VisualStudio.Project
     /// <remarks>Normally this should be an internal interface but since it shouldbe available for the aggregator it must be made public.</remarks>
     [ComVisible(true)]
     [CLSCompliant(false)]
-    public interface IBuildDependencyOnProjectContainer
-    {
+    public interface IBuildDependencyOnProjectContainer {
         /// <summary>
         /// Defines whether the nested projects should be build with the parent project.
         /// </summary>
-        bool BuildNestedProjectsOnBuild
-        {
+        bool BuildNestedProjectsOnBuild {
             get;
             set;
         }
@@ -87,15 +50,13 @@ namespace Microsoft.VisualStudio.Project
     /// <remarks>Normally this should be an internal interface but since it shouldbe available for the aggregator it must be made public.</remarks>
     [ComVisible(true)]
     [CLSCompliant(false)]
-    public interface IBuildDependencyUpdate
-    {
+    public interface IBuildDependencyUpdate {
         /// <summary>
         /// Defines a container for storing BuildDependencies
         /// </summary>
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        IVsBuildDependency[] BuildDependencies
-        {
+        IVsBuildDependency[] BuildDependencies {
             get;
         }
 
@@ -119,8 +80,7 @@ namespace Microsoft.VisualStudio.Project
     /// <remarks>Normally this should be an internal interface but since it should be available for
     /// the aggregator it must be made public.</remarks>
     [ComVisible(true)]
-    public interface IReferenceContainerProvider
-    {
+    public interface IReferenceContainerProvider {
         IReferenceContainer GetReferenceContainer();
     }
 
@@ -130,8 +90,7 @@ namespace Microsoft.VisualStudio.Project
     /// <remarks>Normally this should be an internal interface but since it should be available for
     /// the aggregator it must be made public.</remarks>
     [ComVisible(true)]
-    public interface IReferenceContainer
-    {
+    public interface IReferenceContainer {
         IList<ReferenceNode> EnumReferences();
         ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null);
         void LoadReferencesFromBuildProject(MSBuild.Project buildProject);
@@ -141,8 +100,7 @@ namespace Microsoft.VisualStudio.Project
     /// Defines the events that are internally defined for communication with other subsytems.
     /// </summary>
     [ComVisible(true)]
-    public interface IProjectEvents
-    {
+    public interface IProjectEvents {
         /// <summary>
         /// Event raised just after the project file opened.
         /// </summary>
@@ -160,15 +118,13 @@ namespace Microsoft.VisualStudio.Project
     /// Defines the interface that will specify ehethrr the object is a project events listener.
     /// </summary>
     [ComVisible(true)]
-    public interface IProjectEventsListener
-    {
+    public interface IProjectEventsListener {
 
         /// <summary>
         /// Is the object a project events listener.
         /// </summary>
         /// <returns></returns>
-        bool IsProjectEventsListener
-        { get; set; }
+        bool IsProjectEventsListener { get; set; }
 
     }
 
@@ -176,13 +132,11 @@ namespace Microsoft.VisualStudio.Project
     /// Enable getting and setting the project events provider
     /// </summary>
     [ComVisible(true)]
-    public interface IProjectEventsProvider
-    {
+    public interface IProjectEventsProvider {
         /// <summary>
         /// Defines the provider for the project events
         /// </summary>
-        IProjectEvents ProjectEventsProvider
-        {
+        IProjectEvents ProjectEventsProvider {
             get;
             set;
         }
@@ -191,8 +145,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Defines support for single file generator
     /// </summary>
-    public interface ISingleFileGenerator
-    {
+    public interface ISingleFileGenerator {
         ///<summary>
         /// Runs the generator on the item represented by the document moniker.
         /// </summary>

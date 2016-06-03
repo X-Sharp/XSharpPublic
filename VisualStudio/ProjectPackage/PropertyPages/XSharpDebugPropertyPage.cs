@@ -181,7 +181,11 @@ namespace XSharp.Project
             this.SetConfigProperty(nameof(DebuggerAttach), this.debuggerattach.ToString().ToLower());
             this.SetConfigProperty(nameof(EnableUnmanagedDebugging), this.enableunmanageddebugging.ToString().ToLower());
             this.SetConfigProperty(nameof(UseVSHostingProcess), this.usevshostingprocess.ToString().ToLower());
-
+            if (debugtype == DebugType.none) {
+                this.SetConfigProperty("EmitDebugInformation", "false");
+            } else {
+                this.SetConfigProperty("EmitDebugInformation", "true");
+            }
             this.IsDirty = false;
 
             return VSConstants.S_OK;

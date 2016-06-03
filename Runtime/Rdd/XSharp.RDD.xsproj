@@ -6,7 +6,7 @@
     <CS>false</CS>
     <LB>false</LB>
     <OVF>false</OVF>
-    <Unsafe>false</Unsafe>
+    <Unsafe>true</Unsafe>
     <INS>false</INS>
     <NS>false</NS>
     <VO1>false</VO1>
@@ -95,10 +95,10 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
+    <CommandLineOption>/unsafe</CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
-    <IncludePaths />
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />

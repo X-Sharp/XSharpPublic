@@ -1147,13 +1147,11 @@ begin namespace XSharp.Runtime
 	/// The length of the string.
 	/// </returns>
 	FUNCTION SLen(c AS STRING) AS DWORD
-		local length := 0 as dword
-		try
-			if (!string.IsNullOrEmpty(c))
-			   length := (dword) c:Length
-			endif
-		end try
-	RETURN length  
+		local len := 0 as dword
+		if (!string:IsNullOrEmpty(c))
+			len := (dword) c:Length
+		endif
+	RETURN len  
 
 	/// <summary>
 	/// Convert a string to Soundex form.
@@ -1242,38 +1240,70 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Delete and insert characters in a string.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="n"></param>
-	/// <param name="nDel"></param>
-	/// <param name="cIns"></param>
+	/// <param name="c">The string in which the substitution should take place</param>
+	/// <param name="n">Starting position of the substring to be deleted.</param>
+	/// <param name="nDel">The number of characters to be deleted.</param>
+	/// <param name="cIns">The string which should be inserted instead of the deleted characters.</param>
 	/// <returns>
+	/// A new string with the substring from the starting position in the given length being subsituted with the insert string.
 	/// </returns>
 	FUNCTION Stuff(c AS STRING,n AS DWORD,nDel AS DWORD,cIns AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local result := cIns as string
+		if !string:IsNullOrEmpty(c)
+		   var middlePart:=cIns
+		   if string.IsNullOrEmpty(c)
+			  middlePart := ""
+		   endif
+		   local part1 := c as string
+		   if ( (int)n <= c:Length )
+		      part1 := c:Substring(0,(int)n-1)
+		   endif
+		   local part2 := "" as string
+		   if ( (int)n-1+(int)nDel < c:length )
+			  part2 := c:Substring((int)n-1+(int)nDel)
+		   endif
+		   result := part1+middlePart+part2
+		endif
+	RETURN result
 
 	/// <summary>
 	/// Extract a substring from a string, using strong typing and only two arguments.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwStart"></param>
+	/// <param name="c">The string to be extracted from.</param>
+	/// <param name="dwStart">The starting position from which the substring should be extracted.</param>
 	/// <returns>
+	/// The extracted substring.
 	/// </returns>
 	FUNCTION SubStr2(c AS STRING,dwStart AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local result := c as string
+		if !string:IsNullOrEmpty(c)
+		   if (dwStart < c:Length)
+		      result := c:Substring((int)dwStart-1)
+		   else
+		      result := ""
+		   endif
+		endif
+	RETURN result 
 
 	/// <summary>
 	/// Extract a substring from a string, using strong typing and three required arguments.
 	/// </summary>
-	/// <param name="c"></param>
-	/// <param name="dwStart"></param>
-	/// <param name="dwLen"></param>
+	/// <param name="c">The string to be extracted from.</param>
+	/// <param name="dwStart">The starting position from which the substring should be extracted.</param>
+	/// <param name="dwLen">The length of the substring to beextracted</param>
 	/// <returns>
+	/// The extracted substring in the given length.
 	/// </returns>
 	FUNCTION SubStr3(c AS STRING,dwStart AS DWORD,dwLen AS DWORD) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local result := c as string
+		if !string:IsNullOrEmpty(c)
+		   if (dwStart < c:Length)
+		      result := c:Substring((int)dwStart-1,(int)dwlen)
+		   else
+		      result := ""
+		   endif
+		endif
+	RETURN result 
 
 	/// <summary>
 	/// Convert single-byte and double-byte katakana characters in a string to their double-byte hiragana equivalents.
@@ -1312,8 +1342,11 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION Trim(c AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local result:=c as string
+		if !string:IsNUllOrEmpty(c)
+		   result := result:TrimEnd(' ')
+		endif
+	RETURN result
 
 	/// <summary>
 	/// Determine the data type of an expression represented as a string.
@@ -1331,9 +1364,12 @@ begin namespace XSharp.Runtime
 	/// <param name="cSorce"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Upper(cSorce AS STRING) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	FUNCTION Upper(cSource AS STRING) AS STRING
+		local result:=cSource as string
+		if !string:IsNUllOrEmpty(cSource)
+		   result := result:ToUpper()
+		endif
+	RETURN result 
 
 	/// <summary>
 	/// Convert the lowercase and mixed case characters in a string to uppercase, changing the contents of the argument as well as the return value.

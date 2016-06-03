@@ -615,7 +615,7 @@ namespace XSharp.Build
                         sb.Append(';');
                     sb.Append(s);
                 }
-                commandline.AppendTextUnquoted(" /i:" + sb.ToString());
+                commandline.AppendTextUnquoted(" /i:\"" + sb.ToString()+"\"");
             }
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));

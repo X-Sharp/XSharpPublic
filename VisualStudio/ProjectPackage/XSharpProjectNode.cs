@@ -516,11 +516,12 @@ namespace XSharp.Project
         {
             if (String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
-                )
-            {
+                || String.Compare(type, XSharpConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
+                || String.Compare(type, XSharpConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
+                ) {
                 return true;
             }
-
+            
             // we don't know about this type, ask the base class.
             return base.IsItemTypeFileType( type );
         }

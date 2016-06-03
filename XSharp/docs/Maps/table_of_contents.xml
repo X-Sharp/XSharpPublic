@@ -7,7 +7,10 @@
     <caption translate="true">X# (XSharp)</caption>
     <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-30T22:08:40.876Z" icon="0" href="Introduction">
       <caption translate="true">Getting Started with X#</caption>
-      <topicref type="topic" id="423888143662582" build="ALL" modified="2016-01-19T21:13:50.350Z" icon="0" href="Second-topic">
+      <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
+        <caption translate="true">Dialects</caption>
+      </topicref>
+      <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
         <caption translate="true">Version History</caption>
       </topicref>
       <topicref type="topic" id="423890249842237" build="ALL" modified="2016-01-19T21:14:28.114Z" icon="0" href="Known-Issues">
@@ -809,8 +812,11 @@
           <topicref type="topic" id="423893391153373" build="ALL" modified="2016-01-20T09:48:08.880Z" icon="0" href="opt-vo13">
             <caption translate="true">/vo13</caption>
           </topicref>
-          <topicref type="topic" id="424475874975800" build="ALL" modified="2016-03-18T19:00:36.640Z" icon="0" href="opt-vo14">
-            <caption translate="true">/v014</caption>
+          <topicref type="topic" id="424475874975800" build="ALL" modified="2016-05-26T08:29:50.517Z" icon="0" href="opt-vo14">
+            <caption translate="true">/vo14</caption>
+          </topicref>
+          <topicref type="topic" id="425163894787003" build="ALL" modified="2016-05-26T09:05:09.907Z" icon="0" href="opt-vo15">
+            <caption translate="true">/vo15</caption>
           </topicref>
           <topicref type="topic" id="423892403560623" build="ALL" modified="2016-01-20T09:48:09.787Z" icon="0" href="opt-w">
             <caption translate="true">/w</caption>
@@ -853,14 +859,26 @@
       <topicref type="topic" id="424267695938100" build="ALL" modified="2016-02-26T16:53:24.103Z" icon="0" href="ASYNC-Example">
         <caption translate="true">ASYNC Example</caption>
       </topicref>
+      <topicref type="topic" id="424945667794068" build="ALL" modified="2016-05-04T10:27:22.125Z" icon="0" href="BEGIN-UNSAFE-Example">
+        <caption translate="true">BEGIN UNSAFE Example</caption>
+      </topicref>
+      <topicref type="topic" id="42492634929077" build="ALL" modified="2016-05-04T10:13:15.532Z" icon="0" href="BEGIN-USING-Example">
+        <caption translate="true">BEGIN USING Example</caption>
+      </topicref>
       <topicref type="topic" id="424265406124180" build="ALL" modified="2016-02-26T16:40:46.271Z" icon="0" href="CHECKED-Example">
         <caption translate="true">CHECKED Example</caption>
+      </topicref>
+      <topicref type="topic" id="424265813808443" build="ALL" modified="2016-02-26T17:33:35.007Z" icon="0" href="Expression-Examples">
+        <caption translate="true">Expression Examples</caption>
       </topicref>
       <topicref type="topic" id="424249105268691" build="ALL" modified="2016-02-24T20:04:41.119Z" icon="0" href="GENERICs-Example">
         <caption translate="true">GENERICs Example</caption>
       </topicref>
       <topicref type="topic" id="424249979841329" build="ALL" modified="2016-02-24T19:50:00.886Z" icon="0" href="LINQ-Example">
         <caption translate="true">LINQ Example</caption>
+      </topicref>
+      <topicref type="topic" id="424476434780340" build="ALL" modified="2016-03-18T18:45:40.123Z" icon="0" href="NOP-Example">
+        <caption translate="true">NOP Example</caption>
       </topicref>
       <topicref type="topic" id="424266614671750" build="ALL" modified="2016-02-26T17:14:34.481Z" icon="0" href="SWITCH-Example">
         <caption translate="true">SWITCH Example</caption>
@@ -876,12 +894,6 @@
       </topicref>
       <topicref type="topic" id="424247612718920" build="ALL" modified="2016-02-24T20:02:34.336Z" icon="0" href="YIELD-Example">
         <caption translate="true">YIELD Example</caption>
-      </topicref>
-      <topicref type="topic" id="424265813808443" build="ALL" modified="2016-02-26T17:33:35.007Z" icon="0" href="Expression-Examples">
-        <caption translate="true">Expression Examples</caption>
-      </topicref>
-      <topicref type="topic" id="424476434780340" build="ALL" modified="2016-03-18T18:45:40.123Z" icon="0" href="NOP-Example">
-        <caption translate="true">NOP Example</caption>
       </topicref>
     </topicref>
   </topicref>

@@ -155,8 +155,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static SyntaxToken SyntaxIdentifier(this IToken token)
         {
+            bool isNameOf = token.Type == XSharpParser.NAMEOF;
             (token as CommonToken).Type = XSharpParser.ID;
-            var r = token.Text.StartsWith("@@") ? SyntaxFactory.Identifier(token.Text.Substring(2)) : SyntaxFactory.Identifier(token.Text);
+            var r = token.Text.StartsWith("@@") ? SyntaxFactory.Identifier(token.Text.Substring(2))
+                : isNameOf ? SyntaxFactory.Identifier(SyntaxKind.NameOfKeyword, null, token.Text, token.Text, null)
+                : SyntaxFactory.Identifier(token.Text);
             r.XNode = new TerminalNodeImpl(token);
             return r;
         }
@@ -1223,6 +1226,90 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 default:
                     throw new InvalidOperationException();
+            }
+            return r;
+        }
+
+        public static SyntaxToken ComplexToSimpleToken(this IToken token)
+        {
+            SyntaxToken r;
+            switch (token.Type)
+            {
+                case XSharpParser.ASSIGN_ADD:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken);
+                    break;
+                case XSharpParser.ASSIGN_SUB:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.MinusToken);
+                    break;
+                case XSharpParser.ASSIGN_MUL:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken);
+                    break;
+                case XSharpParser.ASSIGN_DIV:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.SlashToken);
+                    break;
+                case XSharpParser.ASSIGN_MOD:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PercentToken);
+                    break;
+                case XSharpParser.ASSIGN_BITAND:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    break;
+                case XSharpParser.ASSIGN_BITOR:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
+                    break;
+                case XSharpParser.ASSIGN_LSHIFT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.LessThanLessThanToken);
+                    break;
+                case XSharpParser.ASSIGN_RSHIFT:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.GreaterThanGreaterThanToken);
+                    break;
+                case XSharpParser.ASSIGN_XOR:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
+                    break;
+                default:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.DotToken);
+                    break;
+            }
+            return r;
+
+        }
+        public static SyntaxKind ComplexToSimpleBinaryOp(this IToken token)
+        {
+            SyntaxKind r;
+            switch (token.Type)
+            {
+                case XSharpParser.ASSIGN_ADD:
+                    r = SyntaxKind.AddExpression;
+                    break;
+                case XSharpParser.ASSIGN_SUB:
+                    r = SyntaxKind.SubtractExpression;
+                    break;
+                case XSharpParser.ASSIGN_MUL:
+                    r = SyntaxKind.MultiplyExpression;
+                    break;
+                case XSharpParser.ASSIGN_DIV:
+                    r = SyntaxKind.DivideExpression;
+                    break;
+                case XSharpParser.ASSIGN_MOD:
+                    r = SyntaxKind.ModuloExpression;
+                    break;
+                case XSharpParser.ASSIGN_BITAND:
+                    r = SyntaxKind.BitwiseAndExpression;
+                    break;
+                case XSharpParser.ASSIGN_BITOR:
+                    r = SyntaxKind.BitwiseOrExpression;
+                    break;
+                case XSharpParser.ASSIGN_LSHIFT:
+                    r = SyntaxKind.LeftShiftExpression;
+                    break;
+                case XSharpParser.ASSIGN_RSHIFT:
+                    r = SyntaxKind.RightShiftExpression;
+                    break;
+                case XSharpParser.ASSIGN_XOR:
+                    r = SyntaxKind.ExclusiveOrExpression;
+                    break;
+                default:
+                    r = SyntaxKind.EmptyStatement;
+                    break;
             }
             return r;
         }

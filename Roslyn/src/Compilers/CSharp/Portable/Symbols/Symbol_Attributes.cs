@@ -671,11 +671,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 attributeTarget = this.GetAttributeTarget();
             }
 
-            if ((attributeTarget & attributeUsageInfo.ValidTargets) == 0)
+            if ((attributeTarget & attributeUsageInfo.ValidTargets) == 0 )
             {
+#if XSHARP
+                // The ClipperCallingConvention Attribute in VulcanRT has incorrect Targets (Method, but should also be allowed on Constructors)
+                if (node.Name.ToString().ToLower().IndexOf("clippercallingconvention") == -1)
+                {
+#endif
                 // generate error
                 diagnostics.Add(ErrorCode.ERR_AttributeOnBadSymbolType, node.Name.Location, node.Name, attributeUsageInfo.GetValidTargetsErrorArgument());
                 return false;
+#if XSHARP
+                }
+#endif
             }
 
             if (attribute.IsSecurityAttribute(compilation))

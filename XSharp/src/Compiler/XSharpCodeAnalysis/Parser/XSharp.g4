@@ -344,9 +344,8 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmethod
 					| (Attributes=attributes)?
 					  (Modifiers=constructorModifiers)? 
-					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? 
-					  (COLON Chain=(SELF | SUPER) LPAREN ArgList=argumentList? RPAREN)?
-					  end=EOS 
+					  CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS 
+					  (Chain=(SELF | SUPER) LPAREN ArgList=argumentList? RPAREN EOS)?
 					  StmtBlk=statementBlock							 { SetSequencePoint(_localctx,$end); } #clsctor
 					| (Attributes=attributes)? 
 					  (Modifiers=destructorModifiers)?
@@ -421,6 +420,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 
 statement           : Decl=localdecl                                            #declarationStmt
 					| {_xBaseVars}? xbasedecl									#xbasedeclStmt
+					| Decl=fielddecl													#fieldStmt
 					| DO? WHILE Expr=expression end=EOS
 					  StmtBlk=statementBlock (END DO? | ENDDO) EOS				{ SetSequencePoint(_localctx,$end); } #whileStmt
 					| NOP end=EOS												{ SetSequencePoint(_localctx,$end); } #nopStmt
@@ -436,7 +436,7 @@ statement           : Decl=localdecl                                            
 					  (END IF? | ENDIF)  EOS									#ifStmt	
 					| DO CASE end=EOS
 					  CaseStmt=caseBlock?
-					  (END CASE? | ENDCASE) end=EOS								{ SetSequencePoint(_localctx,$end); } #caseStmt
+					  (END CASE? | ENDCASE) EOS									{ SetSequencePoint(_localctx,$end); } #caseStmt
 					| EXIT end=EOS												{ SetSequencePoint(_localctx,$end); } #exitStmt
 					| LOOP end=EOS												{ SetSequencePoint(_localctx,$end); } #loopStmt
 					| BREAK Expr=expression? end=EOS							{ SetSequencePoint(_localctx,$end); } #breakStmt
@@ -447,13 +447,13 @@ statement           : Decl=localdecl                                            
 					  StmtBlk=statementBlock
 					  (RECOVER RecoverBlock=recoverBlock)?
 					  (FINALLY EOS FinBlock=statementBlock)?
-					  END (SEQUENCE)? end=EOS									{ SetSequencePoint(_localctx,$end); } #seqStmt
+					  END (SEQUENCE)? EOS									{ SetSequencePoint(_localctx,$end); } #seqStmt
 					//
 					// New in Vulcan
 					//
 					| REPEAT end=EOS
 					  StmtBlk=statementBlock
-					  UNTIL Expr=expression end=EOS								{ SetSequencePoint(_localctx,$end); }#repeatStmt
+					  UNTIL Expr=expression EOS									{ SetSequencePoint(_localctx,$end); }#repeatStmt
 					| FOREACH
 					  (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
 					  IN Container=expression end=EOS
@@ -496,7 +496,7 @@ statement           : Decl=localdecl                                            
 					;
 
 ifElseBlock			: Cond=expression end=EOS StmtBlk=statementBlock
-					  (ELSEIF ElseIfBlock=ifElseBlock | ELSE end=EOS ElseBlock=statementBlock)?
+					  (ELSEIF ElseIfBlock=ifElseBlock | ELSE EOS ElseBlock=statementBlock)?
  				    { SetSequencePoint(_localctx,$end); }
 					;
 
@@ -556,13 +556,16 @@ impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expressio
 				   ;
 
 
+fielddecl		   : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=EOS       
+				   ;
+
 // Old Style xBase declarations
 
 xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 					  |PUBLIC												// PUBLIC  Foo, Bar
 					  |MEMVAR												// MEMVAR  Foo, Bar
 					  |PARAMETERS											// PARAMETERS Foo, Bar
-					 )   Vars+=identifier (COMMA Vars+=identifier)* end=EOS       
+					 )   Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS       
  				    { SetSequencePoint(_localctx,$end); }
 				 ;
  
@@ -597,8 +600,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
 					| Left=expression Op=LSHIFT Right=expression				#binaryExpression		// expr << expr (shift)
 					| Left=expression Op=GT	Gt=GT Right=expression				#binaryExpression		// expr >> expr (shift)
 					| Left=expression
-					  Op=( LT | LTE | GT | GTE | EQ | EEQ
-							| SUBSTR | NEQ )
+					  Op=( LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ )
 					  Right=expression											#binaryExpression		// expr >= expr (relational)
 					| Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
 					| Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)
@@ -613,7 +615,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
 							| ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
 							| ASSIGN_BITAND | ASSIGN_BITOR | ASSIGN_LSHIFT
 							| ASSIGN_RSHIFT | ASSIGN_XOR )
-					  Right=expression											#assignmentExpression	// expr := expr
+					  Right=expression											#assignmentExpression	// expr := expr, also expr += expr etc.
 					| Expr=primary												#primaryExpression
 					;
 
@@ -622,6 +624,7 @@ primary				: Key=SELF													#selfExpression
 					| Key=SUPER													#superExpression
 					| Literal=literalValue										#literalExpression		// literals
 					| LiteralArray=literalArray									#literalArrayExpression	// { expr [, expr] }
+					| AnonType=anonType											#anonTypeExpression		// { .id := expr [, .id := expr] }
 					| CbExpr=codeblock											#codeblockExpression	// {| [id [, id...] | expr [, expr...] }
                     | Query=linqQuery											#queryExpression        // LINQ
 					| Type=datatype LCURLY Obj=expression COMMA
@@ -631,7 +634,7 @@ primary				: Key=SELF													#selfExpression
 					| ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
 					| TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
 					| SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
-					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// sizeof( typeORid )
+					| DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// default( typeORid )
 					| Name=simpleName											#nameExpression			// generic name
 					| Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
 					| XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
@@ -643,12 +646,15 @@ primary				: Key=SELF													#selfExpression
 					| LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
 					| Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
 					  (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
-//					| aliasedField												#aliasfield				//  ALIAS->FIELD
-//					| aliasedExpr												#aliasexpr				// ALIAS->(expr)
-//					| aliasedFuncCall											#aliasfunccall			//  foo->bar()
-//					| extendedaliasExpr											#aliasextended			// (expr) -> ...
-//					| AMP LPAREN expression RPAREN								#macroexpr				// &( expr )
-//					| AMP identifierName										#macrovar				// &id
+					| FIELD_ ALIAS (Alias=identifierName ALIAS)? Field=identifierName #aliasedField		// _FIELD->CUSTOMER->NAME or _FIELD->NAME
+					| Alias=identifierName ALIAS Field=identifierName			#aliasedField			// CUSTOMER->NAME												
+					| Id=identifierName ALIAS LPAREN Expr=expression RPAREN		#aliasedExpr			// CUSTOMER->(<Expression>)											
+					| LPAREN Alias=expression RPAREN ALIAS
+						( Id=identifierName																// (expr) -> ID
+						| Expr=expression																// (expr) -> expr			// expr includes (expr)
+						)														#extendedaliasExpr											
+					| AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
+					| AMP Id=identifierName										#macro					// &id
 					;
 
 boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new
@@ -713,28 +719,17 @@ typeName			: NativeType=nativeType
 
 literalArray		: (LT Type=datatype GT)? LCURLY (Exprs+=expression (COMMA Exprs+=expression)*)? RCURLY
 					;
-/*
-aliasmethodCall		: Expr=expression LPAREN ArgList=argumentList? RPAREN
+
+anonType			: CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RCURLY
 					;
 
-aliasedField		:	FIELD ALIAS Id=identifierName									// _FIELD->NAME
-					|	Left=identifierName ALIAS Right=identifierName					// CUSTOMER->NAME
-					|   FIELD ALIAS Left=identifierName ALIAS Right=identifierName		// _FIELD->CUSTOMER->NAME
+anonMember			: Name=identifierName ASSIGN_OP Expr=expression
 					;
 
-aliasedExpr			:	Id=identifierName ALIAS LPAREN Expr=expression RPAREN		// CUSTOMER->(<Expression>)
-					;
 
-aliasedFuncCall		:	i=identifierName a=ALIAS m=aliasmethodCall					// Customer->DoSomething()
-					;
 
-extendedaliasExpr	:	l1=LPAREN e1=expression r1=RPAREN a=ALIAS
-						( i=identifierName								// (expr) -> ID
-						| l2=LPAREN e2=expression r2=RPAREN				// (expr) -> (expr)
-						| m=aliasmethodCall									// (expr) -> func(..)
-						)
-					;
-*/
+
+
 codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
 					  ( Expr=expression?
 					  | EOS StmtBlk=statementBlock 
@@ -867,7 +862,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT
 					;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | NOP | OFF | ON | ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OFF | ON | ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
 							  MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
 							)
 					;

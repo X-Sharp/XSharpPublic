@@ -63,25 +63,26 @@
     <Compile Include="CommandLineBuilder.cs" />
     <Compile Include="CreateXSharpManifestResourceName.cs" />
     <Compile Include="Culture.cs" />
+    <Compile Include="NativeResourceGen.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Xsc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Targets\XSharp.Default.props" >
+    <None Include="Targets\XSharp.Default.props">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Targets\XSharp.Default.targets" >
+    <None Include="Targets\XSharp.Default.targets">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Targets\XSharp.props" >
+    <None Include="Targets\XSharp.props">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Targets\XSharp.targets" >
+    <None Include="Targets\XSharp.targets">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -198,6 +199,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Microsoft.VSSDK.BuildTools.14.1.24720\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\..\packages\Microsoft.VSSDK.BuildTools.14.1.24720\build\Microsoft.VSSDK.BuildTools.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(OutDir)$(ProjectName).* "c:\Program Files (x86)\MSBuild\XSharp"  /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

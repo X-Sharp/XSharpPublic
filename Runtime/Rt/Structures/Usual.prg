@@ -140,7 +140,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
                     self:refData  := o
                 case System.TypeCode.DateTime 
                     self:_usualType := UsualDataType.DATE
-                    self:valueData:d := (System.DateTime)o 
+                    self:valueData:d := __VoDate{ (System.DateTime) o }
                 case System.TypeCode.String 
                     self:_usualType := UsualDataType.STRING
                     self:refData  := (string)o 
@@ -151,7 +151,7 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
                 endif
                 if ((typeCode == System.TypeCode.Object) .and. (vartype== typeof(__VODate)))
                     self:_usualType := UsualDataType.DATE
-                    self:refData  := o
+                    self:valueData:d :=  (__VoDate) o
                 endif
 
             endif
@@ -248,7 +248,51 @@ structure Vulcan.__Usual implements System.IConvertible,System.IComparable
     return 0
 
     public method ToString() as string
-	    return ""
+		local strResult as STRING
+	      
+    switch (SELF:usualType)
+        case UsualDataType.ARRAY
+            strResult := SELF:refData:ToString()
+
+        case UsualDataType.CODEBLOCK
+            strResult := SELF:refData:ToString()
+
+        case UsualDataType.DATE
+            strResult := self:valueData:d:ToString()
+
+        case UsualDataType.FLOAT
+            strResult := self:valueData:f:ToString()
+
+        case UsualDataType.INT
+            strResult := self:valueData:i:ToString()
+
+        case UsualDataType.INT64
+            strResult := self:valueData:i64:ToString()
+
+        case UsualDataType.LOGIC
+            strResult := IIF(!self:valueData:l , ".F." , ".T.")
+
+        case UsualDataType.OBJECT
+			// todo
+            strResult := ""
+
+        case UsualDataType.PTR
+			// todo
+            strResult := ""
+
+        case UsualDataType.STRING
+            strResult := (string) SELF:refData;
+
+        case UsualDataType.SYMBOL
+            strResult := self:valueData:s:ToString()
+
+        case UsualDataType.NIL
+            strResult := "NIL"
+		otherwise
+			strResult := ""
+		end switch
+    return strResult
+
 
     public method ToString(provider as System.IFormatProvider) as string
     return ""
@@ -429,7 +473,7 @@ end structure
 internal structure Vulcan.UsualData
     // Fields
     [FieldOffset(0)];
-    export d as System.DateTime 
+    export d as __VoDate
     [FieldOffset(0)];
     export f as real8
     [FieldOffset(0)];
@@ -440,15 +484,13 @@ internal structure Vulcan.UsualData
     export l as Logic
     [FieldOffset(0)];
     export p as System.IntPtr
-	/*constructor(iTemp as int64)
-		i	:= 0
-		i64 := 0
-		l := false
-		p := IntPtr.Zero
-		*/
+    [FieldOffset(0)];
+    export s as __Symbol
+
 end structure
 
-public enum Vulcan.UsualDataType as byte
+
+public enum UsualDataType as Long
     member @@ARRAY:=5
     member @@CODEBLOCK:=9
     member @@DATE:=2

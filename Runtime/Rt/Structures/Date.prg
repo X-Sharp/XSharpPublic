@@ -101,7 +101,12 @@ structure Vulcan.__VODate implements System.IComparable, System.IFormattable, Sy
     return (o:value == self:value)
 
     method Equals(o as Object) as Logic
-		THROW NotImplementedException{}
+		if o:getType() == typeof(__VODate)
+			return Equals( (__VoDate) o)
+		elseif o:getType() == typeof(System.DateTime)
+			return Equals( __VoDate{ (System.DateTime) o})
+		endif
+		return false
 
     method FromDateTime(v as System.DateTime) as __VODate
     return __VODate{v}

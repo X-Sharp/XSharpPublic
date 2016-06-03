@@ -4,6 +4,8 @@
   <Import Project="$(MSBuildThisFileDirectory)\XSharp.Default.targets" />
   <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll"/>
   <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll"/>
+  <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll" />
+
 
   <ItemGroup>
     <ProjectCapability Include="ReferencesFolder"/>
@@ -134,16 +136,15 @@
 
   <Target Name="AfterResGen">
 
-    <GenerateNativeResource
+    <NativeResourceCompiler
        Sources="@(NativeResource)"
        IncludePaths="$(IncludePaths)"
        OutputPath="$(IntermediateOutputPath)"
-       TargetFrameworkVersion="$(TargetFrameworkVersion)"
        EmitDebugInformation="$(EmitDebugInformation)"
        Condition="'@(NativeResource)' != ''">
-    </GenerateNativeResource>
+    </NativeResourceCompiler>
 
-    <CreateItem Include="$(IntermediateOutputPath)Native.Res" Condition="'@(NativeResource)' != ''">
+    <CreateItem Include="$(IntermediateOutputPath)NativeResources.Res" Condition="'@(NativeResource)' != ''">
 
       <Output TaskParameter="Include" ItemName="Win32Resource" />
       <!-- this causes the .res file to be deleted on a Clean -->

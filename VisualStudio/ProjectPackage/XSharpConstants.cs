@@ -26,6 +26,9 @@ namespace XSharp.Project
 
         public const string WPFProjectFactory = "5ADB76EC-7017-476A-A8E0-25D4202FFCF0";
         public const string WPFFlavor = "14989543-69A4-4C47-A31C-74B6A6DB719B";
+        public const string NativeResource = "NativeResource";
+        public const string VOBinary = "VOBinary";
+
 
         /// <summary>
         /// Indexes to the embedded ImageList .bmp

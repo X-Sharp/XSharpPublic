@@ -246,6 +246,16 @@ namespace Microsoft.CodeAnalysis
         System_Runtime_GCLatencyMode,
         System_IFormatProvider,
 
+#if XSHARP
+        VulcanRTFuncs_Functions,
+        Vulcan_Codeblock,
+        Vulcan___VOFloat,
+        Vulcan___VODate,
+        Vulcan___Symbol,
+        Vulcan___Psz,
+        Vulcan___Usual,
+        Vulcan___Array,
+#endif
         Available,
         Last = Available - 1,
     }
@@ -486,6 +496,17 @@ namespace Microsoft.CodeAnalysis
 
             "System.Runtime.GCLatencyMode",
             "System.IFormatProvider"
+#if XSHARP
+            ,
+            "VulcanRTFuncs.Functions",
+            "Vulcan.Codeblock",
+            "Vulcan.__VOFloat",
+            "Vulcan.__VODate",
+            "Vulcan.__Symbol",
+            "Vulcan.__Psz",
+            "Vulcan.__Usual",
+            "Vulcan.__Array"
+#endif
         };
 
         private readonly static Dictionary<string, WellKnownType> s_nameToTypeIdMap = new Dictionary<string, WellKnownType>((int)Count);
@@ -517,11 +538,18 @@ namespace Microsoft.CodeAnalysis
                 }
                 else if (typeId == WellKnownType.Last)
                 {
+#if XSHARP
+                    typeIdName = "Vulcan.__Array";
+#else
                     typeIdName = "System.IFormatProvider";
+#endif
                 }
                 else
                 {
                     typeIdName = typeId.ToString().Replace("__", "+").Replace('_', '.');
+#if XSHARP
+                    typeIdName = typeIdName.Replace("+.", ".__");
+#endif
                 }
 
 #if XSHARP

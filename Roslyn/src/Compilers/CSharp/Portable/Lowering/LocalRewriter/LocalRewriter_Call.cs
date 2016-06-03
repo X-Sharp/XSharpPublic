@@ -73,10 +73,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 default:
                     // delegate invocation
                     var loweredExpression = VisitExpression(node.Expression);
+#if XSHARP
+                    if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredExpression.HasDynamicType())
+                    {
+                        return MakeVODynamicInvokeMember(loweredExpression, "Invoke", loweredArguments);
+                    }
+#endif
                     return _dynamicFactory.MakeDynamicInvocation(loweredExpression, loweredArguments, node.ArgumentNamesOpt, node.ArgumentRefKindsOpt, resultDiscarded).ToExpression();
             }
 
             Debug.Assert(loweredReceiver != null);
+#if XSHARP
+            if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+            {
+                return MakeVODynamicInvokeMember(loweredReceiver, name, loweredArguments);
+            }
+#endif
             return _dynamicFactory.MakeDynamicMemberInvocation(
                 name,
                 loweredReceiver,
@@ -356,11 +368,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool invokedAsExtensionMethod = false,
             ThreeState enableCallerInfo = ThreeState.Unknown)
         {
+#if XSHARP
+            // nvk: In XSharp the property may be fake to support ARRAY "indexers"
+            Debug.Assert(((methodOrIndexer.Kind == SymbolKind.Property) /*&& optionalParametersMethod.IsAccessor()*/) ||
+                ReferenceEquals(methodOrIndexer, optionalParametersMethod));
+#else
             // Either the methodOrIndexer is a property, in which case the method used
             // for optional parameters is an accessor of that property (or an overridden
             // property), or the methodOrIndexer is used for optional parameters directly.
             Debug.Assert(((methodOrIndexer.Kind == SymbolKind.Property) && optionalParametersMethod.IsAccessor()) ||
                 ReferenceEquals(methodOrIndexer, optionalParametersMethod));
+#endif
 
             // We need to do a fancy rewrite under the following circumstances:
             // (1) a params array is being used; we need to generate the array.
@@ -1139,7 +1157,48 @@ namespace Microsoft.CodeAnalysis.CSharp
             // GetMember operation:
             Debug.Assert(node.TypeArgumentsOpt.IsDefault);
             var loweredReceiver = VisitExpression(node.Receiver);
+#if XSHARP
+            if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
+            {
+                return MakeVODynamicGetMember(loweredReceiver, node.Name);
+            }
+#endif
             return _dynamicFactory.MakeDynamicGetMember(loweredReceiver, node.Name, node.Indexed).ToExpression();
         }
+#if XSHARP
+
+        public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, string name)
+        {
+            if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                loweredReceiver = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", loweredReceiver);
+            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions),"IVarGet",
+                MakeConversion(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
+                new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)));
+        }
+
+        public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, string name, BoundExpression loweredValue)
+        {
+            if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                loweredReceiver = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", loweredReceiver);
+            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), "IVarPut",
+                MakeConversion(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
+                new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
+                MakeConversion(loweredValue, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
+        }
+
+        public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name, ImmutableArray<BoundExpression> args)
+        {
+            var convArgs = new ArrayBuilder<BoundExpression>();
+            foreach (var a in args)
+            {
+                convArgs.Add(MakeConversion(a, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
+            }
+            var aArgs = _factory.Array(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), convArgs.ToArrayAndFree());
+            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), "__InternalSend",
+                    MakeConversion(loweredReceiver, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false),
+                    new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
+                    aArgs);
+        }
+#endif
     }
 }

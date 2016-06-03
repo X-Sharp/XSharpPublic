@@ -1360,5 +1360,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_FeatureNotAvailableInDialect = 9007, 
         ERR_UntypedArrayNotAvailableInDialect = 9008,
         ERR_TypedParametersWithClipperCallingConvention = 9009,
+        ERR_OnlySupportedForClipperCallingConvention = 9010,
+        ERR_AmbiguousCase = 9011,
+        ERR_DuplicateDefine = 9012,
+        WRN_DuplicateDefine = 9013,
+        ERR_FeatureRequiresReferenceToRuntime = 9014,
+        WRN_ImplicitParentConstructorInitializer = 9015,
+        ERR_NestedMethodMustHaveSameNameAsParentClass=9016,
     }
 }

@@ -217,6 +217,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // invocation and let the lowering pass sort it out.
                 result = BindDynamicInvocation(node, boundExpression, analyzedArguments, ImmutableArray<MethodSymbol>.Empty, diagnostics, queryClause);
             }
+#if XSHARP
+            else if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
+                boundExpression.Kind != BoundKind.MethodGroup && (object)boundExpression.Type != null && 
+                (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
+            {
+                ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
+                bool hasErrors = ReportBadDynamicArguments(node, argArray, diagnostics, queryClause);
+                result = new BoundDynamicInvocation(
+                    node,
+                    boundExpression,
+                    argArray,
+                    analyzedArguments.GetNames(),
+                    analyzedArguments.RefKinds.ToImmutableOrNull(),
+                    ImmutableArray<MethodSymbol>.Empty,
+                    Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                    hasErrors);
+            }
+#endif
             else if (boundExpression.Kind == BoundKind.MethodGroup)
             {
                 result = BindMethodGroupInvocation(node, expression, methodName, (BoundMethodGroup)boundExpression, analyzedArguments, diagnostics, queryClause, allowUnexpandedForm: allowUnexpandedForm);
@@ -1113,8 +1131,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     nameofBinder.EnsureNameofExpressionSymbols(methodGroup, diagnostics);
+#if XSHARP
+                    if (!string.IsNullOrEmpty(methodGroup.Methods.First()?.Name))
+                    {
+                        name = methodGroup.Methods.First().Name;
+                        foreach (var m in methodGroup.Methods)
+                        {
+                            if (string.CompareOrdinal(name,m.Name) != 0)
+                            {
+                                diagnostics.Add(ErrorCode.ERR_AmbiguousCase, argument.Location, name, m.Name);
+                                break;
+                            }
+                        }
+                    }
+#endif
                 }
             }
+#if XSHARP
+            else if (!boundArgument.HasAnyErrors && !string.IsNullOrEmpty(boundArgument.ExpressionSymbol?.Name))
+            {
+                name = boundArgument.ExpressionSymbol.Name;
+            }
+#endif
 
             return new BoundNameOfOperator(node, boundArgument, ConstantValue.Create(name), Compilation.GetSpecialType(SpecialType.System_String));
         }

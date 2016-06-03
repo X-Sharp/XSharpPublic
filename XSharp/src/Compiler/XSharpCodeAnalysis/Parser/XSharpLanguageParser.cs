@@ -183,7 +183,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             /* Temporary solution to prevent crashes with invalid syntax */
             if (parser.NumberOfSyntaxErrors != 0 || (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {
-                var failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
+                XSharpTreeTransformation failedTreeTransform = null;
+                if (_options.IsDialectVO) {
+                    failedTreeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
+                } else {
+                    failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
+                }
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                 eof.XNode = new ErrorNodeImpl(tree.Stop);
@@ -212,10 +217,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 #endif
             }
-
-            var treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory);
-            try
-            {
+            XSharpTreeTransformation treeTransform;
+            if (_options.IsDialectVO) {
+                treeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
+            } else {
+                treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
+            }
+            try {
                 walker.Walk(treeTransform, tree);
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 if (!parseErrors.IsEmpty())

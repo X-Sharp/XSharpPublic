@@ -60,7 +60,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         {
             Debug.Assert((object)moduleSymbol != null);
             Debug.Assert((object)containingType != null);
+#if !XSHARP
             Debug.Assert(!handle.IsNil);
+#endif
 
             _containingType = containingType;
             var module = moduleSymbol.Module;
@@ -88,7 +90,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             var metadataDecoder = new MetadataDecoder(moduleSymbol, containingType);
             SignatureHeader callingConvention;
             BadImageFormatException propEx;
+#if XSHARP
+            var propertyParams = handle.IsNil ? metadataDecoder.GetSignatureForMethod(getMethod.Handle, out callingConvention, out propEx)
+                : metadataDecoder.GetSignatureForProperty(handle, out callingConvention, out propEx);
+#else
             var propertyParams = metadataDecoder.GetSignatureForProperty(handle, out callingConvention, out propEx);
+#endif
             Debug.Assert(propertyParams.Length > 0);
 
             SignatureHeader unusedCallingConvention;
@@ -112,7 +119,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
             // CONSIDER: Can we make parameter type computation lazy?
             TypeSymbol originalPropertyType = propertyParams[0].Type;
+#if XSHARP
+            _propertyType = DynamicTypeDecoder.TransformType(originalPropertyType, _typeCustomModifiers.Length, handle.IsNil ? (EntityHandle)getMethod.Handle : handle, moduleSymbol);
+#else
             _propertyType = DynamicTypeDecoder.TransformType(originalPropertyType, _typeCustomModifiers.Length, handle, moduleSymbol);
+#endif
 
             // Dynamify object type if necessary
             _propertyType = _propertyType.AsDynamicIfNoPia(_containingType);
@@ -122,6 +133,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             // or if it has parameters and is not an indexer or indexed property.
             bool callMethodsDirectly = !DoSignaturesMatch(module, metadataDecoder, propertyParams, _getMethod, getMethodParams, _setMethod, setMethodParams) ||
                 MustCallMethodsDirectlyCore();
+#if XSHARP
+            if (handle.IsNil)
+                callMethodsDirectly = true;
+#endif
 
             if (!callMethodsDirectly)
             {

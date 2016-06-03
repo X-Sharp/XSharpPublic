@@ -512,7 +512,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 #if XSHARP
                 // TODO: (nvk) This should be done in the local rewriter
-                if (left.Type.SpecialType == SpecialType.System_String && right.Type.SpecialType == SpecialType.System_String &&
+                if (left.Type.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String &&
                     (node.Kind() == SyntaxKind.LessThanExpression || node.Kind() == SyntaxKind.LessThanOrEqualExpression ||
                     node.Kind() == SyntaxKind.GreaterThanExpression || node.Kind() == SyntaxKind.GreaterThanOrEqualExpression
                     || node.Kind() == SyntaxKind.SubtractExpression))

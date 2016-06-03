@@ -1222,7 +1222,7 @@
     <value>The type name '{0}' does not exist in the type '{1}'</value>
   </data>
   <data name="ERR_MethGrpToNonDel" xml:space="preserve">
-    <value>Cannot convert method group '{0}' to non-delegate type '{1}'. Did you intend to invoke the method?</value>
+    <value>'{0}' is a method and cannot be converted to '{1}'. Did you forget the parenthesis?</value>
   </data>
   <data name="ERR_BadExternAlias" xml:space="preserve">
     <value>The extern alias '{0}' was not specified in a /reference option</value>
@@ -4432,7 +4432,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 /ns:&lt;string&gt;                   Default Namespace
 /ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
 /vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
-/vo2[+|-]                      Initialize Strings
+/vo2[+|-]                      Initialize Strings 
 /vo3[+|-]                      All instance methods virtual 
 /vo4[+|-]                      Implicit signed/unsigned conversions 
 /vo5[+|-]                      Implicit CLIPPER calling convention 
@@ -4445,6 +4445,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
 /vo12[+|-]                     Compatible integer divisions 
 /vo13[+|-]                     Compatible String Comparisons 
 /vo14[+|-]                     Use Float Literals 
+/vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 
                         - PREPROCESOR -
 
@@ -4724,5 +4725,26 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   </data>
   <data name="ERR_TypedParametersWithClipperCallingConvention" xml:space="preserve">
     <value>Typed Parameters are not supported in combination with CLIPPER calling convention</value>
+  </data>
+  <data name="ERR_OnlySupportedForClipperCallingConvention" xml:space="preserve">
+    <value>The function '{0}' is only supported in functions or methods with CLIPPER calling convention</value>
+  </data>
+  <data name="ERR_AmbiguousCase" xml:space="preserve">
+    <value>Ambiguous case between '{0}' and '{1}'</value>
+  </data>
+  <data name="ERR_DuplicateDefine" xml:space="preserve">
+    <value>Duplicate define with different value detected '{0}'</value>
+  </data>
+  <data name="WRN_DuplicateDefine" xml:space="preserve">
+    <value>Duplicate define detected '{0}'</value>
+  </data>
+  <data name="ERR_FeatureRequiresReferenceToRuntime" xml:space="preserve">
+    <value>The feature '{0}' requires a reference to the runtime DLL '{1}'.</value>
+  </data>
+  <data name="WRN_ImplicitParentConstructorInitializer" xml:space="preserve">
+    <value>No explicit constructor chaining; generating implicit call to super constructor.</value>
+  </data>
+  <data name="ERR_NestedMethodMustHaveSameNameAsParentClass" xml:space="preserve">
+    <value>Class name {0} for method differs from parent class name {1}</value>
   </data>
 </root>

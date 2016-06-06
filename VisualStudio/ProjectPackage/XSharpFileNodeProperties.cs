@@ -20,6 +20,8 @@ namespace XSharp.Project
         Compile,
         Content,
         EmbeddedResource,
+        NativeResource,
+        VOBinary,
         ApplicationDefinition,
         Page,
         Resource
@@ -124,5 +126,8 @@ namespace XSharp.Project
                 }
             }
         }
+
+
+
     }
 }

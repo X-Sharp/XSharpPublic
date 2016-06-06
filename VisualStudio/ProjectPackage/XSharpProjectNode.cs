@@ -460,6 +460,7 @@ namespace XSharp.Project
             Dictionary<string, string> Dependencies = new Dictionary<string, string>();
             Dependencies.Add(".designer.prg", ".prg");
             Dependencies.Add(".xaml.prg", ".xaml");
+            Dependencies.Add(".vh", ".prg");
             // Check if we can find the Parent
             int dotPos = fileName.IndexOf(".");
             string parentFile = fileName.Substring(0, dotPos);
@@ -479,9 +480,16 @@ namespace XSharp.Project
                         xsharpParent.UpdateHasDesigner();
                     }
                 }
-                //
             }
-
+            // there are other possible parents. For Example Window1.prg is the parent of Window1.Windows.vnfrm
+            // In this case the children are a VOBinary, Header or NativeResource
+            if (IsVoBinary(fileName) || IsNativeResource(fileName) || IsHeaderFile(fileName)) { 
+                // dependent file
+                HierarchyNode newParent = parentNode.FindChild(parentFile + ".prg");
+                if(newParent != null) {
+                    parentNode = newParent;
+                }
+            }
             base.AddNewFileNodeToHierarchy(parentNode, fileName);
         }
 
@@ -492,25 +500,67 @@ namespace XSharp.Project
             Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
 
             string ext = Path.GetExtension(file);
-
-            if(IsCodeFile(itemPath)) {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Compile);
-                // HACK
-                //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Form);
-            } else if(this.IsEmbeddedResource(itemPath)) {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.EmbeddedResource);
+            string type = this.GetItemType(file);
+            if(String.IsNullOrEmpty(type))
+                type = "None";
+            newItem = this.CreateMsBuildFileItem(itemPath, type);
+            if(this.IsEmbeddedResource(itemPath)) {
                 newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
                 newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
             } else if(this.IsSettings(itemPath)) {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.None);
                 newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
-            } else if(this.IsXaml(itemPath)) {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Page);
-            } else {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.None);
-                //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
             }
             return newItem;
+        }
+
+        public string GetItemType(string file) {
+            switch (Path.GetExtension(file).ToLower()) {
+                case ".prg":
+                case ".xs":
+                    return ProjectFileConstants.Compile;
+                case ".rc":
+                    return XSharpConstants.NativeResource;
+                case ".vnmnu":
+                case ".vnfrm":
+                case ".vndbs":
+                case ".vnfs":
+                case ".vnind":
+                case ".vnord":
+                case ".vnfld":
+                case ".xsmnu":  // Special xsharp versions of the VO Binary
+                case ".xsfrm":
+                case ".xsdbs":
+                case ".xsfs":
+                case ".xsind":
+                case ".xsord":
+                case ".xsfld":
+                    return XSharpConstants.VOBinary;
+                case ".resx":
+                    return ProjectFileConstants.Resource;
+                case ".xaml":
+                    return ProjectFileConstants.Page;
+                case ".vh":
+                case ".xh":
+                default:
+                    return ProjectFileConstants.None;
+            }
+        }
+
+        public bool IsVoBinary(string fileName) {
+            return GetItemType(fileName) == XSharpConstants.VOBinary;
+        }
+        public bool IsHeaderFile(string fileName) {
+            switch (Path.GetExtension(fileName).ToLower()) {
+                case ".vh":
+                case ".xh":
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        public bool IsNativeResource(string fileName) {
+            return GetItemType(fileName) == XSharpConstants.NativeResource;
         }
 
         public bool IsSettings(string fileName)

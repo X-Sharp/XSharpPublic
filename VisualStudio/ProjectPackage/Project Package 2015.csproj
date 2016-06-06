@@ -163,6 +163,8 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
+    <ZipItem Include="Templates\ProjectItems\WcfService\IService.prg" />
+    <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
     <Compile Include="WPF\XSharpRuntimeNameFactory.cs" />
     <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
@@ -195,6 +197,9 @@
     <ZipProject Include="Templates\Projects\WPFApplication\App.config" />
     <ZipProject Include="Templates\Projects\WPFApplication\Settings.settings" />
     <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.xsproj" />
+    <ZipItem Include="Templates\ProjectItems\AppConfigInternal\App.config" />
+    <ZipItem Include="Templates\ProjectItems\AppManifestInternal\app.manifest" />
+    <ZipItem Include="Templates\ProjectItems\SettingsInternal\Settings.settings" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +214,8 @@
     </EmbeddedResource>
     <ZipProject Include="Templates\Projects\WinFormApp\Resources.resx" />
     <ZipProject Include="Templates\Projects\WPFApplication\Resources.resx" />
+    <ZipItem Include="Templates\ProjectItems\Resource\Resource.resX" />
+    <ZipItem Include="Templates\ProjectItems\ResourceInternal\Resource.resX" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>
@@ -270,6 +277,16 @@
     <ZipItem Include="Templates\ProjectItems\WPFUserControl\UserControl1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPFWindow\WPFWindow.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPFWindow\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\Rc\NativeResources.rc" />
+    <ZipItem Include="Templates\ProjectItems\Rc\RC.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Resource\Resource.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\AppConfigInternal\App.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\AppManifestInternal\appManifestInternal.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\AssemblyInfoInternal\AssemblyInfo.prg" />
+    <ZipItem Include="Templates\ProjectItems\AssemblyInfoInternal\AssemblyInfo.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\ResourceInternal\Resource.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\SettingsInternal\Settings.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WcfService\WcfService.vstemplate" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

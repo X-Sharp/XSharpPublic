@@ -172,6 +172,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
 
+#if XSHARP
+            if (source != null)
+            {
+                if ((source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr) && destination.IsPointerType())
+                {
+                    return Conversion.IntPtr;
+                }
+                if ((destination.SpecialType == SpecialType.System_IntPtr || destination.SpecialType == SpecialType.System_UIntPtr) && source.IsPointerType())
+                {
+                    return Conversion.IntPtr;
+                }
+            }
+#endif
             return Conversion.NoConversion;
         }
 

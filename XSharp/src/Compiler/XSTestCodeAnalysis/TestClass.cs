@@ -65,17 +65,27 @@ BEGIN NAMESPACE Vulcan
     STRUCTURE __USUAL
         STATIC _NIL AS __USUAL
     END STRUCTURE
+    CLASS VulcanImplicitNamespaceAttribute INHERIT System.Attribute
+        CONSTRUCTOR(defaultNs AS STRING)
+    END CLASS
 END NAMESPACE
 BEGIN NAMESPACE Vulcan.Internal
     [AttributeUsage(AttributeTargets.Method)];
     CLASS ClipperCallingConventionAttribute INHERIT System.Attribute
         CONSTRUCTOR(names AS STRING[])
     END CLASS
+    CLASS VulcanClassLibraryAttribute INHERIT System.Attribute
+        CONSTRUCTOR(globalClass AS STRING, globalNs AS STRING)
+    END CLASS
 END NAMESPACE
 BEGIN NAMESPACE VulcanRtFuncs
     STATIC CLASS Functions
         STATIC FUNCTION AsString(o AS OBJECT) AS STRING
 	        RETURN o:ToString()
+        UNSAFE STATIC FUNCTION FOpen(n AS STRING) AS VOID PTR
+	        RETURN NULL
+        UNSAFE STATIC FUNCTION FClose(v AS VOID PTR) AS VOID
+	        RETURN
     END CLASS
 END NAMESPACE
 ");
@@ -91,6 +101,28 @@ END NAMESPACE
             var args = CSharpCommandLineParser.SplitCommandLineIntoArguments(cmdLine, false);
             var cmdParser = new CSharpCommandLineParser();
             var parsedArgs = cmdParser.Parse(args, ".", null);
+
+            if (sources.Contains(VulcanRuntime))
+            {
+                sources = sources.Where(s => s != VulcanRuntime).ToArray();
+                var c =  CSharpCompilation.Create(
+                    "VulcanRTFuncs.dll",
+                    syntaxTrees: new[] { VulcanRuntime },
+                    references: refs,
+                    options: parsedArgs.CompilationOptions.WithOutputKind(OutputKind.DynamicallyLinkedLibrary).WithAllowUnsafe(true)
+                    );
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    EmitResult r = c.Emit(ms);
+                    if (!r.Success)
+                    {
+                        string err = "";
+                        r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error).ToList().ForEach(d => err += d.ToString() + "\r\n");
+                        throw new Exception(err);
+                    }
+                    refs = refs.Concat(new[] { MetadataReference.CreateFromStream(ms, filePath: "VulcanRTFuncs.dll") }).ToArray();
+                }
+            }
 
             return CSharpCompilation.Create(
                 System.IO.Path.GetRandomFileName(),

@@ -38,6 +38,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.PointerToVoid:
                 case ConversionKind.NullToPointer:
                 case ConversionKind.InterpolatedString:
+#if XSHARP
+                case ConversionKind.IntPtr:
+#endif
                     return true;
 
                 case ConversionKind.ExplicitNumeric:
@@ -50,7 +53,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.PointerToPointer:
                 case ConversionKind.PointerToInteger:
                 case ConversionKind.IntegerToPointer:
+#if !XSHARP
                 case ConversionKind.IntPtr:
+#endif
                     return false;
 
                 default:

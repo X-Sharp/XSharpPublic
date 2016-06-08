@@ -17,7 +17,7 @@ USING System
 
 PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComparer<__Symbol>, System.IEquatable<__Symbol>
     #region fields
-    PRIVATE index AS Long
+    PRIVATE index		AS Long
     PRIVATE stringValue AS string
 	#endregion
 
@@ -32,7 +32,7 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
         IF (upperCase)
             SELF:stringValue := SELF:stringValue:ToUpperInvariant()
         ENDIF
-        __SymbolList.Add(SELF)
+        SymbolDictionary.Add(SELF)
 	return
     #endregion
 	#region methods
@@ -90,33 +90,33 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
 	return self:stringValue
 	#endregion
 	#region internal types
-    INTERNAL STATIC  CLASS __SymbolList
+    INTERNAL STATIC  CLASS SymbolDictionary
         #region fields
         STATIC INITONLY PRIVATE symbolLookup AS System.Collections.Generic.Dictionary<string,Long>
         STATIC INITONLY PRIVATE symbols := System.Collections.Generic.List<__Symbol>{} AS System.Collections.Generic.List<__Symbol>
         STATIC PRIVATE sync AS Object
-        STATIC INITONLY PRIVATE NON_EXISTING_SYMBOL := __Symbol{"65535", FALSE} AS __Symbol
+        STATIC INITONLY PRIVATE NON_EXISTING_SYMBOL := __Symbol{"", FALSE} AS __Symbol
 		#endregion
         #region constructors
         STATIC  CONSTRUCTOR()
             LOCAL dictionary AS System.Collections.Generic.Dictionary<string,Long>
             dictionary := System.Collections.Generic.Dictionary<string,Long>{}
-            dictionary:Add("0", 0)
-            __Symbol.__SymbolList.symbolLookup := dictionary
-            __Symbol.__SymbolList.sync := Object{}
+			Add(NON_EXISTING_SYMBOL)
+            SymbolDictionary.symbolLookup := dictionary
+            SymbolDictionary.sync := Object{}
 		#endregion
 		#region methods
         INTERNAL STATIC METHOD Add(newSymbol AS __Symbol) AS void
             LOCAL syncObj AS Object
-            IF (newSymbol != __Symbol.__SymbolList.NON_EXISTING_SYMBOL)
-                syncObj := __SymbolList.sync
+            IF (newSymbol != SymbolDictionary.NON_EXISTING_SYMBOL)
+                syncObj := SymbolDictionary.sync
                 BEGIN LOCK syncObj
-                    IF (__SymbolList.symbolLookup:ContainsKey(newSymbol:stringValue))
-                        newSymbol:index := __SymbolList.symbolLookup[newSymbol:stringValue]
+                    IF (SymbolDictionary.symbolLookup:ContainsKey(newSymbol:stringValue))
+                        newSymbol:index := SymbolDictionary.symbolLookup[newSymbol:stringValue]
                     ELSE
-                        __SymbolList.symbols:Add(newSymbol)
-                        newSymbol:index := __SymbolList.symbols:Count
-                        __SymbolList.symbolLookup:Add(newSymbol:stringValue, newSymbol:index)
+                        SymbolDictionary.symbols:Add(newSymbol)
+                        newSymbol:index := SymbolDictionary.symbols:Count
+                        SymbolDictionary.symbolLookup:Add(newSymbol:stringValue, newSymbol:index)
                     ENDIF
                 END LOCK
             ENDIF
@@ -124,13 +124,13 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
 
         INTERNAL STATIC METHOD Find(s AS string) AS __Symbol
             LOCAL num AS Long
-            BEGIN LOCK __SymbolList.sync
-                IF (__SymbolList.symbolLookup:ContainsKey(s))
-                    num := __SymbolList.symbolLookup[s]
-                    RETURN __SymbolList.symbols[num]
+            BEGIN LOCK SymbolDictionary.sync
+                IF (SymbolDictionary.symbolLookup:ContainsKey(s))
+                    num := SymbolDictionary.symbolLookup[s]
+                    RETURN SymbolDictionary.symbols[num]
                 ENDIF
             END LOCK
-        RETURN __SymbolList.NON_EXISTING_SYMBOL
+        RETURN SymbolDictionary.NON_EXISTING_SYMBOL
 
         INTERNAL STATIC PROPERTY Count AS Long
             GET

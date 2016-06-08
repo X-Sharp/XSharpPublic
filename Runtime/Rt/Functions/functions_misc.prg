@@ -262,18 +262,17 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AsString(u AS USUAL) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN (string) u   
 
 	/// <summary>
 	/// Convert a string or a PSZ to a symbol.
 	/// </summary>
-	/// <param name="u"></param>
+	/// <param name="u">The usual holding a string or psz</param>
 	/// <returns>
+	/// The symbol representing the given string or psz.
 	/// </returns>
 	FUNCTION AsSymbol(u AS USUAL) AS SYMBOL
-		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
+	RETURN __Symbol{(string)u}   
 
 	/// <summary>
 	/// Calculate the arc tangent of a number.
@@ -289,24 +288,24 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <returns>
 	/// </returns>
+	[System.Obsolete("Function is deprecated")];
 	FUNCTION AtomExit() AS DWORD
-		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
+	[System.Obsolete("Function is deprecated")];
 	FUNCTION AtomInit() AS DWORD
-		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
+	[System.Obsolete("Function is deprecated")];
 	FUNCTION AtomTableGetDirty() AS LOGIC
-		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
@@ -314,6 +313,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
+	[System.Obsolete("Function is deprecated")];
 	FUNCTION AtomTableSetDirty(f AS LOGIC) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
@@ -323,6 +323,7 @@ begin namespace XSharp.Runtime
 	/// <param name="o"></param>
 	/// <returns>
 	/// </returns>
+	[System.Obsolete("Function is deprecated")];
 	FUNCTION AxitCalled(o AS OBJECT) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
@@ -330,14 +331,14 @@ begin namespace XSharp.Runtime
 	/// <summary>
 	/// Determine if a value is between two other values.
 	/// </summary>
-	/// <param name="x"></param>
-	/// <param name="y"></param>
-	/// <param name="z"></param>
+	/// <param name="x">Value which should be compared.</param>
+	/// <param name="y">Lower value to compare against.</param>
+	/// <param name="z">Upper value to compare against.</param>
 	/// <returns>
+	/// True if x is >= y and <= z otherwise false.
 	/// </returns>
 	FUNCTION Between(x AS USUAL,y AS USUAL,z AS USUAL) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	RETURN ((x>=y) && (x<=z))
 
 	/// <summary>
 	/// Check whether a break occurs within the BEGIN SEQUENCE...END construct.
@@ -366,26 +367,33 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION CheckInstanceOf(o AS OBJECT,symClassName AS SYMBOL) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	RETURN o:GetType():Name == symClassName
 
 	/// <summary>
 	/// Return the number of classes available to your application.
 	/// </summary>
 	/// <returns>
+	/// The number of available classes.
 	/// </returns>
 	FUNCTION ClassCount() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN ClassList():Length
 
 	/// <summary>
 	/// Return an array of symbols corresponding to the classes available to your application.
 	/// </summary>
 	/// <returns>
+	/// Returns an array with the name of all available classes
 	/// </returns>
 	FUNCTION ClassList() AS ARRAY
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+		local classes    := __Array{} as ARRAY
+		local assemblies := System.AppDomain.CurrentDomain:GetAssemblies() as System.Reflection.Assembly[]
+		foreach assembly as System.Reflection.Assembly in assemblies
+			local types := assembly:GetTypes() as System.Type[]
+			foreach type as System.Type in types
+				classes:Add(type:Name)
+			next
+		next
+	RETURN classes
 
 	/// <summary>
 	/// Get the class name of an object.
@@ -394,8 +402,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ClassName(o AS OBJECT) AS SYMBOL
-		/// THROW NotImplementedException{}
-	RETURN NULL_SYMBOL   
+	RETURN AsSymbol(o:GetType():Name)
 
 	/// <summary>
 	/// Get the class hierarchy of an object.
@@ -527,10 +534,18 @@ begin namespace XSharp.Runtime
 	/// Return the current Windows drive.
 	/// </summary>
 	/// <returns>
+	/// Return the letter of the current drive without colon
 	/// </returns>
 	FUNCTION CurDrive() AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+		local currentDirectory := System.IO.Directory.GetCurrentDirectory() as string
+		local drive := "" as string
+		local position as int
+
+		position := currentDirectory:IndexOf(System.IO.Path.VolumeSeparatorChar)
+		if position > 0
+			drive := currentDirectory:Substring(0,position)
+		endif
+	return drive
 
 	/// <summary>
 	/// Assign a default value to a NIL argument.
@@ -582,23 +597,41 @@ begin namespace XSharp.Runtime
 	RETURN NULL_ARRAY   
 
 	/// <summary>
-	/// Return the space available on a specified disk.
+	/// Return the space available on the current disk drive.
 	/// </summary>
 	/// <param name="cDisk"></param>
 	/// <returns>
 	/// </returns>
+	FUNCTION DiskFree() AS USUAL
+	RETURN DiskFree(CurDrive())
+
+	/// <summary>
+	/// Return the space available on a specified disk.
+	/// </summary>
+	/// <param name="cDisk">The drivename to get the free space from.</param>
+	/// <returns>
+	/// The free space on the specified disk drive.
+	/// </returns>	   
 	FUNCTION DiskFree(cDisk AS USUAL) AS USUAL
-		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN System.IO.DriveInfo{cDisk}:TotalFreeSpace
 
 	/// <summary>
 	/// Return the current Windows drive.
 	/// </summary>
 	/// <returns>
+	/// The current windows drive.
 	/// </returns>
 	FUNCTION DiskName() AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN CurDrive()
+
+	/// <summary>
+	/// Return the capacity of the current disk.
+	/// </summary>
+	/// <returns>
+	/// The capacity of the current disk.
+	/// </returns>
+	FUNCTION DiskSpace() AS USUAL
+	RETURN DiskSpace(CurDrive())
 
 	/// <summary>
 	/// Return the capacity of the specified disk.
@@ -607,8 +640,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION DiskSpace(nDisk AS USUAL) AS USUAL
-		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN System.IO.DriveInfo{nDisk}:TotalSize
 
 	/// <summary>
 	/// Return the last DOS error code associated with an activation of the runtime error block.

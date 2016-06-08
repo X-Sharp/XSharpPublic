@@ -22,6 +22,8 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			var sym1 := #TestSymbol
 			var sym2 := #TestSymbol
 			AreEqual(true,sym1==sym2)
+			AreEqual(true,sym1=="TestSymbol")
+			AreEqual(false,sym1==#TestSymbol1)
 		RETURN
 
 	END CLASS

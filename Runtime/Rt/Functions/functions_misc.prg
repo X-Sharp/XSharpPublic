@@ -178,8 +178,9 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION AReplicate(x AS USUAL,nCount AS DWORD) AS ARRAY
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+		local a:=__Array{(int)nCount} as __Array
+		__Array.ArrayFill(a,x)
+	RETURN a
 
 	/// <summary>
 	/// </summary>
@@ -195,8 +196,7 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION ArrayBuild() AS ARRAY
-		/// THROW NotImplementedException{}
-	RETURN NULL_ARRAY   
+	RETURN __Array{}
 
 	/// <summary>
 	/// Create an uninitialized array with the specified number of elements and dimensions.

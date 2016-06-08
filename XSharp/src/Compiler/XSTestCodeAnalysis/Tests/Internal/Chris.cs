@@ -2434,8 +2434,21 @@ END CLASS
         {
             var s = ParseSource(@"/dialect:vulcan" , @"
 FUNCTION Start() AS VOID
-LOCAL f AS FLOAT
-f := f + 0.5
+LOCAL f := 1.0 AS FLOAT
+LOCAL r := 1.0 AS REAL8
+LOCAL s := 1.0 AS REAL4
+LOCAL i := 1 AS INT
+LOCAL w := 1 AS WORD
+LOCAL dw := 1 AS DWORD
+LOCAL b := 1 AS BYTE
+f := f + 0.5 
+f := f + r
+f := f + s
+f := f + i
+f := f - w
+f := f - dw
+f := f - b
+? f
 ");
             CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
         }
@@ -2449,10 +2462,40 @@ f := f + 0.5
             var s = ParseSource(@"/dialect:vulcan" , @"
 FUNCTION Start() AS VOID
 LOCAL d AS DATE
-LOCAL n := 1 AS WORD
-d := Today()
+LOCAL f := 1.0 AS FLOAT
+LOCAL r := 1.0 AS REAL8
+LOCAL n := 1 AS INT
+LOCAL w := 1 AS WORD
+LOCAL dw := 1 AS DWORD
+LOCAL b := 1 AS BYTE
+d := DATE{DateTime.Now}
 d += n
+d := d + r
+d -= w
+d := d - dw
+d := d + b
 ? d
+IF d - DATE{DateTime.Now} != 1
+	THROW Exception{""Wrong date calculated""}
+ENDIF
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 170
+        [Test(Author = "Chris", Id = "C170", Title = "compiler crash with GLOBAL initialization")]
+        public static void compiler_crash_with_GLOBAL_initialization()
+        {
+            var s = ParseSource(@"/dialect:vulcan" , @"
+// vulcan dialect
+GLOBAL g := Test() AS STRING
+GLOBAL g1 := 1 AS INT
+GLOBAL g2 := g1 AS INT
+FUNCTION Test() AS STRING STRICT
+RETURN ""abc""
+FUNCTION Start() AS VOID
+? g,g1,g2
 ");
             CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
         }

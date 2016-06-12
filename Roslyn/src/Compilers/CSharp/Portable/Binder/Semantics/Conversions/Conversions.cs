@@ -172,6 +172,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
 
+#if XSHARP
+            if (source != null)
+            {
+                if ((source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr) && destination.IsPointerType())
+                {
+                    return Conversion.IntPtr;
+                }
+                if ((destination.SpecialType == SpecialType.System_IntPtr || destination.SpecialType == SpecialType.System_UIntPtr) && source.IsPointerType())
+                {
+                    return Conversion.IntPtr;
+                }
+            }
+            if (sourceExpression.Kind == BoundKind.Literal && sourceExpression.IsLiteralNull())
+            {
+                Conversion conv;
+                if (ClassifyVoNullLiteralConversion(sourceExpression, destination, out conv) != ConversionKind.NoConversion)
+                {
+                    return conv;
+                }
+            }
+#endif
             return Conversion.NoConversion;
         }
 
@@ -234,6 +255,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             return GetImplicitUserDefinedConversion(sourceExpression, source, destination, ref useSiteDiagnostics);
         }
 
+#if XSHARP
+        protected virtual ConversionKind ClassifyVoNullLiteralConversion(BoundExpression source, TypeSymbol destination, out Conversion conv) { conv = Conversion.NoConversion; return ConversionKind.NoConversion; }
+#endif
         private static ConversionKind ClassifyNullLiteralConversion(BoundExpression source, TypeSymbol destination)
         {
             Debug.Assert((object)source != null);
@@ -932,6 +956,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             return result;
+        }
+
+        protected override ConversionKind ClassifyVoNullLiteralConversion(BoundExpression source, TypeSymbol destination, out Conversion conv)
+        {
+            if (_binder.Compilation.Options.IsDialectVO &&
+                ((NamedTypeSymbol)destination).ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+            {
+                var usualType = _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                var op = usualType.GetOperators("op_Implicit")
+                    .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType == usualType)
+                    .AsSingleton() as MethodSymbol;
+                if (op != null)
+                {
+                    var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);
+                    UserDefinedConversionAnalysis uca = UserDefinedConversionAnalysis.Normal(op, Conversion.ImplicitReference, Conversion.Identity, sourceType, destination);
+                    UserDefinedConversionResult cr = UserDefinedConversionResult.Valid(new [] { uca }.AsImmutable(), 0);
+                    conv = new Conversion(cr, isImplicit: true);
+                    return ConversionKind.ImplicitUserDefined;
+                }
+            }
+
+            conv = Conversion.NoConversion;
+            return ConversionKind.NoConversion;
         }
 #endif
     }

@@ -156,13 +156,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = fileName;
         }
 
-        internal CSharpSyntaxNode GenerateNoRuntimeError(CSharpSyntaxNode node, string Name, string DLL)
-        {
-            node = node.WithAdditionalDiagnostics(
-                new SyntaxDiagnosticInfo(
-                    ErrorCode.ERR_FeatureRequiresReferenceToRuntime, Name, DLL));
-            return node;
-        }
         internal CSharpSyntaxNode NotInDialect(string feature)
         {
             CSharpSyntaxNode node = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));

@@ -438,7 +438,7 @@ END CLASS
         [Test(Author = "Nikos", Id = "N16", Title = "Constructor chaining (vulcan dialect)")]
         public static void CtorChainVulcan()
         {
-            CompileAndRunWithoutExceptions("/dialect:vulcan", ParseSource("/dialect:vulcan", @"
+            CompileAndRunWithoutExceptions("/dialect:vulcan", ParseSource("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 CLASS Parent
     PUBLIC Inits := 0 AS INT
     CONSTRUCTOR()

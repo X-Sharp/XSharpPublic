@@ -52,7 +52,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (!TryParseDialect(value, XSharpDialect.Core, out dialect))
                     {
-                        AddDiagnostic(diagnostics, ErrorCode.ERR_BadCompatMode, value);
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_InvalidDialect, value);
                     }
                     options.Dialect = dialect;
                     break;
@@ -225,5 +225,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
+        private void ValidateXSharpSettings(List<Diagnostic> diagnostics) {
+            if (options.Dialect == XSharpDialect.VO || options.Dialect == XSharpDialect.Vulcan) {
+                if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
+                    // Ok;
+                }
+                else {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(), "VulcanRT.DLL and VulcanRTFuncs.DLL");
+                    options.Dialect = XSharpDialect.Core;
+                }
+            }
+
+        }
     }
 }

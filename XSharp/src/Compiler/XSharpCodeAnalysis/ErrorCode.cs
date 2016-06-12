@@ -32,6 +32,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_StaticDerivedFromNonObject = 713,
     XS_WRN:ERR_ProtectedInStatic = 1057,
     XS_WRN:ERR_UseDefViolationProperty = 8079,
+    XS_WRN:ERR_ConversionWithBase = 553,
+    XS_WRN:ERR_ConversionWithDerived = 554,
     */
 
     internal enum ErrorCode
@@ -1364,8 +1366,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_AmbiguousCase = 9011,
         ERR_DuplicateDefine = 9012,
         WRN_DuplicateDefine = 9013,
-        ERR_FeatureRequiresReferenceToRuntime = 9014,
+        ERR_DialectRequiresReferenceToRuntime = 9014,
         WRN_ImplicitParentConstructorInitializer = 9015,
         ERR_NestedMethodMustHaveSameNameAsParentClass=9016,
+        ERR_InvalidDialect = 9017,
     }
 }

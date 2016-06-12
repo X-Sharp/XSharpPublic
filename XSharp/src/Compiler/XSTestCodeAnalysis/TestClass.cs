@@ -63,7 +63,18 @@ namespace XSTestCodeAnalysis
         public static CSharpSyntaxTree VulcanRuntime { get; } = ParseSource(@"
 BEGIN NAMESPACE Vulcan
     STRUCTURE __USUAL
-        STATIC _NIL AS __USUAL
+        PRIVATE __o AS OBJECT
+        STATIC _NIL := __USUAL{NULL} AS __USUAL
+        PRIVATE CONSTRUCTOR(o AS OBJECT)
+            __o := o
+        OPERATOR ==(a AS __USUAL, b AS __USUAL) AS LOGIC
+            RETURN a:__o == b:__o
+        OPERATOR !=(a AS __USUAL, b AS __USUAL) AS LOGIC
+            RETURN a:__o != b:__o
+        OPERATOR Implicit(o AS OBJECT) AS __USUAL
+            RETURN __USUAL{o}
+        OPERATOR Implicit(u AS __USUAL) AS OBJECT
+            RETURN u:__o
     END STRUCTURE
     CLASS VulcanImplicitNamespaceAttribute INHERIT System.Attribute
         CONSTRUCTOR(defaultNs AS STRING)
@@ -77,6 +88,9 @@ BEGIN NAMESPACE Vulcan.Internal
     CLASS VulcanClassLibraryAttribute INHERIT System.Attribute
         CONSTRUCTOR(globalClass AS STRING, globalNs AS STRING)
     END CLASS
+    CLASS VulcanCompilerVersionAttribute INHERIT System.Attribute
+        CONSTRUCTOR(version AS STRING)
+    END CLASS
 END NAMESPACE
 BEGIN NAMESPACE VulcanRtFuncs
     STATIC CLASS Functions
@@ -89,6 +103,54 @@ BEGIN NAMESPACE VulcanRtFuncs
     END CLASS
 END NAMESPACE
 ");
+
+        private static byte[] _vrt;
+        private static System.Reflection.Assembly _vrta;
+
+        private static MetadataReference LoadVulcanRuntime()
+        {
+            if (_vrt == null)
+            {
+                MetadataReference[] refs = new MetadataReference[]
+                {
+                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
+                };
+                var args = CSharpCommandLineParser.SplitCommandLineIntoArguments("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll /unsafe", false);
+                var cmdParser = new CSharpCommandLineParser();
+                var parsedArgs = cmdParser.Parse(args, ".", null);
+                var c = CSharpCompilation.Create(
+                    "VulcanRTdummy.dll",
+                    syntaxTrees: new[] { VulcanRuntime },
+                    references: refs,
+                    options: parsedArgs.CompilationOptions.WithOutputKind(OutputKind.DynamicallyLinkedLibrary)
+                    );
+                var ms = new System.IO.MemoryStream();
+                EmitResult r = c.Emit(ms);
+                if (!r.Success)
+                {
+                    string err = "";
+                    r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error).ToList().ForEach(d => err += d.ToString() + "\r\n");
+                    throw new Exception(err);
+                }
+                ms.Seek(0, System.IO.SeekOrigin.Begin);
+                _vrt = ms.ToArray();
+                _vrta = System.Reflection.Assembly.Load(_vrt);
+                System.AppDomain.CurrentDomain.AssemblyResolve += currentDomain_AssemblyResolve;
+            }
+            return MetadataReference.CreateFromStream(new System.IO.MemoryStream(_vrt));
+        }
+
+        static System.Reflection.Assembly currentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            if (args.RequestingAssembly == null)
+                return null;
+
+            if (args.Name.StartsWith("VulcanRTdummy.dll,"))
+                return _vrta;
+
+            return null;
+        }
 
         private static CSharpCompilation CreateCompilation(string cmdLine, params CSharpSyntaxTree[] sources)
         {
@@ -105,23 +167,7 @@ END NAMESPACE
             if (sources.Contains(VulcanRuntime))
             {
                 sources = sources.Where(s => s != VulcanRuntime).ToArray();
-                var c =  CSharpCompilation.Create(
-                    "VulcanRTFuncs.dll",
-                    syntaxTrees: new[] { VulcanRuntime },
-                    references: refs,
-                    options: parsedArgs.CompilationOptions.WithOutputKind(OutputKind.DynamicallyLinkedLibrary).WithAllowUnsafe(true)
-                    );
-                using (var ms = new System.IO.MemoryStream())
-                {
-                    EmitResult r = c.Emit(ms);
-                    if (!r.Success)
-                    {
-                        string err = "";
-                        r.Diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error).ToList().ForEach(d => err += d.ToString() + "\r\n");
-                        throw new Exception(err);
-                    }
-                    refs = refs.Concat(new[] { MetadataReference.CreateFromStream(ms, filePath: "VulcanRTFuncs.dll") }).ToArray();
-                }
+                refs = refs.Concat(new[] { LoadVulcanRuntime() }).ToArray();
             }
 
             return CSharpCompilation.Create(

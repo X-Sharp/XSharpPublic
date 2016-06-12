@@ -72,6 +72,24 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         #endregion
 
+		private void OnDesignTimeOutputDeleted(object sender, EventArgs args)
+		{
+			if (DesignTimeOutputDeleted == null)
+				return;
+
+			string moniker = OABuildManager.GetOutputMoniker(sender);
+			if (!String.IsNullOrEmpty(moniker))
+				DesignTimeOutputDeleted(moniker);
+		}
+		private static string GetOutputMoniker(object sender)
+		{
+			IVsOutput2 output = sender as IVsOutput2;
+			if (output == null)
+				return null;
+			string moniker;
+			output.get_CanonicalName(out moniker);
+			return moniker;
+		}
         #region IEventSource<_dispBuildManagerEvents> Members
 
         void IEventSource<_dispBuildManagerEvents>.OnSinkAdded(_dispBuildManagerEvents sink)

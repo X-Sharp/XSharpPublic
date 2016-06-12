@@ -157,7 +157,7 @@ namespace XSharp.CodeDom
             newMethod.Name = context.Id.GetText();
             newMethod.Attributes = MemberAttributes.Public;
             newMethod.Parameters.AddRange(GetParametersList(context.ParamList));
-            newMethod.ReturnType = new CodeTypeReference(context.Type.GetText());
+            newMethod.ReturnType = BuildDataType(context.Type); // new CodeTypeReference(context.Type.GetText());
             //
             if (context.Modifiers != null)
             {
@@ -569,7 +569,7 @@ namespace XSharp.CodeDom
             {
                 CodeParameterDeclarationExpression pm = new CodeParameterDeclarationExpression();
                 pm.Name = param.Id.GetText();
-                pm.Type = new CodeTypeReference(param.Type.GetText());
+                pm.Type = BuildDataType(param.Type); // new CodeTypeReference(param.Type.GetText());
                 pm.Direction = FieldDirection.In;
                 if (param.Modifiers != null)
                 {
@@ -1039,6 +1039,8 @@ namespace XSharp.CodeDom
             {
                 XSharpParser.DelegateCtorCallContext delg = (XSharpParser.DelegateCtorCallContext)ctx;
                 //
+                CodeTypeReference ctr = BuildDataType(delg.Type);
+                CodeExpression ce = BuildExpression(delg.Obj);
                 expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj), delg.Func.GetText());
             }
             else if (ctx is XSharpParser.CtorCallContext)
@@ -1108,9 +1110,58 @@ namespace XSharp.CodeDom
                 (nativeType.VOID() != null) ||
                 (nativeType.WORD() != null))
             {
-                expr = new CodeTypeReference(nativeType.GetText());
+                expr = BuildNativeType(nativeType.GetText());
             }
             //
+            return expr;
+        }
+        private CodeTypeReference BuildNativeType(String nativeType)
+        {
+            CodeTypeReference expr = null;
+            //
+            switch (nativeType.ToLower())
+            {
+                case "byte":
+                    nativeType = "System.Byte";
+                    break;
+                case "dword":
+                    nativeType = "System.UInt32";
+                    break;
+                case "shortint":
+                    nativeType = "System.Int16";
+                    break;
+                case "int":
+                    nativeType = "System.Int32";
+                    break;
+                case "int64":
+                    nativeType = "System.Int64";
+                    break;
+                case "uint64":
+                    nativeType = "System.UInt64";
+                    break;
+                case "logic":
+                    nativeType = "System.Boolean";
+                    break;
+                case "object":
+                    nativeType = "System.Object";
+                    break;
+                case "real4":
+                    nativeType = "System.Single";
+                    break;
+                case "real8":
+                    nativeType = "System.Double";
+                    break;
+                case "string":
+                    nativeType = "System.String";
+                    break;
+                case "word":
+                    nativeType = "System.UInt16";
+                    break;
+                case "void":
+                    nativeType = "System.Void";
+                    break;
+            }
+            expr = new CodeTypeReference(nativeType);
             return expr;
         }
 
@@ -1323,7 +1374,10 @@ namespace XSharp.CodeDom
             else if (context is XSharpParser.SimpleDatatypeContext)
             {
                 XSharpParser.SimpleDatatypeContext sdt = (XSharpParser.SimpleDatatypeContext)context;
-                expr = BuildName(sdt.TypeName.Name);
+                if (sdt.TypeName.Name != null)
+                    expr = BuildName(sdt.TypeName.Name);
+                else
+                    expr = BuildNativeType(sdt.TypeName.GetText());
             }
             else if (context is XSharpParser.NullableDatatypeContext)
             {

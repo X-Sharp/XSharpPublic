@@ -174,6 +174,16 @@ namespace Microsoft.VisualStudio.Project.Automation
             return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE);
         }
 
+		/// <summary>
+		/// Adds a project item which is a link to a file outside the project directory structure.
+		/// </summary>
+		/// <param name="fileName">The file to be linked to the project.</param>
+		/// <returns>A ProjectItem object.</returns>
+		public override EnvDTE.ProjectItem AddFileLink(string fileName)
+		{
+			return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
+		}
+ 
         #endregion
 
         #region helper methods

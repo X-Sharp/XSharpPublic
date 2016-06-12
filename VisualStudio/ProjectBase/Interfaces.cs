@@ -80,7 +80,7 @@ namespace Microsoft.VisualStudio.Project {
     /// <remarks>Normally this should be an internal interface but since it should be available for
     /// the aggregator it must be made public.</remarks>
     [ComVisible(true)]
-    public interface IReferenceContainerProvider {
+    internal interface IReferenceContainerProvider {
         IReferenceContainer GetReferenceContainer();
     }
 
@@ -90,7 +90,7 @@ namespace Microsoft.VisualStudio.Project {
     /// <remarks>Normally this should be an internal interface but since it should be available for
     /// the aggregator it must be made public.</remarks>
     [ComVisible(true)]
-    public interface IReferenceContainer {
+    internal interface IReferenceContainer {
         IList<ReferenceNode> EnumReferences();
         ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null);
         void LoadReferencesFromBuildProject(MSBuild.Project buildProject);
@@ -152,4 +152,15 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="document"></param>
         void RunGenerator(string document);
     }
+ 
+    public interface ISingleFileGenerator2
+    {
+        ///<summary>
+        /// Runs the generator on the item represented by the document moniker.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="runEvenIfNotDirty"></param>
+        void RunGeneratorEx(string document, bool runEvenIfNotDirty);
+    }
+ 
 }

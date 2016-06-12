@@ -207,7 +207,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>An Extender object. </returns>
         public virtual object get_Extender(string name)
         {
-            return null;
+         return DTE.ObjectExtenders.GetExtender(project.NodeProperties.ExtenderCATID.ToUpper(), name, project.NodeProperties);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public virtual string ExtenderCATID
         {
-            get { return String.Empty; }
+         get { return project.NodeProperties.ExtenderCATID; }
         }
 
         /// <summary>

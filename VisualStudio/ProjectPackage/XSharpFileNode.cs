@@ -41,7 +41,9 @@ namespace XSharp.Project
         {
             //
             this.UpdateHasDesigner();
+            this.UpdateItemType();
         }
+
         #endregion
 
         #region Overriden implementation
@@ -108,7 +110,27 @@ namespace XSharp.Project
             {
                 if (_codeDomProvider == null)
                 {
-                    _codeDomProvider = new VSXSharpCodeDomProvider( this );
+                    int tabSize = 1;
+                    try
+                    {
+                        EnvDTE.DTE dte = (EnvDTE.DTE)ProjectMgr.GetService(typeof(EnvDTE.DTE));
+                        EnvDTE.Properties props;
+                        props = dte.Properties["TextEditor", "XSharp"];
+                        foreach (EnvDTE.Property temp in props)
+                        {
+                            if (temp.Name.ToLower() == "tabsize")
+                            {
+                                tabSize = (int)temp.Value;
+                            }
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                    //
+                    _codeDomProvider = new VSXSharpCodeDomProvider(this);
+                    XSharpCodeDomProvider.TabSize = tabSize;
                 }
                 return _codeDomProvider;
             }
@@ -151,6 +173,26 @@ namespace XSharp.Project
             }
         }
 
+
+        private void UpdateItemType()
+        {
+            string ext = Path.GetExtension(this.FileName).ToLower();
+            string itemType = this.ItemNode.ItemName;
+            //
+            if (ext == ".xaml")
+            {
+                if ((String.Compare(itemType, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) != 0)
+                  || (String.Compare(itemType, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) != 0))
+                {
+                    this.ItemNode.ItemName = ProjectFileConstants.Page;
+                }
+            }
+            else if (ext == ".prg" && String.IsNullOrEmpty(itemType))
+            {
+                this.ItemNode.ItemName = SR.Compile;
+            }
+            //
+        }
         /// <summary>
         /// Returns the SubType of an XSharp FileNode. It is 
         /// </summary>

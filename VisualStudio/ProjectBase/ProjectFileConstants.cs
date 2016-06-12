@@ -104,6 +104,11 @@ namespace Microsoft.VisualStudio.Project {
         public const string ApplicationDefinition = "ApplicationDefinition";
         public const string Page = "Page";
         public const string Resource = "Resource";
+        public const string ApplicationIcon = "ApplicationIcon";
+        public const string StartupObject = "StartupObject";
+        public const string TargetPlatform = "TargetPlatform";
+        public const string TargetPlatformLocation = "TargetPlatformLocation";
+        public const string SpecificVersion = "SpecificVersion";
     }
 
     public static class ProjectFileAttributeValue {
@@ -112,6 +117,7 @@ namespace Microsoft.VisualStudio.Project {
         public const string Component = "Component";
         public const string Designer = "Designer";
         public const string UserControl = "UserControl";
+     	public const string Visible = "Visible";
     }
 
     internal static class ProjectFileValues {
@@ -120,7 +126,8 @@ namespace Microsoft.VisualStudio.Project {
 
     public enum WrapperToolAttributeValue {
         Primary,
-        TlbImp
+        TlbImp,
+		AxImp			 
     }
 
     /// <summary>

@@ -18,9 +18,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project {
-    public class OleServiceProvider : IOleServiceProvider, IDisposable {
+    public class OleServiceProvider : IOleServiceProvider, IDisposable, IVsBrowseObject {
         #region Public Types
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public delegate object ServiceCreatorCallback(Type serviceType);
@@ -109,7 +110,7 @@ namespace Microsoft.VisualStudio.Project {
             //
             if(riid.Equals(NativeMethods.IID_IUnknown)) {
                 object inst = serviceInstance.ServiceInstance;
-                if (inst == null) {
+                if(inst == null) {
                     return VSConstants.E_NOINTERFACE;
                 }
                 ppvObject = Marshal.GetIUnknownForObject(serviceInstance.ServiceInstance);
@@ -221,6 +222,43 @@ namespace Microsoft.VisualStudio.Project {
             }
         }
         #endregion
+        #region IVsBrowseObject methods
 
+        // The ResxCodeSingleFileGenerator expects to find the IVsBrowseObject interface on this
+        // object.  The NodePropeties object implements IVsBrowseObject, but we have no way to get
+        // the NodeProperties object since we don't have a back reference to the hierarchy node that 
+        // owns this OleServiceProvider instance.  So when a VulcanFileNode object is created, IVsBrowseObject is added
+        // to the list of available services (in VulcanProject.CreateFileNode) and in the service
+        // creator callback in VulcanProject, querying for the IVsBrowseObject service (which isn't really
+        // a service) returns a reference to the NodeProperties object for the node.
+        //
+        // When this object is QI'd for IVsBrowseObject by the ResXCodeFileGenerator it is successful
+        // and then it calls GetProjectItem().  We then get the real IVsBrowseObject implementation
+        // and call GetProjectItem() on it.  It's a bit of a hack, but it gets the ResXSingleFileGenerator
+        // to work, and the only other alternative seems to be adding a property to this class that we 
+        // could store a reference to the owning node's NodeProperties object in.
+        //
+        // If this is ever fixed by the 2008 MPF code, this hack can be removed and replaced with 
+        // whatever they come up with.
+
+        /// <summary>
+        /// Maps back to the hierarchy or project item object corresponding to the browse object.
+        /// </summary>
+        /// <param name="hier">Reference to the hierarchy object.</param>
+        /// <param name="itemid">Reference to the project item.</param>
+        /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
+        public virtual int GetProjectItem(out IVsHierarchy hier, out uint itemid) {
+            ServiceData serviceInstance = services[typeof(IVsBrowseObject).GUID];
+
+            if(serviceInstance != null) {
+                IVsBrowseObject bo = (IVsBrowseObject)serviceInstance.ServiceInstance;
+                return bo.GetProjectItem(out hier, out itemid);
+            } else {
+                hier = null;
+                itemid = 0;
+                return VSConstants.E_NOINTERFACE;
+            }
+        }
+        #endregion
     }
 }

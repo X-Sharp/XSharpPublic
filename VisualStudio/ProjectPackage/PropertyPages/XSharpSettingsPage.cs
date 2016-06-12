@@ -151,38 +151,6 @@ namespace XSharp.Project
             return property;
         }
 
-        public string GetUnevaluatedConfigProperty(string propertyName)
-        {
-            if (this.ProjectMgr == null)
-            {
-                return string.Empty;
-            }
-            string str = null;
-            var configs = this.GetProjectConfigurations();
-            try
-            { 
-            for (int i = 0; i < configs.Length; i++)
-            {
-                string unevaluatedConfigurationProperty = configs[i].GetUnevaluatedConfigurationProperty(propertyName);
-                if (unevaluatedConfigurationProperty != null)
-                {
-                    string str3 = unevaluatedConfigurationProperty.Trim();
-                    if (i == 0)
-                    {
-                        str = str3;
-                    }
-                    else if (str != str3)
-                    {
-                        return "";
-                    }
-                }
-            }
-            }
-            catch (Exception)
-            { }
-            return str;
-        }
-
         internal int getCfgInteger(String Name, int defaultValue)
         {
             int property;
@@ -226,21 +194,3 @@ namespace XSharp.Project
     }
 }
 
-/// <summary>
-/// Add method to ProjectConfig to read Unevaluated value of a property
-/// </summary>
-namespace Microsoft.VisualStudio.Project
-{
-    public partial class ProjectConfig 
-    {
-        public virtual string GetUnevaluatedConfigurationProperty(string propertyName)
-        {
-            this.project.SetConfiguration(this.ConfigName);
-            this.project.BuildProject.ReevaluateIfNecessary();
-            this.currentConfig = this.project.BuildProject.CreateProjectInstance();
-            this.project.SetCurrentConfiguration();
-            return this.project.GetProjectPropertyUnevaluated(propertyName);
-        }
-
-    }
-}

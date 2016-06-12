@@ -28,10 +28,7 @@ namespace Microsoft.VisualStudio.Project
 
         public EnumDependencies(IList<IVsDependency> dependencyList)
         {
-            if (dependencyList == null)
-            {
-                throw new ArgumentNullException("dependencyList");
-            }
+            Utilities.ArgumentNotNull("dependencyList", dependencyList);
 
             foreach(IVsDependency dependency in dependencyList)
             {
@@ -41,10 +38,7 @@ namespace Microsoft.VisualStudio.Project
 
         public EnumDependencies(IList<IVsBuildDependency> dependencyList)
         {
-            if (dependencyList == null)
-            {
-                throw new ArgumentNullException("dependencyList");
-            }
+            Utilities.ArgumentNotNull("dependencyList", dependencyList);
 
             foreach(IVsBuildDependency dependency in dependencyList)
             {
@@ -62,10 +56,7 @@ namespace Microsoft.VisualStudio.Project
         public int Next(uint elements, IVsDependency[] dependencies, out uint elementsFetched)
         {
             elementsFetched = 0;
-            if (dependencies == null)
-            {
-                throw new ArgumentNullException("dependencies");
-            }
+            Utilities.ArgumentNotNull("dependencies", dependencies);
             
             uint fetched = 0;
             int count = this.dependencyList.Count;

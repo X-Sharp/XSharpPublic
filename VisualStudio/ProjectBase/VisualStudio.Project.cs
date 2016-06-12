@@ -21,24 +21,18 @@ using System.Threading;
 using System.ComponentModel;
 using System.Security.Permissions;
 
-namespace Microsoft.VisualStudio.Project
-{
+namespace Microsoft.VisualStudio.Project {
     [AttributeUsage(AttributeTargets.All)]
-    internal sealed class SRDescriptionAttribute : DescriptionAttribute
-    {
+    internal sealed class SRDescriptionAttribute : DescriptionAttribute {
         private bool replaced;
 
         public SRDescriptionAttribute(string description)
-            : base(description)
-        {
+            : base(description) {
         }
 
-        public override string Description
-        {
-            get
-            {
-                if(!replaced)
-                {
+        public override string Description {
+            get {
+                if(!replaced) {
                     replaced = true;
                     DescriptionValue = SR.GetString(base.Description, CultureInfo.CurrentUICulture);
                 }
@@ -48,21 +42,17 @@ namespace Microsoft.VisualStudio.Project
     }
 
     [AttributeUsage(AttributeTargets.All)]
-    internal sealed class SRCategoryAttribute : CategoryAttribute
-    {
+    internal sealed class SRCategoryAttribute : CategoryAttribute {
 
         public SRCategoryAttribute(string category)
-            : base(category)
-        {
+            : base(category) {
         }
 
-        protected override string GetLocalizedString(string value)
-        {
+        protected override string GetLocalizedString(string value) {
             return SR.GetString(value, CultureInfo.CurrentUICulture);
         }
     }
-    internal sealed class SR
-    {
+    internal sealed class SR {
         internal const string AddReferenceDialogTitle = "AddReferenceDialogTitle";
         internal const string AddToNullProjectError = "AddToNullProjectError";
         internal const string Advanced = "Advanced";
@@ -176,6 +166,37 @@ namespace Microsoft.VisualStudio.Project
         internal const string CannotLoadUnknownTargetFrameworkProject = "CannotLoadUnknownTargetFrameworkProject";
         internal const string ReloadPromptOnTargetFxChanged = "ReloadPromptOnTargetFxChanged";
         internal const string ReloadPromptOnTargetFxChangedCaption = "ReloadPromptOnTargetFxChangedCaption";
+        internal const string LinkAlreadyExistsInProject = "LinkAlreadyExistsInProject";
+        internal const string LinkedFileAlreadyExists = "LinkedFileAlreadyExists";
+
+        internal const string CopyNOfFile = "CopyNOfFile";
+        internal const string CopyOfFile = "CopyOfFile";
+
+        internal const string DestinationFolderAlreadyExists = "DestinationFolderAlreadyExists";
+        internal const string DestinationPathEqualsSourcePath = "DestinationPathEqualsSourcePath";
+        internal const string DestinationPathSubfolderOfSourcePath = "DestinationPathSubfolderOfSourcePath";
+
+        internal const string SpecificVersion = "SpecificVersion";
+        internal const string SpecificVersionDescription = "SpecificVersionDescription";
+
+        internal const string Culture_ = "Culture";
+        internal const string CultureDescription = "CultureDescription";
+        internal const string StrongName = "StrongName";
+        internal const string StrongNameDescription = "StrongNameDescription";
+        internal const string Version = "Version";
+        internal const string VersionDescription = "VersionDescription";
+        internal const string FileType = "FileType";
+        internal const string FileTypeDescription = "FileTypeDescription";
+        internal const string RuntimeVersion = "RuntimeVersion";
+        internal const string RuntimeVersionDescription = "RuntimeVersionDescription";
+        internal const string Description = "Description";
+        internal const string DescriptionDescription = "DescriptionDescription";
+        internal const string Identity = "Identity";
+        internal const string IdentityDescription = "IdentityDescription";
+        internal const string Isolated = "Isolated";
+        internal const string IsolatedDescription = "IsolatedDescription";
+        internal const string Resolved = "Resolved";
+        internal const string ResolvedDescription = "ResolvedDescription";
         internal const string AppContainerExe = "AppContainerExe";
         internal const string WinMDObj = "WinMDObj";
 
@@ -183,12 +204,9 @@ namespace Microsoft.VisualStudio.Project
         ResourceManager resources;
 
         private static Object s_InternalSyncObject;
-        private static Object InternalSyncObject
-        {
-            get
-            {
-                if(s_InternalSyncObject == null)
-                {
+        private static Object InternalSyncObject {
+            get {
+                if(s_InternalSyncObject == null) {
                     Object o = new Object();
                     Interlocked.CompareExchange(ref s_InternalSyncObject, o, null);
                 }
@@ -196,19 +214,14 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal SR()
-        {
+        internal SR() {
             resources = new System.Resources.ResourceManager("Microsoft.VisualStudio.Project", this.GetType().Assembly);
         }
 
-        private static SR GetLoader()
-        {
-            if(loader == null)
-            {
-                lock(InternalSyncObject)
-                {
-                    if(loader == null)
-                    {
+        private static SR GetLoader() {
+            if(loader == null) {
+                lock(InternalSyncObject) {
+                    if(loader == null) {
                         loader = new SR();
                     }
                 }
@@ -217,48 +230,39 @@ namespace Microsoft.VisualStudio.Project
             return loader;
         }
 
-        private static CultureInfo Culture
-        {
+        private static CultureInfo Culture {
             get { return null/*use ResourceManager default, CultureInfo.CurrentUICulture*/; }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static ResourceManager Resources
-        {
-            get
-            {
+        public static ResourceManager Resources {
+            get {
                 return GetLoader().resources;
             }
         }
 
-        public static string GetString(string name, params object[] args)
-        {
+        public static string GetString(string name, params object[] args) {
             SR sys = GetLoader();
             if(sys == null)
                 return null;
             string res = sys.resources.GetString(name, SR.Culture);
 
-            if(args != null && args.Length > 0)
-            {
+            if(args != null && args.Length > 0) {
                 return String.Format(CultureInfo.CurrentCulture, res, args);
-            }
-            else
-            {
+            } else {
                 return res;
             }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static string GetString(string name)
-        {
+        public static string GetString(string name) {
             SR sys = GetLoader();
             if(sys == null)
                 return null;
             return sys.resources.GetString(name, SR.Culture);
         }
 
-        public static string GetString(string name, CultureInfo culture)
-        {
+        public static string GetString(string name, CultureInfo culture) {
             SR sys = GetLoader();
             if(sys == null)
                 return null;
@@ -266,8 +270,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static object GetObject(string name)
-        {
+        public static object GetObject(string name) {
             SR sys = GetLoader();
             if(sys == null)
                 return null;

@@ -90,7 +90,7 @@ namespace Microsoft.VisualStudio.Project {
             }
         }
 
-        protected IList<OutputGroup> OutputGroups {
+        internal IList<OutputGroup> OutputGroups {
             get {
                 if(null == this.outputGroups) {
                     // Initialize output groups
@@ -170,6 +170,21 @@ namespace Microsoft.VisualStudio.Project {
                 return null;
 
             return property.EvaluatedValue;
+        }
+
+        public virtual string GetUnevaluatedConfigurationProperty(string propertyName) {
+            String result;
+            // Get properties for current configuration from project file and cache it
+            this.project.SetConfiguration(this.ConfigName);
+            this.project.BuildProject.ReevaluateIfNecessary();
+            result = this.project.GetProjectPropertyUnevaluated(propertyName);
+            // Create a snapshot of the evaluated project in its current state
+            this.currentConfig = this.project.BuildProject.CreateProjectInstance();
+
+            // Restore configuration
+            project.SetCurrentConfiguration();
+            // return property asked for
+            return result;
         }
 
         public virtual void SetConfigurationProperty(string propertyName, string propertyValue) {
@@ -337,7 +352,12 @@ namespace Microsoft.VisualStudio.Project {
         }
 
         public virtual int get_BuildableProjectCfg(out IVsBuildableProjectCfg pb) {
-            CCITracing.TraceCall();
+            if (project.BuildProject == null || !project.BuildProject.Targets.ContainsKey("CoreCompile")) {
+                // The project is not buildable, so don't return a config. This
+                // will hide the 'Build' commands from the VS UI.
+                pb = null;
+                return VSConstants.E_NOTIMPL;
+            }
             if(buildableCfg == null)
                 buildableCfg = new BuildableProjectConfig(this);
             pb = buildableCfg;
@@ -450,13 +470,22 @@ namespace Microsoft.VisualStudio.Project {
                     info.bstrRemoteMachine = property;
                 }
 
-                info.fSendStdoutToOutputWindow = 0;
+                property = GetConfigurationProperty("RedirectToOutputWindow", false);
+                if (property != null && string.Compare(property, "true", true, CultureInfo.InvariantCulture) == 0)
+                {
+                   info.fSendStdoutToOutputWindow = 1;
+                }
+                else
+                {
+                    info.fSendStdoutToOutputWindow = 0;
+                }
 
                 property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
                 if(property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0) {
                     //Set the unmanged debugger
                     //TODO change to vsconstant when it is available in VsConstants (guidNativeOnlyEng was the old name, maybe it has got a new name)
-                    info.clsidCustom = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
+                   info.clsidCustom = new Guid("{92EF0900-2251-11D2-B72E-0000F87572EF}"); // VSConstants2.guidCOMPlusNativeEng;
+                    //info.clsidCustom = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
                 } else {
                     //Set the managed debugger
                     info.clsidCustom = VSConstants.CLSID_ComPlusOnlyDebugEngine;
@@ -699,7 +728,13 @@ namespace Microsoft.VisualStudio.Project {
             else if(iidCfg == typeof(IVsBuildableProjectCfg).GUID) {
                 IVsBuildableProjectCfg buildableConfig;
                 this.get_BuildableProjectCfg(out buildableConfig);
-                ppCfg = Marshal.GetComInterfaceForObject(buildableConfig, typeof(IVsBuildableProjectCfg));
+                //
+                //In some cases we've intentionally shutdown the build options
+                //  If buildableConfig is null then don't try to get the BuildableProjectCfg interface
+                //  
+                if (null != buildableConfig) {
+                    ppCfg = Marshal.GetComInterfaceForObject(buildableConfig, typeof(IVsBuildableProjectCfg));
+                }
             }
 
             // If not supported
@@ -885,6 +920,9 @@ namespace Microsoft.VisualStudio.Project {
             try {
                 config.ProjectMgr.BuildAsync(options, this.config.ConfigName, output, target, (result, buildTarget) => this.NotifyBuildEnd(result, buildTarget));
             } catch(Exception e) {
+                if (e.IsCriticalException()) {
+                    throw;
+                }
                 Trace.WriteLine("Exception : " + e.Message);
                 ErrorHandler.ThrowOnFailure(output.OutputStringThreadSafe("Unhandled Exception:" + e.Message + "\n"));
                 this.NotifyBuildEnd(MSBuildResult.Failed, target);

@@ -47,6 +47,16 @@ namespace Microsoft.VisualStudio.Project {
     }
 
     /// <summary>
+    /// This attribute is used to mark properties that shouldn't be serialized.  Marking properties with this will
+    /// result in them not being serialized and not being bold in the properties pane.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    internal sealed class AlwaysSerializedAttribute : Attribute {
+        public AlwaysSerializedAttribute() { }
+    }
+
+
+    /// <summary>
     /// To create your own localizable node properties, subclass this and add public properties
     /// decorated with your own localized display name, category and description attributes.
     /// </summary>

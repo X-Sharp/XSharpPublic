@@ -498,9 +498,75 @@ namespace Microsoft.VisualStudio.Project
                 /// <summary>A description of the status is required.</summary>
                 OLECMDTEXTF_STATUS = 2
             }
-        }
+            /// <devdoc>
+            /// Accessing the text of this structure is very cumbersome.  Instead, you may
+            /// use this method to access an integer pointer of the structure.
+            /// Passing integer versions of this structure is needed because there is no
+            /// way to tell the common language runtime that there is extra data at the end of the structure.
+            /// </devdoc>
+            public static string GetText(IntPtr pCmdTextInt)
+            {
+                Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT pCmdText = (Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT)Marshal.PtrToStructure(pCmdTextInt, typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT));
 
-        /// <devdoc>
+                // Get the offset to the rgsz param.
+                //
+                IntPtr offset = Marshal.OffsetOf(typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT), "rgwz");
+
+                // Punt early if there is no text in the structure.
+                //
+                if (pCmdText.cwActual == 0)
+                {
+                    return String.Empty;
+                }
+
+                char[] text = new char[pCmdText.cwActual - 1];
+
+                Marshal.Copy((IntPtr)((long)pCmdTextInt + (long)offset), text, 0, text.Length);
+
+                StringBuilder s = new StringBuilder(text.Length);
+                s.Append(text);
+                return s.ToString();
+            }
+
+            /// <include file='doc\NativeMethods.uex' path='docs/doc[@for="OLECMDTEXTF.SetText"]/*' />
+            /// <devdoc>
+            /// Accessing the text of this structure is very cumbersome.  Instead, you may
+            /// use this method to access an integer pointer of the structure.
+            /// Passing integer versions of this structure is needed because there is no
+            /// way to tell the common language runtime that there is extra data at the end of the structure.
+            /// </devdoc>
+            /// <summary>
+            /// Sets the text inside the structure starting from an integer pointer.
+            /// </summary>
+            /// <param name="pCmdTextInt">The integer pointer to the position where to set the text.</param>
+            /// <param name="text">The text to set.</param>
+            public static void SetText(IntPtr pCmdTextInt, string text)
+            {
+                Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT pCmdText = (Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT)Marshal.PtrToStructure(pCmdTextInt, typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT));
+                char[] menuText = text.ToCharArray();
+
+                // Get the offset to the rgsz param.  This is where we will stuff our text
+                //
+                IntPtr offset = Marshal.OffsetOf(typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT), "rgwz");
+                IntPtr offsetToCwActual = Marshal.OffsetOf(typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT), "cwActual");
+
+                // The max chars we copy is our string, or one less than the buffer size,
+                // since we need a null at the end.
+                //
+                int maxChars = Math.Min((int)pCmdText.cwBuf - 1, menuText.Length);
+
+                Marshal.Copy(menuText, 0, (IntPtr)((long)pCmdTextInt + (long)offset), maxChars);
+
+                // append a null character
+                Marshal.WriteInt16((IntPtr)((long)pCmdTextInt + (long)offset + maxChars * 2), 0);
+
+                // write out the length
+                // +1 for the null char
+                Marshal.WriteInt32((IntPtr)((long)pCmdTextInt + (long)offsetToCwActual), maxChars + 1);
+            }
+
+		}
+
         /// OLECMDF enums for IOleCommandTarget
         /// </devdoc>
         public enum tagOLECMDF

@@ -104,6 +104,9 @@ namespace Microsoft.VisualStudio.Project {
 
             this.InitializeFileChangeEvents();
 
+            if (File.Exists(assemblyPath)) {
+                this.fileChangeListener.ObserveItem(this.assemblyPath);
+            }
             string include = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
 
             this.CreateFromAssemblyName(new System.Reflection.AssemblyName(include));
@@ -223,6 +226,11 @@ namespace Microsoft.VisualStudio.Project {
         protected internal override bool IsAlreadyAdded(out ReferenceNode existingReference) {
             ReferenceContainerNode referencesFolder = this.ProjectMgr.FindChild(ReferenceContainerNode.ReferencesNodeVirtualName) as ReferenceContainerNode;
             Debug.Assert(referencesFolder != null, "Could not find the References node");
+            if (referencesFolder == null) {
+                // Return true so that our caller does not try and add us.
+                existingReference = null;
+                return true;
+            }
             bool shouldCheckPath = !string.IsNullOrEmpty(this.Url);
 
             for(HierarchyNode n = referencesFolder.FirstChild; n != null; n = n.NextSibling) {
@@ -246,11 +254,7 @@ namespace Microsoft.VisualStudio.Project {
         /// </summary>
         /// <returns></returns>
         protected override bool CanShowDefaultIcon() {
-            if(String.IsNullOrEmpty(this.assemblyPath) || !File.Exists(this.assemblyPath)) {
-                return false;
-            }
-
-            return true;
+            return File.Exists(assemblyPath);
         }
 
         private void GetPathNameFromProjectFile() {
@@ -263,7 +267,13 @@ namespace Microsoft.VisualStudio.Project {
                     result += ".dll";
                     this.assemblyPath = result;
                 }
-            } else {
+                else
+                {
+                    this.assemblyPath = result;
+                }
+			}
+			else
+			{
                 this.assemblyPath = this.GetFullPathFromPath(result);
             }
         }
@@ -425,6 +435,22 @@ namespace Microsoft.VisualStudio.Project {
             if(NativeMethods.IsSamePath(e.FileName, this.assemblyPath)) {
                 this.OnInvalidateItems(this.Parent);
             }
+        }
+        /// <summary>
+        /// Overridden method. The method updates the build dependency list before removing the node from the hierarchy.
+        /// </summary>
+        public override void Remove(bool removeFromStorage) {
+            if (this.ProjectMgr == null) {
+                return;
+            }
+            base.RemoveNonDocument(removeFromStorage);
+            this.ItemNode.RemoveFromProjectFile();
+
+            // Notify hierarchy event listeners that items have been invalidated
+            ProjectMgr.OnInvalidateItems(this);
+
+            // Dispose the node now that is deleted.
+            Dispose(true);
         }
         #endregion
     }

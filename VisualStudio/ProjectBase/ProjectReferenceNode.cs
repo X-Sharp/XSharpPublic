@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
+using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 namespace Microsoft.VisualStudio.Project {
     [CLSCompliant(false), ComVisible(true)]
     public class ProjectReferenceNode : ReferenceNode {
@@ -105,8 +105,98 @@ namespace Microsoft.VisualStudio.Project {
 
         internal string ReferencedProjectName {
             get { return this.referencedProjectName; }
+			set
+			{
+				this.referencedProjectName = value;
+
+				string currentName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
+				if (!String.Equals(currentName, this.referencedProjectName, StringComparison.Ordinal))
+				{
+					this.ItemNode.SetMetadata(ProjectFileConstants.Name, this.referencedProjectName);
+					this.ReDraw(UIHierarchyElement.Caption);
+				}
+			}
         }
 
+		/// <summary>
+		/// Searches the solution or project for a contained project with a given path.
+		/// </summary>
+		/// <param name="project">Project node to start the search from, or null to search the solution.</param>
+		/// <param name="projectFilePath">Path of the project to be located.</param>
+		/// <returns>Found project object, or null if the project was not found.</returns>
+		private EnvDTE.Project FindProject(EnvDTE.Project project, string projectFilePath)
+		{
+			if (project == null)
+			{
+				// Search for the project in the collection of the projects in the
+				// current solution.
+				EnvDTE.DTE dte = (EnvDTE.DTE)this.ProjectMgr.GetService(typeof(EnvDTE.DTE));
+				if ((null == dte) || (null == dte.Solution))
+				{
+					return null;
+				}
+
+				foreach (EnvDTE.Project prj in dte.Solution.Projects)
+				{
+					//Skip this project if it is an umodeled project (unloaded)
+					if (!String.Equals(EnvDTE.Constants.vsProjectKindUnmodeled, prj.Kind, StringComparison.OrdinalIgnoreCase))
+					{
+						EnvDTE.Project foundProject = FindProject(prj, projectFilePath);
+						if (foundProject != null)
+						{
+							return foundProject;
+						}
+					}
+				}
+			}
+			else
+			{
+				if (String.Equals(EnvDTE.Constants.vsProjectKindSolutionItems, project.Kind, StringComparison.OrdinalIgnoreCase))
+				{
+					// This is a solution folder -- look for child projects.
+					foreach (EnvDTE.ProjectItem projectItem in project.ProjectItems)
+					{
+						EnvDTE.Project subProject = projectItem.SubProject;
+						if (subProject != null)
+						{
+							EnvDTE.Project foundProject = FindProject(subProject, projectFilePath);
+							if (foundProject != null)
+							{
+								return foundProject;
+							}
+						}
+					}
+				}
+				else
+				{
+					// Get the full path of the current project.
+					EnvDTE.Property pathProperty = null;
+					try
+					{
+						pathProperty = project.Properties.Item("FullPath");
+					}
+					catch (ArgumentException)
+					{
+					}
+
+					if (null == pathProperty)
+					{
+						// The full path should alway be availabe, but if this is not the
+						// case then we have to skip it.
+						return null;
+					}
+
+					// Compare the project path to the path we're searching for.
+					string projectPath = Path.Combine(pathProperty.Value.ToString(), project.FileName);
+					if (NativeMethods.IsSamePath(projectPath, projectFilePath))
+					{
+						return project;
+					}
+				}
+			}
+
+			return null;
+		}
         /// <summary>
         /// Gets the automation object for the referenced project.
         /// </summary>
@@ -114,6 +204,8 @@ namespace Microsoft.VisualStudio.Project {
             get {
                 // If the referenced project is null then re-read.
                 if(this.referencedProject == null) {
+                  this.referencedProject = this.FindProject(null, this.referencedProjectFullPath);
+               }
 
                     // Search for the project in the collection of the projects in the
                     // current solution.
@@ -164,7 +256,6 @@ namespace Microsoft.VisualStudio.Project {
                             break;
                         }
                     }
-                }
 
                 return this.referencedProject;
             }
@@ -183,24 +274,55 @@ namespace Microsoft.VisualStudio.Project {
                     return null;
                 }
 
-                // Get the configuration manager from the project.
-                EnvDTE.ConfigurationManager confManager = this.ReferencedProjectObject.ConfigurationManager;
-                if(null == confManager) {
-                    return null;
-                }
+				EnvDTE.Property outputPathProperty = null;
+				try
+				{
+					// Get the configuration manager from the project.
+					EnvDTE.ConfigurationManager confManager = this.ReferencedProjectObject.ConfigurationManager;
+					if (null != confManager)
+					{
+						// Get the active configuration.
+						EnvDTE.Configuration config = confManager.ActiveConfiguration;
+						if (null != config)
+						{
+							// Get the output path for the current configuration.
+							EnvDTE.Properties props = config.Properties;
+							if (null != props)
+							{
+								outputPathProperty = props.Item("OutputPath");
+							}
+						}
+					}
+				}
+				catch (COMException)
+				{
+				}
+				catch (ArgumentException)
+				{
+				}
 
-                // Get the active configuration.
-                EnvDTE.Configuration config = confManager.ActiveConfiguration;
-                if(null == config) {
-                    return null;
-                }
+				if (outputPathProperty == null)
+				{
+					try
+					{
+						// Most project types should implement the OutputPath property on their
+						// configuration-dependent Properties object above. But if it wasn't found
+						// there, check the project node Properties.
+						EnvDTE.Properties props = this.ReferencedProjectObject.Properties;
+						if (null != props)
+						{
+							outputPathProperty = props.Item("OutputPath");
+						}
+					}
+					catch (COMException)
+					{
+					}
+					catch (ArgumentException)
+					{
+					}
+				}
 
-                if (null == config.Properties) {
-                    return null;
-                }
 
-                // Get the output path for the current configuration.
-                EnvDTE.Property outputPathProperty = config.Properties.Item("OutputPath");
                 if (null == outputPathProperty || outputPathProperty.Value == null) {
                     return null;
                 }
@@ -227,6 +349,8 @@ namespace Microsoft.VisualStudio.Project {
                     return null;
                 }
                 // build the full path adding the name of the assembly to the output path.
+
+               string assemblyName = assemblyNameProperty.Value.ToString();
                 outputPath = System.IO.Path.Combine(outputPath, assemblyNameProperty.Value.ToString());
 
                 return outputPath;
@@ -339,14 +463,16 @@ namespace Microsoft.VisualStudio.Project {
         /// <summary>
         /// The node is added to the hierarchy and then updates the build dependency list.
         /// </summary>
-        public override void AddReference() {
-            if(this.ProjectMgr == null) {
-                return;
-            }
-            base.AddReference();
-            this.ProjectMgr.AddBuildDependency(this.buildDependency);
-            return;
-        }
+        public override ReferenceNode AddReference() // dcaton - changed return type to ReferenceNode, see comments in ReferenceContainerNode.AddReferenceFromSelectorData()
+		{
+			if(this.ProjectMgr == null)
+			{
+				return null;
+			}
+			ReferenceNode node = base.AddReference();
+			this.ProjectMgr.AddBuildDependency(this.buildDependency);
+			return node;
+		}
 
         /// <summary>
         /// Overridden method. The method updates the build dependency list before removing the node from the hierarchy.
@@ -419,6 +545,23 @@ namespace Microsoft.VisualStudio.Project {
 
             return true;
         }
+		protected override bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode )
+		{
+			// When this method is called this refererence has not yet been added to the hierarchy, only instantiated.
+			if(!base.CanAddReference(out errorHandler, out existingNode ))
+			{
+				return false;
+			}
+
+			errorHandler = null;
+			if(this.IsThisProjectReferenceInCycle())
+			{
+				errorHandler = new CannotAddReferenceErrorMessage(ShowCircularReferenceErrorMessage);
+				return false;
+			}
+
+			return true;
+		}
 
         private bool IsThisProjectReferenceInCycle() {
             return IsReferenceInCycle(this.referencedProjectGuid);
@@ -450,6 +593,47 @@ namespace Microsoft.VisualStudio.Project {
 
             return circular != 0;
         }
+		internal override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+		{
+			if (cmdGroup == VsMenus.guidStandardCommandSet97)
+			{
+				switch ((VsCommands)cmd)
+				{
+					case VsCommands.Rename:
+						result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+						return VSConstants.S_OK;
+				}
+			}
+
+			return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
+		}
+		/// <summary>
+		/// Called by the shell to get the node caption when the user tries to rename from the GUI
+		/// </summary>
+		/// <returns>the node cation</returns>
+		/// <remarks>Overridden to allow editing of project reference nodes.</remarks>
+		public override string GetEditLabel()
+		{
+			return this.Caption;
+		}
+
+		/// <summary>
+		/// Called by the shell when a node has been renamed from the GUI
+		/// </summary>
+		/// <param name="label"></param>
+		/// <returns>E_NOTIMPL</returns>
+		public override int SetEditLabel(string label)
+		{
+			HierarchyNode thisParentNode = this.Parent;
+			this.ReferencedProjectName = label;
+			this.OnInvalidateItems(thisParentNode);
+
+			// select the reference node again
+			IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
+			uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem);
+
+			return VSConstants.S_OK;
+		}
         #endregion
     }
 

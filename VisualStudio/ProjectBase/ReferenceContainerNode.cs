@@ -26,8 +26,41 @@ using MSBuild = Microsoft.Build.Evaluation;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.VisualStudio.Project {
+    [CLSCompliant(false), ComVisible(true)]
+    public class ReferenceContainerNodeProperties : NodeProperties
+    {
+    #region properties
+       [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
+       [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
+       [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
+      [AutomationBrowsable( false )]
+      public string FolderName
+      {
+         get
+         {
+            return this.Node.Caption;
+         }
+      }
+
+    #endregion
+
+    #region ctors
+      public ReferenceContainerNodeProperties( HierarchyNode node )
+         : base( node )
+      {
+      }
+    #endregion
+
+    #region overridden methods
+      public override string GetClassName()
+      {
+          return Microsoft.VisualStudio.Project.SR.GetString(Microsoft.VisualStudio.Project.SR.FolderProperties, CultureInfo.CurrentUICulture);
+      }
+    #endregion
+   }
     [CLSCompliant(false), ComVisible(true)]
     public class ReferenceContainerNode : HierarchyNode, IReferenceContainer {
         #region fields
@@ -95,6 +128,11 @@ namespace Microsoft.VisualStudio.Project {
         #endregion
 
         #region overridden methods
+        protected override NodeProperties CreatePropertiesObject()
+        {
+           return new ReferenceContainerNodeProperties( this );
+        }
+
         /// <summary>
         /// Returns an instance of the automation object for ReferenceContainerNode
         /// </summary>
@@ -201,8 +239,9 @@ namespace Microsoft.VisualStudio.Project {
         /// Adds references to this container from a MSBuild project.
         /// </summary>
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject) {
+            var duplicateNodes = new List<ReferenceNode>();
             foreach(string referenceType in SupportedReferenceTypes) {
-                IEnumerable<MSBuild.ProjectItem> refererncesGroup = this.ProjectMgr.BuildProject.GetItems(referenceType);
+                IEnumerable<MSBuild.ProjectItem> referencesGroup = this.ProjectMgr.BuildProject.GetItems(referenceType);
 
                 bool isAssemblyReference = referenceType == ProjectFileConstants.Reference;
                 // If the project was loaded for browsing we should still create the nodes but as not resolved.
@@ -210,7 +249,7 @@ namespace Microsoft.VisualStudio.Project {
                     continue;
                 }
 
-                foreach(MSBuild.ProjectItem item in refererncesGroup) {
+                foreach(MSBuild.ProjectItem item in referencesGroup) {
                     ProjectElement element = new ProjectElement(this.ProjectMgr, item, false);
 
                     ReferenceNode node = CreateReferenceNode(referenceType, element);
@@ -230,7 +269,33 @@ namespace Microsoft.VisualStudio.Project {
 
                         if(!found) {
                             this.AddChild(node);
+                        } else {
+                            duplicateNodes.Add(node);
                         }
+                    }
+                }
+            }
+            if(duplicateNodes.Count > 0) {
+                // Ok, now ask the user what to do
+                string message = "The project " + this.ProjectMgr.Caption + Environment.NewLine +
+                    "has some duplicated references." + Environment.NewLine +
+                    "Would you like to delete all duplicate references ?" + Environment.NewLine;
+                string title = string.Empty;
+                OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
+                OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND;
+                int result = VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
+                // Yes
+                if(result == 6) {
+                    // Make a backup first
+                    string original = buildProject.FullPath;
+                    StreamWriter backup = new StreamWriter(original + ".backup");
+                    buildProject.Save(backup);
+                    backup.Close();
+                    // User replied Yes to the Auto Correction
+                    foreach(ReferenceNode node in duplicateNodes) {
+                        //this.RemoveChild( node );
+                        node.Remove(false);
                     }
                 }
             }
@@ -241,7 +306,7 @@ namespace Microsoft.VisualStudio.Project {
         /// </summary>
         /// <param name="selectorData">data describing selected component</param>
         /// <returns>Reference in case of a valid reference node has been created. Otherwise null</returns>
-        public ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null) {
+        public virtual ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null) {
             //Make sure we can edit the project file
             if(!this.ProjectMgr.QueryEditProjectFile(false)) {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
@@ -331,6 +396,11 @@ namespace Microsoft.VisualStudio.Project {
         protected virtual ReferenceNode CreateFileComponent(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null) {
             if(null == selectorData.bstrFile) {
                 throw new ArgumentNullException("selectorData");
+            }
+            // refer to http://social.msdn.microsoft.com/Forums/en-US/vsx/thread/50af4ee8-1431-4d27-86c4-7db799c3f085
+            if ( selectorData.bstrFile[0] == '*' )
+            {
+               selectorData.bstrFile = selectorData.bstrFile.Substring( 1 );
             }
 
             // We have a path to a file, it could be anything
@@ -431,7 +501,7 @@ namespace Microsoft.VisualStudio.Project {
         /// Creates a com reference node from a selector data.
         /// </summary>
         protected virtual ComReferenceNode CreateComReferenceNode(Microsoft.VisualStudio.Shell.Interop.VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null) {
-            ComReferenceNode node = new ComReferenceNode(this.ProjectMgr, selectorData);
+            ComReferenceNode node = new ComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
             return node;
         }
         #endregion

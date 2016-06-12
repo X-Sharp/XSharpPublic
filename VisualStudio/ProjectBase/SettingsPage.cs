@@ -176,6 +176,34 @@ namespace Microsoft.VisualStudio.Project
             return String.Empty;
         }
 
+        public string GetUnevaluatedConfigProperty(string propertyName)
+        {
+            if (this.ProjectMgr != null)
+            {
+                string unifiedResult = null;
+
+                for (int i = 0; i < this.projectConfigs.Length; i++)
+                {
+                    ProjectConfig config = projectConfigs[i];
+                    string property = config.GetUnevaluatedConfigurationProperty(propertyName);
+
+                    if (property != null)
+                    {
+                        string text = property.Trim();
+
+                        if (i == 0)
+                            unifiedResult = text;
+                        else if (unifiedResult != text)
+                            return ""; // tristate value is blank then
+                    }
+                }
+
+                return unifiedResult;
+            }
+
+            return String.Empty;
+        }
+
         /// <summary>
         /// Sets the value of a configuration dependent property.
         /// If the attribute does not exist it is created.  

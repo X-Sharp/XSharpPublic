@@ -15,7 +15,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-
+using System.Reflection;
 namespace Microsoft.VisualStudio.Project {
     /// <summary>
     /// The purpose of DesignPropertyDescriptor is to allow us to customize the
@@ -152,8 +152,13 @@ namespace Microsoft.VisualStudio.Project {
         /// Delegates to base.
         /// </summary>
         public override bool ShouldSerializeValue(object component) {
-            bool result = this.property.ShouldSerializeValue(component);
-            return result;
+            // If the user has set the AlwaysSerializedAttribute, do not attempt to bold.
+            if (property.ComponentType.GetProperty(property.Name).IsDefined(typeof(AlwaysSerializedAttribute))) {
+                return false;
+            } else {
+                bool result = property.ShouldSerializeValue(component);
+                return result;
+            }
         }
 
         /// <summary>

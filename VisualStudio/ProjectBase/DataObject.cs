@@ -213,6 +213,18 @@ namespace Microsoft.VisualStudio.Project {
         void IDataObject.SetData(FORMATETC[] fmt, STGMEDIUM[] m, int fRelease) {
         }
         #endregion
+        #region static methods
+		internal static int ForceCast(uint i)
+		{
+			unchecked { return (int)i; }
+		}
+
+		internal static uint ForceCast(int i)
+		{
+			unchecked { return (uint)i; }
+		}
+
+        #endregion
     }
 
     [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -221,10 +233,14 @@ namespace Microsoft.VisualStudio.Project {
         internal static readonly ushort CF_VSREFPROJECTITEMS;
         internal static readonly ushort CF_VSSTGPROJECTITEMS;
         internal static readonly ushort CF_VSPROJECTCLIPDESCRIPTOR;
+		internal static readonly ushort CF_VSREFPROJECTS;
+		internal static readonly ushort CF_VSSTGPROJECTS;
 #pragma warning restore 414
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static DragDropHelper() {
+			CF_VSREFPROJECTS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTS");
+			CF_VSSTGPROJECTS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTS");
             CF_VSREFPROJECTITEMS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTITEMS");
             CF_VSSTGPROJECTITEMS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTITEMS");
             CF_VSPROJECTCLIPDESCRIPTOR = UnsafeNativeMethods.RegisterClipboardFormat("CF_PROJECTCLIPBOARDDESCRIPTOR");
@@ -241,6 +257,11 @@ namespace Microsoft.VisualStudio.Project {
             return fmt;
         }
 
+		public static FORMATETC CreateFormatEtc()
+		{
+			return CreateFormatEtc(CF_VSSTGPROJECTITEMS);
+		}
+ 
         public static int QueryGetData(Microsoft.VisualStudio.OLE.Interop.IDataObject pDataObject, ref FORMATETC fmtetc) {
             int returnValue = VSConstants.E_FAIL;
             FORMATETC[] af = new FORMATETC[1];
@@ -356,7 +377,28 @@ namespace Microsoft.VisualStudio.Project {
 
             return null;
         }
+		internal static void FillFormatEtc(ref FORMATETC template, ushort clipFormat, ref FORMATETC result)
+		{
+			if (clipFormat != 0)
+			{
+				result = template;
+				result.cfFormat = clipFormat;
+				result.ptd = IntPtr.Zero;
+				result.dwAspect = (uint)DVASPECT.DVASPECT_CONTENT;
+				result.lindex = -1;
+				result.tymed = (uint)TYMED.TYMED_NULL;
+			}
+		}
 
+		internal static void OleCopyFormatEtc(ref FORMATETC src, ref FORMATETC dest)
+		{
+			dest.cfFormat = src.cfFormat;
+			dest.ptd = Marshal.AllocCoTaskMem(Marshal.SizeOf(src.ptd));
+			Marshal.StructureToPtr(src.ptd, dest.ptd, false);
+			dest.dwAspect = src.dwAspect;
+			dest.lindex = src.lindex;
+			dest.tymed = src.tymed;
+		}
         internal static IntPtr CopyHGlobal(IntPtr data) {
             IntPtr src = UnsafeNativeMethods.GlobalLock(data);
             int size = UnsafeNativeMethods.GlobalSize(data);

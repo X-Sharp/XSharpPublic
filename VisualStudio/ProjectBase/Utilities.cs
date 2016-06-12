@@ -388,6 +388,30 @@ namespace Microsoft.VisualStudio.Project {
             return currentConfigName;
 
         }
+		/// <summary>
+		/// Gets the active configuration name.
+		/// </summary>
+		/// <param name="automationObject">The automation object.</param>
+		/// <returns>The name of the active configuartion.</returns>
+		internal static string GetActivePlatformName(EnvDTE.Project automationObject)
+		{
+			if (automationObject == null)
+			{
+				throw new ArgumentNullException("automationObject");
+			}
+
+			string currentPlatformName = string.Empty;
+			if (automationObject.ConfigurationManager != null)
+			{
+				EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
+				if (activeConfig != null)
+				{
+					currentPlatformName = activeConfig.PlatformName;
+				}
+			}
+
+			return currentPlatformName;
+		}
 
 
         /// <summary>
@@ -589,6 +613,16 @@ namespace Microsoft.VisualStudio.Project {
             return returnValue;
         }
 
+		/// <summary>
+		/// Converts a UInt32 to Int32 containing the same bytes.
+		/// </summary>
+		/// <param name="value">The UInt32 to convert.</param>
+		/// <returns>The converted value.</returns>
+		[CLSCompliant(false)]
+		public static int ConvertUIntToInt(uint value)
+		{
+			return System.BitConverter.ToInt32(System.BitConverter.GetBytes(value), 0);
+		}
 
         /// <summary>
         /// Sets a string value from an enum
@@ -616,6 +650,7 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="fullProjectPath">The full path of the project.</param>
         /// <returns>A loaded msbuild project.</returns>
         internal static MSBuild.Project InitializeMsBuildProject(MSBuild.ProjectCollection buildEngine, string fullProjectPath) {
+			Utilities.ArgumentNotNull("buildEngine", buildEngine);
             Utilities.ArgumentNotNullOrEmpty("fullProjectPath", fullProjectPath);
 
             // Call GetFullPath to expand any relative path passed into this method.
@@ -732,6 +767,11 @@ namespace Microsoft.VisualStudio.Project {
             return false;
         }
 
+        private const string _reservedName = "(\\b(nul|con|aux|prn)\\b)|(\\b((com|lpt)[0-9])\\b)";
+        private const string _invalidChars = "([\\/:*?\"<>|#%])";
+        private const string _regexToUseForFileName = _reservedName + "|" + _invalidChars;
+        private static Regex _unsafeFileNameCharactersRegex = new Regex(_regexToUseForFileName, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static Regex _unsafeCharactersRegex = new Regex(_invalidChars, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         /// <summary>
         /// Checks whether a file part contains valid characters. The file part can be any part of a non rooted path.
         /// </summary>
@@ -741,9 +781,6 @@ namespace Microsoft.VisualStudio.Project {
             if(String.IsNullOrEmpty(filePart)) {
                 return true;
             }
-            String reservedName = "(\\b(nul|con|aux|prn)\\b)|(\\b((com|lpt)[0-9])\\b)";
-            String invalidChars = @"([/?:&\\*<>|#%" + '\"' + "])";
-            String regexToUseForFileName = reservedName + "|" + invalidChars;
             String fileNameToVerify = filePart;
 
             // Define a regular expression that covers all characters that are not in the safe character sets.
@@ -761,9 +798,7 @@ namespace Microsoft.VisualStudio.Project {
 
             if(!String.IsNullOrEmpty(extension)) {
                 // Check the extension first
-                String regexToUseForExtension = invalidChars;
-                Regex unsafeCharactersRegex = new Regex(regexToUseForExtension, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-                bool isMatch = unsafeCharactersRegex.IsMatch(extension);
+                bool isMatch = _unsafeCharactersRegex.IsMatch(extension);
                 if(isMatch) {
                     return isMatch;
                 }
@@ -778,12 +813,11 @@ namespace Microsoft.VisualStudio.Project {
             }
 
             // We verify CLOCK$ outside the regex since for some reason the regex is not matching the clock\\$ added.
-            if(String.Compare(fileNameToVerify, "CLOCK$", StringComparison.OrdinalIgnoreCase) == 0) {
+            if (String.Equals(fileNameToVerify, "CLOCK$", StringComparison.OrdinalIgnoreCase)) {
                 return true;
             }
 
-            Regex unsafeFileNameCharactersRegex = new Regex(regexToUseForFileName, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-            return unsafeFileNameCharactersRegex.IsMatch(fileNameToVerify);
+            return _unsafeFileNameCharactersRegex.IsMatch(fileNameToVerify);
         }
 
         /// <summary>

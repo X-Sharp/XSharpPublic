@@ -165,6 +165,14 @@ namespace Microsoft.VisualStudio.Project {
                 return;
             }
 
+            String currentValue = item.GetMetadataValue(attributeName);
+            bool changed;
+            if (String.IsNullOrEmpty(currentValue) && String.IsNullOrEmpty(attributeValue))
+                changed = false;
+            else
+                changed = String.Compare(currentValue, attributeValue) != 0;
+            if (changed)
+            {
             // Check out the project file.
             if(!this.itemProject.QueryEditProjectFile(false)) {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
@@ -175,6 +183,7 @@ namespace Microsoft.VisualStudio.Project {
             else
                 item.SetMetadataValue(attributeName, attributeValue);
             itemProject.SetProjectFileDirty(true);
+            }
         }
 
         public string GetEvaluatedMetadata(string attributeName) {
@@ -211,7 +220,7 @@ namespace Microsoft.VisualStudio.Project {
                     return String.Empty;
                 return virtualProperties[attributeName];
             }
-
+            if(this.item != null) {
             // cannot ask MSBuild for Include, so intercept it and return the corresponding property
             if(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
                 return item.EvaluatedInclude;
@@ -221,6 +230,8 @@ namespace Microsoft.VisualStudio.Project {
                 return item.ItemType;
 
             return item.GetMetadataValue(attributeName);
+            }
+            return null;
         }
 
         /// <summary>

@@ -205,7 +205,16 @@ namespace Microsoft.VisualStudio.Project.Automation
             throw new NotImplementedException();
         }
 
-        /// <summary>
+		/// <summary>
+		/// Adds a project item which is a link to a file outside the project directory structure.
+		/// </summary>
+		/// <param name="fileName">The file to be linked to the project.</param>
+		/// <returns>A ProjectItem object.</returns>
+		public virtual EnvDTE.ProjectItem AddFileLink(string fileName)
+		{
+			throw new NotImplementedException();
+		}
+ 
         /// Get Project Item from index
         /// </summary>
         /// <param name="index">Either index by number (1-based) or by name can be used to get the item</param>
@@ -220,7 +229,6 @@ namespace Microsoft.VisualStudio.Project.Automation
                 {
                     return (EnvDTE.ProjectItem)items[realIndex];
                 }
-                return null;
             }
             else if(index is string)
             {
@@ -233,7 +241,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     }
                 }
             }
-            return null;
+            throw new ArgumentException(SR.GetString(SR.InvalidParameter, System.Globalization.CultureInfo.CurrentUICulture), "index");
         }
 
         /// <summary>

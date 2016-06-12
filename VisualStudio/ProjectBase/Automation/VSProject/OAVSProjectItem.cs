@@ -56,6 +56,7 @@ namespace Microsoft.VisualStudio.Project.Automation {
 
         public void RunCustomTool()
         {
+			this.FileNode.RunGenerator();
         }
 
         #endregion

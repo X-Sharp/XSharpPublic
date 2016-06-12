@@ -66,7 +66,8 @@ namespace Microsoft.VisualStudio.Project {
         IVsProjectSpecialFiles,
         IVsProjectUpgrade,
         IVsDesignTimeAssemblyResolution,
-        IVsSetTargetFrameworkWorkerCallback {
+        IVsSetTargetFrameworkWorkerCallback,
+        IVsDeferredSaveProject {
         #region nested types
 
         public enum ImageName {
@@ -241,6 +242,8 @@ namespace Microsoft.VisualStudio.Project {
 
         private bool isNewProject;
 
+        private bool isZeroImpact;
+ 
         private bool projectOpened;
 
         private bool buildIsPrepared;
@@ -340,6 +343,16 @@ namespace Microsoft.VisualStudio.Project {
 
         // Has the object been disposed.
         private bool isDisposed;
+ 
+        private bool allowDuplicateLinks;
+
+        private bool isInPasteOrDrop = false;
+
+        private bool dropAsCopy = false;
+
+        private bool pasteAsNonMemberItem = false;
+
+        private bool alreadyHandledOverwritePrompts = false;
         #endregion
 
         #region abstract properties
@@ -526,6 +539,17 @@ namespace Microsoft.VisualStudio.Project {
         #endregion
 
         /// <summary>
+        /// Gets or sets a flag that allows multiple links to the same file in the project.
+        /// </summary>
+        protected internal bool AllowDuplicateLinks {
+            get {
+                return this.allowDuplicateLinks;
+            }
+            set {
+                this.allowDuplicateLinks = value;
+            }
+        }
+        /// <summary>
         /// Gets or sets the ability of a project filenode to have child nodes (sub items).
         /// Example would be C#/VB forms having resx and designer files.
         /// </summary>
@@ -596,6 +620,18 @@ namespace Microsoft.VisualStudio.Project {
         }
 
         /// <summary>
+        /// Gets or sets whether or not files pasted should be pasted as non-
+        /// member items.
+        /// </summary>
+        public bool PasteAsNonMemberItem {
+            get {
+                return this.pasteAsNonMemberItem;
+            }
+            set {
+                this.pasteAsNonMemberItem = value;
+            }
+        }
+        /// <summary>
         /// Gets the path to the folder containing the project.
         /// </summary>
         public string ProjectFolder {
@@ -649,6 +685,23 @@ namespace Microsoft.VisualStudio.Project {
         public bool IsClosing {
             get {
                 return this.isClosing;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether or not the project is open.
+        /// </summary>
+        public bool IsProjectOpened {
+            get { return this.projectOpened; }
+        }
+
+
+        /// <summary>
+        /// Gets whether or not the readonly file attribute is set for this project.
+        /// </summary>
+        internal bool IsReadOnly {
+            get {
+                return (File.GetAttributes(filename) & FileAttributes.ReadOnly) != 0;
             }
         }
 
@@ -937,6 +990,19 @@ namespace Microsoft.VisualStudio.Project {
         #endregion
 
         #region overridden methods
+        public override int SaveItem(VSSAVEFLAGS saveFlag, string silentSaveAsName, uint itemid, IntPtr docData, out int cancelled) {
+            int ret = base.SaveItem(saveFlag, silentSaveAsName, itemid, docData, out cancelled);
+
+            if(ret == VSConstants.S_OK && cancelled == 0) {
+                FileNode node = NodeFromItemId(itemid) as FileNode;
+
+                if(node != null) {
+                    node.RunGenerator(false);
+                }
+            }
+
+            return ret;
+        }
         protected override NodeProperties CreatePropertiesObject() {
             return new ProjectNodeProperties(this);
         }
@@ -1038,6 +1104,7 @@ namespace Microsoft.VisualStudio.Project {
 
             this.isClosed = true;
 
+            this.isZeroImpact = false;
             return hr;
         }
 
@@ -1249,14 +1316,27 @@ namespace Microsoft.VisualStudio.Project {
         internal override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result) {
             if(cmdGroup == VsMenus.guidStandardCommandSet97) {
                 switch((VsCommands)cmd) {
-                    case VsCommands.Copy:
                     case VsCommands.Paste:
                     case VsCommands.Cut:
+                        if(this.isZeroImpact) {
+                            result |= QueryStatusResult.NOTSUPPORTED;
+                        } else {
+                            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                        }
+                        return VSConstants.S_OK;
+                    case VsCommands.UnloadProject:
+                        if(this.isZeroImpact) {
+                            result |= QueryStatusResult.NOTSUPPORTED | QueryStatusResult.INVISIBLE;
+                        } else {
+                            result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
+                        }
+                        return VSConstants.S_OK;
+
+                    case VsCommands.Copy:
                     case VsCommands.Rename:
                     case VsCommands.Exit:
                     case VsCommands.ProjectSettings:
                     case VsCommands.BuildSln:
-                    case VsCommands.UnloadProject:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
 
@@ -1757,6 +1837,9 @@ namespace Microsoft.VisualStudio.Project {
 
             string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
             Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
+            if(key.Contains("\\") && !dependentOf.Contains("\\")) {
+                dependentOf = key.Substring(0, key.IndexOf('\\') + 1) + dependentOf;
+            }
             if(subitems.ContainsKey(dependentOf)) {
                 // The parent item is an other subitem, so recurse into this method to add the parent first
                 parent = AddDependentFileNode(subitems, dependentOf);
@@ -1765,6 +1848,12 @@ namespace Microsoft.VisualStudio.Project {
                 uint parentItemID;
                 string path = Path.Combine(this.ProjectFolder, dependentOf);
                 ErrorHandler.ThrowOnFailure(this.ParseCanonicalName(path, out parentItemID));
+                if(parentItemID == (uint)VSConstants.VSITEMID.Nil) {
+                    // if the parent does not exist in a subfolder, check in the root
+                    // because transporter write the resources in a subfolder and the modules in the root
+                    path = Path.Combine(this.ProjectFolder, Path.GetFileName(path));
+                    ErrorHandler.ThrowOnFailure(this.ParseCanonicalName(path, out parentItemID));
+                }
                 if(parentItemID != (uint)VSConstants.VSITEMID.Nil)
                     parent = this.NodeFromItemId(parentItemID);
                 Debug.Assert(parent != null, "File dependent upon a non existing item or circular dependency. Ignoring the DependentUpon metadata");
@@ -2452,6 +2541,8 @@ namespace Microsoft.VisualStudio.Project {
                 this.InitSccInfo();
 
                 this.RegisterSccProject();
+            } catch(Exception ex) {
+                Debug.WriteLine(ex.ToString());
             } finally {
                 this.SetProjectFileDirty(false);
                 this.eventTriggeringFlag = ProjectNode.EventTriggering.TriggerAll;
@@ -2943,7 +3034,7 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="originalFileName">The orginal filname.</param>
         /// <param name="computedNewFileName">The computed new file name, that will be copied to the project directory or into the folder .</param>
         /// <returns>S_OK for success, or an error message</returns>
-        protected virtual int CanOverwriteExistingItem(string originalFileName, string computedNewFileName) {
+        protected virtual int SystemCanOverwriteExistingItem(string originalFileName, string computedNewFileName) {
             if(String.IsNullOrEmpty(originalFileName) || String.IsNullOrEmpty(computedNewFileName)) {
                 return VSConstants.E_INVALIDARG;
             }
@@ -2967,11 +3058,36 @@ namespace Microsoft.VisualStudio.Project {
                 return VSConstants.E_ABORT;
             }
 
+            return VSConstants.S_OK;
+        }
+        /// <summary>
+        /// Determines whether an item can be overwritten in the hierarchy.
+        /// </summary>
+        /// <param name="originalFileName">The full path of the orginal filname.</param>
+        /// <param name="computedNewFileName">The full path of the computed new file name, that will be copied to the project directory or into the folder.</param>
+        /// <returns>S_OK for success, or an error message</returns>
+        protected virtual int CanOverwriteExistingItem(string originalFileName, string computedNewFileName) {
+            int ret = SystemCanOverwriteExistingItem(originalFileName, computedNewFileName);
+            if(ret != VSConstants.S_OK) {
+                return ret;
+            }
 
+            string message = String.Empty;
+            string title = String.Empty;
+            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_QUERY;
+            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
+            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+
+
+
+            HierarchyNode existingNode = this.ProjectMgr.FindChild(computedNewFileName);
+            FileNode existingFileNode = existingNode as FileNode;
+            if(existingFileNode != null && existingFileNode.IsLink) {
+                message = SR.GetString(SR.LinkedFileAlreadyExists, Path.GetFileName(computedNewFileName));
+            } else {
+                message = SR.GetString(SR.FileAlreadyInProject, Path.GetFileName(computedNewFileName));
+            }
             // File already exists in project... message box
-            message = SR.GetString(SR.FileAlreadyInProject, CultureInfo.CurrentUICulture);
-            icon = OLEMSGICON.OLEMSGICON_QUERY;
-            buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
             int msgboxResult = VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
             if(msgboxResult != NativeMethods.IDYES) {
                 return (int)OleConstants.OLECMDERR_E_CANCELED;
@@ -2998,13 +3114,23 @@ namespace Microsoft.VisualStudio.Project {
                 throw new ArgumentNullException("parentNode");
             }
 
+            AddNewFileNodeToHierarchy(parentNode, fileName, null, VSADDFILEFLAGS.VSADDFILEFLAGS_NoFlags);
+        }
+        protected virtual HierarchyNode AddNewFileNodeToHierarchy(HierarchyNode parentNode, string fileName, string linkPath, VSADDFILEFLAGS addFlags) {
+            if(parentNode == null) {
+                throw new ArgumentNullException("parentNode");
+            }
+
             HierarchyNode child;
 
             // In the case of subitem, we want to create dependent file node
             // and set the DependentUpon property
-            if(this.canFileNodesHaveChilds && (parentNode is FileNode || parentNode is DependentFileNode)) {
+            if(this.canFileNodesHaveChilds && parentNode is FileNode) {
                 child = this.CreateDependentFileNode(fileName);
-                child.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parentNode.ItemNode.GetMetadata(ProjectFileConstants.Include));
+                string parent = parentNode.ItemNode.GetMetadata(ProjectFileConstants.Include);
+                // if the parent is in a subfolder, then we omit the folder name, like the C# project system
+                parent = Path.GetFileName(parent);
+                child.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
 
                 // Make sure to set the HasNameRelation flag on the dependent node if it is related to the parent by name
                 if(!child.HasParentNodeNameRelation && string.Compare(child.GetRelationalName(), parentNode.GetRelationalName(), StringComparison.OrdinalIgnoreCase) == 0) {
@@ -3013,12 +3139,16 @@ namespace Microsoft.VisualStudio.Project {
             } else {
                 //Create and add new filenode to the project
                 child = this.CreateFileNode(fileName);
+                if(!String.IsNullOrEmpty(linkPath)) {
+                    child.ItemNode.SetMetadata(ProjectFileConstants.Link, linkPath);
+                }
             }
 
             parentNode.AddChild(child);
 
             // TODO : Revisit the VSADDFILEFLAGS here. Can it be a nested project?
             this.tracker.OnItemAdded(fileName, VSADDFILEFLAGS.VSADDFILEFLAGS_NoFlags);
+            return child;
         }
 
         /// <summary>
@@ -3108,7 +3238,7 @@ namespace Microsoft.VisualStudio.Project {
         /// </summary>
         /// <param name="config">Configuration name</param>
         protected internal virtual void SetConfiguration(string config) {
-            if(config == null) {
+            if(String.IsNullOrEmpty(config)) {
                 throw new ArgumentNullException("config");
             }
 
@@ -3210,6 +3340,13 @@ namespace Microsoft.VisualStudio.Project {
                 if(!this.IsItemTypeFileType(item.ItemType))
                     continue;
 
+                // If the item visibility is false in the project file then skip adding it
+                if(!String.IsNullOrEmpty(item.GetMetadataValue(ProjectFileAttributeValue.Visible))) {
+                    bool result;
+                    if(Boolean.TryParse(item.GetMetadataValue(ProjectFileAttributeValue.Visible), out result) && !result) {
+                        continue;
+                    }
+                }
                 // If the item is already contained do nothing.
                 // TODO: possibly report in the error list that the the item is already contained in the project file similar to Language projects.
                 if(items.ContainsKey(item.EvaluatedInclude.ToUpperInvariant()))
@@ -4005,6 +4142,44 @@ namespace Microsoft.VisualStudio.Project {
         }
         #endregion
 
+        #region IVsDeferredSaveProject
+        //---------------------------------------------------------------------------
+        // IVsDeferredSaveProject
+        //---------------------------------------------------------------------------
+        // Implemented by a project that supports being a "zero-impact" project.
+        // The flags in the VSDIR file for the project must include VSDIRFLAG_DeferredSaveProject.
+        // This means that the project name will be automatically generated, as will the location,
+        // which will be at some temporary location (imitating the "in-memory" project experience).
+        // Then, when the project is created, CPF_DEFERREDSAVE is passed as one of the grfCreateFlags
+        // to IVsProjectFactory::CreateProject and/or IVsAggregatableProject::InitializeForOuter.
+        // The solution will be limited to containing one project, and nothing will be considered
+        // "dirty" while the solution/project are "zero-impact".
+        // When the user chooses to save the project permanently, he will use File.SaveAll, which
+        // will present him with a file browser with which he is to choose the new filename/location
+        // for his project file.  Once he chooses the filename, SaveProjectToLocation is called and
+        // the project must save itself to the specified filename and save all its other contents to
+        // the folder where the filename was specified.  At this point, the solution/project will no
+        // longer be considered "zero-impact" and normal solution/project operations will be available.
+        public virtual int SaveProjectToLocation(string pszProjectFilename) {
+            // first rename the project file from temporary location
+            this.RenameProjectFile(pszProjectFilename);
+
+            // now rename all documents in the project
+            this.RenameAllChildren(this);
+
+            // reset BaseUri because it was cached
+            this.baseUri = null;
+
+            // links may be changed so save the project file
+            this.SaveAs(pszProjectFilename);
+
+            // once the project is saved, it is no longer zero-impact project
+            this.isZeroImpact = false;
+
+            return VSConstants.S_OK;
+        }
+
+        #endregion
         #region IPersist Members
 
         public int GetClassID(out Guid clsid) {
@@ -4198,6 +4373,10 @@ namespace Microsoft.VisualStudio.Project {
         /// <remarks>The result array is initalized to failure.</remarks>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         public virtual int AddItemWithSpecific(uint itemIdLoc, VSADDITEMOPERATION op, string itemName, uint filesToOpen, string[] files, IntPtr dlgOwner, uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, VSADDRESULT[] result) {
+            return this.AddItemWithSpecific(itemIdLoc, op, VSADDFILEFLAGS.VSADDFILEFLAGS_NoFlags, itemName, filesToOpen, files, dlgOwner, editorFlags, ref editorType, physicalView, ref logicalView, result);
+        }
+
+        internal int AddItemWithSpecific(uint itemIdLoc, VSADDITEMOPERATION op, VSADDFILEFLAGS addFlags, string itemName, uint filesToOpen, string[] files, IntPtr dlgOwner, uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, VSADDRESULT[] result) {
             if(files == null || result == null || files.Length == 0 || result.Length == 0) {
                 return VSConstants.E_INVALIDARG;
             }
@@ -4217,9 +4396,6 @@ namespace Microsoft.VisualStudio.Project {
 
             // handle link and runwizard operations at this point
             switch(op) {
-                case VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE:
-                    // we do not support this right now
-                    throw new NotImplementedException("VSADDITEMOP_LINKTOFILE");
 
                 case VSADDITEMOPERATION.VSADDITEMOP_RUNWIZARD:
                     result[0] = this.RunWizard(n, itemName, files[0], dlgOwner);
@@ -4250,7 +4426,8 @@ namespace Microsoft.VisualStudio.Project {
                             newFileName = Path.Combine(baseDir, fileName);
                         }
                         break;
-                    case VSADDITEMOPERATION.VSADDITEMOP_OPENFILE: {
+                    case VSADDITEMOPERATION.VSADDITEMOP_OPENFILE:
+                    case VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE: {
                             string fileName = Path.GetFileName(file);
                             newFileName = Path.Combine(baseDir, fileName);
                         }
@@ -4281,100 +4458,173 @@ namespace Microsoft.VisualStudio.Project {
 
                 child = this.FindChild(newFileName);
                 if(child != null) {
+                    bool skipOverwriteCheck = false;
                     // If the file to be added is an existing file part of the hierarchy then continue.
                     if(NativeMethods.IsSamePath(file, newFileName)) {
-                        result[0] = VSADDRESULT.ADDRESULT_Cancel;
-                        continue;
+                        FileNode childFileNode = child as FileNode;
+                        if(!(childFileNode != null && childFileNode.IsLink)) {
+                            object isNonMemberItem = child.GetProperty((int)__VSHPROPID.VSHPROPID_IsNonMemberItem);
+                            if(isNonMemberItem != null && ((bool)isNonMemberItem) && !this.isInPasteOrDrop) {
+                                result[0] = this.IncludeExistingNonMemberNode(child);
+                            } else if(op == VSADDITEMOPERATION.VSADDITEMOP_OPENFILE && this.isInPasteOrDrop) {
+                                int copyNumber = 0;
+                                string originalFileName = newFileName;
+                                while(File.Exists(newFileName)) {
+                                    copyNumber++;
+                                    string fileNoExtension = Path.GetFileNameWithoutExtension(originalFileName);
+                                    string extension = Path.GetExtension(originalFileName);
+                                    if(copyNumber == 1) {
+                                        fileNoExtension = SR.GetString(SR.CopyOfFile, fileNoExtension);
+                                    } else {
+                                        fileNoExtension = SR.GetString(SR.CopyNOfFile, copyNumber, fileNoExtension);
+                                    }
+                                    newFileName = Path.Combine(baseDir, fileNoExtension + extension);
+                                }
+                                skipOverwriteCheck = true;
+                            } else {
+                                result[0] = VSADDRESULT.ADDRESULT_Cancel;
+                            }
+                            if(!skipOverwriteCheck) {
+                                continue;
+                            }
+                        }
                     }
 
-                    int canOverWriteExistingItem = this.CanOverwriteExistingItem(file, newFileName);
+                    if(!skipOverwriteCheck) {
+                        int canOverWriteExistingItem;
+                        if(this.alreadyHandledOverwritePrompts) {
+                            canOverWriteExistingItem = this.SystemCanOverwriteExistingItem(file, newFileName);
+                        } else {
+                            canOverWriteExistingItem = this.CanOverwriteExistingItem(file, newFileName);
+                        }
 
-                    if(canOverWriteExistingItem == (int)OleConstants.OLECMDERR_E_CANCELED) {
-                        result[0] = VSADDRESULT.ADDRESULT_Cancel;
-                        return canOverWriteExistingItem;
-                    } else if(canOverWriteExistingItem == VSConstants.S_OK) {
-                        overwrite = true;
-                    } else {
-                        return canOverWriteExistingItem;
+                        if(canOverWriteExistingItem == (int)OleConstants.OLECMDERR_E_CANCELED) {
+                            result[0] = VSADDRESULT.ADDRESULT_Cancel;
+                            return canOverWriteExistingItem;
+                        } else if(canOverWriteExistingItem == VSConstants.S_OK) {
+                            overwrite = true;
+                        } else {
+                            return canOverWriteExistingItem;
+                        }
+
                     }
-                }
 
-                // If the file to be added is not in the same path copy it.
-                if(NativeMethods.IsSamePath(file, newFileName) == false) {
-                    if(!overwrite && File.Exists(newFileName)) {
-                        string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FileAlreadyExists, CultureInfo.CurrentUICulture), newFileName);
-                        string title = string.Empty;
-                        OLEMSGICON icon = OLEMSGICON.OLEMSGICON_QUERY;
-                        OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
-                        OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-                        int messageboxResult = VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
-                        if(messageboxResult == NativeMethods.IDNO) {
+                    // If the file to be added is not in the same path copy it.
+                    if(NativeMethods.IsSamePath(file, newFileName) == false
+                    && op != VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE) {
+                        if(!overwrite && File.Exists(newFileName)) {
+                            string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.FileAlreadyExists, CultureInfo.CurrentUICulture), newFileName);
+                            string title = string.Empty;
+                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_QUERY;
+                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_YESNO;
+                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+                            int messageboxResult = VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
+                            if(messageboxResult == NativeMethods.IDNO) {
+                                result[0] = VSADDRESULT.ADDRESULT_Cancel;
+                                return (int)OleConstants.OLECMDERR_E_CANCELED;
+                            }
+                        }
+
+                        // Copy the file to the correct location.
+                        // We will suppress the file change events to be triggered to this item, since we are going to copy over the existing file and thus we will trigger a file change event. 
+                        // We do not want the filechange event to ocur in this case, similar that we do not want a file change event to occur when saving a file.
+                        IVsFileChangeEx fileChange = this.site.GetService(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
+                        if(fileChange == null) {
+                            throw new InvalidOperationException();
+                        }
+
+                        try {
+                            ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(VSConstants.VSCOOKIE_NIL, newFileName, 1));
+                            if(op == VSADDITEMOPERATION.VSADDITEMOP_CLONEFILE) {
+                                this.AddFileFromTemplate(file, newFileName);
+                            } else {
+                                PackageUtilities.CopyUrlToLocal(new Uri(file), newFileName);
+                            }
+                        } finally {
+                            ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(VSConstants.VSCOOKIE_NIL, newFileName, 0));
+                        }
+                    }
+
+                    if(op == VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE) {
+                        Url baseUrl = new Url(this.ProjectFolder + Path.DirectorySeparatorChar);
+                        string relativePath = baseUrl.MakeRelative(new Url(file));
+                        string linkPath = baseUrl.MakeRelative(new Url(newFileName));
+
+                        HierarchyNode existingLink = this.FindChild(file);
+                        if(!this.AllowDuplicateLinks && existingLink != null) {
+                            string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.LinkAlreadyExistsInProject, CultureInfo.CurrentUICulture), newFileName);
+                            string title = string.Empty;
+                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+                            VsShellUtilities.ShowMessageBox(this.Site, title, message, icon, buttons, defaultButton);
                             result[0] = VSADDRESULT.ADDRESULT_Cancel;
                             return (int)OleConstants.OLECMDERR_E_CANCELED;
                         }
-                    }
 
-                    // Copy the file to the correct location.
-                    // We will suppress the file change events to be triggered to this item, since we are going to copy over the existing file and thus we will trigger a file change event. 
-                    // We do not want the filechange event to ocur in this case, similar that we do not want a file change event to occur when saving a file.
-                    IVsFileChangeEx fileChange = this.site.GetService(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
-                    if(fileChange == null) {
-                        throw new InvalidOperationException();
-                    }
-
-                    try {
-                        ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(VSConstants.VSCOOKIE_NIL, newFileName, 1));
-                        if(op == VSADDITEMOPERATION.VSADDITEMOP_CLONEFILE) {
-                            this.AddFileFromTemplate(file, newFileName);
+                        if(overwrite) {
+                            child.Remove(false);
+                        }
+                        this.AddNewFileNodeToHierarchy(n, relativePath, linkPath, addFlags);
+                    } else {
+                        HierarchyNode existingLink = this.FindChild(newFileName);
+                        bool bExistingIsExcluded = false;
+                        HierarchyNode newFileNode = existingLink;
+                        if(existingLink != null) {
+                            object isNonMemberItem = existingLink.GetProperty((int)__VSHPROPID.VSHPROPID_IsNonMemberItem);
+                            bExistingIsExcluded = (isNonMemberItem != null) && ((bool)isNonMemberItem);
+                            existingLink.Remove(false);
+                            newFileNode = this.AddNewFileNodeToHierarchy(n, newFileName, null, addFlags);
+                        } else if(overwrite) {
+                            this.OverwriteExistingItem(child);
                         } else {
-                            PackageUtilities.CopyUrlToLocal(new Uri(file), newFileName);
+                            //Add new filenode/dependentfilenode
+                            newFileNode = this.AddNewFileNodeToHierarchy(n, newFileName, null, addFlags);
                         }
-                    } finally {
-                        ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(VSConstants.VSCOOKIE_NIL, newFileName, 0));
-                    }
-                }
 
-                if(overwrite) {
-                    this.OverwriteExistingItem(child);
-                } else {
-                    //Add new filenode/dependentfilenode
-                    this.AddNewFileNodeToHierarchy(n, newFileName);
-                }
-
-                result[0] = VSADDRESULT.ADDRESULT_Success;
-                actualFiles[actualFilesAddedIndex++] = newFileName;
-            }
-
-            // Notify listeners that items were appended.
-            if(actualFilesAddedIndex > 0)
-                n.OnItemsAppended(n);
-
-            //Open files if this was requested through the editorFlags
-            bool openFiles = (editorFlags & (uint)__VSSPECIFICEDITORFLAGS.VSSPECIFICEDITOR_DoOpen) != 0;
-            if(openFiles && actualFiles.Length <= filesToOpen) {
-                for(int i = 0; i < filesToOpen; i++) {
-                    if(!String.IsNullOrEmpty(actualFiles[i])) {
-                        string name = actualFiles[i];
-                        HierarchyNode child = this.FindChild(name);
-                        Debug.Assert(child != null, "We should have been able to find the new element in the hierarchy");
-                        if(child != null) {
-                            IVsWindowFrame frame;
-                            if(editorType == Guid.Empty) {
-                                Guid view = Guid.Empty;
-                                ErrorHandler.ThrowOnFailure(this.OpenItem(child.ID, ref view, IntPtr.Zero, out frame));
-                            } else {
-                                ErrorHandler.ThrowOnFailure(this.OpenItemWithSpecific(child.ID, editorFlags, ref editorType, physicalView, ref logicalView, IntPtr.Zero, out frame));
-                            }
-
-                            // Show the window frame in the UI and make it the active window
-                            if(frame != null) {
-                                ErrorHandler.ThrowOnFailure(frame.Show());
+                        if(this.isInPasteOrDrop && this.pasteAsNonMemberItem) {
+                            // special case for copying
+                            // when copying, we want to maintain the destination's member status
+                            if(existingLink == null || (this.dropAsCopy && bExistingIsExcluded) || !this.dropAsCopy) {
+                                newFileNode.SendExcludeFromProjectCommand();
                             }
                         }
                     }
+                    result[0] = VSADDRESULT.ADDRESULT_Success;
+                    actualFiles[actualFilesAddedIndex++] = newFileName;
                 }
-            }
 
+                // Notify listeners that items were appended.
+                if(actualFilesAddedIndex > 0) {
+                    n.OnItemsAppended(n);
+                }
+                //Open files if this was requested through the editorFlags
+                bool openFiles = (editorFlags & (uint)__VSSPECIFICEDITORFLAGS.VSSPECIFICEDITOR_DoOpen) != 0;
+                if(openFiles && actualFiles.Length <= filesToOpen) {
+                    for(int i = 0; i < filesToOpen; i++) {
+                        if(!String.IsNullOrEmpty(actualFiles[i])) {
+                            string name = actualFiles[i];
+                            HierarchyNode foundchild = this.FindChild(name);
+                            Debug.Assert(foundchild != null, "We should have been able to find the new element in the hierarchy");
+                            if(foundchild != null) {
+                                IVsWindowFrame frame;
+                                if(editorType == Guid.Empty) {
+                                    Guid view = Guid.Empty;
+                                    ErrorHandler.ThrowOnFailure(this.OpenItem(foundchild.ID, ref view, IntPtr.Zero, out frame));
+                                } else {
+                                    ErrorHandler.ThrowOnFailure(this.OpenItemWithSpecific(foundchild.ID, editorFlags, ref editorType, physicalView, ref logicalView, IntPtr.Zero, out frame));
+                                }
+
+                                // Show the window frame in the UI and make it the active window
+                                if(frame != null) {
+                                    ErrorHandler.ThrowOnFailure(frame.Show());
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
             return VSConstants.S_OK;
         }
 
@@ -4476,7 +4726,7 @@ namespace Microsoft.VisualStudio.Project {
                 itemId = VSConstants.VSITEMID_ROOT;
             } else {
                 HierarchyNode child = this.FindChild(mkDoc);
-                if(child != null) {
+                if(child != null && !(child is ReferenceNode)) {
                     found = 1;
                     itemId = child.ID;
                 }
@@ -4637,6 +4887,17 @@ namespace Microsoft.VisualStudio.Project {
             return hr;
         }
 
+        /// <summary>
+        /// This method helps converting any non member node into the member one.
+        /// </summary>
+        /// <param name="node">Node to be added.</param>
+        /// <returns>Returns the result of the conversion.</returns>
+        /// <remarks>This method helps including the non-member items into the project when ShowAllFiles option is enabled.
+        /// Normally, the project ignores "Add Existing Item" command if it is in ShowAllFiles mode and the non-member node
+        /// exists for the item being added. Override this method in the sub-class to alter this behavior.</remarks>
+        protected virtual VSADDRESULT IncludeExistingNonMemberNode(HierarchyNode node) {
+            return VSADDRESULT.ADDRESULT_Cancel;
+        }
         #endregion
 
         #region IVsProjectBuidSystem Members
@@ -4832,7 +5093,7 @@ namespace Microsoft.VisualStudio.Project {
                         throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "itemidAffectedNodes");
                     }
 
-                    n.ReDraw(UIHierarchyElement.SccState);
+                    n.ReDraw(UIHierarchyElement.SccState | UIHierarchyElement.Icon);
                 }
             }
             return VSConstants.S_OK;
@@ -5019,6 +5280,12 @@ namespace Microsoft.VisualStudio.Project {
             this.InteropSafeIVsUIHierWinClipboardHelperEvents = Utilities.GetOuterAs<IVsUIHierWinClipboardHelperEvents>(this);
             this.InteropSafeIVsComponentUser = Utilities.GetOuterAs<IVsComponentUser>(this);
 
+            if((flags & (uint)__VSCREATEPROJFLAGS2.CPF_DEFERREDSAVE) == (uint)__VSCREATEPROJFLAGS2.CPF_DEFERREDSAVE) {
+                this.isZeroImpact = true;
+            } else {
+                this.isZeroImpact = false;
+            }
+ 
             // Initialize the project
             this.Load(filename, location, name, flags, ref iid, out canceled);
 
@@ -5206,6 +5473,26 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="item">Item to add</param>
         /// <returns>Added node</returns>
         private HierarchyNode AddIndependentFileNode(MSBuild.ProjectItem item) {
+            string includePath = item.Xml.Include.Replace("/./", "/").Replace("\\.\\", "\\");
+            while(includePath.StartsWith("./") || includePath.StartsWith(".\\")) {
+                includePath = includePath.Substring(2);
+            }
+
+            // Don't set the property unless necessary to avoid dirtying the project.
+            if(includePath != item.Xml.Include) {
+                item.Xml.Include = includePath;
+            }
+
+            // Make sure the item is within the project folder hierarchy. If not, link it.
+            string linkPath = item.GetMetadataValue(ProjectFileConstants.Link);
+            if(String.IsNullOrEmpty(linkPath)) {
+                string projectFolder = new Uri(this.ProjectFolder).LocalPath;
+                string itemPath = new Uri(Path.Combine(this.ProjectFolder, item.Xml.Include)).LocalPath;
+                if(!itemPath.StartsWith(projectFolder, StringComparison.OrdinalIgnoreCase)) {
+                    linkPath = Path.GetFileName(item.Xml.Include);
+                    item.SetMetadataValue(ProjectFileConstants.Link, linkPath);
+                }
+            }
             HierarchyNode currentParent = GetItemParentNode(item);
             return AddFileNodeToNode(item, currentParent);
         }
@@ -5248,14 +5535,23 @@ namespace Microsoft.VisualStudio.Project {
         private HierarchyNode GetItemParentNode(MSBuild.ProjectItem item) {
             HierarchyNode currentParent = this;
             string strPath = item.EvaluatedInclude;
+            ProjectMetadata link = item.GetMetadata(ProjectFileConstants.Link);
+            if(link != null) {
+                string linkPath = link.EvaluatedValue;
+                // if the link path is empty, then remove the link property
+                if(!String.IsNullOrEmpty(linkPath))
+                    strPath = linkPath;
+                else
+                    item.RemoveMetadata(ProjectFileConstants.Link);
 
-            strPath = Path.GetDirectoryName(strPath);
-            if(strPath.Length > 0) {
-                // Use the relative to verify the folders...
-                currentParent = this.CreateFolderNodes(strPath);
+				}
+                strPath = Path.GetDirectoryName(strPath);
+                if(strPath.Length > 0) {
+                    // Use the relative to verify the folders...
+                    currentParent = this.CreateFolderNodes(strPath);
+                }
+                return currentParent;
             }
-            return currentParent;
-        }
 
         private MSBuildExecution.ProjectPropertyInstance GetMsBuildProperty(string propertyName, bool resetCache) {
             if(resetCache || this.currentConfig == null) {
@@ -5301,9 +5597,8 @@ namespace Microsoft.VisualStudio.Project {
                 name = this.Caption;
 
             string outputtype = GetProjectProperty(ProjectFileConstants.OutputType, false);
-
+            outputtype = outputtype.ToLowerInvariant();
             if(outputtype == "library") {
-                outputtype = outputtype.ToLowerInvariant();
                 name += ".dll";
             } else {
                 name += ".exe";
@@ -5658,7 +5953,7 @@ namespace Microsoft.VisualStudio.Project {
             return VSConstants.S_OK;
         }
 
-        public int UpgradeProject(uint grfUpgradeFlags) {
+        public virtual int UpgradeProject(uint grfUpgradeFlags) {
             int hr = VSConstants.S_OK;
 
             if(!PerformTargetFrameworkCheck()) {
@@ -5765,5 +6060,73 @@ namespace Microsoft.VisualStudio.Project {
 
             return false;
         }
+        /// <summary>
+        /// Renames all child nodes for a given ProjectNode.
+        /// This function is called by SaveProjectToLocation() to rename all documents
+        /// in the project recursively.
+        /// </summary>
+        /// <param name="node">ProjectNode</param>
+        private void RenameAllChildren(HierarchyNode node) {
+            if(node is FileNode) {
+                FileNode n = node as FileNode;
+                if(n.IsLink) {
+                    Url baseUrl = new Url(this.ProjectFolder + Path.DirectorySeparatorChar);
+                    string linkPath = baseUrl.MakeRelative(new Url(n.Url));
+                    n.ItemNode.Rename(linkPath);
+                } else {
+                    string subfolder = this.GetBaseDirectoryForAddingFiles(n);
+                    string source = n.Url;
+                    string target = Path.Combine(subfolder, n.Caption);
+
+                    // note that source and target is never same since IDE uses source location
+                    // in volatile path and IDE will prevent saving the project into the volatile location.
+                    // volatile path ex: c:\Documents and Settings\<user>\Local Settings\Application Data\Temporary Projects.
+                    Debug.Assert(!NativeMethods.IsSamePath(source, target));
+
+                    n.RenameDocument(source, target);
+
+                    // now make the target relative
+                    Url url = new Url(target);
+                    Url baseUrl = new Url(this.ProjectFolder + Path.DirectorySeparatorChar);
+                    string relPath = baseUrl.MakeRelative(url);
+                    n.ItemNode.Rename(relPath);
+                }
+            } else if(node is FolderNode || node is ProjectNode || node is ReferenceContainerNode) {
+                if(node is FolderNode) {
+                    string subfolder = this.GetBaseDirectoryForAddingFiles(node);
+                    Directory.CreateDirectory(subfolder);
+                }
+
+                for(HierarchyNode n = node.FirstChild; n != null; n = n.NextSibling) {
+                    this.RenameAllChildren(n);
+                }
+            } else if(node is ReferenceNode) {
+                // fix 'HintPath' to point to location relative to new project location
+                string relPath = node.ItemNode.GetMetadata(ProjectFileConstants.HintPath);
+                if(string.IsNullOrEmpty(relPath)) {
+                    relPath = node.ItemNode.GetMetadata(ProjectFileConstants.Include);
+                }
+
+                if(string.IsNullOrEmpty(relPath)) {
+                    return;
+                }
+
+                // do not process if variables are used
+                int startIndex, endIndex;
+                if((startIndex = relPath.IndexOf("$(", StringComparison.Ordinal)) >= 0 && (endIndex = relPath.IndexOf(Convert.ToString(')', CultureInfo.InvariantCulture), startIndex + 2, StringComparison.Ordinal)) >= 0) {
+                    return;
+                }
+
+                // get correct url to the reference
+                // this.ProjectMgr.BaseURI points to the old project location
+                Url url = new Url(this.ProjectMgr.BaseURI, relPath);
+
+                // now make path relative to the new project location
+                Url baseUrl = new Url(this.ProjectFolder + Path.DirectorySeparatorChar);
+                relPath = baseUrl.MakeRelative(url);
+                node.ItemNode.SetMetadata(ProjectFileConstants.HintPath, relPath);
+            }
+        }
+
     }
 }

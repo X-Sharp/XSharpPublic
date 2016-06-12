@@ -28,6 +28,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using IOleDataObject = Microsoft.VisualStudio.OLE.Interop.IDataObject;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
+using System.Windows.Forms;
 namespace Microsoft.VisualStudio.Project {
     /// <summary>
     /// Manages the CopyPaste and Drag and Drop scenarios for a Project.
@@ -38,6 +39,8 @@ namespace Microsoft.VisualStudio.Project {
         #region fields
         private uint copyPasteCookie;
         private DropDataType dropDataType;
+        private bool dataWasCut;
+        private List<DragDropItem> dropItems = new List<DragDropItem>();
         #endregion
 
         #region override of IVsHierarchyDropDataTarget methods
@@ -52,9 +55,9 @@ namespace Microsoft.VisualStudio.Project {
         public override int DragEnter(IOleDataObject pDataObject, uint grfKeyState, uint itemid, ref uint pdwEffect) {
             pdwEffect = (uint)DropEffect.None;
 
-            if(this.SourceDraggedOrCutOrCopied) {
-                return VSConstants.S_OK;
-            }
+            // if(this.SourceDraggedOrCutOrCopied) {
+            //     return VSConstants.S_OK;
+            // }
 
             this.dropDataType = QueryDropDataType(pDataObject);
             if(this.dropDataType != DropDataType.None) {
@@ -136,7 +139,8 @@ namespace Microsoft.VisualStudio.Project {
             int returnValue;
             try {
                 DropDataType dropDataType = DropDataType.None;
-                dropDataType = ProcessSelectionDataObject(pDataObject, targetNode);
+                this.isInPasteOrDrop = true;
+                dropDataType = ProcessSelectionDataObject(pDataObject, targetNode, grfKeyState);
                 pdwEffect = (uint)this.QueryDropEffect(dropDataType, grfKeyState);
 
                 // If it is a drop from windows and we get any kind of error we return S_FALSE and dropeffect none. This
@@ -155,8 +159,10 @@ namespace Microsoft.VisualStudio.Project {
                 }
 
                 returnValue = VSConstants.E_FAIL;
+            } finally {
+                this.isInPasteOrDrop = false;
+                this.dropAsCopy = false;
             }
-
             return returnValue;
         }
         #endregion
@@ -187,6 +193,7 @@ namespace Microsoft.VisualStudio.Project {
             }
 
             this.SourceDraggedOrCutOrCopied = true;
+            this.SourceDragged = true;
 
             pdwOKEffects = (uint)(DropEffect.Move | DropEffect.Copy);
 
@@ -206,9 +213,13 @@ namespace Microsoft.VisualStudio.Project {
                 return VSConstants.S_FALSE;
             }
 
-            this.CleanupSelectionDataObject(fDropped != 0, false, dwEffects == (uint)DropEffect.Move);
+            try {
+                this.CleanupSelectionDataObject(fDropped != 0, false, dwEffects == (uint)DropEffect.Move);
+            } finally {
+                this.SourceDraggedOrCutOrCopied = false;
+                this.SourceDragged = false;
+            }
 
-            this.SourceDraggedOrCutOrCopied = false;
 
             return VSConstants.S_OK;
         }
@@ -304,8 +315,11 @@ namespace Microsoft.VisualStudio.Project {
                 return OnClear(wasCut);
             }
 
-            this.CleanupSelectionDataObject(false, wasCut != 0, dropEffect == (uint)DropEffect.Move);
-            this.SourceDraggedOrCutOrCopied = false;
+            try {
+                this.CleanupSelectionDataObject(false, wasCut != 0, dropEffect == (uint)DropEffect.Move);
+            } finally {
+                this.SourceDraggedOrCutOrCopied = false;
+            }
             return VSConstants.S_OK;
         }
 
@@ -320,8 +334,11 @@ namespace Microsoft.VisualStudio.Project {
                 return VSConstants.S_FALSE;
             }
 
-            this.CleanupSelectionDataObject(false, wasCut != 0, false, true);
-            this.SourceDraggedOrCutOrCopied = false;
+            try {
+                this.CleanupSelectionDataObject(false, wasCut != 0, false, true);
+            } finally {
+                this.SourceDraggedOrCutOrCopied = false;
+            }
             return VSConstants.S_OK;
         }
         #endregion
@@ -362,9 +379,12 @@ namespace Microsoft.VisualStudio.Project {
                     // If there is a selection package the data
                     if(selectedNodes.Count > 1) {
                         foreach(HierarchyNode node in selectedNodes) {
-                            selectionContent = node.PrepareSelectedNodesForClipBoard();
-                            if(selectionContent != null) {
-                                sb.Append(selectionContent);
+                            FileNode fn = node as FileNode;
+                            if(fn == null || !fn.IsDependent) {
+                                selectionContent = node.PrepareSelectedNodesForClipBoard();
+                                if(selectionContent != null) {
+                                    sb.Append(selectionContent);
+                                }
                             }
                         }
                     } else if(selectedNodes.Count == 1) {
@@ -424,32 +444,64 @@ namespace Microsoft.VisualStudio.Project {
         /// </summary>
         /// <param name="folderToAdd">Project reference (from data object) using the format: {Guid}|project|folderPath</param>
         /// <param name="targetNode">Node to add the new folder to</param>
-        protected internal virtual void AddFolderFromOtherProject(string folderToAdd, HierarchyNode targetNode) {
+      /// <param name="dropEffect">The drop effect</param>
+      /// <param name="validateOnly">If true, no action is actually taken. Only checks for error cases.</param>
+      protected internal virtual void AddFolderFromOtherProject(string folderToAdd, HierarchyNode targetNode, uint dropEffect, bool validateOnly = false)
+      {
             if(String.IsNullOrEmpty(folderToAdd))
                 throw new ArgumentNullException("folderToAdd");
             if(targetNode == null)
                 throw new ArgumentNullException("targetNode");
-
-            // Split the reference in its 3 parts
-            int index1 = Guid.Empty.ToString("B").Length;
-            if(index1 + 1 >= folderToAdd.Length)
-                throw new ArgumentOutOfRangeException("folderToAdd");
-
-            // Get the Guid
-            string guidString = folderToAdd.Substring(1, index1 - 2);
-            Guid projectInstanceGuid = new Guid(guidString);
-
             // Get the project path
-            int index2 = folderToAdd.IndexOf('|', index1 + 1);
-            if(index2 < 0 || index2 + 1 >= folderToAdd.Length)
-                throw new ArgumentOutOfRangeException("folderToAdd");
-
-            // Finally get the source path
-            string folder = folderToAdd.Substring(index2 + 1);
+            Guid projectInstanceGuid;
+            string folder = GetSourceFromFolderReference(folderToAdd, out projectInstanceGuid);
+            string folderNoTrailingSlash = folder.Substring(0, folder.Length - 1);
 
             // Get the target path
             string folderName = Path.GetFileName(Path.GetDirectoryName(folder));
-            string targetPath = Path.Combine(GetBaseDirectoryForAddingFiles(targetNode), folderName);
+            string newFolderBaseDir = GetBaseDirectoryForAddingFiles(targetNode);
+            string targetPath = Path.Combine(newFolderBaseDir, folderName);
+
+            bool bPathsSame = NativeMethods.IsSamePath(folderNoTrailingSlash, targetPath);
+
+            if(!bPathsSame && targetPath.StartsWith(folder, StringComparison.Ordinal)) {
+                throw new DestionPathSubfolderOfSourceException(folderName);
+            }
+
+            // If these paths are the same, allow it and prepend "Copy of" only
+            // if it was copied to clipboard or dragged with copy effect
+            if(bPathsSame && (!this.SourceDragged && !this.dataWasCut) || (this.SourceDragged && dropEffect == (uint)DropEffect.Copy)) {
+                // When validating, do not find a free directory
+                // Validation is finished at this point.
+                if(validateOnly)
+                    return;
+
+                int copyNumber = 0;
+                string originalFolderName = folderName;
+                while(Directory.Exists(targetPath)) {
+                    copyNumber++;
+                    if(copyNumber == 1) {
+                        folderName = SR.GetString(SR.CopyOfFile, originalFolderName);
+                    } else {
+                        folderName = SR.GetString(SR.CopyNOfFile, copyNumber, originalFolderName);
+                    }
+                    targetPath = Path.Combine(newFolderBaseDir, folderName);
+                }
+            }
+
+            // Do not perform copy if paths are still the same.
+            if(NativeMethods.IsSamePath(folderNoTrailingSlash, targetPath)) {
+                throw new DestionPathSameAsSourceException(folderName);
+            }
+
+            if(Directory.Exists(targetPath)) {
+                throw new DestinationFolderAlreadyExists(folderName);
+            }
+
+            if(validateOnly)
+                return;
+
+
 
             // Recursively copy the directory to the new location
             Utilities.RecursivelyCopyDirectory(folder, targetPath);
@@ -474,7 +526,7 @@ namespace Microsoft.VisualStudio.Project {
             }
 
             // Now walk the source project hierarchy to see which node needs to be added.
-            WalkSourceProjectAndAdd(sourceHierarchy, itemID, targetNode, false);
+            WalkSourceProjectAndAdd(sourceHierarchy, itemID, targetNode, folderName, false);
         }
 
         /// <summary>
@@ -486,6 +538,28 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="targetNode">Node to start adding to</param>
         /// <param name="addSibblings">Typically false on first call and true after that</param>
         protected virtual void WalkSourceProjectAndAdd(IVsHierarchy sourceHierarchy, uint itemId, HierarchyNode targetNode, bool addSiblings) {
+
+            if(itemId != VSConstants.VSITEMID_NIL) {
+                // Calculate the corresponding path in our project
+                string source;
+                ErrorHandler.ThrowOnFailure(((IVsProject)sourceHierarchy).GetMkDocument(itemId, out source));
+                string name = Path.GetFileName(source.TrimEnd(new char[] { '/', '\\' }));
+
+                WalkSourceProjectAndAdd(sourceHierarchy, itemId, targetNode, name, addSiblings);
+            }
+        }
+        /// <summary>
+        /// Recursive method that walk a hierarchy and add items it find to our project.
+        /// Note that this is meant as an helper to the Copy&Paste/Drag&Drop functionality.
+        /// </summary>
+        /// <param name="sourceHierarchy">Hierarchy to walk</param>
+        /// <param name="itemId">Item ID where to start walking the hierarchy</param>
+        /// <param name="targetNode">Node to start adding to</param>
+        /// <param name="name">Folder name to use</param>
+        /// <param name="addSiblings">Typically false on first call and true after that</param>
+        /// <remarks>Use this method when the folder name to add items to is not
+        /// the same as the source.</remarks>
+        protected virtual void WalkSourceProjectAndAdd(IVsHierarchy sourceHierarchy, uint itemId, HierarchyNode targetNode, string name, bool addSiblings) {
             if(sourceHierarchy == null) {
                 throw new ArgumentNullException("sourceHierarchy");
             }
@@ -497,24 +571,36 @@ namespace Microsoft.VisualStudio.Project {
                 // Calculate the corresponding path in our project
                 string source;
                 ErrorHandler.ThrowOnFailure(((IVsProject)sourceHierarchy).GetMkDocument(itemId, out source));
-                string name = Path.GetFileName(source.TrimEnd(new char[] { '/', '\\' }));
-                string targetPath = Path.Combine(GetBaseDirectoryForAddingFiles(targetNode), name);
+                string _name = Path.GetFileName(source.TrimEnd(new char[] { '/', '\\' }));
+                string targetPath = Path.Combine(GetBaseDirectoryForAddingFiles(targetNode), _name);
 
                 // See if this is a linked item (file can be linked, not folders)
+                VSADDITEMOPERATION addItemOp = VSADDITEMOPERATION.VSADDITEMOP_OPENFILE;
                 ErrorHandler.ThrowOnFailure(sourceHierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_BrowseObject, out variant), VSConstants.E_NOTIMPL);
                 VSLangProj.FileProperties fileProperties = variant as VSLangProj.FileProperties;
                 if(fileProperties != null && fileProperties.IsLink) {
-                    // Since we don't support linked item, we make a copy of the file into our storage where it would have been linked
-                    File.Copy(source, targetPath, true);
+                    addItemOp = VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE;
+                    targetPath = fileProperties.FullPath;
                 }
-
-                newNode = AddNodeIfTargetExistInStorage(targetNode, name, targetPath);
+                ErrorHandler.ThrowOnFailure(sourceHierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_IsNonMemberItem, out variant), VSConstants.E_NOTIMPL);
+                bool oldPasteAsNonMemberItem = this.PasteAsNonMemberItem;
+                try {
+                    this.pasteAsNonMemberItem = variant != null && (bool)variant;
+                    newNode = AddNodeIfTargetExistInStorage(targetNode, name, targetPath, addItemOp);
+                } finally {
+                    this.pasteAsNonMemberItem = oldPasteAsNonMemberItem;
+                }
 
 
                 // Start with child nodes (depth first)
                 variant = null;
                 ErrorHandler.ThrowOnFailure(sourceHierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_FirstVisibleChild, out variant));
-                uint currentItemID = (uint)(int)variant;
+                uint currentItemID;
+                if(variant is int) {
+                    currentItemID = (uint)System.BitConverter.ToUInt32(System.BitConverter.GetBytes((int)variant), 0);
+                } else {
+                    currentItemID = (uint)variant;
+                }
                 WalkSourceProjectAndAdd(sourceHierarchy, currentItemID, newNode, true);
 
                 if(addSiblings) {
@@ -522,9 +608,14 @@ namespace Microsoft.VisualStudio.Project {
                     currentItemID = itemId;
                     while(currentItemID != VSConstants.VSITEMID_NIL) {
                         variant = null;
-                        ErrorHandler.ThrowOnFailure(sourceHierarchy.GetProperty(itemId, (int)__VSHPROPID.VSHPROPID_NextVisibleSibling, out variant));
+                        ErrorHandler.ThrowOnFailure(sourceHierarchy.GetProperty(currentItemID, (int)__VSHPROPID.VSHPROPID_NextVisibleSibling, out variant));
+                        if(variant is int) {
+                            currentItemID = (uint)System.BitConverter.ToUInt32(System.BitConverter.GetBytes((int)variant), 0);
+                        } else {
+                            currentItemID = (uint)variant;
+                        }
                         currentItemID = (uint)(int)variant;
-                        WalkSourceProjectAndAdd(sourceHierarchy, currentItemID, targetNode, true);
+                        WalkSourceProjectAndAdd(sourceHierarchy, currentItemID, targetNode, false);
                     }
                 }
             }
@@ -536,17 +627,18 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="parentNode">Node to that this item to</param>
         /// <param name="name">Name of the item being added</param>
         /// <param name="targetPath">Path of the item being added</param>
+        /// <param name="addItemOp">Type of operation (Add or Link)</param>
         /// <returns>Node that was added</returns>
-        protected virtual HierarchyNode AddNodeIfTargetExistInStorage(HierarchyNode parentNode, string name, string targetPath) {
+        protected virtual HierarchyNode AddNodeIfTargetExistInStorage(HierarchyNode parentNode, string name, string targetPath, VSADDITEMOPERATION addItemOp) {
             if(parentNode == null) {
                 return null;
             }
 
             HierarchyNode newNode = parentNode;
             // If the file/directory exist, add a node for it
-            if(File.Exists(targetPath)) {
+            if(addItemOp == VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE || File.Exists(targetPath)) {
                 VSADDRESULT[] result = new VSADDRESULT[1];
-                ErrorHandler.ThrowOnFailure(this.AddItem(parentNode.ID, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE, name, 1, new string[] { targetPath }, IntPtr.Zero, result));
+                ErrorHandler.ThrowOnFailure(this.AddItem(parentNode.ID, addItemOp, name, 1, new string[] { targetPath }, IntPtr.Zero, result));
                 if(result[0] != VSADDRESULT.ADDRESULT_Success)
                     throw new Exception();
                 newNode = this.FindChild(targetPath);
@@ -565,6 +657,7 @@ namespace Microsoft.VisualStudio.Project {
         /// </summary>
         protected internal override int CutToClipboard() {
             int returnValue = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
+            this.dataWasCut = true;
             try {
                 this.RegisterClipboardNotifications(true);
 
@@ -597,6 +690,7 @@ namespace Microsoft.VisualStudio.Project {
         /// </summary>
         protected internal override int CopyToClipboard() {
             int returnValue = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
+            this.dataWasCut = false;
             try {
                 this.RegisterClipboardNotifications(true);
 
@@ -630,6 +724,27 @@ namespace Microsoft.VisualStudio.Project {
         /// Handle the Paste operation to a targetNode
         /// </summary>
         protected internal override int PasteFromClipboard(HierarchyNode targetNode) {
+            if(targetNode == null) {
+                return VSConstants.E_INVALIDARG;
+            }
+            int returnValue;
+            try {
+                this.isInPasteOrDrop = true;
+                this.dropAsCopy = !this.dataWasCut;
+                returnValue = PasteFromClipboardCore(targetNode);
+            } finally {
+                this.isInPasteOrDrop = false;
+                this.dropAsCopy = false;
+                this.pasteAsNonMemberItem = false;
+            }
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Handle the Paste operation to a targetNode. Do not call directly
+        /// outside of PasteFromClipboard.
+        /// </summary>
+        private int PasteFromClipboardCore(HierarchyNode targetNode) {
             int returnValue = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
 
             if(targetNode == null) {
@@ -653,7 +768,8 @@ namespace Microsoft.VisualStudio.Project {
                 DropEffect dropEffect = DropEffect.None;
                 DropDataType dropDataType = DropDataType.None;
                 try {
-                    dropDataType = this.ProcessSelectionDataObject(dataObject, targetNode.GetDragTargetHandlerNode());
+                    this.SourceDraggedOrCutOrCopied = this.dataWasCut;
+                    dropDataType = this.ProcessSelectionDataObject(dataObject, targetNode.GetDragTargetHandlerNode(), 0);
                     dropEffect = this.QueryDropEffect(dropDataType, 0);
                 } catch(ExternalException e) {
                     Trace.WriteLine("Exception : " + e.Message);
@@ -733,7 +849,7 @@ namespace Microsoft.VisualStudio.Project {
         /// Process dataobject from Drag/Drop/Cut/Copy/Paste operation
         /// </summary>
         /// <remarks>The targetNode is set if the method is called from a drop operation, otherwise it is null</remarks>
-        internal DropDataType ProcessSelectionDataObject(IOleDataObject dataObject, HierarchyNode targetNode) {
+        internal DropDataType ProcessSelectionDataObject(IOleDataObject dataObject, HierarchyNode targetNode, uint grfKeyState) {
             DropDataType dropDataType = DropDataType.None;
             bool isWindowsFormat = false;
 
@@ -748,12 +864,21 @@ namespace Microsoft.VisualStudio.Project {
             }
 
             if(dropDataType != DropDataType.None && filesDropped.Count > 0) {
-                string[] filesDroppedAsArray = filesDropped.ToArray();
+                bool saveAllowDuplicateLinks = this.AllowDuplicateLinks;
+                try {
+                    DropEffect dropEffect = this.QueryDropEffect(dropDataType, grfKeyState);
+                    this.dropAsCopy = dropEffect == DropEffect.Copy;
+                    if(dropEffect == DropEffect.Move && this.SourceDraggedOrCutOrCopied) {
+                        // Temporarily allow duplicate links to enable cut-paste or drag-move of links within the project.
+                        // This won't happen when the source is another project because this.SourceDraggedOrCutOrCopied won't get set.
+                        this.AllowDuplicateLinks = true;
+                    }
+                    string[] filesDroppedAsArray = filesDropped.ToArray();
 
-                HierarchyNode node = (targetNode == null) ? this : targetNode;
+                    HierarchyNode node = (targetNode == null) ? this : targetNode;
 
-                // For directory based projects the content of the clipboard is a double-NULL terminated list of Projref strings.
-                if(isWindowsFormat) {
+                    // For directory based projects the content of the clipboard is a double-NULL terminated list of Projref strings.
+                    if(isWindowsFormat) {
                     // This is the code path when source is windows explorer
                     VSADDRESULT[] vsaddresults = new VSADDRESULT[1];
                     vsaddresults[0] = VSADDRESULT.ADDRESULT_Failure;
@@ -765,11 +890,15 @@ namespace Microsoft.VisualStudio.Project {
 
                     return dropDataType;
                 } else {
-                    if(AddFilesFromProjectReferences(node, filesDroppedAsArray)) {
-                        return dropDataType;
+                        if(AddFilesFromProjectReferences(node, filesDroppedAsArray, (uint)dropEffect)) {
+                            return dropDataType;
+                        }
                     }
+                } finally {
+                    this.AllowDuplicateLinks = saveAllowDuplicateLinks;
                 }
             }
+            this.dataWasCut = false;
 
             // If we reached this point then the drop data must be set to None.
             // Otherwise the OnPaste will be called with a valid DropData and that would actually delete the item.
@@ -841,7 +970,10 @@ namespace Microsoft.VisualStudio.Project {
                 return DropEffect.Move;
 
             // no modifier
-            if(this.SourceDraggedOrCutOrCopied) {
+            //if (this.SourceDraggedOrCutOrCopied ) 
+            // This line was changed to support drag and drop between projects
+            // See bug report at http://mpfproj10.codeplex.com/workitem/9705
+            if(this.SourceDraggedOrCutOrCopied || this.ItemsDraggedOrCutOrCopied == null || this.ItemsDraggedOrCutOrCopied.Count == 0) {
                 return DropEffect.Move;
             } else {
                 return DropEffect.Copy;
@@ -862,10 +994,24 @@ namespace Microsoft.VisualStudio.Project {
                 return;
             }
 
+            // If the source and destination are within the same project, the
+            // number of items dropped and selected should be equal.
+            Debug.Assert(!this.SourceDraggedOrCutOrCopied ||
+                (dropItems == null || dropItems.Count == 0 || (dropItems.Count > 0 && dropItems.Count == this.ItemsDraggedOrCutOrCopied.Count)),
+                "Number of drop items didn't match number of items selected.");
             try {
+                int index = -1;
                 IVsUIHierarchyWindow w = UIHierarchyUtilities.GetUIHierarchyWindow(this.site, HierarchyNode.SolutionExplorer);
                 foreach(HierarchyNode node in this.ItemsDraggedOrCutOrCopied) {
-                    if((moved && (cut || dropped) && !justCleanup)) {
+                    index++;
+                    bool shouldRemove = ((moved && dropped) || cut) && !justCleanup;
+                    if(dropItems != null && dropItems.Count > 0) {
+                        DragDropItem dropItem = dropItems[index];
+                        if(dropItem.userCancelled)
+                            shouldRemove = false;
+                    }
+
+                    if(shouldRemove) {
                         // do not close it if the doc is dirty or we do not own it
                         bool isDirty, isOpen, isOpenedByUs;
                         uint docCookie;
@@ -898,6 +1044,7 @@ namespace Microsoft.VisualStudio.Project {
                         this.CleanAndFlushClipboard();
                     }
                 } finally {
+                    this.dropItems.Clear();
                     this.dropDataType = DropDataType.None;
                 }
             }
@@ -909,7 +1056,7 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="targetNode">the targetHandler node</param>
         /// <param name="projectReferences">List of projectref string</param>
         /// <returns>true if succeeded</returns>
-        internal bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences) {
+        internal bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect) {
             //Validate input
             if(projectReferences == null) {
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "projectReferences");
@@ -919,17 +1066,220 @@ namespace Microsoft.VisualStudio.Project {
             }
 
             //Iteratively add files from projectref
+            bool bSourceProjectIsNotThisProject = false;
             foreach(string projectReference in projectReferences) {
-                if(projectReference == null) {
+                if(String.IsNullOrEmpty(projectReference)) {
                     // bad projectref, bail out
                     return false;
                 }
+                IVsSolution solution = this.GetService(typeof(IVsSolution)) as IVsSolution;
+                if(solution == null) {
+                    throw new InvalidOperationException();
+                }
+
                 if(projectReference.EndsWith("/", StringComparison.Ordinal) || projectReference.EndsWith("\\", StringComparison.Ordinal)) {
-                    AddFolderFromOtherProject(projectReference, targetNode);
-                } else if(!AddFileToNodeFromProjectReference(projectReference, targetNode)) {
-                    return false;
+                    Guid projectInstanceGuid;
+                    string folder = GetSourceFromFolderReference(projectReference, out projectInstanceGuid);
+                    string folderNoTrailingSlash = folder.Substring(0, folder.Length - 1);
+
+                    // Check if the source is not this project if it hasn't been
+                    // determined yet.
+                    if(!bSourceProjectIsNotThisProject) {
+                        if(projectInstanceGuid != this.ProjectIDGuid) {
+                            bSourceProjectIsNotThisProject = true;
+                        }
+                    }
+
+                    string folderName = Path.GetFileName(Path.GetDirectoryName(folder));
+                    string newFolderBaseDir = GetBaseDirectoryForAddingFiles(targetNode);
+                    string targetPath = Path.Combine(newFolderBaseDir, folderName);
+
+                    DragDropItem newItem = new DragDropItem();
+                    newItem.reference = projectReference;
+                    newItem.source = folderNoTrailingSlash;
+                    newItem.destination = targetPath;
+                    newItem.destinationExists = Directory.Exists(targetPath);
+                    newItem.isFolder = true;
+                    newItem.sourceDirMatchesDestDir = NativeMethods.IsSamePath(folderNoTrailingSlash, targetPath);
+
+                    dropItems.Add(newItem);
+                } else {
+                    uint itemidLoc;
+                    IVsHierarchy hierarchy;
+                    string str;
+                    VSUPDATEPROJREFREASON[] reason = new VSUPDATEPROJREFREASON[1];
+                    ErrorHandler.ThrowOnFailure(solution.GetItemOfProjref(projectReference, out hierarchy, out itemidLoc, out str, reason));
+                    if(hierarchy == null) {
+                        throw new InvalidOperationException();
+                    }
+
+                    // This will throw invalid cast exception if the hierrachy is not a project.
+                    IVsProject project = (IVsProject)hierarchy;
+
+                    string moniker;
+                    ErrorHandler.ThrowOnFailure(project.GetMkDocument(itemidLoc, out moniker));
+
+                    HierarchyNode n = targetNode;
+                    while((!(n is ProjectNode)) && (!(n is FolderNode)) && (!this.CanFileNodesHaveChilds || !(n is FileNode))) {
+                        n = n.Parent;
+                    }
+
+                    Guid projectInstanceGuid;
+                    solution.GetGuidOfProject(hierarchy, out projectInstanceGuid);
+                    // Check if the source is not this project if it hasn't been
+                    // determined yet.
+                    if(!bSourceProjectIsNotThisProject) {
+                        if(projectInstanceGuid != this.ProjectIDGuid) {
+                            bSourceProjectIsNotThisProject = true;
+                        }
+                    }
+
+                    string filename = Path.GetFileName(moniker);
+                    string destination = Path.Combine(this.GetBaseDirectoryForAddingFiles(n), filename);
+                    string sourcedir = Path.GetDirectoryName(moniker);
+                    string destdir = Path.GetDirectoryName(destination);
+
+                    DragDropItem newItem = new DragDropItem();
+                    newItem.reference = projectReference;
+                    newItem.source = moniker;
+                    newItem.destination = destination;
+                    newItem.destinationExists = File.Exists(destination);
+                    newItem.isFolder = false;
+                    newItem.sourceDirMatchesDestDir = NativeMethods.IsSamePath(sourcedir, destdir);
+
+                    dropItems.Add(newItem);
                 }
             }
+
+            // We don't want to copy files that are within any selected directories
+            foreach(DragDropItem dropItem1 in dropItems) {
+                if(dropItem1.isFolder) {
+                    foreach(DragDropItem dropItem2 in dropItems) {
+                        // If this item is underneath a folder also being copied
+                        // or moved, then remove it from the list of items to be
+                        // copied or moved since the copy/move operation of the
+                        // containing folder will handle it.
+                        if(!dropItem2.source.Equals(dropItem1.source) && dropItem2.source.StartsWith(dropItem1.source, StringComparison.Ordinal)) {
+                            // set userCancelled so that this item gets skipped
+                            dropItem2.userCancelled = true;
+                        }
+                    }
+                }
+            }
+
+            // Check for error cases
+            foreach(DragDropItem dropItem in dropItems) {
+                if(dropItem.userCancelled)
+                    continue;
+
+                if(dropItem.isFolder) {
+                    try {
+                        AddFolderFromOtherProject(dropItem.reference, targetNode, dropEffect, true);
+                    } catch(CopyPasteException e) {
+                        string errorMessage = e.Message;
+                        if(!Utilities.IsInAutomationFunction(this.ProjectMgr.Site)) {
+                            string title = null;
+                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+                            VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                            return false;
+                        } else {
+                            throw new InvalidOperationException(errorMessage);
+                        }
+                    }
+                } else {
+                    try {
+                        if(dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Move) {
+                            throw new DestionPathSameAsSourceException(filename);
+                        }
+
+                        bool bWillHaveCopyOfPrepended = dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Copy;
+                        // Check if overwriting is possible.
+                        // If not, a dialog box will be shown by SystemCanOverwriteExistingItem
+                        // and we should stop processing items.
+                        if(!bWillHaveCopyOfPrepended && dropItem.destinationExists && this.SystemCanOverwriteExistingItem(dropItem.source, dropItem.destination) != VSConstants.S_OK) {
+                            return false;
+                        }
+                    } catch(DestionPathSameAsSourceException e) {
+                        string errorMessage = e.Message;
+                        if(!Utilities.IsInAutomationFunction(this.ProjectMgr.Site)) {
+                            string title = null;
+                            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+                            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+                            VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, errorMessage, icon, buttons, defaultButton);
+                            return false;
+                        } else {
+                            throw new InvalidOperationException(errorMessage);
+                        }
+                    }
+                }
+            }
+
+            bool bAnyWereCancelled = false;
+            bool bDoApplyAll = false;
+            DialogResult applyAllResult = DialogResult.No;
+            // Prompt for files to be overwritten
+            for(int i = 0; i < dropItems.Count; i++) {
+                DragDropItem dropItem = dropItems[i];
+
+                if(dropItem.userCancelled)
+                    continue;
+
+                // If the source dir matches the destination dir and we are doing copy
+                // then no overwriting will occur. Instead, "Copy of " will be prepended.
+                if(dropItem.destinationExists && !(dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Copy)) {
+                    string message = SR.GetString(SR.FileAlreadyExists, Path.GetFileName(dropItem.destination));
+                    string title = SR.GetString(SR.FileAlreadyExistsCaption);
+                    DialogResult msgboxResult;
+                    if(bDoApplyAll) {
+                        msgboxResult = applyAllResult;
+                    } else {
+                        bool bApplyAllChecked;
+                        msgboxResult = FileOverwriteDialog.LaunchFileOverwriteDialog(this.Site, message, title, null, FileOverwriteDialog.DefaultButton.Yes, out bApplyAllChecked);
+                        if(bApplyAllChecked) {
+                            bDoApplyAll = true;
+                            applyAllResult = msgboxResult;
+                        }
+                    }
+
+                    if(msgboxResult == DialogResult.No) {
+                        dropItem.userCancelled = true;
+                        bAnyWereCancelled = true;
+                    } else if(msgboxResult != DialogResult.Yes) {
+                        // user cancelled the whole thing
+                        return false;
+                    }
+                }
+            }
+
+            // Iteratively add files from projectref
+            foreach(DragDropItem dropItem in dropItems) {
+                if(dropItem.userCancelled)
+                    continue;
+
+                if(dropItem.isFolder) {
+                    AddFolderFromOtherProject(dropItem.reference, targetNode, dropEffect);
+                } else {
+                    bool oldHandledOverwrite = this.alreadyHandledOverwritePrompts;
+                    this.alreadyHandledOverwritePrompts = true;
+                    try {
+                        if(!AddFileToNodeFromProjectReference(dropItem.reference, targetNode)) {
+                            return false;
+                        }
+                    } finally {
+                        this.alreadyHandledOverwritePrompts = oldHandledOverwrite;
+                    }
+                }
+            }
+
+            // If any items were cancelled and the source and target projects
+            // differ, return false here so that none of the source items are
+            // removed. It would be incorrect to remove all of the source
+            // items at this point.
+            if(bSourceProjectIsNotThisProject && bAnyWereCancelled)
+                return false;
 
             return true;
         }
@@ -937,6 +1287,33 @@ namespace Microsoft.VisualStudio.Project {
         #endregion
 
         #region private helper methods
+        /// <summary>
+        /// Gets the folder path and guid from a reference string.
+        /// </summary>
+        /// <param name="folderToAdd">The folder reference</param>
+        /// <param name="projectInstanceGuid">The project guid</param>
+        /// <returns>The path to the folder with a trailing slash</returns>
+        private string GetSourceFromFolderReference(string folderToAdd, out Guid projectInstanceGuid) {
+            if(String.IsNullOrEmpty(folderToAdd))
+                throw new ArgumentNullException("folderToAdd");
+
+            // Split the reference in its 3 parts
+            int index1 = Guid.Empty.ToString("B").Length;
+            if(index1 + 1 >= folderToAdd.Length)
+                throw new ArgumentException("folderToAdd");
+
+            // Get the Guid
+            string guidString = folderToAdd.Substring(1, index1 - 2);
+            projectInstanceGuid = new Guid(guidString);
+
+            // Get the project path
+            int index2 = folderToAdd.IndexOf('|', index1 + 1);
+            if(index2 < 0 || index2 + 1 >= folderToAdd.Length)
+                throw new ArgumentException("folderToAdd");
+
+            // Finally get the source path
+            return folderToAdd.Substring(index2 + 1);
+        }
         /// <summary>
         /// Empties all the data structures added to the clipboard and flushes the clipboard.
         /// </summary>
@@ -1003,4 +1380,42 @@ namespace Microsoft.VisualStudio.Project {
 
         #endregion
     }
+    #region helper classes
+
+    internal class CopyPasteException : Exception {
+        protected CopyPasteException(string message)
+           : base(message) {
+        }
+    }
+
+    internal class DestionPathSameAsSourceException : CopyPasteException {
+        public DestionPathSameAsSourceException(string source)
+           : base(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.DestinationPathEqualsSourcePath, CultureInfo.CurrentUICulture), source)) {
+        }
+    }
+
+    internal class DestionPathSubfolderOfSourceException : CopyPasteException {
+        public DestionPathSubfolderOfSourceException(string source)
+           : base(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.DestinationPathSubfolderOfSourcePath, CultureInfo.CurrentUICulture), source)) {
+        }
+    }
+
+    internal class DestinationFolderAlreadyExists : CopyPasteException {
+        public DestinationFolderAlreadyExists(string folder)
+           : base(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.DestinationFolderAlreadyExists, CultureInfo.CurrentUICulture), folder)) {
+        }
+    }
+
+    // cannot be a struct since we do not want a value type
+    internal class DragDropItem {
+        public string reference;
+        public string source;
+        public string destination;
+        public bool destinationExists;
+        public bool isFolder;
+        public bool sourceDirMatchesDestDir;
+        public bool userCancelled;
+    }
+
+    #endregion
 }

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions
+    xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+  <ContentType
+      Name="XSharpFile"
+      DisplayName="X# file"
+      ItemType="Compile">
+  </ContentType>
+
+  <ContentType
+    Name="XSharpHeader"
+    DisplayName="X# header"
+    ItemType="None">
+  </ContentType>
+
+  <ItemType Name="Compile" DisplayName="X# compiler"/>
+
+  <FileExtension Name=".prg" ContentType="XSharpFile"/>
+  <FileExtension Name=".xs"  ContentType="XSharpFile"/>
+  <FileExtension Name=".vh"  ContentType="XSharpHeader"/>
+  <FileExtension Name=".xh"  ContentType="XSharpHeader"/>
+</ProjectSchemaDefinitions>
+

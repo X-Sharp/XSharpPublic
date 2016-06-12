@@ -1094,7 +1094,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableArray<string> referencePaths = BuildSearchPaths(sdkDirectory, libPaths);
 
             ValidateWin32Settings(win32ResourceFile, win32IconFile, win32ManifestFile, outputKind, diagnostics);
-
+#if XSHARP
+            ValidateXSharpSettings(diagnostics);
+#endif
             // Dev11 searches for the key file in the current directory and assembly output directory.
             // We always look to base directory and then examine the search paths.
             keyFileSearchPaths.Add(baseDirectory);

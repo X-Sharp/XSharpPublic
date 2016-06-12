@@ -124,7 +124,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             namespaces = ArrayBuilder<SingleNamespaceDeclaration>.GetInstance();
                         }
+#if XSHARP
+                        else if (allNamespacesHaveSameName && !CaseInsensitiveComparison.Equals(asNamespace.Name,namespaces[0].Name))
+#else
                         else if (allNamespacesHaveSameName && !asNamespace.Name.Equals(namespaces[0].Name))
+#endif
                         {
                             allNamespacesHaveSameName = false;
                         }
@@ -148,7 +152,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else
                 {
+#if XSHARP
+                    var namespaceGroups = namespaces.ToDictionary(n => n.Name, CaseInsensitiveComparison.Comparer);
+#else
                     var namespaceGroups = namespaces.ToDictionary(n => n.Name);
+#endif
                     namespaces.Free();
 
                     foreach (var namespaceGroup in namespaceGroups.Values)

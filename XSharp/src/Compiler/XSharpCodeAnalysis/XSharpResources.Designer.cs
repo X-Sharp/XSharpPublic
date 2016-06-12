@@ -3167,6 +3167,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The dialect &apos;{0}&apos; requires a reference to the runtime DLLs {1}..
+        /// </summary>
+        internal static string ERR_DialectRequiresReferenceToRuntime {
+            get {
+                return ResourceManager.GetString("ERR_DialectRequiresReferenceToRuntime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression tree lambda may not contain a dictionary initializer..
         /// </summary>
         internal static string ERR_DictionaryInitializerInExpressionTree {
@@ -4126,15 +4135,6 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_FeatureNotValidInExpressionTree {
             get {
                 return ResourceManager.GetString("ERR_FeatureNotValidInExpressionTree", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The feature &apos;{0}&apos; requires a reference to the runtime DLL &apos;{1}&apos;..
-        /// </summary>
-        internal static string ERR_FeatureRequiresReferenceToRuntime {
-            get {
-                return ResourceManager.GetString("ERR_FeatureRequiresReferenceToRuntime", resourceCulture);
             }
         }
         
@@ -5170,6 +5170,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string ERR_InvalidDelegateType {
             get {
                 return ResourceManager.GetString("ERR_InvalidDelegateType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid dialect {0}. Must be &apos;Core&apos;, &apos;Vo&apos;, &apos;Vulcan&apos;, &apos;dBase&apos;, &apos;FoxPro&apos;, &apos;Harbour&apos; or &apos;XBasepp&apos;.
+        /// </summary>
+        internal static string ERR_InvalidDialect {
+            get {
+                return ResourceManager.GetString("ERR_InvalidDialect", resourceCulture);
             }
         }
         

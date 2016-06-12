@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +27,6 @@ namespace XSharp.Build
 
         #region VO Compatible properties
 
-        // Todo: store the values in base.bag
         public Boolean AZ
         {
             set { base.Bag[nameof(AZ)] = value; }
@@ -141,6 +145,10 @@ namespace XSharp.Build
             get { return base.GetBoolParameterWithDefault(nameof(VO14), false); }
         }
 
+        public Boolean VO15 {
+            set { base.Bag[nameof(VO15)] = value; }
+            get { return base.GetBoolParameterWithDefault(nameof(VO15), false); }
+        }
 
         public String CompilerPath
         {
@@ -607,7 +615,7 @@ namespace XSharp.Build
                         sb.Append(';');
                     sb.Append(s);
                 }
-                commandline.AppendTextUnquoted(" /i:" + sb.ToString());
+                commandline.AppendTextUnquoted(" /i:\"" + sb.ToString()+"\"");
             }
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
@@ -626,9 +634,10 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo12", base.Bag, nameof(VO12));
             commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
+            commandline.AppendPlusOrMinusSwitch("/vo15", base.Bag, nameof(VO15));
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
-            if (!String.IsNullOrEmpty(this.CommandLineOption))
+            if(!String.IsNullOrEmpty(this.CommandLineOption))
             {
                 commandline.AppendTextUnquoted("\n" + this.CommandLineOption);
             }
@@ -720,7 +729,7 @@ namespace XSharp.Build
             {
                 return;
             }
-            // Todo: Implement
+            // Todo: Implement /features commandline option
             //foreach (var feature in CompilerOptionParseUtilities.ParseFeatureFromMSBuild(features))
             //{
             //    commandLine.AppendSwitchIfNotNull("/features:", feature.Trim());
@@ -875,10 +884,7 @@ namespace XSharp.Build
             // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
             commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
             commandLine.AppendSwitchIfNotNull("/target:", TargetType);
-            if (TreatWarningsAsErrors)
-            {
-                commandLine.AppendSwitch("/warnaserror");
-            }
+            commandLine.AppendPlusOrMinusSwitch("/warnaserror", base.Bag, nameof(TreatWarningsAsErrors));
             commandLine.AppendWhenTrue("/utf8output", base.Bag, nameof(Utf8Output));
             commandLine.AppendSwitchIfNotNull("/win32icon:", Win32Icon);
             commandLine.AppendSwitchIfNotNull("/win32manifest:", Win32Manifest);

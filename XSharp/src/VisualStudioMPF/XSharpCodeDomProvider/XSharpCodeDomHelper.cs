@@ -38,23 +38,23 @@ namespace XSharp.CodeDom
                     // Ok, same Namespace & same Class : Merge !
 
                     // So, the "main" class is...
-                    CodeTypeDeclaration mergedType = new CodeTypeDeclaration(designerClass.Name);
+                    CodeTypeDeclaration mergedType = new CodeTypeDeclaration(className.Name);
                     // And does inherit from
-                    mergedType.BaseTypes.AddRange(designerClass.BaseTypes);
-                    mergedType.TypeAttributes = designerClass.TypeAttributes;
+                    mergedType.BaseTypes.AddRange(className.BaseTypes);
+                    mergedType.TypeAttributes = className.TypeAttributes;
                     // Now, read members from each side, and put a stamp on each
                     foreach (CodeTypeMember member in designerClass.Members)
                     {
-                        member.UserData["XSharp:FromDesigner"] = true;
+                        member.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER] = true;
                         mergedType.Members.Add(member);
                     }
                     foreach (CodeTypeMember member in className.Members)
                     {
-                        member.UserData["XSharp:FromDesigner"] = false;
+                        member.UserData[XSharpCodeConstants.USERDATA_FROMDESIGNER] = false;
                         mergedType.Members.Add(member);
                     }
                     // A class is always in a NameSpace
-                    CodeNamespace mergedNamespace = new CodeNamespace(designerNamespace.Name);
+                    CodeNamespace mergedNamespace = new CodeNamespace(nameSpace.Name);
                     mergedNamespace.Types.Add(mergedType);
                     // Now, add it to the CompileUnit
                     mergedCodeCompileUnit.Namespaces.Clear();

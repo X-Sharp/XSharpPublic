@@ -32,6 +32,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_StaticDerivedFromNonObject = 713,
     XS_WRN:ERR_ProtectedInStatic = 1057,
     XS_WRN:ERR_UseDefViolationProperty = 8079,
+    XS_WRN:ERR_ConversionWithBase = 553,
+    XS_WRN:ERR_ConversionWithDerived = 554,
     */
 
     internal enum ErrorCode

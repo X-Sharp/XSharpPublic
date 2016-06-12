@@ -70,7 +70,7 @@
       <Link>ProjectBase\misc\ConnectionPointContainer.cs</Link>
       <Visible>true</Visible>
     </Compile>
-    <Compile Include="$(ProjectBasePath)Misc\ExternDll.cs">
+     <Compile Include="$(ProjectBasePath)Misc\ExternDll.cs">
       <Link>ProjectBase\Misc\ExternDll.cs</Link>
       <Visible>true</Visible>
     </Compile>
@@ -91,7 +91,10 @@
       <Link>ProjectBase\UIThread.cs</Link>
       <Visible>true</Visible>
     </Compile>
-
+    <Compile Include="$(ProjectBasePath)UIThreadBase.cs">
+      <Link>ProjectBase\UIThreadBase.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
     <Compile Include="$(ProjectBasePath)AssemblyReferenceNode.cs">
       <Link>ProjectBase\AssemblyReferenceNode.cs</Link>
       <Visible>true</Visible>
@@ -100,7 +103,10 @@
       <Link>ProjectBase\Attributes.cs</Link>
       <Visible>true</Visible>
     </Compile>
-
+   <Compile Include="$(ProjectBasePath)ExceptionExtensions.cs">
+      <Link>ProjectBase\ExceptionExtensions.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
     <!-- Automation Objects -->
     <Compile Include="$(ProjectBasePath)Automation\AutomationScope.cs">
       <Link>ProjectBase\AutomationScope.cs</Link>
@@ -453,9 +459,29 @@
       <Link>ProjectBase\ProjectDocumentsListener.cs</Link>
       <Visible>true</Visible>
     </Compile>
+    <Compile Include="$(ProjectBasePath)VsExtensions.cs">
+      <Link>ProjectBase\VsExtensions.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
+    <Compile Include="$(ProjectBasePath)\FileOverwriteDialog.cs">
+      <SubType>Form</SubType>
+      <Link>ProjectBase\FileOverwriteDialog.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
+    <Compile Include="$(ProjectBasePath)\FileOverwriteDialog.Designer.cs">
+      <DependentUpon>FileOverwriteDialog.cs</DependentUpon>
+      <Link>ProjectBase\FileOverwriteDialog.Designer.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+      <EmbeddedResource Include="$(ProjectBasePath)\FileOverwriteDialog.resx">
+      <Link>ProjectBase\FileOverwriteDialog.resx</Link>
+      <Visible>true</Visible>
+      <SubType>Designer</SubType>
+      <DependentUpon>FileOverwriteDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectBasePath)VisualStudio.Project.resx">
       <Link>VisualStudio.Package.Project.resx</Link>
       <Visible>true</Visible>

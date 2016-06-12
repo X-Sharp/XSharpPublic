@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 using System;
 using Microsoft.VisualStudio.Project.Automation;
@@ -48,7 +53,7 @@ namespace XSharp.Project
         /// <returns></returns>
         public override object GetAutomationObject()
         {
-            if (automationObject == null)
+            if(automationObject == null)
             {
                 automationObject = new OAXSharpFileItem(this.ProjectMgr.GetAutomationObject() as OAProject, this);
             }
@@ -86,7 +91,7 @@ namespace XSharp.Project
         private object CreateServices(Type serviceType)
         {
             object service = null;
-            if (typeof(EnvDTE.ProjectItem) == serviceType)
+            if(typeof(EnvDTE.ProjectItem) == serviceType)
             {
                 service = GetAutomationObject();
             }
@@ -144,11 +149,11 @@ namespace XSharp.Project
             {
                 if (_designerContext == null)
                 {
-                    XSharpFileNode xsFile = Parent.FindChild(this.Url.Replace(".xaml", ".xaml.prg")) as XSharpFileNode;
+                    XSharpFileNode xsFile = Parent.FindChild( this.Url.Replace(".xaml", ".xaml.prg") ) as XSharpFileNode;
                     _designerContext = new DesignerContext();
                     //Set the EventBindingProvider for this XAML file so the designer will call it
                     //when event handlers need to be generated
-                    _designerContext.EventBindingProvider = new XSharpEventBindingProvider(xsFile);
+                    _designerContext.EventBindingProvider = new XSharpEventBindingProvider( xsFile );
                 }
 
                 return _designerContext;
@@ -272,49 +277,5 @@ namespace XSharp.Project
             //
             return ret;
         }
-
-
-
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////
-        /*
-        public override int SetProperty(int propid, object value)
-        {
-            int result;
-            __VSHPROPID id = (__VSHPROPID)propid;
-            switch (id)
-            {
-                case __VSHPROPID.VSHPROPID_ItemSubType:
-                    this.SubType = (string)value;
-                    result = VSConstants.S_OK;
-                    break;
-
-                default:
-                    result = base.SetProperty(propid, value);
-                    break;
-            }
-
-            return result;
-        }
-
-        public override object GetProperty(int propId)
-        {
-            __VSHPROPID id = (__VSHPROPID)propId;
-            switch (id)
-            {
-                case __VSHPROPID.VSHPROPID_ItemSubType:
-                    return this.SubType;
-            }
-
-            return base.GetProperty(propId);
-        }
-
-    */
-
-
     }
 }

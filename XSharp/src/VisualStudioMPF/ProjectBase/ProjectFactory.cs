@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation. 
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
+ * copy of the license can be found in the License.html file at the root of this distribution. If 
+ * you cannot locate the Apache License, Version 2.0, please send an email to 
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -58,8 +24,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 
-namespace Microsoft.VisualStudio.Project
-{
+namespace Microsoft.VisualStudio.Project {
     /// <summary>
     /// Creates projects within the solution
     /// </summary>
@@ -83,18 +48,14 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region properties
-        protected Microsoft.VisualStudio.Shell.Package Package
-        {
-            get
-            {
+        protected Microsoft.VisualStudio.Shell.Package Package {
+            get {
                 return this.package;
             }
         }
 
-        protected System.IServiceProvider Site
-        {
-            get
-            {
+        protected System.IServiceProvider Site {
+            get {
                 return this.site;
             }
         }
@@ -102,10 +63,8 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The msbuild engine that we are going to use.
         /// </summary>
-        protected MSBuild.ProjectCollection BuildEngine
-        {
-            get
-            {
+        protected MSBuild.ProjectCollection BuildEngine {
+            get {
                 return this.buildEngine;
             }
         }
@@ -113,22 +72,18 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The msbuild project for the temporary project file.
         /// </summary>
-        protected MSBuild.Project BuildProject
-        {
-            get
-            {
+        protected MSBuild.Project BuildProject {
+            get {
                 return this.buildProject;
             }
-            set
-            {
+            set {
                 this.buildProject = value;
             }
         }
         #endregion
 
         #region ctor
-        protected ProjectFactory(Microsoft.VisualStudio.Shell.Package package)
-        {
+        protected ProjectFactory(Microsoft.VisualStudio.Shell.Package package) {
             this.package = package;
             this.site = package;
 
@@ -139,36 +94,31 @@ namespace Microsoft.VisualStudio.Project
 
         #region methods
 
-        public virtual bool CanCreateProjectAsynchronously(ref Guid rguidProjectID, string filename, uint flags)
-        {
+        public virtual bool CanCreateProjectAsynchronously(ref Guid rguidProjectID, string filename, uint flags) {
             return true;
         }
 
-        public void OnBeforeCreateProjectAsync(ref Guid rguidProjectID, string filename, string location, string pszName, uint flags)
-        {
+        public void OnBeforeCreateProjectAsync(ref Guid rguidProjectID, string filename, string location, string pszName, uint flags) {
         }
 
-        public virtual IVsTask CreateProjectAsync(ref Guid rguidProjectID, string filename, string location, string pszName, uint flags)
-        {
+        public virtual IVsTask CreateProjectAsync(ref Guid rguidProjectID, string filename, string location, string pszName, uint flags) {
             Guid iid = typeof(IVsHierarchy).GUID;
-            return VsTaskLibraryHelper.CreateAndStartTask(taskSchedulerService.Value, VsTaskRunContext.UIThreadBackgroundPriority, VsTaskLibraryHelper.CreateTaskBody(() =>
-                {
-                    IntPtr project;
-                    int cancelled;
-                    CreateProject(filename, location, pszName, flags, ref iid, out project, out cancelled);
-                    if (cancelled != 0)
-                    {
-                        throw new OperationCanceledException();
-                    }
+            return VsTaskLibraryHelper.CreateAndStartTask(taskSchedulerService.Value, VsTaskRunContext.UIThreadBackgroundPriority, VsTaskLibraryHelper.CreateTaskBody(() => {
+                IntPtr project;
+                int cancelled;
+                CreateProject(filename, location, pszName, flags, ref iid, out project, out cancelled);
+                if(cancelled != 0) {
+                    throw new OperationCanceledException();
+                }
 
-                    return Marshal.GetObjectForIUnknown(project);
-                }));
+                return Marshal.GetObjectForIUnknown(project);
+            }));
         }
 
         #endregion
 
         #region abstract methods
-        protected abstract ProjectNode CreateProject();
+        internal abstract ProjectNode CreateProject();
         #endregion
 
         #region overriden methods
@@ -184,8 +134,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="projectGuid">Guid of the project</param>
         /// <param name="project">Project that end up being created by this method</param>
         /// <param name="canceled">Was the project creation canceled</param>
-        protected override void CreateProject(string fileName, string location, string name, uint flags, ref Guid projectGuid, out IntPtr project, out int canceled)
-        {
+        protected override void CreateProject(string fileName, string location, string name, uint flags, ref Guid projectGuid, out IntPtr project, out int canceled) {
             project = IntPtr.Zero;
             canceled = 0;
 
@@ -213,11 +162,10 @@ namespace Microsoft.VisualStudio.Project
         /// Delegate to CreateProject implemented by the derived class.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-            Justification="The global property handles is instantiated here and used in the project node that will Dispose it")]
-        protected override object PreCreateForOuter(IntPtr outerProjectIUnknown)
-        {
+            Justification = "The global property handles is instantiated here and used in the project node that will Dispose it")]
+        protected override object PreCreateForOuter(IntPtr outerProjectIUnknown) {
             Debug.Assert(this.buildProject != null, "The build project should have been initialized before calling PreCreateForOuter.");
-            
+
             // Please be very carefull what is initialized here on the ProjectNode. Normally this should only instantiate and return a project node.
             // The reason why one should very carefully add state to the project node here is that at this point the aggregation has not yet been created and anything that would cause a CCW for the project to be created would cause the aggregation to fail
             // Our reasoning is that there is no other place where state on the project node can be set that is known by the Factory and has to execute before the Load method.
@@ -237,10 +185,9 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="file">Project file to look into to find the Guid list</param>
         /// <returns>List of semi-colon separated GUIDs</returns>
-        protected override string ProjectTypeGuids(string file)
-        {
+        protected override string ProjectTypeGuids(string file) {
             // Load the project so we can extract the list of GUIDs
-           
+
             this.buildProject = Utilities.ReinitializeMsBuildProject(this.buildEngine, file, this.buildProject);
 
             // Retrieve the list of GUIDs, if it is not specify, make it our GUID
@@ -253,17 +200,13 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region helpers
-        private IProjectEvents GetProjectEventsProvider()
-        {
+        private IProjectEvents GetProjectEventsProvider() {
             ProjectPackage projectPackage = this.package as ProjectPackage;
             Debug.Assert(projectPackage != null, "Package not inherited from framework");
-            if(projectPackage != null)
-            {
-                foreach(SolutionListener listener in projectPackage.SolutionListeners)
-                {
+            if(projectPackage != null) {
+                foreach(SolutionListener listener in projectPackage.SolutionListeners) {
                     IProjectEvents projectEvents = listener as IProjectEvents;
-                    if(projectEvents != null)
-                    {
+                    if(projectEvents != null) {
                         return projectEvents;
                     }
                 }

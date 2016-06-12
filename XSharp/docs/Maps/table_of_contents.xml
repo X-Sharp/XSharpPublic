@@ -7,11 +7,14 @@
     <caption translate="true">X# (XSharp)</caption>
     <topicref type="topic" id="423889533736020" build="ALL" modified="2016-01-30T22:08:40.876Z" icon="0" href="Introduction">
       <caption translate="true">Getting Started with X#</caption>
+      <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
+        <caption translate="true">Version History</caption>
+      </topicref>
       <topicref type="topic" id="425165252463386" build="ALL" modified="2016-05-26T08:37:03.149Z" icon="0" href="Dialects">
         <caption translate="true">Dialects</caption>
       </topicref>
-      <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
-        <caption translate="true">Version History</caption>
+      <topicref type="topic" id="425235102214402" build="ALL" modified="2016-06-02T17:06:00.116Z" icon="0" href="Bring-Your-Own-Runtime-BYOR">
+        <caption translate="true">Bring Your Own Runtime (BYOR)</caption>
       </topicref>
       <topicref type="topic" id="423890249842237" build="ALL" modified="2016-01-19T21:14:28.114Z" icon="0" href="Known-Issues">
         <caption translate="true">Known Issues</caption>
@@ -20,6 +23,9 @@
         <caption translate="true">New features</caption>
         <topicref type="topic" id="423997726350447" build="ALL" modified="2016-01-30T21:22:45.037Z" icon="0" href="Anonymous-Methods">
           <caption translate="true">Anonymous Methods</caption>
+        </topicref>
+        <topicref type="topic" id="425338296933191" build="ALL" modified="2016-06-12T16:17:47.965Z" icon="0" href="Anonymous-Classes">
+          <caption translate="true">Anonymous Types</caption>
         </topicref>
         <topicref type="topic" id="423997260438779" build="ALL" modified="2016-01-30T21:22:44.821Z" icon="0" href="ASYNC---AWAIT">
           <caption translate="true">ASYNC - AWAIT</caption>

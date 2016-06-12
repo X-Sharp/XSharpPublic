@@ -57,6 +57,7 @@ namespace XSharp.Project
             // Are we are from the Designer ?
             if (codeStream is DocDataTextReader)
             {
+                this.FileName = mainFilePath;
                 // Do the parse
                 ccu = base.Parse(codeStream);
             }

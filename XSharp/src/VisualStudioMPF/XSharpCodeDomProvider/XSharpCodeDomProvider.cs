@@ -18,12 +18,15 @@ namespace XSharp.CodeDom
     public partial class XSharpCodeDomProvider : CodeDomProvider
     {
         protected XSharpCodeGenerator xsGenerator;
-        public int TabSize { get; set; }
+
+        // The Tab setting is shared by all instance of our CodeDomProvider
+        public static int TabSize { get; set; }
+        public string FileName { get; set; }
 
         public XSharpCodeDomProvider()
         {
             this.xsGenerator = new XSharpCodeGenerator();
-            this.TabSize = 1;
+            XSharpCodeDomProvider.TabSize = 1;
         }
 
         [Obsolete]
@@ -42,7 +45,8 @@ namespace XSharp.CodeDom
         public override ICodeParser CreateParser()
         {
             var parser = new XSharpCodeParser();
-            parser.TabSize = this.TabSize;
+            parser.TabSize = XSharpCodeDomProvider.TabSize;
+            parser.FileName = this.FileName;
             return parser;
         }
 
@@ -140,8 +144,29 @@ namespace XSharp.CodeDom
                     }
                 }
                 // Ok,we MUST do the same thing for the Form file
-
-
+                base.GenerateCodeFromCompileUnit(formCCU, writer, options);
+                // BUT, the writer is hold by the Form Designer, don't close  it !!
+                writer.Flush();
+                // Now, we must re-read it and parse again
+                IServiceProvider provider = (DocDataTextWriter)writer;
+                DocData docData = (DocData)provider.GetService(typeof(DocData));
+                DocDataTextReader ddtr = new DocDataTextReader(docData);
+                // Retrieve 
+                generatedSource = ddtr.ReadToEnd();
+                resultDesigner = parser.Parse(generatedSource);
+                resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner, out resultNamespace);
+                // just to be sure...
+                if (resultClass != null)
+                {
+                    // Now push all elements from resultClass to formClass
+                    formClass.Members.Clear();
+                    foreach (CodeTypeMember ctm in formClass.Members)
+                    {
+                        formClass.Members.Add(ctm);
+                    }
+                }
+                // Ok, it should be ok....
+                // We have updated the file and the types that are stored inside each CCU that have been merged in compileUnit
 
             }
             else

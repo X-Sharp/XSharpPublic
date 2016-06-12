@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+   <TemplateData>
+      <Name Package="Native Resource File (.rc)"  />
+      <Description Package="A file in which native resources can be defined"  />
+      <TemplateID>XSharp.NativeResource</TemplateID>
+      <ProjectType>XSharp</ProjectType>
+      <SortOrder>300</SortOrder>
+      <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+      <DefaultName>NativeResources.rc</DefaultName>
+   </TemplateData>
+   <TemplateContent>
+      <ProjectItem>NativeResources.rc</ProjectItem>
+   </TemplateContent>
+</VSTemplate>

@@ -78,7 +78,7 @@ NEXT
         [Test(Author = "Chris", Id = "C31", Title = "error XS0175: Use of keyword 'SUPER' is not valid in this context")]
         public static void cannot_use_super_in_constructor_body()
         {
-            var s = ParseSource("/dialect:vulcan", @"
+            var s = ParseSource("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 CLASS TestClass
 CONSTRUCTOR()
 LOCAL n AS INT
@@ -129,7 +129,7 @@ END CLASS
         [Test(Author = "Chris", Id = "C34", Title = "error XS0119: 'TestClass.MessageBox()' is a method, which is not valid in the given context")]
         public static void error_XS0119_MessageBox_is_a_method_which_is_not_valid_in_the_given_context()
         {
-            var s = ParseSource("/dialect:vulcan",@"
+            var s = ParseSource("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 STATIC CLASS MessageBox
     STATIC METHOD Show(s AS STRING) AS VOID
 END CLASS
@@ -842,7 +842,7 @@ INTERNAL VOSTRUCT _winPOINT
         [Test(Author = "Chris", Id = "C79", Title = "error XS0119: 'Xs$Globals.Directory()' is a method, which is not valid in the given context")]
         public static void error_XS0119_Directory_CreateDirectory()
         {
-            var s = ParseSource("/dialect:vulcan",@"
+            var s = ParseSource("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 #using System.IO
 FUNCTION Directory() AS INT
 Directory.CreateDirectory('')
@@ -1204,7 +1204,7 @@ END CLASS
         [Test(Author = "Chris", Id = "C99", Title = "Keyword 'this' not available in the current context")]
         public static void Keyword_this_not_available_in_current_context()
         {
-            var s = ParseSource("/dialect:vulcan", @"
+            var s = ParseSource("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 //Not sure if this one is the same as 31:
 //99. error XS0027: Keyword 'this' is not available in the current context
 
@@ -1347,7 +1347,7 @@ c := '123'
         [Test(Author = "Chris", Id = "C108", Title = "Name conflict with '.' static member access")]
         public static void Name_conflict_static_access()
         {
-            var s = ParseSource("/dialect:vulcan", @"
+            var s = ParseSource("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 INTERFACE ITest
     METHOD Foo() AS VOID
 END INTERFACE
@@ -1552,7 +1552,7 @@ s := ( n ):ToString()
         [Test(Author = "Chris", Id = "C119", Title = "Constructor chaining in body")]
         public static void Ctor_chain_in_body()
         {
-            var s = ParseStartFunction("/dialect:vulcan", @"
+            var s = ParseStartFunction("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 CLASS Test
     CONSTRUCTOR(n AS INT)
     CONSTRUCTOR()
@@ -2018,12 +2018,17 @@ END CLASS
         [Test(Author = "Chris", Id = "C146", Title = "error XS1737: Optional parameters must appear after all required parameters")]
         public static void error_XS1737_Optional_parameters_must_appear_after_all_required_parameters()
         {
-            var s = ParseSource(@"
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL o AS TestClass
+o := TestClass{}
+o:DoTest(1 ,2 , 3)
+o:DoTest(1 , , 3)
 CLASS TestClass
 	METHOD DoTest(n AS INT , m := 1 AS INT,k AS INT) AS VOID
 END CLASS
 ");
-            CompileAndLoadWithoutErrors(s);
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
@@ -2031,7 +2036,7 @@ END CLASS
         [Test(Author = "Chris", Id = "C147", Title = "incorrect params passed to super constructor")]
         public static void incorrect_params_passed_to_super_constructor()
         {
-            var s = ParseSource(@"/dialect:vulcan" , @"
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 // /dialect:vulcan
 FUNCTION Start() AS VOID
 Child{1,2}
@@ -2057,7 +2062,7 @@ END CLASS
         [Test(Author = "Chris", Id = "C148", Title = "No errors reported on mixing CLIPPER/STRICT members in the same class or inheritance tree")]
         public static void No_errors_reported_on_mixing_CLIPPER_STRICT_members_in_the_same_class_or_inheritance_tree()
         {
-            var s = ParseSource(@"/dialect:vulcan" , @"
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 // /dialect:vulcan
 CLASS Parent
 	METHOD Test1() CLIPPER
@@ -2159,7 +2164,7 @@ END IF
         [Test(Author = "Chris", Id = "C153", Title = "error XS0121: The call is ambiguous between the following methods or properties: 'VulcanRTFuncs.Functions.Left(string, uint)' and 'Xs$Globals.Left(string, uint)'")]
         public static void Problem_overriding_runtime_function_with_custom_one()
         {
-            var s = ParseSource(@"/dialect:vulcan" , @"
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
 // /dialect:vulcan
 FUNCTION Left(c AS STRING, n AS DWORD) AS STRING
 RETURN ""local function correctly called""
@@ -2187,6 +2192,312 @@ LOCAL c AS STRING
 c = System.Console.WriteLine
 ");
             CompileWithErrors(s);
+        }
+
+
+
+        // 155
+        [Test(Author = "Chris", Id = "C155", Title = "error XS1736: Default parameter value for 'u' must be a compile-time constant")]
+        public static void Deafault_NIL_param()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Test(u := NIL AS USUAL) AS VOID
+FUNCTION Start() AS VOID
+Test(1)
+Test(NIL)
+Test()
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 156
+        [Test(Author = "Chris", Id = "C156", Title = "error XS0266: Cannot implicitly convert type 'void*' to 'System.IntPtr'. An explicit conversion exists (are you missing a cast?)")]
+        public static void Convert_PTR_to_IntPtr()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll /unsafe", @"
+FUNCTION Start() AS VOID
+LOCAL p AS IntPtr
+p := FOpen(""somefile"")
+");
+            CompileAndLoadWithoutErrors("/dialect:vulcan /unsafe", s, VulcanRuntime);
+        }
+
+
+        // 157
+        [Test(Author = "Chris", Id = "C157", Title = "error XS1503: Argument 1: cannot convert from 'System.IntPtr' to 'void*'")]
+        public static void Convert_IntPtr_to_PTR()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll /unsafe", @"
+FUNCTION Start() AS VOID
+LOCAL p AS IntPtr
+FClose(p)
+");
+            CompileAndLoadWithoutErrors("/dialect:vulcan /unsafe", s, VulcanRuntime);
+        }
+
+
+        // 158
+        [Test(Author = "Chris", Id = "C158", Title = "error XS0037: Cannot convert null to '__Usual' because it is a non-nullable value type")]
+        public static void Compare_USUAL_to_NULL()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll" , @"
+FUNCTION Start() AS VOID
+LOCAL u AS USUAL
+LOCAL l AS LOGIC
+
+u := NULL
+
+l := u == NULL
+IF .not. l
+	THROW Exception{""Incorrect comparison result""}
+END IF
+
+l := u != NULL
+IF l
+	THROW Exception{""Incorrect comparison result""}
+END IF
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 159
+        [Test(Author = "Chris", Id = "C159", Title = "error XS0034: Operator '==' is ambiguous on operands of type '__Usual' and 'IntPtr'")]
+        public static void Compare_USUAL_to_NULL_PTR()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll /unsafe", @"
+FUNCTION Start() AS VOID
+LOCAL u AS USUAL
+LOCAL l AS LOGIC
+
+u := NULL_PTR
+
+l := u == NULL_PTR
+IF .not. l
+	THROW Exception{""Incorrect comparison result""}
+END IF
+
+l := u != NULL_PTR
+IF l
+	THROW Exception{""Incorrect comparison result""}
+END IF
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan /unsafe", s, VulcanRuntime);
+        }
+
+
+
+        // 160
+        [Test(Author = "Chris", Id = "C160", Title = "error XS0034: Operator '==' is ambiguous on operands of type '__Usual' and '__VODate'")]
+        public static void Compare_USUAL_to_NULL_DATE()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL u AS USUAL
+LOCAL l AS LOGIC
+
+u := NULL_DATE // this works ok, unlike NULL_PTR
+
+l := u == NULL_DATE
+IF .not. l
+	THROW Exception{""Incorrect comparison result""}
+END IF
+
+l := u != NULL_DATE
+IF l
+	THROW Exception{""Incorrect comparison result""}
+END IF
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 161
+        [Test(Author = "Chris", Id = "C161", Title = "error XS1750: A value of type 'int' cannot be used as a default parameter because there are no standard conversions to type '__Usual'")]
+        public static void INT_Default_value_in_USUAL_param()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Test(u := 1 AS USUAL) AS VOID
+FUNCTION Start() AS VOID
+Test()
+Test(1)
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 162
+        [Test(Author = "Chris", Id = "C162", Title = "error XS1763: 'o' is of type 'object'. A default parameter value of a reference type other than string can only be initialized with null")]
+        public static void INT_Default_value_in_OBJECT_param()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Test(o := 1 AS OBJECT) AS VOID
+FUNCTION Start() AS VOID
+Test()
+Test(1)
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 163
+        [Test(Author = "Chris", Id = "C163", Title = "Compiler crash with RECOVER statement")]
+        public static void Compiler_crash_with_RECOVER_statement()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+BEGIN SEQUENCE
+RECOVER
+	? ""recover""
+END SEQUENCE
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 164
+        [Test(Author = "Chris", Id = "C164", Title = "Problem dereferencing pointer")]
+        public static void Problem_dereferencing_pointer()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll /unsafe", @"
+FUNCTION Start() AS VOID
+LOCAL p AS BYTE PTR
+LOCAL b AS BYTE
+b := 127
+p := @b
+? BYTE(p)
+IF BYTE(p) != 127
+	THROW Exception{""Wrong value""}
+END IF
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan /unsafe", s, VulcanRuntime);
+        }
+
+
+        // 165
+        [Test(Author = "Chris", Id = "C165", Title = "error XS0131: The left-hand side of an assignment must be a variable, property or indexer")]
+        public static void Pointer_arithmetic_problem()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll /unsafe", @"
+FUNCTION Start() AS VOID
+LOCAL p AS BYTE PTR
+LOCAL b AS BYTE
+p := @b
+BYTE(p++) := 1
+BYTE(++p) := 2
+");
+            CompileAndLoadWithoutErrors	("/dialect:vulcan /unsafe", s, VulcanRuntime);
+        }
+
+
+        // 166
+        [Test(Author = "Chris", Id = "C166", Title = "error XS0457: Ambiguous user defined conversions '__Usual.implicit operator byte(__Usual)' and '__Usual.implicit operator sbyte(__Usual)' when converting from '__Usual' to 'decimal'")]
+        public static void Problem_converting_Decimal_to_USUAL()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL u AS USUAL
+LOCAL d AS Decimal
+u := 1.2m
+d := (System.Decimal)u
+? d
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 167
+        [Test(Author = "Chris", Id = "C167", Title = "error XS0101: The namespace '<global namespace>' already contains a definition for 'Test'")]
+        public static void Class_name_and_namespace_conflict()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+BEGIN NAMESPACE Test
+CLASS MyClass
+END CLASS
+END NAMESPACE
+
+CLASS Test
+END CLASS
+");
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 168
+        [Test(Author = "Chris", Id = "C168", Title = "error XS0034: Operator '+' is ambiguous on operands of type '__VOFloat' and 'double'")]
+        public static void Ambiguous_operator_with_FLOAT()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL f := 1.0 AS FLOAT
+LOCAL r := 1.0 AS REAL8
+LOCAL s := 1.0 AS REAL4
+LOCAL i := 1 AS INT
+LOCAL w := 1 AS WORD
+LOCAL dw := 1 AS DWORD
+LOCAL b := 1 AS BYTE
+f := f + 0.5 
+f := f + r
+f := f + s
+f := f + i
+f := f - w
+f := f - dw
+f := f - b
+? f
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 169
+        [Test(Author = "Chris", Id = "C169", Title = "error XS0034: Operator '+=' is ambiguous on operands of type '__VODate' and 'ushort'")]
+        public static void Ambiguous_operator_with_DATE()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL d AS DATE
+LOCAL f := 1.0 AS FLOAT
+LOCAL r := 1.0 AS REAL8
+LOCAL n := 1 AS INT
+LOCAL w := 1 AS WORD
+LOCAL dw := 1 AS DWORD
+LOCAL b := 1 AS BYTE
+d := DATE{DateTime.Now}
+d += n
+d := d + r
+d -= w
+d := d - dw
+d := d + b
+? d
+IF d - DATE{DateTime.Now} != 1
+	THROW Exception{""Wrong date calculated""}
+ENDIF
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 170
+        [Test(Author = "Chris", Id = "C170", Title = "compiler crash with GLOBAL initialization")]
+        public static void compiler_crash_with_GLOBAL_initialization()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan dialect
+GLOBAL g := Test() AS STRING
+GLOBAL g1 := 1 AS INT
+GLOBAL g2 := g1 AS INT
+FUNCTION Test() AS STRING STRICT
+RETURN ""abc""
+FUNCTION Start() AS VOID
+? g,g1,g2
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
         }
 
 

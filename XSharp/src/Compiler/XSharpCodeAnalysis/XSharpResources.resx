@@ -4738,13 +4738,16 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_DuplicateDefine" xml:space="preserve">
     <value>Duplicate define detected '{0}'</value>
   </data>
-  <data name="ERR_FeatureRequiresReferenceToRuntime" xml:space="preserve">
-    <value>The feature '{0}' requires a reference to the runtime DLL '{1}'.</value>
+  <data name="ERR_DialectRequiresReferenceToRuntime" xml:space="preserve">
+    <value>The dialect '{0}' requires a reference to the runtime DLLs {1}.</value>
   </data>
   <data name="WRN_ImplicitParentConstructorInitializer" xml:space="preserve">
     <value>No explicit constructor chaining; generating implicit call to super constructor.</value>
   </data>
   <data name="ERR_NestedMethodMustHaveSameNameAsParentClass" xml:space="preserve">
     <value>Class name {0} for method differs from parent class name {1}</value>
+  </data>
+  <data name="ERR_InvalidDialect" xml:space="preserve">
+    <value>Invalid dialect {0}. Must be 'Core', 'Vo', 'Vulcan', 'dBase', 'FoxPro', 'Harbour' or 'XBasepp'</value>
   </data>
 </root>

@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation. 
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
+ * copy of the license can be found in the License.html file at the root of this distribution. If 
+ * you cannot locate the Apache License, Version 2.0, please send an email to 
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -62,8 +28,7 @@ using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using MSBuildConstruction = Microsoft.Build.Construction;
 
-namespace Microsoft.VisualStudio.Project
-{
+namespace Microsoft.VisualStudio.Project {
     [CLSCompliant(false), ComVisible(true)]
     public partial class ProjectConfig :
         IVsCfg,
@@ -73,8 +38,7 @@ namespace Microsoft.VisualStudio.Project
         IVsDebuggableProjectCfg,
         ISpecifyPropertyPages,
         IVsSpecifyProjectDesignerPages,
-        IVsCfgBrowseObject
-    {
+        IVsCfgBrowseObject {
         #region constants
         internal const string Debug = "Debug";
         internal const string Release = "Release";
@@ -93,56 +57,42 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region properties
-        public ProjectNode ProjectMgr
-        {
-            get
-            {
+        internal ProjectNode ProjectMgr {
+            get {
                 return this.project;
             }
         }
 
-        public string ConfigName
-        {
-            get
-            {
+        public string ConfigName {
+            get {
                 return this.configName;
             }
-            set
-            {
+            set {
                 this.configName = value;
             }
         }
 
-        public string PlatformName
-        {
-            get
-            {
+        public string PlatformName {
+            get {
                 return platformName;
             }
-            set
-            {
+            set {
                 platformName = value;
             }
         }
 
-        public virtual object ConfigurationProperties
-        {
-            get
-            {
-                if(this.configurationProperties == null)
-                {
+        public virtual object ConfigurationProperties {
+            get {
+                if(this.configurationProperties == null) {
                     this.configurationProperties = new ProjectConfigProperties(this);
                 }
                 return this.configurationProperties;
             }
         }
 
-        protected IList<OutputGroup> OutputGroups
-        {
-            get
-            {
-                if(null == this.outputGroups)
-                {
+        internal IList<OutputGroup> OutputGroups {
+            get {
+                if(null == this.outputGroups) {
                     // Initialize output groups
                     this.outputGroups = new List<OutputGroup>();
 
@@ -151,11 +101,9 @@ namespace Microsoft.VisualStudio.Project
                     // it by simply overriding that method and providing the correct MSBuild target(s).
                     IList<KeyValuePair<string, string>> groupNames = project.GetOutputGroupNames();
 
-                    if(groupNames != null)
-                    {
+                    if(groupNames != null) {
                         // Populate the output array
-                        foreach(KeyValuePair<string, string> group in groupNames)
-                        {
+                        foreach(KeyValuePair<string, string> group in groupNames) {
                             OutputGroup outputGroup = CreateOutputGroup(project, group);
                             this.outputGroups.Add(outputGroup);
                         }
@@ -168,26 +116,19 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctors
-        public ProjectConfig(ProjectNode project, string configuration)
-        {
+        internal ProjectConfig(ProjectNode project, string configuration) {
             this.project = project;
 
-            if (configuration.Contains("|"))
-            { 
+            if(configuration.Contains("|")) {
                 // If configuration is in the form "<Configuration>|<Platform>"
                 string[] configStrArray = configuration.Split('|');
-                if (2 == configStrArray.Length)
-                {
+                if(2 == configStrArray.Length) {
                     this.configName = configStrArray[0];
                     this.platformName = configStrArray[1];
-                }
-                else
-                {
+                } else {
                     throw new Exception(string.Format(CultureInfo.InvariantCulture, "Invalid configuration format: {0}", configuration));
                 }
-            }
-            else
-            { 
+            } else {
                 // If configuration is in the form "<Configuration>"          
                 this.configName = configuration;
             }
@@ -195,65 +136,71 @@ namespace Microsoft.VisualStudio.Project
             // Because the project can be aggregated by a flavor, we need to make sure
             // we get the outer most implementation of that interface (hence: project --> IUnknown --> Interface)
             IntPtr projectUnknown = Marshal.GetIUnknownForObject(this.ProjectMgr);
-            try
-            {
+            try {
                 IVsProjectFlavorCfgProvider flavorCfgProvider = (IVsProjectFlavorCfgProvider)Marshal.GetTypedObjectForIUnknown(projectUnknown, typeof(IVsProjectFlavorCfgProvider));
                 ErrorHandler.ThrowOnFailure(flavorCfgProvider.CreateProjectFlavorCfg(this, out flavoredCfg));
                 if(flavoredCfg == null)
                     throw new COMException();
-            }
-            finally
-            {
+            } finally {
                 if(projectUnknown != IntPtr.Zero)
                     Marshal.Release(projectUnknown);
             }
             // if the flavored object support XML fragment, initialize it
             IPersistXMLFragment persistXML = flavoredCfg as IPersistXMLFragment;
-            if(null != persistXML)
-            {
+            if(null != persistXML) {
                 this.project.LoadXmlFragment(persistXML, this.configName, platformName);
             }
         }
         #endregion
 
         #region methods
-        protected virtual OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
-        {
+ 
+        internal virtual OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group) {
             OutputGroup outputGroup = new OutputGroup(group.Key, group.Value, project, this);
             return outputGroup;
         }
 
-        public void PrepareBuild(bool clean)
-        {
+        public void PrepareBuild(bool clean) {
             project.PrepareBuild(this.configName, clean);
         }
 
-        public virtual string GetConfigurationProperty(string propertyName, bool resetCache)
-        {
+        public virtual string GetConfigurationProperty(string propertyName, bool resetCache) {
             MSBuildExecution.ProjectPropertyInstance property = GetMsBuildProperty(propertyName, resetCache);
-            if (property == null)
+            if(property == null)
                 return null;
 
             return property.EvaluatedValue;
         }
 
-        public virtual void SetConfigurationProperty(string propertyName, string propertyValue)
-        {
-            if(!this.project.QueryEditProjectFile(false))
-            {
+        public virtual string GetUnevaluatedConfigurationProperty(string propertyName) {
+            String result;
+            // Get properties for current configuration from project file and cache it
+            this.project.SetConfiguration(this.ConfigName);
+            this.project.BuildProject.ReevaluateIfNecessary();
+            result = this.project.GetProjectPropertyUnevaluated(propertyName);
+            // Create a snapshot of the evaluated project in its current state
+            this.currentConfig = this.project.BuildProject.CreateProjectInstance();
+
+            // Restore configuration
+            project.SetCurrentConfiguration();
+            // return property asked for
+            return result;
+        }
+
+        public virtual void SetConfigurationProperty(string propertyName, string propertyValue) {
+            if(!this.project.QueryEditProjectFile(false)) {
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
             }
 
             string condition = String.Format(CultureInfo.InvariantCulture, ConfigProvider.configString, this.ConfigName);
 
             SetPropertyUnderCondition(propertyName, propertyValue, condition);
-            
+
             // property cache will need to be updated
             this.currentConfig = null;
-           
+
             // Signal the output groups that something is changed
-            foreach(OutputGroup group in this.OutputGroups)
-            {
+            foreach(OutputGroup group in this.OutputGroups) {
                 group.InvalidateGroup();
             }
             this.project.SetProjectFileDirty(true);
@@ -265,12 +212,10 @@ namespace Microsoft.VisualStudio.Project
         /// Emulates the behavior of SetProperty(name, value, condition) on the old MSBuild object model.
         /// This finds a property group with the specified condition (or creates one if necessary) then sets the property in there.
         /// </summary>
-        private void SetPropertyUnderCondition(string propertyName, string propertyValue, string condition)
-        {
+        private void SetPropertyUnderCondition(string propertyName, string propertyValue, string condition) {
             string conditionTrimmed = (condition == null) ? String.Empty : condition.Trim();
 
-            if (conditionTrimmed.Length == 0)
-            {
+            if(conditionTrimmed.Length == 0) {
                 this.project.BuildProject.SetProperty(propertyName, propertyValue);
                 return;
             }
@@ -279,25 +224,21 @@ namespace Microsoft.VisualStudio.Project
             // So do it ourselves.
             MSBuildConstruction.ProjectPropertyGroupElement newGroup = null;
 
-            foreach (MSBuildConstruction.ProjectPropertyGroupElement group in this.project.BuildProject.Xml.PropertyGroups)
-            {
-                if (String.Equals(group.Condition.Trim(), conditionTrimmed, StringComparison.OrdinalIgnoreCase))
-                {
+            foreach(MSBuildConstruction.ProjectPropertyGroupElement group in this.project.BuildProject.Xml.PropertyGroups) {
+                if(String.Equals(group.Condition.Trim(), conditionTrimmed, StringComparison.OrdinalIgnoreCase)) {
                     newGroup = group;
                     break;
                 }
             }
 
-            if (newGroup == null)
-            {
+            if(newGroup == null) {
                 newGroup = this.project.BuildProject.Xml.AddPropertyGroup(); // Adds after last existing PG, else at start of project
                 newGroup.Condition = condition;
             }
 
-            foreach (MSBuildConstruction.ProjectPropertyElement property in newGroup.PropertiesReversed) // If there's dupes, pick the last one so we win
+            foreach(MSBuildConstruction.ProjectPropertyElement property in newGroup.PropertiesReversed) // If there's dupes, pick the last one so we win
             {
-                if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
-                {
+                if(String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0) {
                     property.Value = propertyValue;
                     return;
                 }
@@ -311,17 +252,13 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="storageType">Project file or user file</param>
         /// <returns>0 = not dirty</returns>
-        internal int IsFlavorDirty(_PersistStorageType storageType)
-        {
+        internal int IsFlavorDirty(_PersistStorageType storageType) {
             int isDirty = 0;
-            if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
-            {
+            if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment) {
                 ErrorHandler.ThrowOnFailure(((IPersistXMLFragment)this.flavoredCfg).IsFragmentDirty((uint)storageType, out isDirty));
             }
             return isDirty;
         }
-
-
 
         /// <summary>
         /// If flavored, ask the flavor if it wants to provide an XML fragment
@@ -330,12 +267,10 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="storageType">Project file or user file</param>
         /// <param name="fragment">Fragment that the flavor wants to save</param>
         /// <returns>HRESULT</returns>
-        internal int GetXmlFragment(Guid flavor, _PersistStorageType storageType, out string fragment)
-        {
+        internal int GetXmlFragment(Guid flavor, _PersistStorageType storageType, out string fragment) {
             fragment = null;
             int hr = VSConstants.S_OK;
-            if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment)
-            {
+            if(this.flavoredCfg != null && this.flavoredCfg is IPersistXMLFragment) {
                 Guid flavorGuid = flavor;
                 hr = ((IPersistXMLFragment)this.flavoredCfg).Save(ref flavorGuid, (uint)storageType, out fragment, 1);
             }
@@ -344,8 +279,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region IVsSpecifyPropertyPages
-        public void GetPages(CAUUID[] pages)
-        {
+        public void GetPages(CAUUID[] pages) {
             this.GetCfgPropertyPages(pages);
         }
         #endregion
@@ -356,8 +290,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="pages">The pages to return.</param>
         /// <returns>VSConstants.S_OK</returns>		
-        public virtual int GetProjectDesignerPages(CAUUID[] pages)
-        {
+        public virtual int GetProjectDesignerPages(CAUUID[] pages) {
             this.GetCfgPropertyPages(pages);
             return VSConstants.S_OK;
         }
@@ -368,16 +301,18 @@ namespace Microsoft.VisualStudio.Project
         /// The display name is a two part item
         /// first part is the config name, 2nd part is the platform name
         /// </summary>
-        public virtual int get_DisplayName(out string name)
-        {
-            name = DisplayName;
+        public virtual int get_DisplayName(out string name) {
+            if (!string.IsNullOrEmpty(PlatformName)) {
+                name = ConfigName + "|" + PlatformName;
+
+            } else {
+                name = DisplayName;
+            }
             return VSConstants.S_OK;
         }
 
-        private string DisplayName
-        {
-            get
-            {
+        private string DisplayName {
+            get {
                 string name;
                 string[] platform = new string[1];
                 uint[] actual = new uint[1];
@@ -386,28 +321,23 @@ namespace Microsoft.VisualStudio.Project
                 IVsCfgProvider provider;
                 ErrorHandler.ThrowOnFailure(project.GetCfgProvider(out provider));
                 ErrorHandler.ThrowOnFailure(((IVsCfgProvider2)provider).GetPlatformNames(1, platform, actual));
-                if(!string.IsNullOrEmpty(platform[0]))
-                {
+                if(!string.IsNullOrEmpty(platform[0])) {
                     name += "|" + platform[0];
                 }
                 return name;
             }
         }
-        public virtual int get_IsDebugOnly(out int fDebug)
-        {
+        public virtual int get_IsDebugOnly(out int fDebug) {
             fDebug = 0;
-            if(this.configName == "Debug")
-            {
+            if(this.configName == "Debug") {
                 fDebug = 1;
             }
             return VSConstants.S_OK;
         }
-        public virtual int get_IsReleaseOnly(out int fRelease)
-        {
+        public virtual int get_IsReleaseOnly(out int fRelease) {
             CCITracing.TraceCall();
             fRelease = 0;
-            if(this.configName == "Release")
-            {
+            if(this.configName == "Release") {
                 fRelease = 1;
             }
             return VSConstants.S_OK;
@@ -415,82 +345,75 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region IVsProjectCfg methods
-        public virtual int EnumOutputs(out IVsEnumOutputs eo)
-        {
+        public virtual int EnumOutputs(out IVsEnumOutputs eo) {
             CCITracing.TraceCall();
             eo = null;
             return VSConstants.E_NOTIMPL;
         }
 
-        public virtual int get_BuildableProjectCfg(out IVsBuildableProjectCfg pb)
-        {
-            CCITracing.TraceCall();
+        public virtual int get_BuildableProjectCfg(out IVsBuildableProjectCfg pb) {
+            if (project.BuildProject == null || !project.BuildProject.Targets.ContainsKey("CoreCompile")) {
+                // The project is not buildable, so don't return a config. This
+                // will hide the 'Build' commands from the VS UI.
+                pb = null;
+                return VSConstants.E_NOTIMPL;
+            }
             if(buildableCfg == null)
                 buildableCfg = new BuildableProjectConfig(this);
             pb = buildableCfg;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_CanonicalName(out string name)
-        {
+        public virtual int get_CanonicalName(out string name) {
             name = configName;
             return VSConstants.S_OK;
             //return ((IVsCfg)this).get_DisplayName(out name);
         }
 
-        public virtual int get_IsPackaged(out int pkgd)
-        {
+        public virtual int get_IsPackaged(out int pkgd) {
             CCITracing.TraceCall();
             pkgd = 0;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_IsSpecifyingOutputSupported(out int f)
-        {
+        public virtual int get_IsSpecifyingOutputSupported(out int f) {
             CCITracing.TraceCall();
             f = 1;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_Platform(out Guid platform)
-        {
+        public virtual int get_Platform(out Guid platform) {
             CCITracing.TraceCall();
             platform = Guid.Empty;
             return VSConstants.E_NOTIMPL;
         }
 
-        public virtual int get_ProjectCfgProvider(out IVsProjectCfgProvider p)
-        {
+        public virtual int get_ProjectCfgProvider(out IVsProjectCfgProvider p) {
             CCITracing.TraceCall();
             p = null;
             IVsCfgProvider cfgProvider = null;
             this.project.GetCfgProvider(out cfgProvider);
-            if(cfgProvider != null)
-            {
+            if(cfgProvider != null) {
                 p = cfgProvider as IVsProjectCfgProvider;
             }
 
             return (null == p) ? VSConstants.E_NOTIMPL : VSConstants.S_OK;
         }
 
-        public virtual int get_RootURL(out string root)
-        {
+        public virtual int get_RootURL(out string root) {
             CCITracing.TraceCall();
             root = null;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_TargetCodePage(out uint target)
-        {
+        public virtual int get_TargetCodePage(out uint target) {
             CCITracing.TraceCall();
             target = (uint)System.Text.Encoding.Default.CodePage;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_UpdateSequenceNumber(ULARGE_INTEGER[] li)
-        {
-            if (li == null)
-            {
+        public virtual int get_UpdateSequenceNumber(ULARGE_INTEGER[] li) {
+            if(li == null) {
                 throw new ArgumentNullException("li");
             }
 
@@ -500,8 +423,7 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public virtual int OpenOutput(string name, out IVsOutput output)
-        {
+        public virtual int OpenOutput(string name, out IVsOutput output) {
             CCITracing.TraceCall();
             output = null;
             return VSConstants.E_NOTIMPL;
@@ -515,68 +437,62 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="grfLaunch">A flag that determines the conditions under which to start the debugger. For valid grfLaunch values, see __VSDBGLAUNCHFLAGS</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code</returns>
-        public virtual int DebugLaunch(uint grfLaunch)
-        {
+        public virtual int DebugLaunch(uint grfLaunch) {
             CCITracing.TraceCall();
 
-            try
-            {
+            try {
                 VsDebugTargetInfo info = new VsDebugTargetInfo();
                 info.cbSize = (uint)Marshal.SizeOf(info);
                 info.dlo = Microsoft.VisualStudio.Shell.Interop.DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
 
                 // On first call, reset the cache, following calls will use the cached values
                 string property = GetConfigurationProperty("StartProgram", true);
-                if(string.IsNullOrEmpty(property))
-                {
+                if(string.IsNullOrEmpty(property)) {
                     info.bstrExe = this.project.GetOutputAssembly(this.ConfigName);
-                }
-                else
-                {
+                } else {
                     info.bstrExe = property;
                 }
 
                 property = GetConfigurationProperty("WorkingDirectory", false);
-                if(string.IsNullOrEmpty(property))
-                {
+                if(string.IsNullOrEmpty(property)) {
                     info.bstrCurDir = Path.GetDirectoryName(info.bstrExe);
-                }
-                else
-                {
+                } else {
                     info.bstrCurDir = property;
                 }
 
                 property = GetConfigurationProperty("CmdArgs", false);
-                if(!string.IsNullOrEmpty(property))
-                {
+                if(!string.IsNullOrEmpty(property)) {
                     info.bstrArg = property;
                 }
 
                 property = GetConfigurationProperty("RemoteDebugMachine", false);
-                if(property != null && property.Length > 0)
-                {
+                if(property != null && property.Length > 0) {
                     info.bstrRemoteMachine = property;
                 }
 
-                info.fSendStdoutToOutputWindow = 0;
-
-                property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
-                if(property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
+                property = GetConfigurationProperty("RedirectToOutputWindow", false);
+                if (property != null && string.Compare(property, "true", true, CultureInfo.InvariantCulture) == 0)
                 {
-                    //Set the unmanged debugger
-                    //TODO change to vsconstant when it is available in VsConstants (guidNativeOnlyEng was the old name, maybe it has got a new name)
-                    info.clsidCustom = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
+                   info.fSendStdoutToOutputWindow = 1;
                 }
                 else
                 {
+                    info.fSendStdoutToOutputWindow = 0;
+                }
+
+                property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
+                if(property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0) {
+                    //Set the unmanged debugger
+                    //TODO change to vsconstant when it is available in VsConstants (guidNativeOnlyEng was the old name, maybe it has got a new name)
+                   info.clsidCustom = new Guid("{92EF0900-2251-11D2-B72E-0000F87572EF}"); // VSConstants2.guidCOMPlusNativeEng;
+                    //info.clsidCustom = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
+                } else {
                     //Set the managed debugger
                     info.clsidCustom = VSConstants.CLSID_ComPlusOnlyDebugEngine;
                 }
                 info.grfLaunch = grfLaunch;
                 VsShellUtilities.LaunchDebugger(this.project.Site, info);
-            }
-            catch(Exception e)
-            {
+            } catch(Exception e) {
                 Trace.WriteLine("Exception : " + e.Message);
 
                 return Marshal.GetHRForException(e);
@@ -592,13 +508,11 @@ namespace Microsoft.VisualStudio.Project
         /// For valid grfLaunch values, see __VSDBGLAUNCHFLAGS or __VSDBGLAUNCHFLAGS2.</param>
         /// <param name="fCanLaunch">true if the debugger can be launched, otherwise false</param>
         /// <returns>S_OK if the method succeeds, otherwise an error code</returns>
-        public virtual int QueryDebugLaunch(uint flags, out int fCanLaunch)
-        {
+        public virtual int QueryDebugLaunch(uint flags, out int fCanLaunch) {
             CCITracing.TraceCall();
             string assembly = this.project.GetAssemblyName(this.ConfigName);
             fCanLaunch = (assembly != null && assembly.ToUpperInvariant().EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) ? 1 : 0;
-            if(fCanLaunch == 0)
-            {
+            if(fCanLaunch == 0) {
                 string property = GetConfigurationProperty("StartProgram", true);
                 fCanLaunch = (property != null && property.Length > 0) ? 1 : 0;
             }
@@ -608,16 +522,13 @@ namespace Microsoft.VisualStudio.Project
 
         #region IVsProjectCfg2 Members
 
-        public virtual int OpenOutputGroup(string szCanonicalName, out IVsOutputGroup ppIVsOutputGroup)
-        {
+        public virtual int OpenOutputGroup(string szCanonicalName, out IVsOutputGroup ppIVsOutputGroup) {
             ppIVsOutputGroup = null;
             // Search through our list of groups to find the one they are looking forgroupName
-            foreach(OutputGroup group in OutputGroups)
-            {
+            foreach(OutputGroup group in OutputGroups) {
                 string groupName;
                 group.get_CanonicalName(out groupName);
-                if(String.Compare(groupName, szCanonicalName, StringComparison.OrdinalIgnoreCase) == 0)
-                {
+                if(String.Compare(groupName, szCanonicalName, StringComparison.OrdinalIgnoreCase) == 0) {
                     ppIVsOutputGroup = group;
                     break;
                 }
@@ -625,14 +536,12 @@ namespace Microsoft.VisualStudio.Project
             return (ppIVsOutputGroup != null) ? VSConstants.S_OK : VSConstants.E_FAIL;
         }
 
-        public virtual int OutputsRequireAppRoot(out int pfRequiresAppRoot)
-        {
+        public virtual int OutputsRequireAppRoot(out int pfRequiresAppRoot) {
             pfRequiresAppRoot = 0;
             return VSConstants.E_NOTIMPL;
         }
 
-        public virtual int get_CfgType(ref Guid iidCfg, out IntPtr ppCfg)
-        {
+        public virtual int get_CfgType(ref Guid iidCfg, out IntPtr ppCfg) {
             // Delegate to the flavored configuration (to enable a flavor to take control)
             // Since we can be asked for Configuration we don't support, avoid throwing and return the HRESULT directly
             int hr = flavoredCfg.get_CfgType(ref iidCfg, out ppCfg);
@@ -640,19 +549,15 @@ namespace Microsoft.VisualStudio.Project
             return hr;
         }
 
-        public virtual int get_IsPrivate(out int pfPrivate)
-        {
+        public virtual int get_IsPrivate(out int pfPrivate) {
             pfPrivate = 0;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_OutputGroups(uint celt, IVsOutputGroup[] rgpcfg, uint[] pcActual)
-        {
+        public virtual int get_OutputGroups(uint celt, IVsOutputGroup[] rgpcfg, uint[] pcActual) {
             // Are they only asking for the number of groups?
-            if(celt == 0)
-            {
-                if((null == pcActual) || (0 == pcActual.Length))
-                {
+            if(celt == 0) {
+                if((null == pcActual) || (0 == pcActual.Length)) {
                     throw new ArgumentNullException("pcActual");
                 }
                 pcActual[0] = (uint)OutputGroups.Count;
@@ -660,17 +565,14 @@ namespace Microsoft.VisualStudio.Project
             }
 
             // Check that the array of output groups is not null
-            if((null == rgpcfg) || (rgpcfg.Length == 0))
-            {
+            if((null == rgpcfg) || (rgpcfg.Length == 0)) {
                 throw new ArgumentNullException("rgpcfg");
             }
 
             // Fill the array with our output groups
             uint count = 0;
-            foreach(OutputGroup group in OutputGroups)
-            {
-                if(rgpcfg.Length > count && celt > count && group != null)
-                {
+            foreach(OutputGroup group in OutputGroups) {
+                if(rgpcfg.Length > count && celt > count && group != null) {
                     rgpcfg[count] = group;
                     ++count;
                 }
@@ -683,8 +585,7 @@ namespace Microsoft.VisualStudio.Project
             return (count == celt) ? VSConstants.S_OK : VSConstants.S_FALSE;
         }
 
-        public virtual int get_VirtualRoot(out string pbstrVRoot)
-        {
+        public virtual int get_VirtualRoot(out string pbstrVRoot) {
             pbstrVRoot = null;
             return VSConstants.E_NOTIMPL;
         }
@@ -697,8 +598,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="cfg">The IVsCfg object represented by the browse object</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
-        public virtual int GetCfg(out IVsCfg cfg)
-        {
+        public virtual int GetCfg(out IVsCfg cfg) {
             cfg = this;
             return VSConstants.S_OK;
         }
@@ -709,12 +609,10 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="hier">Reference to the hierarchy object.</param>
         /// <param name="itemid">Reference to the project item.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
-        public virtual int GetProjectItem(out IVsHierarchy hier, out uint itemid)
-        {
-            if(this.project == null || this.project.NodeProperties == null)
-            {
-                throw new InvalidOperationException();
-            }
+        public virtual int GetProjectItem(out IVsHierarchy hier, out uint itemid) {
+            Utilities.CheckNotNull(this.project);
+            Utilities.CheckNotNull(this.project.NodeProperties);
+
             return this.project.NodeProperties.GetProjectItem(out hier, out itemid);
         }
         #endregion
@@ -727,36 +625,30 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="configName">The name of the configuration.</param>
         /// <param name="platformName">The name of the platform.</param>
         /// <returns>true if successfull.</returns>
-        internal static bool TrySplitConfigurationCanonicalName(string canonicalName, out string configName, out string platformName)
-        {
+        internal static bool TrySplitConfigurationCanonicalName(string canonicalName, out string configName, out string platformName) {
             configName = String.Empty;
             platformName = String.Empty;
 
-            if(String.IsNullOrEmpty(canonicalName))
-            {
+            if(String.IsNullOrEmpty(canonicalName)) {
                 return false;
             }
 
             string[] splittedCanonicalName = canonicalName.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if(splittedCanonicalName == null || (splittedCanonicalName.Length != 1 && splittedCanonicalName.Length != 2))
-            {
+            if(splittedCanonicalName == null || (splittedCanonicalName.Length != 1 && splittedCanonicalName.Length != 2)) {
                 return false;
             }
 
             configName = splittedCanonicalName[0];
-            if(splittedCanonicalName.Length == 2)
-            {
+            if(splittedCanonicalName.Length == 2) {
                 platformName = splittedCanonicalName[1];
             }
 
             return true;
         }
 
-        private MSBuildExecution.ProjectPropertyInstance GetMsBuildProperty(string propertyName, bool resetCache)
-        {
-            if (resetCache || this.currentConfig == null)
-            {
+        private MSBuildExecution.ProjectPropertyInstance GetMsBuildProperty(string propertyName, bool resetCache) {
+            if(resetCache || this.currentConfig == null) {
                 // Get properties for current configuration from project file and cache it
                 this.project.SetConfiguration(this.ConfigName);
                 this.project.BuildProject.ReevaluateIfNecessary();
@@ -767,7 +659,7 @@ namespace Microsoft.VisualStudio.Project
                 project.SetCurrentConfiguration();
             }
 
-            if (this.currentConfig == null)
+            if(this.currentConfig == null)
                 throw new Exception("Failed to retrieve properties");
 
             // return property asked for
@@ -778,17 +670,13 @@ namespace Microsoft.VisualStudio.Project
         /// Retrieves the configuration dependent property pages.
         /// </summary>
         /// <param name="pages">The pages to return.</param>
-        private void GetCfgPropertyPages(CAUUID[] pages)
-        {
+        private void GetCfgPropertyPages(CAUUID[] pages) {
             // We do not check whether the supportsProjectDesigner is set to true on the ProjectNode.
             // We rely that the caller knows what to call on us.
-            if(pages == null)
-            {
-                throw new ArgumentNullException("pages");
-            }
+            Utilities.ArgumentNotNull("pages", pages);
 
-            if(pages.Length == 0)
-            {
+
+            if(pages.Length == 0) {
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "pages");
             }
 
@@ -801,13 +689,10 @@ namespace Microsoft.VisualStudio.Project
             guidsList = (string)variant;
 
             Guid[] guids = Utilities.GuidsArrayFromSemicolonDelimitedStringOfGuids(guidsList);
-            if(guids == null || guids.Length == 0)
-            {
+            if(guids == null || guids.Length == 0) {
                 pages[0] = new CAUUID();
                 pages[0].cElems = 0;
-            }
-            else
-            {
+            } else {
                 pages[0] = PackageUtilities.CreateCAUUIDFromGuidArray(guids);
             }
         }
@@ -819,8 +704,7 @@ namespace Microsoft.VisualStudio.Project
         /// of any reference it may still be holding to the base config
         /// </summary>
         /// <returns></returns>
-        int IVsProjectFlavorCfg.Close()
-        {
+        int IVsProjectFlavorCfg.Close() {
             // This is used to release the reference the flavored config is holding
             // on the base config, but in our scenario these 2 are the same object
             // so we have nothing to do here.
@@ -835,18 +719,22 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="iidCfg">IID representing the type of config object we should create</param>
         /// <param name="ppCfg">Config object that the method created</param>
         /// <returns>HRESULT</returns>
-        int IVsProjectFlavorCfg.get_CfgType(ref Guid iidCfg, out IntPtr ppCfg)
-        {
+        int IVsProjectFlavorCfg.get_CfgType(ref Guid iidCfg, out IntPtr ppCfg) {
             ppCfg = IntPtr.Zero;
 
             // See if this is an interface we support
             if(iidCfg == typeof(IVsDebuggableProjectCfg).GUID)
                 ppCfg = Marshal.GetComInterfaceForObject(this, typeof(IVsDebuggableProjectCfg));
-            else if(iidCfg == typeof(IVsBuildableProjectCfg).GUID)
-            {
+            else if(iidCfg == typeof(IVsBuildableProjectCfg).GUID) {
                 IVsBuildableProjectCfg buildableConfig;
                 this.get_BuildableProjectCfg(out buildableConfig);
-                ppCfg = Marshal.GetComInterfaceForObject(buildableConfig, typeof(IVsBuildableProjectCfg));
+                //
+                //In some cases we've intentionally shutdown the build options
+                //  If buildableConfig is null then don't try to get the BuildableProjectCfg interface
+                //  
+                if (null != buildableConfig) {
+                    ppCfg = Marshal.GetComInterfaceForObject(buildableConfig, typeof(IVsBuildableProjectCfg));
+                }
             }
 
             // If not supported
@@ -866,40 +754,35 @@ namespace Microsoft.VisualStudio.Project
     [CLSCompliant(false)]
     [ComVisible(true)]
     [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Buildable")]
-    public class BuildableProjectConfig : IVsBuildableProjectCfg
-    {
+    internal class BuildableProjectConfig : IVsBuildableProjectCfg {
         #region fields
         ProjectConfig config = null;
         EventSinkCollection callbacks = new EventSinkCollection();
         #endregion
 
         #region ctors
-        public BuildableProjectConfig(ProjectConfig config)
-        {
+        public BuildableProjectConfig(ProjectConfig config) {
             this.config = config;
         }
         #endregion
 
         #region IVsBuildableProjectCfg methods
 
-        public virtual int AdviseBuildStatusCallback(IVsBuildStatusCallback callback, out uint cookie)
-        {
+        public virtual int AdviseBuildStatusCallback(IVsBuildStatusCallback callback, out uint cookie) {
             CCITracing.TraceCall();
 
             cookie = callbacks.Add(callback);
             return VSConstants.S_OK;
         }
 
-        public virtual int get_ProjectCfg(out IVsProjectCfg p)
-        {
+        public virtual int get_ProjectCfg(out IVsProjectCfg p) {
             CCITracing.TraceCall();
 
             p = config;
             return VSConstants.S_OK;
         }
 
-        public virtual int QueryStartBuild(uint options, int[] supported, int[] ready)
-        {
+        public virtual int QueryStartBuild(uint options, int[] supported, int[] ready) {
             CCITracing.TraceCall();
             if(supported != null && supported.Length > 0)
                 supported[0] = 1;
@@ -908,8 +791,7 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public virtual int QueryStartClean(uint options, int[] supported, int[] ready)
-        {
+        public virtual int QueryStartClean(uint options, int[] supported, int[] ready) {
             CCITracing.TraceCall();
             config.PrepareBuild(false);
             if(supported != null && supported.Length > 0)
@@ -919,8 +801,7 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public virtual int QueryStartUpToDateCheck(uint options, int[] supported, int[] ready)
-        {
+        public virtual int QueryStartUpToDateCheck(uint options, int[] supported, int[] ready) {
             CCITracing.TraceCall();
             config.PrepareBuild(false);
             if(supported != null && supported.Length > 0)
@@ -930,16 +811,14 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public virtual int QueryStatus(out int done)
-        {
+        public virtual int QueryStatus(out int done) {
             CCITracing.TraceCall();
 
             done = (this.config.ProjectMgr.BuildInProgress) ? 0 : 1;
             return VSConstants.S_OK;
         }
 
-        public virtual int StartBuild(IVsOutputWindowPane pane, uint options)
-        {
+        public virtual int StartBuild(IVsOutputWindowPane pane, uint options) {
             CCITracing.TraceCall();
             config.PrepareBuild(false);
 
@@ -952,8 +831,7 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public virtual int StartClean(IVsOutputWindowPane pane, uint options)
-        {
+        public virtual int StartClean(IVsOutputWindowPane pane, uint options) {
             CCITracing.TraceCall();
             config.PrepareBuild(true);
             // Current version of MSBuild wish to be called in an STA
@@ -961,22 +839,19 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public virtual int StartUpToDateCheck(IVsOutputWindowPane pane, uint options)
-        {
+        public virtual int StartUpToDateCheck(IVsOutputWindowPane pane, uint options) {
             CCITracing.TraceCall();
 
             return VSConstants.E_NOTIMPL;
         }
 
-        public virtual int Stop(int fsync)
-        {
+        public virtual int Stop(int fsync) {
             CCITracing.TraceCall();
 
             return VSConstants.S_OK;
         }
 
-        public virtual int UnadviseBuildStatusCallback(uint cookie)
-        {
+        public virtual int UnadviseBuildStatusCallback(uint cookie) {
             CCITracing.TraceCall();
 
 
@@ -984,8 +859,7 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public virtual int Wait(uint ms, int fTickWhenMessageQNotEmpty)
-        {
+        public virtual int Wait(uint ms, int fTickWhenMessageQNotEmpty) {
             CCITracing.TraceCall();
 
             return VSConstants.E_NOTIMPL;
@@ -995,21 +869,15 @@ namespace Microsoft.VisualStudio.Project
         #region helpers
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private bool NotifyBuildBegin()
-        {
+        private bool NotifyBuildBegin() {
             int shouldContinue = 1;
-            foreach (IVsBuildStatusCallback cb in callbacks)
-            {
-                try
-                {
+            foreach(IVsBuildStatusCallback cb in callbacks) {
+                try {
                     ErrorHandler.ThrowOnFailure(cb.BuildBegin(ref shouldContinue));
-                    if (shouldContinue == 0)
-                    {
+                    if(shouldContinue == 0) {
                         return false;
                     }
-                }
-                catch (Exception e)
-                {
+                } catch(Exception e) {
                     // If those who ask for status have bugs in their code it should not prevent the build/notification from happening
                     Debug.Fail(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.BuildEventError, CultureInfo.CurrentUICulture), e.Message));
                 }
@@ -1019,23 +887,16 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private void NotifyBuildEnd(MSBuildResult result, string buildTarget)
-        {
+        private void NotifyBuildEnd(MSBuildResult result, string buildTarget) {
             int success = ((result == MSBuildResult.Successful) ? 1 : 0);
 
-            foreach (IVsBuildStatusCallback cb in callbacks)
-            {
-                try
-                {
+            foreach(IVsBuildStatusCallback cb in callbacks) {
+                try {
                     ErrorHandler.ThrowOnFailure(cb.BuildEnd(success));
-                }
-                catch (Exception e)
-                {
+                } catch(Exception e) {
                     // If those who ask for status have bugs in their code it should not prevent the build/notification from happening
                     Debug.Fail(String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.BuildEventError, CultureInfo.CurrentUICulture), e.Message));
-                }
-                finally
-                {
+                } finally {
                     // We want to refresh the references if we are building with the Build or Rebuild target or if the project was opened for browsing only.
                     bool shouldRepaintReferences = (buildTarget == null || buildTarget == MsBuildTarget.Build || buildTarget == MsBuildTarget.Rebuild);
 
@@ -1044,48 +905,43 @@ namespace Microsoft.VisualStudio.Project
                     // One scenario to think at is when an assembly reference is renamed on disk thus becomming unresolvable, 
                     // but msbuild can actually resolve it.
                     // Another one if the project was opened only for browsing and now the user chooses to build or rebuild.
-                    if (shouldRepaintReferences && (result == MSBuildResult.Successful))
-                    {
+                    if(shouldRepaintReferences && (result == MSBuildResult.Successful)) {
                         this.RefreshReferences();
                     }
                 }
             }
         }
 
-        private void Build(uint options, IVsOutputWindowPane output, string target)
-        {
-            if (!this.NotifyBuildBegin())
-            {
+        private void Build(uint options, IVsOutputWindowPane output, string target) {
+            if(!this.NotifyBuildBegin()) {
                 return;
             }
 
-            try
-            {
+            try {
                 config.ProjectMgr.BuildAsync(options, this.config.ConfigName, output, target, (result, buildTarget) => this.NotifyBuildEnd(result, buildTarget));
-            }
-            catch(Exception e)
-            {
+            } catch(Exception e) {
+                if (e.IsCriticalException()) {
+                    throw;
+                }
                 Trace.WriteLine("Exception : " + e.Message);
                 ErrorHandler.ThrowOnFailure(output.OutputStringThreadSafe("Unhandled Exception:" + e.Message + "\n"));
                 this.NotifyBuildEnd(MSBuildResult.Failed, target);
                 throw;
-            }
-            finally
-            {              
-                ErrorHandler.ThrowOnFailure(output.FlushToTaskList());               
+            } finally {
+                ErrorHandler.ThrowOnFailure(output.FlushToTaskList());
             }
         }
 
         /// <summary>
         /// Refreshes references and redraws them correctly.
         /// </summary>
-        private void RefreshReferences()
-        {
+        private void RefreshReferences() {
             // Refresh the reference container node for assemblies that could be resolved.
             IReferenceContainer referenceContainer = this.config.ProjectMgr.GetReferenceContainer();
-            foreach(ReferenceNode referenceNode in referenceContainer.EnumReferences())
-            {
-                referenceNode.RefreshReference();
+            if (referenceContainer != null) {
+	            foreach(ReferenceNode referenceNode in referenceContainer.EnumReferences()) {
+	                referenceNode.RefreshReference();
+                }
             }
         }
         #endregion

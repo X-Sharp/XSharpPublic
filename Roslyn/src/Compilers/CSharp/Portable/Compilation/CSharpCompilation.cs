@@ -669,15 +669,27 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-			if (Options.OutputKind.IsApplication())
+            if (!trees.IsEmpty() && ! Options.HasDefaultTree)
             {
-				if (String.IsNullOrEmpty(Options.MainTypeName) )
-						Options.MainTypeName =Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName;
-            }
-            SyntaxTree def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
-            if (!externalSyntaxTrees.Contains(def))
-            {
+                SyntaxTree def = null ;
+                if (Options.IsDialectVO)
+                {
+                    if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
+                    {
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
+                    }
+                    def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options);
+                }
+                else /* core dialect */
+                {
+                    if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
+                    {
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
+                    }
+                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
+                }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
+                Options.HasDefaultTree = true;
             }
 #endif
             externalSyntaxTrees.Free();

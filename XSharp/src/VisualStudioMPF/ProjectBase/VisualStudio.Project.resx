@@ -234,7 +234,7 @@
     <value>Destination File Exists</value>
   </data>
   <data name="FileAlreadyInProject" xml:space="preserve">
-    <value>A file of this name is already part of the project. Do you want to overwrite it?</value>
+    <value>A file with the same name '{0}' already exists in the project. Do you want to replace it?</value>
   </data>
   <data name="FileAlreadyInProjectCaption" xml:space="preserve">
     <value>Destination File Exists</value>
@@ -264,7 +264,7 @@
     <value>Full Path</value>
   </data>
   <data name="FullPathDescription" xml:space="preserve">
-    <value>Location of the file</value>
+    <value>Location of the file being referenced.</value>
   </data>
   <data name="ItemDoesNotExistInProjectDirectory" xml:space="preserve">
     <value>The item '{0}' does not exist in the project directory. It may have been moved, renamed or deleted.</value>
@@ -274,6 +274,12 @@
   </data>
   <data name="Library" xml:space="preserve">
     <value>Class Library</value>
+  </data>
+  <data name="LinkAlreadyExistsInProject" xml:space="preserve">
+    <value>A project cannot have more than one link to the same file.</value>
+  </data>
+  <data name="LinkedFileAlreadyExists" xml:space="preserve">
+    <value>A file link with the same name '{0}' already exists in the project. Do you want to replace it?</value>
   </data>
   <data name="Minimal" xml:space="preserve">
     <value>Minimal</value>
@@ -429,7 +435,7 @@
     <value>Custom Tool Namespace</value>
   </data>
   <data name="CustomToolNamespaceDescription" xml:space="preserve">
-    <value>The namespace into which the output of the custom tool is placed.</value>
+    <value>The namespace into which the output of the custom tool is placed. If not set, the default namespace for the project is used.</value>
   </data>
   <data name="OutputBuilt" xml:space="preserve">
     <value>Primary Output</value>
@@ -485,6 +491,15 @@
   <data name="ErrorReferenceCouldNotBeAdded" xml:space="preserve">
     <value>A reference to {0} could not be added. Please make sure that the file is accessible, and that it is a valid assembly or COM component.</value>
   </data>
+  <data name="DestinationFolderAlreadyExists" xml:space="preserve">
+    <value>Cannot move the folder '{0}'. A folder with that name already exists in the destination directory.</value>
+  </data>
+  <data name="DestinationPathEqualsSourcePath" xml:space="preserve">
+    <value>Cannot move '{0}'. The destination folder is the same as the source folder.</value>
+  </data>
+  <data name="DestinationPathSubfolderOfSourcePath" xml:space="preserve">
+    <value>Cannot move '{0}'. The destination folder is a subfolder of the source folder.</value>
+  </data>
   <data name="DetailsImport" xml:space="preserve">
     <value>An 'Import' of the file '{1}' was found in the project file '{0}'. This file is not registered as a safe file to import, and could contain targets and tasks that are harmful.  If this imported file is indeed considered safe, then it can be registered by writing to the registry key {2}.</value>
   </data>
@@ -512,6 +527,21 @@
   <data name="BuildEventError" xml:space="preserve">
     <value>Exception was thrown during BuildBegin event\n{0}</value>
   </data>
+  <data name="Culture" xml:space="preserve">
+    <value>Culture</value>
+  </data>
+  <data name="CultureDescription" xml:space="preserve">
+    <value>The value of the Culture field from the assembly metadata.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DescriptionDescription" xml:space="preserve">
+    <value>The value of the AssemblyDescription attribute from the assembly metadata.</value>
+  </data>
+    <data name="CopyNOfFile" xml:space="preserve">
+    <value>Copy ({0}) of {1}</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
@@ -537,6 +567,65 @@ Are you sure you want to change the Target Framework for this project?</value>
   </data>
   <data name="ReloadPromptOnTargetFxChangedCaption" xml:space="preserve">
     <value>Target Framework Change</value>
+  </data>
+  <data name="FileType" xml:space="preserve">
+    <value>File Type</value>
+  </data>
+  <data name="FileTypeDescription" xml:space="preserve">
+    <value>The file type of the reference: .NET assembly (Assembly), COM type library (ActiveX), or Native Assembly (Native Assembly).</value>
+  </data>
+  <data name="RuntimeVersion" xml:space="preserve">
+    <value>Runtime Version</value>
+  </data>
+  <data name="RuntimeVersionDescription" xml:space="preserve">
+    <value>Version of the .NET runtime this assembly was compiled against.</value>
+  </data>
+  <data name="SpecificVersion" xml:space="preserve">
+    <value>Specific Version</value>
+  </data>
+  <data name="SpecificVersionDescription" xml:space="preserve">
+    <value>Indicates whether this reference is to a specific version of an assembly.</value>
+  </data>
+  <data name="StrongName" xml:space="preserve">
+    <value>Strong Name</value>
+  </data>
+  <data name="StrongNameDescription" xml:space="preserve">
+    <value>True indicates that the reference has been signed with a key-pair.</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="CopyOfFile" xml:space="preserve">
+    <value>Copy of {0}</value>
+  </data>
+  <data name="VersionDescription" xml:space="preserve">
+    <value>The version number of the reference.</value>
+  </data>
+  <data name="NativeResource" xml:space="preserve">
+    <value>Native Resource</value>
+    <comment>Build action dropdown</comment>
+  </data>
+  <data name="Identity" xml:space="preserve">
+    <value>Identity</value>
+  </data>
+  <data name="IdentityDescription" xml:space="preserve">
+    <value>Security identity of the referenced assembly (see System.Reflection.Assembly.Evidence or System.Security.Poicy.Evidence).</value>
+  </data>
+  <data name="Isolated" xml:space="preserve">
+    <value>Isolated</value>
+  </data>
+  <data name="IsolatedDescription" xml:space="preserve">
+    <value>Indicates whether this COM reference is isolated to this application.</value>
+  </data>
+  <data name="Resolved" xml:space="preserve">
+    <value>Resolved</value>
+  </data>
+  <data name="ResolvedDescription" xml:space="preserve">
+    <value>Indicates whether reference has been resolved to a path.</value>
+  </data>
+  <data name="VOBinary" xml:space="preserve">
+    <value>VO Binary Resource</value>
+    <comment>Build Action - drop down option</comment>
   </data>
   <data name="AppContainerExe" xml:space="preserve">
     <value>Windows Store app</value>

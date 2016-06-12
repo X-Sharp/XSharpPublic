@@ -1,3 +1,8 @@
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 
 using System;
 using System.Drawing;
@@ -14,6 +19,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.Project.WPF;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
 using System.Diagnostics;
 
 namespace XSharp.Project
@@ -23,7 +29,7 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : ProjectNode
+    internal class XSharpProjectNode : ProjectNode
     {
         #region Enum for image list
         internal enum XSharpProjectImageName
@@ -126,59 +132,7 @@ namespace XSharp.Project
                 imageList = value;
             }
         }
-        protected override void SetOutputLogger(IVsOutputWindowPane output)
-        {
-            //base.SetOutputLogger(output);
-            // Create our logger, if it was not specified
-            if (BuildLogger == null)
-            {
-                // Because we may be aggregated, we need to make sure to get the outer IVsHierarchy
-                IntPtr unknown = IntPtr.Zero;
-                IVsHierarchy hierarchy = null;
-                try
-                {
-                    unknown = Marshal.GetIUnknownForObject(this);
-                    hierarchy = Marshal.GetTypedObjectForIUnknown(unknown, typeof(IVsHierarchy)) as IVsHierarchy;
-                }
-                finally
-                {
-                    if (unknown != IntPtr.Zero)
-                        Marshal.Release(unknown);
-                }
-                // Create the logger
-                BuildLogger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
-                //BuildLogger = new IDEBuildLogger(output, this.TaskProvider, hierarchy);
-
-                // To retrieve the verbosity level, the build logger depends on the registry root 
-                // (otherwise it will used an hard coded default)
-                ILocalRegistry2 registry = this.GetService(typeof(SLocalRegistry)) as ILocalRegistry2;
-                if (null != registry)
-                {
-                    string registryRoot;
-                    registry.GetLocalRegistryRoot(out registryRoot);
-                    XSharpIDEBuildLogger logger = this.BuildLogger as XSharpIDEBuildLogger;
-                    //IDEBuildLogger logger = this.BuildLogger as IDEBuildLogger;
-                    if (!String.IsNullOrEmpty(registryRoot) && (null != logger))
-                    {
-                        logger.BuildVerbosityRegistryRoot = registryRoot;
-                        logger.ErrorString = this.ErrorString;
-                        logger.WarningString = this.WarningString;
-                    }
-                }
-            }
-            else
-            {
-                ((XSharpIDEBuildLogger)this.BuildLogger).OutputWindowPane = output;
-            }
-
-            if (BuildEngine != null)
-            {
-                BuildEngine.UnregisterAllLoggers();
-                BuildEngine.RegisterLogger(BuildLogger);
-            }
-        }
-
-        protected internal VSLangProj.VSProject VSProject
+         protected internal VSLangProj.VSProject VSProject
         {
             get
             {
@@ -360,6 +314,97 @@ namespace XSharp.Project
             };
             return result;
         }
+
+        /// <summary>
+        /// Allows you to query the project for special files and optionally create them. 
+        /// </summary>
+        /// <param name="fileId">__PSFFILEID of the file</param>
+        /// <param name="flags">__PSFFLAGS flags for the file</param>
+        /// <param name="itemid">The itemid of the node in the hierarchy</param>
+        /// <param name="fileName">The file name of the special file.</param>
+        /// <returns></returns>
+        public override int GetFile(int fileId, uint flags, out uint itemid, out string fileName) {
+            bool fCreateInPropertiesFolder = false;
+
+            switch(fileId) {
+                case (int)__PSFFILEID.PSFFILEID_AppConfig:
+                    fileName = "app.config";
+                    break;
+                case (int)__PSFFILEID.PSFFILEID_Licenses:
+                    fileName = "licenses.licx";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_WebSettings:
+                    fileName = "web.config";
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AppManifest:
+                    fileName = "app.manifest";
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AppSettings:
+                    fileName = "Settings.settings";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AssemblyResource:
+                    fileName = "Resources.resx";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID2.PSFFILEID_AssemblyInfo:
+                    fileName = "AssemblyInfo.prg";
+                    fCreateInPropertiesFolder = true;
+                    break;
+                case (int)__PSFFILEID3.PSFFILEID_AppXaml:
+                    fileName = "App.Xaml";
+                    break;
+                case (int)__PSFFILEID4.PSFFILEID_WcfServiceReferencesConfig:
+                    fileName = "ServiceReference.config";
+                    break;
+                //case (int)__PSFFILEID5.PSFFILEID_AppxManifest:
+                //    fileName = "App.manifest";
+                //    break;
+                default:
+                    return base.GetFile(fileId, flags, out itemid, out fileName);
+            }
+
+            if(fCreateInPropertiesFolder) {
+                string sPropFolder = ProjectFolder + "\\Properties";
+                if(!System.IO.Directory.Exists(sPropFolder)){
+                    System.IO.Directory.CreateDirectory(sPropFolder);
+                }
+                fileName = "Properties\\" + fileName;
+            }
+
+            HierarchyNode fileNode = FindChild(fileName);
+            string fullPath = Path.Combine(ProjectFolder, fileName);
+            if (fCreateInPropertiesFolder) {
+                fullPath = Path.Combine(ProjectFolder , fileName);
+                }
+
+            if(fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0) {
+                // Create a zero-length file if does not exist already.
+                //
+                if(!File.Exists(fullPath))
+                    File.WriteAllText(fullPath, string.Empty);
+
+                fileNode = CreateFileNode(fileName);
+                if (fCreateInPropertiesFolder) {
+                    var PropsFolder = FindChild("Properties");
+                    if(PropsFolder == null) {
+                        PropsFolder = CreateFolderNode("Properties");
+                        AddChild(PropsFolder);
+                    }
+                    PropsFolder.AddChild(fileNode);
+                }
+                else {
+                    AddChild(fileNode);
+                }
+            }
+
+            itemid = fileNode != null ? fileNode.ID : 0;
+             if((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
+                fileName = fullPath;
+
+            return VSConstants.S_OK;
+        }
         /// <summary>
         /// Overriding to provide project general property page.
         /// </summary>
@@ -415,6 +460,7 @@ namespace XSharp.Project
             Dictionary<string, string> Dependencies = new Dictionary<string, string>();
             Dependencies.Add(".designer.prg", ".prg");
             Dependencies.Add(".xaml.prg", ".xaml");
+            Dependencies.Add(".vh", ".prg");
             // Check if we can find the Parent
             int dotPos = fileName.IndexOf(".");
             string parentFile = fileName.Substring(0, dotPos);
@@ -434,45 +480,87 @@ namespace XSharp.Project
                         xsharpParent.UpdateHasDesigner();
                     }
                 }
-                //
             }
-
+            // there are other possible parents. For Example Window1.prg is the parent of Window1.Windows.vnfrm
+            // In this case the children are a VOBinary, Header or NativeResource
+            if (IsVoBinary(fileName) || IsNativeResource(fileName) || IsHeaderFile(fileName)) { 
+                // dependent file
+                HierarchyNode newParent = parentNode.FindChild(parentFile + ".prg");
+                if(newParent != null) {
+                    parentNode = newParent;
+                }
+            }
             base.AddNewFileNodeToHierarchy(parentNode, fileName);
         }
 
-        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
-        {
+        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file) {
             ProjectElement newItem;
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
             Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
 
             string ext = Path.GetExtension(file);
-
-            if (IsCodeFile(itemPath))
-            {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.Compile);
-                // HACK
-                //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Form);
-            }
-            else if (this.IsEmbeddedResource(itemPath))
-            {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.EmbeddedResource);
+            string type = this.GetItemType(file);
+            if(String.IsNullOrEmpty(type))
+                type = "None";
+            newItem = this.CreateMsBuildFileItem(itemPath, type);
+            if(this.IsEmbeddedResource(itemPath)) {
                 newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
                 newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
-            }
-            else if ( this.IsSettings(itemPath) )
-            {
-                newItem = this.CreateMsBuildFileItem(itemPath, "None");
+            } else if(this.IsSettings(itemPath)) {
                 newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
             }
-            else
-            {
-                newItem = this.CreateMsBuildFileItem(itemPath, ProjectFileConstants.None);
-                //newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileConstants.Content);
-            }
-
             return newItem;
+        }
+
+        public string GetItemType(string file) {
+            switch (Path.GetExtension(file).ToLower()) {
+                case ".prg":
+                case ".xs":
+                    return ProjectFileConstants.Compile;
+                case ".rc":
+                    return XSharpConstants.NativeResource;
+                case ".vnmnu":
+                case ".vnfrm":
+                case ".vndbs":
+                case ".vnfs":
+                case ".vnind":
+                case ".vnord":
+                case ".vnfld":
+                case ".xsmnu":  // Special xsharp versions of the VO Binary
+                case ".xsfrm":
+                case ".xsdbs":
+                case ".xsfs":
+                case ".xsind":
+                case ".xsord":
+                case ".xsfld":
+                    return XSharpConstants.VOBinary;
+                case ".resx":
+                    return ProjectFileConstants.Resource;
+                case ".xaml":
+                    return ProjectFileConstants.Page;
+                case ".vh":
+                case ".xh":
+                default:
+                    return ProjectFileConstants.None;
+            }
+        }
+
+        public bool IsVoBinary(string fileName) {
+            return GetItemType(fileName) == XSharpConstants.VOBinary;
+        }
+        public bool IsHeaderFile(string fileName) {
+            switch (Path.GetExtension(fileName).ToLower()) {
+                case ".vh":
+                case ".xh":
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        public bool IsNativeResource(string fileName) {
+            return GetItemType(fileName) == XSharpConstants.NativeResource;
         }
 
         public bool IsSettings(string fileName)
@@ -481,7 +569,11 @@ namespace XSharp.Project
                 return true;
             return false;
         }
-
+        public bool IsXaml(string fileName) {
+            if(String.Compare(Path.GetExtension(fileName), ".xaml", StringComparison.OrdinalIgnoreCase) == 0)
+                return true;
+            return false;
+        }
 
         /// <summary>
         /// Evaluates if a file is an XSharp code file based on is extension
@@ -511,11 +603,12 @@ namespace XSharp.Project
         {
             if (String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
-                )
-            {
+                || String.Compare(type, XSharpConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
+                || String.Compare(type, XSharpConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
+                ) {
                 return true;
             }
-
+            
             // we don't know about this type, ask the base class.
             return base.IsItemTypeFileType( type );
         }

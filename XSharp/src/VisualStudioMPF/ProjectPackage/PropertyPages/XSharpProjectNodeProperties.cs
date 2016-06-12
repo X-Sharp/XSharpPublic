@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Project;
@@ -11,7 +16,7 @@ namespace XSharp.Project
     public class XSharpProjectNodeProperties : ProjectNodeProperties
     {
         #region ctors
-        public XSharpProjectNodeProperties(ProjectNode node)
+        internal XSharpProjectNodeProperties(ProjectNode node)
            : base(node)
         {
         }

@@ -67,6 +67,7 @@ namespace XSharp.CodeDom
                 walker.Walk(discover, xtree);
                 //
                 ccu = discover.CodeCompileUnit;
+                ccu.UserData[XSharpCodeConstants.USERDATA_FILENAME] = this.FileName;
             }
             catch ( Exception ex )
             {

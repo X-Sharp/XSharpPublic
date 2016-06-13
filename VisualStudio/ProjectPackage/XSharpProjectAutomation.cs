@@ -21,7 +21,7 @@ namespace XSharp.Project
         /// Public constructor.
         /// </summary>
         /// <param name="project">Custom project.</param>
-        internal OAXSharpProject(XSharpProjectNode project)
+        public OAXSharpProject(XSharpProjectNode project)
             : base(project)
         {
         }

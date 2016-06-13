@@ -16,7 +16,7 @@ namespace XSharp.Project
     public class XSharpProjectNodeProperties : ProjectNodeProperties
     {
         #region ctors
-        internal XSharpProjectNodeProperties(ProjectNode node)
+        public XSharpProjectNodeProperties(ProjectNode node)
            : base(node)
         {
         }

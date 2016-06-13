@@ -53,7 +53,7 @@ namespace XSharp.Project
         /// <returns></returns>
         public override object GetAutomationObject()
         {
-            if(automationObject == null)
+            if (automationObject == null)
             {
                 automationObject = new OAXSharpFileItem(this.ProjectMgr.GetAutomationObject() as OAProject, this);
             }
@@ -91,7 +91,7 @@ namespace XSharp.Project
         private object CreateServices(Type serviceType)
         {
             object service = null;
-            if(typeof(EnvDTE.ProjectItem) == serviceType)
+            if (typeof(EnvDTE.ProjectItem) == serviceType)
             {
                 service = GetAutomationObject();
             }
@@ -149,11 +149,11 @@ namespace XSharp.Project
             {
                 if (_designerContext == null)
                 {
-                    XSharpFileNode xsFile = Parent.FindChild( this.Url.Replace(".xaml", ".xaml.prg") ) as XSharpFileNode;
+                    XSharpFileNode xsFile = Parent.FindChild(this.Url.Replace(".xaml", ".xaml.prg")) as XSharpFileNode;
                     _designerContext = new DesignerContext();
                     //Set the EventBindingProvider for this XAML file so the designer will call it
                     //when event handlers need to be generated
-                    _designerContext.EventBindingProvider = new XSharpEventBindingProvider( xsFile );
+                    _designerContext.EventBindingProvider = new XSharpEventBindingProvider(xsFile);
                 }
 
                 return _designerContext;
@@ -165,18 +165,30 @@ namespace XSharp.Project
 
         public void UpdateHasDesigner()
         {
-            switch (SubType)
-            {
-                case ProjectFileAttributeValue.Component:
-                case ProjectFileAttributeValue.Form:
-                case ProjectFileAttributeValue.UserControl:
+            string itemType = GetItemType(this.FileName);
+            switch (itemType) {
+                case XSharpConstants.VOBinary:
+                case XSharpConstants.Settings:
+                case ProjectFileConstants.Resource:
+                case ProjectFileConstants.Page:
+                case ProjectFileConstants.ApplicationDefinition:
                     HasDesigner = true;
                     break;
                 default:
-                    HasDesigner = false;
+                    switch(SubType) {
+                        case ProjectFileAttributeValue.Component:
+                        case ProjectFileAttributeValue.Form:
+                        case ProjectFileAttributeValue.UserControl:
+                            HasDesigner = true;
+                            break;
+                        default:
+                            HasDesigner = false;
+                            break;
+                    }
                     break;
             }
         }
+
 
 
         private void UpdateItemType()
@@ -223,7 +235,16 @@ namespace XSharp.Project
             var manager = (FileDocumentManager)this.GetDocumentManager();
             Debug.Assert(manager != null, "Could not get the FileDocumentManager");
 
-            Guid viewGuid = HasDesigner ? VSConstants.LOGVIEWID_Designer : VSConstants.LOGVIEWID_Code;
+            Guid viewGuid;
+
+            if(HasDesigner) {
+                viewGuid = VSConstants.LOGVIEWID_Designer;
+            } else if(GetItemType(this.FileName) == ProjectFileConstants.Compile) {
+                viewGuid = VSConstants.LOGVIEWID_Code;
+            } else {
+                viewGuid = VSConstants.LOGVIEWID_Primary;
+            }
+
 
             IVsWindowFrame frame;
             manager.Open(false, false, viewGuid, out frame, WindowFrameShowAction.Show);
@@ -277,5 +298,83 @@ namespace XSharp.Project
             //
             return ret;
         }
+
+
+
+        ////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////
+        /*
+        public override int SetProperty(int propid, object value)
+        {
+            int result;
+            __VSHPROPID id = (__VSHPROPID)propid;
+            switch (id)
+            {
+                case __VSHPROPID.VSHPROPID_ItemSubType:
+                    this.SubType = (string)value;
+                    result = VSConstants.S_OK;
+                    break;
+
+                default:
+                    result = base.SetProperty(propid, value);
+                    break;
+            }
+
+            return result;
+        }
+
+        public override object GetProperty(int propId)
+        {
+            __VSHPROPID id = (__VSHPROPID)propId;
+            switch (id)
+            {
+                case __VSHPROPID.VSHPROPID_ItemSubType:
+                    return this.SubType;
+            }
+
+            return base.GetProperty(propId);
+        }
+
+    */
+
+        public static string GetItemType(string file) {
+            switch(Path.GetExtension(file).ToLower()) {
+                case ".prg":
+                case ".xs":
+                    return ProjectFileConstants.Compile;
+                case ".rc":
+                    return XSharpConstants.NativeResource;
+                case ".vnmnu":
+                case ".vnfrm":
+                case ".vndbs":
+                case ".vnfs":
+                case ".vnind":
+                case ".vnord":
+                case ".vnfld":
+                case ".xsmnu":  // Special xsharp versions of the VO Binary
+                case ".xsfrm":
+                case ".xsdbs":
+                case ".xsfs":
+                case ".xsind":
+                case ".xsord":
+                case ".xsfld":
+                    return XSharpConstants.VOBinary;
+                case ".resx":
+                    return ProjectFileConstants.Resource;
+                case ".settings":
+                    return XSharpConstants.Settings;
+                case ".xaml":
+                    return ProjectFileConstants.Page;
+                case ".vh":
+                case ".xh":
+                default:
+                    return ProjectFileConstants.None;
+            }
+        }
+
     }
 }

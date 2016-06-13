@@ -1,16 +1,50 @@
-/* ****************************************************************************
- *
- * Copyright (c) Microsoft Corporation. 
- *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
- * copy of the license can be found in the License.html file at the root of this distribution. If 
- * you cannot locate the Apache License, Version 2.0, please send an email to 
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
- * by the terms of the Apache License, Version 2.0.
- *
- * You must not remove this notice, or any other, from this software.
- *
- * ***************************************************************************/
+/********************************************************************************************
+
+Copyright (c) Microsoft Corporation 
+All rights reserved. 
+
+Microsoft Public License: 
+
+This license governs use of the accompanying software. If you use the software, you 
+accept this license. If you do not accept the license, do not use the software. 
+
+1. Definitions 
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
+same meaning here as under U.S. copyright law. 
+A "contribution" is the original software, or any additions or changes to the software. 
+A "contributor" is any person that distributes its contribution under this license. 
+"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
+
+2. Grant of Rights 
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
+royalty-free copyright license to reproduce its contribution, prepare derivative works of 
+its contribution, and distribute its contribution or any derivative works that you create. 
+(B) Patent Grant- Subject to the terms of this license, including the license conditions 
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
+royalty-free license under its licensed patents to make, have made, use, sell, offer for 
+sale, import, and/or otherwise dispose of its contribution in the software or derivative 
+works of the contribution in the software. 
+
+3. Conditions and Limitations 
+(A) No Trademark License- This license does not grant you rights to use any contributors' 
+name, logo, or trademarks. 
+(B) If you bring a patent claim against any contributor over patents that you claim are 
+infringed by the software, your patent license from such contributor to the software ends 
+automatically. 
+(C) If you distribute any portion of the software, you must retain all copyright, patent, 
+trademark, and attribution notices that are present in the software. 
+(D) If you distribute any portion of the software in source code form, you may do so only 
+under this license by including a complete copy of this license with your distribution. 
+If you distribute any portion of the software in compiled or object code form, you may only 
+do so under a license that complies with this license. 
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
+no express warranties, guarantees or conditions. You may have additional consumer rights 
+under your local laws which this license cannot change. To the extent permitted under your 
+local laws, the contributors exclude the implied warranties of merchantability, fitness for 
+a particular purpose and non-infringement.
+
+********************************************************************************************/
 
 using System;
 using System.Reflection;
@@ -21,18 +55,24 @@ using System.Threading;
 using System.ComponentModel;
 using System.Security.Permissions;
 
-namespace Microsoft.VisualStudio.Project {
+namespace Microsoft.VisualStudio.Project
+{
     [AttributeUsage(AttributeTargets.All)]
-    internal sealed class SRDescriptionAttribute : DescriptionAttribute {
+    internal sealed class SRDescriptionAttribute : DescriptionAttribute
+    {
         private bool replaced;
 
         public SRDescriptionAttribute(string description)
-            : base(description) {
+            : base(description)
+        {
         }
 
-        public override string Description {
-            get {
-                if(!replaced) {
+        public override string Description
+        {
+            get
+            {
+                if(!replaced)
+                {
                     replaced = true;
                     DescriptionValue = SR.GetString(base.Description, CultureInfo.CurrentUICulture);
                 }
@@ -42,17 +82,21 @@ namespace Microsoft.VisualStudio.Project {
     }
 
     [AttributeUsage(AttributeTargets.All)]
-    internal sealed class SRCategoryAttribute : CategoryAttribute {
+    internal sealed class SRCategoryAttribute : CategoryAttribute
+    {
 
         public SRCategoryAttribute(string category)
-            : base(category) {
+            : base(category)
+        {
         }
 
-        protected override string GetLocalizedString(string value) {
+        protected override string GetLocalizedString(string value)
+        {
             return SR.GetString(value, CultureInfo.CurrentUICulture);
         }
     }
-    internal sealed class SR {
+    internal sealed class SR
+    {
         internal const string AddReferenceDialogTitle = "AddReferenceDialogTitle";
         internal const string AddToNullProjectError = "AddToNullProjectError";
         internal const string Advanced = "Advanced";
@@ -166,37 +210,6 @@ namespace Microsoft.VisualStudio.Project {
         internal const string CannotLoadUnknownTargetFrameworkProject = "CannotLoadUnknownTargetFrameworkProject";
         internal const string ReloadPromptOnTargetFxChanged = "ReloadPromptOnTargetFxChanged";
         internal const string ReloadPromptOnTargetFxChangedCaption = "ReloadPromptOnTargetFxChangedCaption";
-        internal const string LinkAlreadyExistsInProject = "LinkAlreadyExistsInProject";
-        internal const string LinkedFileAlreadyExists = "LinkedFileAlreadyExists";
-
-        internal const string CopyNOfFile = "CopyNOfFile";
-        internal const string CopyOfFile = "CopyOfFile";
-
-        internal const string DestinationFolderAlreadyExists = "DestinationFolderAlreadyExists";
-        internal const string DestinationPathEqualsSourcePath = "DestinationPathEqualsSourcePath";
-        internal const string DestinationPathSubfolderOfSourcePath = "DestinationPathSubfolderOfSourcePath";
-
-        internal const string SpecificVersion = "SpecificVersion";
-        internal const string SpecificVersionDescription = "SpecificVersionDescription";
-
-        internal const string Culture_ = "Culture";
-        internal const string CultureDescription = "CultureDescription";
-        internal const string StrongName = "StrongName";
-        internal const string StrongNameDescription = "StrongNameDescription";
-        internal const string Version = "Version";
-        internal const string VersionDescription = "VersionDescription";
-        internal const string FileType = "FileType";
-        internal const string FileTypeDescription = "FileTypeDescription";
-        internal const string RuntimeVersion = "RuntimeVersion";
-        internal const string RuntimeVersionDescription = "RuntimeVersionDescription";
-        internal const string Description = "Description";
-        internal const string DescriptionDescription = "DescriptionDescription";
-        internal const string Identity = "Identity";
-        internal const string IdentityDescription = "IdentityDescription";
-        internal const string Isolated = "Isolated";
-        internal const string IsolatedDescription = "IsolatedDescription";
-        internal const string Resolved = "Resolved";
-        internal const string ResolvedDescription = "ResolvedDescription";
         internal const string AppContainerExe = "AppContainerExe";
         internal const string WinMDObj = "WinMDObj";
 
@@ -204,9 +217,12 @@ namespace Microsoft.VisualStudio.Project {
         ResourceManager resources;
 
         private static Object s_InternalSyncObject;
-        private static Object InternalSyncObject {
-            get {
-                if(s_InternalSyncObject == null) {
+        private static Object InternalSyncObject
+        {
+            get
+            {
+                if(s_InternalSyncObject == null)
+                {
                     Object o = new Object();
                     Interlocked.CompareExchange(ref s_InternalSyncObject, o, null);
                 }
@@ -214,14 +230,19 @@ namespace Microsoft.VisualStudio.Project {
             }
         }
 
-        internal SR() {
+        internal SR()
+        {
             resources = new System.Resources.ResourceManager("Microsoft.VisualStudio.Project", this.GetType().Assembly);
         }
 
-        private static SR GetLoader() {
-            if(loader == null) {
-                lock(InternalSyncObject) {
-                    if(loader == null) {
+        private static SR GetLoader()
+        {
+            if(loader == null)
+            {
+                lock(InternalSyncObject)
+                {
+                    if(loader == null)
+                    {
                         loader = new SR();
                     }
                 }
@@ -230,39 +251,48 @@ namespace Microsoft.VisualStudio.Project {
             return loader;
         }
 
-        private static CultureInfo Culture {
+        private static CultureInfo Culture
+        {
             get { return null/*use ResourceManager default, CultureInfo.CurrentUICulture*/; }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static ResourceManager Resources {
-            get {
+        public static ResourceManager Resources
+        {
+            get
+            {
                 return GetLoader().resources;
             }
         }
 
-        public static string GetString(string name, params object[] args) {
+        public static string GetString(string name, params object[] args)
+        {
             SR sys = GetLoader();
             if(sys == null)
                 return null;
             string res = sys.resources.GetString(name, SR.Culture);
 
-            if(args != null && args.Length > 0) {
+            if(args != null && args.Length > 0)
+            {
                 return String.Format(CultureInfo.CurrentCulture, res, args);
-            } else {
+            }
+            else
+            {
                 return res;
             }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static string GetString(string name) {
+        public static string GetString(string name)
+        {
             SR sys = GetLoader();
             if(sys == null)
                 return null;
             return sys.resources.GetString(name, SR.Culture);
         }
 
-        public static string GetString(string name, CultureInfo culture) {
+        public static string GetString(string name, CultureInfo culture)
+        {
             SR sys = GetLoader();
             if(sys == null)
                 return null;
@@ -270,7 +300,8 @@ namespace Microsoft.VisualStudio.Project {
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static object GetObject(string name) {
+        public static object GetObject(string name)
+        {
             SR sys = GetLoader();
             if(sys == null)
                 return null;

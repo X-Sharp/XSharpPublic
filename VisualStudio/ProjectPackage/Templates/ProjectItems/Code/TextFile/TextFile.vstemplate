@@ -2,7 +2,7 @@
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
     <Name>TextFile</Name>
-    <Description>An Textfile</Description>
+    <Description>An empty text file</Description>
     <TemplateID>Microsoft.XSharp.TextFile</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>

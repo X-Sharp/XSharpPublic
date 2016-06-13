@@ -38,7 +38,7 @@ namespace XSharp.Project
         /// Creates a new project by cloning an existing template project.
         /// </summary>
         /// <returns></returns>
-        internal override ProjectNode CreateProject()
+        protected override ProjectNode CreateProject()
         {
             XSharpProjectNode project = new XSharpProjectNode(this.package);
             project.SetSite((IOleServiceProvider)((IServiceProvider)this.package).GetService(typeof(IOleServiceProvider)));

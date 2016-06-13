@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <DefaultName>WinForm.prg</DefaultName>
+    <Name>Windows.Forms form</Name>
+    <Description>A Windows form</Description>
+    <ProjectType>XSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+    <TemplateID>XSharp.Form</TemplateID>
+  </TemplateData>
+  <TemplateContent>
+		<References>
+			<Reference>
+				<Assembly>System</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Data</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Drawing</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Windows.Forms</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Xml</Assembly>
+			</Reference>
+		</References>
+
+    <ProjectItem ReplaceParameters="true" SubType="Form" TargetFileName="$fileinputname$.prg">form.prg</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

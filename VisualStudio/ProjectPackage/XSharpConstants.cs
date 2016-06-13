@@ -28,6 +28,7 @@ namespace XSharp.Project
         public const string WPFFlavor = "14989543-69A4-4C47-A31C-74B6A6DB719B";
         public const string NativeResource = "NativeResource";
         public const string VOBinary = "VOBinary";
+        public const string Settings = "Settings";
 
 
         /// <summary>

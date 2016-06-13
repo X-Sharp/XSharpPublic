@@ -47,7 +47,7 @@ namespace XSharp.CodeDom
         {
             get
             {
-                if ( _currentNamespace == null )
+                if (_currentNamespace == null)
                 {
                     _currentNamespace = new CodeNamespace();
                 }
@@ -78,15 +78,15 @@ namespace XSharp.CodeDom
             //
             this.NamespaceStack.Push(this.CurrentNamespace);
             //
-            if( String.IsNullOrEmpty( this.CurrentNamespace.Name ) )
+            if (String.IsNullOrEmpty(this.CurrentNamespace.Name))
             {
                 // We could just have the empty fake Namespace here, but
                 // if we have some Usings inside we must copy them
-                if ( ( this.CurrentNamespace.Types.Count == 0 ) && (this.CurrentNamespace.Imports.Count > 0 ))
+                if ((this.CurrentNamespace.Types.Count == 0) && (this.CurrentNamespace.Imports.Count > 0))
                 {
                     // No Types means no Classes
                     // Ok, copy
-                    foreach ( CodeNamespaceImport import in this.CurrentNamespace.Imports)
+                    foreach (CodeNamespaceImport import in this.CurrentNamespace.Imports)
                         newNamespace.Imports.Add(import);
                 }
             }
@@ -442,7 +442,8 @@ namespace XSharp.CodeDom
                             cere = new CodeEventReferenceExpression(((CodeFieldReferenceExpression)left).TargetObject, ((CodeFieldReferenceExpression)left).FieldName);
                         else
                             cere = new CodeEventReferenceExpression(((CodePropertyReferenceExpression)left).TargetObject, ((CodePropertyReferenceExpression)left).PropertyName);
-                        stmt = new CodeAttachEventStatement( cere, right);
+                        stmt = new CodeAttachEventStatement(cere, right);
+                        //
                     }
                     else if (exp.ASSIGN_SUB() != null)
                     {
@@ -455,7 +456,7 @@ namespace XSharp.CodeDom
                         stmt = new CodeRemoveEventStatement(cere, right);
                     }
                 }
-                else if ( context._expression is XSharpParser.MethodCallContext)
+                else if (context._expression is XSharpParser.MethodCallContext)
                 {
                     XSharpParser.MethodCallContext exp = (XSharpParser.MethodCallContext)context._expression;
                     expr = BuildExpression(exp);
@@ -605,7 +606,7 @@ namespace XSharp.CodeDom
         {
             int length = statement.Stop.StopIndex - statement.Start.StartIndex;
             string extract = "";
-            if ( length > 0 )
+            if (length > 0)
                 extract = this.SourceCode.Substring(statement.Start.StartIndex, length);
             element.UserData[XSharpCodeConstants.USERDATA_CODE] = extract;
         }
@@ -978,7 +979,7 @@ namespace XSharp.CodeDom
                         exprlist.Add(BuildExpression(arg.Expr));
                     }
                 }
-                if ( target is CodeFieldReferenceExpression)
+                if (target is CodeFieldReferenceExpression)
                 {
                     //
                     expr = new CodeMethodInvokeExpression(((CodeFieldReferenceExpression)target).TargetObject, ((CodeFieldReferenceExpression)target).FieldName, exprlist.ToArray());
@@ -1041,7 +1042,9 @@ namespace XSharp.CodeDom
                 //
                 CodeTypeReference ctr = BuildDataType(delg.Type);
                 CodeExpression ce = BuildExpression(delg.Obj);
+                //
                 expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj), delg.Func.GetText());
+
             }
             else if (ctx is XSharpParser.CtorCallContext)
             {
@@ -1067,7 +1070,7 @@ namespace XSharp.CodeDom
             {
                 String name = ((XSharpParser.NameExpressionContext)ctx).Name.Id.GetText();
                 // Sometimes, we will need to do it that way....
-                if ( name.ToLower() == "self")
+                if (name.ToLower() == "self")
                 {
                     expr = new CodeThisReferenceExpression();
                 }
@@ -1078,7 +1081,7 @@ namespace XSharp.CodeDom
                 else
                 {
                     CodeTypeReference ctr = BuildSimpleName(((XSharpParser.NameExpressionContext)ctx).Name);
-                    expr = new CodeVariableReferenceExpression( name );
+                    expr = new CodeVariableReferenceExpression(name);
                 }
             }
             else
@@ -1115,6 +1118,7 @@ namespace XSharp.CodeDom
             //
             return expr;
         }
+
         private CodeTypeReference BuildNativeType(String nativeType)
         {
             CodeTypeReference expr = null;

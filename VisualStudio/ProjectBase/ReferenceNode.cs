@@ -87,8 +87,8 @@ namespace Microsoft.VisualStudio.Project {
 
         #region overridden methods
         protected override NodeProperties CreatePropertiesObject() {
-         	Debug.Fail( "CreatePropertiesObject() must be overridden" );
-         	return null; //  new ReferenceNodeProperties( this );
+         	//Debug.Fail( "CreatePropertiesObject() must be overridden" );
+         	return new ReferenceNodeProperties( this );
         }
 
         /// <summary>

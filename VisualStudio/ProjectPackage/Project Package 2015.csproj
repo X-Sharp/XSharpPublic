@@ -214,8 +214,8 @@
     </EmbeddedResource>
     <ZipProject Include="Templates\Projects\WinFormApp\Resources.resx" />
     <ZipProject Include="Templates\Projects\WPFApplication\Resources.resx" />
-    <ZipItem Include="Templates\ProjectItems\Resource\Resource.resX" />
-    <ZipItem Include="Templates\ProjectItems\ResourceInternal\Resource.resX" />
+    <ZipItem Include="Templates\ProjectItems\Resource\Resource.resx" />
+    <ZipItem Include="Templates\ProjectItems\ResourceInternal\Resource.resx" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>
@@ -231,12 +231,12 @@
     <ZipItem Include="Templates\ProjectItems\FormSimple\Class.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\FormSimple\Codefile.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\FormSimple\form.prg" />
-    <ZipItem Include="Templates\ProjectItems\FormSimple\windowsform.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\FormSimple\formsimple.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\FormSimple\__TemplateIcon.ico" />
     <ZipItem Include="Templates\ProjectItems\Form\form.designer.prg" />
     <ZipItem Include="Templates\ProjectItems\Form\Form.ico" />
     <ZipItem Include="Templates\ProjectItems\Form\form.prg" />
-    <ZipItem Include="Templates\ProjectItems\Form\windowsform.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Form\form.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\Form\__TemplateIcon.ico" />
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.prg" />
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.vstemplate" />
@@ -280,12 +280,12 @@
     <ZipItem Include="Templates\ProjectItems\Rc\NativeResources.rc" />
     <ZipItem Include="Templates\ProjectItems\Rc\RC.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\Resource\Resource.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\AppConfigInternal\App.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\AppConfigInternal\AppConfigInternal.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\AppManifestInternal\appManifestInternal.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\AssemblyInfoInternal\AssemblyInfo.prg" />
-    <ZipItem Include="Templates\ProjectItems\AssemblyInfoInternal\AssemblyInfo.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\ResourceInternal\Resource.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\SettingsInternal\Settings.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\AssemblyInfoInternal\AssemblyInfoInternal.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\ResourceInternal\ResourceInternal.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\SettingsInternal\SettingsInternal.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WcfService\WcfService.vstemplate" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

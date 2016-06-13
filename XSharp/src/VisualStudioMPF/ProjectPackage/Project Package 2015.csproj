@@ -83,7 +83,6 @@
     </Reference>
     <Reference Include="Microsoft.Build.Engine" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
-    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Designer.Interfaces, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Package.LanguageService.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -100,9 +99,6 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Shell.12.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
@@ -197,9 +193,9 @@
     <ZipProject Include="Templates\Projects\WPFApplication\App.config" />
     <ZipProject Include="Templates\Projects\WPFApplication\Settings.settings" />
     <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.xsproj" />
-    <ZipItem Include="Templates\ProjectItems\AppConfigInternal\App.config" />
-    <ZipItem Include="Templates\ProjectItems\AppManifestInternal\app.manifest" />
-    <ZipItem Include="Templates\ProjectItems\SettingsInternal\Settings.settings" />
+    <ZipItem Include="Templates\ProjectItems\Support\AppConfigInternal\App.config" />
+    <ZipItem Include="Templates\ProjectItems\Support\AppManifestInternal\app.manifest" />
+    <ZipItem Include="Templates\ProjectItems\Support\SettingsInternal\Settings.settings" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -214,30 +210,29 @@
     </EmbeddedResource>
     <ZipProject Include="Templates\Projects\WinFormApp\Resources.resx" />
     <ZipProject Include="Templates\Projects\WPFApplication\Resources.resx" />
-    <ZipItem Include="Templates\ProjectItems\Resource\Resource.resX" />
-    <ZipItem Include="Templates\ProjectItems\ResourceInternal\Resource.resX" />
+    <ZipItem Include="Templates\ProjectItems\Resources\Resource\Resource.resX" />
+    <ZipItem Include="Templates\ProjectItems\Support\ResourceInternal\Resource.resX" />
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ZipItem Include="Templates\ProjectItems\Class\Class.ico" />
-    <ZipItem Include="Templates\ProjectItems\Class\Class.prg" />
-    <ZipItem Include="Templates\ProjectItems\Class\Class.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\CodeFile\CodeFile.ico" />
-    <ZipItem Include="Templates\ProjectItems\CodeFile\Codefile.prg" />
-    <ZipItem Include="Templates\ProjectItems\CodeFile\Codefile.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\FormSimple\Class.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\FormSimple\Codefile.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\FormSimple\form.prg" />
-    <ZipItem Include="Templates\ProjectItems\FormSimple\windowsform.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\FormSimple\__TemplateIcon.ico" />
-    <ZipItem Include="Templates\ProjectItems\Form\form.designer.prg" />
-    <ZipItem Include="Templates\ProjectItems\Form\Form.ico" />
-    <ZipItem Include="Templates\ProjectItems\Form\form.prg" />
-    <ZipItem Include="Templates\ProjectItems\Form\windowsform.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\Form\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\Code\Class\Class.ico" />
+    <ZipItem Include="Templates\ProjectItems\Code\Class\Class.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\Class\Class.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\CodeFile\CodeFile.ico" />
+    <ZipItem Include="Templates\ProjectItems\Code\CodeFile\Codefile.prg" />
+    <ZipItem Include="Templates\ProjectItems\Code\CodeFile\Codefile.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Forms\SimpleForm\Class.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Forms\SimpleForm\simpleform.prg" />
+    <ZipItem Include="Templates\ProjectItems\Forms\SimpleForm\simpeform.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Forms\SimpleForm\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\form.designer.prg" />
+    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\Form.ico" />
+    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\form.prg" />
+    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\form.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\__TemplateIcon.ico" />
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.prg" />
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.prg" />
@@ -269,24 +264,38 @@
     <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml.prg" />
     <ZipProject Include="Templates\Projects\WPFApplication\XSharp.ico" />
     <Content Include="LanguageService\LanguageService.vsct" />
-    <ZipItem Include="Templates\ProjectItems\WPFPage\WPFPage.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\WPFUserControl\WPFUserControl.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\WPFWindow\wpfWindow.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\WPFPage\Page1.xaml.prg" />
-    <ZipItem Include="Templates\ProjectItems\WPFPage\__TemplateIcon.ico" />
-    <ZipItem Include="Templates\ProjectItems\WPFUserControl\UserControl1.xaml.prg" />
-    <ZipItem Include="Templates\ProjectItems\WPFWindow\WPFWindow.xaml.prg" />
-    <ZipItem Include="Templates\ProjectItems\WPFWindow\__TemplateIcon.ico" />
-    <ZipItem Include="Templates\ProjectItems\Rc\NativeResources.rc" />
-    <ZipItem Include="Templates\ProjectItems\Rc\RC.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\Resource\Resource.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\AppConfigInternal\App.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\AppManifestInternal\appManifestInternal.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\AssemblyInfoInternal\AssemblyInfo.prg" />
-    <ZipItem Include="Templates\ProjectItems\AssemblyInfoInternal\AssemblyInfo.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\ResourceInternal\Resource.vstemplate" />
-    <ZipItem Include="Templates\ProjectItems\SettingsInternal\Settings.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\wpfWindow.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\Page1.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\UserControl1.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\Resources\Rc\NativeResources.rc" />
+    <ZipItem Include="Templates\ProjectItems\Resources\Rc\RC.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Resources\Resource\Resource.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Support\AppConfigInternal\App.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Support\AppManifestInternal\appManifestInternal.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Support\AssemblyInfoInternal\AssemblyInfo.prg" />
+    <ZipItem Include="Templates\ProjectItems\Support\AssemblyInfoInternal\AssemblyInfo.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Support\ResourceInternal\Resource.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Support\SettingsInternal\Settings.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WcfService\WcfService.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResBitMap\Bitmap.bmp" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResBitMap\Bitmap.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResCursor\cursor.cur" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResCursor\cursor.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResIcon\Icon.ico" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResIcon\Icon.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\TextFile\TextFile.txt" />
+    <ZipItem Include="Templates\ProjectItems\TextFile\TextFile.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\__TemplateIcon.ico" />
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\Form.ico" />
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\form.prg" />
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\form.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\Code\Header\Header.vh" />
+    <ZipItem Include="Templates\ProjectItems\Code\Header\Header.vstemplate" />
     <Content Include="XSharp.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -361,15 +370,15 @@
     </ZipProject>
   </ItemGroup>
   <ItemGroup>
-    <ZipItem Include="Templates\ProjectItems\WPFPage\Page1.xaml">
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\Page1.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\WPFUserControl\UserControl1.xaml">
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\UserControl1.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\WPFWindow\WPFWindow.xaml">
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipItem>

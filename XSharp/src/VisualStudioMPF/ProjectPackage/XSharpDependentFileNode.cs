@@ -29,7 +29,7 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="root">Root of the hierarchy</param>
         /// <param name="e">Associated project element</param>
-        internal XSharpDependentFileNode(ProjectNode root, ProjectElement e)
+        public XSharpDependentFileNode(ProjectNode root, ProjectElement e)
             : base(root, e)
         {
             HasParentNodeNameRelation = false;
@@ -62,7 +62,7 @@ namespace XSharp.Project
         /// <summary>
         /// Disable certain commands for dependent file nodes 
         /// </summary>
-        internal override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
+        protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
             if (cmdGroup == Microsoft.VisualStudio.Project.VsMenus.guidStandardCommandSet97)
             {

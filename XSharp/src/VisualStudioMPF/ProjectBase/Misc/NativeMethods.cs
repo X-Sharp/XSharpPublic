@@ -1,16 +1,50 @@
-/* ****************************************************************************
- *
- * Copyright (c) Microsoft Corporation. 
- *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
- * copy of the license can be found in the License.html file at the root of this distribution. If 
- * you cannot locate the Apache License, Version 2.0, please send an email to 
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
- * by the terms of the Apache License, Version 2.0.
- *
- * You must not remove this notice, or any other, from this software.
- *
- * ***************************************************************************/
+/********************************************************************************************
+
+Copyright (c) Microsoft Corporation 
+All rights reserved. 
+
+Microsoft Public License: 
+
+This license governs use of the accompanying software. If you use the software, you 
+accept this license. If you do not accept the license, do not use the software. 
+
+1. Definitions 
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
+same meaning here as under U.S. copyright law. 
+A "contribution" is the original software, or any additions or changes to the software. 
+A "contributor" is any person that distributes its contribution under this license. 
+"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
+
+2. Grant of Rights 
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
+royalty-free copyright license to reproduce its contribution, prepare derivative works of 
+its contribution, and distribute its contribution or any derivative works that you create. 
+(B) Patent Grant- Subject to the terms of this license, including the license conditions 
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
+royalty-free license under its licensed patents to make, have made, use, sell, offer for 
+sale, import, and/or otherwise dispose of its contribution in the software or derivative 
+works of the contribution in the software. 
+
+3. Conditions and Limitations 
+(A) No Trademark License- This license does not grant you rights to use any contributors' 
+name, logo, or trademarks. 
+(B) If you bring a patent claim against any contributor over patents that you claim are 
+infringed by the software, your patent license from such contributor to the software ends 
+automatically. 
+(C) If you distribute any portion of the software, you must retain all copyright, patent, 
+trademark, and attribution notices that are present in the software. 
+(D) If you distribute any portion of the software in source code form, you may do so only 
+under this license by including a complete copy of this license with your distribution. 
+If you distribute any portion of the software in compiled or object code form, you may only 
+do so under a license that complies with this license. 
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
+no express warranties, guarantees or conditions. You may have additional consumer rights 
+under your local laws which this license cannot change. To the extent permitted under your 
+local laws, the contributors exclude the implied warranties of merchantability, fitness for 
+a particular purpose and non-infringement.
+
+********************************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -498,75 +532,9 @@ namespace Microsoft.VisualStudio.Project
                 /// <summary>A description of the status is required.</summary>
                 OLECMDTEXTF_STATUS = 2
             }
-            /// <devdoc>
-            /// Accessing the text of this structure is very cumbersome.  Instead, you may
-            /// use this method to access an integer pointer of the structure.
-            /// Passing integer versions of this structure is needed because there is no
-            /// way to tell the common language runtime that there is extra data at the end of the structure.
-            /// </devdoc>
-            public static string GetText(IntPtr pCmdTextInt)
-            {
-                Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT pCmdText = (Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT)Marshal.PtrToStructure(pCmdTextInt, typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT));
+        }
 
-                // Get the offset to the rgsz param.
-                //
-                IntPtr offset = Marshal.OffsetOf(typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT), "rgwz");
-
-                // Punt early if there is no text in the structure.
-                //
-                if (pCmdText.cwActual == 0)
-                {
-                    return String.Empty;
-                }
-
-                char[] text = new char[pCmdText.cwActual - 1];
-
-                Marshal.Copy((IntPtr)((long)pCmdTextInt + (long)offset), text, 0, text.Length);
-
-                StringBuilder s = new StringBuilder(text.Length);
-                s.Append(text);
-                return s.ToString();
-            }
-
-            /// <include file='doc\NativeMethods.uex' path='docs/doc[@for="OLECMDTEXTF.SetText"]/*' />
-            /// <devdoc>
-            /// Accessing the text of this structure is very cumbersome.  Instead, you may
-            /// use this method to access an integer pointer of the structure.
-            /// Passing integer versions of this structure is needed because there is no
-            /// way to tell the common language runtime that there is extra data at the end of the structure.
-            /// </devdoc>
-            /// <summary>
-            /// Sets the text inside the structure starting from an integer pointer.
-            /// </summary>
-            /// <param name="pCmdTextInt">The integer pointer to the position where to set the text.</param>
-            /// <param name="text">The text to set.</param>
-            public static void SetText(IntPtr pCmdTextInt, string text)
-            {
-                Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT pCmdText = (Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT)Marshal.PtrToStructure(pCmdTextInt, typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT));
-                char[] menuText = text.ToCharArray();
-
-                // Get the offset to the rgsz param.  This is where we will stuff our text
-                //
-                IntPtr offset = Marshal.OffsetOf(typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT), "rgwz");
-                IntPtr offsetToCwActual = Marshal.OffsetOf(typeof(Microsoft.VisualStudio.OLE.Interop.OLECMDTEXT), "cwActual");
-
-                // The max chars we copy is our string, or one less than the buffer size,
-                // since we need a null at the end.
-                //
-                int maxChars = Math.Min((int)pCmdText.cwBuf - 1, menuText.Length);
-
-                Marshal.Copy(menuText, 0, (IntPtr)((long)pCmdTextInt + (long)offset), maxChars);
-
-                // append a null character
-                Marshal.WriteInt16((IntPtr)((long)pCmdTextInt + (long)offset + maxChars * 2), 0);
-
-                // write out the length
-                // +1 for the null char
-                Marshal.WriteInt32((IntPtr)((long)pCmdTextInt + (long)offsetToCwActual), maxChars + 1);
-            }
-
-		}
-
+        /// <devdoc>
         /// OLECMDF enums for IOleCommandTarget
         /// </devdoc>
         public enum tagOLECMDF

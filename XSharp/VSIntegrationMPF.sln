@@ -15,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Package 2015.UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "src\VisualStudioMPF\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharp.Build", "src\VisualStudio\XSharp.Build\XSharp.Build.csproj", "{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpColorizer2015", "src\VisualStudioMPF\XSharpColorizer\XSharpColorizer2015.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharp.Build", "src\VisualStudioMPF\XSharp.Build\XSharp.Build.csproj", "{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,14 +37,14 @@ Global
 		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

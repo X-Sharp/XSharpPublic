@@ -53,6 +53,8 @@ namespace XSharp.CodeDom
         // Called by the WinForm designer at save time
         public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
         {
+
+#if DESIGNERSUPPORT
             // Does that CodeCompileUnit comes from a "Merged" unit ?
             if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_HASDESIGNER))
             {
@@ -170,7 +172,9 @@ namespace XSharp.CodeDom
 
             }
             else
+#endif
             {
+
                 //
                 base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
                 writer.Flush();
@@ -215,6 +219,7 @@ namespace XSharp.CodeDom
         {
             CodeCompileUnit compileUnit = null;
 
+#if DESIGNERSUPPORT
             // If the TextReader is a DocDataTextReader, we should be running from VisualStudio, called by the designer
             // So, we will guess the FileName to check if we have a .Designer.Prg file at the same place.
             // If so, we will have to handle both .prg to produce two CodeCompileUnit, then we will merge the result into one, with markers in it
@@ -252,6 +257,7 @@ namespace XSharp.CodeDom
                 }
             }
             else
+#endif
             {
                 compileUnit = base.Parse(codeStream);
             }

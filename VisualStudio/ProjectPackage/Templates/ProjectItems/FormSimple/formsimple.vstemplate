@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <DefaultName>WinForm.prg</DefaultName>
+    <DefaultName>Form.prg</DefaultName>
     <Name>WinForm without Designer</Name>
-    <Description>A simple WinForm Form for XSharp</Description>
+    <Description>A simple WinForm Form for XSharp withoud designer.prg</Description>
     <ProjectType>XSharp</ProjectType>
-    <SortOrder>10</SortOrder>
+    <SortOrder>20</SortOrder>
     <Icon>__TemplateIcon.ico</Icon>
   </TemplateData>
   <TemplateContent>
 		<References>
 			<Reference>
-				<Assembly>System</Assembly>
+				<Assembly>System</Assembly> 
 			</Reference>
 			<Reference>
 				<Assembly>System.Data</Assembly>

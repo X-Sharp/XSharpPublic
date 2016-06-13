@@ -20,7 +20,7 @@ begin namespace $rootnamespace$
     /// </summary>
     public partial class $safeitemname$ INHERIT Window
     
-        public CONSTRUCTOR() //$safeitemname$()
+        public constructor()
             InitializeComponent()
 			RETURN
 		

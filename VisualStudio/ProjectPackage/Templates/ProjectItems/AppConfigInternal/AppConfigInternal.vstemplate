@@ -8,7 +8,7 @@
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <DefaultName>App.config</DefaultName>
-    <Hidden>true</Hidden>
+    <Hidden>true</Hidden> 
   </TemplateData>
   <TemplateContent>
     <ProjectItem OpenInEditor="false">App.config</ProjectItem>

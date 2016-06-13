@@ -10,7 +10,7 @@
     <DefaultName>Resource.resx</DefaultName>
     <Hidden>true</Hidden>
   </TemplateData>
-  <TemplateContent>
+  <TemplateContent> 
     <ProjectItem OpenInEditor="false">Resource.resx</ProjectItem>
     <CustomParameters>
       <CustomParameter Name="$itemproperties$" Value="CustomTool" />

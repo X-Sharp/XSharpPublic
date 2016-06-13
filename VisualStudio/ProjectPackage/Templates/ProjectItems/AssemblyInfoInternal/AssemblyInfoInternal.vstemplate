@@ -6,7 +6,7 @@
     <Icon Package="{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}" ID="4601" />
     <TemplateID>XSharp.AssemblyInfo.Internal</TemplateID>
     <ProjectType>XSharp</ProjectType>
-    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
+    <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion> 
     <DefaultName>AssemblyInfo.prg</DefaultName>
     <Hidden>true</Hidden>
   </TemplateData>

@@ -3,13 +3,13 @@
   <TemplateData>
     <DefaultName>WinForm.prg</DefaultName>
     <Name>WinForm</Name>
-    <Description>A WinForm Form</Description>
+    <Description>A WinForm Form with separate designer.prg</Description>
     <ProjectType>XSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>form.ico</Icon>
   </TemplateData>
   <TemplateContent>
-		<References>
+		<References> 
 			<Reference>
 				<Assembly>System</Assembly>
 			</Reference>

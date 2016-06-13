@@ -29,7 +29,7 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    internal class XSharpProjectNode : ProjectNode
+    public class XSharpProjectNode : ProjectNode
     {
         #region Enum for image list
         internal enum XSharpProjectImageName
@@ -132,7 +132,8 @@ namespace XSharp.Project
                 imageList = value;
             }
         }
-         protected internal VSLangProj.VSProject VSProject
+ 
+        protected internal VSLangProj.VSProject VSProject
         {
             get
             {
@@ -314,7 +315,6 @@ namespace XSharp.Project
             };
             return result;
         }
-
         /// <summary>
         /// Allows you to query the project for special files and optionally create them. 
         /// </summary>
@@ -493,14 +493,15 @@ namespace XSharp.Project
             base.AddNewFileNodeToHierarchy(parentNode, fileName);
         }
 
-        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file) {
+        protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
+        {
             ProjectElement newItem;
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
             Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
 
             string ext = Path.GetExtension(file);
-            string type = this.GetItemType(file);
+            string type = XSharpFileNode.GetItemType(file);
             if(String.IsNullOrEmpty(type))
                 type = "None";
             newItem = this.CreateMsBuildFileItem(itemPath, type);
@@ -513,41 +514,9 @@ namespace XSharp.Project
             return newItem;
         }
 
-        public string GetItemType(string file) {
-            switch (Path.GetExtension(file).ToLower()) {
-                case ".prg":
-                case ".xs":
-                    return ProjectFileConstants.Compile;
-                case ".rc":
-                    return XSharpConstants.NativeResource;
-                case ".vnmnu":
-                case ".vnfrm":
-                case ".vndbs":
-                case ".vnfs":
-                case ".vnind":
-                case ".vnord":
-                case ".vnfld":
-                case ".xsmnu":  // Special xsharp versions of the VO Binary
-                case ".xsfrm":
-                case ".xsdbs":
-                case ".xsfs":
-                case ".xsind":
-                case ".xsord":
-                case ".xsfld":
-                    return XSharpConstants.VOBinary;
-                case ".resx":
-                    return ProjectFileConstants.Resource;
-                case ".xaml":
-                    return ProjectFileConstants.Page;
-                case ".vh":
-                case ".xh":
-                default:
-                    return ProjectFileConstants.None;
-            }
-        }
-
+  
         public bool IsVoBinary(string fileName) {
-            return GetItemType(fileName) == XSharpConstants.VOBinary;
+            return XSharpFileNode.GetItemType(fileName) == XSharpConstants.VOBinary;
         }
         public bool IsHeaderFile(string fileName) {
             switch (Path.GetExtension(fileName).ToLower()) {
@@ -560,7 +529,7 @@ namespace XSharp.Project
         }
 
         public bool IsNativeResource(string fileName) {
-            return GetItemType(fileName) == XSharpConstants.NativeResource;
+            return XSharpFileNode.GetItemType(fileName) == XSharpConstants.NativeResource;
         }
 
         public bool IsSettings(string fileName)
@@ -608,7 +577,7 @@ namespace XSharp.Project
                 ) {
                 return true;
             }
-            
+
             // we don't know about this type, ask the base class.
             return base.IsItemTypeFileType( type );
         }

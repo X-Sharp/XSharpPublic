@@ -1,7 +1,8 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="XSharpClassifier.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 //------------------------------------------------------------------------------
 
 using System;

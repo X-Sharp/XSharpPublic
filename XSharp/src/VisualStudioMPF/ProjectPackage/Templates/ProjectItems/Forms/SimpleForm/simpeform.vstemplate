@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <DefaultName>Form.prg</DefaultName>
+    <Name>Windows forms form without Designer</Name>
+    <Description>A simple WinForm Form for XSharp without designer.prg</Description>
+    <ProjectType>XSharp</ProjectType>
+    <SortOrder>11</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+    <TemplateID>XSharp.SimpleForm</TemplateID>
+  </TemplateData>
+  <TemplateContent>
+		<References>
+			<Reference>
+				<Assembly>System</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Data</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Drawing</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Windows.Forms</Assembly>
+			</Reference>
+			<Reference>
+				<Assembly>System.Xml</Assembly>
+			</Reference>
+		</References>
+
+    <ProjectItem ReplaceParameters="true" SubType="Form" TargetFileName="$fileinputname$.prg">simpleform.prg</ProjectItem>
+    
+  </TemplateContent>
+</VSTemplate>

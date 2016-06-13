@@ -1,17 +1,50 @@
-/* ****************************************************************************
- *
- * Copyright (c) Microsoft Corporation. 
- *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
- * copy of the license can be found in the License.html file at the root of this distribution. If 
- * you cannot locate the Apache License, Version 2.0, please send an email to 
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
- * by the terms of the Apache License, Version 2.0.
- *
- * You must not remove this notice, or any other, from this software.
- *
- * ***************************************************************************/
+/********************************************************************************************
 
+Copyright (c) Microsoft Corporation 
+All rights reserved. 
+
+Microsoft Public License: 
+
+This license governs use of the accompanying software. If you use the software, you 
+accept this license. If you do not accept the license, do not use the software. 
+
+1. Definitions 
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
+same meaning here as under U.S. copyright law. 
+A "contribution" is the original software, or any additions or changes to the software. 
+A "contributor" is any person that distributes its contribution under this license. 
+"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
+
+2. Grant of Rights 
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
+royalty-free copyright license to reproduce its contribution, prepare derivative works of 
+its contribution, and distribute its contribution or any derivative works that you create. 
+(B) Patent Grant- Subject to the terms of this license, including the license conditions 
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
+royalty-free license under its licensed patents to make, have made, use, sell, offer for 
+sale, import, and/or otherwise dispose of its contribution in the software or derivative 
+works of the contribution in the software. 
+
+3. Conditions and Limitations 
+(A) No Trademark License- This license does not grant you rights to use any contributors' 
+name, logo, or trademarks. 
+(B) If you bring a patent claim against any contributor over patents that you claim are 
+infringed by the software, your patent license from such contributor to the software ends 
+automatically. 
+(C) If you distribute any portion of the software, you must retain all copyright, patent, 
+trademark, and attribution notices that are present in the software. 
+(D) If you distribute any portion of the software in source code form, you may do so only 
+under this license by including a complete copy of this license with your distribution. 
+If you distribute any portion of the software in compiled or object code form, you may only 
+do so under a license that complies with this license. 
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
+no express warranties, guarantees or conditions. You may have additional consumer rights 
+under your local laws which this license cannot change. To the extent permitted under your 
+local laws, the contributors exclude the implied warranties of merchantability, fitness for 
+a particular purpose and non-infringement.
+
+********************************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -23,12 +56,14 @@ using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 
-namespace Microsoft.VisualStudio.Project {
+namespace Microsoft.VisualStudio.Project
+{
     /// <summary>
     /// Allows projects to group outputs according to usage.
     /// </summary>
     [CLSCompliant(false), ComVisible(true)]
-    public class OutputGroup : IVsOutputGroup2 {
+    public class OutputGroup : IVsOutputGroup2
+    {
         #region fields
         private ProjectConfig projectCfg;
         private ProjectNode project;
@@ -44,14 +79,16 @@ namespace Microsoft.VisualStudio.Project {
         /// Get the project configuration object associated with this output group
         /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Cfg")]
-        protected ProjectConfig ProjectCfg {
+        protected ProjectConfig ProjectCfg
+        {
             get { return projectCfg; }
         }
 
         /// <summary>
         /// Get the project object that produces this output group.
         /// </summary>
-        internal ProjectNode Project {
+        protected ProjectNode Project
+        {
             get { return project; }
         }
 
@@ -59,7 +96,8 @@ namespace Microsoft.VisualStudio.Project {
         /// Gets the msbuild target name which is assciated to the outputgroup.
         /// ProjectNode defines a static collection of output group names and their associated MsBuild target
         /// </summary>
-        protected string TargetName {
+        protected string TargetName
+        {
             get { return targetName; }
         }
         #endregion
@@ -73,11 +111,16 @@ namespace Microsoft.VisualStudio.Project {
         /// <param name="msBuildTargetName">MSBuild target name</param>
         /// <param name="projectManager">Project that produce this output</param>
         /// <param name="configuration">Configuration that produce this output</param>
-        internal OutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration) {
-            Utilities.ArgumentNotNull("outputName", outputName);
-            Utilities.ArgumentNotNull("msBuildTargetName", msBuildTargetName);
-            Utilities.ArgumentNotNull("projectManager", projectManager);
-            Utilities.ArgumentNotNull("configuration", configuration);
+        public OutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration)
+        {
+            if(outputName == null)
+                throw new ArgumentNullException("outputName");
+            if(msBuildTargetName == null)
+                throw new ArgumentNullException("outputName");
+            if(projectManager == null)
+                throw new ArgumentNullException("projectManager");
+            if(configuration == null)
+                throw new ArgumentNullException("configuration");
 
             name = outputName;
             targetName = msBuildTargetName;
@@ -87,13 +130,15 @@ namespace Microsoft.VisualStudio.Project {
         #endregion
 
         #region virtual methods
-        protected virtual void Refresh() {
+        protected virtual void Refresh()
+        {
             // Let MSBuild know which configuration we are working with
             project.SetConfiguration(projectCfg.ConfigName);
 
             // Generate dependencies if such a task exist
             const string generateDependencyList = "AllProjectOutputGroups";
-            if(project.BuildProject.Targets.ContainsKey(generateDependencyList)) {
+            if(project.BuildProject.Targets.ContainsKey(generateDependencyList))
+            {
                 bool succeeded = false;
                 project.BuildTarget(generateDependencyList, out succeeded);
                 Debug.Assert(succeeded, "Failed to build target: " + generateDependencyList);
@@ -102,7 +147,8 @@ namespace Microsoft.VisualStudio.Project {
             // Rebuild the content of our list of output
             string outputType = this.targetName + "Output";
             this.outputs.Clear();
-            foreach(MSBuildExecution.ProjectItemInstance assembly in project.CurrentConfig.GetItems(outputType)) {
+            foreach (MSBuildExecution.ProjectItemInstance assembly in project.CurrentConfig.GetItems(outputType))
+            {
                 Output output = new Output(project, assembly);
                 this.outputs.Add(output);
 
@@ -118,10 +164,12 @@ namespace Microsoft.VisualStudio.Project {
             project.OnProjectPropertyChanged += new EventHandler<ProjectPropertyChangedArgs>(OnProjectPropertyChanged);
         }
 
-        public virtual void InvalidateGroup() {
+        public virtual void InvalidateGroup()
+        {
             // Set keyOutput to null so that a refresh will be performed the next time
             // a property getter is called.
-            if(null != keyOutput) {
+            if(null != keyOutput)
+            {
                 // Once the group is invalidated there is no more reason to listen for events.
                 project.OnProjectPropertyChanged -= new EventHandler<ProjectPropertyChangedArgs>(OnProjectPropertyChanged);
             }
@@ -130,7 +178,8 @@ namespace Microsoft.VisualStudio.Project {
         #endregion
 
         #region event handlers
-        private void OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs args) {
+        private void OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs args)
+        {
             // In theory here we should decide if we have to invalidate the group according with the kind of property
             // that is changed.
             InvalidateGroup();
@@ -139,16 +188,19 @@ namespace Microsoft.VisualStudio.Project {
 
         #region IVsOutputGroup2 Members
 
-        public virtual int get_CanonicalName(out string pbstrCanonicalName) {
+        public virtual int get_CanonicalName(out string pbstrCanonicalName)
+        {
             pbstrCanonicalName = this.name;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_DeployDependencies(uint celt, IVsDeployDependency[] rgpdpd, uint[] pcActual) {
+        public virtual int get_DeployDependencies(uint celt, IVsDeployDependency[] rgpdpd, uint[] pcActual)
+        {
             return VSConstants.E_NOTIMPL;
         }
 
-        public virtual int get_Description(out string pbstrDescription) {
+        public virtual int get_Description(out string pbstrDescription)
+        {
             pbstrDescription = null;
 
             string description;
@@ -158,7 +210,8 @@ namespace Microsoft.VisualStudio.Project {
             return hr;
         }
 
-        public virtual int get_DisplayName(out string pbstrDisplayName) {
+        public virtual int get_DisplayName(out string pbstrDisplayName)
+        {
             pbstrDisplayName = null;
 
             string displayName;
@@ -168,18 +221,21 @@ namespace Microsoft.VisualStudio.Project {
             return hr;
         }
 
-        public virtual int get_KeyOutput(out string pbstrCanonicalName) {
+        public virtual int get_KeyOutput(out string pbstrCanonicalName)
+        {
             pbstrCanonicalName = null;
             if(keyOutput == null)
                 Refresh();
-            if(keyOutput == null) {
+            if(keyOutput == null)
+            {
                 pbstrCanonicalName = String.Empty;
                 return VSConstants.S_FALSE;
             }
             return keyOutput.get_CanonicalName(out pbstrCanonicalName);
         }
 
-        public virtual int get_KeyOutputObject(out IVsOutput2 ppKeyOutput) {
+        public virtual int get_KeyOutputObject(out IVsOutput2 ppKeyOutput)
+        {
             if(keyOutput == null)
                 Refresh();
             ppKeyOutput = keyOutput;
@@ -188,7 +244,8 @@ namespace Microsoft.VisualStudio.Project {
             return VSConstants.S_OK;
         }
 
-        public virtual int get_Outputs(uint celt, IVsOutput2[] rgpcfg, uint[] pcActual) {
+        public virtual int get_Outputs(uint celt, IVsOutput2[] rgpcfg, uint[] pcActual)
+        {
             // Ensure that we are refreshed.  This is somewhat of a hack that enables project to
             // project reference scenarios to work.  Normally, output groups are populated as part
             // of build.  However, in the project to project reference case, what ends up happening
@@ -203,7 +260,8 @@ namespace Microsoft.VisualStudio.Project {
             Refresh();
 
             // See if only the caller only wants to know the count
-            if(celt == 0 || rgpcfg == null) {
+            if(celt == 0 || rgpcfg == null)
+            {
                 if(pcActual != null && pcActual.Length > 0)
                     pcActual[0] = (uint)outputs.Count;
                 return VSConstants.S_OK;
@@ -211,8 +269,10 @@ namespace Microsoft.VisualStudio.Project {
 
             // Fill the array with our outputs
             uint count = 0;
-            foreach(Output output in outputs) {
-                if(rgpcfg.Length > count && celt > count && output != null) {
+            foreach(Output output in outputs)
+            {
+                if(rgpcfg.Length > count && celt > count && output != null)
+                {
                     rgpcfg[count] = output;
                     ++count;
                 }
@@ -225,12 +285,14 @@ namespace Microsoft.VisualStudio.Project {
             return (count == celt) ? VSConstants.S_OK : VSConstants.S_FALSE;
         }
 
-        public virtual int get_ProjectCfg(out IVsProjectCfg2 ppIVsProjectCfg2) {
+        public virtual int get_ProjectCfg(out IVsProjectCfg2 ppIVsProjectCfg2)
+        {
             ppIVsProjectCfg2 = (IVsProjectCfg2)this.projectCfg;
             return VSConstants.S_OK;
         }
 
-        public virtual int get_Property(string pszProperty, out object pvar) {
+        public virtual int get_Property(string pszProperty, out object pvar)
+        {
             pvar = project.GetProjectProperty(pszProperty);
             return VSConstants.S_OK;
         }

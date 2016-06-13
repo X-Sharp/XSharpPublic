@@ -67,7 +67,7 @@ namespace Microsoft.VisualStudio.Project
 
         [Browsable(false)]
         [AutomationBrowsable(false)]
-        internal ProjectNode ProjectMgr
+        public ProjectNode ProjectMgr
         {
             get
             {
@@ -449,7 +449,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region helper methods
 
-        internal ProjectConfig[] GetProjectConfigurations()
+        protected ProjectConfig[] GetProjectConfigurations()
         {
             return this.projectConfigs;
         }

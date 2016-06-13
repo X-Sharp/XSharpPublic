@@ -60,7 +60,7 @@ namespace Microsoft.VisualStudio.Project
     [CLSCompliant(false), ComVisible(true)]
     public class ProjectReferenceNode : ReferenceNode
     {
-        #region fieds
+        #region fields
         /// <summary>
         /// The name of the assembly this refernce represents
         /// </summary>

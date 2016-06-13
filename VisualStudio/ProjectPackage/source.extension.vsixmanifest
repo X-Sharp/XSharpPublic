@@ -5,8 +5,9 @@
     <DisplayName>XSharp Visual Studio Project System </DisplayName>
     <Description xml:space="preserve">XSharp Visual Studio Project Integration</Description>
     <MoreInfo>http://www.xsharp.info</MoreInfo>
+    <License>License.txt</License>
     <Icon>XSharp.ico</Icon>
-    <PreviewImage>XSharpDocument.png</PreviewImage>
+    <PreviewImage>XSharpVSIXLogo.png</PreviewImage>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Version="[14.0,15.0)" Id="Microsoft.VisualStudio.Pro"  />

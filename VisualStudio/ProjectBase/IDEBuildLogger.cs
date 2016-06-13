@@ -114,7 +114,6 @@ namespace Microsoft.VisualStudio.Project {
             this.outputWindowPane = output;
             this.hierarchy = hierarchy;
             this.serviceProvider = new ServiceProvider(site);
-            serviceProvider.GetUIThread().MustBeCalledFromUIThread();
             this.dispatcher = Dispatcher.CurrentDispatcher;
         }
 

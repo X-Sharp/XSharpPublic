@@ -56,9 +56,8 @@ namespace XSharp.CodeDom
         }
 
         // Called by the WinForm designer at save time
-        public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
-        {
-
+            public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options) 
+            { 
 #if DESIGNERSUPPORT
             // Does that CodeCompileUnit comes from a "Merged" unit ?
             if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_HASDESIGNER))
@@ -177,46 +176,47 @@ namespace XSharp.CodeDom
 
             }
             else
-#endif
             {
+#endif
+            //
+            base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
+            writer.Flush();
+            //
+#if DESIGNERSUPPORT
+            CodeNamespace originNamespace;
+            CodeTypeDeclaration originClass = XSharpCodeDomHelper.FindDesignerClass(compileUnit, out originNamespace);
+            //
+            // Now, we must re-read it and parse again
+            IServiceProvider provider = (DocDataTextWriter)writer;
+            DocData docData = (DocData)provider.GetService(typeof(DocData));
+            DocDataTextReader ddtr = new DocDataTextReader(docData);
+            // Retrieve 
+            XSharpCodeParser parser = new XSharpCodeParser();
+            parser.FileName = this.FileName;
+            string generatedSource = ddtr.ReadToEnd();
+            CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
+            CodeNamespace resultNamespace;
+            CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner, out resultNamespace);
+            // just to be sure...
+            if(resultClass != null) {
+                // Now push all elements from resultClass to formClass
+                originClass.Members.Clear();
+                foreach(CodeTypeMember ctm in resultClass.Members) {
+                    originClass.Members.Add(ctm);
 
-                //
-                base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
-                writer.Flush();
-                //
-                CodeNamespace originNamespace;
-                CodeTypeDeclaration originClass = XSharpCodeDomHelper.FindDesignerClass(compileUnit, out originNamespace);
-                //
-                // Now, we must re-read it and parse again
-                IServiceProvider provider = (DocDataTextWriter)writer;
-                DocData docData = (DocData)provider.GetService(typeof(DocData));
-                DocDataTextReader ddtr = new DocDataTextReader(docData);
-                // Retrieve 
-                XSharpCodeParser parser = new XSharpCodeParser();
-                parser.FileName = this.FileName;
-                string generatedSource = ddtr.ReadToEnd();
-                CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
-                CodeNamespace resultNamespace;
-                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner, out resultNamespace);
-                // just to be sure...
-                if (resultClass != null)
-                {
-                    // Now push all elements from resultClass to formClass
-                    originClass.Members.Clear();
-                    foreach (CodeTypeMember ctm in resultClass.Members)
-                    {
-                        originClass.Members.Add(ctm);
-
-                    }
                 }
-                //
+            }
+#endif
+
+        
+            //
 #if WRITE2LOGFILE
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             path = Path.Combine(path, "XSharpDumpCodeCompileUnit_generate.log");
             XSharpCodeDomHelper.DumpCodeCompileUnit(compileUnit, path, true);
 #endif
-            }
         }
+    
 
 
         // Called by the WinForm designer at load time

@@ -18,7 +18,7 @@ namespace XSharp.LanguageService
     public class XSharpLanguageService : Microsoft.VisualStudio.Package.LanguageService
     {
         private LanguagePreferences m_preferences;
-        private XSharpScanner m_scanner;
+        //private XSharpScanner m_scanner;
 
         public override string GetFormatFilterList()
         {
@@ -39,11 +39,13 @@ namespace XSharp.LanguageService
 
         public override IScanner GetScanner(IVsTextLines buffer)
         {
-            if (m_scanner == null)
-            {
-                m_scanner = new XSharpScanner(buffer);
-            }
-            return m_scanner;
+            //if (m_scanner == null)
+            //{
+            //    m_scanner = new XSharpScanner(buffer);
+            //}
+            //m_scanner = null;
+            //return m_scanner;
+            return null;
         }
 
         public override string Name

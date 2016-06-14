@@ -48,9 +48,9 @@
       </export-task-group>
     </export-task-groups>
     <helpwindows>
-      <helpwindow name="Main" left="-1" top="-1" width="-1" height="-1">
-        <caption translate="true">&lt;%TITLE%&gt;</caption>
-        <window-options-chm navigation="true" navigationwidth="200" search="true" favorite="true" saveregistry="true" buttons="12366">
+      <helpwindow name="Main" left="86" top="51" width="800" height="600">
+        <caption translate="true">X# BYOR Runtime Documentation</caption>
+        <window-options-chm navigation="true" navigationwidth="220" search="true" favorite="true" saveregistry="true" buttons="14462">
           <user-button name="jump1">
             <caption translate="true">jump1</caption>
           </user-button>
@@ -160,6 +160,10 @@
       <config-value name="historyfilecount">10</config-value>
       <config-value name="historykeepdeletedfiles">0</config-value>
       <config-value name="vcsmanuallycheckout">0</config-value>
+      <config-value name="make2include">HXS</config-value>
+      <config-value name="make2status">*</config-value>
+      <config-value name="lastedited">-1</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -303,6 +307,8 @@
       <config-value name="fkeywords">1</config-value>
       <config-value name="namespace">XSharp</config-value>
       <config-value name="uniqueid">XSharp</config-value>
+      <config-value name="outputfile">..\Binaries\Help\XSharp.mshc</config-value>
+      <config-value name="deletetemp">1</config-value>
     </config-group>
     <config-group name="print">
       <config-value name="tocname">Table of Contents</config-value>

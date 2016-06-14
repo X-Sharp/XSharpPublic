@@ -96,30 +96,36 @@ Minversion=6.0.600
 [Components]
 Name: "main";   Description: "The XSharp Compiler and Build System";  Types: full compact custom; Flags: fixed; 
 Name: "vs2015"; Description: "Visual Studio 2015 Integration";        Types: full custom;                  Check: Vs2015IsInstalled;
-Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files"; Types: full custom;                  Check: VulcanPrgAssociated;
+Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files"; Types: full custom;        Check: VulcanPrgAssociated;
+Name: "vs2015\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer22Found;
 Name: "vsnext"; Description: "Visual Studio 15 Preview Integration";  Types: full custom;                  Check: VsNextIsInstalled;
+Name: "vsnext\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer23Found;
 Name: "xide";   Description: "Include the XIDE files";                Types: full custom;                  
 
 
 [Dirs]
-Name: "{app}\Assemblies"
-Name: "{app}\Bin"
-Name: "{app}\Help"
-Name: "{app}\Images"
-Name: "{app}\Include"
-Name: "{app}\ProjectSystem"
+Name: "{app}\Assemblies";
+Name: "{app}\Bin";
+Name: "{app}\Help";
+Name: "{app}\Images";
+Name: "{app}\Include";
+Name: "{app}\ProjectSystem";                                
 Name: "{app}\Redist"
-Name: "{app}\Tools"
-Name: "{app}\Uninst"
-Name: "{app}\Xide"
-Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015; 
-Name: "{code:GetVsNextIdeDir}\Extensions\XSharp"; Components: vsNext; 
+Name: "{app}\Snippets";                                      Components: vs2015; 
+Name: "{app}\Tools";
+Name: "{app}\Uninst";
+Name: "{app}\Xide";
+Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";            Components: vs2015; 
+Name: "{userdocs}\Visual Studion 2015\Code Snippets\XSharp"; Components: vs2015; 
+Name: "{code:GetVsNextIdeDir}\Extensions\XSharp";            Components: vsNext; 
+Name: "{userdocs}\Visual Studion 15\Code Snippets\XSharp";   Components: vsNext; 
 
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
+; Main program
 Source: "{#BinFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
@@ -153,8 +159,12 @@ Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{pf}\MsBuild
 Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
 
 ;Documentation
-Source: "{#DocFolder}\XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main
-Source: "{#DocFolder}\XSharp.chm";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main
+Source: "{#DocFolder}\XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
+Source: "{#DocFolder}\XSharp.chm";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
+Source: "{#DocFolder}\XSVulcan.chm";                      DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
+Source: "{#DocFolder}\XSharp.msha";                       DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: vs2015\help or vsnext\help;     
+Source: "{#DocFolder}\XSharp.mshc";                       DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: vs2015\help or vsnext\help;
+Source: "{#DocFolder}\XSVulcan.mshc";                     DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: vs2015\help or vsnext\help;
 
 ;XIDE
 Source: "{#XIDEFolder}{#XIDESetup}";                      DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; Components: Xide
@@ -176,6 +186,8 @@ Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVs2
 Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Resources";     Flags: recursesubdirs {#StdFlags}; Components: vs2015
 
 Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
@@ -186,9 +198,14 @@ Source: "{#BinPFolder}XSharpProject2015.pdb";             DestDir: "{code:GetVs2
 Source: "{#BinPFolder}XSharpProject2015.pkgdef";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015; AfterInstall: AdjustPkgDef;
 Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 
-Source: "{#BinPFolder}XSharp.ico ";                              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
-Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";  Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
+;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";  Flags: {#StdFlags}; Components: vs2015
+
+
+; private snippets
+
 
 ; VsNext
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
@@ -205,6 +222,8 @@ Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVsN
 Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Resources";     Flags: recursesubdirs {#StdFlags}; Components: vsnext
 
 Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vsnext
@@ -215,9 +234,10 @@ Source: "{#BinPFolder}XSharpProject2015.pdb";             DestDir: "{code:GetVsN
 Source: "{#BinPFolder}XSharpProject2015.pkgdef";          DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vsnext
 
-Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";       Flags: {#StdFlags}; Components: vsnext
-Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\Images"; Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
 Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext 
+;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\Images"; Flags: {#StdFlags}; Components: vsnext
 
 ; Examples
 Source: "{#ExamplesFolder}*.prg";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
@@ -235,6 +255,7 @@ Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}"; Filename: "{#XSharpURL}";IconFi
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
 Name: "{group}\{#Product} Documenation (CHM)"; Filename: "{app}\Help\XSharp.chm"; 
 Name: "{group}\{#Product} Documenation (PDF)"; Filename: "{app}\Help\XSharp.pdf"; 
+Name: "{group}\{#Product} Vulcan Runtime Reference (CHM)"; Filename: "{app}\Help\XSVulcan.chm"; 
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
 Name: "{group}\{#Product} Examples"; Filename: "{commondocs}\XSharp\Examples";
 Name: "{app}\Examples";  Filename: "{commondocs}\XSharp\Examples";
@@ -244,6 +265,13 @@ Name: "{app}\Examples";  Filename: "{commondocs}\XSharp\Examples";
 Root: HKLM; Subkey: "Software\{#RegCompany}"; Flags: uninsdeletekeyifempty 
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; Flags: uninsdeletekey 
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPath}"; ValueType: string; ValueData: "{app}" ;
+Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help22Installed"; ValueType: string; ValueData: "yes" ;  Components: vs2015\help;
+Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help23Installed"; ValueType: string; ValueData: "yes" ;  Components: vsnext\help;
+
+; set the VSHelp to Offline
+Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vs2015\help; Flags: noerror;
+Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\15.0\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vsnext\help; Flags: noerror;
+
 
 [Ini]
 Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vs2015;
@@ -251,11 +279,24 @@ Filename: "{code:GetVsNextIdeDir}\Extensions\extensions.configurationchanged"; S
 
 [Run]
 Filename: "{app}\Tools\RegisterProvider.exe";
+
+; Remove old Help contents
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Check: OurHelp22IsInstalled;   Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS2015"; Check: OurHelp23IsInstalled;   Flags: waituntilidle;
+
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio14 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vs2015\help; StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio15 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vsnext\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
 Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]
 ; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry
 ;Filename: "{app}\uninst\XsVsUnInst.exe"; Flags: runhidden;  Components: vs2015 ;
+
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""XSharp Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";        Flags: waituntilidle;
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# BYOR Runtime Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";  Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""XSharp Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# BYOR Runtime Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS2015";  Flags: waituntilidle;
+
 
 [InstallDelete]
 ; The old License.rtf file.
@@ -285,12 +326,16 @@ Type: filesandordirs; Name: "{app}\Help"                          ; Components: 
 Type: filesandordirs; Name: "{app}\Images"                        ; Components: main
 Type: filesandordirs; Name: "{app}\ProjectSystem"                 ; Components: main
 Type: filesandordirs; Name: "{app}\Redist"                        ; Components: main
+Type: filesandordirs; Name: "{app}\Tools"                         ; Components: main
 Type: filesandordirs; Name: "{app}\Uninst"                        ; Components: main
 Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"             ; Components: main
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015;  
 Type: filesandordirs; Name: "{code:GetVsNextIdeDir}\Extensions\XSharp"; Components: vsnext;  
 Type: filesandordirs; Name: "{commondocs}\XSharp\Examples";
+Type: dirifempty;     Name: "{app}\Include"; 
+Type: dirifempty;     Name: "{app}\Xide"; 
 Type: dirifempty;     Name: "{app}"; 
+
 Type: dirifempty;     Name: "{commondocs}\XSharp"; 
 
 ; Template cache and component cache
@@ -321,6 +366,12 @@ var
   VsNextBaseDir: String;
   VulcanPrgAssociation: Boolean;
   VulcanGuid : String;
+  HelpViewer22Installed : Boolean;
+  HelpViewer22Dir : String;
+  OurHelp22Installed: Boolean;
+  HelpViewer23Installed : Boolean;
+  HelpViewer23Dir : String;
+  OurHelp23Installed: Boolean;
 
 procedure PrintButtonClick(Sender: TObject);
 var ResultCode :integer;
@@ -332,10 +383,13 @@ if not ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
 //     '', '', SW_SHOW, ewNoWait, ResultCode) then
 end;
 procedure DetectVS();
+var temp : String;
 begin
   Vs2015Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','14.0',Vs2015BaseDir) ;
   if Vs2015Installed then Vs2015Path := Vs2015BaseDir+'\Common7\Ide\';
   VsNextInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',VsNextBaseDir) ;
+  HelpViewer22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.2','AppRoot',HelpViewer22Dir) ;
+  HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;
   if VsNextInstalled then VsNextPath := VsNextBaseDir+'\Common7\Ide\';
   VulcanPrgAssociation := false;
   if Vs2015Installed then
@@ -346,7 +400,8 @@ begin
       VulcanPrgAssociation := (UpperCase(VulcanGuid) = '{8D3F6D25-C81C-4FD8-9599-2F72B5D4B0C9}');
       end
   end
-
+  OurHelp22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help22Installed',temp) ;
+  OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;
 end;
 
 
@@ -360,6 +415,16 @@ end;
 function VulcanPrgAssociated: Boolean;
 begin
   result := Vs2015Installed and VulcanPrgAssociation;
+end;
+
+function HelpViewer22Found: Boolean;
+begin
+  result := HelpViewer22Installed;
+end;
+
+function HelpViewer23Found: Boolean;
+begin
+  result := HelpViewer23Installed;
 end;
 
 
@@ -381,6 +446,27 @@ end;
 function GetVsNextIdeDir(Param: String): String;
 begin
   result := VsNextPath;
+end;
+
+
+function OurHelp22IsInstalled: Boolean;
+begin
+  result := OurHelp22Installed;
+end;
+
+function OurHelp23IsInstalled: Boolean;
+begin
+  result := OurHelp23Installed;
+end;
+
+function GetHelp22Dir(Param: String): String;
+begin
+  result := HelpViewer22Dir;
+end;
+
+function GetHelp23Dir(Param: String): String;
+begin
+  result := HelpViewer23Dir;
 end;
 
 Procedure CurPageChanged(CurPage: Integer);

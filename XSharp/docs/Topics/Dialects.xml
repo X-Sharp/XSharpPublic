@@ -490,7 +490,6 @@
       </tr>
     </table></para>
     <para></para>
-    <para></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="font-family:Arial; font-size:10pt; color:#000000;">
       <li><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Requires VulcanRT.DLL</text></li>
       <li><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Requires VulcanRTFuncs.DLL</text></li>

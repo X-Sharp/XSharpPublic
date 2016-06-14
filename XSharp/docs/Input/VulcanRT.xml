@@ -1,0 +1,698 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VulcanRT</name>
+  </assembly>
+  <members>
+    <member name="T:Vulcan.MacroCompilerException">
+      <summary>This exception is thrown by the Vulcan Macro Compiler</summary>
+    </member>
+    <member name="M:Vulcan.MacroCompilerException.#ctor(System.String,System.String)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.MacroCompilerException</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.MacroCompilerException.ErrorNumber"></member>
+    <member name="M:Vulcan.MacroCompilerException.ToString"></member>
+    <member name="T:Vulcan.VulcanImplicitNamespaceAttribute">
+      <summary>This class is used by the Vulcan Macro Compiler</summary>
+    </member>
+    <member name="M:Vulcan.VulcanImplicitNamespaceAttribute.#ctor(System.String)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.VulcanImplicitNamespaceAttribute</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.VulcanImplicitNamespaceAttribute.Namespace"></member>
+    <member name="T:Vulcan.RDD.DBEVALINFO">
+      <summary>This class is used by the RDD System</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBEVALINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBEVALINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBEVALINFO.dbsci"></member>
+    <member name="F:Vulcan.RDD.DBEVALINFO.itmBlock"></member>
+    <member name="T:Vulcan.RDD.DBFFIELD">
+      <summary>This structure is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBFFIELD.#ctor(System.String,System.String,System.UInt32,System.UInt32)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBFFIELD</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBFFIELD.#ctor(System.String,Vulcan.RDD.DBFFIELD.FieldType,System.UInt32,System.UInt32)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBFFIELD</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBFFIELD.fieldAlias"></member>
+    <member name="F:Vulcan.RDD.DBFFIELD.fieldDecimals"></member>
+    <member name="F:Vulcan.RDD.DBFFIELD.fieldLength"></member>
+    <member name="F:Vulcan.RDD.DBFFIELD.fieldName"></member>
+    <member name="F:Vulcan.RDD.DBFFIELD.fieldType"></member>
+    <member name="M:Vulcan.RDD.DBFFIELD.SameTypeAs(Vulcan.RDD.DBFFIELD)"></member>
+    <member name="M:Vulcan.RDD.DBFFIELD.ToString"></member>
+    <member name="T:Vulcan.RDD.DBFFIELD.FieldType">
+      <summary>This enum is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.RDD.DBFieldInfo">
+      <summary>This enum is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.RDD.DBFILTERINFO">
+      <summary>This structure is used by the RDD system</summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBFILTERINFO.abFilterText"></member>
+    <member name="F:Vulcan.RDD.DBFILTERINFO.fFilter"></member>
+    <member name="F:Vulcan.RDD.DBFILTERINFO.itmCobExpr"></member>
+    <member name="T:Vulcan.RDD.DBInfo">
+      <summary>This enum is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.RDD.DBLOCKINFO">
+      <summary>This structure is used by the RDD system</summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBLOCKINFO.fResult"></member>
+    <member name="F:Vulcan.RDD.DBLOCKINFO.recID"></member>
+    <member name="F:Vulcan.RDD.DBLOCKINFO.uiMethod"></member>
+    <member name="T:Vulcan.RDD.DBLOCKINFO.LockMethod">
+      <summary>This enum is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.RDD.DBOPENINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBOPENINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBOPENINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBOPENINFO.#ctor(System.String,System.String,System.UInt32,System.Boolean,System.Boolean)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBOPENINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBOPENINFO.fReadOnly"></member>
+    <member name="F:Vulcan.RDD.DBOPENINFO.fShared"></member>
+    <member name="F:Vulcan.RDD.DBOPENINFO.sAlias"></member>
+    <member name="F:Vulcan.RDD.DBOPENINFO.sExt"></member>
+    <member name="F:Vulcan.RDD.DBOPENINFO.sName"></member>
+    <member name="F:Vulcan.RDD.DBOPENINFO.uiArea"></member>
+    <member name="T:Vulcan.RDD.DBORDERCONDINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBORDERCONDINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBORDERCONDINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.abFor"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fActive"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fAdditive"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fAll"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fCustom"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fDescending"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fNoOptimize"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fRest"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fScoped"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.fUseCurrent"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.itmCobEval"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.itmCobFor"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.itmCobWhile"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.lNextCount"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.lRecno"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.lStartRecno"></member>
+    <member name="F:Vulcan.RDD.DBORDERCONDINFO.lStep"></member>
+    <member name="T:Vulcan.RDD.DBORDERCREATEINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBORDERCREATEINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBORDERCREATEINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBORDERCREATEINFO.abBagName"></member>
+    <member name="F:Vulcan.RDD.DBORDERCREATEINFO.abExpr"></member>
+    <member name="F:Vulcan.RDD.DBORDERCREATEINFO.fUnique"></member>
+    <member name="F:Vulcan.RDD.DBORDERCREATEINFO.itmCobExpr"></member>
+    <member name="F:Vulcan.RDD.DBORDERCREATEINFO.itmOrder"></member>
+    <member name="F:Vulcan.RDD.DBORDERCREATEINFO.lpdbOrdCondInfo"></member>
+    <member name="T:Vulcan.RDD.DBOrderInfo">
+      <summary>This enum is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.RDD.DBORDERINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBORDERINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBORDERINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBORDERINFO.fAllTags"></member>
+    <member name="F:Vulcan.RDD.DBORDERINFO.itmCobExpr"></member>
+    <member name="F:Vulcan.RDD.DBORDERINFO.itmOrder"></member>
+    <member name="F:Vulcan.RDD.DBORDERINFO.itmResult"></member>
+    <member name="F:Vulcan.RDD.DBORDERINFO.sBagName"></member>
+    <member name="T:Vulcan.RDD.DBRecordInfo">
+      <summary>This enum is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.RDD.DBRELINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBRELINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBRELINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBRELINFO.abKey"></member>
+    <member name="F:Vulcan.RDD.DBRELINFO.itmCobExpr"></member>
+    <member name="F:Vulcan.RDD.DBRELINFO.lpaChild"></member>
+    <member name="F:Vulcan.RDD.DBRELINFO.lpaParent"></member>
+    <member name="T:Vulcan.RDD.DBSCOPEINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBSCOPEINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBSCOPEINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBSCOPEINFO.Clear"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.fIgnoreDuplicates"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.fIgnoreFilter"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.fIncludeDeleted"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.fLast"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.fRest"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.itmCobFor"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.itmCobWhile"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.itmRecID"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.lNext"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.lpstrFor"></member>
+    <member name="F:Vulcan.RDD.DBSCOPEINFO.lpstrWhile"></member>
+    <member name="T:Vulcan.RDD.DBSEEKINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBSEEKINFO.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBSEEKINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBSEEKINFO.fLast"></member>
+    <member name="F:Vulcan.RDD.DBSEEKINFO.fSoft"></member>
+    <member name="F:Vulcan.RDD.DBSEEKINFO.lpval"></member>
+    <member name="T:Vulcan.RDD.DBSORTINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBSORTINFO.#ctor(System.UInt32,System.UInt32)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBSORTINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBSORTINFO.dbtri"></member>
+    <member name="F:Vulcan.RDD.DBSORTINFO.lpdbsItem"></member>
+    <member name="F:Vulcan.RDD.DBSORTINFO.uiItemCount"></member>
+    <member name="T:Vulcan.RDD.DBSORTITEM">
+      <summary>This structure is used by the RDD system</summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.iField"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.iFlags"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.iLen"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.iOffSet"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.SF_ASCII"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.SF_CASE"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.SF_DEFAULT"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.SF_DESCEND"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.SF_LONG"></member>
+    <member name="F:Vulcan.RDD.DBSORTITEM.SF_NUM"></member>
+    <member name="T:Vulcan.RDD.DBTRANSINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="M:Vulcan.RDD.DBTRANSINFO.#ctor(System.UInt32)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.DBTRANSINFO</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.dbsci"></member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.DBTF_MATCH"></member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.DBTF_PUTREC"></member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.lpaDest"></member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.lpaSource"></member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.lpTransItems"></member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.uiFlags"></member>
+    <member name="F:Vulcan.RDD.DBTRANSINFO.uiItemCount"></member>
+    <member name="T:Vulcan.RDD.DBTRANSITEM">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="F:Vulcan.RDD.DBTRANSITEM.uiDest"></member>
+    <member name="F:Vulcan.RDD.DBTRANSITEM.uiSource"></member>
+    <member name="T:Vulcan.RDD.LOCKINFO">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="F:Vulcan.RDD.LOCKINFO.dwLockLength"></member>
+    <member name="F:Vulcan.RDD.LOCKINFO.file"></member>
+    <member name="F:Vulcan.RDD.LOCKINFO.lLockOffset"></member>
+    <member name="F:Vulcan.RDD.LOCKINFO.Space"></member>
+    <member name="F:Vulcan.RDD.LOCKINFO.uiRetries"></member>
+    <member name="F:Vulcan.RDD.LOCKINFO.uiTag"></member>
+    <member name="T:Vulcan.RDD.LockMode">
+      <summary>This enum is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.RDD.RDDBase">
+      <summary>This is the base class for all RDDs</summary>
+    </member>
+    <member name="M:Vulcan.RDD.RDDBase.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.RDDBase</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.RDD.RDDBase.AddField(Vulcan.RDD.DBFFIELD@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.AdjustArea(System.UInt32@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Alias(System.String@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Append(System.Boolean)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.AppendLock(Vulcan.RDD.LockMode)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.BlobInfo(System.UInt32,System.UInt32,System.Object@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Bof(System.Boolean@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ChildEnd(Vulcan.RDD.DBRELINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ChildStart(Vulcan.RDD.DBRELINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ChildSync(Vulcan.RDD.DBRELINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ClearFilter"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ClearRel"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ClearScope(System.IntPtr)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Close"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CloseAll"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CloseArea(System.UInt32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CloseMemFile"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Compile(System.String)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Continue"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CountScope(System.IntPtr,System.Int32@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Create(Vulcan.RDD.DBOPENINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CreateFields(Vulcan.RDD.DBFFIELD[])"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CreateFileStream(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.FileOptions)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CreateMemFile(Vulcan.RDD.DBOPENINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.CreateWFileStream(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.FileOptions)"></member>
+    <member name="P:Vulcan.RDD.RDDBase.CurrentWorkarea"></member>
+    <member name="M:Vulcan.RDD.RDDBase.DbEval(Vulcan.RDD.DBEVALINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Deleted(System.Boolean@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.DeleteRecord"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Dispose">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocDispose">
+            <parameter>Vulcan.RDD.RDDBase</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.RDD.RDDBase.Eof(System.Boolean@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Error(Vulcan.Runtime.ErrorInfo,System.Boolean)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.EvalBlock(Vulcan.Runtime.ICodeblock)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.FieldCount(System.UInt32@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.FieldIndex(System.String,System.UInt32@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.FieldInfo(System.UInt32,Vulcan.RDD.DBFieldInfo,System.Object@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.FieldName(System.UInt32,System.String@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.FilterText(System.String@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.FindAlias(System.String)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.FindEmptyArea(System.Boolean)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Flush"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ForceRel"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Found(System.Boolean@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GetAlias(System.UInt32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GetArea(System.UInt32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GetRec(System.Byte[]@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GetScope(Vulcan.RDD.DBSCOPEINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GetValue(System.UInt32,System.Object@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GetValueFile(System.UInt32,System.String)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GetVarLen(System.UInt32,System.UInt32@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GoBottom"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GoCold"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GoHot"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GoTo(System.UInt32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GoToId(System.Object)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.GoTop"></member>
+    <member name="M:Vulcan.RDD.RDDBase.HeaderLock(Vulcan.RDD.LockMode)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Info(Vulcan.RDD.DBInfo,System.Object@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Lock(Vulcan.RDD.DBLOCKINFO@)"></member>
+    <member name="F:Vulcan.RDD.RDDBase.m_valResult"></member>
+    <member name="F:Vulcan.RDD.RDDBase.MaxWorkareas"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Open(Vulcan.RDD.DBOPENINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OpenMemFile(System.String)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderCondition(Vulcan.RDD.DBORDERCONDINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderCreate(Vulcan.RDD.DBORDERCREATEINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderDestroy(Vulcan.RDD.DBORDERINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderInfo(Vulcan.RDD.DBOrderInfo,Vulcan.RDD.DBORDERINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderListAdd(Vulcan.RDD.DBORDERINFO,System.String)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderListDelete(Vulcan.RDD.DBORDERINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderListFocus(Vulcan.RDD.DBORDERINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.OrderListRebuild"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Pack"></member>
+    <member name="M:Vulcan.RDD.RDDBase.PackRec(System.UInt32,System.Boolean@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.PutRec(System.Byte[])"></member>
+    <member name="M:Vulcan.RDD.RDDBase.PutValue(System.UInt32,System.Object)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.PutValueFile(System.UInt32,System.String)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Recall"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Reccount(System.UInt32@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.RecInfo(System.Object,Vulcan.RDD.DBRecordInfo,System.Object@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Recno(System.Object@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.RelArea(System.UInt32,System.UInt32@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.RelEval(Vulcan.RDD.DBRELINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.RelText(System.UInt32,System.String@)"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Ansi"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_AutoOpen"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_AutoOrder"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_AutoShare"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_BlobCircularRef"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Default"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_DefaultRDD"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Deleted"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_DosCodePage"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_ErrInfo"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Exact"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Exclusive"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_FoxLock"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_HPLocking"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_LastError"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_LockRetries"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_MemoBlockSize"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_MemoExt"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_NetErr"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_NewIndexLock"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Optimize"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Path"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_RddCodePage"></member>
+    <member name="M:Vulcan.RDD.RDDBase.RT_SetRddInfo(System.Int32,System.Object@)"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_StrictRead"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_Unique"></member>
+    <member name="P:Vulcan.RDD.RDDBase.RT_WinCodePage"></member>
+    <member name="M:Vulcan.RDD.RDDBase.ScopeInfo(System.UInt32,System.Object@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Seek(Vulcan.RDD.DBSEEKINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SetArea(System.UInt32,System.String,Vulcan.RDD.RDDBase)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SetFieldExtent(System.UInt32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SetFilter(Vulcan.RDD.DBFILTERINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SetFound(System.Boolean)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SetRel(Vulcan.RDD.DBRELINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SetScope(Vulcan.RDD.DBSCOPEINFO,System.IntPtr@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Skip(System.Int32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SkipFilter(System.Int32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SkipRaw(System.Int32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SkipScope(System.IntPtr,System.Int32)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Sort(Vulcan.RDD.DBSORTINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SyncChildren"></member>
+    <member name="M:Vulcan.RDD.RDDBase.SysName(System.String@)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Trans(Vulcan.RDD.DBTRANSINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.TransRec(Vulcan.RDD.DBTRANSINFO)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Unlock(System.Object)"></member>
+    <member name="M:Vulcan.RDD.RDDBase.Zap"></member>
+    <member name="T:Vulcan.RDD.WFileStream"></member>
+    <member name="M:Vulcan.RDD.WFileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32,System.IO.FileOptions)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.RDD.WFileStream</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.RDD.WFileStream.Flush"></member>
+    <member name="M:Vulcan.RDD.WFileStream.Flush(System.Boolean)"></member>
+    <member name="P:Vulcan.RDD.WFileStream.Length"></member>
+    <member name="M:Vulcan.RDD.WFileStream.Lock(System.Int64,System.Int64)"></member>
+    <member name="M:Vulcan.RDD.WFileStream.Read(System.Byte[],System.Int32,System.Int32)"></member>
+    <member name="M:Vulcan.RDD.WFileStream.Seek(System.Int64,System.IO.SeekOrigin)"></member>
+    <member name="M:Vulcan.RDD.WFileStream.SetLength(System.Int64)"></member>
+    <member name="M:Vulcan.RDD.WFileStream.Unlock(System.Int64,System.Int64)"></member>
+    <member name="M:Vulcan.RDD.WFileStream.Write(System.Byte[],System.Int32,System.Int32)"></member>
+    <member name="M:Vulcan.RDD.WFileStream.WriteByte(System.Byte)"></member>
+    <member name="T:Vulcan.Runtime.DBFloat">
+      <summary>This class is used by the RDD System</summary>
+    </member>
+    <member name="M:Vulcan.Runtime.DBFloat.#ctor(System.Double,System.Int32,System.Int32)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.Runtime.DBFloat</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="P:Vulcan.Runtime.DBFloat.Decimals"></member>
+    <member name="P:Vulcan.Runtime.DBFloat.Digits"></member>
+    <member name="P:Vulcan.Runtime.DBFloat.Value"></member>
+    <member name="T:Vulcan.Runtime.ErrorInfo">
+      <summary>This class is used by the Vulcan Runtime</summary>
+    </member>
+    <member name="M:Vulcan.Runtime.ErrorInfo.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.Runtime.ErrorInfo</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Arg"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.ArgNum"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Args"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.ArgType"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.ArgTypeReq"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.ArgTypeReqType"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.ArgTypeType"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.CallFuncSym"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.CanDefault"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.CanRetry"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.CanSubstitute"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Cargo"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Choice"></member>
+    <member name="M:Vulcan.Runtime.ErrorInfo.Clear"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Description"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.FileHandle"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.FileName"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.FuncPtr"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.FuncSym"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.GenCode"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.InnerExcept"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.MaxSize"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.MethodSelf"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Operation"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.OsCode"></member>
+    <member name="M:Vulcan.Runtime.ErrorInfo.raise"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Severity"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.SubCode"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.SubCodeText"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.SubstituteType"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.SubSystem"></member>
+    <member name="M:Vulcan.Runtime.ErrorInfo.Throw(System.Int32)"></member>
+    <member name="M:Vulcan.Runtime.ErrorInfo.Throw(System.Int32,System.Int32)"></member>
+    <member name="F:Vulcan.Runtime.ErrorInfo.Tries"></member>
+    <member name="T:Vulcan.Runtime.GenCodes">
+      <summary>This enum has the Error Gencodes</summary>
+    </member>
+    <member name="T:Vulcan.Runtime.ICodeblock">
+      <summary>This interface defines the Codeblock type</summary>
+    </member>
+    <member name="M:Vulcan.Runtime.ICodeblock.EvalBlock(System.Object[])"></member>
+    <member name="M:Vulcan.Runtime.ICodeblock.PCount"></member>
+    <member name="T:Vulcan.Runtime.IDate">
+      <summary>This interface defines the Date type</summary>
+    </member>
+    <member name="P:Vulcan.Runtime.IDate.IsEmpty"></member>
+    <member name="P:Vulcan.Runtime.IDate.Value"></member>
+    <member name="T:Vulcan.Runtime.IFloat">
+      <summary>This interface defines the Float type</summary>
+    </member>
+    <member name="P:Vulcan.Runtime.IFloat.Decimals"></member>
+    <member name="P:Vulcan.Runtime.IFloat.Digits"></member>
+    <member name="P:Vulcan.Runtime.IFloat.Value"></member>
+    <member name="T:Vulcan.Runtime.IMacroCompiler">
+      <summary>This interface defines the Macro Compiler</summary>
+    </member>
+    <member name="M:Vulcan.Runtime.IMacroCompiler.Compile(System.String,System.Boolean,System.Reflection.Module,System.Boolean@)"></member>
+    <member name="T:Vulcan.Runtime.MacroCompilerWrapper">
+      <summary>This class defines a helper for the MacroCompiler</summary>
+    </member>
+    <member name="M:Vulcan.Runtime.MacroCompilerWrapper.Compile(System.String,System.Boolean,System.Reflection.Module,System.Boolean@)"></member>
+    <member name="M:Vulcan.Runtime.MacroCompilerWrapper.System#IDisposable#Dispose"></member>
+    <member name="T:Vulcan.Runtime.RuntimeCodeblock">
+      <summary>This class is used for Runtime Codeblocks</summary>
+    </member>
+    <member name="M:Vulcan.Runtime.RuntimeCodeblock.#ctor(Vulcan.Runtime.RuntimeCodeblockDelegate,System.Int32)">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan.Runtime.RuntimeCodeblock</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan.Runtime.RuntimeCodeblock.EvalBlock(System.Object[])"></member>
+    <member name="M:Vulcan.Runtime.RuntimeCodeblock.PCount"></member>
+    <member name="M:Vulcan.Runtime.RuntimeCodeblock.ToString"></member>
+    <member name="T:Vulcan.Runtime.RuntimeCodeblockDelegate">
+      <summary>This delegate is used for Runtime Codeblocks</summary>
+    </member>
+    <member name="T:Vulcan.Runtime.Severity">
+      <summary>This enum defines the error severity</summary>
+    </member>
+    <member name="T:Vulcan.Runtime.State">
+      <summary>This static class defines a couple of system wide properties/settings</summary>
+    </member>
+    <member name="F:Vulcan.Runtime.State._LCID"></member>
+    <member name="F:Vulcan.Runtime.State.AMExt"></member>
+    <member name="F:Vulcan.Runtime.State.AmPm"></member>
+    <member name="F:Vulcan.Runtime.State.Ansi"></member>
+    <member name="F:Vulcan.Runtime.State.AppModule"></member>
+    <member name="F:Vulcan.Runtime.State.AutoOpen"></member>
+    <member name="F:Vulcan.Runtime.State.AutoOrder"></member>
+    <member name="F:Vulcan.Runtime.State.AutoShare"></member>
+    <member name="F:Vulcan.Runtime.State.Bell"></member>
+    <member name="F:Vulcan.Runtime.State.BlobCircularRef"></member>
+    <member name="P:Vulcan.Runtime.State.CanBreak"></member>
+    <member name="F:Vulcan.Runtime.State.Century"></member>
+    <member name="P:Vulcan.Runtime.State.Collation"></member>
+    <member name="F:Vulcan.Runtime.State.Color"></member>
+    <member name="F:Vulcan.Runtime.State.CompilerOptionFOvf"></member>
+    <member name="F:Vulcan.Runtime.State.CompilerOptionOvf"></member>
+    <member name="F:Vulcan.Runtime.State.CompilerOptionVO11"></member>
+    <member name="F:Vulcan.Runtime.State.CPU"></member>
+    <member name="P:Vulcan.Runtime.State.CurrentWorkarea"></member>
+    <member name="F:Vulcan.Runtime.State.DateCountry"></member>
+    <member name="P:Vulcan.Runtime.State.DateFormat"></member>
+    <member name="P:Vulcan.Runtime.State.DateFormat_Empty"></member>
+    <member name="P:Vulcan.Runtime.State.DateFormat_Internal"></member>
+    <member name="P:Vulcan.Runtime.State.DBAvgCount"></member>
+    <member name="F:Vulcan.Runtime.State.Decimals"></member>
+    <member name="P:Vulcan.Runtime.State.DecimalSep"></member>
+    <member name="P:Vulcan.Runtime.State.Default"></member>
+    <member name="P:Vulcan.Runtime.State.DefaultDir"></member>
+    <member name="F:Vulcan.Runtime.State.DefaultRDD"></member>
+    <member name="F:Vulcan.Runtime.State.Deleted"></member>
+    <member name="F:Vulcan.Runtime.State.DigitFixed"></member>
+    <member name="F:Vulcan.Runtime.State.Digits"></member>
+    <member name="P:Vulcan.Runtime.State.DosCodePage"></member>
+    <member name="M:Vulcan.Runtime.State.EnterBeginSequence"></member>
+    <member name="F:Vulcan.Runtime.State.Epoch"></member>
+    <member name="F:Vulcan.Runtime.State.EpochCent"></member>
+    <member name="F:Vulcan.Runtime.State.EpochYear"></member>
+    <member name="F:Vulcan.Runtime.State.ErrInfo"></member>
+    <member name="F:Vulcan.Runtime.State.Exact"></member>
+    <member name="F:Vulcan.Runtime.State.Exclusive"></member>
+    <member name="M:Vulcan.Runtime.State.ExitBeginSequence"></member>
+    <member name="F:Vulcan.Runtime.State.Fixed"></member>
+    <member name="F:Vulcan.Runtime.State.FloatDelta"></member>
+    <member name="F:Vulcan.Runtime.State.FoxLock"></member>
+    <member name="P:Vulcan.Runtime.State.FPathName"></member>
+    <member name="F:Vulcan.Runtime.State.HPLocking"></member>
+    <member name="P:Vulcan.Runtime.State.International"></member>
+    <member name="F:Vulcan.Runtime.State.LastError"></member>
+    <member name="P:Vulcan.Runtime.State.LCID"></member>
+    <member name="F:Vulcan.Runtime.State.LockRetries"></member>
+    <member name="P:Vulcan.Runtime.State.MacroCompiler"></member>
+    <member name="F:Vulcan.Runtime.State.MacroCompilerClass"></member>
+    <member name="F:Vulcan.Runtime.State.Math"></member>
+    <member name="F:Vulcan.Runtime.State.MemoBlockSize"></member>
+    <member name="F:Vulcan.Runtime.State.MemoExt"></member>
+    <member name="P:Vulcan.Runtime.State.NationDLL"></member>
+    <member name="F:Vulcan.Runtime.State.NetErr"></member>
+    <member name="F:Vulcan.Runtime.State.NewIndexLock"></member>
+    <member name="P:Vulcan.Runtime.State.NoMethod"></member>
+    <member name="F:Vulcan.Runtime.State.oCompareString_DelA"></member>
+    <member name="F:Vulcan.Runtime.State.oCompareString_DelP"></member>
+    <member name="F:Vulcan.Runtime.State.Optimize"></member>
+    <member name="P:Vulcan.Runtime.State.Path"></member>
+    <member name="P:Vulcan.Runtime.State.PathArray"></member>
+    <member name="F:Vulcan.Runtime.State.Platform"></member>
+    <member name="F:Vulcan.Runtime.State.PMExt"></member>
+    <member name="M:Vulcan.Runtime.State.PopCurrentWorkarea"></member>
+    <member name="M:Vulcan.Runtime.State.PushCurrentWorkarea(System.UInt32)"></member>
+    <member name="F:Vulcan.Runtime.State.RddCodePage"></member>
+    <member name="F:Vulcan.Runtime.State.Science"></member>
+    <member name="P:Vulcan.Runtime.State.ScratchData"></member>
+    <member name="P:Vulcan.Runtime.State.ScratchDataSize"></member>
+    <member name="M:Vulcan.Runtime.State.SetNatDLL(System.String,System.Byte[])"></member>
+    <member name="M:Vulcan.Runtime.State.SetRddInfo(System.Int32,System.Object@)"></member>
+    <member name="F:Vulcan.Runtime.State.SoftSeek"></member>
+    <member name="F:Vulcan.Runtime.State.StrictRead"></member>
+    <member name="M:Vulcan.Runtime.State.StringCompare(System.Byte*,System.Byte*,System.UInt32)"></member>
+    <member name="M:Vulcan.Runtime.State.StringCompare(System.Byte[],System.Byte[],System.UInt32)"></member>
+    <member name="P:Vulcan.Runtime.State.ThousandSep"></member>
+    <member name="F:Vulcan.Runtime.State.TimeSep"></member>
+    <member name="F:Vulcan.Runtime.State.Unique"></member>
+    <member name="F:Vulcan.Runtime.State.UseWinApiFileStream"></member>
+    <member name="P:Vulcan.Runtime.State.WinCodePage"></member>
+    <member name="T:Vulcan.Runtime.State.AutoShareMode">
+      <summary>This enum defines AutoShare options</summary>
+    </member>
+    <member name="T:Vulcan.Runtime.State.CollationMode">
+      <summary>This enum defines the Collation Modes</summary>
+    </member>
+    <member name="T:Vulcan.Runtime.State.CompareString_DelA">
+      <summary>This delegate defines a Compare string method that accepts a Byte Array</summary>
+    </member>
+    <member name="T:Vulcan.Runtime.State.CompareString_DelP">
+      <summary>This delegate defines a Compare string method that accepts a Byte PTR</summary>
+    </member>
+    <member name="T:Vulcan.Runtime.SubCodes">
+      <summary>This enum defines the error subcodes</summary>
+    </member>
+  </members>
+</doc>

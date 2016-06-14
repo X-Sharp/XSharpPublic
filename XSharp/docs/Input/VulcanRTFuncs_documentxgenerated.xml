@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>VulcanRTFuncs</name>
+  </assembly>
+  <members>
+    <member name="T:Vulcan._FIELDNAMES">
+      <summary>This structure is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan._JOINFIELD">
+      <summary>This structure is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan._RDDLIST">
+      <summary>This structure is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan._JOINLIST">
+      <summary>This class is used by the RDD system</summary>
+    </member>
+    <member name="T:Vulcan.Error">
+      <summary>This is the Error class that represents an error like it is represented in Visual Objects. It is a container for a DotNet Exception.</summary>
+    </member>
+    <member name="T:Vulcan.ErrorDialog">
+      <summary>This class can be used to display an exception to the user</summary>
+    </member>
+    <member name="T:Vulcan.NamedArg">
+      <summary>This class is used to send arguments by name to methods of the OleAutoObject class</summary>
+    </member>
+    <member name="T:Vulcan.OleAutoObject">
+      <summary>This class is used access OLE Automation Servers 'Late Bound'</summary>
+    </member>
+    <member name="T:Vulcan.OleAutoObjectFromFile">
+      <summary>This class is used create an OleAutoObject from a file on disk</summary>
+    </member>
+    <member name="T:Vulcan.OleDateTime">
+      <summary>Provide an encapsulation of a DateTime value as used by OLE objects.</summary>
+    </member>
+    <member name="T:Vulcan.VObject">
+      <summary>This is the class on which most of the GUI classes are based</summary>
+    </member>
+    <member name="M:VulcanRTFuncs.Functions.DBRecordInfo(Vulcan.__Usual[])">
+      <summary>
+        <para>Retrieve field information about a record.</para>
+      </summary>
+    </member>
+    <member name="M:VulcanRTFuncs.Functions.VODBRegisterRDD(System.String,System.Type)">
+      <summary>Register a user defined or 3rd party RDD by name</summary>
+      <returns>TRUE when the RDD Name was successfully registered. FALSE when the name already existed in the list of registered RDDs</returns>
+    </member>
+  </members>
+</doc>

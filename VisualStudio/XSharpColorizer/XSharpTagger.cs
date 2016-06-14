@@ -69,6 +69,16 @@ namespace XSharpColorizer
             TokenStream = null;
             try
             {
+                // Todo: Create XSharpParseOptions object and pass the current dialect to it, so
+                // at least we can see the difference between 4 letter abbreviations in VO dialect and the normal keywords
+                // in the other dialects
+                //string[] opts = new string[] { "/dialect:VO" };
+                //var pars = XSharpCommandLineParser.Default;
+                //var cmdopt = pars.Parse(opts, "", "");
+
+                //var options = new LanguageService.CodeAnalysis.XSharp.XSharpParseOptions();
+                //options.SetOptions(cmdopt);
+                //LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source, options, path);
                 LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(source, null, path);
                 var syntaxRoot = tree.GetRoot();
                 // Get the antlr4 parse tree root

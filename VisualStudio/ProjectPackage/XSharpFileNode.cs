@@ -199,7 +199,8 @@ namespace XSharp.Project
             if (ext == ".xaml")
             {
                 if ((String.Compare(itemType, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) != 0)
-                  || (String.Compare(itemType, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) != 0))
+                  && (String.Compare(itemType, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) != 0)
+                  && (String.Compare(itemType, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase) != 0))
                 {
                     this.ItemNode.ItemName = ProjectFileConstants.Page;
                 }

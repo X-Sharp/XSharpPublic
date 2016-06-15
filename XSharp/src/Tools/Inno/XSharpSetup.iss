@@ -9,9 +9,9 @@
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
 #define VIVersion       "0.2.5.2501"
 #define VITextVersion   "0.2.5.2501 (Beta 5)"
-#define TouchDate       "2016-06-04"
+#define TouchDate       "2016-06-15"
 #define TouchTime       "02:05:00"
-#define SetupExeName    "XSharpSetup025a"
+#define SetupExeName    "XSharpSetup025b"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -115,10 +115,10 @@ Name: "{app}\Snippets";                                      Components: vs2015;
 Name: "{app}\Tools";
 Name: "{app}\Uninst";
 Name: "{app}\Xide";
-Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";            Components: vs2015; 
-Name: "{userdocs}\Visual Studion 2015\Code Snippets\XSharp"; Components: vs2015; 
-Name: "{code:GetVsNextIdeDir}\Extensions\XSharp";            Components: vsNext; 
-Name: "{userdocs}\Visual Studion 15\Code Snippets\XSharp";   Components: vsNext; 
+Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";                              Components: vs2015; 
+Name: "{userdocs}\Visual Studio 2015\Code Snippets\XSharp\My Code Snippets";   Components: vs2015; 
+Name: "{code:GetVsNextIdeDir}\Extensions\XSharp";                              Components: vsNext; 
+Name: "{userdocs}\Visual Studio 15\Code Snippets\XSharp\My Code Snippets";     Components: vsNext; 
 
 
 [Languages]

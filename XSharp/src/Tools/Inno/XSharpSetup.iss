@@ -11,7 +11,7 @@
 #define VITextVersion   "0.2.5.2501 (Beta 5)"
 #define TouchDate       "2016-06-15"
 #define TouchTime       "02:05:00"
-#define SetupExeName    "XSharpSetup025b"
+#define SetupExeName    "XSharpSetup025c"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -25,7 +25,7 @@
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
 #define XIDESetup       "XIDE_Set_up_1.03.exe"
-
+#define XIDEVersion     "1.03"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
@@ -100,7 +100,7 @@ Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files"; 
 Name: "vs2015\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer22Found;
 Name: "vsnext"; Description: "Visual Studio 15 Preview Integration";  Types: full custom;                  Check: VsNextIsInstalled;
 Name: "vsnext\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer23Found;
-Name: "xide";   Description: "Include the XIDE files";                Types: full custom;                  
+Name: "xide";   Description: "Include the XIDE {# XIDEVersion} installer";                Types: full custom;                  
 
 
 [Dirs]
@@ -286,7 +286,7 @@ Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation 
 
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio14 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vs2015\help; StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
 Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio15 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vsnext\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
-Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE Installer"; Flags: postInstall;  Components: XIDE;
+Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]
 ; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry

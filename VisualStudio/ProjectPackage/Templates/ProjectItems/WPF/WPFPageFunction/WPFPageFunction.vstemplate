@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name>WPF UserControl</Name>
-    <Description>A WPF User Control</Description>
-    <Icon>__TemplateIcon.ico</Icon>
-    <TemplateID>XSharp.WPF.UserControl</TemplateID>
+    <Name>WPF Page Function</Name>
+    <Description>WPF Page function</Description>
+    <TemplateID>XSharp.WPF.PageFunction</TemplateID>
     <ProjectType>XSharp</ProjectType>
-    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-    <DefaultName>UserControl.xaml</DefaultName>
-    <SortOrder>30</SortOrder>
     <RequiredFrameworkVersion>3.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>PageFunction.xaml</DefaultName>
     <TemplateGroupID>WPF</TemplateGroupID>
     <ShowByDefault>true</ShowByDefault>
+    <SortOrder>50</SortOrder>
+    <AppIdFilter>blend</AppIdFilter>
   </TemplateData>
   <TemplateContent>
     <References>
@@ -28,7 +28,7 @@
         <Assembly>PresentationFramework</Assembly>
       </Reference>
     </References>
-    <ProjectItem ReplaceParameters="true" CustomTool="MSBuild:Compile" TargetFileName="$fileinputname$.xaml" >UserControl1.xaml</ProjectItem>
-    <ProjectItem ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.xaml.prg">UserControl1.xaml.prg</ProjectItem>
+    <ProjectItem ReplaceParameters="true" CustomTool="MSBuild:Compile">PageFunction1.xaml</ProjectItem>
+    <ProjectItem ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.xaml.prg">PageFunction1.xaml.prg</ProjectItem>
   </TemplateContent>
 </VSTemplate>

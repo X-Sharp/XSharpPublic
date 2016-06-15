@@ -41,7 +41,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
@@ -159,6 +159,10 @@
       <DependentUpon>XSharpSLEPropertyForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PropertyPages\XSharpUITypeEditors.cs" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\WPFFlowDocument.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -457,6 +461,17 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ZipItem>
+  </ItemGroup>
+  <ItemGroup>
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFFlowDocument\FlowDocument1.xaml">
+      <SubType>Designer</SubType>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml">
+      <SubType>Designer</SubType>
+    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\ResourceDictionary1.xaml">
       <SubType>Designer</SubType>
     </ZipItem>
   </ItemGroup>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
   <TemplateData>
-    <Name>WpfPage</Name>
+    <Name>WPF Page</Name>
     <Description>A WPF Page</Description>
     <Icon>__TemplateIcon.ico</Icon>
     <TemplateID>XSharp.WPF.Page</TemplateID>

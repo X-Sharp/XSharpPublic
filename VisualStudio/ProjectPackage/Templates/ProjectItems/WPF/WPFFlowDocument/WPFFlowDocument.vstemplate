@@ -1,16 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <Name>WPF UserControl</Name>
-    <Description>A WPF User Control</Description>
-    <Icon>__TemplateIcon.ico</Icon>
-    <TemplateID>XSharp.WPF.UserControl</TemplateID>
+    <Name>WPF Flow Document</Name>
+    <Description>Dynamically formatted XAML document</Description>
+    <TemplateID>XSharp.WPF.FlowDocument</TemplateID>
     <ProjectType>XSharp</ProjectType>
-    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-    <DefaultName>UserControl.xaml</DefaultName>
-    <SortOrder>30</SortOrder>
     <RequiredFrameworkVersion>3.0</RequiredFrameworkVersion>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>FlowDocument.xaml</DefaultName>
     <TemplateGroupID>WPF</TemplateGroupID>
+    <SortOrder>60</SortOrder>
     <ShowByDefault>true</ShowByDefault>
   </TemplateData>
   <TemplateContent>
@@ -28,7 +27,6 @@
         <Assembly>PresentationFramework</Assembly>
       </Reference>
     </References>
-    <ProjectItem ReplaceParameters="true" CustomTool="MSBuild:Compile" TargetFileName="$fileinputname$.xaml" >UserControl1.xaml</ProjectItem>
-    <ProjectItem ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.xaml.prg">UserControl1.xaml.prg</ProjectItem>
+    <ProjectItem ReplaceParameters="true" CustomTool="MSBuild:Compile">FlowDocument1.xaml</ProjectItem>
   </TemplateContent>
 </VSTemplate>

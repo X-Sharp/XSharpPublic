@@ -14,11 +14,11 @@
     <Name>Documentation</Name>
     <!-- SHFB properties -->
     <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
-    <OutputPath>.\Help\</OutputPath>
+    <OutputPath>Help\</OutputPath>
     <HtmlHelpName>XSVulcan</HtmlHelpName>
     <Language>en-US</Language>
     <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1, MSHelpViewer</HelpFileFormat>
     <IndentHtml>False</IndentHtml>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -137,7 +137,7 @@
     <MSHelpViewerSdkLinkType>Id</MSHelpViewerSdkLinkType>
     <CatalogVersion>100</CatalogVersion>
     <CatalogProductId>VS</CatalogProductId>
-    <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, ProtectedInternalAsProtected, PublicCompilerGenerated</VisibleItems>
+    <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, ProtectedInternalAsProtected, PublicCompilerGenerated</VisibleItems>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
       <Argument Key="logoHeight" Value="" />
@@ -1061,27 +1061,28 @@
     <NamespaceSummaries>
       <NamespaceSummaryItem name="Vulcan.VO" isDocumented="True">This namespace contains the "Normal" VO SDK Classes, such as DbServer, Window, Console, FileSpec etc.
 You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem>
-<NamespaceSummaryItem name="VulcanRTFuncs" isDocumented="True">This namespace contains the runtime functions.
+      <NamespaceSummaryItem name="VulcanRTFuncs" isDocumented="True">This namespace contains the runtime functions.
 Please note that all functions are implemented as static methods in the Functions class.
 You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem>
-<NamespaceSummaryItem name="Vulcan (Group)" isGroup="True" isDocumented="True">The namespaces below represent the most important namespaces in the Vulcan.NET runtime. There are more namespaces, such as Vulcan.Internal,  but these are almost never used in end users code.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="Vulcan.RDD" isDocumented="True">This namespace contains the base RDD Class (RDDBase) as well as helper classes and structures</NamespaceSummaryItem>
-<NamespaceSummaryItem name="VulcanVORDDClasses" isDocumented="True">This namespace contains the RDD helper functions.
+      <NamespaceSummaryItem name="Vulcan (Group)" isGroup="True" isDocumented="True">The namespaces below represent the most important namespaces in the Vulcan.NET runtime. There are more namespaces, such as Vulcan.Internal,  but these are almost never used in end users code.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Vulcan.RDD" isDocumented="True">This namespace contains the base RDD Class (RDDBase) as well as helper classes and structures</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VulcanVORDDClasses" isDocumented="True">This namespace contains the RDD helper functions.
 Please note that all functions are implemented as static methods in the Functions class.
 You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem>
-<NamespaceSummaryItem name="Vulcan" isDocumented="True">This namespace contains the implementation of the Vulcan datatypes, such as ARRAY, CODEBLOCK, DATE and FLOAT.
+      <NamespaceSummaryItem name="Vulcan" isDocumented="True">This namespace contains the implementation of the Vulcan datatypes, such as ARRAY, CODEBLOCK, DATE and FLOAT.
 You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem>
-<NamespaceSummaryItem name="Vulcan.Internal" isDocumented="False">This namespace contains support classes for the Vulcan compiler. These classes are not used in normal code.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="Vulcan.Runtime" isDocumented="True">This namespace contains some helper classes for the Vulcan Runtime.</NamespaceSummaryItem>
-<NamespaceSummaryItem name="VulcanVOGUIClasses" isDocumented="True">This namespace contains the GUI helper functions.
+      <NamespaceSummaryItem name="Vulcan.Internal" isDocumented="False">This namespace contains support classes for the Vulcan compiler. These classes are not used in normal code.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Vulcan.Runtime" isDocumented="True">This namespace contains some helper classes for the Vulcan Runtime.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="VulcanVOGUIClasses" isDocumented="True">This namespace contains the GUI helper functions.
 Please note that all functions are implemented as static methods in the Functions class.
 You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem>
-<NamespaceSummaryItem name="VulcanVOInternetClasses" isDocumented="True">This namespace contains the internet helper functions.
+      <NamespaceSummaryItem name="VulcanVOInternetClasses" isDocumented="True">This namespace contains the internet helper functions.
 Please note that all functions are implemented as static methods in the Functions class.
 You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem>
-<NamespaceSummaryItem name="VulcanVOSQLClasses" isDocumented="True">This namespace contains the SQL helper functions.
+      <NamespaceSummaryItem name="VulcanVOSQLClasses" isDocumented="True">This namespace contains the SQL helper functions.
 Please note that all functions are implemented as static methods in the Functions class.
-You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem></NamespaceSummaries>
+You do not need to a reference to this namespace to your code. The compiler does this automatically when the VO and/or Vulcan dialect is selected</NamespaceSummaryItem>
+    </NamespaceSummaries>
     <FooterText>This documentation was generated for reference purposes from the metadata inside the Vulcan.NET Runtime Assemblies&amp;lt%3bbr/&amp;gt%3b</FooterText>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <PostBuildEvent>xcopy d:\Xsharp\Dev\XSharp\docs\Help\XSVulcan.* d:\Xsharp\Dev\XSharp\Binaries\Help /y</PostBuildEvent>

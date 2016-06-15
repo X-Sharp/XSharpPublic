@@ -18,12 +18,17 @@
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Compile</text></li>
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Debug</text></li>
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Source control</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Windows Forms Editor</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">WPF Editor</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Resource editor (no code generation yet)</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Settings editor (no code generation yet)</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Known issues:</text></para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Most of the intellisense options in the Editor are not working </text></li>
-      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Tools that generate code (Form Editor, WPF Editor, Resource Editor etc) are not working</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">There are no editors for VO Binary entities yet</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">There is no support .designer.prg yet</text></li>
     </list>
   </body>
 </topic>

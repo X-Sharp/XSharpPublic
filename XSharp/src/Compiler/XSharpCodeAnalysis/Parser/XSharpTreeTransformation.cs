@@ -943,14 +943,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected MemberDeclarationSyntax GenerateGlobalClass(string className, SyntaxList<MemberDeclarationSyntax> members)
+        protected MemberDeclarationSyntax GenerateGlobalClass(string className, bool bInternalClass, SyntaxList<MemberDeclarationSyntax> members)
         {
             string nameSpace ;
             splitClassNameAndNamespace(ref className, out nameSpace);
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+            if (bInternalClass)
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
+            else
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax r = 
                 _syntaxFactory.ClassDeclaration(
@@ -973,7 +976,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected MemberDeclarationSyntax GenerateGlobalClass(string className, params MemberDeclarationSyntax[] members)
+        protected MemberDeclarationSyntax GenerateGlobalClass(string className, bool internalClass , params MemberDeclarationSyntax[] members )
         {
             SyntaxListBuilder<MemberDeclarationSyntax> globalClassMembers = _pool.Allocate<MemberDeclarationSyntax>();
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
@@ -999,7 +1002,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+            if (internalClass)
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
+            else
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax r = 
                 _syntaxFactory.ClassDeclaration(
@@ -1211,7 +1217,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_defTree == null) {
                 var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName));
+                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName,false));
 
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 _defTree = CSharpSyntaxTree.Create(
@@ -1295,7 +1301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var generated = ClassEntities.Pop();
             if(generated.Members.Count > 0) {
-                globalMembers.Add(GenerateGlobalClass(GlobalClassName, generated.Members));
+                globalMembers.Add(GenerateGlobalClass(GlobalClassName, false, generated.Members));
             }
             generated.Free();
 
@@ -1354,48 +1360,51 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
             var ch = context.children[0];
+            bool bStaticVisibility = false;
             bool bProcess = false;
-            IList<IToken> tokens = null;
-            if(ch is XP.FunctionContext) {
+
+            if(ch is XP.FunctionContext ) {
                 bProcess = true;
-                tokens = ((XP.FunctionContext)ch).Modifiers?._Tokens;
+                XP.FuncprocModifiersContext modifiers = ((XP.FunctionContext)ch).Modifiers;
+                if (modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
-            if(ch is XP.ProcedureContext) {
+            else if(ch is XP.ProcedureContext) {
                 bProcess = true;
-                tokens = ((XP.ProcedureContext)ch).Modifiers?._Tokens;
+                XP.FuncprocModifiersContext modifiers = ((XP.ProcedureContext)ch).Modifiers;
+                if(modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
-            if(ch is XP.VoglobalContext) {
+            else if(ch is XP.VoglobalContext) {
                 bProcess = true;
-                tokens = ((XP.VoglobalContext)ch).Modifiers?._Tokens;
+                XP.FuncprocModifiersContext modifiers = ((XP.VoglobalContext)ch).Modifiers;
+                if(modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
-            if(ch is XP.VodefineContext) {
+            else if(ch is XP.VodefineContext) {
                 bProcess = true;
+                XP.FuncprocModifiersContext modifiers = ((XP.VodefineContext)ch).Modifiers;
+                if(modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
-            if(ch is XP.VodllContext) {
+            else if(ch is XP.VodllContext) {
                 bProcess = true;
-                tokens = ((XP.VodllContext)ch).Modifiers?._Tokens;
+                XP.FuncprocModifiersContext modifiers = ((XP.VodllContext)ch).Modifiers;
+                if(modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
             if(bProcess) {
                 string className = GlobalClassName;
-                bool bStatic = false;
-                if(tokens != null) {
-                    foreach(var token in tokens) {
-                        if(token.Type == XP.STATIC) {
-                            bStatic = true;
-                            break;
-                        }
-                    }
-                }
-                if(bStatic) {
+                if (bStaticVisibility) {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
-                    if (className.Contains(".Functions"))
+                    if(className.Contains(".Functions"))
                         className = className.Replace(".Functions", ".$" + filename + "$.Functions");
                     else
                         className = className.Replace("$Globals", "$" + filename + "$Globals");
-                    AddUsingWhenMissing(GlobalEntities.Usings, className, true);
                 }
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, ch.Get<MemberDeclarationSyntax>()));
+                AddUsingWhenMissing(GlobalEntities.Usings, className, true);
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, bStaticVisibility, ch.Get<MemberDeclarationSyntax>()));
             }
              else {
                 context.Put(ch.Get<CSharpSyntaxNode>());
@@ -1421,9 +1430,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // that it is in-lined when used
             // We can probably inspect the type and depending on the type switch between
             // public Const and public Static
+            var list = _pool.Allocate();
+            SyntaxList<SyntaxToken> modifiers = null;
+            if (context.Modifiers != null) {
+                // We are not including the "STATIC" modifier here. If there is any diagnostics attached
+                // to this modifier, we will attach that to the Const Keyword that we are adding
+                // This may happen if we have STATIC STATIC DEFINE Foo := 123 AS LONG
+                DiagnosticInfo[] diags = null;
+                foreach(var m in context.Modifiers.GetList<SyntaxToken>()) {
+                    if (m.Kind != SyntaxKind.StaticKeyword) 
+                        list.Add(m);
+                    else if(m.ContainsDiagnostics)
+                       diags = m.GetDiagnostics();
+                }
+                // Static define becomes an Internal define
+                if(context.Modifiers.IsStaticVisible) 
+                    list.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
+                var constToken = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword);
+                if(diags != null)
+                    constToken = constToken.WithAdditionalDiagnostics(diags);
+                list.Add(constToken);
+                modifiers = list.ToTokenList();
+                _pool.Free(list);
+            } else {
+                // No modifiers, so a regular DEFINE Foo := "abc" AS STRING
+                // Will be a public const
+                modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ConstKeyword);
+            }
+
+                
             context.Put(_syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
-                TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ConstKeyword),
+                modifiers,
                 _syntaxFactory.VariableDeclaration(context.DataType?.Get<TypeSyntax>() ?? MissingType(), variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             _pool.Free(variables);
@@ -3031,16 +3069,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
         }
 
-        public override void ExitFuncprocModifiers([NotNull] XP.FuncprocModifiersContext context)
-        {
+        public override void ExitFuncprocModifiers([NotNull] XP.FuncprocModifiersContext context) {
             SyntaxListBuilder modifiers = _pool.Allocate();
-            foreach (var m in context._Tokens)
-            {
+            foreach(var m in context._Tokens) {
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
             }
-            if (!modifiers.Any(SyntaxKind.StaticKeyword))
+            // STATIC FUNCTION is implemented as INTERNAL and will be moved to a special class
+            if(modifiers.Any(SyntaxKind.StaticKeyword)) { 
+                // in this context static has to do with visibility
+                modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
+                context.IsStaticVisible = true;
+            } else {
+                // in this context static means that .Net static = class method as opposed to instance method
+                context.IsStaticVisible = false;
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            modifiers.FixDefaultVisibility();
+                modifiers.FixDefaultVisibility();
+            }
             context.PutList(modifiers.ToTokenList());
             _pool.Free(modifiers);
         }

@@ -177,7 +177,7 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
                     ;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
-vodefine			: DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=nativeType)? end=EOS
+vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=nativeType)? end=EOS
                     { SetSequencePoint(_localctx,$end); }
                     ;
 

@@ -1387,7 +1387,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (t.Kind != SyntaxKind.None) {
                 if(list.Any(t.Kind)) {
                     t = t.WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(t.GetLeadingTriviaWidth(), t.Width, ErrorCode.ERR_DuplicateModifier, t));
+                        new SyntaxDiagnosticInfo(t.GetLeadingTriviaWidth(), t.Width, ErrorCode.ERR_DuplicateModifier, t.Text));
                 }
                 list.Add(t);
             }

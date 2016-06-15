@@ -394,5 +394,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             EntityData data = new EntityData();
             public EntityData Data { get { return data; } }
         }
+
+        public partial class FuncprocModifiersContext: ParserRuleContext {
+            public bool IsStaticVisible { get; set; }
+        }
     }
 }

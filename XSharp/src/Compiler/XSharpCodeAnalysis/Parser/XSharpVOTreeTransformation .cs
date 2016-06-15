@@ -94,7 +94,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private SyntaxTree GenerateDefaultSyntaxTree()
         {
-            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName));
+            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName,false));
 
             // Add global attributes 
 

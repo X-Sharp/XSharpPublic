@@ -2516,6 +2516,58 @@ FUNCTION Start() AS VOID
         }
 
 
+        // 171
+        [Test(Author = "Chris", Id = "C171", Title = "error XS1501: No overload for method 'Eval' takes 2 arguments")]
+        public static void cannot_resolve_call_to_function_when_same_named_method_exists()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// function call is not being resolved to the Eval() function
+CLASS TestClass
+METHOD Test() AS VOID
+	LOCAL u AS USUAL
+	// eval() is also a function
+	Eval(u,u)
+RETURN
+METHOD Eval(n AS INT) AS VOID
+	LOCAL u AS USUAL
+	Eval(u,n)
+RETURN
+END CLASS
+");
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 172
+        [Test(Author = "Chris", Id = "C172", Title = "error XS0218: In order for '__Usual.operator |(__Usual, __Usual)' to be applicable as a short circuit operator, its declaring type '__Usual' must define operator true and operator false")]
+        public static void Error_using_or_on_USUALs()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL u AS USUAL
+LOCAL l AS LOGIC
+u := TRUE
+l := u .OR. u
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 173
+        [Test(Author = "Chris", Id = "C173", Title = "No compiler error and parent constructor not being invoked")]
+        public static void No_compiler_error_and_parent_constructor_not_being_invoked()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL u AS USUAL
+LOCAL l AS LOGIC
+u := TRUE
+l := u .OR. u
+");
+            CompileWithErrors("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
 
     }
 }

@@ -2558,11 +2558,19 @@ l := u .OR. u
         public static void No_compiler_error_and_parent_constructor_not_being_invoked()
         {
             var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan dialect only. Core dialect properly reports a compiler error
+CLASS Parent
+CONSTRUCTOR(n AS INT,m AS STRING)
+? ""parent initialized""
+END CLASS
+
+CLASS Child INHERIT Parent
+CONSTRUCTOR(a AS STRING)
+SUPER() // overrides parent constructor!
+END CLASS
+
 FUNCTION Start() AS VOID
-LOCAL u AS USUAL
-LOCAL l AS LOGIC
-u := TRUE
-l := u .OR. u
+Child{NULL}
 ");
             CompileWithErrors("/dialect:vulcan", s, VulcanRuntime);
         }

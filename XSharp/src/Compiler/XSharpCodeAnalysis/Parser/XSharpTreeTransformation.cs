@@ -2136,13 +2136,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             bool actualDeclaration = true;
             if (context.T.Token.Type != XP.METHOD) {
+                string sName;
                 switch (context.T.Token.Type) {
                     case XP.ACCESS:
-                        idName = SyntaxFactory.Identifier(VoPropertyAccessPrefix + context.Id.GetText());
+                        sName = context.Id.GetText();
+                        if(sName.StartsWith("@@"))
+                            sName = sName.Substring(2);
+                        idName = SyntaxFactory.Identifier(VoPropertyAccessPrefix + sName);
                         idName.XNode = context.Id;
                         break;
                     case XP.ASSIGN:
-                        idName = SyntaxFactory.Identifier(VoPropertyAssignPrefix + context.Id.GetText());
+                        sName = context.Id.GetText();
+                        if(sName.StartsWith("@@"))
+                            sName = sName.Substring(2);
+                        idName = SyntaxFactory.Identifier(VoPropertyAssignPrefix + sName);
                         idName.XNode = context.Id;
                         break;
                 }

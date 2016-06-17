@@ -19,13 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XSTestCodeAnalysis
-{
-    public partial class TestClass
-    {
+namespace XSTestCodeAnalysis {
+    public partial class TestClass {
         [Test(Author = "Robert", Id = "R1", Title = "NOP Statement")]
-        public static void Nop_Statement()
-        {
+        public static void Nop_Statement() {
             var s = ParseSource(@"
 Function Start AS VOID
 LOCAL i as LONG
@@ -40,8 +37,7 @@ RETURN
             CompileAndLoadWithoutErrors(s);
         }
         [Test(Author = "Robert", Id = "R2", Title = "On and Off keywords")]
-        public static void On_And_Off_Keywords()
-        {
+        public static void On_And_Off_Keywords() {
             var s = ParseSource(@"
 ENUM Test
 MEMBER On
@@ -52,8 +48,7 @@ END ENUM
         }
 
         [Test(Author = "Robert", Id = "R3", Title = "MissingParameterTypes")]
-        public static void MissingParameterTypes()
-        {
+        public static void MissingParameterTypes() {
             var s = ParseSource(@"
 CLASS Test
 CONSTRUCTOR(a)
@@ -65,8 +60,7 @@ END CLASS
         }
 
         [Test(Author = "Robert", Id = "R4", Title = "ConstructorCallingConvention")]
-        public static void ConstructorCallingConvention()
-        {
+        public static void ConstructorCallingConvention() {
             var s = ParseSource(@"
 CLASS Test
 CONSTRUCTOR() STRICT
@@ -76,8 +70,7 @@ END CLASS
         }
 
         [Test(Author = "Robert", Id = "R5", Title = "_AND and _OR Operation incorrect")]
-        public static void AndOperationIncorrect()
-        {
+        public static void AndOperationIncorrect() {
             var s = ParseSource(@"
 FUNCTION Start AS VOID
  LOCAL iResult as LONG
@@ -95,8 +88,7 @@ RETURN
         }
 
         [Test(Author = "Robert", Id = "R6", Title = "_AND and _OR Operation Correct")]
-        public static void AndOperationCorrect()
-        {
+        public static void AndOperationCorrect() {
             var s = ParseSource(@"
 FUNCTION Start AS VOID
  LOCAL iResult as LONG
@@ -115,8 +107,7 @@ FUNCTION Start AS VOID
 
 
         [Test(Author = "Robert", Id = "R7", Title = "MissingTypes")]
-        public static void MissingTypes()
-        {
+        public static void MissingTypes() {
             var s = ParseSource(@"
 DEFINE Foo := 10
 FUNCTION Start AS VOID
@@ -144,8 +135,7 @@ END CLASS
         }
 
         [Test(Author = "Robert", Id = "R8", Title = "** AS alias for Exponent")]
-        public static void StarStarExponent()
-        {
+        public static void StarStarExponent() {
             var s = ParseStartFunction(@"
 LOCAL r AS REAL8
 r := (int) (2 ** 0)
@@ -168,8 +158,7 @@ ENDIF
             CompileAndRunWithoutExceptions(s);
         }
         [Test(Author = "Robert", Id = "R9", Title = "**= and ^= Expression")]
-        public static void ExponentEqualsExponent()
-        {
+        public static void ExponentEqualsExponent() {
             var s = ParseStartFunction(@"
 LOCAL r AS REAL8
 r := 3
@@ -189,8 +178,7 @@ ENDIF
 
 
         [Test(Author = "Robert", Id = "R10", Title = "> and >> ")]
-        public static void GTandRShift()
-        {
+        public static void GTandRShift() {
             var s = ParseStartFunction(@"
 LOCAL x AS LONG
 x := 8
@@ -208,8 +196,7 @@ ENDIF
             CompileAndRunWithoutExceptions(s);
         }
         [Test(Author = "Robert", Id = "R11", Title = "NestedGeneric List<Tuple<int,int>>")]
-        public static void NestedGeneric()
-        {
+        public static void NestedGeneric() {
             var s = ParseSource(@"
 using System.Collections.Generic
 FUNCTION Start as int
@@ -220,8 +207,7 @@ return x:Count
         }
 
         [Test(Author = "Robert", Id = "R12", Title = "Preprocessor Test")]
-        public static void PPtest()
-        {
+        public static void PPtest() {
             var s = ParseSource(@"
 #define FOO FALSE    // With compatible PP behaviour (/vo8) this is the same as #undef FOO               
 #undef BAR
@@ -244,8 +230,7 @@ FUNCTION Start() AS INT
             CompileAndRunWithoutExceptions(s);
         }
         [Test(Author = "Robert", Id = "R13", Title = "Preprocessor Test - /vo8 compatibility")]
-        public static void PPtest2()
-        {
+        public static void PPtest2() {
             var s = ParseSource("/vo8+", @"
 #define FOO FALSE    // With compatible PP behavior (/vo8) this is the same as #undef FOO. 
 #define BAR 0        // With compatible PP behavior (/vo8) this is the same as #undef BAR. 
@@ -268,8 +253,7 @@ FUNCTION Start() AS INT
         }
 
         [Test(Author = "Robert", Id = "R14", Title = "Clipper constructors")]
-        public static void ClipperCCConstructors()
-        {
+        public static void ClipperCCConstructors() {
             CompileAndRunWithoutExceptions("/dialect:vulcan", ParseSource("/dialect:vulcan", @"
 CLASS Parent
     PUBLIC Value as LONG
@@ -289,7 +273,20 @@ FUNCTION Start() AS VOID
         }
 
 
+        [Test(Author = "Robert", Id = "R15", Title = "Access/Assign with @@ characters")]
+        public static void AccessAssignTest() {
+            var s = ParseSource("/target:library", @"
+CLASS Foo
+ACCESS @@Bar AS LONG
+	RETURN 1
+ASSIGN @@Bar(n AS LONG)
+	RETURN
+END CLASS
+");
+            CompileAndLoadWithoutErrors();
+        }
+
     }
+
+
 }
-
-

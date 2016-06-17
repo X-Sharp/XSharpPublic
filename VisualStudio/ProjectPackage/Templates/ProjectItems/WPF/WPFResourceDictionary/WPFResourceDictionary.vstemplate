@@ -5,7 +5,7 @@
     <Description></Description>
     <TemplateID>XSharp.WPF.ResourceDictionary</TemplateID>
     <ProjectType>XSharp</ProjectType>
-    <SortOrder>40SortOrder>
+    <SortOrder>40</SortOrder>
     <RequiredFrameworkVersion>3.0</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>Dictionary.xaml</DefaultName>

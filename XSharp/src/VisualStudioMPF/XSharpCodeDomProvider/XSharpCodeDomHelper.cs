@@ -101,7 +101,7 @@ namespace XSharp.CodeDom
             return rstClass;
         }
 
-        internal static CodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu, out CodeNamespace namespaceName)
+        public static CodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu, out CodeNamespace namespaceName)
         {
             namespaceName = null;
             CodeTypeDeclaration rstClass = null;

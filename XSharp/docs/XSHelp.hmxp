@@ -163,6 +163,7 @@
       <config-value name="make2include">HXS</config-value>
       <config-value name="make2status">*</config-value>
       <config-value name="lastedited">-1</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>

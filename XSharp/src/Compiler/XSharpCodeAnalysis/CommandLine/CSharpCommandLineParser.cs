@@ -57,6 +57,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "cf":  
                     options.CompactFramework = positive;
                     break;
+                case "creatingruntime":
+                    options.CreatingRuntime = true;
+                    break;
                 case "dialect":
                     XSharpDialect dialect = XSharpDialect.Core;
                     if (string.IsNullOrEmpty(value))
@@ -242,6 +245,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (options.Dialect == XSharpDialect.VO || options.Dialect == XSharpDialect.Vulcan) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;
+                }
+                else if(options.CreatingRuntime) {
+                    // Ok
                 }
                 else {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(), "VulcanRT.DLL and VulcanRTFuncs.DLL");

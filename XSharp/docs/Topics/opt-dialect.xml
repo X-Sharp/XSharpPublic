@@ -16,6 +16,11 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/dialect</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The syntax is: </text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">/dialect:Core</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">/dialect:VO</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">/dialect:Vulcan</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">etc.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"><link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects" styleclass="Heading3" style="font-weight:normal;" translate="true">See the dialect topic for differences between dialects</link></para>
     <para styleclass="Normal"></para>

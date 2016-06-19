@@ -82,5 +82,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo15 { get; internal set; } = true;
         public bool VulcanRTFuncsIncluded { get; internal set; } = false;
         public bool VulcanRTIncluded { get; internal set; } = false;
+        public bool CreatingRuntime { get; internal set; } = false;
     }
 }

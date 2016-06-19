@@ -598,9 +598,6 @@
           <caption translate="true">#undef</caption>
         </topicref>
       </topicref>
-      <topicref type="topic" id="424523873502446" build="ALL" modified="2016-03-23T11:26:25.772Z" icon="0" href="X-Preprocessor-Macros">
-        <caption translate="true">X# Preprocessor Macros</caption>
-      </topicref>
       <topicref type="topic" id="423887666250768" build="ALL" modified="2016-01-19T22:47:35.766Z" icon="0" href="X-Compiler-Options">
         <caption translate="true">X# Compiler Options</caption>
         <topicref type="topic" id="423891769948279" build="ALL" modified="2016-01-20T08:58:14.880Z" icon="0" href="Command-line-Building-With-xsc">

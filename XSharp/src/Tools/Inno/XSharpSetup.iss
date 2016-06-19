@@ -9,9 +9,9 @@
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
 #define VIVersion       "0.2.5.2501"
 #define VITextVersion   "0.2.5.2501 (Beta 5)"
-#define TouchDate       "2016-06-15"
+#define TouchDate       "2016-06-19"
 #define TouchTime       "02:05:00"
-#define SetupExeName    "XSharpSetup025c"
+#define SetupExeName    "XSharpSetup025d"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -83,8 +83,6 @@ UninstallLogMode=overwrite
 
 TouchDate={#=TouchDate}
 TouchTime={#=TouchTime}
-
-
 
 
 ; Make sure they are admins

@@ -84,11 +84,14 @@
       <caption translate="true">Using X# in Visual Studio</caption>
       <topicref type="topic" id="423888586335039" build="ALL" modified="2016-01-19T21:24:53.563Z" icon="0" href="Project-System">
         <caption translate="true">Project System</caption>
+        <topicref type="topic" id="423886862409427" build="ALL" modified="2016-01-19T21:24:53.893Z" icon="0" href="Forms">
+          <caption translate="true">Forms</caption>
+        </topicref>
+        <topicref type="topic" id="423887693907857" build="ALL" modified="2016-01-19T21:24:53.961Z" icon="0" href="Other-Item-types">
+          <caption translate="true">Other Item types</caption>
+        </topicref>
         <topicref type="topic" id="423889199749481" build="ALL" modified="2016-01-19T21:24:53.624Z" icon="0" href="Project-Properties">
           <caption translate="true">Project Properties</caption>
-        </topicref>
-        <topicref type="topic" id="42386764973040" build="ALL" modified="2016-01-19T21:24:53.694Z" icon="0" href="Source-code-Items">
-          <caption translate="true">Source code Items</caption>
         </topicref>
         <topicref type="topic" id="423887085079505" build="ALL" modified="2016-01-19T21:24:53.759Z" icon="0" href="Resources">
           <caption translate="true">Resources</caption>
@@ -96,11 +99,8 @@
         <topicref type="topic" id="423889093227394" build="ALL" modified="2016-01-19T21:24:53.825Z" icon="0" href="Settings">
           <caption translate="true">Settings</caption>
         </topicref>
-        <topicref type="topic" id="423886862409427" build="ALL" modified="2016-01-19T21:24:53.893Z" icon="0" href="Forms">
-          <caption translate="true">Forms</caption>
-        </topicref>
-        <topicref type="topic" id="423887693907857" build="ALL" modified="2016-01-19T21:24:53.961Z" icon="0" href="Other-Item-types">
-          <caption translate="true">Other Item types</caption>
+        <topicref type="topic" id="42386764973040" build="ALL" modified="2016-01-19T21:24:53.694Z" icon="0" href="Source-code-Items">
+          <caption translate="true">Source code Items</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="423888873133831" build="ALL" modified="2016-01-19T21:24:54.026Z" icon="0" href="Source-Code-Editor">
@@ -388,9 +388,6 @@
             <topicref type="topic" id="423887339989427" build="ALL" modified="2016-01-19T21:05:10.292Z" icon="0" href="REPEAT-___-UNTIL">
               <caption translate="true">REPEAT ... UNTIL</caption>
             </topicref>
-            <topicref type="topic" id="423888006089921" build="ALL" modified="2016-01-19T21:05:10.427Z" icon="0" href="SWITCH">
-              <caption translate="true">SWITCH</caption>
-            </topicref>
           </topicref>
           <topicref type="topic" id="423888476587208" build="ALL" modified="2016-01-19T23:00:17.738Z" icon="0" href="Block-Statements">
             <caption translate="true">Block Statements</caption>
@@ -427,6 +424,9 @@
           </topicref>
           <topicref type="topic" id="423891418207155" build="ALL" modified="2016-01-19T23:00:17.869Z" icon="0" href="Selection-Statements">
             <caption translate="true">Selection Statements</caption>
+            <topicref type="topic" id="423888006089921" build="ALL" modified="2016-01-19T21:05:10.427Z" icon="0" href="SWITCH">
+              <caption translate="true">SWITCH</caption>
+            </topicref>
             <topicref type="topic" id="423886743379886" build="ALL" modified="2016-01-19T21:05:09.964Z" icon="0" href="DO-CASE">
               <caption translate="true">DO CASE</caption>
             </topicref>
@@ -436,8 +436,20 @@
           </topicref>
           <topicref type="topic" id="423888652394528" build="ALL" modified="2016-01-19T23:00:17.933Z" icon="0" href="Declaration-Statements">
             <caption translate="true">Declaration Statements</caption>
+            <topicref type="topic" id="425384106851300" build="ALL" modified="2016-06-17T11:27:50.118Z" icon="0" href="FIELD">
+              <caption translate="true">FIELD</caption>
+            </topicref>
             <topicref type="topic" id="423887768581854" build="ALL" modified="2016-01-19T21:05:27.023Z" icon="0" href="LOCAL">
               <caption translate="true">LOCAL</caption>
+            </topicref>
+            <topicref type="topic" id="42539618119958" build="ALL" modified="2016-06-17T11:27:49.979Z" icon="0" href="MEMVAR">
+              <caption translate="true">MEMVAR</caption>
+            </topicref>
+            <topicref type="topic" id="425384312782120" build="ALL" modified="2016-06-17T11:27:21.982Z" icon="0" href="PRIVATE">
+              <caption translate="true">PRIVATE</caption>
+            </topicref>
+            <topicref type="topic" id="425385968646375" build="ALL" modified="2016-06-17T11:27:49.789Z" icon="0" href="PUBLIC">
+              <caption translate="true">PUBLIC</caption>
             </topicref>
             <topicref type="topic" id="423888911265666" build="ALL" modified="2016-01-19T21:05:53.480Z" icon="0" href="LOCAL_2">
               <caption translate="true">STATIC</caption>
@@ -515,6 +527,9 @@
         </topicref>
         <topicref type="topic" id="423887080212844" build="ALL" modified="2016-01-19T22:54:29.270Z" icon="0" href="Visibility">
           <caption translate="true">Modifiers</caption>
+        </topicref>
+        <topicref type="topic" id="425386471139560" build="ALL" modified="2016-06-17T11:15:44.425Z" icon="0" href="Compiler-Macros">
+          <caption translate="true">Compiler Macros</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="423889109101067" build="ALL" modified="2016-01-19T22:47:35.662Z" icon="0" href="X-Operators">

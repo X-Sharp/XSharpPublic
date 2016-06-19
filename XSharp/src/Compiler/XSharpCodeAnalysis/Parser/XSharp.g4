@@ -388,19 +388,10 @@ constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVA
 destructorModifiers : ( Tokens+=EXTERN )+
                     ;
 
-/*
-    From the C# syntax guide:
-    overloadable-unary-operator:  one of
-    +   -   !   ~   ++   --   true   false
-    overloadable-binary-operator:
-    + - * / % & | ^ << right-shift == != > < >= <=
 
-
-*/
-overloadedOps		: Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                              MULT | DIV | MOD | AMP | PIPE | EXP | LSHIFT | RSHIFT | EEQ | NEQ | 
-                              GT | LT | GTE | LTE |
-                              AND | OR )  // these two do not exist in C# and are mapped to & and |
+overloadedOps		: Token=(INC | DEC | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
+                    | GT  | LT | NEQ | GTE| LTE | TRUE_CONST | FALSE_CONST | NOT
+                    | TILDE | AMP   | PIPE )
                     ;
 
 conversionOps		: Token=( IMPLICIT | EXPLICIT )
@@ -881,11 +872,11 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
                     // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
-                    | LOCK | NAMESPACE | NEW | OPTIONS | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
+                    | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
                     ;
 
 keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | OFF | ON | ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP |  ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
                               MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
                             )
                     ;

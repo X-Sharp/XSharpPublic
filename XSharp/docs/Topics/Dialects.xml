@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# compiler can run in different dialects. The table below shows the differences between these dialects.</text><br/><text styleclass="Normal" translate="true">You can use the /dialect compiler option to select the dialect that you want to use. The </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Core dialect</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> is default.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="29" colcount="5">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="33" colcount="5">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Feature</text></para>
@@ -24,6 +24,58 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Other</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">4 Letter </text><text styleclass="Normal" style="font-weight:normal;" translate="true">abbreviations of keywords</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">(FUNC, WHIL etc). </text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes, 11</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">&amp;&amp;</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> as single line comment character</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-size:12pt; font-weight:bold;" translate="true">*</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> at beginning of line as comment character</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -185,6 +237,23 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">FUNCTION</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">PROCEDURE </text><text styleclass="Normal" style="font-weight:normal;" translate="true"> inside class are compiled as Static Method of that class</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
@@ -501,6 +570,7 @@
       <li><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Untyped literal arrays in the VO/Vulcan dialect are translated to the VO Array type:</text><br/><text styleclass="Code Example" style="font-size:10pt;" translate="true">{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text style="font-family:Arial; font-size:10pt; color:#000000;" translate="true">Typed literal arrays are prefixed with &lt;Type&gt; like this:</text><br/><text styleclass="Code Example" style="font-size:10pt;" translate="true">&lt;STRING&gt;{&quot;aa&quot;, &quot;bb&quot;, &quot;cc&quot;}</text><br/><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">This becomes a literal string array</text></li>
       <li><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">With the /vo2 compiler option NULL_STRING is compiled to an empty string. Otherwise to a NULL.</text></li>
       <li><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The VOSTRUCT and UNION can be replaced with a standard .NET structure. For Union you need to use the [StructLayout(LayoutKind.Explicit) attribute on the structure and the FieldOffSet attribute on each field to explicitly define the location of the fields. </text></li>
+      <li><text styleclass="Normal" style="font-weight:normal;" translate="true">Only for VO compatible keywords, not for keywords introduced in Vulcan or XSharp.</text></li>
     </list>
   </body>
 </topic>

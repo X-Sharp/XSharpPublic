@@ -425,8 +425,15 @@ namespace XSharp.CodeDom
             if (e.TargetObject != null)
             {
                 this.GenerateExpression(e.TargetObject);
-
-                base.Output.Write(this.selector);
+                // If we have a Type, we must use a dot as a selector
+                if (e.TargetObject.GetType() == typeof(CodeTypeReferenceExpression))
+                {
+                    base.Output.Write(this.staticSelector);
+                }
+                else
+                {
+                    base.Output.Write(this.selector);
+                }
             }
 
             this.OutputIdentifier(e.FieldName);

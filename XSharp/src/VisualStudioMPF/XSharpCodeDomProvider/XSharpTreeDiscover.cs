@@ -423,11 +423,11 @@ namespace XSharp.CodeDom
                     XSharpParser.AssignmentExpressionContext exp = (XSharpParser.AssignmentExpressionContext)context._expression;
                     //
                     //what is the left hand side ?
-                    //    Self  -> check is Right is in the member of CurrentClass --> FieldReference
+                    //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
                     // else --> always Property
                     //
-                    CodeExpression left = BuildExpression(exp.Left);
-                    CodeExpression right = BuildExpression(exp.Right);
+                    CodeExpression left = BuildExpression(exp.Left, false);
+                    CodeExpression right = BuildExpression(exp.Right, true);
                     if (exp.ASSIGN_OP() != null)
                     {
                         //expr = new CodeBinaryOperatorExpression(left, CodeBinaryOperatorType.Assign, right);
@@ -459,7 +459,7 @@ namespace XSharp.CodeDom
                 else if (context._expression is XSharpParser.MethodCallContext)
                 {
                     XSharpParser.MethodCallContext exp = (XSharpParser.MethodCallContext)context._expression;
-                    expr = BuildExpression(exp);
+                    expr = BuildExpression(exp,false);
                     stmt = new CodeExpressionStatement(expr);
                 }
                 else
@@ -925,7 +925,7 @@ namespace XSharp.CodeDom
         }
 
 
-        private CodeExpression BuildExpression(XSharpParser.ExpressionContext expression)
+        private CodeExpression BuildExpression(XSharpParser.ExpressionContext expression, bool right )
         {
             CodeExpression expr = null;
             //
@@ -937,10 +937,10 @@ namespace XSharp.CodeDom
             {
                 XSharpParser.AccessMemberContext member = (XSharpParser.AccessMemberContext)expression;
                 //what is the left hand side ?
-                //    Self  -> check is Right is in the member of CurrentClass --> FieldReference
+                //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
                 // else --> always Property
                 bool isMember = false;
-                CodeExpression left = BuildExpression(member.Expr);
+                CodeExpression left = BuildExpression(member.Expr,false);
                 if (left is CodeThisReferenceExpression)
                 {
                     string fieldCandidate = member.Name.GetText();
@@ -956,27 +956,35 @@ namespace XSharp.CodeDom
                         }
                     }
                 }
-                //
+                // It seems to be a member...
                 if (isMember)
                 {
-                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr), member.Name.GetText());
+                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr,false), member.Name.GetText());
                 }
                 else
                 {
-                    //
-                    expr = new CodePropertyReferenceExpression(BuildExpression(member.Expr), member.Name.GetText());
+                    // Let's guess that on the Left member, we should have a Property if it is not a Field
+                    if (!right)
+                    {
+                        expr = new CodePropertyReferenceExpression(BuildExpression(member.Expr, false), member.Name.GetText());
+                    }
+                    else
+                    {
+                        // We are processing the Right memeber of an Assignment...
+                        expr = new CodeSnippetExpression(member.GetText());
+                    }
                 }
             }
             else if (expression is XSharpParser.MethodCallContext)
             {
                 XSharpParser.MethodCallContext meth = (XSharpParser.MethodCallContext)expression;
-                CodeExpression target = BuildExpression(meth.Expr);
+                CodeExpression target = BuildExpression(meth.Expr,false);
                 List<CodeExpression> exprlist = new List<CodeExpression>();
                 if (meth.ArgList != null)
                 {
                     foreach (var arg in meth.ArgList._Args)
                     {
-                        exprlist.Add(BuildExpression(arg.Expr));
+                        exprlist.Add(BuildExpression(arg.Expr,false));
                     }
                 }
                 if (target is CodeFieldReferenceExpression)
@@ -1027,7 +1035,7 @@ namespace XSharp.CodeDom
                     List<CodeExpression> exprlist = new List<CodeExpression>();
                     foreach (var Expression in arr._Exprs)
                     {
-                        exprlist.Add(BuildExpression(Expression));
+                        exprlist.Add(BuildExpression(Expression,true));
                     }
                     expr = new CodeArrayCreateExpression(BuildDataType(arr.Type), exprlist.ToArray());
                 }
@@ -1041,9 +1049,9 @@ namespace XSharp.CodeDom
                 XSharpParser.DelegateCtorCallContext delg = (XSharpParser.DelegateCtorCallContext)ctx;
                 //
                 CodeTypeReference ctr = BuildDataType(delg.Type);
-                CodeExpression ce = BuildExpression(delg.Obj);
+                CodeExpression ce = BuildExpression(delg.Obj,false);
                 //
-                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj), delg.Func.GetText());
+                expr = new CodeDelegateCreateExpression(BuildDataType(delg.Type), BuildExpression(delg.Obj,false), delg.Func.GetText());
 
             }
             else if (ctx is XSharpParser.CtorCallContext)
@@ -1056,7 +1064,7 @@ namespace XSharp.CodeDom
                     foreach (var arg in ctor.ArgList._Args)
                     {
                         // We should handle arg.Name if arg.ASSIGN_OP is not null...
-                        exprlist.Add(BuildExpression(arg.Expr));
+                        exprlist.Add(BuildExpression(arg.Expr,false));
                     }
                 }
                 expr = new CodeObjectCreateExpression(ctr.BaseType, exprlist.ToArray());
@@ -1354,6 +1362,10 @@ namespace XSharp.CodeDom
                 expr = new CodeSnippetExpression(context.GetText());
             }
             //
+            if ( expr == null )
+            {
+                expr = new CodeSnippetExpression(context.GetText());
+            }
             return expr;
         }
 

@@ -25,21 +25,24 @@
     <CppCommentsFixup>False</CppCommentsFixup>
     <CleanIntermediates>True</CleanIntermediates>
     <DocumentationSources>
-      <DocumentationSource sourceFile="C:\Program Files (x86)\Vulcan.NET 4.0\Redist\Assemblies\v4.0\VulcanRTFuncs.dll" />
-<DocumentationSource sourceFile="C:\Program Files (x86)\Vulcan.NET 4.0\Redist\Assemblies\v4.0\VulcanRT.dll" />
+      <DocumentationSource sourceFile="Input\VulcanRT.dll" />
 <DocumentationSource sourceFile="Input\VulcanRT.xml" />
+<DocumentationSource sourceFile="Input\VulcanRTFuncs.dll" />
 <DocumentationSource sourceFile="Input\VulcanRTFuncs.xml" />
+<DocumentationSource sourceFile="Input\VulcanVOConsoleClasses.dll" />
 <DocumentationSource sourceFile="Input\VulcanVOConsoleClasses.xml" />
+<DocumentationSource sourceFile="Input\VulcanVOGUIClasses.dll" />
 <DocumentationSource sourceFile="Input\VulcanVOGUIClasses.xml" />
+<DocumentationSource sourceFile="Input\VulcanVOInternetClasses.dll" />
 <DocumentationSource sourceFile="Input\VulcanVOInternetClasses.xml" />
+<DocumentationSource sourceFile="Input\VulcanVORDDClasses.dll" />
 <DocumentationSource sourceFile="Input\VulcanVORDDClasses.xml" />
+<DocumentationSource sourceFile="Input\VulcanVOReportClasses.dll" />
+<DocumentationSource sourceFile="Input\VulcanVOSQLClasses.dll" />
 <DocumentationSource sourceFile="Input\VulcanVOSQLClasses.xml" />
+<DocumentationSource sourceFile="Input\VulcanVOSystemClasses.dll" />
 <DocumentationSource sourceFile="Input\VulcanVOSystemClasses.xml" />
-<DocumentationSource sourceFile="..\..\..\..\XIDE\Projects\SDK\Bin\Debug\VulcanVOGUIClasses.dll" />
-<DocumentationSource sourceFile="..\..\..\..\XIDE\Projects\SDK\Bin\Debug\VulcanVOInternetClasses.dll" />
-<DocumentationSource sourceFile="..\..\..\..\XIDE\Projects\SDK\Bin\Debug\VulcanVORDDClasses.dll" />
-<DocumentationSource sourceFile="..\..\..\..\XIDE\Projects\SDK\Bin\Debug\VulcanVOSQLClasses.dll" />
-<DocumentationSource sourceFile="..\..\..\..\XIDE\Projects\SDK\Bin\Debug\VulcanVOSystemClasses.dll" /></DocumentationSources>
+<DocumentationSource sourceFile="Input\VulcanVOReportClasses.xml" /></DocumentationSources>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <ComponentConfigurations>
       <ComponentConfig id="Syntax Component" enabled="True">

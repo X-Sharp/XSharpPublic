@@ -2439,7 +2439,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitOverloadedOps([NotNull] XP.OverloadedOpsContext context)
         {
-            context.Put(context.Token.SyntaxOp());
+            switch (context.Token.Type) {
+                case XP.OR:
+                    // Please note that C# does not have an operator ||
+                    context.Put(SyntaxFactory.MakeToken(SyntaxKind.BarToken));
+                    break;
+                case XP.AND:
+                    // Please note that C# does not have an operator &&
+                    context.Put(SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken));
+                    break;
+                default:
+                    context.Put(context.Token.SyntaxOp());
+                    break;
+            }
         }
 
         public override void ExitConversionOps([NotNull] XP.ConversionOpsContext context)

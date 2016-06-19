@@ -505,9 +505,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxToken r;
             switch (token.Type)
             {
-                //case XSharpParser.EXP:
-                //    r = SyntaxKind.None;
-                //    break;
+                case XSharpParser.EXP:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
+                    break;
                 case XSharpParser.PLUS:
                     r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken);
                     break;
@@ -557,7 +557,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
                 case XSharpParser.TILDE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
                     break;
                 case XSharpParser.PIPE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
@@ -637,6 +637,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.LOGIC_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
+                    break;
+                case XSharpParser.TRUE_CONST:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TrueKeyword);
+                    break;
+                case XSharpParser.FALSE_CONST:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
                 default:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(

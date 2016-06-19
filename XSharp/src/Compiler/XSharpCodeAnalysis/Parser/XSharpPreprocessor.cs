@@ -142,6 +142,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__DATETIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
             if (_options.DebugEnabled)
                 macroDefines.Add("__DEBUG__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+            macroDefines.Add("__DIALECT__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+options.Dialect.ToString()+ '"'));
+            switch (_options.Dialect) {
+                case XSharpDialect.Core:
+                    macroDefines.Add("__DIALECT_CORE__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+                    break;
+                case XSharpDialect.VO:
+                    macroDefines.Add("__DIALECT_VO__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+                    break;
+                case XSharpDialect.Vulcan:
+                    macroDefines.Add("__DIALECT_VULCAN__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+                    break;
+                default:
+                    break;
+            }
             macroDefines.Add("__ENTITY__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\""));  // Handled later in Transformation phase
             macroDefines.Add("__FILE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+(inputs.SourceFileName ?? fileName)+'"'));
             macroDefines.Add("__LINE__", () => new CommonToken(XSharpLexer.INT_CONST, inputs.Lt().Line.ToString()));

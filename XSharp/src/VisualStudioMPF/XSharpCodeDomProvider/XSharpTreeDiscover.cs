@@ -970,8 +970,15 @@ namespace XSharp.CodeDom
                     }
                     else
                     {
-                        // We are processing the Right memeber of an Assignment...
-                        expr = new CodeSnippetExpression(member.GetText());
+                        // We are processing the Right member of an Assignment...
+                        // Most likely Enum Value, which is a typereference expression followed by a DOT and a field
+                        if (member.DOT() != null) {
+                            var typeexpr = new CodeTypeReferenceExpression(member.Expr.GetText());
+                            expr = new CodeFieldReferenceExpression(typeexpr, member.Name.GetText());
+                        }
+                        else {
+                            expr = new CodeSnippetExpression(member.GetText());
+                        }
                     }
                 }
             }

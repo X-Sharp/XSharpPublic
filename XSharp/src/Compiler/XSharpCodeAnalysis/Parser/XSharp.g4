@@ -390,7 +390,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
 
 
 overloadedOps		: Token=(INC | DEC | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
-                    | GT  | LT | NEQ | GTE| LTE | TRUE_CONST | FALSE_CONST
+                    | GT  | LT | NEQ | GTE| LTE | TRUE_CONST | FALSE_CONST | NOT
                     | TILDE | AMP   | PIPE )
                     ;
 

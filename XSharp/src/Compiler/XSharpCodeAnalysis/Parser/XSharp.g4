@@ -388,10 +388,19 @@ constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVA
 destructorModifiers : ( Tokens+=EXTERN )+
                     ;
 
+/*
+    From the C# syntax guide:
+    overloadable-unary-operator:  one of
+    +   -   !   ~   ++   --   true   false
+    overloadable-binary-operator:
+    + - * / % & | ^ << right-shift == != > < >= <=
 
-overloadedOps		: Token=(INC | DEC | PLUS | MINUS | MULT | DIV | MOD | AND | OR| LSHIFT| RSHIFT| EEQ
-                    | GT  | LT | NEQ | GTE| LTE | TRUE_CONST | FALSE_CONST
-                    | TILDE | AMP   | PIPE )
+
+*/
+overloadedOps		: Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
+                              MULT | DIV | MOD | AMP | PIPE | EXP | LSHIFT | RSHIFT | EEQ | NEQ | 
+                              GT | LT | GTE | LTE |
+                              AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;
 
 conversionOps		: Token=( IMPLICIT | EXPLICIT )

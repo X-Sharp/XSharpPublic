@@ -87,7 +87,6 @@
     <member name="M:Vulcan.__Psz.GreaterThan(Vulcan.__Psz)"></member>
     <member name="P:Vulcan.__Psz.IsEmpty"></member>
     <member name="P:Vulcan.__Psz.IsNull"></member>
-    <member name="P:Vulcan.__Psz.Item(System.UInt32)"></member>
     <member name="P:Vulcan.__Psz.Length"></member>
     <member name="M:Vulcan.__Psz.LessThan(Vulcan.__Psz)"></member>
     <member name="M:Vulcan.__Psz.op_Addition(System.String,Vulcan.__Psz)"></member>
@@ -273,8 +272,8 @@
     <member name="M:Vulcan.__Usual.op_Decrement(Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_Division(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_Equality(Vulcan.__Usual,Vulcan.__Usual)"></member>
-    <member name="M:Vulcan.__Usual.op_GreaterThan(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:Vulcan.__Usual.op_GreaterThanOrEqual(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.__Usual.op_GreaterThan(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.__Usual.op_GreaterThanOrEqual(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_Implicit(System.Boolean)~Vulcan.__Usual"></member>
     <member name="M:Vulcan.__Usual.op_Implicit(System.Byte)~Vulcan.__Usual"></member>
     <member name="M:Vulcan.__Usual.op_Implicit(System.DateTime)~Vulcan.__Usual"></member>
@@ -318,14 +317,14 @@
     <member name="M:Vulcan.__Usual.op_Implicit(Vulcan.Codeblock)~Vulcan.__Usual"></member>
     <member name="M:Vulcan.__Usual.op_Increment(Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_Inequality(Vulcan.__Usual,Vulcan.__Usual)"></member>
-    <member name="M:Vulcan.__Usual.op_LeftShift(Vulcan.__Usual,Vulcan.__Usual)"></member>
-    <member name="M:Vulcan.__Usual.op_LessThan(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:Vulcan.__Usual.op_LessThanOrEqual(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.__Usual.op_LeftShift(Vulcan.__Usual,System.Int32)"></member>
+    <member name="M:Vulcan.__Usual.op_LessThan(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.__Usual.op_LessThanOrEqual(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_LogicalNot(Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_Modulus(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_Multiply(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_OnesComplement(Vulcan.__Usual)"></member>
-    <member name="M:Vulcan.__Usual.op_RightShift(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:Vulcan.__Usual.op_RightShift(Vulcan.__Usual,System.Int32)"></member>
     <member name="M:Vulcan.__Usual.op_Subtraction(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_UnaryNegation(Vulcan.__Usual)"></member>
     <member name="M:Vulcan.__Usual.op_UnaryPlus(Vulcan.__Usual)"></member>
@@ -590,7 +589,16 @@
     <member name="T:Vulcan._Codeblock">
       <summary>This class implements the VO CODEBLOCK Type</summary>
     </member>
-    <member name="M:Vulcan._Codeblock.Eval(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan._Codeblock.#ctor">
+      <summary>
+        <markup>
+          <include item="SMCAutoDocConstructor">
+            <parameter>Vulcan._Codeblock</parameter>
+          </include>
+        </markup>
+      </summary>
+    </member>
+    <member name="M:Vulcan._Codeblock.Eval(Vulcan.__Usual[])"></member>
     <member name="M:Vulcan._Codeblock.PCount"></member>
     <member name="M:Vulcan._Codeblock.ToString"></member>
     <member name="T:Vulcan._FIELDNAMES">
@@ -653,7 +661,7 @@
     <member name="T:Vulcan.Codeblock">
       <summary>This class implements the VO CODEBLOCK Type</summary>
     </member>
-    <member name="M:Vulcan.Codeblock.Eval(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.Codeblock.Eval(Vulcan.__Usual[])"></member>
     <member name="M:Vulcan.Codeblock.EvalBlock(System.Object[])"></member>
     <member name="M:Vulcan.Codeblock.PCount"></member>
     <member name="M:Vulcan.Codeblock.ToString"></member>
@@ -705,15 +713,6 @@
         </markup>
       </summary>
     </member>
-    <member name="M:Vulcan.Error.#ctor(Vulcan.Runtime.ErrorInfo)">
-      <summary>
-        <markup>
-          <include item="SMCAutoDocConstructor">
-            <parameter>Vulcan.Error</parameter>
-          </include>
-        </markup>
-      </summary>
-    </member>
     <member name="M:Vulcan.Error._WrapRawException(System.Exception)"></member>
     <member name="F:Vulcan.Error.Arg"></member>
     <member name="F:Vulcan.Error.ArgNum"></member>
@@ -750,7 +749,7 @@
     <member name="F:Vulcan.Error.SubCodeText"></member>
     <member name="F:Vulcan.Error.SubstituteType"></member>
     <member name="F:Vulcan.Error.SubSystem"></member>
-    <member name="M:Vulcan.Error.Throw(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.Error.Throw"></member>
     <member name="M:Vulcan.Error.ToString"></member>
     <member name="F:Vulcan.Error.Tries"></member>
     <member name="M:Vulcan.Error.UsualBinaryOpError(System.String,System.Boolean,System.String,Vulcan.__Usual,Vulcan.__Usual)"></member>
@@ -783,7 +782,6 @@
         </markup>
       </summary>
     </member>
-    <member name="F:Vulcan.ErrorDialog.ErrorText"></member>
     <member name="T:Vulcan.NamedArg">
       <summary>This class is used for Named Arguments for OLE Automation</summary>
     </member>
@@ -841,11 +839,11 @@
     <member name="P:Vulcan.OleAutoObject.dwFuncs"></member>
     <member name="P:Vulcan.OleAutoObject.dwVars"></member>
     <member name="P:Vulcan.OleAutoObject.fInit"></member>
-    <member name="M:Vulcan.OleAutoObject.NoIVarGet(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.OleAutoObject.NoIVarGet(Vulcan.__Usual)"></member>
     <member name="M:Vulcan.OleAutoObject.NoIVarGetCollection(System.String,Vulcan.__Usual[])"></member>
-    <member name="M:Vulcan.OleAutoObject.NoIvarPut(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.OleAutoObject.NoIvarPut(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:Vulcan.OleAutoObject.NoIVarPutCollection(System.String,Vulcan.__Usual,Vulcan.__Usual[])"></member>
-    <member name="M:Vulcan.OleAutoObject.NoMethod(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.OleAutoObject.NoMethod"></member>
     <member name="M:Vulcan.OleAutoObject.OleCreateObject(System.String)"></member>
     <member name="M:Vulcan.OleAutoObject.OleGetObject(System.String)"></member>
     <member name="M:Vulcan.OleAutoObject.OleIvarGet(System.Object,System.String)"></member>
@@ -874,7 +872,7 @@
     <member name="T:Vulcan.OleDateTime">
       <summary>This class wraps a OLE DateTime value</summary>
     </member>
-    <member name="M:Vulcan.OleDateTime.#ctor(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)">
+    <member name="M:Vulcan.OleDateTime.#ctor(Vulcan.__Usual)">
       <summary>
         <markup>
           <include item="SMCAutoDocConstructor">
@@ -904,7 +902,7 @@
         </markup>
       </summary>
     </member>
-    <member name="M:Vulcan.VObject.Destroy(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:Vulcan.VObject.Destroy"></member>
     <member name="F:Vulcan.VObject.oCargo"></member>
     <member name="T:VulcanRTFuncs.Functions">
       <summary>This is the compiler generated class in which all functions are implemented as static methods.<br />
@@ -916,7 +914,7 @@
     <member name="M:VulcanRTFuncs.Functions._AsString(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions._Break(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions._CallClipFunc(System.String,Vulcan.__Array)"></member>
-    <member name="M:VulcanRTFuncs.Functions._DBCreate(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions._DBCreate(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions._DebOut32(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions._DebOut32(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions._DebOut32(Vulcan.__Usual)"></member>
@@ -928,7 +926,6 @@
     <member name="M:VulcanRTFuncs.Functions._GetFirstParam(System.Void*@,System.Void*,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions._GetNextParam(System.Void*@,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions._getPrevInst"></member>
-    <member name="M:VulcanRTFuncs.Functions._GetStringDXAX(VOStringResources)"></member>
     <member name="M:VulcanRTFuncs.Functions._NGet(Vulcan.__Psz,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions._NPut(Vulcan.__Psz,System.UInt32,System.Byte)"></member>
     <member name="M:VulcanRTFuncs.Functions._Quit"></member>
@@ -953,33 +950,27 @@
     <member name="M:VulcanRTFuncs.Functions.AbsShort(System.Int16)"></member>
     <member name="M:VulcanRTFuncs.Functions.AClone(Vulcan.__Array)"></member>
     <member name="M:VulcanRTFuncs.Functions.ACloneShallow(Vulcan.__Array)"></member>
-    <member name="M:VulcanRTFuncs.Functions.ACopy(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ACopy(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.ACot(System.Double)"></member>
     <member name="M:VulcanRTFuncs.Functions.ADel(Vulcan.__Array,System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AFields(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AFill(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array,Vulcan.Codeblock)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array,Vulcan.Codeblock,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array,Vulcan.Codeblock,System.Int32,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEval(Vulcan.__Array,Vulcan.Codeblock,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array,Vulcan.Codeblock)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array,Vulcan.Codeblock,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array,Vulcan.Codeblock,System.Int32,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalA(Vulcan.__Array,Vulcan.Codeblock,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array,Vulcan.Codeblock)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array,Vulcan.Codeblock,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array,Vulcan.Codeblock,System.Int32,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AEvalOld(Vulcan.__Array,Vulcan.Codeblock,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AFields(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AFill(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AFind(Vulcan.__Array,Vulcan.__Usual,System.UInt32,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.AIns(Vulcan.__Array,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.ALen(Vulcan.__Array)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Alias(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)">
-      <summary>
-        Return the alias of a specified work area as a string.
-      </summary>
-      <param name="nWorkarea">(Optional) The workarea for which the alias needs to be determined. If not specified the alias of the current workarea is returned.</param>
-      <returns>If there is no tabel open in the specified workarea then Alias returns a NULL_STRING</returns>
-    </member>
+    <member name="M:VulcanRTFuncs.Functions.Alias(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.Alias0">
       <summary>
         Return the alias of the current work area as a string.
@@ -1003,22 +994,22 @@
     <member name="M:VulcanRTFuncs.Functions.ArrayDeprotect(Vulcan.__Array)"></member>
     <member name="M:VulcanRTFuncs.Functions.ArrayGet(Vulcan.__Array,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.ArrayInit(System.UInt32,Vulcan.__Usual[]@)"></member>
-    <member name="M:VulcanRTFuncs.Functions.ArrayNew(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ArrayNew"></member>
     <member name="M:VulcanRTFuncs.Functions.ArrayProtect(Vulcan.__Array)"></member>
     <member name="M:VulcanRTFuncs.Functions.ArrayPut(Vulcan.__Array,System.UInt32,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.ArraySwap(Vulcan.__Array,System.UInt32,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.Asc(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.AscA(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AScan(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AScan(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AScanBin(Vulcan.__Array,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AScanBinExact(Vulcan.__Array,Vulcan.__Usual)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AScanExact(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AScanExact(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AscW(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.ASend(Vulcan.__Array,System.String,Vulcan.__Usual[])"></member>
-    <member name="M:VulcanRTFuncs.Functions.ASendClass(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ASendClass(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AsHexString(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.ASize(Vulcan.__Array,System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.ASort(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ASort(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AsPsz(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AsString(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AsSymbol(System.String)"></member>
@@ -1049,16 +1040,16 @@
     <member name="M:VulcanRTFuncs.Functions.Bin2Real4(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Bin2Real8(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Bin2W(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBDirectExport(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBDirectGet(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBDirectImport(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBDirectPut(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBExport(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBGet(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBImport(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBDirectExport(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBDirectGet(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBDirectImport(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBDirectPut(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBExport(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBGet(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBImport(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.BLOBRootGet"></member>
     <member name="M:VulcanRTFuncs.Functions.BLOBRootLock"></member>
-    <member name="M:VulcanRTFuncs.Functions.BLOBRootPut(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.BLOBRootPut(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.BLOBRootUnlock"></member>
     <member name="M:VulcanRTFuncs.Functions.BOF"></member>
     <member name="M:VulcanRTFuncs.Functions.Buffer(System.UInt32)"></member>
@@ -1092,10 +1083,10 @@
     <member name="M:VulcanRTFuncs.Functions.Cot(System.Double)"></member>
     <member name="M:VulcanRTFuncs.Functions.CParamCount(Vulcan.Codeblock)"></member>
     <member name="M:VulcanRTFuncs.Functions.CreateGCDump(System.Void*,System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.CreateInstance(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.CreateVOThread(System.Void*,System.UInt32,System.Void*,System.Void*,System.UInt32,System.UInt32*)"></member>
+    <member name="M:VulcanRTFuncs.Functions.CreateInstance(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.CreateVOThread(System.Void*,System.UInt32,System.Void*,System.Void*,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.Crypt(System.String,System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Crypt4(System.Byte*,System.Byte*,System.UInt32,System.UInt32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Crypt4(System.Byte,System.Byte,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.CryptA(System.String@,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.CToD(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.CToD(System.String,System.String)"></member>
@@ -1106,14 +1097,14 @@
     <member name="M:VulcanRTFuncs.Functions.Date2Bin(Vulcan.__VODate)"></member>
     <member name="M:VulcanRTFuncs.Functions.Day(Vulcan.__VODate)"></member>
     <member name="M:VulcanRTFuncs.Functions.Days(System.Double)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBApp(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBAppDelim(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBApp(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBAppDelim(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBAppend"></member>
     <member name="M:VulcanRTFuncs.Functions.DBAppend(System.Boolean)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBAppSDF(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBBlobInfo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBAppSDF(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBBlobInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBClearFilter"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBClearIndex(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBClearIndex(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBClearOrderCondition"></member>
     <member name="M:VulcanRTFuncs.Functions.DBClearRelation"></member>
     <member name="M:VulcanRTFuncs.Functions.DBCloseAll"></member>
@@ -1121,66 +1112,66 @@
     <member name="M:VulcanRTFuncs.Functions.DBCommit"></member>
     <member name="M:VulcanRTFuncs.Functions.DBCommitAll"></member>
     <member name="M:VulcanRTFuncs.Functions.DBContinue"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBCopy(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBCopyDelim(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBCopySDF(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBCopy(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBCopyDelim(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBCopySDF(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBCopyStruct(System.String,Vulcan.__Array)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBCopyXStruct(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBCreate(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBCreateIndex(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBCreateOrder(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBCreate(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBCreateIndex(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBCreateOrder(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBDelete"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBDeleteOrder(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBDeleteOrder(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBDriver"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBEval(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBEval(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBF"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBFieldInfo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBFileCopy(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBFieldInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBFileCopy(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBFilter"></member>
     <member name="M:VulcanRTFuncs.Functions.DBGetSelect"></member>
     <member name="M:VulcanRTFuncs.Functions.DBGoBottom"></member>
     <member name="M:VulcanRTFuncs.Functions.DBGoTo(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBGoTop"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBInfo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBJoin(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBInfo(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBJoin(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBJoinAppend(System.UInt32,Vulcan._JOINLIST)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBLocate(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBMemoField(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBOrderInfo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBLocate(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBMemoField(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBOrderInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBPack"></member>
     <member name="M:VulcanRTFuncs.Functions.DBRecall"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBRecordInfo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBRecordInfo(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBReindex"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBRelation(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBRLock(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBRelation(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBRLock(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBRLockList"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBRSelect(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBRUnlock(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSeek(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSelect(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSelectArea(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSetDriver(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSetFilter(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSetFound(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSetIndex(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSetOrder(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSetOrderCondition(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSetRelation(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBRSelect(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBRUnlock(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSeek(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSelect(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSelectArea(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSetDriver(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSetFilter(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSetFound(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSetIndex(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSetOrder(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSetOrderCondition(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSetRelation(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBSetSelect"></member>
     <member name="M:VulcanRTFuncs.Functions.DBSetSelect(System.Int32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSkip(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSort(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSkip(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSort(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBStruct"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBSymSelect(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBSymSelect(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBToSB(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBTotal(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBTrans(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBTotal(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBTrans(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBUnlock"></member>
     <member name="M:VulcanRTFuncs.Functions.DBUnlockAll"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBUpdate(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.DBUseArea(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBUpdate(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DBUseArea(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.DBZap"></member>
-    <member name="M:VulcanRTFuncs.Functions.DebOut(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.DebOut"></member>
     <member name="M:VulcanRTFuncs.Functions.DebOut32(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.DebOut32(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.DebOut32(Vulcan.__Usual)"></member>
@@ -1234,7 +1225,7 @@
     <member name="M:VulcanRTFuncs.Functions.EmptyField(System.Int32)"></member>
     <member name="M:VulcanRTFuncs.Functions.EmptyPSZ(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.EmptyRecord"></member>
-    <member name="M:VulcanRTFuncs.Functions.EmptyUsual(System.UInt32!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.EmptyUsual(System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.EnableLBOptimizations(System.Boolean)"></member>
     <member name="M:VulcanRTFuncs.Functions.EncodeBase64(System.Void*,System.Void*)"></member>
     <member name="M:VulcanRTFuncs.Functions.EnforceNumeric(Vulcan.__Usual@)"></member>
@@ -1243,7 +1234,7 @@
     <member name="M:VulcanRTFuncs.Functions.ErrorBlock"></member>
     <member name="M:VulcanRTFuncs.Functions.ErrorBlock(Vulcan.Codeblock)"></member>
     <member name="M:VulcanRTFuncs.Functions.ErrorBuild(Vulcan.Runtime.ErrorInfo)"></member>
-    <member name="M:VulcanRTFuncs.Functions.ErrorCount(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ErrorCount(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.ErrorDialog(System.Exception)"></member>
     <member name="M:VulcanRTFuncs.Functions.ErrorDialog(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.ErrorExec(System.Void*)"></member>
@@ -1254,9 +1245,9 @@
     <member name="M:VulcanRTFuncs.Functions.ErrorLevel(System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.ErrorNew"></member>
     <member name="M:VulcanRTFuncs.Functions.ErrString(System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Eval(System.Object!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Eval(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Eval(Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Eval(System.Object,Vulcan.__Usual[])"></member>
+    <member name="M:VulcanRTFuncs.Functions.Eval(Vulcan.__Usual,Vulcan.__Usual[])"></member>
+    <member name="M:VulcanRTFuncs.Functions.Eval(Vulcan.Codeblock,Vulcan.__Usual[])"></member>
     <member name="M:VulcanRTFuncs.Functions.Evaluate(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Evaluate(System.String,System.Boolean)"></member>
     <member name="M:VulcanRTFuncs.Functions.ExecName(System.Boolean)"></member>
@@ -1304,7 +1295,7 @@
     <member name="M:VulcanRTFuncs.Functions.FieldPos(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.FieldPos(System.String,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.FieldPosSym(Vulcan.__Symbol)"></member>
-    <member name="M:VulcanRTFuncs.Functions.FieldPut(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.FieldPut(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.FieldPutAlias(Vulcan.__Symbol,Vulcan.__Symbol,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.FieldPutArea(System.UInt32,Vulcan.__Symbol,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.FieldPutSym(Vulcan.__Symbol,Vulcan.__Usual)"></member>
@@ -1360,13 +1351,13 @@
     <member name="M:VulcanRTFuncs.Functions.GetCurPath"></member>
     <member name="M:VulcanRTFuncs.Functions.GetDateFormat"></member>
     <member name="M:VulcanRTFuncs.Functions.GetDefault"></member>
-    <member name="M:VulcanRTFuncs.Functions.GetDefaultDir(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.GetDefaultDir"></member>
     <member name="M:VulcanRTFuncs.Functions.GetDOSError"></member>
     <member name="M:VulcanRTFuncs.Functions.GetEnv(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.GetFAttr(Vulcan.__Usual)"></member>
-    <member name="M:VulcanRTFuncs.Functions.GetFDate(_WINFILETIME*)"></member>
+    <member name="M:VulcanRTFuncs.Functions.GetFDate(_WINFILETIME)"></member>
     <member name="M:VulcanRTFuncs.Functions.GetFMask(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.GetFTime(_WINFILETIME*)"></member>
+    <member name="M:VulcanRTFuncs.Functions.GetFTime(_WINFILETIME)"></member>
     <member name="M:VulcanRTFuncs.Functions.GetMimeType(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.GetNatDll"></member>
     <member name="M:VulcanRTFuncs.Functions.GetNatDllHandle"></member>
@@ -1384,11 +1375,11 @@
     <member name="M:VulcanRTFuncs.Functions.IndexExt"></member>
     <member name="M:VulcanRTFuncs.Functions.IndexHPLock"></member>
     <member name="M:VulcanRTFuncs.Functions.IndexHPLock(System.Boolean)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IndexKey(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IndexKey(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IndexOrd"></member>
     <member name="M:VulcanRTFuncs.Functions.InitSettings"></member>
-    <member name="M:VulcanRTFuncs.Functions.InList(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.InListExact(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.InList(Vulcan.__Usual,Vulcan.__Usual[])"></member>
+    <member name="M:VulcanRTFuncs.Functions.InListExact(Vulcan.__Usual,Vulcan.__Usual[])"></member>
     <member name="M:VulcanRTFuncs.Functions.InStr(System.String,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Integer(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsAccess(System.Object,System.String)"></member>
@@ -1396,42 +1387,42 @@
     <member name="M:VulcanRTFuncs.Functions.IsAlNum(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsAlpha(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsAlpha(Vulcan.__Psz)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsArray(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsArray(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsAssign(System.Object,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsBDigit(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsBDigit(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsBiDi"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsByRef(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsByRef(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsClass(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsClassOf(System.String,System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsCodeBlock(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsDate(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsCodeBlock(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsDate(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsDigit(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsDigit(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsDynPtr(System.Void*)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsFloat(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsFloat(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsInstanceOf(System.Object,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsInstanceOfUsual(Vulcan.__Usual,System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsLogic(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsLong(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsLogic(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsLong(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsLower(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsLower(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsMethod(System.Object,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsMethodClass(System.String,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsMethodUsual(Vulcan.__Usual,System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsNil(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsNumeric(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsObject(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsNil(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsNumeric(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsObject(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsOldSpace(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsOldSpaceArray(Vulcan.__Array)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsOldSpaceFloat(Vulcan.__VOFloat)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsOldSpaceObject(System.Object)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsOldSpaceString(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsPtr(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsPtr(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsSpace(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsSpace(Vulcan.__Psz)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsString(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.IsSymbol(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsString(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.IsSymbol(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsUpper(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsUpper(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.IsXDigit(System.String)"></member>
@@ -1450,7 +1441,7 @@
     <member name="M:VulcanRTFuncs.Functions.Len(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Len(Vulcan.__Array)"></member>
     <member name="M:VulcanRTFuncs.Functions.Len(Vulcan.__Usual)"></member>
-    <member name="M:VulcanRTFuncs.Functions.LoadResString(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.LoadResString(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.LoByte(System.UInt16)"></member>
     <member name="M:VulcanRTFuncs.Functions.LockTries"></member>
     <member name="M:VulcanRTFuncs.Functions.LockTries(System.UInt32)"></member>
@@ -1491,7 +1482,7 @@
     <member name="M:VulcanRTFuncs.Functions.MBRTrim(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.MBSLen(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.MBStuff(System.String,System.UInt32,System.UInt32,System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.MBSubStr(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.MBSubStr(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.MBSubStr2(System.String,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.MBSubStr3(System.String,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.MBTrim(System.String)"></member>
@@ -1521,10 +1512,10 @@
     <member name="M:VulcanRTFuncs.Functions.MemLines(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.MemLong(System.Void*,System.Int32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.MemMove(System.Void*,System.Void*,System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.MemoLine(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.MemoLine(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.MemoRead(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Memory(System.Int32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.MemoTran(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.MemoTran(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.MemoWrit(System.String,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.MemRealloc(System.Void*,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.MemSet(System.Void*,System.Byte,System.UInt32)"></member>
@@ -1541,19 +1532,19 @@
     <member name="M:VulcanRTFuncs.Functions.MethodListClass(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.MExec(Vulcan.Codeblock)"></member>
     <member name="M:VulcanRTFuncs.Functions.Min(Vulcan.__Usual,Vulcan.__Usual)"></member>
-    <member name="M:VulcanRTFuncs.Functions.MLCount(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.MLCount(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.MLCount1(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.MLcToPos(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.MLcToPos(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.MLine(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.MLine(Vulcan.__Usual,Vulcan.__Usual,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.MLine(Vulcan.__Usual,Vulcan.__Usual,System.UInt32@)"></member>
     <member name="M:VulcanRTFuncs.Functions.MLine3(System.String,System.UInt32,System.UInt32@)"></member>
-    <member name="M:VulcanRTFuncs.Functions.MLPos(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.MLPos(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.MLPos2(System.String,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.Mod(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.ModuleName(System.Boolean)"></member>
     <member name="M:VulcanRTFuncs.Functions.Month(Vulcan.__VODate)"></member>
-    <member name="M:VulcanRTFuncs.Functions.MPosToLc(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.MPosToLc(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.Multi2Wide(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.NetErr"></member>
     <member name="M:VulcanRTFuncs.Functions.NetErr(System.Boolean)"></member>
@@ -1573,33 +1564,33 @@
     <member name="M:VulcanRTFuncs.Functions.Oem2OAnsiA(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.OldSpaceFree(Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.OldSpaceFreeArray(Vulcan.__Array)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OleDateTimeAsDate(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OleDateTimeAsDate(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.OOPTree(System.Object)"></member>
     <member name="M:VulcanRTFuncs.Functions.OOPTreeClass(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.OrdBagExt"></member>
     <member name="M:VulcanRTFuncs.Functions.OrdBagName(System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdCondSet(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdCreate(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdDescend(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdDestroy(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdFor(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdIsUnique(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdKey(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdKeyAdd(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdKeyCount(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdKeyDel(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdKeyGoTo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdKeyNo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdCondSet(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdCreate(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdDescend(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdDestroy(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdFor(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdIsUnique(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdKey(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdKeyAdd(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdKeyCount(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdKeyDel(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdKeyGoTo(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdKeyNo(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.OrdKeyVal"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdListAdd(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdListClear(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdListAdd(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdListClear(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.OrdListRebuild"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdName(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdNumber(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdScope(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdSetFocus(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdSetRelation(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.OrdSkipUnique(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdName(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdNumber(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdScope(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdSetFocus(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdSetRelation(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.OrdSkipUnique(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.OS(System.Object[])"></member>
     <member name="M:VulcanRTFuncs.Functions.Pad(System.Object,System.Int32)"></member>
     <member name="M:VulcanRTFuncs.Functions.Pad(System.Object,System.Int32,System.String)"></member>
@@ -1664,11 +1655,11 @@
     <member name="M:VulcanRTFuncs.Functions.RAtLine2(System.String,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.RDDCount"></member>
     <member name="M:VulcanRTFuncs.Functions.RDDCount(System.Int32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.RDDInfo(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.RDDInfo(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.RDDList"></member>
     <member name="M:VulcanRTFuncs.Functions.RDDList(System.Int32)"></member>
     <member name="M:VulcanRTFuncs.Functions.RDDName"></member>
-    <member name="M:VulcanRTFuncs.Functions.RDDSetDefault(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.RDDSetDefault(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.Real42Bin(System.Single)"></member>
     <member name="M:VulcanRTFuncs.Functions.Real82Bin(System.Double)"></member>
     <member name="M:VulcanRTFuncs.Functions.RecCount"></member>
@@ -1688,10 +1679,10 @@
     <member name="M:VulcanRTFuncs.Functions.SClone(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Seconds"></member>
     <member name="M:VulcanRTFuncs.Functions.Secs(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Select(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Send(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SendClass(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Set(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Select(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Send(Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SendClass(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Set(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetAMExt(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetAMPM"></member>
     <member name="M:VulcanRTFuncs.Functions.SetAMPM(System.Boolean)"></member>
@@ -1715,7 +1706,7 @@
     <member name="M:VulcanRTFuncs.Functions.SetDecimalSep"></member>
     <member name="M:VulcanRTFuncs.Functions.SetDecimalSep(System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetDefault(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SetDefaultDir(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SetDefaultDir"></member>
     <member name="M:VulcanRTFuncs.Functions.SetDeleted"></member>
     <member name="M:VulcanRTFuncs.Functions.SetDeleted(System.Boolean)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetDigit"></member>
@@ -1725,7 +1716,7 @@
     <member name="M:VulcanRTFuncs.Functions.SetEnv(System.String,System.String,System.Boolean)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetEpoch"></member>
     <member name="M:VulcanRTFuncs.Functions.SetEpoch(System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SetErrorLog(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SetErrorLog"></member>
     <member name="M:VulcanRTFuncs.Functions.SetExact"></member>
     <member name="M:VulcanRTFuncs.Functions.SetExact(System.Boolean)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetExclusive"></member>
@@ -1742,7 +1733,7 @@
     <member name="M:VulcanRTFuncs.Functions.SetInternational(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetKidStackSize(System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetKidStackSpace(System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SetLiteral(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SetLiteral(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetMacroCompiler(System.Type)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetMath"></member>
     <member name="M:VulcanRTFuncs.Functions.SetMath(System.UInt32)"></member>
@@ -1770,15 +1761,15 @@
     <member name="M:VulcanRTFuncs.Functions.SetUnique"></member>
     <member name="M:VulcanRTFuncs.Functions.SetUnique(System.Boolean)"></member>
     <member name="M:VulcanRTFuncs.Functions.SetWipeDynSpace(System.Boolean)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEval(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEval(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEval(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEval(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst,System.Int32!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String!System.Runtime.CompilerServices.IsConst,Vulcan.Codeblock!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst,Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.ShowArray(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEval(System.String,Vulcan.Codeblock)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEval(System.String,Vulcan.Codeblock,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEval(System.String,Vulcan.Codeblock,System.Int32,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEval(System.String,Vulcan.Codeblock,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String,Vulcan.Codeblock)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String,Vulcan.Codeblock,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String,Vulcan.Codeblock,System.Int32,System.Int32)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SEvalA(System.String,Vulcan.Codeblock,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ShowArray(Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.ShowBitmap(System.Void*,System.String,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Sin(System.Double)"></member>
     <member name="M:VulcanRTFuncs.Functions.SoundEx(System.String)"></member>
@@ -1787,7 +1778,7 @@
     <member name="M:VulcanRTFuncs.Functions.SplitPath(Vulcan.__Psz,Vulcan.__Psz,Vulcan.__Psz,Vulcan.__Psz,Vulcan.__Psz)"></member>
     <member name="M:VulcanRTFuncs.Functions.SqRt(System.Double)"></member>
     <member name="M:VulcanRTFuncs.Functions.SToD(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Str(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Str(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.Str1(Vulcan.__VOFloat)"></member>
     <member name="M:VulcanRTFuncs.Functions.Str2(Vulcan.__VOFloat,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.Str3(Vulcan.__VOFloat,System.UInt32,System.UInt32)"></member>
@@ -1802,13 +1793,13 @@
     <member name="M:VulcanRTFuncs.Functions.StringAlloc(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.StrInt(System.Int32,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.StrLong(System.Int32,System.UInt32,System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.StrTran(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.StrTran(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.StrZero(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.StrZero(Vulcan.__Usual,System.Int32)"></member>
     <member name="M:VulcanRTFuncs.Functions.StrZero(Vulcan.__Usual,System.Int32,System.Int32)"></member>
     <member name="M:VulcanRTFuncs.Functions.Stuff(System.String,System.UInt32,System.UInt32,System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Subs(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.SubStr(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Subs(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.SubStr(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.SubStr2(System.String,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.SubStr3(System.String,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.SwapByte(System.Byte)"></member>
@@ -1848,7 +1839,7 @@
     <member name="M:VulcanRTFuncs.Functions.TString(System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.TString(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.TString(Vulcan.__VOFloat)"></member>
-    <member name="M:VulcanRTFuncs.Functions.Type(Vulcan.__Usual[]!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.Type(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.TypeString(System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.Unformat(System.String,System.String,System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.UnregisterAxit(System.Object)"></member>
@@ -1856,12 +1847,12 @@
     <member name="M:VulcanRTFuncs.Functions.Upper(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.UpperA(System.String@)"></member>
     <member name="M:VulcanRTFuncs.Functions.Used"></member>
-    <member name="M:VulcanRTFuncs.Functions.UsualType(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
-    <member name="M:VulcanRTFuncs.Functions.UsualVal(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.UsualType(Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.UsualVal(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.UUDecodeLine(System.String,System.Void*)"></member>
     <member name="M:VulcanRTFuncs.Functions.UUEncFile(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.Val(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.ValType(Vulcan.__Usual!System.Runtime.CompilerServices.IsConst)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ValType(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.VarGet(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.VarPut(System.String,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.Version"></member>
@@ -1958,6 +1949,7 @@
     <member name="M:VulcanRTFuncs.Functions.W2Bin(System.UInt16)"></member>
     <member name="M:VulcanRTFuncs.Functions.Wide2Multi(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.WorkDir"></member>
+    <member name="F:VulcanRTFuncs.Functions.Xs$Dummy"></member>
     <member name="M:VulcanRTFuncs.Functions.Year(Vulcan.__VODate)"></member>
   </members>
 </doc>

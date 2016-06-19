@@ -457,6 +457,7 @@ namespace XSharp.Project
             // We have to take care of Dependant Files here
             // So any .Designer.prg, or .Xaml.Prg is depending from a parent which has the same prefix name
             // then we must set that parent as parentNode;
+            Utilities.ArgumentNotNull("parentNode", parentNode);
             Dictionary<string, string> Dependencies = new Dictionary<string, string>();
             Dependencies.Add(".designer.prg", ".prg");
             Dependencies.Add(".xaml.prg", ".xaml");
@@ -524,7 +525,7 @@ namespace XSharp.Project
                 case ".xh":
                     return true;
                 default:
-                    return true;
+                    return false;
             }
         }
 

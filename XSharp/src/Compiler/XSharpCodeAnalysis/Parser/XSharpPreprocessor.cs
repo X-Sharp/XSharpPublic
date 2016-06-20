@@ -702,9 +702,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     SkipToEol();
                                     if (nfp != null && text != null)
                                     {
-                                        var stream = new AntlrInputStream(text.ToString());
+                                        var stream = new AntlrInputStream(text.ToString(), nfp);
                                         var lexer = new XSharpLexer(stream);
                                         var tokens = new CommonTokenStream(lexer);
+                                        
                                         tokens.Fill();
                                         InsertStream(nfp, tokens);
                                     }

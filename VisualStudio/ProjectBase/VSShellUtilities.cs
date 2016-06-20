@@ -117,9 +117,7 @@ namespace Microsoft.VisualStudio.Project
             ErrorHandler.ThrowOnFailure(pWindowFrame.Show());
 
             // Set the cursor at the beginning of the declaration.
-            ErrorHandler.ThrowOnFailure(viewAdapter.SetCaretPos(line, col));
-            // Make sure that the text is visible.
-            viewAdapter.CenterLines(line, 1);
+            FocusLine(viewAdapter, line, col);
         }
 
         internal static void NavigateTo(IServiceProvider serviceProvider, string filename, Guid docViewGuidType, int pos) {
@@ -134,9 +132,19 @@ namespace Microsoft.VisualStudio.Project
             ErrorHandler.ThrowOnFailure(pWindowFrame.Show());
             int line, col;
             ErrorHandler.ThrowOnFailure(viewAdapter.GetLineAndColumn(pos, out line, out col));
+            FocusLine(viewAdapter, line, col);
+        }
+
+        internal static void FocusLine(IVsTextView viewAdapter, int line, int col) {
             ErrorHandler.ThrowOnFailure(viewAdapter.SetCaretPos(line, col));
             // Make sure that the text is visible.
+            int topline = line - 10;
+            if(topline < 0)
+                topline = 0;
+
+            viewAdapter.SetTopLine(topline);
             viewAdapter.CenterLines(line, 1);
+
         }
 
         internal static void OpenDocument(IServiceProvider serviceProvider, string filename, out IVsTextView viewAdapter, out IVsWindowFrame pWindowFrame) {

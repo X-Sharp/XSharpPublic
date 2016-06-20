@@ -1065,7 +1065,7 @@ REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( 'e' ( '+' | '
 
 // Preprocessor symbols are in the handwritten part above as well as #pragma and #using
 
-SYMBOL_CONST     : '#' [a-z_A-Z] ([a-z_A-Z0-9])*;
+SYMBOL_CONST     : '#' IDStartChar (IDChar)*;
 
 CHAR_CONST  : '\'' ESCAPED_CHARACTER '\'';
 

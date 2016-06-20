@@ -84,6 +84,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else
                     {
+                        if(value.StartsWith("\"") && value.EndsWith("\""))
+                            value = value.Substring(1, value.Length - 2);
                         options.IncludePaths = string.IsNullOrEmpty(options.IncludePaths) ? value : options.IncludePaths +';' + value;
                     }
                     break;

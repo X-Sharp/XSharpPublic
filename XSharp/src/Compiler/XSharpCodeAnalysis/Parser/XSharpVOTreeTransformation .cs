@@ -579,6 +579,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
+
+        public override void ExitBinaryExpression([NotNull] XP.BinaryExpressionContext context) {
+            if (context.Op.Type == XP.SUBSTR) {
+                string method = "global::VulcanRTFuncs.Functions.Instr";
+                var argLeft = context.Left.Get<ExpressionSyntax>();
+                var argRight = context.Right.Get<ExpressionSyntax>();
+                var args = MakeArgumentList(MakeArgument(argLeft), MakeArgument(argRight));
+                context.Put(GenerateMethodCall(method, args));
+                return;
+            }
+            base.ExitBinaryExpression(context);
+        }
+
         public override void ExitBreakStmt([NotNull] XP.BreakStmtContext context)
         {
             ArgumentListSyntax args;
@@ -1125,7 +1138,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            var fieldInfo = CurrentEntity.Data.GetField(Name);
+            MemVarFieldInfo fieldInfo= null;
+            if (CurrentEntity != null)
+                fieldInfo = CurrentEntity.Data.GetField(Name);
             if (fieldInfo != null )
             {
                 if (fieldInfo.IsField)

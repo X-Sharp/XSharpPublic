@@ -653,7 +653,8 @@ namespace XSharp.Build
             commandLine.AppendPlusOrMinusSwitch("/unsafe", base.Bag, nameof(AllowUnsafeBlocks));
             commandLine.AppendPlusOrMinusSwitch("/checked", base.Bag, nameof(CheckForOverflowUnderflow));
             commandLine.AppendSwitchWithSplitting("/nowarn:", DisabledWarnings, ",", ';', ',');
-            commandLine.AppendWhenTrue("/fullpaths", base.Bag, nameof(GenerateFullPaths));
+            //commandLine.AppendWhenTrue("/fullpaths", base.Bag, nameof(GenerateFullPaths));
+            commandLine.AppendSwitch("/fullpaths");
             commandLine.AppendSwitchIfNotNull("/langversion:", LangVersion);
             commandLine.AppendSwitchIfNotNull("/moduleassemblyname:", ModuleAssemblyName);
             commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);

@@ -669,9 +669,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     foreach (var p in includeDirs)
                                     {
                                         bool rooted = System.IO.Path.IsPathRooted(fn);
-                                        string fp = rooted ? fn : System.IO.Path.Combine(p, fn);
-                                        try
-                                        {
+                                        string fp;
+                                        try {
+                                            fp = rooted ? fn : System.IO.Path.Combine(p, fn);
+                                        }
+                                        catch (Exception e) {
+                                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + fn+" "+e.Message));
+                                            continue;
+                                        }
+                                        try {
                                             using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
                                             {
                                                 nfp = (string)PortableShim.FileStream.Name.GetValue(data);

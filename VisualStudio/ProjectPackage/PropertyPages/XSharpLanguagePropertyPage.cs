@@ -144,7 +144,7 @@ namespace XSharp.Project
             set { this.ovf = value; this.IsDirty = true; }
         }
 
-        [Category(CatGeneral), DisplayName(LBCaption), Description(LBDescription)]
+        [Category(CatCompatibility), DisplayName(LBCaption), Description(LBDescription)]
         public bool LB
         {
             get { return this.lb; }

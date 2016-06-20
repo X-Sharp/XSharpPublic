@@ -4080,7 +4080,10 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>Unevaluated value of the property.</returns>
         public string GetProjectPropertyUnevaluated(string propertyName)
         {
-            return this.buildProject.GetProperty(propertyName).UnevaluatedValue;
+            var prop = this.buildProject.GetProperty(propertyName);
+            if (prop != null)
+                return prop.UnevaluatedValue;
+            return string.Empty;
         }
 
         /// <summary>

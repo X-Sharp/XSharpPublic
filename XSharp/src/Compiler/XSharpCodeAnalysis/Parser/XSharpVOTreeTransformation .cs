@@ -579,6 +579,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
+        public override void ExitArgument([NotNull] XP.ArgumentContext context) {
+            if (context.Expr == null) {
+                context.Put(MakeArgument(GenerateNIL()));
+                return;
+            }
+            base.ExitArgument(context);
+        }
 
         public override void ExitBinaryExpression([NotNull] XP.BinaryExpressionContext context) {
             if (context.Op.Type == XP.SUBSTR) {

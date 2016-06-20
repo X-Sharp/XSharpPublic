@@ -691,14 +691,15 @@ boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#bound
                     ;
 
 bracketedArgumentList
-                    : Args+=argument (COMMA Args+=argument?)*
+                    : {TokenStream.La(1) != RBRKT }? Args+=argument (COMMA Args+=argument?)*
                     ;
 
-argumentList		: Args+=argument (COMMA Args+=argument?)*
+argumentList		: {TokenStream.La(1) != RPAREN && TokenStream.La(1) != RCURLY }? Args+=argument (COMMA Args+=argument)*
                     ;
 
-argument			: ( COLON Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression
+argument			: ( COLON Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
+
 
 iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
                     | IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN

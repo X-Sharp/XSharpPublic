@@ -79,6 +79,16 @@ namespace Antlr4.Runtime
             this.n = input.Length;
         }
 
+        /// <summary>
+        /// Create stream and associate filename
+        /// </summary>
+        /// <param name="input">contents of the input stream</param>
+        /// <param name="fileName">FileName to associate with the inputstream</param>
+        public AntlrInputStream(string input, string fileName) :this(input){
+            this.name = fileName;
+        }
+
+
         /// <summary>This is the preferred constructor for strings as no data is copied</summary>
         public AntlrInputStream(char[] data, int numberOfActualCharsInArray)
         {

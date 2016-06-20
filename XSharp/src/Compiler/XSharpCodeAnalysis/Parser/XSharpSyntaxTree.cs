@@ -148,7 +148,7 @@ namespace Antlr4.Runtime {
 
             }
         }
-        public override string SourceFileName { get { return (Start as CommonToken).SourceFileName; } }
+        public override string SourceFileName { get { return (Start as CommonToken).TokenSource.SourceName; } }
         public override string MappedFileName { get { return (Start as CommonToken).MappedFileName; } }
         public override int MappedLine { get { return (Start as CommonToken).MappedLine; } }
         public override string ToString() {

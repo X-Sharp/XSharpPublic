@@ -74,6 +74,7 @@ namespace Microsoft.CodeAnalysis.BuildTasks
 #if XSHARP
                 var includeDir = Environment.GetEnvironmentVariable("INCLUDE");
                 string XSharpIncludeDir = String.Empty;
+                string VulcanIncludeDir = string.Empty;
                 try
                 {
                     string key;
@@ -84,13 +85,30 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                     XSharpIncludeDir = (string)Registry.GetValue(key, global::XSharp.Constants.RegistryValue, "");
                 }
                 catch (Exception) { }
-                if (!String.IsNullOrEmpty(XSharpIncludeDir))
+                try {
+                    string key;
+                    if(Environment.Is64BitProcess)
+                        key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
+                    else
+                        key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
+                    XSharpIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
+                } catch(Exception) { }
+
+
+                if(!String.IsNullOrEmpty(XSharpIncludeDir))
                 {
                     if (!XSharpIncludeDir.EndsWith("\\"))
                         XSharpIncludeDir += @"\";
                     XSharpIncludeDir += @"Include\";
                 }
+                if(!String.IsNullOrEmpty(VulcanIncludeDir)) {
+                    if(!VulcanIncludeDir.EndsWith("\\"))
+                        VulcanIncludeDir += @"\";
+                    VulcanIncludeDir += @"Include\";
+                }
                 includeDir = includeDir ?? "" + XSharpIncludeDir;
+                if(!string.IsNullOrEmpty(VulcanIncludeDir))
+                    includeDir += ";" + VulcanIncludeDir;
 #endif
 
                 var responseTask = TryRunServerCompilation(

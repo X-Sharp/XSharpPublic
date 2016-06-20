@@ -1031,6 +1031,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        private bool GenerateChr(XP.MethodCallContext context) {
+            // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
+            // and the reference to the String2Psz() in the Vulcan Runtime.
+            ArgumentListSyntax argList;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            } else {
+                argList = EmptyArgumentList();
+            }
+            context.Put(GenerateMethodCall("global::VulcanRTFuncs.Functions.Chr", argList));
+            return true;
+        }
+
         private bool GenerateClipCallFunc(XP.MethodCallContext context, string name) {
             ArgumentListSyntax argList;
             ExpressionSyntax expr;
@@ -1097,7 +1110,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
                         context.Put(expr);
                         return;
-                        
+                    case "_CHR":
+                        if(GenerateChr(context))
+                            return;
+                        break;
+
                     default:
                         break;
                 }

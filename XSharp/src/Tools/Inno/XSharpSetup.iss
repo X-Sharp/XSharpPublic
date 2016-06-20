@@ -93,7 +93,6 @@ Minversion=6.0.600
 
 [Components]
 Name: "main";   Description: "The XSharp Compiler and Build System";  Types: full compact custom; Flags: fixed; 
-Name: "vulcanheaders";   Description: "Copy the Vulcan Include files to the XSharp include dir"; Types: full;   Check: VulcanIsInstalled;
 Name: "vs2015"; Description: "Visual Studio 2015 Integration";        Types: full custom;                  Check: Vs2015IsInstalled;
 Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files"; Types: full custom;        Check: VulcanPrgAssociated;
 Name: "vs2015\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer22Found;
@@ -151,7 +150,6 @@ Source: "Baggage\License.txt";                            DestDir: "{app}";     
 
 ; Include Files
 Source: "{#CommonFolder}*.xh";                            DestDir: "{app}\Include"; Flags: touch {#StdFlags}; Components: main
-Source: "{code:GetVulcanDir}\include\*.vh";               DestDir: "{app}\Include"; Flags: touch external {#StdFlags}; Components: vulcanheaders
 
 ;MsBuild Files
 Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main

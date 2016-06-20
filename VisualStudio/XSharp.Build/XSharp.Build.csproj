@@ -199,7 +199,9 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy $(OutDir)$(ProjectName).* "c:\Program Files (x86)\MSBuild\XSharp"  /y</PostBuildEvent>
+    <PostBuildEvent>xcopy $(OutDir)$(ProjectName).* "c:\Program Files (x86)\MSBuild\XSharp\*.*"  /y
+xcopy $(OutDir)Targets\*.* "c:\Program Files (x86)\MSBuild\XSharp\*.*"  /y
+xcopy $(OutDir)Xaml\*.* "c:\Program Files (x86)\MSBuild\XSharp\Rules\*.*"  /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

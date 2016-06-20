@@ -4355,6 +4355,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitArgument([NotNull] XP.ArgumentContext context)
         {
+            if (context.Expr == null) {
+                context.Put(NotInDialect(MakeArgument(GenerateLiteral("")), "Missing arguments"));
+                return;
+            }
             context.Put(_syntaxFactory.Argument(
                 context.Name == null ? null : _syntaxFactory.NameColon(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.ColonToken)), 
                 context.RefOut?.SyntaxKeyword(), context.Expr.Get<ExpressionSyntax>()));

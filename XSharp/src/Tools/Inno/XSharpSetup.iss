@@ -9,9 +9,9 @@
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
 #define VIVersion       "0.2.5.2501"
 #define VITextVersion   "0.2.5.2501 (Beta 5)"
-#define TouchDate       "2016-06-19"
+#define TouchDate       "2016-06-20"
 #define TouchTime       "02:05:00"
-#define SetupExeName    "XSharpSetup025d"
+#define SetupExeName    "XSharpSetup025e"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -93,6 +93,7 @@ Minversion=6.0.600
 
 [Components]
 Name: "main";   Description: "The XSharp Compiler and Build System";  Types: full compact custom; Flags: fixed; 
+Name: "vulcanheaders";   Description: "Copy the Vulcan Include files to the XSharp include dir"; Types: full;   Check: VulcanIsInstalled;
 Name: "vs2015"; Description: "Visual Studio 2015 Integration";        Types: full custom;                  Check: Vs2015IsInstalled;
 Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files"; Types: full custom;        Check: VulcanPrgAssociated;
 Name: "vs2015\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer22Found;
@@ -109,7 +110,7 @@ Name: "{app}\Images";
 Name: "{app}\Include";
 Name: "{app}\ProjectSystem";                                
 Name: "{app}\Redist"
-Name: "{app}\Snippets";                                      Components: vs2015; 
+Name: "{app}\Snippets"
 Name: "{app}\Tools";
 Name: "{app}\Uninst";
 Name: "{app}\Xide";
@@ -150,6 +151,7 @@ Source: "Baggage\License.txt";                            DestDir: "{app}";     
 
 ; Include Files
 Source: "{#CommonFolder}*.xh";                            DestDir: "{app}\Include"; Flags: touch {#StdFlags}; Components: main
+Source: "{code:GetVulcanDir}\include\*.vh";               DestDir: "{app}\Include"; Flags: touch external {#StdFlags}; Components: vulcanheaders
 
 ;MsBuild Files
 Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main
@@ -359,6 +361,8 @@ var
   Vs2015Path : String;
   Vs2015Installed: Boolean;
   Vs2015BaseDir: String;
+  VulcanInstalled: Boolean;
+  VulcanBaseDir: String;
   VsNextPath : String;
   VsNextInstalled: Boolean;
   VsNextBaseDir: String;
@@ -383,6 +387,7 @@ end;
 procedure DetectVS();
 var temp : String;
 begin
+  VulcanInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Grafx\Vulcan.NET','InstallPath',VulcanBaseDir) ;
   Vs2015Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','14.0',Vs2015BaseDir) ;
   if Vs2015Installed then Vs2015Path := Vs2015BaseDir+'\Common7\Ide\';
   VsNextInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',VsNextBaseDir) ;
@@ -409,6 +414,16 @@ begin
   result := True;
 end;
 }
+
+function VulcanIsInstalled: Boolean;
+begin
+  result := VulcanInstalled;
+end;
+
+function GetVulcanDir(Param: String): String;
+begin
+  result := VulcanBaseDir;
+end;
 
 function VulcanPrgAssociated: Boolean;
 begin

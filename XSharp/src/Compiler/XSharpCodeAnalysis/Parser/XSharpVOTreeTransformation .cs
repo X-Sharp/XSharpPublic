@@ -695,105 +695,111 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // else
             //   uValue := obj1                                                        // assign 4
             // endif
-            var objName = GenerateSimpleName(RecoverVarName);
-            var idName = GenerateSimpleName(context.Id.GetText());
-
-            var condition1 = _syntaxFactory.BinaryExpression(
-                  SyntaxKind.IsExpression,
-                  objName,
-                  SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                  GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"));
-
-            var condition2 = _syntaxFactory.BinaryExpression(
-                SyntaxKind.IsExpression,
-                objName,
-                SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                GenerateQualifiedName("global::Vulcan.Error"));
-
-            var condition3 = _syntaxFactory.BinaryExpression(
-                SyntaxKind.IsExpression,
-                objName,
-                SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                GenerateQualifiedName("global::System.Exception"));
-
-            var assign1 = GenerateExpressionStatement(
-                _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                idName,
-                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                _syntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                   _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    objName),
-                   SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                     GenerateSimpleName("Value"))));
-
-            var assign2 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                 idName,
-                 SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                 objName));
-
-            var assign3 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                idName,
-                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _usualType,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                GenerateMethodCall("global::Vulcan.Error._WrapRawException",
-                MakeArgumentList(MakeArgument(objName))))));
-
-            var assign4= GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                 idName,
-                 SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                 objName));
-
-             var elseClause = _syntaxFactory.ElseClause(
-                SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
-                MakeBlock(assign4));
-
-            // if 3
-            var ifstmt = _syntaxFactory.IfStatement(
-                        SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        condition3,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                        MakeBlock(assign3), elseClause);
-
-            // if 3 is assigned to the else block of if 2
-            elseClause = _syntaxFactory.ElseClause(
-                SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
-                MakeBlock(ifstmt));
-
-            // if 2
-            ifstmt = _syntaxFactory.IfStatement(
-                        SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        condition2,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                        MakeBlock(assign2), elseClause);
-            
-            // if 2 is assigned to the else block of if 1
-            elseClause = _syntaxFactory.ElseClause(
-                SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
-                MakeBlock(ifstmt));
-            // if 1
-            ifstmt = _syntaxFactory.IfStatement(
-                        SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        condition1,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                        MakeBlock(assign1), elseClause);
-
             var stmts = _pool.Allocate<StatementSyntax>();
-            stmts.Add(ifstmt);
+            var catchVar = SyntaxFactory.Identifier(RecoverVarName);
+            if(context.Id != null) {
+                var objName = GenerateSimpleName(RecoverVarName);
+                var idName = GenerateSimpleName(context.Id.GetText());
+
+                var condition1 = _syntaxFactory.BinaryExpression(
+                      SyntaxKind.IsExpression,
+                      objName,
+                      SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                      GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"));
+
+                var condition2 = _syntaxFactory.BinaryExpression(
+                    SyntaxKind.IsExpression,
+                    objName,
+                    SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                    GenerateQualifiedName("global::Vulcan.Error"));
+
+                var condition3 = _syntaxFactory.BinaryExpression(
+                    SyntaxKind.IsExpression,
+                    objName,
+                    SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                    GenerateQualifiedName("global::System.Exception"));
+
+                var assign1 = GenerateExpressionStatement(
+                    _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                    idName,
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                    _syntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                       _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        objName),
+                       SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                         GenerateSimpleName("Value"))));
+
+                var assign2 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                     idName,
+                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                     objName));
+
+                var assign3 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                    idName,
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                    _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    _usualType,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    GenerateMethodCall("global::Vulcan.Error._WrapRawException",
+                    MakeArgumentList(MakeArgument(objName))))));
+
+                var assign4 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                     idName,
+                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                     objName));
+
+                var elseClause = _syntaxFactory.ElseClause(
+                   SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
+                   MakeBlock(assign4));
+
+                // if 3
+                var ifstmt = _syntaxFactory.IfStatement(
+                            SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            condition3,
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                            MakeBlock(assign3), elseClause);
+
+                // if 3 is assigned to the else block of if 2
+                elseClause = _syntaxFactory.ElseClause(
+                    SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
+                    MakeBlock(ifstmt));
+
+                // if 2
+                ifstmt = _syntaxFactory.IfStatement(
+                            SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            condition2,
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                            MakeBlock(assign2), elseClause);
+
+                // if 2 is assigned to the else block of if 1
+                elseClause = _syntaxFactory.ElseClause(
+                    SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
+                    MakeBlock(ifstmt));
+                // if 1
+                ifstmt = _syntaxFactory.IfStatement(
+                            SyntaxFactory.MakeToken(SyntaxKind.IfKeyword),
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            condition1,
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                            MakeBlock(assign1), elseClause);
+
+                stmts.Add(ifstmt);
+            }
+            else {
+                catchVar = null;
+            }
             stmts.Add(context.StmtBlock.Get<BlockSyntax>());
             var catchClause = _syntaxFactory.CatchClause(
                 SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword),
                 _syntaxFactory.CatchDeclaration(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                     GenerateQualifiedName("global::System.Exception"),
-                    SyntaxFactory.Identifier(RecoverVarName),
+                    catchVar,
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)),
                     null,
                     MakeBlock(stmts));

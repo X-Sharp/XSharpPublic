@@ -7,11 +7,11 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.5.2501"
-#define VITextVersion   "0.2.5.2501 (Beta 5)"
+#define VIVersion       "0.2.5.2502"
+#define VITextVersion   "0.2.5.2502 (Beta 5)"
 #define TouchDate       "2016-06-20"
-#define TouchTime       "02:05:00"
-#define SetupExeName    "XSharpSetup025e"
+#define TouchTime       "02:05:02"
+#define SetupExeName    "XSharpSetup025Final"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -92,13 +92,13 @@ Minversion=6.0.600
 
 
 [Components]
-Name: "main";   Description: "The XSharp Compiler and Build System";  Types: full compact custom; Flags: fixed; 
-Name: "vs2015"; Description: "Visual Studio 2015 Integration";        Types: full custom;                  Check: Vs2015IsInstalled;
-Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files"; Types: full custom;        Check: VulcanPrgAssociated;
-Name: "vs2015\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer22Found;
-Name: "vsnext"; Description: "Visual Studio 15 Preview Integration";  Types: full custom;                  Check: VsNextIsInstalled;
-Name: "vsnext\help"; Description: "Install VS documentation"; Types: full custom;       Check: HelpViewer23Found;
-Name: "xide";   Description: "Include the XIDE {# XIDEVersion} installer";                Types: full custom;                  
+Name: "main";             Description: "The XSharp Compiler and Build System";        Types: full compact custom; Flags: fixed; 
+Name: "vs2015";           Description: "Visual Studio 2015 Integration";              Types: full custom;         Check: Vs2015IsInstalled;
+Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files";       Types: full custom;         Check: VulcanPrgAssociated;
+Name: "vs2015\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer22Found;
+Name: "vsnext";           Description: "Visual Studio 15 Preview Integration";        Types: full custom;         Check: VsNextIsInstalled;
+Name: "vsnext\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer23Found;
+Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";  Types: full custom;                  
 
 
 [Dirs]
@@ -139,7 +139,7 @@ Source: "{#BinFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; 
 
 ; GAC files in Bin folder
 Source: "{#BinFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall}; components: main
-Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";    Flags: {#StdFlags} {#GACInstall}; components: main
+Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall}; components: main
 
 ; Support files
 Source: "Baggage\Readme.rtf";                             DestDir: "{app}"    ; Flags: isreadme {#StdFlags}; Components: main
@@ -279,8 +279,8 @@ Filename: "{code:GetVsNextIdeDir}\Extensions\extensions.configurationchanged"; S
 Filename: "{app}\Tools\RegisterProvider.exe";
 
 ; Remove old Help contents
-Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Check: OurHelp22IsInstalled;   Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS2015"; Check: OurHelp23IsInstalled;   Flags: waituntilidle;
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";        Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
 
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio14 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vs2015\help; StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
 Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio15 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vsnext\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
@@ -290,10 +290,8 @@ Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Inst
 ; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry
 ;Filename: "{app}\uninst\XsVsUnInst.exe"; Flags: runhidden;  Components: vs2015 ;
 
-Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""XSharp Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";        Flags: waituntilidle;
-Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# BYOR Runtime Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";  Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""XSharp Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# BYOR Runtime Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS2015";  Flags: waituntilidle;
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";        Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
 
 
 [InstallDelete]

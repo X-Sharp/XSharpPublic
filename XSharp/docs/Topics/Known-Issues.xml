@@ -18,7 +18,6 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">ACCESS/ASSIGN must be both in same (partial) class. Cannot be spread over 2 parts of the class</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">VOSTRUCT and VOUNION are compiled as a special kind of STRUCTURE but the special AS/IS handling is not supported yet</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">SWITCH Block may give warnings about unreachable code, especially when a case contains a return or a break.</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Missing arguments in a comma separated list are not supported. </text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Compiler</text></para>

@@ -97,7 +97,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">ARRAY</text><text styleclass="Normal" translate="true"> type, Including Array literals &amp; NULL_ARRAY</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">ARRAY</text><text styleclass="Normal" translate="true"> type, Including Array literals &amp; NULL_ARRAY, including missing elements</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>

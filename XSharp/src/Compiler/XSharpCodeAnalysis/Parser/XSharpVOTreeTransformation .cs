@@ -1375,6 +1375,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // __pushWorkarea(CUSTOMER)
             // expr2
             // __popWorkarea()
+            context.Put(NotInDialect(GenerateLiteral(true), "Aliased Expression"));
+            /*
             var exprs = _pool.Allocate<ExpressionSyntax>();
             ExpressionSyntax expr;
             expr = GenerateLiteral(context.Id.GetText());
@@ -1386,7 +1388,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             exprs.Add(expr);
             context.Put(exprs.ToListNode());
             _pool.Free(exprs);
-
+            */
         }
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
@@ -1424,6 +1426,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var args = MakeArgumentList(arg1, arg2);
                 context.Put(GenerateMethodCall(method, args));
             } else {
+                /*
                 var exprs = _pool.Allocate<ExpressionSyntax>();
                 ExpressionSyntax expr;
                 expr = context.Alias.Get<ExpressionSyntax>();
@@ -1435,6 +1438,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 exprs.Add(expr);
                 context.Put(exprs.ToListNode());
                 _pool.Free(exprs);
+                */
+                context.Put(NotInDialect(GenerateLiteral(true), "Extended Aliased Expression"));
             }
         }
         public override void ExitMacro([NotNull] XP.MacroContext context)

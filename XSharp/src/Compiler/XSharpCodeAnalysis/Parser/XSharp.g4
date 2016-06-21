@@ -20,7 +20,6 @@ grammar XSharp;
 */
 
 // Known issues:
-// - ALIAS (->) operator
 // - preprocessor , #region, #using etc
 
 @parser::members

@@ -4551,15 +4551,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // detect typed arrays.
             // <LONG> {...} indicates an array of type LONG
             // when no type is specified and the dialect VO or Vulcan the type is USUAL
-            if (context.Type != null)
+            if(context.Type != null)
             {
                 type = context.Type.Get<TypeSyntax>();
+            }
+            SeparatedSyntaxList<ExpressionSyntax> exprs;
+            if((context._Elements?.Count ?? 0) > 0) {
+                // 
+                var l = _pool.AllocateSeparated<ExpressionSyntax>();
+                foreach(var item in context._Elements) {
+                    if(l.Count > 0)
+                        l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    if(item.Expr != null)
+                        l.Add(item.Expr.Get<ExpressionSyntax>());
+                    else
+                        l.Add((ExpressionSyntax)NotInDialect(GenerateLiteral(false), "omitting (typed) array elements"));
+                }
+                exprs = l.ToList();
+                _pool.Free(l);
+            } else {
+                exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
             }
 
             var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, 
                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken), 
-                (context._Exprs?.Count ?? 0) == 0 ? default(SeparatedSyntaxList<ExpressionSyntax>)
-                    : MakeSeparatedList<ExpressionSyntax>(context._Exprs), 
+                exprs, 
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
             if (type != null)
             {
@@ -4583,6 +4599,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put<ExpressionSyntax>(expr);
         }
+
+
+        public override void ExitArrayElement([NotNull] XP.ArrayElementContext context) {
+            if(context.Expr != null)
+                context.Put(context.Expr.Get<ExpressionSyntax>());
+            return;
+        }
+
 
         public override void ExitAnonType([NotNull] XP.AnonTypeContext context)
         {

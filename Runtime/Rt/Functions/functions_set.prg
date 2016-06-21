@@ -70,9 +70,9 @@ begin namespace XSharp.Runtime
 	/// <param name="pFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetClipCompFunc(pFunc AS USUAL) AS IntPtr
+	FUNCTION SetClipCompFunc(pFunc AS USUAL) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
+	RETURN PTR.Zero
 
 	/// <summary>
 	/// Return and optionally change the setting that determines the type of central processor you have.
@@ -432,9 +432,9 @@ begin namespace XSharp.Runtime
 	/// <param name="pFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetWinCompFunc(pFunc AS USUAL) AS IntPtr
+	FUNCTION SetWinCompFunc(pFunc AS USUAL) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
+	RETURN PTR.Zero
 
 	/// <summary>
 	/// Set the value of WipeDynSpace.

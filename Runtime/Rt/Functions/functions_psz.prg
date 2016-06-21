@@ -117,29 +117,7 @@ begin namespace XSharp.IO
 	/// </returns>
 	FUNCTION ErrorMessageBox(pszText AS PSZ,pszCapt AS PSZ,dwB1 AS DWORD,dwB2 AS DWORD,dwB3 AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Return the number of files that match a given file specification and attribute.
-	/// </summary>
-	/// <param name="pszFile"></param>
-	/// <param name="nAttr"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FFCount(pszFile AS PSZ,nAttr AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Find the first file that matches a given file specification or attribute.
-	/// </summary>
-	/// <param name="pszFile"></param>
-	/// <param name="nAttr"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FFirst(pszFile AS PSZ,nAttr AS DWORD) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	RETURN 0     
 
 	/// <summary>
 	/// Determine if the leftmost character in a string is alphanumeric.

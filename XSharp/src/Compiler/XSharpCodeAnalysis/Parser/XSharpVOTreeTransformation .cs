@@ -1211,23 +1211,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
         {
-            TypeSyntax type = null;
             ExpressionSyntax expr = null;
-            bool bVOArray = false;
             // detect typed arrays.
-            // <LONG> {...} indicates an array of type LONG
-            // when no type is specified and the dialect VO or Vulcan the type is USUAL
+            // <LONG> {...} indicates an array of type LONG -> Handled by base class
             if(context.Type != null) {
-                type = context.Type.Get<TypeSyntax>();
-            } else {
-                type = _usualType;
-                bVOArray = true;
+                base.ExitLiteralArray(context);
+                return;
             }
+            // when no type is specified and the dialect VO or Vulcan the type is USUAL
+            TypeSyntax type = _usualType;
+            SeparatedSyntaxList<ExpressionSyntax> exprs ;
+            if((context._Elements?.Count ?? 0) > 0) {
+                // Literal array with optional elements. 
+                // ExitArrayElement has left the CsNode empty for missing Expressions
+                var l = _pool.AllocateSeparated<ExpressionSyntax>();
+                foreach(var item in context._Elements){ 
+                    if(l.Count > 0)
+                        l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    if(item.Expr != null)
+                        l.Add(item.Expr.Get<ExpressionSyntax>());
+                    else
+                        l.Add(GenerateNIL());
 
-            var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, 
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken), 
-                (context._Exprs?.Count ?? 0) == 0 ? default(SeparatedSyntaxList<ExpressionSyntax>)
-                    : MakeSeparatedList<ExpressionSyntax>(context._Exprs), 
+                }
+                exprs = l.ToList();
+                _pool.Free(l);
+            }
+            else {
+                exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
+            }
+            var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                exprs,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
             expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                 _syntaxFactory.ArrayType(type,
@@ -1237,14 +1252,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
                 initializer);
-            if (bVOArray)
-            {
-                context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr)), null));
-            }
-            else
-                context.Put<ExpressionSyntax>(expr);
-        }
+            context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr)), null));
 
+        }
         public override void ExitLiteralValue([NotNull] XP.LiteralValueContext context)
         {
             string[] args;

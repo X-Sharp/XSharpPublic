@@ -740,7 +740,13 @@ typeName			: NativeType=nativeType
                     | Name=name
                     ;
 
-literalArray		: (LT Type=datatype GT)? LCURLY (Exprs+=expression (COMMA Exprs+=expression)*)? RCURLY
+                    // Separate rule for Array with zero elements, to prevent entering the first arrayElement rule 
+                    // with a missing Expression which would not work for the core dialect
+literalArray		: (LT Type=datatype GT)? LCURLY RCURLY                                                                  // {}
+                    | (LT Type=datatype GT)? LCURLY (Elements+=arrayElement (COMMA Elements+=arrayElement)*)? RCURLY        // {e,e,e} or {e,,e} or {,e,} etc
+                    ;
+
+arrayElement        : Expr=expression?      // VO Array elements are optional
                     ;
 
 anonType			: CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RCURLY

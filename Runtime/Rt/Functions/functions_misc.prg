@@ -914,54 +914,6 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
-	/// Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION FAttrib() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Return the number of fields in the current database file.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION FCount() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Return the date stamp of the file found by FFCount(), FFirst(), or FNext().
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION FDate() AS DATE
-		/// THROW NotImplementedException{}
-	RETURN (DATE)0   
-
-	/// <summary>
-	/// Get or set the error code for a file operation.
-	/// </summary>
-	/// <param name="nSet"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FError(nSet AS USUAL) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Read a line from an open file.
-	/// </summary>
-	/// <param name="pFile"></param>
-	/// <param name="nBuffLen"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION FGetS(pFile AS USUAL,nBuffLen AS USUAL) AS STRING
-		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
-
-	/// <summary>
 	/// </summary>
 	/// <param name="uSelect"></param>
 	/// <param name="symField"></param>

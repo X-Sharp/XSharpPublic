@@ -1040,9 +1040,9 @@ namespace XSharp.CodeDom
                 if (arr.Type != null)
                 {
                     List<CodeExpression> exprlist = new List<CodeExpression>();
-                    foreach (var Expression in arr._Exprs)
+                    foreach (var Element in arr._Elements)
                     {
-                        exprlist.Add(BuildExpression(Expression,true));
+                        exprlist.Add(BuildExpression(Element.Expr,true));
                     }
                     expr = new CodeArrayCreateExpression(BuildDataType(arr.Type), exprlist.ToArray());
                 }

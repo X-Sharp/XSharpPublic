@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-begin namespace XSharp.Runtime
+// Most of these settings will Get and Set properties of the Runtime.State class
+
+begin namespace XSharp.Runtime 
 	#region functions
 	/// <summary>
 	/// Set the morning extension for time strings in 12-hour format.

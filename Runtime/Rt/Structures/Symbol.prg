@@ -15,7 +15,7 @@ USING System
 	//PROPERTY _stringValue as LONG GET Value
 //END STRUCTURE
 
-PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComparer<__Symbol>, System.IEquatable<__Symbol>
+PUBLIC STRUCTURE Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComparer<__Symbol>, System.IEquatable<__Symbol>
     #region fields
     PRIVATE index		AS Long
     PRIVATE stringValue AS string
@@ -32,7 +32,8 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
         IF (upperCase)
             SELF:stringValue := SELF:stringValue:ToUpperInvariant()
         ENDIF
-        SymbolDictionary.Add(SELF)
+        index := 0
+        index := SymbolDictionary.Add(SELF)
 	return
     #endregion
 	#region methods
@@ -47,13 +48,13 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
         ENDIF
     RETURN SELF:Equals(other)
 
-    VIRTUAL METHOD Equals(other AS __Symbol) AS Logic
+    METHOD Equals(other AS __Symbol) AS Logic
         IF (other == null)
             RETURN FALSE
         ENDIF
     RETURN SELF:stringValue:Equals(other:stringValue)
 
-    VIRTUAL METHOD Equals(x AS __Symbol, y AS __Symbol) AS Logic
+     METHOD Equals(x AS __Symbol, y AS __Symbol) AS Logic
         IF ((x == null) .AND. (y == null))
             RETURN TRUE
         ENDIF
@@ -65,7 +66,7 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
     VIRTUAL METHOD GetHashCode() AS Long
     RETURN SELF:index
 
-    VIRTUAL METHOD GetHashCode(obj AS __Symbol) AS Long
+    METHOD GetHashCode(obj AS __Symbol) AS Long
     RETURN obj:index
 
     STATIC OPERATOR ==(a AS __Symbol, b AS __Symbol) AS Logic
@@ -106,7 +107,7 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
             SymbolDictionary.sync := Object{}
 		#endregion
 		#region methods
-        INTERNAL STATIC METHOD Add(newSymbol AS __Symbol) AS void
+        INTERNAL STATIC METHOD Add(newSymbol AS __Symbol) AS Int
             LOCAL syncObj AS Object
             IF (newSymbol != SymbolDictionary.NON_EXISTING_SYMBOL)
                 syncObj := SymbolDictionary.sync
@@ -120,7 +121,7 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
                     ENDIF
                 END LOCK
             ENDIF
-		return 
+		return newSymbol:index
 
         INTERNAL STATIC METHOD Find(s AS string) AS __Symbol
             LOCAL num AS Long
@@ -142,4 +143,4 @@ PUBLIC CLASS Vulcan.__Symbol IMPLEMENTS System.Collections.Generic.IEqualityComp
     END CLASS
 	#endregion
 
-END CLASS
+END STRUCTURE

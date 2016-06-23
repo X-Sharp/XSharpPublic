@@ -1303,15 +1303,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.REAL_CONST:
                     if (_options.VOFloatConstants)
                     {
-                        args = context.Token.Text.Split('.');
-                        if (args.Length == 2)
-                        {
-                            int len = context.Token.Text.Length;
-                            int dec = args[1].Length;
-                            arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
-                            arg1 = MakeArgument(GenerateLiteral(len.ToString(), len));
-                            arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
-                            expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2), null);
+                        // check to see if the token contains an 'S', 'D' or 'M'. In that case leave as is, since the user has specified
+                        // single, double or decimal
+                        var text = context.Token.Text;
+                        if (text.IndexOfAny("sdmSDM".ToCharArray()) == -1)
+                        { 
+                            args = text.Split('.');
+                            if (args.Length == 2)
+                            {
+                                int len = context.Token.Text.Length;
+                                int dec = args[1].Length;
+                                arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                                arg1 = MakeArgument(GenerateLiteral(len.ToString(), len));
+                                arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
+                                expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2), null);
+                            }
                         }
                     }
                     break;

@@ -1061,7 +1061,9 @@ HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
 BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
 INT_CONST	:  ( DIGIT )+ ( U | L )? ;
 DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? '.' DIGIT ( DIGIT )? '.' DIGIT ( DIGIT )?;			// 2015.07.15
-REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-' )? ( DIGIT )+ )? ( S | D | M )?;
+REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-' )? ( DIGIT )+ )? ( S | D )? // normal, exponential with optional Single or Double specifier
+            | ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) M // decimals cannot have exponential notation                            
+            ;
 
 // Preprocessor symbols are in the handwritten part above as well as #pragma and #using
 

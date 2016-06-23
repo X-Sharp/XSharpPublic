@@ -4750,4 +4750,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_InvalidDialect" xml:space="preserve">
     <value>Invalid dialect {0}. Must be 'Core', 'Vo', 'Vulcan', 'dBase', 'FoxPro', 'Harbour' or 'XBasepp'</value>
   </data>
+  <data name="ERR_InvalidDLLEntryPoint" xml:space="preserve">
+    <value>Using a numeric DLL entrypoint '{0}' is not supported in .NET</value>
+  </data>
 </root>

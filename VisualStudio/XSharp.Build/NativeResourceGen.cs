@@ -59,11 +59,30 @@ namespace XSharp.Build {
                 return false;
             }
             bool ok = base.Execute();
-            return ok;
+            return ok; 
+        }
+
+        protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands) {
+            int iResult;
+            DateTime start = DateTime.Now;
+            Log.LogMessageFromText("Creating Native Resource file: \"" + this.outputFileName + "\"", MessageImportance.High);
+            iResult = base.ExecuteTool(pathToTool, responseFileCommands, commandLineCommands);
+            var time = DateTime.Now - start;
+            var timestring = time.ToString();
+            Log.LogMessageFromText("Native Resource Compilation time: " + timestring, MessageImportance.High);
+            return iResult;   
+        }
+
+
+        protected override  void LogToolCommand(string message) {
+            //base.LogToolCommand(message);
+            //base.LogToolCommand(message.Substring(0, message.IndexOf("\n")));
+            base.Log.LogMessageFromText(message, MessageImportance.Normal);
         }
         /// <summary>
         /// /i = include directory
         /// /fo = output directory
+        /// /v  = verbose (output only shown with diagnostic logging)
         /// /d DEBUG for conditional compilation
         /// rest is passed through a response file
         /// </summary>
@@ -71,7 +90,7 @@ namespace XSharp.Build {
         protected override string GenerateCommandLineCommands() {
             StringBuilder cmdline = null;
             cmdline = new StringBuilder();
-            cmdline.Append("/i \"" + this.XSharpIncludedir + "\" /x ");
+            cmdline.Append("/i \"" + this.XSharpIncludedir + "\" /v /x ");
             cmdline.Append("/fo \"" + this.outputFileName + "\"");
             if(EmitDebugInformation)
                 cmdline.Append(" /dDEBUG");
@@ -264,13 +283,12 @@ namespace XSharp.Build {
             if(this.OutputPath == null) {
                 base.Log.LogError("No output path specified", null);
                 return false;
-            }
+            } 
             this.outputFileName = this.OutputPath + outputName;
-            base.Log.LogMessage("Started Creating Output file: {0}" , this.outputFileName);
             return parametersValid;
         }
 
-        /// <summary>
+        /// <summary> 
         /// Additional Include Paths (next to XSharp\Include)
         /// </summary>
         public string IncludePaths { get; set; }
@@ -334,9 +352,12 @@ namespace XSharp.Build {
                 if(!String.IsNullOrEmpty(vulcanIncludeDir)) {
                     if(!vulcanIncludeDir.EndsWith(@"\"))
                         vulcanIncludeDir += @"\";
-                    vulcanIncludeDir += @"Include\";
+                    vulcanIncludeDir += @"Include";
                     defincpath += ";" + vulcanIncludeDir;
                 }
+                // please note that the path should not end with a backslash
+                if (defincpath.EndsWith(@"\"))
+                   defincpath = defincpath.Substring(0, defincpath.Length - 1);
                 return defincpath;
             }
         }

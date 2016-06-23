@@ -1153,7 +1153,7 @@ ID						: ID_PART
 KWID					: '@' '@' ID_PART // {Text = Text.Substring(2, Text.Length-2);}
 						;
 
-ORDINAL					: '#' ( DIGIT )+ ;
+DLLHINT					: '#' ( DIGIT )+ ;
 
 UNRECOGNIZED			: . ;
 

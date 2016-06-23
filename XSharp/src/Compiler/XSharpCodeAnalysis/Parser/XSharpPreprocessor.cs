@@ -455,9 +455,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     }
 
                                     if (equalDefine)
-                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefine, def.Text));
+                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
                                     else
-                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_DuplicateDefine, def.Text));
+                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text));
                                 }
                                 symbolDefines[def.Text] = newtokens;
                             }

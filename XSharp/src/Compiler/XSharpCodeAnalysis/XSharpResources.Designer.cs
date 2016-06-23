@@ -3320,15 +3320,6 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate define with different value detected &apos;{0}&apos;.
-        /// </summary>
-        internal static string ERR_DuplicateDefine {
-            get {
-                return ResourceManager.GetString("ERR_DuplicateDefine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The parameter name &apos;{0}&apos; conflicts with an automatically-generated parameter name.
         /// </summary>
         internal static string ERR_DuplicateGeneratedName {
@@ -11322,11 +11313,20 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate define with different value detected &apos;{0}&apos;.
+        /// </summary>
+        internal static string WRN_DuplicateDefineDiff {
+            get {
+                return ResourceManager.GetString("WRN_DuplicateDefineDiff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate define detected &apos;{0}&apos;.
         /// </summary>
-        internal static string WRN_DuplicateDefine {
+        internal static string WRN_DuplicateDefineSame {
             get {
-                return ResourceManager.GetString("WRN_DuplicateDefine", resourceCulture);
+                return ResourceManager.GetString("WRN_DuplicateDefineSame", resourceCulture);
             }
         }
         

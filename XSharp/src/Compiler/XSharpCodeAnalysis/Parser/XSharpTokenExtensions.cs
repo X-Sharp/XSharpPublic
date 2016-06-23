@@ -557,7 +557,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
                 case XSharpParser.TILDE:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
+                    // Note 
+                    // in VO ~is XOR for binary expressions and bitwise negation (Ones complement) for unary expressions
+                    // VO uses ^ for Exponent
+                    // in C# ^is XOR and ~is Bitwise negation (Ones complement)
+                    // This method returns the Binary operator Caret
+                    r = SyntaxFactory.MakeToken(SyntaxKind.CaretToken);
                     break;
                 case XSharpParser.PIPE:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarToken);
@@ -645,8 +650,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
                 default:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
+                    // return a valid operator with an error message prevents a crash in the compiler
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken).WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(0, "operator".Length, ErrorCode.ERR_SyntaxError, "operator"));
                     break;
             }
             r.XNode = new TerminalNodeImpl(token);
@@ -665,6 +671,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.MinusToken);
                     break;
                 case XSharpParser.TILDE:
+                    // Note 
+                    // in VO ~is XOR for binary expressions and bitwise negation (Ones complement) for unary expressions
+                    // VO uses ^ for Exponent
+                    // in C# ^is XOR and ~is Bitwise negation (Ones complement)
+                    // This method returns the Unaru operator Tilde
                     r = SyntaxFactory.MakeToken(SyntaxKind.TildeToken);
                     break;
                 case XSharpParser.ADDROF:
@@ -683,9 +694,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.LOGIC_XOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationToken);
                     break;
+                case XSharpParser.TRUE_CONST:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.TrueKeyword);
+                    break;
+                case XSharpParser.FALSE_CONST:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
+                    break;
                 default:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.BadToken).WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(0, token.Text.Length, ErrorCode.ERR_SyntaxError, token));
+                    // return a valid operator with an error message prevents a crash in the compiler
+                    r = SyntaxFactory.MakeToken(SyntaxKind.PlusToken).WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(0, "unary operator".Length, ErrorCode.ERR_SyntaxError, "unary operator"));
                     break;
             }
             r.XNode = new TerminalNodeImpl(token);

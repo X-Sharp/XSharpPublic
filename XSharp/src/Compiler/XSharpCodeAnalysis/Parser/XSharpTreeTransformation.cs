@@ -2409,7 +2409,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     opToken = context.Operation.Get<SyntaxToken>();
                 }
+                // differentiate between unary and primary operators
+                // overloadedops only handles binary operators
+                // So for unary operator remap the token here.
 
+                if(context.ParamList?._Params.Count ==1) {
+                    opToken = context.Operation.Token.SyntaxPrefixOp();
+                }
                 context.Put(_syntaxFactory.OperatorDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
@@ -3898,6 +3904,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitPrefixExpression([NotNull] XP.PrefixExpressionContext context)
         {
+            // Note 
+            // in VO ~is XOR for binary expressions and bitwise negation (ones complement) for unary expressions
+            // in C# ^is XOR and ~is Bitwise negation (ones complement)
+            // SyntaxPrefixOp() takes care of the Unary operators
             context.Put(_syntaxFactory.PrefixUnaryExpression(
                 context.Op.ExpressionKindPrefixOp(),
                 context.Op.SyntaxPrefixOp(),
@@ -3974,8 +3984,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.Right.Get<ExpressionSyntax>()));
 
                     break;
-
                 default:
+                    // Note 
+                    // in VO ~is XOR for binary expressions and bitwise negation for unary expressions
+                    // in C# ^is XOR and ~is Bitwise negation 
+                    // SyntaxOp() takes care of the Binary Operators
                     context.Put(_syntaxFactory.BinaryExpression(
                         context.Op.ExpressionKindBinaryOp(),
                         context.Left.Get<ExpressionSyntax>(),

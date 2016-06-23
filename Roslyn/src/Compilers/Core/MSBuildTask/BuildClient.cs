@@ -91,7 +91,7 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                         key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
                     else
                         key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-                    XSharpIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
+                    VulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
                 } catch(Exception) { }
 
 

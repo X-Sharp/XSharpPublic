@@ -2802,6 +2802,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     arguments: MakeSeparatedList(
                                         _syntaxFactory.AttributeArgument(null,null,dllExpr),
                                         _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"),null, EntrypointExpr),
+                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"),null, GenerateLiteral(true)),
+                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)),
                                         context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
                                                 _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"), 
                                                     SyntaxFactory.MakeToken(SyntaxKind.DotToken), _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))

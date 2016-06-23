@@ -126,7 +126,7 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL)
 vodll				: (Modifiers=funcprocModifiers)? DLL 
                       ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
                       | T=PROCEDURE Id=identifier ParamList=parameterList )
-                      (CallingConvention=dllcallconv)? COLON 
+                      (CallingConvention=dllcallconv) COLON 
                       Dll=identifierString (DOT Extension=identifierString)?
                         ( DOT Entrypoint=identifierString (Hint=DLLHINT)?
                         | Ordinal=REAL_CONST)

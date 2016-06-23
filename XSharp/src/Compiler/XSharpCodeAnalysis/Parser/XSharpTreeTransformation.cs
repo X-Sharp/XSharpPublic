@@ -2775,8 +2775,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        
         public override void ExitVodll([NotNull] XP.VodllContext context)
         {
+            string dllName = context.Dll.GetText();
+            if (context.Extension != null) {
+                dllName += "." + context.Extension.GetText();
+            }
+            ExpressionSyntax dllExpr = GenerateLiteral(dllName);
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: MakeList(
                     _syntaxFactory.AttributeList(
@@ -2788,10 +2794,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 argumentList: _syntaxFactory.AttributeArgumentList(
                                     openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                     arguments: MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null,null,context.Dll.Get<ExpressionSyntax>()),
+                                        _syntaxFactory.AttributeArgument(null,null,dllExpr),
                                         context.Entrypoint != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"),null,context.Entrypoint.Get<ExpressionSyntax>())
-                                            : context.Ordinal != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null,
-                                                    _syntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, context.Ordinal.SyntaxLiteralValue(_options)))
                                             : null,
                                         context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
                                                 _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"), 

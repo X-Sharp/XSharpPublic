@@ -112,11 +112,21 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL)
                     ;
 
 
+                    // there are many variations
+                    // Simple:
+                    // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.SetDebugErrorLevel
+                    // With Extension
+                    // _DLL FUNC HTMLHelp(hwndCaller AS PTR, pszFile AS PSZ, uCommand AS LONG, dwData AS LONG) AS LONG PASCAL:HHCTRL.OCX.HtmlHelpA
+                    // With Hint (which is ignored by Vulcan too)
+                    // _DLL FUNC InternetHangUp(dwConnection AS DWORD, dwReserved AS DWORD) AS DWORD PASCAL:WININET.InternetHangUp#247
+                    // And with numeric entrypoint, which is not supported yet
+                    // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.123
+
 vodll				: (Modifiers=funcprocModifiers)? DLL 
                       ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
                       | T=PROCEDURE Id=identifier ParamList=parameterList )
                       (CallingConvention=dllcallconv)? COLON 
-                      Dll=identifierString ( DOT Entrypoint=identifierString | Ordinal=ORDINAL )
+                      Dll=identifierString (DOT Extension=identifierString)? DOT Entrypoint=identifierString (Hint=DLLHINT)?
                       ( CharSet=(AUTO | ANSI | UNICODE) )?
                       end=EOS
                     { SetSequencePoint(_localctx,$end); }
@@ -129,7 +139,6 @@ dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)
 parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
                     ;
 
-// Compared with C# PARAMS is not supported. This can be achived by setting [ParamArrayAttribute] on the parameter: [ParamArrayAttribute] args as OBJECT[] 
 parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? (Modifiers=parameterDeclMods Type=datatype)?
                     ;
 

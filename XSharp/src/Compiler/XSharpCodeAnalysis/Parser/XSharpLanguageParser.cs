@@ -137,7 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             ParserRuleContext tree;
-            var stream = new AntlrInputStream(_text.ToString(), _fileName);
+            var stream = new AntlrInputStream(_text.ToString());
             var lexer = new XSharpLexer(stream);
             if(_options.Dialect == XSharpDialect.VO) {
                 lexer.AllowFourLetterAbbreviations = true;

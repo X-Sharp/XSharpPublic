@@ -5174,6 +5174,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Using a numeric DLL entrypoint &apos;{0}&apos; is not supported in .NET.
+        /// </summary>
+        internal static string ERR_InvalidDLLEntryPoint {
+            get {
+                return ResourceManager.GetString("ERR_InvalidDLLEntryPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expression must be implicitly convertible to Boolean or its type &apos;{0}&apos; must define operator &apos;{1}&apos;..
         /// </summary>
         internal static string ERR_InvalidDynamicCondition {

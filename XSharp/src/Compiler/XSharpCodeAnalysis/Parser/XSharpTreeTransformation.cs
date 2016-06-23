@@ -2783,6 +2783,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 dllName += "." + context.Extension.GetText();
             }
             ExpressionSyntax dllExpr = GenerateLiteral(dllName);
+            ExpressionSyntax EntrypointExpr;
+            if(context.Ordinal != null) {
+                EntrypointExpr = GenerateLiteral(context.Ordinal.Text).WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, context.Ordinal.Text));
+            } else
+                EntrypointExpr = GenerateLiteral(context.Entrypoint.GetText());
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: MakeList(
                     _syntaxFactory.AttributeList(
@@ -2795,8 +2801,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                     arguments: MakeSeparatedList(
                                         _syntaxFactory.AttributeArgument(null,null,dllExpr),
-                                        context.Entrypoint != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"),null,context.Entrypoint.Get<ExpressionSyntax>())
-                                            : null,
+                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"),null, EntrypointExpr),
                                         context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
                                                 _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"), 
                                                     SyntaxFactory.MakeToken(SyntaxKind.DotToken), _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))

@@ -119,14 +119,17 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL)
                     // _DLL FUNC HTMLHelp(hwndCaller AS PTR, pszFile AS PSZ, uCommand AS LONG, dwData AS LONG) AS LONG PASCAL:HHCTRL.OCX.HtmlHelpA
                     // With Hint (which is ignored by Vulcan too)
                     // _DLL FUNC InternetHangUp(dwConnection AS DWORD, dwReserved AS DWORD) AS DWORD PASCAL:WININET.InternetHangUp#247
-                    // And with numeric entrypoint, which is not supported yet
+                    // And with numeric entrypoint, which is supported by VO but not by .NET
+                    // We parse the numeric entrypoint here but we will throw an error during the tree transformation
                     // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.123
 
 vodll				: (Modifiers=funcprocModifiers)? DLL 
                       ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
                       | T=PROCEDURE Id=identifier ParamList=parameterList )
                       (CallingConvention=dllcallconv)? COLON 
-                      Dll=identifierString (DOT Extension=identifierString)? DOT Entrypoint=identifierString (Hint=DLLHINT)?
+                      Dll=identifierString (DOT Extension=identifierString)?
+                        ( DOT Entrypoint=identifierString (Hint=DLLHINT)?
+                        | Ordinal=REAL_CONST)
                       ( CharSet=(AUTO | ANSI | UNICODE) )?
                       end=EOS
                     { SetSequencePoint(_localctx,$end); }

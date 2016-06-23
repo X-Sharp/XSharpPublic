@@ -1383,5 +1383,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_ImplicitParentConstructorInitializer = 9015,
         ERR_NestedMethodMustHaveSameNameAsParentClass=9016,
         ERR_InvalidDialect = 9017,
+        ERR_InvalidDLLEntryPoint=9018,        
     }
 }

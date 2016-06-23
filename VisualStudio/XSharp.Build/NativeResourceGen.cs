@@ -154,6 +154,7 @@ namespace XSharp.Build {
             string[] includeDirectories = null;
             string IncludeDir = XSharpIncludedir;
             DateTime outputTime = File.GetLastWriteTime(outputFileName);
+            string outName = Path.GetFileName(outputFileName);
             if(!string.IsNullOrEmpty(IncludeDir)) {
                 includeDirectories = IncludeDir.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
@@ -163,14 +164,14 @@ namespace XSharp.Build {
                     base.Log.LogError("Input file: {0} not found", fileName);
                     return true;
                 }
-                DateTime fileTime = File.GetLastWriteTime(fileName);
+                DateTime fileTime = File.GetLastWriteTime(fileName); 
                 if(fileTime > outputTime) {
-                    base.Log.LogMessage("Input file: {0} is newer than output file {1}, last updated on {2:f}" , fileName,outputFileName, fileTime);
+                    base.Log.LogMessage("Input file: {0} is newer than output file {1}, last updated on {2:f}" , Path.GetFileName(fileName), outName, fileTime);
                     return true;
                 }
                 // check file for include files
                 // this can probably be done smarter using a RegEx but it works for now
-                base.Log.LogMessage("Input file: {0} is older than output file {1}", fileName, outputFileName);
+                base.Log.LogMessage("Input file: {0} is older than {1}", Path.GetFileName(fileName), outName);
                 var contents = System.IO.File.ReadAllLines(fileName);
                 foreach(var line in contents) {
                     if(line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase)) {
@@ -319,6 +320,22 @@ namespace XSharp.Build {
                 defincpath = Path.Combine(InstallPath, "include");
                 if(!string.IsNullOrEmpty(incpath)) {
                     defincpath = incpath + ";" + defincpath;
+                }
+                // Find the Vulcan Include path
+                string vulcanIncludeDir = String.Empty;
+                try {
+                    string key;
+                    if(Environment.Is64BitProcess)
+                        key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Grafx\Vulcan.NET";
+                    else
+                        key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
+                    vulcanIncludeDir = (string)Registry.GetValue(key, "InstallPath", "");
+                } catch(Exception) { }
+                if(!String.IsNullOrEmpty(vulcanIncludeDir)) {
+                    if(!vulcanIncludeDir.EndsWith(@"\"))
+                        vulcanIncludeDir += @"\";
+                    vulcanIncludeDir += @"Include\";
+                    defincpath += ";" + vulcanIncludeDir;
                 }
                 return defincpath;
             }

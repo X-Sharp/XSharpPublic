@@ -27,7 +27,7 @@ BEGIN NAMESPACE Vulcan
 		CONSTRUCTOR( elements as object[] )
 		    self()
 			if elements == null
-				throw ArgumentNullException{"elemenst"}
+				throw ArgumentNullException{nameof(elements)}
 			endif
 			foreach element as object in elements
 				internallist:Add(Usual{element})
@@ -78,7 +78,7 @@ BEGIN NAMESPACE Vulcan
 			  local nextDim := currentDim+1 as int
 			  local index   := 1 as int
 			  do while index <= capacity
-			     newArray:Add(Usual{ArrayNewHelper(dimensions,nextDIm)})
+			     newArray:Add(Usual{ArrayNewHelper(dimensions,nextDim)})
 				 index+=1
 			  enddo
 			  return newArray

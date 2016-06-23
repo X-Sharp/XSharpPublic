@@ -2576,6 +2576,58 @@ Child{NULL}
         }
 
 
+        // 174
+        [Test(Author = "Chris", Id = "C174", Title = "compiler crash with alias")]
+        public static void compiler_crash_with_alias()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+alias->(DBSkip())
+");
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 175
+        [Test(Author = "Chris", Id = "C175", Title = "error XS1503: Argument 1: cannot convert from 'uint' to 'string'")]
+        public static void Problem_using_numeric_alias()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL nAlias AS DWORD
+nAlias := Select(""test.dbf"")
+(nAlias)->DBSkip()
+");
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+        // 176
+        [Test(Author = "Chris", Id = "C176", Title = "Incorrect value passed to super clipper constructor")]
+        public static void Incorrect_value_passed_to_super_clipper_constructor()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start( ) AS VOID
+	Child{123}
+RETURN
+
+CLASS Parent
+CONSTRUCTOR(u)
+	IF u != 123
+		THROW Exception{""Incorrect value passed to parent constructor""}
+	END IF
+END CLASS
+
+CLASS Child INHERIT Parent
+CONSTRUCTOR(u)
+SUPER(u)
+END CLASS
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
 
     }
 }

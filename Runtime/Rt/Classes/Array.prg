@@ -27,7 +27,7 @@ BEGIN NAMESPACE Vulcan
 		CONSTRUCTOR( elements as object[] )
 		    self()
 			if elements == null
-				throw ArgumentNullException{"elemenst"}
+				throw ArgumentNullException{nameof(elements)}
 			endif
 			foreach element as object in elements
 				internallist:Add(Usual{element})
@@ -61,7 +61,6 @@ BEGIN NAMESPACE Vulcan
 
 		public method IEnumerable.GetEnumerator() as IEnumerator
 		return internallist:GetEnumerator()
-
 		public static method ArrayNew( dimensions params int[] ) as __Array 
 			local newArray as __Array
 			if dimensions:Length != 0 
@@ -79,7 +78,7 @@ BEGIN NAMESPACE Vulcan
 			  local nextDim := currentDim+1 as int
 			  local index   := 1 as int
 			  do while index <= capacity
-			     newArray:Add(Usual{ArrayNewHelper(dimensions,nextDIm)})
+			     newArray:Add(Usual{ArrayNewHelper(dimensions,nextDim)})
 				 index+=1
 			  enddo
 			  return newArray
@@ -97,6 +96,9 @@ BEGIN NAMESPACE Vulcan
 			throw NotImplementedException{"__Array.CloneShallow is not implemented yet."}
 
 
+        ///
+        /// <Summary>Access the array element using ZERO based array index</Summary>
+        ///
 		public method __GetElement(index params int[]) as Usual
 			local indexLength := index:Length as int
 			local currentArray := self as __Array
@@ -289,6 +291,5 @@ BEGIN NAMESPACE Vulcan
 			endif
 		return arraytoFill
 		#endregion
-
 	END CLASS
 END NAMESPACE

@@ -121,9 +121,10 @@ begin namespace XSharp.Runtime
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
+    
 	FUNCTION ArrayGet(a AS ARRAY,dwEl AS DWORD) AS USUAL
-	return a[dwEl]
-
+	return a:__GetElement( (int) dwEl-1)
+    
 	/// <summary>
 	/// </summary>
 	/// <param name="a"></param>
@@ -251,4 +252,5 @@ begin namespace XSharp.Runtime
 	RETURN 
 
 	#endregion
+    */
 end namespace

@@ -401,14 +401,16 @@ destructorModifiers : ( Tokens+=EXTERN )+
 /*
     From the C# syntax guide:
     overloadable-unary-operator:  one of
-    +   -   !   ~   ++   --   true   false
+    +   -   !  ~   ++   --   true   false
     overloadable-binary-operator:
-    + - * / % & | ^ << right-shift == != > < >= <=
-
+    + - * / % & | ^  << right-shift == != > < >= <=          
+    // note in C# ^ is binary operator XOR and ~ is bitwise negation (Ones complement)
+    // in VO ~is XOR AND bitwise negation. ^is EXP and should not be used for overloaded ops
+    // VO uses ^ for Exponent
 
 */
 overloadedOps		: Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                              MULT | DIV | MOD | AMP | PIPE | EXP | LSHIFT | RSHIFT | EEQ | NEQ | 
+                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | 
                               GT | LT | GTE | LTE |
                               AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;

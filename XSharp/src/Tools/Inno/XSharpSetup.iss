@@ -1,17 +1,17 @@
 ; Please note that the "deregistering" of the XSharp association is done in a script step at the end of this file
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.5"
-#define ProdBuild       "XSharp Beta 5"
+#define ProdVer         "XSharp 0.2.5.1"
+#define ProdBuild       "XSharp Beta 5a"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.5.2502"
-#define VITextVersion   "0.2.5.2502 (Beta 5)"
-#define TouchDate       "2016-06-20"
-#define TouchTime       "02:05:02"
-#define SetupExeName    "XSharpSetup025Final"
+#define VIVersion       "0.2.5.2503"
+#define VITextVersion   "0.2.5.2503 (Beta 5a)"
+#define TouchDate       "2016-06-24"
+#define TouchTime       "02:05:03"
+#define SetupExeName    "XSharpSetup0251"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -251,6 +251,7 @@ Source:"{#ToolsFolder}Various\RegisterProvider.exe";          DestDir: "{app}\To
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#Product}}"; Filename: "{#XSharpURL}";IconFilename:{app}\Images\XSharp.ico;
 Name: "{group}\{cm:UninstallProgram,{#Product}}"; Filename: "{uninstallexe}"; 
+Name: "{group}\{#Product} Readme";  Filename: "{app}\Readme.rtf";
 Name: "{group}\{#Product} Documenation (CHM)"; Filename: "{app}\Help\XSharp.chm"; 
 Name: "{group}\{#Product} Documenation (PDF)"; Filename: "{app}\Help\XSharp.pdf"; 
 Name: "{group}\{#Product} Vulcan Runtime Reference (CHM)"; Filename: "{app}\Help\XSVulcan.chm"; 

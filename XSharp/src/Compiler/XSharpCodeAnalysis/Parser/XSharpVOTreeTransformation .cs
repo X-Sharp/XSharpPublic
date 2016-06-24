@@ -320,7 +320,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //      Xs$PCount := Xs$Args.Length
             // ENDIF
 
-            //Todo: This code will be generated for ALL Clipper calling convention methods. 
             InitializeArrayTypes();
             var blockstmts = _pool.Allocate<StatementSyntax>();
             // lhs : Xs$Args.GetType()

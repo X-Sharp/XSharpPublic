@@ -117,17 +117,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         public const string XSharpGlobalClassName = "Xs$Globals";
-        const string ImpliedTypeName = "Xs$var";
-        const string ForStartNamePrefix = "Xs$ForStart$";
-        const string ForEndNamePrefix = "Xs$ForEnd$";
-        const string ForIndNamePrefix = "Xs$ForInd$";
-        const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
-        const string StaticLocalInitFieldNameSuffix = "$init";
-        const string StaticLocalLockFieldNameSuffix = "$lock";
-        const string EventFieldNamePrefix = "Xs$Event$";
-        const string VoPropertyAccessPrefix = "Xs$Access$";
-        const string VoPropertyAssignPrefix = "Xs$Assign$";
-        const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
+        protected const string ImpliedTypeName = "Xs$var";
+        protected const string ForStartNamePrefix = "Xs$ForStart$";
+        protected const string ForEndNamePrefix = "Xs$ForEnd$";
+        protected const string ForIndNamePrefix = "Xs$ForInd$";
+        protected const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
+        protected const string StaticLocalInitFieldNameSuffix = "$init";
+        protected const string StaticLocalLockFieldNameSuffix = "$lock";
+        protected const string EventFieldNamePrefix = "Xs$Event$";
+        protected const string VoPropertyAccessPrefix = "Xs$Access$";
+        protected const string VoPropertyAssignPrefix = "Xs$Assign$";
+        protected const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         private static int _unique = 0;
 
         protected string GlobalClassName = XSharpGlobalClassName;

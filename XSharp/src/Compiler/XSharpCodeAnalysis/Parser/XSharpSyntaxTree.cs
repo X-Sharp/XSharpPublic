@@ -287,6 +287,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             MustHaveReturnType = 16,
             HasTypedParameter = 32,
             UsesPCount = 64,
+            UsesGetMParam = 128,
         }
 
         public class EntityData {
@@ -322,6 +323,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public bool UsesPCount {
                 get { return (flags & MethodFlags.UsesPCount) == MethodFlags.UsesPCount; }
                 set { if(value) flags |= MethodFlags.UsesPCount; else flags &= ~MethodFlags.UsesPCount; }
+            }
+            public bool UsesGetMParam
+            {
+                get { return (flags & MethodFlags.UsesGetMParam) == MethodFlags.UsesGetMParam; }
+                set { if(value) flags |= MethodFlags.UsesGetMParam; else flags &= ~MethodFlags.UsesGetMParam; }
             }
             private List<MemVarFieldInfo> Fields;
             public void AddField(string Name, string Alias, bool Field) {

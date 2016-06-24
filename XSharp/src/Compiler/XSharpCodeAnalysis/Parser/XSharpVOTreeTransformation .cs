@@ -54,8 +54,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private TypeSyntax _codeblockType;
         private TypeSyntax _stringType;
 
-        public XSharpVOTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, 
-            ContextAwareSyntax syntaxFactory, string fileName) : 
+        private ArrayTypeSyntax arrayOfUsual = null;
+        private ArrayTypeSyntax arrayOfString = null;
+
+        public XSharpVOTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool,
+            ContextAwareSyntax syntaxFactory, string fileName) :
             base(parser, options, pool, syntaxFactory, fileName)
         {
             _usualType = GenerateQualifiedName("global::Vulcan.__Usual");
@@ -75,16 +78,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 name = firstSource;
             }
 
-            if (!String.IsNullOrEmpty(name)) {
+            if (!String.IsNullOrEmpty(name))
+            {
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = filename.Replace('.', '_');
                 OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
-                if(kind.GetDefaultExtension().ToLower() == ".exe")
+                if (kind.GetDefaultExtension().ToLower() == ".exe")
                     GlobalClassName = filename + ".Exe.Functions";
                 else
                     GlobalClassName = filename + ".Functions";
-            } else {
+            }
+            else
+            {
                 GlobalClassName = XSharpGlobalClassName;
             }
             // regenerate default tree with new name
@@ -92,9 +98,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //DefaultXSharpSyntaxTree = GetDefaultTree();
         }
 
+        private void InitializeArrayTypes()
+        {
+            if (arrayOfUsual == null || arrayOfString == null)
+            {
+                var emptysizes = _pool.AllocateSeparated<ExpressionSyntax>();
+                emptysizes.Add(_syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken)));
+                var emptyrank = _syntaxFactory.ArrayRankSpecifier(
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                                emptysizes,
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                _pool.Free(emptysizes);
+                arrayOfUsual = _syntaxFactory.ArrayType(_usualType, emptyrank);
+                arrayOfString = _syntaxFactory.ArrayType(_stringType, emptyrank);
+            }
+        }
         private SyntaxTree GenerateDefaultSyntaxTree()
         {
-            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName,false));
+            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false));
+
 
             // Add global attributes 
 
@@ -146,6 +168,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
             return t.GlobalClassName;
         }
+
+        internal InitializerExpressionSyntax MakeArrayInitializer(SeparatedSyntaxList<ExpressionSyntax> exprs) {
+            return _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
+                                              SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                                              exprs,
+                                              SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+         }
+
+        internal InitializerExpressionSyntax MakeArrayInitializer(ExpressionSyntax expr) {
+            return MakeArrayInitializer(MakeSeparatedList<ExpressionSyntax>(expr));
+         }
 
         internal ExpressionSyntax GenerateMemVarPut(string memvar, ExpressionSyntax right)
         {
@@ -264,10 +297,92 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected StatementSyntax CachedIfBlock = null;
+        protected StatementSyntax GetClipperCallingConventionIfStatement()
+        {
+            if(CachedIfBlock != null)
+                return CachedIfBlock;
+            ExpressionSyntax assignExpr;
+            ExpressionSyntax ifExpr;
+            StatementSyntax exprStmt;
+            // This method generates the common block that is used for all Clipper calling convention methods
+            // to retrieve the PCount and also to fix the problem where Roslyn passes a boxed usual in stead of a USUAL[]
+            // please note that there may be an error when a Clipper calling convention method is called with a single USUAL param
+            // In that case Roslyn will pass the boxed usual as parameter
+            // that is why we have to check for the type of the param and convert it to a usual[]
+            // when it is of the wrong type
+            // the pseudo code for that is 
+
+            // IF Xs$Args != NULL
+            //      IF Xs$Args:GetType() != typeof(USUAL[])
+            //          Xs$Args := <USUAL> {Xs$Args}
+            //      ENDIF 
+            //      Xs$PCount := Xs$Args.Length
+            // ENDIF
+
+            //Todo: This code will be generated for ALL Clipper calling convention methods. 
+            InitializeArrayTypes();
+            var blockstmts = _pool.Allocate<StatementSyntax>();
+            // lhs : Xs$Args.GetType()
+            var ma = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, GenerateSimpleName(ClipperArgs), SyntaxFactory.MakeToken(SyntaxKind.DotToken), GenerateSimpleName("GetType"));
+            var Lhs = _syntaxFactory.InvocationExpression(ma, EmptyArgumentList());
+            // typeof(USUAL[])
+            var rhs = _syntaxFactory.TypeOfExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    arrayOfUsual,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+
+            // lhs != rhs
+            var notEqExpr = _syntaxFactory.BinaryExpression(SyntaxKind.NotEqualsExpression,
+                    Lhs, SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken), rhs);
+
+
+            // { Xs$Args }
+            var arrayinitializer = MakeArrayInitializer(GenerateSimpleName(ClipperArgs));
+
+            //  new USUAL [] {..}
+            var arraycreateexpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                                    arrayOfUsual,
+                                    arrayinitializer);
+
+            // Xs$Args := <USUAL> { Xs$Args }
+            var assignExp = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                                            GenerateSimpleName(ClipperArgs),
+                                                            SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                                                            arraycreateexpr);
+            // if <NotEqExpr> <AssignmentExpression>
+            blockstmts.Add(GenerateIfStatement(notEqExpr, GenerateExpressionStatement(assignExp)));
+            // Xs$PCount = Xs$Args:Length
+            assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                    GenerateSimpleName(ClipperPCount),
+                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                                _syntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    GenerateSimpleName(ClipperArgs),
+                                     SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                    GenerateSimpleName("Length")));
+
+            exprStmt = _syntaxFactory.ExpressionStatement(assignExpr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            blockstmts.Add(exprStmt);
+            // Xs$Args != NULL
+            
+            ifExpr = _syntaxFactory.BinaryExpression(
+                    SyntaxKind.NotEqualsExpression,
+                    GenerateSimpleName(ClipperArgs),
+                    SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
+                    SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression,
+                        SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)));
+            // if XsArgs != NULL ......
+            CachedIfBlock = GenerateIfStatement(ifExpr, MakeBlock(blockstmts));
+            _pool.Free(blockstmts);
+            return CachedIfBlock;
+        }
         protected override void ImplementClipperAndPSZ(XP.IEntityContext context,
             ref  SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
             ref TypeSyntax dataType )
         {
+            InitializeArrayTypes();
             if (context.Data.HasTypedParameter && context.Data.HasClipperCallingConvention)
             {
                 parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
@@ -276,37 +391,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (body != null && (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ ))
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
-                ExpressionSyntax assignExpr;
-                ExpressionSyntax ifExpr;
-                StatementSyntax exprStmt;
-                if (context.Data.HasClipperCallingConvention)
-                {
 
-                    if (context.Data.UsesPCount || parameters.Parameters.Count > 0  )
+                if(context.Data.HasClipperCallingConvention)
+                {
+                    ExpressionSyntax assignExpr;
+                    ExpressionSyntax ifExpr;
+                    StatementSyntax exprStmt;
+                    if(context.Data.UsesPCount || parameters.Parameters.Count > 0  || context.Data.UsesGetMParam)
                     {
                         // When the PCount function is used then we need to introduce a helper variable
                         // and also when there are defined parameters
+
                         // VAR Xs$PCount  := 0
-                        // IF Xs$Args != NULL
-                        //    Xs$PCount := Xs$Args.Length
-                        // ENDIF
                         stmts.Add(GenerateLocalDecl(ClipperPCount, _impliedType, GenerateLiteral("0", 0)));
-                        assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                GenerateSimpleName(ClipperPCount),
-                                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                                            _syntaxFactory.MemberAccessExpression(
-                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                GenerateSimpleName(ClipperArgs),
-                                                 SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                                GenerateSimpleName("Length")));
-                        exprStmt = _syntaxFactory.ExpressionStatement(assignExpr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                        ifExpr = _syntaxFactory.BinaryExpression(
-                                SyntaxKind.NotEqualsExpression,
-                                GenerateSimpleName(ClipperArgs),
-                                SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
-                                SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression,
-                                    SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)));
-                        stmts.Add(GenerateIfStatement(ifExpr, exprStmt));
+                        // Other common statements are cached
+                        stmts.Add(GetClipperCallingConventionIfStatement());
                     }
 
                     // Assuming the parameters are called oPar1 and oPar2 then the following code is generated
@@ -366,36 +465,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         stmts.Add(LastStmt);
                     }
                     // Now Change argument to X$Args PARAMS USUAL[]
-                    var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
-                    var omittedArraySizeExpressionInstance = 
-                        _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken));
-                    sizes.Add(omittedArraySizeExpressionInstance);
-                    var rank = _syntaxFactory.ArrayRankSpecifier(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        sizes,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
-                    _pool.Free(sizes);
-                    var atype = _syntaxFactory.ArrayType(_usualType, rank) ;
                     SyntaxListBuilder modifiers = _pool.Allocate();
                     modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
+                    var attrs = _pool.Allocate<AttributeListSyntax>();
+                    GenerateAttributeList(attrs, CompilerGenerated);
                     var par = _syntaxFactory.Parameter(
-                                    EmptyList<AttributeListSyntax>(),
+                                    attrs,
                                     modifiers.ToList(),
-                                    type: atype,
+                                    type: arrayOfUsual,
                                     identifier: SyntaxFactory.Identifier(ClipperArgs),
                                     @default: null );
-                    var param = _pool.AllocateSeparated<ParameterSyntax>();
-                    param.Add(par);
                     parameters = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        param.ToList(),
+                        MakeSeparatedList<ParameterSyntax>(par),
                         SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                    _pool.Free(param);
                     // Finally add ClipperCallingConventionAttribute to the method
                     // using the names from the paramNames list
                     // [Vulcan.Internal.ClipperCallingConvention(new string[] { "a", "b" })]
                     // make sure that existing attributes are not removed!
-                    var attrs = _pool.Allocate<AttributeListSyntax>();
-                    attrs.AddRange(attributes);
+                    attrs.Clear();
+                    attrs.AddRange(attributes); // Copy existing attributes
                     var names = new List<ExpressionSyntax>();
                     foreach (var name in paramNames)
                     {
@@ -412,7 +500,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     _syntaxFactory.AttributeArgument(null, null,
                                         _syntaxFactory.ArrayCreationExpression(
                                             SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                                            _syntaxFactory.ArrayType(_stringType,rank),
+                                            arrayOfString,
                                             _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                                 MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
@@ -1075,6 +1163,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 // _GETMPARAM or _GETFPARAM
+                CurrentEntity.Data.UsesGetMParam = true;
                 var indices = _pool.AllocateSeparated<ArgumentSyntax>();
                 indices.Add(MakeArgument(argList.Arguments[0].Expression));
 
@@ -1240,10 +1329,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else {
                 exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
             }
-            var initializer = _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                exprs,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            var initializer = MakeArrayInitializer(exprs);
             expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                 _syntaxFactory.ArrayType(type,
                 MakeList(_syntaxFactory.ArrayRankSpecifier(

@@ -107,5 +107,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 return type1 == type2;
             }
         }
+
+#if XSHARP
+        /// <summary>
+        /// Given a codeblock delegate provided constructs a codeblock type symbol.
+        /// </summary>
+        public NamedTypeSymbol ConstructCodeblockTypeSymbol(TypeSymbol[] codeblockParameters, Location location)
+        {
+            return new CodeblockTypePublicSymbol(this, codeblockParameters, location);
+        }
+
+        public NamedTypeSymbol GetCodeblockDelegateType(NamedTypeSymbol cbType)
+        {
+            return (NamedTypeSymbol)((CodeblockTypePublicSymbol)cbType).Properties[0].Type;
+        }
+#endif
     }
 }

@@ -299,6 +299,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 type.Name == "Expression" &&
                 CheckFullName(type.ContainingSymbol, s_expressionsNamespaceName);
         }
+#if XSHARP
+
+        private static readonly string[] s_VulcanNamespace = { "Vulcan", "" };
+
+        public static bool IsCodeblock(this TypeSymbol _type)
+        {
+            // TODO (nvk): there must be a better way!
+            var type = _type.OriginalDefinition as NamedTypeSymbol;
+            return
+                (object)type != null &&
+                type.Arity == 0 &&
+                !type.MangleName &&
+                type.Name == "Codeblock" &&
+                CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
+        }
+#endif
 
 
         /// <summary>

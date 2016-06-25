@@ -274,6 +274,7 @@
     <Compile Include="Antlr4.Runtime\UnbufferedCharStream.cs" />
     <Compile Include="Antlr4.Runtime\UnbufferedTokenStream.cs" />
     <Compile Include="Antlr4.Runtime\Vocabulary.cs" />
+    <Compile Include="Binder\Binder_Codeblock.cs" />
     <Compile Include="CodeAnalysisResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -298,6 +299,7 @@
     <Compile Include="Parser\XSharpVOTreeTransformation .cs" />
     <Compile Include="Parser\XSharpTreeTransformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Symbols\CodeblockType.TypePublicSymbol.cs" />
     <Compile Include="XSharpResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -262,7 +262,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return finalConversion;
         }
 
+#if XSHARP
+        private BoundExpression CreateAnonymousFunctionConversion(CSharpSyntaxNode syntax, BoundExpression source, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
+#else
         private static BoundExpression CreateAnonymousFunctionConversion(CSharpSyntaxNode syntax, BoundExpression source, Conversion conversion, bool isCast, TypeSymbol destination, DiagnosticBag diagnostics)
+#endif
         {
             // We have a successful anonymous function conversion; rather than producing a node
             // which is a conversion on top of an unbound lambda, replace it with the bound
@@ -272,6 +276,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             // UNDONE: is converted to a delegate that does not match. What to surface then?
 
             var unboundLambda = (UnboundLambda)source;
+#if XSHARP
+            if (destination.IsCodeblock())
+            {
+                return BindCodeblock(syntax, unboundLambda, conversion, isCast, destination, diagnostics);
+            }
+#endif
             var boundLambda = unboundLambda.Bind((NamedTypeSymbol)destination);
             diagnostics.AddRange(boundLambda.Diagnostics);
 

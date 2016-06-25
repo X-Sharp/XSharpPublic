@@ -62,6 +62,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             /// <summary> Key pf the anonymous type descriptor </summary>
             internal readonly string TypeDescriptorKey;
 
+#if XSHARP
+            private readonly NamedTypeSymbol _baseType;
+
+            internal bool IsCodeblock { get; }
+#endif
             internal AnonymousTypeTemplateSymbol(AnonymousTypeManager manager, AnonymousTypeDescriptor typeDescr)
             {
                 this.Manager = manager;
@@ -73,6 +78,60 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 // before that moment.
                 _nameAndIndex = null;
 
+#if XSHARP
+                IsCodeblock = typeDescr.Fields.Length > 0 && typeDescr.Fields[0].Name.StartsWith("Cb$Param$");
+                _baseType = IsCodeblock ? manager.Vulcan_Codeblock : manager.System_Object;
+                if (IsCodeblock)
+                {
+                    _baseType = manager.Vulcan_Codeblock;
+
+                    int cbParamCount = typeDescr.Fields.Length;
+                    NamedTypeSymbol[] cbParameters = new NamedTypeSymbol[cbParamCount];
+                    for (int i = 0; i < cbParamCount; i++)
+                    {
+                        cbParameters[i] = manager.Vulcan_Usual;
+                    }
+                    var cbDelegate = manager.SynthesizeDelegate(typeDescr.Fields.Length - 1, default(BitVector), false).Construct(cbParameters);
+
+                    Symbol[] cbMembers = new Symbol[4];
+                    int cbMemberIndex = 0;
+
+                    var eval = new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", typeDescr.Location, cbDelegate), cbDelegate);
+
+                    this.Properties = ImmutableArray<AnonymousTypePropertySymbol>.Empty;
+
+                    // Property related symbols
+                    cbMembers[cbMemberIndex++] = eval;
+                    cbMembers[cbMemberIndex++] = eval.BackingField;
+                    cbMembers[cbMemberIndex++] = eval.GetMethod;
+
+                    cbMembers[cbMemberIndex++] = new AnonymousTypeConstructorSymbol(this, new[] { eval }.ToImmutableArray());
+
+                    _typeParameters = ImmutableArray<TypeParameterSymbol>.Empty;
+
+                    _members = cbMembers.AsImmutable();
+
+                    Debug.Assert(cbMemberIndex == _members.Length);
+
+                    // fill nameToSymbols map
+                    foreach (var symbol in _members)
+                    {
+                        _nameToSymbols.Add(symbol.Name, symbol);
+                    }
+
+                    MethodSymbol[] cbSpecialMembers = new MethodSymbol[4];
+                    cbSpecialMembers[0] = new AnonymousTypeEqualsMethodSymbol(this);
+                    cbSpecialMembers[1] = new AnonymousTypeGetHashCodeMethodSymbol(this);
+                    cbSpecialMembers[2] = new AnonymousTypeToStringMethodSymbol(this);
+                    cbSpecialMembers[3] = new CodeblockEvalMethod(this);
+                    this.SpecialMembers = cbSpecialMembers.AsImmutable();
+
+                    return;
+                }
+
+                _baseType = manager.System_Object;
+
+#endif
                 int fieldsCount = typeDescr.Fields.Length;
 
                 // members
@@ -355,7 +414,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal override NamedTypeSymbol BaseTypeNoUseSiteDiagnostics
             {
+#if XSHARP
+                get { return _baseType; }
+#else
                 get { return this.Manager.System_Object; }
+#endif
             }
 
             public override TypeKind TypeKind
@@ -393,7 +456,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             internal override NamedTypeSymbol GetDeclaredBaseType(ConsList<Symbol> basesBeingResolved)
             {
+#if XSHARP
+                return _baseType;
+#else
                 return this.Manager.System_Object;
+#endif
             }
 
             internal override ImmutableArray<NamedTypeSymbol> GetDeclaredInterfaces(ConsList<Symbol> basesBeingResolved)

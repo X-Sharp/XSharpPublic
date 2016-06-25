@@ -22,16 +22,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         /// Represents an anonymous type 'public' symbol which is used in binding and lowering.
         /// In emit phase it is being substituted with implementation symbol.
         /// </summary>
+#if XSHARP
+        private class AnonymousTypePublicSymbol : NamedTypeSymbol
+#else
         private sealed class AnonymousTypePublicSymbol : NamedTypeSymbol
+#endif
         {
+#if XSHARP
+            internal readonly ImmutableArray<Symbol> _members;
+#else
             private readonly ImmutableArray<Symbol> _members;
+#endif
 
             /// <summary> Properties defined in the type </summary>
             internal readonly ImmutableArray<AnonymousTypePropertySymbol> Properties;
 
             /// <summary> Maps member names to symbol(s) </summary>
 #if XSHARP
-            private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer);
+            internal readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>(CaseInsensitiveComparison.Comparer);
 #else
             private readonly MultiDictionary<string, Symbol> _nameToSymbols = new MultiDictionary<string, Symbol>();
 #endif
@@ -91,6 +99,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     _nameToSymbols.Add(symbol.Name, symbol);
                 }
             }
+#if XSHARP
+            internal bool IsCodeblock { get; } = false;
+
+            protected AnonymousTypePublicSymbol(AnonymousTypeManager manager, TypeSymbol[] codeblockParams, Location location)
+            {
+                Debug.Assert(codeblockParams.Length > 0);
+
+                this.Manager = manager;
+                this.TypeDescriptor = new AnonymousTypeDescriptor(codeblockParams.Select((t, i) => new AnonymousTypeField("Cb$Param$" + i, location, t))
+                    .ToImmutableArray(), location);
+                var codeblockDelegate = manager.SynthesizeDelegate(codeblockParams.Length-1, default(BitVector), false).Construct(codeblockParams);
+                this.Properties = new[] { new AnonymousTypePropertySymbol(this, new AnonymousTypeField("Cb$Eval$", location, codeblockDelegate)) }.AsImmutableOrNull();
+
+                Symbol[] members = new Symbol[3];
+                int memberIndex = 0;
+                members[memberIndex++] = Properties[0];
+                members[memberIndex++] = new AnonymousTypeConstructorSymbol(this, this.Properties);
+                members[memberIndex++] = new CodeblockEvalMethod(this);
+
+                _members = members.AsImmutableOrNull();
+                Debug.Assert(memberIndex == _members.Length);
+
+                //  fill nameToSymbols map
+                foreach (var symbol in _members)
+                {
+                    _nameToSymbols.Add(symbol.Name, symbol);
+                }
+
+                IsCodeblock = true;
+            }
+#endif
 
             public override ImmutableArray<Symbol> GetMembers()
             {

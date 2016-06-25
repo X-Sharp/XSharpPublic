@@ -182,6 +182,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return this.Compilation.GetWellKnownTypeMember(WellKnownMember.System_String__Format_IFormatProvider) as MethodSymbol; }
         }
 
+#if XSHARP
+        public NamedTypeSymbol Vulcan_Codeblock
+        {
+            get { return this.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock); }
+        }
+
+        public NamedTypeSymbol Vulcan_Usual
+        {
+            get { return this.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual); }
+        }
+#endif
+
         #endregion
     }
 }

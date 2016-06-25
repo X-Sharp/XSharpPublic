@@ -589,6 +589,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return IsAnonymousFunctionCompatibleWithExpressionTree(anonymousFunction, (NamedTypeSymbol)type);
             }
+#if XSHARP
+            else if (type.IsCodeblock())
+            {
+                return LambdaConversionResult.Success;
+            }
+#endif
 
             return LambdaConversionResult.BadTargetType;
         }

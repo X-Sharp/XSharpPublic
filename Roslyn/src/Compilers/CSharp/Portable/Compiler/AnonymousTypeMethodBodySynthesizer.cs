@@ -29,7 +29,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 int statementIndex = 0;
 
                 //  explicit base constructor call
+#if XSHARP
+                BoundExpression call = null;
+                if (((AnonymousTypeTemplateSymbol)this.ContainingType).IsCodeblock)
+                {
+                    NamedTypeSymbol baseType = this.ContainingType.BaseTypeNoUseSiteDiagnostics;
+                    MethodSymbol objectConstructor = baseType.InstanceConstructors[0];
+                    if (objectConstructor.ParameterCount != 1)
+                    {
+                        diagnostics.Add(ErrorCode.ERR_BadCtorArgCount, this.Locations[0], baseType, /*desired param count*/ 1);
+                    }
+                    call = F.Call(F.This(), objectConstructor, F.Literal(3));
+                }
+                else
+                {
+                    call = MethodCompiler.GenerateObjectConstructorInitializer(this, diagnostics);
+                }
+#else
                 BoundExpression call = MethodCompiler.GenerateObjectConstructorInitializer(this, diagnostics);
+#endif
                 if (call == null)
                 {
                     // This may happen if Object..ctor is not found or is unaccessible
@@ -40,9 +58,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (paramCount > 0)
                 {
                     AnonymousTypeTemplateSymbol anonymousType = (AnonymousTypeTemplateSymbol)this.ContainingType;
+#if XSHARP
+                    Debug.Assert((!anonymousType.IsCodeblock && anonymousType.Properties.Length == paramCount) || (anonymousType.IsCodeblock && paramCount == 1 && anonymousType.Properties.Length == 0));
+#else
                     Debug.Assert(anonymousType.Properties.Length == paramCount);
+#endif
 
                     // Assign fields
+#if XSHARP
+                    if (anonymousType.IsCodeblock)
+                    {
+                        statements[statementIndex++] =
+                            F.Assignment(F.Field(F.This(), (anonymousType.GetMembers()[0] as AnonymousTypePropertySymbol).BackingField), F.Parameter(_parameters[0]));
+                    }
+                    else
+#endif
                     for (int index = 0; index < this.ParameterCount; index++)
                     {
                         // Generate 'field' = 'parameter' statement

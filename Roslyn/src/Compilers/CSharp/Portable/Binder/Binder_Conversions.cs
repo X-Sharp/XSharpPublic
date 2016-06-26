@@ -277,7 +277,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var unboundLambda = (UnboundLambda)source;
 #if XSHARP
-            if (destination.IsCodeblock())
+            if (!destination.IsDelegateType() && !destination.IsExpressionTree())
             {
                 return BindCodeblock(syntax, unboundLambda, conversion, isCast, destination, diagnostics);
             }

@@ -39,7 +39,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         diagnostics.Add(ErrorCode.ERR_BadCtorArgCount, this.Locations[0], baseType, /*desired param count*/ 1);
                     }
-                    call = F.Call(F.This(), objectConstructor, F.Literal(3));
+                    call = F.Call(F.This(), objectConstructor, F.Literal(_parameters[0].Type.GetDelegateType().DelegateParameters().Length));
                 }
                 else
                 {

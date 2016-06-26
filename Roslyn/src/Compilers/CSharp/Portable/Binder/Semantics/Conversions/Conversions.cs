@@ -576,7 +576,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             return IsAnonymousFunctionCompatibleWithDelegate(anonymousFunction, delegateType);
         }
 
+#if XSHARP
+        public virtual LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+#else
         public static LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+#endif
         {
             Debug.Assert((object)anonymousFunction != null);
             Debug.Assert((object)type != null);
@@ -589,12 +593,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return IsAnonymousFunctionCompatibleWithExpressionTree(anonymousFunction, (NamedTypeSymbol)type);
             }
-#if XSHARP
-            else if (type.IsCodeblock())
-            {
-                return LambdaConversionResult.Success;
-            }
-#endif
 
             return LambdaConversionResult.BadTargetType;
         }
@@ -985,6 +983,28 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             conv = Conversion.NoConversion;
             return ConversionKind.NoConversion;
+        }
+
+        public override LambdaConversionResult IsAnonymousFunctionCompatibleWithType(UnboundLambda anonymousFunction, TypeSymbol type)
+        {
+            var res = base.IsAnonymousFunctionCompatibleWithType(anonymousFunction, type);
+
+            if (res == LambdaConversionResult.BadTargetType && _binder.Compilation.Options.IsDialectVO)
+            {
+                if (type.IsCodeblock() || type.IsUsual() || type.IsObjectType())
+                {
+                    return LambdaConversionResult.Success;
+                }
+
+                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                var conv = ClassifyConversion(Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), type, ref useSiteDiagnostics);
+                if (conv.Exists)
+                {
+                    return LambdaConversionResult.Success;
+                }
+            }
+
+            return res;
         }
 #endif
     }

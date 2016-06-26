@@ -314,6 +314,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 type.Name == "Codeblock" &&
                 CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
         }
+
+        public static bool IsUsual(this TypeSymbol _type)
+        {
+            // TODO (nvk): there must be a better way!
+            var type = _type.OriginalDefinition as NamedTypeSymbol;
+            return
+                (object)type != null &&
+                type.Arity == 0 &&
+                !type.MangleName &&
+                type.Name == "__Usual" &&
+                CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
+        }
 #endif
 
 

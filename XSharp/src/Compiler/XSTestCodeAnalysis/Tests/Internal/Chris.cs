@@ -2628,6 +2628,72 @@ END CLASS
 
 
 
+        // 177
+        [Test(Author = "Chris", Id = "C177", Title = "Compiler crash with xor operator")]
+        public static void Compiler_crash_with_xor_operator()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+ENUM TestEnum AS INT
+	MEMBER m1 := 1
+	MEMBER m2 := 2
+END ENUM
+
+FUNCTION Start() AS VOID
+LOCAL n AS INT
+n := 1
+n := n ~ 2
+
+LOCAL e AS TestEnum
+e := TestEnum.m1
+e := e ~ TestEnum.m1
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 178
+        [Test(Author = "Chris", Id = "C178", Title = "error XS1660: Cannot convert lambda expression to type '__Usual' because it is not a delegate type")]
+        public static void Problem_assigning_codeblock_to_usual()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start( ) AS VOID
+LOCAL u AS USUAL
+u := {|n|n+1}
+SomeFunct({|a,b| a > b})
+	
+FUNCTION SomeFunct(u) CLIPPER
+RETURN NIL
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 179
+        [Test(Author = "Chris", Id = "C179", Title = "Assertion failed and compiler crash with event in vulcan dialect")]
+        public static void Assertion_failed_and_compiler_crash_with_event_in_vulcan_dialect()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// works ok in core, crash in vulcan/vo
+CLASS TestClass
+	STATIC EVENT TestEvent AS EventHandler
+END CLASS
+FUNCTION Start( ) AS VOID
+Foo{}
+
+CLASS Foo
+CONSTRUCTOR()
+TestClass.TestEvent += Eventhandler{SELF, @Handler()}
+TestClass.TestEvent += Handler
+METHOD Handler(sender AS OBJECT, e AS EventArgs) AS VOID
+END CLASS
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
 
     }
 }

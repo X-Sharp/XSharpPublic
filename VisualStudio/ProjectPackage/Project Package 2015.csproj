@@ -127,6 +127,8 @@
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="VOEditorSupport\EditorPane.cs" />
+    <Compile Include="VOEditorSupport\Factories.cs" />
     <Compile Include="LanguageService\Guids.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpAuthoringScope.cs" />
@@ -171,6 +173,7 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg">
     </ZipItem>
+    <Compile Include="VOEditorSupport\IEditor.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
     <Compile Include="WPF\XSharpRuntimeNameFactory.cs" />
     <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
@@ -429,6 +432,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VODesigners\XSharpVODesigners.xsprj">
+      <Project>{4a9a5f83-c9c7-41cb-9e16-68497277e0a8}</Project>
+      <Name>XSharpVODesigners</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj">
       <Project>{f9c94f84-d196-4be7-ad67-0c9dbfc912b4}</Project>
       <Name>XSharpCodeDomProvider</Name>

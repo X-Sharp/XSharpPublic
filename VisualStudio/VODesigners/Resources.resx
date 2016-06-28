@@ -117,52 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>XSharp.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="EditorName" xml:space="preserve">
+    <value>VO Windows Editor</value>
+    <comment>Windows editor name</comment>
   </data>
-  <data name="110" xml:space="preserve">
-    <value>XSharp Project System</value>
+  <data name="PropertiesCaption" xml:space="preserve">
+    <value>Window Editor Properties</value>
+    <comment>Window editor properties window caption</comment>
   </data>
-  <data name="112" xml:space="preserve">
-    <value>The XSharp Project system allows you to edit, compile and debug your XSharp application inside Visual Studio.</value>
+  <data name="ToolboxCaption" xml:space="preserve">
+    <value>Windows Editor Toolbox</value>
+    <comment>Windows editor toolbox caption</comment>
   </data>
-
-  <data name="1" xml:space="preserve">
-    <value>XSharp</value>
-  </data>
-  <data name="2" xml:space="preserve">
-    <value>XSharp Project Files (*.xsprj);*.xsprj</value>
-  </data>
-  <data name="3" xml:space="preserve">
-    <value>XSharp Items</value>
-  </data>
-  <data name="109" xml:space="preserve">
-    <value>XSharp Source Code Editor</value>
-    <comment>Text that apears in Open With dialog editors list</comment>
-  </data>
-  <data name="80110" xml:space="preserve">
-    <value>XSharp VO Form Editor</value>
-    <comment>Text that apears in Open With dialog editors list</comment>
-  </data>
-  <data name="80111" xml:space="preserve">
-    <value>XSharp VO Menu Editor</value>
-    <comment>Text that apears in Open With dialog editors list</comment>
-  </data>
-  <data name="80112" xml:space="preserve">
-    <value>XSharp VO DbServer Editor</value>
-    <comment>Text that apears in Open With dialog editors list</comment>
-  </data>
-  <data name="80113" xml:space="preserve">
-    <value>XSharp VO FieldSpec Editor</value>
-    <comment>Text that apears in Open With dialog editors list</comment>
-  </data>
-  <data name="80200" xml:space="preserve">
-    <value>[Read Only]</value>
-    <comment>Read-only text in file caption</comment>
-  </data>
-  <data name="80201" xml:space="preserve">
-    <value>File has been changed outside the environment. Reload the new file?</value>
-    <comment>Prompt when file changed outside of VS</comment>
-  </data>
-
 </root>

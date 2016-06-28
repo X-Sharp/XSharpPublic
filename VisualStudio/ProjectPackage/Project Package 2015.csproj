@@ -165,6 +165,8 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="Template.ico" />
+    <Content Include="XSharp.png" />
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -193,14 +195,10 @@
     <Compile Include="Resources.cs" />
     <Compile Include="XSharpVSMDProvider.cs" />
     <None Include="app.config" />
-    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.vndbs">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.vnfs">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.vnmnu">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vnfrm">
-    </ZipItem>
+    <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.xsdbs" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.xsfs" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.xsmnu" />
+    <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.xsfrm" />
     <ZipProject Include="Templates\Projects\ClassLibrary\ClassLibrary.xsproj" />
     <ZipProject Include="Templates\Projects\ClassLibrary\packages.config" />
     <ZipProject Include="Templates\Projects\Console\ConsoleApplication.xsproj" />

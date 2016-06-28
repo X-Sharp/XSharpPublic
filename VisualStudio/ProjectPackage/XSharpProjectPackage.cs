@@ -135,6 +135,12 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu",   Int32.MaxValue, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory),    ".xsdbs",   Int32.MaxValue, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory),   ".xsfs",    Int32.MaxValue, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    // Vulcan Binaries
+    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", Int32.MaxValue, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", Int32.MaxValue, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
+    [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", Int32.MaxValue, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
+    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", Int32.MaxValue, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+
 
 
     // Attention! The LOGVIEWID guids are magic numbers provided by Microsoft. Don't change them.

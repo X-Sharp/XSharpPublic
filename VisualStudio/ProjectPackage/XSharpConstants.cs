@@ -39,7 +39,10 @@ namespace XSharp.Project
             public const int Project = 0;
             public const int Source = 1;
             public const int Form = 2;
-            
+            public const int Server = 3;
+            public const int FieldSpec = 4;
+            public const int Menu = 5;
+
         }
     }
 }

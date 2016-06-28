@@ -57,7 +57,12 @@ namespace XSharp.Project
         /// </summary>
         static XSharpProjectNode()
         {
-            imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
+            try
+            {
+                imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
+            }
+            catch (Exception)
+            { }
         }
 
         /// <summary>

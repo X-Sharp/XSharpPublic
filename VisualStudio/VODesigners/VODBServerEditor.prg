@@ -182,7 +182,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					oDesign:GetProperty("hlname"):TextValue:Trim() == "" .or. oDesign:GetProperty("type"):IsAuto .or. ;
 					oDesign:GetProperty("len"):IsAuto .or. .not. IsNameValid(oDesign)
 				Funcs.WarningBox("Field " + oDesign:Name + " has invalid values." , "DBServer Editor")
-				RETURN FALSE
+				//RETURN FALSE
 			END IF
 		NEXT
 		

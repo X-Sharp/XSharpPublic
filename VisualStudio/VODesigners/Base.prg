@@ -403,9 +403,6 @@ ABSTRACT CLASS WindowDesignerBase INHERIT DesignerBase
 		SELF:oSurface:MouseUp += MouseEventHandler{ SELF , @SurfaceMouseUp() }
 	RETURN
 
-	//ABSTRACT METHOD Cut() AS VOID
-	//ABSTRACT METHOD Copy() AS VOID
-	//ABSTRACT METHOD Paste() AS VOID
 	VIRTUAL METHOD SelectAll() AS VOID
 	VIRTUAL METHOD TestForm() AS VOID
 	VIRTUAL METHOD Delete() AS VOID
@@ -440,6 +437,7 @@ ABSTRACT CLASS WindowDesignerBase INHERIT DesignerBase
 			oPoint:Y := SELF:IntToGrid(oPoint:Y , SELF:oOptions:oGridSize:Height)
 		ENDIF
 	RETURN oPoint
+
 	VIRTUAL METHOD RectangleToGrid(oRect AS Rectangle) AS Rectangle
 		IF SELF:oOptions:lUseGrid
 			oRect:X := SELF:IntToGrid(oRect:X , SELF:oOptions:oGridSize:Width)
@@ -448,16 +446,20 @@ ABSTRACT CLASS WindowDesignerBase INHERIT DesignerBase
 			oRect:Height := SELF:IntToGrid(oRect:Height , SELF:oOptions:oGridSize:Height)
 		ENDIF
 	RETURN oRect
+
 	VIRTUAL METHOD SizeToGrid(oSize AS Size) AS Size
 		IF SELF:oOptions:lUseGrid
 			oSize:Width := SELF:IntToGrid(oSize:Width , SELF:oOptions:oGridSize:Width)
 			oSize:Height := SELF:IntToGrid(oSize:Height , SELF:oOptions:oGridSize:Height)
 		ENDIF
 	RETURN oSize
+
 	VIRTUAL METHOD IntToGridX(x AS INT) AS INT
 	RETURN SELF:IntToGrid(x , SELF:oOptions:oGridSize:Width)
+
 	VIRTUAL METHOD IntToGridY(y AS INT) AS INT
-	RETURN SELF:IntToGrid(y , SELF:oOptions:oGridSize:Height)
+    	RETURN SELF:IntToGrid(y , SELF:oOptions:oGridSize:Height)
+
 	VIRTUAL METHOD IntToGrid(n AS INT , nGrid AS INT) AS INT
 		IF SELF:oOptions:lUseGrid
 			n += nGrid / 2
@@ -511,14 +513,16 @@ ABSTRACT CLASS WindowDesignerBase INHERIT DesignerBase
 
 // make sure overflow checks are off. On a multi monitor system we may get negative screen
 // coordinates that would otherwise cause an overflow
-#pragma options("ovf", off)
+
     STATIC METHOD IntPtrToPoint(LParam AS IntPtr) AS Point
         LOCAL d := (DWORD)LParam AS DWORD
         LOCAL Hi, Lo AS LONG
-        Hi := (SHORT) (d >> 16)
-        Lo := (SHORT) (d & 0xFFFF)
+        BEGIN UNCHECKED
+            Hi := (SHORT) (d >> 16)
+            Lo := (SHORT) (d & 0xFFFF)
+        END UNCHECKED
         RETURN Point{Lo , Hi}
-#pragma options("ovf", default)
+
 END CLASS
 
 

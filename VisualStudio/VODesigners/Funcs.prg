@@ -49,11 +49,11 @@ INTERNAL STRUCTURE UnitTranslateInfo
 END STRUCTURE
 
 INTERNAL STATIC PARTIAL CLASS Funcs
-   STATIC PRIVATE cInstallTemplatesFolder AS STRING
+   STATIC PRIVATE cInstallTemplatesFolder := NULL AS STRING
    STATIC ACCESS InstallTemplatesFolder AS STRING
       LOCAL rk AS Microsoft.Win32.RegistryKey
       LOCAL cTemp AS STRING
-      IF cInstallTemplatesFolder == NULL
+      IF String.IsNullOrEmpty(cInstallTemplatesFolder)
          cInstallTemplatesFolder := ""
          TRY
             //rk := Microsoft.Win32.Registry.LocalMachine:OpenSubKey("Software\Grafx\Vulcan.net")

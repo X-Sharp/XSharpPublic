@@ -361,4 +361,7 @@
 java -jar $(SolutionDir).\build\antlr-4.5.1-complete.jar -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated
 </PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).* d:\Xsharp\DevPublic\External\*.* /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

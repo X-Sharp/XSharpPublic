@@ -288,6 +288,22 @@ namespace XSharp.Project
                 case ".ppo":
                     ret = XSharpConstants.ImageListIndex.Source;
                     break;
+                case ".xsfrm":
+                case ".vnfrm":
+                    ret = XSharpConstants.ImageListIndex.Form;
+                    break;
+                case ".xsmnu":
+                case ".vnmnu":
+                    ret = XSharpConstants.ImageListIndex.Menu;
+                    break;
+                case ".xsdbs":
+                case ".vndbs":
+                    ret = XSharpConstants.ImageListIndex.Server;
+                    break;
+                case ".xsfs":
+                case ".vnfs":
+                    ret = XSharpConstants.ImageListIndex.FieldSpec;
+                    break;
             }
             //
             if (ret != -1)

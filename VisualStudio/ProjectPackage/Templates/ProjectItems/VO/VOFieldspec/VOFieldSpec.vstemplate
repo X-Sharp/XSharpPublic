@@ -3,7 +3,7 @@
   <TemplateData>
      <Name>VOFieldSpec</Name>
      <Description>An empty FieldSpec container file</Description>
-     <Icon Package="{E8D067DD-5A12-4d49-9AB1-7D7D429C293B}" ID="1073" />
+     <Icon Package="{E299FB7B-D273-4678-9ACF-B37B4AF04A12}" ID="401" />
      <TemplateID>XSharp.VOFieldSpec</TemplateID>
      <ProjectType>XSharp</ProjectType>
      <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
@@ -17,6 +17,6 @@
       </Reference>
     </References>
     <ProjectItem OpenInEditor="false" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.prg">VOFieldSpec.prg</ProjectItem>
-    <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.FieldSpecs.vnfs">VOFieldSpec.vnfs</ProjectItem>
+    <ProjectItem OpenInEditor="true" ReplaceParameters="true" SubType="Code" TargetFileName="$fileinputname$.FieldSpecs.xsfs">VOFieldSpec.xsfs</ProjectItem>
   </TemplateContent>
 </VSTemplate>

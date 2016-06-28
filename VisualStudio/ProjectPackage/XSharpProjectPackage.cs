@@ -19,6 +19,7 @@ using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
+using XSharp.VOEditors;
 
 namespace XSharp.Project
 {
@@ -123,13 +124,27 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    // Todo
-    // Add extensions for VO Compatible editors here
+    // This tells VS that we support Code and Designer view
+    // The guids are VS specific and should not be changed
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
+
+
+    // Editors for VOBinaries
+    [ProvideEditorExtension(typeof(VOFormEditorFactory),        ".xsfrm",   Int32.MaxValue, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu",   Int32.MaxValue, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
+    [ProvideEditorExtension(typeof(VODBServerEditorFactory),    ".xsdbs",   Int32.MaxValue, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
+    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory),   ".xsfs",    Int32.MaxValue, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
 
 
     // Attention! The LOGVIEWID guids are magic numbers provided by Microsoft. Don't change them.
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
+    // This tells the project system if we allow to open in Code or Designer view
+    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
+    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
+    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
+    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
+
+
 
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
@@ -149,8 +164,14 @@ namespace XSharp.Project
 
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
-
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
+
+            // editors for the binaries
+            base.RegisterEditorFactory(new VOFormEditorFactory(this));
+            base.RegisterEditorFactory(new VOMenuEditorFactory(this));
+            base.RegisterEditorFactory(new VODBServerEditorFactory(this));
+            base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
+
 
 
             // Register the language service

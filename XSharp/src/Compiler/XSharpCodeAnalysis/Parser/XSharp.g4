@@ -307,12 +307,31 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
                     ;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-                       EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)? end=EOS
+                       EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)? 
+                       ( end=EOS
+                        | (LineAccessors += eventLineAccessor)+ end=EOS
+                        | Multi=EOS (Accessors+=eventAccessor)+  END EVENT? EOS
+                       )
                        { SetSequencePoint(_localctx,$end); }
                     ;
 
 eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
                     ;
+
+
+eventLineAccessor   : Attributes=attributes? Modifiers=eventModifiers? 
+                      ( {InputStream.La(2) != REMOVE}? Key=ADD ExprList=expressionListStmt?
+                      | {InputStream.La(2) != ADD}?    Key=REMOVE ExprList=expressionListStmt?
+                      | Key=(ADD|REMOVE) )
+                    ;
+eventAccessor       : Attributes=attributes? Modifiers=eventModifiers? 
+                      ( Key=ADD     end=EOS StmtBlk=statementBlock END ADD?
+                      | Key=REMOVE  end=EOS StmtBlk=statementBlock END REMOVE? )
+                      end=EOS
+                    { SetSequencePoint(_localctx,$end); }
+                    ;
+
+
 
 classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList end=EOS
                        { SetSequencePoint(_localctx,$end); }
@@ -903,8 +922,9 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT
                     | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
                     ;
 
-keywordxs           : Token=( ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP |  ORDERBY | OVERRIDE |PARAMS | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
+keywordxs           : Token=( ADD | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FROM | 
+                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP |  ORDERBY | OVERRIDE |PARAMS | REMOVE | 
+                              SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
                               MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
                             )
                     ;

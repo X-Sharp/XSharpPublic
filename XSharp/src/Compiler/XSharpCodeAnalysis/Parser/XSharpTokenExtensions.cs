@@ -850,6 +850,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DESCENDING:
                     r = SyntaxFactory.MakeToken(SyntaxKind.DescendingKeyword, token.Text);
                     break;
+                case XSharpParser.ADD:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AddKeyword, token.Text);
+                    break;
+                case XSharpParser.REMOVE:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.RemoveKeyword, token.Text);
+                    break;
                 case XSharpParser.ACCESS:
                 case XSharpParser.ALIGN:
                 case XSharpParser.AS:
@@ -1040,6 +1046,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.SET:
                     r = SyntaxKind.SetAccessorDeclaration;
+                    break;
+                case XSharpParser.ADD:
+                    r = SyntaxKind.AddAccessorDeclaration;
+                    break;
+                case XSharpParser.REMOVE:
+                    r = SyntaxKind.RemoveAccessorDeclaration;
                     break;
                 default:
                     throw new InvalidOperationException();

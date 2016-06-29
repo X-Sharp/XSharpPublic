@@ -363,6 +363,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public EntityData Data { get { return data; } }
         }
 
+        public partial class EventAccessorContext : ParserRuleContext, IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data { get { return data; } }
+        }
+
+        public partial class PropertyAccessorContext : ParserRuleContext, IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data { get { return data; } }
+        }
+
         public partial class ClsctorContext : ClassmemberContext, IEntityContext {
             EntityData data = new EntityData();
             public EntityData Data { get { return data; } }

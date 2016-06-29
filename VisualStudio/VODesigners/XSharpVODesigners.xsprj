@@ -71,36 +71,38 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base.prg" />
-    <Compile Include="ControlOrder.prg" />
-    <Compile Include="Controls.prg" />
-    <Compile Include="EntityParser.prg" />
-    <Compile Include="FillUsing.prg" />
-    <Compile Include="Funcs.prg" />
-    <Compile Include="Properties.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg">
+    <Compile Include="Base.xs" />
+    <Compile Include="ControlOrder.xs" />
+    <Compile Include="Controls.xs" />
+    <Compile Include="EntityParser.xs" />
+    <Compile Include="Enums.xs" />
+    <Compile Include="FillUsing.xs" />
+    <Compile Include="Funcs.xs" />
+    <Compile Include="Properties.xs" />
+    <Compile Include="Properties\AssemblyInfo.xs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PropGrid.prg" />
-    <Compile Include="PseudoClass.prg" />
+    <Compile Include="PropGrid.xs" />
+    <Compile Include="PseudoClass.xs" />
     <Compile Include="Resources.Designer.prg">
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Structures.xs" />
     <Compile Include="_ProjectSystem.prg" />
-    <Compile Include="Template.prg" />
-    <Compile Include="ToolBox.prg" />
-    <Compile Include="Various.prg" />
-    <Compile Include="VODBServerEditor.prg" />
-    <Compile Include="VODBServerEditorIO.prg" />
-    <Compile Include="VOEditorsShared.prg" />
-    <Compile Include="VOFieldSpecEditor.prg" />
-    <Compile Include="VOFieldSpecEditorIO.prg" />
-    <Compile Include="VOMenuEditor.prg" />
-    <Compile Include="VOMenuEditorIO.prg" />
-    <Compile Include="VOWEDControl.prg" />
-    <Compile Include="VOWindowEditor.prg" />
-    <Compile Include="VOWindowEditorIO.prg" />
-    <Compile Include="VulcanEditor.prg" />
+    <Compile Include="Template.xs" />
+    <Compile Include="ToolBox.xs" />
+    <Compile Include="Various.xs" />
+    <Compile Include="VODBServerEditor.xs" />
+    <Compile Include="VODBServerEditorIO.xs" />
+    <Compile Include="VOEditorsShared.xs" />
+    <Compile Include="VOFieldSpecEditor.xs" />
+    <Compile Include="VOFieldSpecEditorIO.xs" />
+    <Compile Include="VOMenuEditor.xs" />
+    <Compile Include="VOMenuEditorIO.xs" />
+    <Compile Include="VOWEDControl.xs" />
+    <Compile Include="VOWindowEditor.xs" />
+    <Compile Include="VOWindowEditorIO.xs" />
+    <Compile Include="Editor.xs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

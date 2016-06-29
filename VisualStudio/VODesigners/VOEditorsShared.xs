@@ -1,14 +1,14 @@
-#using System.Collections.Generic
-#using System.Collections
-#using System.Xml
-#using System.Text
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections.Generic
+using System.Collections
+using System.Xml
+using System.Text
 
-ENUM DBServerItemType
-	MEMBER DBServer
-	MEMBER @@Field
-	MEMBER Index
-	MEMBER Order
-END ENUM
+
 
 CLASS DBServerBinary
 	PROTECT cName AS STRING
@@ -84,10 +84,12 @@ CLASS VODBServerDescription
 		SELF:aFields := ArrayList{}
 		SELF:aIndexes := ArrayList{}
 	RETURN
+
 	STATIC METHOD LoadFromBinary(aBytes AS BYTE[]) AS VODBServerDescription
-	RETURN VODBServerEditor.OpenVNdbs(aBytes , "")
+	    RETURN VODBServerEditor.OpenVNdbs(aBytes , "")
+
 	METHOD SaveToDocument(cFileName AS STRING) AS LOGIC
-	RETURN VODBServerEditor.SaveToXml(SELF , cFileName)
+	    RETURN VODBServerEditor.SaveToXml(SELF , cFileName)
 END CLASS
 
 
@@ -857,14 +859,7 @@ INTERNAL STATIC PARTIAL CLASS Funcs
 	RETURN
 END CLASS
 
-STRUCTURE NameValue
-	EXPORT Name AS STRING
-	EXPORT Value AS OBJECT
-	CONSTRUCTOR(_cName AS STRING , _oValue AS OBJECT)
-		SELF:Name := _cName
-		SELF:Value := _oValue
-	RETURN
-END STRUCTURE
+
 
 CLASS NameValueCollection IMPLEMENTS ICollection
 	PROTECT aCollection AS ArrayList

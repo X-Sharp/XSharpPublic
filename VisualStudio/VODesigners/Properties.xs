@@ -1,41 +1,15 @@
-//#using System.Drawing
-#using System.Collections
-#using System.Collections.Generic
-#using System.Drawing
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Drawing
+using System.Collections
+using System.Collections.Generic
 
 
-//#include "C:\dotNet\vonet\VOEdit\Win32-GlobalDefines.vh"
-//#include "Win32-GlobalDefines.vh"
 #include "VOWin32APILibrary.vh"
 
-ENUM PropertyType
-	MEMBER None
-	MEMBER Numeric
-	MEMBER Text
-//	MEMBER Boolean
-	MEMBER Enumerated
-	MEMBER Type
-	MEMBER CODE
-	MEMBER @@Callback
-END ENUM
-
-ENUM VOStyle
-	MEMBER None
-	MEMBER Style
-	MEMBER ExStyle
-END ENUM
-
-[flags];
-ENUM PropertyStyles
-	MEMBER None := 0
-	MEMBER ReadOnly := 1
-	MEMBER NoNULL := 2
-	MEMBER NoAuto := 4
-	MEMBER NoVisual := 8
-	MEMBER NoCF := 16
-	MEMBER Track := 32
-	MEMBER NoCode := 64
-END ENUM
 
 
 CLASS VODesignProperty INHERIT DesignProperty
@@ -48,6 +22,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 	EXPORT nMultiPos AS INT
 	EXPORT cSymbolProp AS STRING
 
+    #region Constructors
 	CONSTRUCTOR(cName AS STRING,cCaption AS STRING,_cMember AS STRING,eType AS PropertyType)
 		SUPER(cName,cCaption,eType)
 		SELF:cMember := _cMember
@@ -56,26 +31,11 @@ CLASS VODesignProperty INHERIT DesignProperty
 		SUPER(cName,cCaption,eType,eStyle)
 		SELF:cMember := _cMember
 	RETURN
+
 	CONSTRUCTOR(cName AS STRING,cCaption AS STRING,_cMember AS STRING,_cEnum AS STRING)
 		SUPER(cName,cCaption,_cEnum)
 		SELF:cMember := _cMember
 
-//		IF SELF:cMember != NULL
-/*			LOCAL cAssignMap AS STRING
-			cAssignMap := VOWindowEditorTemplate.GetAssignMap(SELF:cMember)
-			IF cAssignMap != NULL .and. cAssignMap:Length != 0
-				DO CASE
-				CASE cAssignMap == "Color"
-					SELF:cSpecialClass := "Color"
-				CASE cAssignMap == "Brush"
-					SELF:cSpecialClass := "Brush"
-				CASE cAssignMap == "Font"
-					SELF:cSpecialClass := "Font"
-				CASE cAssignMap == "FillUsing"
-					SELF:cSpecialClass := "FillUsing"
-				END CASE
-			END IF*/
-//		END IF
 		DO CASE
 		CASE SELF:cEnumType != NULL .and. SELF:cEnumType:ToUpper() == "COLOR"
 			SELF:cSpecialClass := "Color"
@@ -84,8 +44,8 @@ CLASS VODesignProperty INHERIT DesignProperty
 		CASE SELF:cMember != NULL .and. SELF:cMember:ToUpper() == "FILLUSING"
 			SELF:cSpecialClass := "FillUsing"
 		END CASE
-//		System.Diagnostics.Debug.WriteLine(cName + " , " + cCaption)
 	RETURN
+
 	CONSTRUCTOR(cName AS STRING,cCaption AS STRING,_cMember AS STRING,_cEnum AS STRING,eStyle AS PropertyStyles)
 		SUPER(cName,cCaption,_cEnum,eStyle)
 		SELF:cMember := _cMember
@@ -98,8 +58,8 @@ CLASS VODesignProperty INHERIT DesignProperty
 		CASE SELF:cMember != NULL .and. SELF:cMember:ToUpper() == "FILLUSING"
 			SELF:cSpecialClass := "FillUsing"
 		END CASE
-//		System.Diagnostics.Debug.WriteLine(cName + " , " + cCaption)
 	RETURN
+
 	CONSTRUCTOR(cName AS STRING , _cEnumType AS STRING , _cEnumValues AS STRING, _eVOStyle AS VOStyle)
 		SUPER(cName,cName,PropertyType.Enumerated,PropertyStyles.NoAuto)
 		SELF:_Init(cName,cName,PropertyType.Enumerated,PropertyStyles.NoAuto)
@@ -108,7 +68,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 		SELF:cEnumValues := _cEnumValues
 		SELF:InitEnum()
 	RETURN
-
+    #endregion
 	VIRTUAL ACCESS IsAuto AS LOGIC
 		DO CASE
 		CASE SELF:eVOStyle != VOStyle.None
@@ -121,23 +81,6 @@ CLASS VODesignProperty INHERIT DesignProperty
 		LOCAL cValue AS STRING
 		LOCAL nMatches AS INT
         nMatches := 0
-/*		IF SELF:cEnumType == "BOOL"
-//			SELF:Value := "FALSE"
-			SELF:Value := SELF:aEnumTextValues[1]
-		ENDIF*/
-/*		IF aList == NULL
-			RETURN
-		ENDIF*/
-/*		FOR n := 0 UPTO aList:Count - 1
-			cValue := aList[n]:ToUpper()
-			FOR m := 0 UPTO SELF:aEnumValues:Count - 1
-//				IF SELF:aEnumValues[m]:ToUpper() == cValue:ToUpper()
-				IF SELF:aEnumValues[m]:ToUpper():IndexOf(cValue) != -1
-					SELF:Value := SELF:aEnumTextValues[m]
-					RETURN
-				ENDIF
-			NEXT
-		NEXT*/
 		LOCAL aValues AS List<STRING>
 		cValue := NULL
 		
@@ -159,13 +102,12 @@ CLASS VODesignProperty INHERIT DesignProperty
 		
 		IF SELF:cEnumType == "BOOL"
 			SELF:Value := "FALSE"
-//			SELF:Value := SELF:aEnumTextValues[1]
 		ENDIF
 	RETURN
 
 	VIRTUAL METHOD GetTextValue(oTest AS OBJECT) AS STRING
 		LOCAL cRet AS STRING
-		IF SELF:cSpecialClass != NULL
+		IF SELF:HasSpecialClass
 			DO CASE
 			CASE oTest:GetType() == TypeOf(System.Drawing.Font)
 				LOCAL oFont AS System.Drawing.Font
@@ -198,29 +140,30 @@ CLASS VODesignProperty INHERIT DesignProperty
 			END CASE
 		ENDIF
 	RETURN SUPER:GetTextValue(oTest)
+
 	VIRTUAL ASSIGN Value(_oValue AS OBJECT)
 		LOCAL nAt AS INT
 		LOCAL n AS INT
 		
-		IF SELF:cSpecialClass != NULL
-			DO CASE
+		IF SELF:HasSpecialClass
+			DO CASE 
 			CASE _oValue:GetType() == TypeOf(System.Drawing.Font)
 				SELF:oValue := _oValue
 				RETURN
-			CASE _oValue:GetType() == TypeOf(System.Drawing.Color)
+			CASE _oValue:GetType() ==TypeOf(System.Drawing.Color)
 				SELF:oValue := _oValue
 				RETURN
-			CASE _oValue:GetType() == TypeOf(FillUsingClass)
+			CASE _oValue:GetType() ==TypeOf(FillUsingClass)
 				SELF:oValue := _oValue
 				RETURN
-			CASE _oValue:GetType() == TypeOf(MenuAccelerator)
+			CASE _oValue:GetType() ==TypeOf(MenuAccelerator)
 				SELF:oValue := _oValue
 				RETURN
-			CASE _oValue:GetType() == TypeOf(STRING)
+			CASE _oValue:GetType() ==TypeOf(STRING)
 				LOCAL cValue AS STRING
 				cValue := (STRING)_oValue
 				DO CASE
-				CASE SELF:cSpecialClass == "__MenuAccelerator"
+				CASE SELF:cSpecialClass== "__MenuAccelerator"
 					LOCAL cAccelerator AS STRING
 					SELF:oValue := MenuAccelerator{"" , FALSE , FALSE , FALSE}
 					TRY
@@ -242,14 +185,14 @@ CLASS VODesignProperty INHERIT DesignProperty
 					END TRY
 					RETURN
 					
-				CASE SELF:cSpecialClass == "Color" //.or. SELF:cSpecialClass == "Brush"
+				CASE SELF:cSpecialClass=="Color" //.or. SELF:cSpecialClass == "Brush"
 					IF cValue:Contains(" ")
 						LOCAL aRGB AS STRING[]
 						aRGB := cValue:Split(' ')
 						SELF:oValue := System.Drawing.Color.FromArgb(Convert.ToInt32(aRGB[1]) , Convert.ToInt32(aRGB[2]) , Convert.ToInt32(aRGB[3]))
 						RETURN
 					END IF
-				CASE SELF:cSpecialClass == "Font"
+				CASE SELF:cSpecialClass=="Font"
 					IF cValue:Contains(":")
 						LOCAL oFont := NULL AS System.Drawing.Font
 						LOCAL cFont := "" AS STRING
@@ -285,7 +228,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 						SELF:oValue := oFont
 						RETURN
 					END IF
-				CASE SELF:cSpecialClass == "FillUsing"
+				CASE SELF:cSpecialClass=="FillUsing"
 					LOCAL oUsing AS FillUsingClass
 					oUsing := FillUsingClass{}
 					DO CASE
@@ -319,8 +262,9 @@ CLASS VODesignProperty INHERIT DesignProperty
 		ENDIF
 		SUPER:Value := _oValue
 	RETURN
+
 	VIRTUAL ACCESS CodeValue AS STRING
-		IF SELF:cSpecialClass != NULL
+		IF SELF:HasSpecialClass
 			DO CASE
 			CASE SELF:oValue:GetType() == TypeOf(System.Drawing.Font)
 				LOCAL oFont AS System.Drawing.Font
@@ -345,7 +289,7 @@ CLASS VODesignProperty INHERIT DesignProperty
 	VIRTUAL ACCESS SaveValue AS STRING
 		LOCAL cValue AS STRING
 
-		IF SELF:cSpecialClass != NULL
+		IF SELF:HasSpecialClass
 			DO CASE
 			CASE SELF:oValue:GetType() == TypeOf(System.Drawing.Font)
 				LOCAL oFont AS System.Drawing.Font
@@ -392,7 +336,6 @@ CLASS VODesignProperty INHERIT DesignProperty
 END CLASS
 
 
-
 CLASS DesignProperty
 	EXPORT Name AS STRING
 	EXPORT Caption AS STRING
@@ -417,7 +360,11 @@ CLASS DesignProperty
 	EXPORT lNoCode AS LOGIC
 
 	EXPORT cSpecialClass AS STRING
-	
+
+	PROPERTY HasSpecialClass as LOGIC GET !String.IsNullOrEmpty(SELF:cSpecialClass)
+
+
+    #region Constructors	
 	CONSTRUCTOR(cName AS STRING,eType AS PropertyType,eStyle AS PropertyStyles)
 		SELF:_Init(cName,cName,eType,eStyle)
 	RETURN
@@ -443,6 +390,8 @@ CLASS DesignProperty
 		ENDIF
 		SELF:InitEnum()
 	RETURN
+    #endregion
+
 	PROTECTED METHOD InitEnum() AS VOID
 		LOCAL cValues AS STRING
 		LOCAL cValue AS STRING
@@ -549,15 +498,17 @@ CLASS DesignProperty
 	RETURN
 	
 	VIRTUAL ACCESS Value() AS OBJECT
-	RETURN SELF:oValue
+		RETURN SELF:oValue
+
 	VIRTUAL ACCESS ValueLogic() AS LOGIC
 		IF SELF:Type == PropertyType.Enumerated
 			RETURN (INT)SELF:oValue == 0
 		ENDIF
 	RETURN FALSE
+
 	VIRTUAL ASSIGN Value(_oValue AS OBJECT)
-		DO CASE
-		CASE SELF:Type == PropertyType.Numeric
+		SWITCH SELF:Type 
+		CASE PropertyType.Numeric
 			IF _oValue:GetType() == TypeOf(STRING)
 				TRY
 					SELF:oValue := Convert.ToInt32((STRING)_oValue)
@@ -565,7 +516,7 @@ CLASS DesignProperty
 			ELSE
 				SELF:oValue := _oValue
 			ENDIF
-		CASE SELF:Type == PropertyType.Enumerated
+		CASE PropertyType.Enumerated
 			IF _oValue:GetType() == TypeOf(STRING)
 				LOCAL cValue AS STRING
 				LOCAL n AS INT
@@ -586,30 +537,33 @@ CLASS DesignProperty
 			ENDIF
 		OTHERWISE
 			SELF:oValue := _oValue
-		END CASE
+		END SWITCH
+		IF oValue:GetType() == typeof(STRING) .and. SELF:HasSpecialClass
+			Altd()
+		ENDIF
 	RETURN
 	
 	VIRTUAL ACCESS TextValue() AS STRING
-	RETURN SELF:GetTextValue(SELF:oValue)
+		RETURN SELF:GetTextValue(SELF:oValue)
 	
 	VIRTUAL METHOD GetTextValue(oTest AS OBJECT) AS STRING
 		LOCAL cRet AS STRING
 		LOCAL nValue AS INT
-		DO CASE
-		CASE SELF:Type == PropertyType.Text
+		SWITCH SELF:Type
+		CASE PropertyType.Text
 			cRet := oTest:ToString()
-		CASE SELF:Type == PropertyType.Type
+		CASE PropertyType.Type
 			cRet := oTest:ToString()
-		CASE SELF:Type == PropertyType.Numeric
+		CASE PropertyType.Numeric
 			cRet := oTest:ToString()
-		CASE SELF:Type == PropertyType.Callback
+		CASE PropertyType.Callback
 			IF (INT)oTest == 0
 				cRet := "Not Defined"
 			ELSE
 				cRet := "Defined"
 			ENDIF
 			cRet := "Not supported yet"
-		CASE SELF:Type == PropertyType.Enumerated
+		CASE PropertyType.Enumerated
 			IF oTest:GetType() == TypeOf(INT)
 				nValue := (INT)oTest
 				IF SELF:lNoAuto
@@ -626,12 +580,12 @@ CLASS DesignProperty
 			END IF
 		OTHERWISE
 			cRet := ""
-		END CASE
+		END SWITCH
 	RETURN cRet
 	
 	VIRTUAL ACCESS IsAuto AS LOGIC
 		DO CASE
-		CASE SELF:cSpecialClass != NULL .and. SELF:cSpecialClass == "FillUsing"
+		CASE SELF:HasSpecialClass .and. SELF:cSpecialClass == "FillUsing"
 			IF SELF:oValue:GetType() == TypeOf(FillUsingClass)
 				RETURN ((FillUsingClass)SELF:oValue):cValue:Trim() == ""
 			ELSE
@@ -660,9 +614,9 @@ CLASS DesignProperty
 		ELSE
 			RETURN SELF:TextValue
 		ENDIF
-//	RETURN NULL
+
 	VIRTUAL ACCESS CodeValue AS STRING
-	RETURN SELF:TextValue
+    	RETURN SELF:TextValue
 
 END CLASS
 
@@ -966,24 +920,18 @@ STATIC CLASS VODefines
 		VODefines.aDefines:Add("ES_SELFIME" , ES_SELFIME)
 
 	RETURN
+
 	STATIC METHOD GetDefineValue(cDefine AS STRING) AS DWORD
 		LOCAL dValue := 0 AS DWORD
 		IF cDefine:Length == 0 .or. cDefine == "WS_NULL"
 			RETURN 0
 		ENDIF
 		IF cDefine:IndexOf('|') == -1
-//			TRY
-				IF VODefines.aDefines:ContainsKey(cDefine)
-					dValue := VODefines.aDefines[cDefine]
-				ELSE
-					dValue := 0
-//					Funcs.WarningBox("Style value not found : " + cDefine , Resources.EditorName)
-				ENDIF
-//			CATCH
-//				TRY
-//					dValue := (DWORD)(INT)VODefines.aDefines[cDefine]
-//				END
-//			END
+			IF VODefines.aDefines:ContainsKey(cDefine)
+				dValue := VODefines.aDefines[cDefine]
+			ELSE
+				dValue := 0
+			ENDIF
 		ELSE
 			LOCAL aSplit AS STRING[]
 			LOCAL n AS INT

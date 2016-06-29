@@ -1,11 +1,16 @@
-#using System.Collections
-#using System.Collections.Generic
-#using System.Windows.Forms
-#using System.Drawing
-#using System.IO
-#using System.Text
-#using System.Xml
-#using XSharp.VOEditors
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections
+using System.Collections.Generic
+using System.Windows.Forms
+using System.Drawing
+using System.IO
+using System.Text
+using System.Xml
+using XSharp.VOEditors
 
 PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	
@@ -210,14 +215,14 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 		oXmlNode := oMainNode:FirstChild
 		DO WHILE oXmlNode != NULL
-			DO CASE
-			CASE oXmlNode:Name:ToUpper() == "FIELDS"
+			SWITCH oXmlNode:Name:ToUpper()
+			CASE  "FIELDS"
 				oSubNode := oXmlNode:FirstChild
 				DO WHILE oSubNode != NULL
 					SELF:OpenXmlField(oSubNode , cModule)
 					oSubNode := oSubNode:NextSibling
 				END DO
-			CASE oXmlNode:Name:ToUpper() == "INDEXES"
+			CASE "INDEXES"
 				oSubNode := oXmlNode:FirstChild
 				DO WHILE oSubNode != NULL
 					SELF:OpenXmlIndex(oSubNode)
@@ -225,7 +230,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 				END DO
 			OTHERWISE
 				Funcs.ReadXmlProperty(oXmlNode , SELF:oMainDesign)
-			END CASE
+			END SWITCH
 			
 			oXmlNode := oXmlNode:NextSibling
 		END DO
@@ -257,21 +262,6 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 						NEXT
 					END IF
 				END IF
-/*				LOCAL oFSNode AS XmlNode
-				LOCAL cFSFileName AS STRING
-				oFSNode := FindFieldSpecInXmlFiles(cModule , oSubNode:InnerText)
-				TRY
-					IF oFSNode != NULL
-						VOFieldSpecEditor.OpenXml(oFSNode , oDesign)
-//						MessageBox.Show("Read fieldspec from xml: " + oDesign:Name , "DBServer")
-					ELSE
-						cFSFileName := FindFieldSpecInVnfsFiles(cModule , oSubNode:InnerText)
-						IF cFSFileName != NULL
-							VOFieldSpecEditor.OpenVNfs(cFSFileName , oDesign)
-							oDesign:GetProperty("classname"):Value := oSubNode:InnerText
-						END IF
-					END IF
-				END TRY*/
 			OTHERWISE
 				Funcs.ReadXmlProperty(oSubNode , oDesign)
 			END CASE
@@ -480,45 +470,45 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 	METHOD SavePrg(oStream AS EditorStream , oCode AS CodeContents , aFieldSpecs AS ArrayList) AS LOGIC
 		LOCAL aAdditional AS List<STRING>
-		LOCAL oTempEditor AS VulcanEditor
+		LOCAL oTempEditor AS CodeManager
 		LOCAL oEntity AS ParseInfo
 		LOCAL cName AS STRING
 		LOCAL n AS INT
 		
 		cName := SELF:oMainDesign:GetProperty("classname"):TextValue
-		oStream:Editor:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
-		oStream:Editor:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
-		oStream:Editor:ReplaceEntity("FIELDDESC" , cName , EntityType._Access , oCode:aFieldDesc)
-		oStream:Editor:ReplaceEntity("INDEXLIST" , cName , EntityType._Access , oCode:aIndexList)
+		oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
+		oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
+		oStream:CodeManager:ReplaceEntity("FIELDDESC" , cName , EntityType._Access , oCode:aFieldDesc)
+		oStream:CodeManager:ReplaceEntity("INDEXLIST" , cName , EntityType._Access , oCode:aIndexList)
 
 		FOR n := 0 UPTO oCode:aAdditional:Count - 1
 			aAdditional := oCode:aAdditional[n]
-			oTempEditor := VulcanEditor{aAdditional}
+			oTempEditor := CodeManager{aAdditional}
 			oEntity := oTempEditor:GetFirstEntity()
 			IF oEntity != NULL
-				oStream:Editor:ReplaceEntity(oEntity:cName , cName , oEntity:eType , aAdditional)
+				oStream:CodeManager:ReplaceEntity(oEntity:cName , cName , oEntity:eType , aAdditional)
 			END IF
 		NEXT
 		
-		SELF:SaveAccessAssign(oStream:Editor , cName , SELF:oMainDesign:GetProperty("noaccass"):TextValue:ToUpper() == "YES")
+		SELF:SaveAccessAssign(oStream:CodeManager , cName , SELF:oMainDesign:GetProperty("noaccass"):TextValue:ToUpper() == "YES")
 		
 		LOCAL oFieldSpec AS FSEDesignFieldSpec
 		FOR n := 0 UPTO aFieldSpecs:Count - 1
 			oFieldSpec := (FSEDesignFieldSpec)aFieldSpecs[n]
 			oCode := VOFieldSpecEditor.GetCodeContents(oFieldSpec)
 			cName := oFieldSpec:GetProperty("classname"):TextValue
-			oStream:Editor:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
-			oStream:Editor:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
+			oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
+			oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
 		NEXT
 		
 		oStream:Save()
 		
 	RETURN TRUE
 
-	METHOD SaveAccessAssign(oEditor AS VulcanEditor , cClass AS STRING , lNoAccAss AS LOGIC) AS VOID
+	METHOD SaveAccessAssign(oManager AS CodeManager , cClass AS STRING , lNoAccAss AS LOGIC) AS VOID
 		LOCAL aValues AS NameValueCollection
 		LOCAL oDesign AS DBEDesignDBServer
-		LOCAL oTempEditor AS VulcanEditor
+		LOCAL oTempEditor AS CodeManager
 		LOCAL aTempEntity AS List<STRING>
 		LOCAL aEntity AS List<STRING>
 		LOCAL oProp AS DesignProperty
@@ -572,13 +562,13 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 					cLine := TranslateLine(cLine , aValues)
 					aEntity:Add(cLine)
 				NEXT
-				oTempEditor := VulcanEditor{aEntity}
+				oTempEditor := CodeManager{aEntity}
 				oEntity := oTempEditor:GetFirstEntity()
 				IF oEntity != NULL
 					IF lNoAccAss .or. oDesign:GetProperty("included"):TextValue == "0"
-						oEditor:DeleteEntity(oEntity:cName , cClass , oEntity:eType)
+						oManager:DeleteEntity(oEntity:cName , cClass , oEntity:eType)
 					ELSE
-						oEditor:ReplaceEntity(oEntity:cName , cClass , oEntity:eType , aEntity)
+						oManager:ReplaceEntity(oEntity:cName , cClass , oEntity:eType , aEntity)
 					ENDIF
 				END IF
 			NEXT

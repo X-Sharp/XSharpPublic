@@ -1,13 +1,12 @@
-#using System.Collections.Generic
-#using System.Reflection
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections.Generic
+using System.Reflection
 
-INTERNAL ENUM MethodType
-	MEMBER @@Method
-	MEMBER @@Access
-	MEMBER @@Assign
-END ENUM
-
-CLASS Vulcan.PseudoClassCreator
+CLASS PseudoClassCreator
 	STATIC EXPORT _includehiddenmembers := FALSE AS LOGIC
 	STATIC EXPORT _showusingdiectives := TRUE AS LOGIC
 	STATIC EXPORT _showvirtualkeyword := TRUE AS LOGIC

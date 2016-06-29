@@ -1,7 +1,12 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Windows.Forms
+using System.Drawing
+using System.Collections.Generic
+using System.Collections
 
 DELEGATE PropertyUpdatedEventHandler(cProperty AS STRING , oValue AS OBJECT) AS VOID
 DELEGATE ControlKeyPressedEventHandler(eKey AS Keys) AS VOID
@@ -275,7 +280,7 @@ CLASS PropertyPanel INHERIT PictureBox
 
 	METHOD EventButtonClicked(o AS OBJECT,e AS EventArgs) AS VOID
 		SELF:oProperty := (VODesignProperty)SELF:aProperties[SELF:nCurY]
-		IF SELF:oProperty:cSpecialClass != NULL
+		IF SELF:oProperty:HasSpecialClass
 			DO CASE
 			CASE SELF:oProperty:cSpecialClass == "Color" //.or. SELF:oProperty:cSpecialClass == "Brush"
 				LOCAL oColorDlg AS ColorDialog
@@ -508,18 +513,14 @@ CLASS PropertyPanel INHERIT PictureBox
 		CASE SELF:oProperty:Type == PropertyType.Numeric .or. SELF:oProperty:Type == PropertyType.Text
 			SELF:oEdit:Text := SELF:oProperty:TextValue
 			SELF:oEdit:oProperty := SELF:oProperty
-/*			SELF:oEdit:lOnlyNumbers := SELF:oProperty:Type == PropertyType.Number
-			SELF:oEdit:lAllowDecimal := SELF:oProperty:lAllowDecimal*/
 			SELF:oEdit:Location := Point{SELF:nSplit + 1 , SELF:nCurY * SELF:nItemHeight + 1}
 			SELF:oEdit:Width := SELF:Width - SELF:nSplit
 			SELF:oEdit:Show(SELF:lMultiple , SELF:oProperty:Name != "validation") // HACK
-//		CASE SELF:oProperty:Type == PropertyType.Boolean .or. ;
 		CASE SELF:oProperty:Type == PropertyType.Enumerated .or. ;
 				SELF:oProperty:Type == PropertyType.Type
-//			SELF:oCombo:DropDownStyle := ComboBoxStyle.DropDownList
 			SELF:oCombo:Location := Point{SELF:nSplit + 1 , SELF:nCurY * SELF:nItemHeight + 1}
 			SELF:oCombo:Width := SELF:Width - SELF:nSplit
-			IF SELF:oProperty:cSpecialClass != NULL
+			IF SELF:oProperty:HasSpecialClass
 				SELF:oCombo:Width -= SELF:nItemHeight
 			ENDIF
 			SELF:oCombo:Items:Clear()
@@ -544,15 +545,13 @@ CLASS PropertyPanel INHERIT PictureBox
 						NEXT
 					END IF
 				ENDIF
-//				SELF:oCombo:SelectedIndex := 0
 				SELF:oCombo:Text := (STRING)SELF:oProperty:Value
-//				SELF:oCombo:SelectedText := (STRING)SELF:oProperty:Value
 			ELSE
 				SELF:oCombo:DropDownStyle := ComboBoxStyle.DropDownList
 				FOR n := 0 UPTO SELF:oProperty:aEnumTextValues:Count - 1
 					SELF:oCombo:Items:Add(SELF:oProperty:aEnumTextValues[n])
 				NEXT
-				IF SELF:oProperty:cSpecialClass != NULL .and. SELF:oProperty:Value:GetType() != TypeOf(INT)
+				IF SELF:oProperty:HasSpecialClass .and. SELF:oProperty:Value:GetType() != TypeOf(INT)
 					SELF:oCombo:SelectedIndex := -1
 				ELSE
 					SELF:oCombo:SelectedIndex := INT(SELF:oProperty:Value)
@@ -574,7 +573,7 @@ CLASS PropertyPanel INHERIT PictureBox
 		ENDIF
 		oProp := (DesignProperty)SELF:aProperties[SELF:nCurY]
 	
-		IF oProp:Type == PropertyType.Callback .or. oProp:cSpecialClass != NULL
+		IF oProp:Type == PropertyType.Callback .or. oProp:HasSpecialClass
 			SELF:oButton:Size := Size{SELF:nItemHeight + 1 , SELF:nItemHeight + 1}
 			SELF:oButton:Location := Point{SELF:Width - SELF:oButton:Width + 1 , SELF:nCurY * SELF:nItemHeight}
 			SELF:oButton:Show()
@@ -591,9 +590,6 @@ END CLASS
 
 
 
-
-
-
 INTERNAL CLASS PropertyTextBox INHERIT TextBox
 	EXPORT oPropertyPanel AS PropertyPanel
 	EXPORT oProperty AS DesignProperty
@@ -606,6 +602,7 @@ INTERNAL CLASS PropertyTextBox INHERIT TextBox
 		SUPER()
 		SELF:oPropertyPanel := oPanel
 	RETURN
+
 	METHOD Show(_lMultiple AS LOGIC, _lConvertQuotes AS LOGIC) AS VOID
 		SELF:lMultiple := _lMultiple
 		IF SELF:lMultiple
@@ -628,6 +625,7 @@ INTERNAL CLASS PropertyTextBox INHERIT TextBox
 		END IF
 		SUPER:OnKeyPress(e)
 	RETURN
+
 	PROTECTED METHOD ProcessCmdKey(Msg REF Message,KeyData AS Keys) AS LOGIC
 		IF KeyData == Keys.Escape
 			SELF:lCanceled := TRUE
@@ -635,6 +633,7 @@ INTERNAL CLASS PropertyTextBox INHERIT TextBox
 			RETURN TRUE
 		END IF
 	RETURN FALSE
+
 	PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 		SUPER:OnKeyDown(e)
 		DO CASE
@@ -643,21 +642,19 @@ INTERNAL CLASS PropertyTextBox INHERIT TextBox
 			SELF:Hide()
 		END CASE
 	RETURN
+
 	PROTECTED METHOD OnLostFocus(e AS EventArgs) AS VOID
 		SUPER:OnLostFocus(e)
 		IF !SELF:lCanceled .and. (SELF:Text != SELF:cOldText .or. (SELF:lEntered .and. SELF:lMultiple))
-//			IF SELF:oProperty:lAllowNULL .or. !AllTrim(SELF:Text)==""
 				SELF:SetProperty()
-//			END IF
 		ENDIF
 		SELF:Hide()
 	RETURN
+
 	PROTECTED METHOD OnTextChanged(e AS EventArgs) AS VOID
 		SUPER:OnTextChanged(e)
-/*		IF SELF:Visible .and. SELF:oProperty:lTrack
-//			SELF:SetProperty()
-		END IF*/
 	RETURN
+
 	PROTECTED METHOD SetProperty() AS VOID
 		LOCAL cValue AS STRING
 		cValue := SELF:Text
@@ -669,8 +666,6 @@ INTERNAL CLASS PropertyTextBox INHERIT TextBox
 
 END CLASS
 
-
-
 INTERNAL CLASS PropertyComboBox INHERIT ComboBox
 	EXPORT oPropertyPanel AS PropertyPanel
 	EXPORT nProperty AS Int32
@@ -679,10 +674,12 @@ INTERNAL CLASS PropertyComboBox INHERIT ComboBox
 	PROTECT lCanceled AS LOGIC
 	PROTECT lCombined AS LOGIC
 	EXPORT cInitValue := "" AS STRING
+
 CONSTRUCTOR(oPanel AS PropertyPanel)
 	SUPER()
 	SELF:oPropertyPanel:=oPanel
 RETURN
+
 METHOD Show(_lMultiple AS LOGIC) AS VOID
 	SELF:lMultiple:=_lMultiple
 	IF SELF:lMultiple
@@ -696,6 +693,7 @@ METHOD Show(_lMultiple AS LOGIC) AS VOID
 	SELF:Show()
 	SELF:Focus()
 RETURN
+
 PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 	SUPER:OnKeyDown(e)
 	DO CASE
@@ -703,18 +701,18 @@ PROTECTED METHOD OnKeyDown(e AS KeyEventArgs) AS VOID
 		SELF:lCanceled := TRUE
 		SELF:Hide()
 	CASE e:KeyData==Keys.Enter
-//		IF SELF:oProperty:lAllowNULL .or. !AllTrim(SELF:Text) == ""
-			SELF:SetProperty()
-			SELF:Hide()
-//		END IF
+		SELF:SetProperty()
+		SELF:Hide()
 	END CASE
 RETURN
+
 PROTECTED METHOD OnLostFocus(e AS EventArgs) AS VOID
 	SUPER:OnLostFocus(e)
 	IF !SELF:lCombined
 		SELF:Hide()
 	ENDIF
 RETURN
+
 PROTECTED METHOD OnSelectionChangeCommitted (e AS EventArgs) AS VOID
 	SUPER:OnSelectionChangeCommitted(e)
 	IF SELF:lCombined
@@ -726,6 +724,7 @@ PROTECTED METHOD OnSelectionChangeCommitted (e AS EventArgs) AS VOID
 	END IF
 	SELF:Hide()
 RETURN
+
 PROTECTED METHOD OnDropDownClosed(e AS EventArgs) AS VOID
 	SUPER:OnDropDownClosed(e)
 	IF !SELF:lCombined
@@ -761,17 +760,12 @@ PROTECTED METHOD SetProperty() AS VOID
 RETURN
 END CLASS
 
-
-
-
 INTERNAL CLASS PropertyButton INHERIT Button
 CONSTRUCTOR()
 	SUPER()
 	SELF:SetStyle(ControlStyles.Selectable,FALSE)
 RETURN
 END CLASS
-
-
 
 
 CLASS AccelSelectDlg INHERIT System.Windows.Forms.Form

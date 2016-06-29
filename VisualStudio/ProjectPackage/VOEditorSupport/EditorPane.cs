@@ -1,4 +1,9 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System;
 using System.Collections;
 using System.ComponentModel.Design;
 using System.Diagnostics;
@@ -26,29 +31,28 @@ namespace XSharp.Project
     // For our file type should appear under "General" in the new files dialog, we need the following:-
     //     - A .vsdir file in the same directory as NewFileItems.vsdir (generally under Common7\IDE\NewFileItems).
     //       In our case the file name is Editor.vsdir but we only require a file with .vsdir extension.
-    //     - An empty vnfrm file in the same directory as NewFileItems.vsdir. In
-    //       our case we chose form.vnfrm. Note this file name appears in Editor.vsdir
+    //     - An empty <myext> file in the same directory as NewFileItems.vsdir. In
+    //       our case we chose myfile.<myext>. Note this file name appears in Editor.vsdir
     //       (see vsdir file format below)
     //     - Three text strings in our language specific resource. File Resources.resx :-
-    //          - "Rich Text file" - this is shown next to our icon.
-    //          - "A blank rich text file" - shown in the description window
+    //          - "My File Type" - this is shown next to our icon.
+    //          - "A blank my file type" - shown in the description window
     //             in the new file dialog.
-    //          - "form" - This is the base file name. New files will initially
-    //             be named as form1.vnfrm, form2.vnfrm... etc.
+    //          - "myfile" - This is the base file name. New files will initially
+    //             be named as myfile.myext, myfile.myext... etc.
     ///////////////////////////////////////////////////////////////////////////////
     // Editor.vsdir contents:-
-    //    form.vnfrm|{3085E1D6-A938-478e-BE49-3546C09A1AB1}|#106|80|#109|0|401|0|#107
-    //
+    //    myfile.myext|{guid}|#106|80|#109|0|401|0|#107
     // The fields in order are as follows:-
-    //    - form.vnfrm - our empty vnfrm file
-    //    - {db16ff5e-400a-4cb7-9fde-cb3eab9d22d2} - our Editor package guid
-    //    - #106 - the ID of "Rich Text file" in the resource
+    //    - form.vnfs - our empty vnfs file
+    //    - {guid} - our Editor package guid
+    //    - #106 - the ID of "My File Type" in the resource
     //    - 80 - the display ordering priority
-    //    - #109 - the ID of "A blank rich text file" in the resource
+    //    - #109 - the ID of "A blank my file type" in the resource
     //    - 0 - resource dll string (we don't use this)
     //    - 401 - the ID of our icon
     //    - 0 - various flags (we don't use this - se vsshell.idl)
-    //    - #107 - the ID of "vnfrm"
+    //    - #107 - the ID of "myext"
     ///////////////////////////////////////////////////////////////////////////////
 
     //This is required for Find In files scenario to work properly. This provides a connection point 
@@ -68,11 +72,10 @@ namespace XSharp.Project
                                                     //support IVsFileBackup and have unsaved changes.
                                                     //                               IVsFindTarget,      //to implement find and replace capabilities within the editor
                                 IExtensibleObject,  //so we can get the automation object
-                                IEditor,            //the automation interface for Editor
-                                IVsToolboxUser      //Sends notification about Toolbox items to the owner of these items
+                                IEditor            //the automation interface for Editor
     {
-        private const uint MyFormat = 0;
-        private const string MyExtension = ".vnfrm";
+        private uint MyFormat = 0;
+        protected string MyExtension = ".*";
 
         private class VOEditorProperties
         {
@@ -100,13 +103,9 @@ namespace XSharp.Project
 
         private string fileName = string.Empty;
         private bool isDirty;
-        // Flag true when we are loading the file. It is used to avoid to change the isDirty flag
-        // when the changes are related to the load operation.
         private bool loading;
-        // This flag is true when we are asking the QueryEditQuerySave service if we can edit the
-        // file. It is used to avoid to have more than one request queued.
         private bool gettingCheckoutStatus;
-        private VOWEDControl editorControl;             // All VO Editors havce this common parent
+        protected VOWEDControl editorControl;             // All VO Editors have this common parent
         private bool isLoaded;
 
         private Microsoft.VisualStudio.Shell.SelectionContainer selContainer;
@@ -184,13 +183,10 @@ namespace XSharp.Project
 
             // Create and initialize the editor
 
-            //System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VOEditorPane));
             this.editorControl = new VOWEDControl();
             this.editorControl.IsDirtyChanged = new EventHandler(IsDirtyChangedHandler);
             this.editorControl.TriggerSave = new EventHandler(TriggerSaveHandler);
 
-
-            // Call the helper function that will do all of the command setup work
             setupCommands();
             this.editorControl.StatusBarMessage = new StatusBarMessageDelegate(StatusBarMessageHandler);
         }
@@ -331,13 +327,6 @@ namespace XSharp.Project
             ErrorHandler.ThrowOnFailure(hr);
         }
 
-        /// <summary>
-        /// This is an added command handler that will make it so the ITrackSelection.OnSelectChange
-        /// function gets called whenever the cursor position is changed and also so the position 
-        /// displayed on the status bar will update whenever the cursor position changes.
-        /// </summary>
-        /// <param name="sender"> Not used.</param>
-        /// <param name="e"> Not used.</param>
         void OnSelectionChanged(object sender, EventArgs e)
         {
             ITrackSelection track = TrackSelection;
@@ -349,141 +338,11 @@ namespace XSharp.Project
 
         #region Command Handling Functions
 
-        /// <summary>
-        /// This helper function, which is called from the VOFormEditorPane's PrivateInit
-        /// function, does all the work involving adding commands.
-        /// </summary>
-        private void setupCommands()
+        protected virtual void setupCommands()
         {
-            // Now get the IMenuCommandService; this object is the one
-            // responsible for handling the collection of commands implemented by the package.
-
-            IMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
-            if (null != mcs)
-            {
-                // Now create one object derived from MenuCommnad for each command defined in
-                // the .vsct file and add it to the command service.
-
-                // For each command we have to define its id that is a unique Guid/integer pair, then
-                // create the OleMenuCommand object for this command. The EventHandler object is the
-                // function that will be called when the user will select the command. Then we add the 
-                // OleMenuCommand to the menu service.  The addCommand helper function does all this for us.
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SelectAll,
-                                new EventHandler(onSelectAll), null);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Copy,
-                                new EventHandler(onCopy), new EventHandler(onQueryCopy));
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Cut,
-                                new EventHandler(onCut), new EventHandler(onQueryCutOrDelete));
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Paste,
-                                new EventHandler(onPaste), new EventHandler(onQueryPaste));
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Delete,
-                                new EventHandler(onDelete), new EventHandler(onQueryCutOrDelete));
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Undo,
-                                new EventHandler(onUndo), new EventHandler(onQueryUndo));
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Redo,
-                                new EventHandler(onRedo), new EventHandler(onQueryRedo));
-                // These two commands enable Visual Studio's default undo/redo toolbar buttons.  When these
-                // buttons are clicked it triggers a multi-level undo/redo (even when we are undoing/redoing
-                // only one action.  Note that we are not implementing the multi-level undo/redo functionality,
-                // we are just adding a handler for this command so these toolbar buttons are enabled (Note that
-                // we are just reusing the undo/redo command handlers).  To implement multi-level functionality
-                // we would need to properly handle these two commands as well as MultiLevelUndoList and
-                // MultiLevelRedoList.
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.MultiLevelUndo,
-                                new EventHandler(onUndo), new EventHandler(onQueryUndo));
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.MultiLevelRedo,
-                                new EventHandler(onRedo), new EventHandler(onQueryRedo));
-
-                EventHandler onQueryAlignEH = new EventHandler(onQueryAlign);
-                EventHandler onQuerySpacingEH = new EventHandler(onQuerySpacing);
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignLeft,
-                                new EventHandler(onAlignLeft), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignRight,
-                                new EventHandler(onAlignRight), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignHorizontalCenters,
-                                new EventHandler(onAlignHorizontalCenters), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignTop,
-                                new EventHandler(onAlignTop), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignBottom,
-                                new EventHandler(onAlignBottom), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignVerticalCenters,
-                                new EventHandler(onAlignVerticalCenters), onQueryAlignEH);
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControl,
-                                new EventHandler(onSameSize), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControlWidth,
-                                new EventHandler(onSameHorzSize), onQueryAlignEH);
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControlHeight,
-                                new EventHandler(onSameVertSize), onQueryAlignEH);
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.TabOrder,
-                                new EventHandler(onTabOrder), null);
-
-                //addCommand(mcs, GuidList.guidVOWindowEditorCmdSet, PkgCmdIDList.cmdidShowGrid,
-                //                new EventHandler(onViewGrid), new EventHandler(onQueryViewGrid));
-
-                //// not implemented yet
-                //addCommand(mcs, GuidList.guidVOWindowEditorCmdSet, (int)PkgCmdIDList.cmdidTestDialog,
-                //                new EventHandler(onTestDialog), null);
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToGrid,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.LockControls,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignToGrid,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
-
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceMakeEqual,
-                               new EventHandler(onHorizSpaceMakeEqual), new EventHandler(onQuerySpacingEH));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceIncrease,
-                                new EventHandler(onHorizSpaceIncrease), new EventHandler(onQuerySpacingEH));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceDecrease,
-                                new EventHandler(onHorizSpaceDecrease), new EventHandler(onQuerySpacingEH));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceConcatenate,
-                                new EventHandler(onHorizSpaceConcatenate), new EventHandler(onQuerySpacingEH));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceMakeEqual,
-                                new EventHandler(onVertSpaceMakeEqual), new EventHandler(onQuerySpacingEH));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceIncrease,
-                                new EventHandler(onVertSpaceIncrease), new EventHandler(onQuerySpacingEH));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceDecrease,
-                                new EventHandler(onVertSpaceDecrease), new EventHandler(onQuerySpacingEH));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceConcatenate,
-                                new EventHandler(onVertSpaceConcatenate), new EventHandler(onQuerySpacingEH));
-
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.CenterHorizontally,
-                                new EventHandler(onCenterHorizontally), new EventHandler(onQueryCopy));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.CenterVertically,
-                                new EventHandler(onCenterVertically), new EventHandler(onQueryCopy));
-
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.BringToFront,
-                               new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
-
-                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SendToBack,
-                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
-
-
-                // Support clipboard rings
-                //addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.PasteNextTBXCBItem,
-                //new EventHandler(onPasteNextTBXCBItem), new EventHandler(onQueryPasteNextTBXCBItem));
-            }
         }
 
-        private void onQueryUnimplemented(object sender, EventArgs e)
+        protected  void onQueryUnimplemented(object sender, EventArgs e)
         {
             OleMenuCommand command = (OleMenuCommand)sender;
             command.Enabled = false;
@@ -491,7 +350,7 @@ namespace XSharp.Project
             command.Visible = true;
         }
 
-        private void onUnimplemented(object sender, EventArgs e)
+        protected void onUnimplemented(object sender, EventArgs e)
         {
         }
 
@@ -504,7 +363,7 @@ namespace XSharp.Project
         /// <param name="commandEvent"> An EventHandler which will be called whenever the command is invoked.</param>
         /// <param name="queryEvent"> An EventHandler which will be called whenever we want to query the status of
         /// the command.  If null is passed in here then no EventHandler will be added.</param>
-        private static void addCommand(IMenuCommandService mcs, Guid menuGroup, int cmdID,
+        protected static void addCommand(IMenuCommandService mcs, Guid menuGroup, int cmdID,
                                        EventHandler commandEvent, EventHandler queryEvent)
         {
             // Create the OleMenuCommand from the menu group, command ID, and command event
@@ -520,315 +379,6 @@ namespace XSharp.Project
             // Add the command using our IMenuCommandService instance
             mcs.AddCommand(command);
         }
-
-        /// <summary>
-        /// Handler for out SelectAll command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onSelectAll(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SelectAll);
-        }
-
-        /// <summary>
-        /// Handler for when we want to query the status of the copy command.  If there
-        /// is any text selected then it will set the Enabled property to true.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryCopy(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Copy);
-        }
-
-        /// <summary>
-        /// Handler for our Copy command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onCopy(object sender, EventArgs e)
-        {
-            Copy();
-            editorControl.RecordCommand("Copy");
-        }
-
-        /// <summary>
-        /// Handler for when we want to query the status of the cut or delete
-        /// commands.  If there is any selected text then it will set the 
-        /// enabled property to true.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryCutOrDelete(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Cut);
-        }
-
-        /// <summary>
-        /// Handler for our Cut command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onCut(object sender, EventArgs e)
-        {
-            Cut();
-            editorControl.RecordCommand("Cut");
-        }
-
-        /// <summary>
-        /// Handler for our Delete command.
-        /// </summary>
-        private void onDelete(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.RemoveSelected);
-            editorControl.RecordCommand("Delete");
-        }
-
-        /// <summary>
-        /// Handler for when we want to query the status of the paste command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryPaste(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Paste);
-        }
-
-        /// <summary>
-        /// Handler for our Paste command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onPaste(object sender, EventArgs e)
-        {
-            Paste();
-            editorControl.RecordCommand("Paste");
-        }
-
-        private void onQueryAlign(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.AlignLeft);
-        }
-        private void onQuerySpacing(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.SpacingHorzEqual);
-        }
-
-        private void onAlignLeft(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.AlignLeft);
-            //editorControl.RecordCommand("");
-        }
-        private void onAlignRight(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.AlignRight);
-            //editorControl.RecordCommand("");
-        }
-        private void onAlignHorizontalCenters(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.AlignCenterVert);
-            //editorControl.RecordCommand("");
-        }
-        private void onAlignTop(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.AlignTop);
-            //editorControl.RecordCommand("");
-        }
-        private void onAlignBottom(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.AlignBottom);
-            //editorControl.RecordCommand("");
-        }
-        private void onAlignVerticalCenters(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.AlignCenterHorz);
-            //editorControl.RecordCommand("");
-        }
-
-        private void onSameSize(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SameSize);
-            //editorControl.RecordCommand("");
-        }
-        private void onSameHorzSize(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SameHorSize);
-            //editorControl.RecordCommand("");
-        }
-        private void onSameVertSize(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SameVerSize);
-            //editorControl.RecordCommand("");
-        }
-
-        private void onHorizSpaceMakeEqual(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingHorzEqual);
-        }
-        private void onHorizSpaceIncrease(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingHorzInc);
-        }
-        private void onHorizSpaceDecrease(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingHorzDec);
-        }
-        private void onHorizSpaceConcatenate(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingHorzRem);
-        }
-        private void onVertSpaceMakeEqual(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingVertEqual);
-        }
-        private void onVertSpaceIncrease(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingVertInc);
-        }
-        private void onVertSpaceDecrease(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingVertDec);
-        }
-        private void onVertSpaceConcatenate(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.SpacingVertRem);
-        }
-
-        private void onCenterHorizontally(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.CenterHorz);
-        }
-        private void onCenterVertically(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.CenterVert);
-        }
-
-
-        private void onQueryViewGrid(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = true;
-            command.Checked = editorControl.IsGridEnabled;
-        }
-
-        private void onViewGrid(object sender, EventArgs e)
-        {
-            editorControl.ToggleGrid();
-        }
-
-        private void onTabOrder(object sender, EventArgs e)
-        {
-            editorControl.ShowTabOrder();
-        }
-
-        private void onTestDialog(object sender, EventArgs e)
-        {
-            editorControl.TestForm();
-        }
-
-
-        /// <summary>
-        /// Handler for when we want to query the status of the clipboard ring.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryPasteNextTBXCBItem(object sender, EventArgs e)
-        {
-            // Get the Toolbox Service from the package
-            IVsToolboxClipboardCycler clipboardCycler = GetService(typeof(SVsToolbox)) as IVsToolboxClipboardCycler;
-
-            int itemsAvailable;
-            ErrorHandler.ThrowOnFailure(clipboardCycler.AreDataObjectsAvailable((IVsToolboxUser)this, out itemsAvailable));
-
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = ((itemsAvailable > 0) ? true : false);
-        }
-
-        /// <summary>
-        /// Handler for our Paste command.
-        /// </summary>
-        /// <param name="sender">  Not used.</param>
-        /// <param name="e">  Not used.</param>
-        private void onPasteNextTBXCBItem(object sender, EventArgs e)
-        {
-            /*            // Get the Toolbox Service from the package
-                        IVsToolboxClipboardCycler clipboardCycler = GetService(typeof(SVsToolbox)) as IVsToolboxClipboardCycler;
-
-                        Microsoft.VisualStudio.OLE.Interop.IDataObject pDO;
-
-                        ErrorHandler.ThrowOnFailure(clipboardCycler.GetAndSelectNextDataObject((IVsToolboxUser)this, out pDO));
-
-                        ITextSelection textSelection = editorControl.TextDocument.Selection;
-
-                        // Get the current position of the start of the current selection. 
-                        // After the paste the positiono of the start of current selection
-                        // will be moved to the end of inserted text, so it needs to
-                        // move back to original position so that inserted text can be highlighted to 
-                        // allow cycling through our clipboard items.
-                        int originalStart;
-                        originalStart = textSelection.Start;
-
-                        // This will do the actual pasting of the object
-                        ItemPicked(pDO);
-
-                        // Now move the start position backwards to the original position.
-                        int currentStart;
-                        currentStart = textSelection.Start;
-                        textSelection.MoveStart((int)tom.tomConstants.tomCharacter, originalStart - currentStart);
-
-                        // Select the pasted text
-                        textSelection.Select();*/
-        }
-
-        /// <summary>
-        /// Handler for when we want to query the status of the Undo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryUndo(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Undo);
-        }
-
-        /// <summary>
-        /// Handler for our Undo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onUndo(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.Undo);
-        }
-
-        /// <summary>
-        /// Handler for when we want to query the status of the Redo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onQueryRedo(object sender, EventArgs e)
-        {
-            OleMenuCommand command = (OleMenuCommand)sender;
-            command.Enabled = editorControl.CanDoAction(DesignerActionType.Redo);
-        }
-
-        /// <summary>
-        /// Handler for our Redo command.
-        /// </summary>
-        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
-        /// <param name="e">  Not used.</param>
-        private void onRedo(object sender, EventArgs e)
-        {
-            editorControl.DoAction(DesignerActionType.Redo);
-        }
-
-        /// <summary>
 
 
         #endregion
@@ -847,68 +397,6 @@ namespace XSharp.Project
             set { }
         }
 
-        /// <summary>
-        /// This property gets our editor's current ITextRange interface.  ITextRange is part
-        /// of the rich edit control's text object model.
-        /// </summary>
-        //         public ITextRange Range
-        //         {
-        //             get { return null; }
-        //         }
-
-        /// <summary>
-        /// This property gets our editor's current ITextSelection interface.  ITextSelection
-        /// is part of the rich edit control's text object model.
-        /// </summary>
-        //         public ITextSelection Selection
-        //         {
-        //             get { return null; }
-        //         }
-
-        /// <summary>
-        /// This property gets/sets the selection properties that contain certain information
-        /// about our editor's current selection.
-        /// </summary>
-        public int SelectionProperties
-        {
-            get { return 0; }
-            set { }
-        }
-
-        /// <summary>
-        /// This function finds a string and returns the length of the matched string.
-        /// Note that this function does not move the cursor to the string that it finds.
-        /// </summary>
-        /// <param name="textToFind"> The string that we want to look for.</param>
-        /// <returns> The length of the matched string.</returns>
-        public int FindText(string textToFind)
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// This function has the same effect as typing the passed in string into the editor.
-        /// Our implementation will just call TypeText since for now we want them both to do
-        /// the same thing.
-        /// </summary>
-        /// <param name="textToSet"> The string to set/</param>
-        /// <returns> HResult that indicates success/failure.</returns>
-        public int SetText(string textToSet)
-        {
-            // Just delegate to TypeText
-            return TypeText(textToSet);
-        }
-
-        /// <summary>
-        /// This function has the same effect as typing the passed in string into the editor.
-        /// </summary>
-        /// <param name="textToType"> The string to type.</param>
-        /// <returns> HResult that indicates success/failure.</returns>
-        public int TypeText(string textToType)
-        {
-            //editorControl.TextSelection.TypeText(textToType);
-            return VSConstants.S_OK;
-        }
 
         /// <summary>
         /// This function performs the cut operation in the editor.
@@ -962,93 +450,7 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
-        /// <summary>
-        /// This function will move up by the specified number of lines/paragraphs in the editor.
-        /// </summary>
-        /// <param name="unit"> The type of unit to move up by.  The two valid options for this are
-        /// TOMLine and TOMParagraph, which are defined in the TOMConstants enumeration.</param>
-        /// <param name="count"> The number of units to move.</param>
-        /// <param name="extend"> This should be set to TOMExtend if we want to select as we move
-        /// or TOMMove if we don't.  These values are defined in the TOMConstants enumeration.</param>
-        /// <returns> The number of units that the cursor moved up.</returns>
-        public int MoveUp(int unit, int count, int extend)
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// This function will move down by the specified number of lines/paragraphs in the editor.
-        /// </summary>
-        /// <param name="unit"> The type of unit to move down by.  The two valid options for this are
-        /// TOMLine and TOMParagraph, which are defined in the TOMConstants enumeration.</param>
-        /// <param name="count"> The number of units to move.</param>
-        /// <param name="extend"> This should be set to TOMExtend if we want to select as we move
-        /// or TOMMove if we don't.  These values are defined in the TOMConstants enumeration.</param>
-        /// <returns> The number of units that the cursor moved down.</returns>
-        public int MoveDown(int unit, int count, int extend)
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// This function will move to the left by the specified number of characters/words in the editor.
-        /// </summary>
-        /// <param name="unit"> The type of unit to move left by.  The two valid options for this are
-        /// TOMWord and TOMCharacter, which are defined in the TOMConstants enumeration.</param>
-        /// <param name="count"> The number of units to move.</param>
-        /// <param name="extend"> This should be set to TOMExtend if we want to select as we move
-        /// or TOMMove if we don't.  These values are defined in the TOMConstants enumeration.</param>
-        /// <returns> The number of units that the cursor moved to the left.</returns>
-        public int MoveLeft(int unit, int count, int extend)
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// This function will move to the right by the specified number of characters/words in the editor.
-        /// </summary>
-        /// <param name="unit"> The type of unit to move right by.  The two valid options for this are
-        /// TOMWord and TOMCharacter, which are defined in the TOMConstants enumeration.</param>
-        /// <param name="count"> The number of units to move.</param>
-        /// <param name="extend"> This should be set to TOMExtend if we want to select as we move
-        /// or TOMMove if we don't.  These values are defined in the TOMConstants enumeration.</param>
-        /// <returns> The number of units that the cursor moved to the right.</returns>
-        public int MoveRight(int unit, int count, int extend)
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// This function will either move the cursor to either the end of the current line or the end of the document.
-        /// </summary>
-        /// <param name="unit"> If this value is equal to TOMLine it will move the cursor to the end of the line.  If
-        /// it is set to TOMStory then it will move to the end of the document.  These values are defined in the
-        /// TOMConstants enumeration.</param>
-        /// <param name="extend"> This should be set to TOMExtend if we want to select as we move
-        /// or TOMMove if we don't.  These values are defined in the TOMConstants enumeration.</param>
-        /// <returns> The number of characters that the operation moved the cursor by.  This value
-        /// should always be positive since we are moving "forward" in the text buffer.</returns>
-        public int EndKey(int unit, int extend)
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// This function will either move the cursor to either the beggining of the current line or
-        /// the beggining of the document.
-        /// </summary>
-        /// <param name="unit"> If this value is equal to TOMLine it will move the cursor to the beggining of the line.
-        /// If it is set to TOMStory then it will move to the beggining of the document.  These values are defined in the
-        /// TOMConstants enumeration.</param>
-        /// <param name="extend"> This should be set to TOMExtend if we want to select as we move
-        /// or TOMMove if we don't.  These values are defined in the TOMConstants enumeration.</param>
-        /// <returns> The number of characters that the operation moved the cursor by.  This value
-        /// should always be negative since we are moving "backward" in the text buffer.</returns>
-        public int HomeKey(int unit, int extend)
-        {
-            return 0;
-        }
-
+ 
         #endregion
 
         #region IExtensibleObject Implementation
@@ -1102,9 +504,9 @@ namespace XSharp.Project
         /// <summary>
         /// Notifies the object that it has concluded the Save transaction
         /// </summary>
-        /// <param name="pszFilename">Pointer to the file name</param>
+        /// <param name="strFileName">Pointer to the file name</param>
         /// <returns>S_OK if the funtion succeeds</returns>
-        int IPersistFileFormat.SaveCompleted(string pszFilename)
+        int IPersistFileFormat.SaveCompleted(string strFileName)
         {
             // TODO:  Add Editor.SaveCompleted implementation
             return VSConstants.S_OK;
@@ -1113,19 +515,18 @@ namespace XSharp.Project
         /// <summary>
         /// Returns the path to the object's current working file 
         /// </summary>
-        /// <param name="ppszFilename">Pointer to the file name</param>
+        /// <param name="pstrFileName">Pointer to the file name</param>
         /// <param name="pnFormatIndex">Value that indicates the current format of the file as a zero based index
         /// into the list of formats. Since we support only a single format, we need to return zero. 
         /// Subsequently, we will return a single element in the format list through a call to GetFormatList.</param>
         /// <returns></returns>
-        int IPersistFileFormat.GetCurFile(out string ppszFilename, out uint pnFormatIndex)
+        int IPersistFileFormat.GetCurFile(out string pstrFileName, out uint pnFormatIndex)
         {
             // We only support 1 format so return its index
             pnFormatIndex = MyFormat;
-            ppszFilename = fileName;
+            pstrFileName = fileName;
             return VSConstants.S_OK;
         }
-
         /// <summary>
         /// Initialization for the object 
         /// </summary>
@@ -1171,14 +572,20 @@ namespace XSharp.Project
         /// <returns>S_OK if the method succeeds</returns>
         int IPersistFileFormat.GetFormatList(out string ppszFormatList)
         {
-            char Endline = (char)'\n';
-            string FormatList = string.Format(CultureInfo.InvariantCulture, "My Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
-            ppszFormatList = FormatList;
+            ppszFormatList = getFormatList();
             return VSConstants.S_OK;
         }
 
+        protected virtual string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "My Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
+        }
+
+
         /// <summary>
-        /// Loads the file content into the textbox
+        /// Loads the file content into the editor
         /// </summary>
         /// <param name="filename">Pointer to the full path name of the file to load</param>
         /// <param name="grfMode">file format mode</param>
@@ -1264,15 +671,15 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// Save the contents of the textbox into the specified file. If doing the save on the same file, we need to
+        /// Save the contents of the editor into the specified file. If doing the save on the same file, we need to
         /// suspend notifications for file changes during the save operation.
         /// </summary>
-        /// <param name="pszFilename">Pointer to the file name. If the pszFilename parameter is a null reference 
+        /// <param name="strFileName">Pointer to the file name. If the strFileName parameter is a null reference 
         /// we need to save using the current file
         /// </param>
-        /// <param name="remember">Boolean value that indicates whether the pszFileName parameter is to be used 
+        /// <param name="remember">Boolean value that indicates whether the strFileName parameter is to be used 
         /// as the current working file.
-        /// If remember != 0, pszFileName needs to be made the current file and the dirty flag needs to be cleared after the save.
+        /// If remember != 0, strFileName needs to be made the current file and the dirty flag needs to be cleared after the save.
         ///                   Also, file notifications need to be enabled for the new file and disabled for the old file 
         /// If remember == 0, this save operation is a Save a Copy As operation. In this case, 
         ///                   the current file is unchanged and dirty flag is not cleared
@@ -1280,13 +687,13 @@ namespace XSharp.Project
         /// <param name="nFormatIndex">Zero based index into the list of formats that indicates the format in which 
         /// the file will be saved</param>
         /// <returns>S_OK if the method succeeds</returns>
-        int IPersistFileFormat.Save(string pszFilename, int fRemember, uint nFormatIndex)
+        int IPersistFileFormat.Save(string strFileName, int fRemember, uint nFormatIndex)
         {
             int hr = VSConstants.S_OK;
             bool doingSaveOnSameFile = false;
             bool lSuccess = false;
             // If file is null or same --> SAVE
-            if (pszFilename == null || pszFilename == fileName)
+            if (strFileName == null || strFileName == fileName)
             {
                 fRemember = 1;
                 doingSaveOnSameFile = true;
@@ -1295,13 +702,12 @@ namespace XSharp.Project
             //Suspend file change notifications for only Save since we don't have notifications setup
             //for SaveAs and SaveCopyAs (as they are different files)
             if (doingSaveOnSameFile)
-                this.SuspendFileChangeNotification(pszFilename, 1);
+                this.SuspendFileChangeNotification(strFileName, 1);
 
             try
             {
-                // editorControl.RichTextBoxControl.SaveFile(pszFilename, RichTextBoxStreamType.RichText);
                 if (this.isLoaded)
-                    lSuccess = editorControl.Save(pszFilename);
+                    lSuccess = editorControl.Save(strFileName);
             }
             catch (ArgumentException)
             {
@@ -1315,7 +721,7 @@ namespace XSharp.Project
             {
                 //restore the file change notifications
                 if (doingSaveOnSameFile)
-                    this.SuspendFileChangeNotification(pszFilename, 0);
+                    this.SuspendFileChangeNotification(strFileName, 0);
             }
 
             if (VSConstants.E_FAIL == hr)
@@ -1327,11 +733,11 @@ namespace XSharp.Project
                 if (fRemember != 0)
                 {
                     //Save as
-                    if (null != pszFilename && !fileName.Equals(pszFilename))
+                    if (null != strFileName && !fileName.Equals(strFileName))
                     {
                         SetFileChangeNotification(fileName, false); //remove notification from old file
-                        SetFileChangeNotification(pszFilename, true); //add notification for new file
-                        fileName = pszFilename;     //cache the new file name
+                        SetFileChangeNotification(strFileName, true); //add notification for new file
+                        fileName = strFileName;     //cache the new file name
                     }
                     isDirty = false;
                     SetReadOnly(false);             //set read only to false since you were successfully able
@@ -1673,10 +1079,10 @@ namespace XSharp.Project
         /// events when our file is changed or we inform the shell when 
         /// we wish not to receive events anymore.
         /// </summary>
-        /// <param name="pszFileName">File name string</param>
+        /// <param name="strFileName">File name string</param>
         /// <param name="fStart">TRUE indicates advise, FALSE indicates unadvise.</param>
         /// <returns>Result of teh operation</returns>
-        private int SetFileChangeNotification(string pszFileName, bool fStart)
+        private int SetFileChangeNotification(string strFileName, bool fStart)
         {
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t **** Inside SetFileChangeNotification ****"));
 
@@ -1695,7 +1101,7 @@ namespace XSharp.Project
                 {
                     //Receive notifications if either the attributes of the file change or 
                     //if the size of the file changes or if the last modified time of the file changes
-                    result = vsFileChangeEx.AdviseFileChange(pszFileName,
+                    result = vsFileChangeEx.AdviseFileChange(strFileName,
                         (uint)(_VSFILECHANGEFLAGS.VSFILECHG_Attr | _VSFILECHANGEFLAGS.VSFILECHG_Size | _VSFILECHANGEFLAGS.VSFILECHG_Time),
                         (IVsFileChangeEvents)this,
                         out vsFileChangeCookie);
@@ -1719,11 +1125,11 @@ namespace XSharp.Project
         /// a file or we reinstate a previously suspended file depending
         /// on the value of the given fSuspend flag.
         /// </summary>
-        /// <param name="pszFileName">File name string</param>
+        /// <param name="strFileName">File name string</param>
         /// <param name="fSuspend">TRUE indicates that the events needs to be suspended</param>
         /// <returns></returns>
 
-        private int SuspendFileChangeNotification(string pszFileName, int fSuspend)
+        private int SuspendFileChangeNotification(string strFileName, int fSuspend)
         {
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t **** Inside SuspendFileChangeNotification ****"));
 
@@ -1736,7 +1142,7 @@ namespace XSharp.Project
             {
                 // we are transitioning from suspended to non-suspended state - so force a
                 // sync first to avoid asynchronous notifications of our own change
-                if (vsFileChangeEx.SyncFile(pszFileName) == VSConstants.E_FAIL)
+                if (vsFileChangeEx.SyncFile(strFileName) == VSConstants.E_FAIL)
                     return VSConstants.E_FAIL;
             }
 
@@ -1752,18 +1158,16 @@ namespace XSharp.Project
         /// This method is used to Persist the data to a single file. On a successful backup this 
         /// should clear up the backup dirty bit
         /// </summary>
-        /// <param name="pszBackupFileName">Name of the file to persist</param>
+        /// <param name="strBackupFileName">Name of the file to persist</param>
         /// <returns>S_OK if the data can be successfully persisted.
         /// This should return STG_S_DATALOSS or STG_E_INVALIDCODEPAGE if there is no way to 
         /// persist to a file without data loss
         /// </returns>
-        int IVsFileBackup.BackupFile(string pszBackupFileName)
+        int IVsFileBackup.BackupFile(string strBackupFileName)
         {
             try
             {
-                // TODO: Chris - save a backup copy of this file
-                //editorControl.RichTextBoxControl.SaveFile( pszBackupFileName );
-                editorControl.Save(pszBackupFileName, true);
+                editorControl.Save(strBackupFileName, true);
                 backupObsolete = false;
             }
             catch (ArgumentException)
@@ -1794,42 +1198,6 @@ namespace XSharp.Project
 
         #endregion
 
-        #region IVsToolboxUser Interface
-        public int IsSupported(Microsoft.VisualStudio.OLE.Interop.IDataObject pDO)
-        {
-
-            // We don't support dragging anything from the toolbox, at least not yet
-            // so returning S_FALSE for everything prevents any items from showing up in the
-            // toolbox when this editor has focus
-
-            //          // Create a OleDataObject from the input interface.
-            //          OleDataObject oleData = new OleDataObject( pDO );
-            //          // && editorControl.RichTextBoxControl.CanPaste(DataFormats.GetFormat(DataFormats.UnicodeText))
-            //          // Check if the data object is of type UnicodeText.
-            //          if ( oleData.GetDataPresent( DataFormats.UnicodeText ) )
-            //          {
-            //             return VSConstants.S_OK;
-            //          }
-
-            // In all the other cases return S_FALSE
-            return VSConstants.S_FALSE;
-        }
-
-        public int ItemPicked(Microsoft.VisualStudio.OLE.Interop.IDataObject pDO)
-        {
-            /*            // Create a OleDataObject from the input interface.
-                        OleDataObject oleData = new OleDataObject(pDO);
-
-                        // Check if the picked item is the one we can paste.
-                        if (oleData.GetDataPresent(DataFormats.UnicodeText))
-                        {
-                            object o = null;
-                            editorControl.TextSelection.Paste(ref o, 0);
-                        }
-            */
-            return VSConstants.S_OK;
-        }
-        #endregion
 
         /// <summary>
         /// Used to ReadOnly property for the Rich TextBox and correspondingly update the editor caption
@@ -1953,46 +1321,441 @@ namespace XSharp.Project
     }
     public class VOFormEditorPane : VOEditorPane
     {
-        public VOFormEditorPane(XSharpProjectPackage package) :base(package)
+        public VOFormEditorPane(XSharpProjectPackage package) : base(package)
         {
-
+            MyExtension = ".xsfrm";
         }
         protected override Guid _GetClassID()
         {
             return GuidStrings.guidVOFormEditorFactory;
         }
+        protected override string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "Window Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
+        }
+
+        #region Command Handling
+        protected override void setupCommands()
+        {
+            // Now get the IMenuCommandService; this object is the one
+            // responsible for handling the collection of commands implemented by the package.
+
+            IMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
+            if (null != mcs)
+            {
+                // Now create one object derived from MenuCommnad for each command defined in
+                // the .vsct file and add it to the command service.
+
+                // For each command we have to define its id that is a unique Guid/integer pair, then
+                // create the OleMenuCommand object for this command. The EventHandler object is the
+                // function that will be called when the user will select the command. Then we add the 
+                // OleMenuCommand to the menu service.  The addCommand helper function does all this for us.
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SelectAll,
+                                new EventHandler(onSelectAll), null);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Copy,
+                                new EventHandler(onCopy), new EventHandler(onQueryCopy));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Cut,
+                                new EventHandler(onCut), new EventHandler(onQueryCutOrDelete));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Paste,
+                                new EventHandler(onPaste), new EventHandler(onQueryPaste));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Delete,
+                                new EventHandler(onDelete), new EventHandler(onQueryCutOrDelete));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Undo,
+                                new EventHandler(onUndo), new EventHandler(onQueryUndo));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Redo,
+                                new EventHandler(onRedo), new EventHandler(onQueryRedo));
+                // These two commands enable Visual Studio's default undo/redo toolbar buttons.  When these
+                // buttons are clicked it triggers a multi-level undo/redo (even when we are undoing/redoing
+                // only one action.  Note that we are not implementing the multi-level undo/redo functionality,
+                // we are just adding a handler for this command so these toolbar buttons are enabled (Note that
+                // we are just reusing the undo/redo command handlers).  To implement multi-level functionality
+                // we would need to properly handle these two commands as well as MultiLevelUndoList and
+                // MultiLevelRedoList.
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.MultiLevelUndo,
+                                new EventHandler(onUndo), new EventHandler(onQueryUndo));
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.MultiLevelRedo,
+                                new EventHandler(onRedo), new EventHandler(onQueryRedo));
+
+                EventHandler onQueryAlignEH = new EventHandler(onQueryAlign);
+                EventHandler onQuerySpacingEH = new EventHandler(onQuerySpacing);
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignLeft,
+                                new EventHandler(onAlignLeft), onQueryAlignEH);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignRight,
+                                new EventHandler(onAlignRight), onQueryAlignEH);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignHorizontalCenters,
+                                new EventHandler(onAlignHorizontalCenters), onQueryAlignEH);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignTop,
+                                new EventHandler(onAlignTop), onQueryAlignEH);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignBottom,
+                                new EventHandler(onAlignBottom), onQueryAlignEH);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignVerticalCenters,
+                                new EventHandler(onAlignVerticalCenters), onQueryAlignEH);
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControl,
+                                new EventHandler(onSameSize), onQueryAlignEH);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControlWidth,
+                                new EventHandler(onSameHorzSize), onQueryAlignEH);
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToControlHeight,
+                                new EventHandler(onSameVertSize), onQueryAlignEH);
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.TabOrder,
+                                new EventHandler(onTabOrder), null);
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SizeToGrid,
+                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.LockControls,
+                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.AlignToGrid,
+                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceMakeEqual,
+                               new EventHandler(onHorizSpaceMakeEqual), new EventHandler(onQuerySpacingEH));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceIncrease,
+                                new EventHandler(onHorizSpaceIncrease), new EventHandler(onQuerySpacingEH));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceDecrease,
+                                new EventHandler(onHorizSpaceDecrease), new EventHandler(onQuerySpacingEH));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.HorizSpaceConcatenate,
+                                new EventHandler(onHorizSpaceConcatenate), new EventHandler(onQuerySpacingEH));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceMakeEqual,
+                                new EventHandler(onVertSpaceMakeEqual), new EventHandler(onQuerySpacingEH));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceIncrease,
+                                new EventHandler(onVertSpaceIncrease), new EventHandler(onQuerySpacingEH));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceDecrease,
+                                new EventHandler(onVertSpaceDecrease), new EventHandler(onQuerySpacingEH));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.VertSpaceConcatenate,
+                                new EventHandler(onVertSpaceConcatenate), new EventHandler(onQuerySpacingEH));
+
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.CenterHorizontally,
+                                new EventHandler(onCenterHorizontally), new EventHandler(onQueryCopy));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.CenterVertically,
+                                new EventHandler(onCenterVertically), new EventHandler(onQueryCopy));
+
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.BringToFront,
+                               new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+
+                addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.SendToBack,
+                                new EventHandler(onUnimplemented), new EventHandler(onQueryUnimplemented));
+
+
+            }
+        }
+        /// <summary>
+        /// Handler for out SelectAll command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onSelectAll(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SelectAll);
+        }
+
+        /// <summary>
+        /// Handler for when we want to query the status of the copy command.  If there
+        /// is any text selected then it will set the Enabled property to true.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onQueryCopy(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(DesignerActionType.Copy);
+        }
+
+        /// <summary>
+        /// Handler for our Copy command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onCopy(object sender, EventArgs e)
+        {
+            Copy();
+            editorControl.RecordCommand("Copy");
+        }
+
+        /// <summary>
+        /// Handler for when we want to query the status of the cut or delete
+        /// commands.  If there is any selected text then it will set the 
+        /// enabled property to true.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onQueryCutOrDelete(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(DesignerActionType.Cut);
+        }
+
+        /// <summary>
+        /// Handler for our Cut command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onCut(object sender, EventArgs e)
+        {
+            Cut();
+            editorControl.RecordCommand("Cut");
+        }
+
+        /// <summary>
+        /// Handler for our Delete command.
+        /// </summary>
+        private void onDelete(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.RemoveSelected);
+            editorControl.RecordCommand("Delete");
+        }
+
+        /// <summary>
+        /// Handler for when we want to query the status of the paste command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onQueryPaste(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(DesignerActionType.Paste);
+        }
+
+        /// <summary>
+        /// Handler for our Paste command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onPaste(object sender, EventArgs e)
+        {
+            Paste();
+            editorControl.RecordCommand("Paste");
+        }
+
+        private void onQueryAlign(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(DesignerActionType.AlignLeft);
+        }
+        private void onQuerySpacing(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(DesignerActionType.SpacingHorzEqual);
+        }
+
+        private void onAlignLeft(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.AlignLeft);
+        }
+        private void onAlignRight(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.AlignRight);
+        }
+        private void onAlignHorizontalCenters(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.AlignCenterVert);
+        }
+        private void onAlignTop(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.AlignTop);
+        }
+        private void onAlignBottom(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.AlignBottom);
+        }
+        private void onAlignVerticalCenters(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.AlignCenterHorz);
+        }
+
+        private void onSameSize(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SameSize);
+        }
+        private void onSameHorzSize(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SameHorSize);
+        }
+        private void onSameVertSize(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SameVerSize);
+        }
+
+        private void onHorizSpaceMakeEqual(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingHorzEqual);
+        }
+        private void onHorizSpaceIncrease(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingHorzInc);
+        }
+        private void onHorizSpaceDecrease(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingHorzDec);
+        }
+        private void onHorizSpaceConcatenate(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingHorzRem);
+        }
+        private void onVertSpaceMakeEqual(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingVertEqual);
+        }
+        private void onVertSpaceIncrease(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingVertInc);
+        }
+        private void onVertSpaceDecrease(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingVertDec);
+        }
+        private void onVertSpaceConcatenate(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.SpacingVertRem);
+        }
+
+        private void onCenterHorizontally(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.CenterHorz);
+        }
+        private void onCenterVertically(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.CenterVert);
+        }
+
+
+        private void onQueryViewGrid(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = true;
+            command.Checked = editorControl.IsGridEnabled;
+        }
+
+        private void onViewGrid(object sender, EventArgs e)
+        {
+            editorControl.ToggleGrid();
+        }
+
+        private void onTabOrder(object sender, EventArgs e)
+        {
+            editorControl.ShowTabOrder();
+        }
+
+        private void onTestDialog(object sender, EventArgs e)
+        {
+            editorControl.TestForm();
+        }
+
+
+        /// <summary>
+        /// Handler for when we want to query the status of the Undo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onQueryUndo(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(DesignerActionType.Undo);
+        }
+
+        /// <summary>
+        /// Handler for our Undo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onUndo(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.Undo);
+        }
+
+        /// <summary>
+        /// Handler for when we want to query the status of the Redo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onQueryRedo(object sender, EventArgs e)
+        {
+            OleMenuCommand command = (OleMenuCommand)sender;
+            command.Enabled = editorControl.CanDoAction(DesignerActionType.Redo);
+        }
+
+        /// <summary>
+        /// Handler for our Redo command.
+        /// </summary>
+        /// <param name="sender">  This can be cast to an OleMenuCommand.</param>
+        /// <param name="e">  Not used.</param>
+        private void onRedo(object sender, EventArgs e)
+        {
+            editorControl.DoAction(DesignerActionType.Redo);
+        }
+
+#endregion
+
+
+
+
     }
-    public class VOMenuEditorPane : VOEditorPane
+        public class VOMenuEditorPane : VOEditorPane
     {
         public VOMenuEditorPane(XSharpProjectPackage package) : base(package)
         {
-
+            MyExtension = ".xsmnu";
         }
         protected override Guid _GetClassID()
         {
             return GuidStrings.guidVOMenuEditorFactory;
+        }
+        protected override string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "Menu Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
         }
     }
     public class VOServerEditorPane : VOEditorPane
     {
         public VOServerEditorPane(XSharpProjectPackage package) : base(package)
         {
-
+            MyExtension = ".xsdbs";
         }
         protected override Guid _GetClassID()
         {
             return GuidStrings.guidVOServerEditorFactory;
+        }
+        protected override string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "DbServer Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
         }
     }
     public class VOFieldSpecEditorPane : VOEditorPane
     {
         public VOFieldSpecEditorPane(XSharpProjectPackage package) : base(package)
         {
-
+            MyExtension = ".xsfs";
         }
         protected override Guid _GetClassID()
         {
             return GuidStrings.guidVOFieldSpecEditorFactory;
+        }
+        protected override string getFormatList()
+        {
+            char Endline = (char)'\n';
+            string FormatList = string.Format(CultureInfo.InvariantCulture, "FieldSpec Editor (*{0}){1}*{0}{1}{1}", MyExtension, Endline);
+            return FormatList;
         }
     }
 }

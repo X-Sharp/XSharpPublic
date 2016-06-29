@@ -1,7 +1,12 @@
-#using System.Collections
-#using System.Text
-#using System.Xml
-#using System.IO
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections
+using System.Text
+using System.Xml
+using System.IO
 
 CLASS VOWEDItem
 	EXPORT cName AS STRING
@@ -492,7 +497,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 					oProp:Value := oItem:aProperties:GetValue(n):ToString()
 				END CASE
 				
-				IF oProp:cSpecialClass != NULL
+				IF oProp:HasSpecialClass
 					SELF:ApplyProperty(oDesign , oProp)
 				ENDIF
 				
@@ -919,22 +924,22 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	METHOD SaveRC(oStream AS EditorStream , oCode AS CodeContents , cVhName AS STRING , lOldTransporter AS LOGIC , lRcInSameFolder AS LOGIC) AS LOGIC
 		LOCAL n AS INT
 
-		oStream:Editor:Clear()
-		oStream:Editor:AddLine(e"#include \"VOWin32APILibrary.vh\"")
+		oStream:CodeManager:Clear()
+		oStream:CodeManager:AddLine(e"#include \"VOWin32APILibrary.vh\"")
 		IF lOldTransporter
 			FOR n := 0 UPTO oCode:aDefines:Count - 1
-				oStream:Editor:AddLine("#define " + oCode:aDefines[n] + " " + oCode:aDefineValues[n])
+				oStream:CodeManager:AddLine("#define " + oCode:aDefines[n] + " " + oCode:aDefineValues[n])
 			NEXT
 		ELSE
 			IF lRcInSameFolder
-				oStream:Editor:AddLine(e"#include \"" + cVhName + e"\"")
+				oStream:CodeManager:AddLine(e"#include \"" + cVhName + e"\"")
 			ELSE
-				oStream:Editor:AddLine(e"#include \"..\\" + cVhName + e"\"")
+				oStream:CodeManager:AddLine(e"#include \"..\\" + cVhName + e"\"")
 			END IF
 		END IF
-		oStream:Editor:AddLine("")
+		oStream:CodeManager:AddLine("")
 		FOR n := 0 UPTO oCode:aResource:Count - 1
-			oStream:Editor:AddLine(oCode:aResource[n])
+			oStream:CodeManager:AddLine(oCode:aResource[n])
 		NEXT
 		oStream:Save()
 	RETURN TRUE
@@ -948,12 +953,12 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		cName := SELF:oWindowDesign:Name
 		cClass := cName
 		IF lOldTransporter
-			oDest:Editor:ReplaceDefines(oCode:aDefines , oCode:aDefineValues , FALSE)
+			oDest:CodeManager:ReplaceDefines(oCode:aDefines , oCode:aDefineValues , FALSE)
 		ELSE
-			oDest:Editor:DeleteDefines(oCode:aDefines) // in case they exist, from old transporter
+			oDest:CodeManager:DeleteDefines(oCode:aDefines) // in case they exist, from old transporter
 		ENDIF
-		oDest:Editor:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
-		oDest:Editor:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
+		oDest:CodeManager:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
+		oDest:CodeManager:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
 		
 		oProp := SELF:oWindowDesign:GetPropertyByMember("NoAcc")
 //		IF oProp != NULL .and. oProp:TextValue:ToUpper() != "YES"
@@ -965,12 +970,12 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 				aEntity:Clear()
 				aEntity:Add("ACCESS " + cName)
 				aEntity:Add("RETURN SELF:FieldGet( #" + cName + " )")
-				oDest:Editor:AddEntity(cName , cClass , EntityType._Access , aEntity)
+				oDest:CodeManager:AddEntity(cName , cClass , EntityType._Access , aEntity)
 				aEntity:Clear()
 				aEntity:Add("ASSIGN " + cName + "( uValue )")
 				aEntity:Add("SELF:FieldPut( #" + cName + " , uValue )")
 				aEntity:Add("RETURN")
-				oDest:Editor:AddEntity(cName , cClass , EntityType._Assign , aEntity)
+				oDest:CodeManager:AddEntity(cName , cClass , EntityType._Assign , aEntity)
 			NEXT
 			
 		ENDIF
@@ -981,7 +986,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 		IF .not. oStream:IsValid
 			RETURN FALSE
 		END IF
-		oStream:Editor:ReplaceDefines(oCode:aDefines, oCode:aDefineValues, TRUE)
+		oStream:CodeManager:ReplaceDefines(oCode:aDefines, oCode:aDefineValues, TRUE)
 	RETURN oStream:Save()
 	
 END CLASS

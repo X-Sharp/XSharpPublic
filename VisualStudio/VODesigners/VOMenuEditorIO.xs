@@ -1,10 +1,15 @@
-#using System.Collections
-#using System.Collections.Generic
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Text
-#using System.IO
-#using System.Xml
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections
+using System.Collections.Generic
+using System.Windows.Forms
+using System.Drawing
+using System.Text
+using System.IO
+using System.Xml
 
 
 PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
@@ -109,6 +114,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		END DO
 
 	RETURN FALSE
+
 	PROTECTED METHOD OpenXml(oParentNode AS XmlNode , oParent AS DesignMenuItem) AS VOID
 		LOCAL oXmlNode , oSubNode AS XmlNode
 		LOCAL oNode AS DesignTreeNode
@@ -143,6 +149,7 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 		oDescr:cName := SELF:oMainNode:oDesign:Name
 		SELF:GetMenuDescription(oDescr:oMainItem , SELF:oMainNode)
 	RETURN oDescr
+
 	METHOD GetMenuDescription(oParent AS VOMenuItem , oNode AS DesignTreeNode) AS VOID
 		LOCAL oDesign AS DesignMenuItem
 		LOCAL oProp AS VODesignProperty
@@ -159,7 +166,6 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 			SELF:GetMenuDescription(oItem , (DesignTreeNode)oNode:Nodes[n])
 		NEXT
 	RETURN
-	
 
 	METHOD SaveToXml(oStream AS FileStream) AS LOGIC
 		LOCAL oDocument AS XmlDocument
@@ -180,28 +186,28 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 	METHOD SaveRC(oStream AS EditorStream , oAccelStream AS EditorStream , oCode AS CodeContents , cPathToVh AS STRING) AS LOGIC
 		LOCAL n AS INT
 
-		oStream:Editor:Clear()
-		oStream:Editor:AddLine(e"#include \"" + cPathToVh + e"GlobalDefines.vh\"")
-		oStream:Editor:AddLine(e"#include \"VOWin32APILibrary.vh\"")
-		oStream:Editor:AddLine(e"")
+		oStream:CodeManager:Clear()
+		oStream:CodeManager:AddLine(e"#include \"" + cPathToVh + e"GlobalDefines.vh\"")
+		oStream:CodeManager:AddLine(e"#include \"VOWin32APILibrary.vh\"")
+		oStream:CodeManager:AddLine(e"")
 		FOR n := 0 UPTO oCode:aResource:Count - 1
-			oStream:Editor:AddLine(oCode:aResource[n])
+			oStream:CodeManager:AddLine(oCode:aResource[n])
 		NEXT
 
 		
 		IF oAccelStream:IsValid
-			oAccelStream:Editor:Clear()
-			oAccelStream:Editor:AddLine(e"#include \"" + cPathToVh + e"GlobalDefines.vh\"")
-			oAccelStream:Editor:AddLine(e"#include \"VOWin32APILibrary.vh\"")
-			oAccelStream:Editor:AddLine("")
+			oAccelStream:CodeManager:Clear()
+			oAccelStream:CodeManager:AddLine(e"#include \"" + cPathToVh + e"GlobalDefines.vh\"")
+			oAccelStream:CodeManager:AddLine(e"#include \"VOWin32APILibrary.vh\"")
+			oAccelStream:CodeManager:AddLine("")
 			FOR n := 0 UPTO oCode:aAccelResource:Count - 1
-				oAccelStream:Editor:AddLine(oCode:aAccelResource[n])
+				oAccelStream:CodeManager:AddLine(oCode:aAccelResource[n])
 			NEXT
 			oAccelStream:Save()
 		ELSE
-			oStream:Editor:AddLine("")
+			oStream:CodeManager:AddLine("")
 			FOR n := 0 UPTO oCode:aAccelResource:Count - 1
-				oStream:Editor:AddLine(oCode:aAccelResource[n])
+				oStream:CodeManager:AddLine(oCode:aAccelResource[n])
 			NEXT
 		END IF
 
@@ -212,19 +218,18 @@ PARTIAL CLASS VOMenuEditor INHERIT DesignerBase
 	METHOD SavePrg(oStream AS EditorStream , oCode AS CodeContents) AS LOGIC
 		LOCAL cName AS STRING
 		cName := SELF:oMainNode:oDesign:Name
-		oStream:Editor:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
-		oStream:Editor:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
+		oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Class , oCode:aClass)
+		oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aConstructor)
 		IF SELF:HasAccelerators
 			cName := SELF:oMainNode:oDesign:Name + "_Accelerator"
-			oStream:Editor:ReplaceEntity(cName , cName , EntityType._Class , oCode:aAccelClass)
-			oStream:Editor:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aAccelConstructor)
+			oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Class , oCode:aAccelClass)
+			oStream:CodeManager:ReplaceEntity(cName , cName , EntityType._Constructor , oCode:aAccelConstructor)
 		END IF
 		oStream:Save()
 	RETURN TRUE
 
 	METHOD SaveVh(oStream AS EditorStream , oCode AS CodeContents) AS LOGIC
-		oStream:Editor:ReplaceDefines(oCode:aDefines, oCode:aDefineValues, TRUE)
-//		oStream:Editor:DeleteDefines(oCode:aDefines)
+		oStream:CodeManager:ReplaceDefines(oCode:aDefines, oCode:aDefineValues, TRUE)
 		oStream:Save()
 	RETURN TRUE
 

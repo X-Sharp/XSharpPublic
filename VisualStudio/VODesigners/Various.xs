@@ -1,7 +1,12 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Windows.Forms
+using System.Drawing
+using System.Collections.Generic
+using System.Collections
 
 //#include "C:\dotNet\vonet\VOEdit\Win32-GlobalDefines.vh"
 #include "VOWin32APILibrary.vh"
@@ -40,32 +45,6 @@ CLASS DesignerClipboardEntry
 		SELF:aSubEntries := ArrayList{}
 	RETURN
 END CLASS
-
-
-STRUCTURE ActionData
-	EXPORT cGuid AS STRING
-	EXPORT cData AS STRING
-	EXPORT oData AS OBJECT
-	EXPORT aData AS ICollection
-	CONSTRUCTOR(_cGuid AS STRING)
-		SELF:cGuid := _cGuid
-        SELF:cData := NULL
-        SELF:oData := NULL
-        SELF:aData := NULL
-	RETURN
-	CONSTRUCTOR(_cGuid AS STRING , _cData AS STRING)
-		SELF(_cGuid)
-		SELF:cData := _cData
-	RETURN
-	CONSTRUCTOR(_cGuid AS STRING , _cData AS STRING , _oData AS OBJECT)
-		SELF(_cGuid, _cData)
-		SELF:oData := _oData
-	RETURN
-	CONSTRUCTOR(_cGuid AS STRING , _cData AS STRING , _oData AS OBJECT , _aData AS ICollection)
-		SELF(_cGuid, _cData, _oData)
-		SELF:aData := _aData
-	RETURN
-END STRUCTURE
 
 
 
@@ -154,17 +133,12 @@ END CLASS
 
 
 
-ENUM EditorStreamType
-	MEMBER None
-	MEMBER Module
-	MEMBER File
-END ENUM
 
 CLASS EditorStream
 	PROTECT eType AS EditorStreamType
 	PROTECT oModule AS XSharp.ProjectAPI.Module
 	PROTECT oStream AS System.IO.FileStream
-	PROTECT oEditor AS VulcanEditor
+	PROTECT oManager AS CodeManager
 	PROTECT oEncoding AS System.Text.Encoding
 
 	CONSTRUCTOR()
@@ -179,7 +153,7 @@ CLASS EditorStream
 			SELF:oModule := XSharp.ProjectAPI.Projects.Find(cFileName)
 			IF SELF:oModule != NULL .and. Funcs.IsModuleOpen(SELF:oModule) ///.and. FALSE
 				aLines := Funcs.BufferToLines(SELF:oModule:SourceCode)
-				SELF:oEditor := VulcanEditor{aLines}
+				SELF:oManager := CodeManager{aLines}
 				SELF:eType := EditorStreamType.Module
 			ELSE
 				SELF:oStream := System.IO.File.Open(cFileName, System.IO.FileMode.OpenOrCreate , System.IO.FileAccess.ReadWrite , System.IO.FileShare.None)
@@ -189,7 +163,7 @@ CLASS EditorStream
 				DO WHILE oReader:Peek() != -1
 					aLines:Add(oReader:ReadLine())
 				END DO
-				SELF:oEditor := VulcanEditor{aLines}
+				SELF:oManager := CodeManager{aLines}
 				SELF:eType := EditorStreamType.File
 			END IF
 		END TRY
@@ -199,8 +173,8 @@ CLASS EditorStream
 	ACCESS IsValid AS LOGIC
 	RETURN SELF:eType != EditorStreamType.None
 
-	ACCESS Editor AS VulcanEditor
-	RETURN SELF:oEditor
+	ACCESS CodeManager AS CodeManager
+	RETURN SELF:oManager
 
 	METHOD Save() AS LOGIC
 		LOCAL oWriter AS System.IO.StreamWriter
@@ -212,7 +186,7 @@ CLASS EditorStream
 			LOCAL nLine := 0 AS INT
 			LOCAL sb    AS System.Text.StringBuilder
 			sb := System.Text.StringBuilder{}
-			oEnumerator := SELF:oEditor:GetEnumerator()
+			oEnumerator := SELF:oManager:GetEnumerator()
 			DO WHILE oEnumerator:MoveNext()
 				nLine ++
 				sb:AppendLine((STRING)oEnumerator:Current )
@@ -223,7 +197,7 @@ CLASS EditorStream
 		CASE SELF:eType == EditorStreamType.File
 			SELF:oStream:SetLength(0)
 			oWriter := System.IO.StreamWriter{SELF:oStream , SELF:oEncoding}
-			oEnumerator := SELF:oEditor:GetEnumerator()
+			oEnumerator := SELF:oManager:GetEnumerator()
 			DO WHILE oEnumerator:MoveNext()
 				oWriter:WriteLine((STRING)oEnumerator:Current)
 			END DO

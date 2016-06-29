@@ -1,23 +1,23 @@
-#using System.Windows.Forms
-#using System.Drawing
-
-ENUM FillUsingType
-	MEMBER UseArray
-	MEMBER UseMethod
-	MEMBER UseServer
-END ENUM
-
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Windows.Forms
+using System.Drawing
 
 CLASS FillUsingClass
 	EXPORT eType AS FillUsingType
 	EXPORT cValue AS STRING
 	EXPORT cField1 AS STRING
 	EXPORT cField2 AS STRING
+
 	CONSTRUCTOR()
 		SELF:cValue := ""
 		SELF:cField1 := ""
 		SELF:cField2 := ""
 	RETURN
+
 	METHOD ToString() AS STRING
 		LOCAL cRet AS STRING
 		SWITCH SELF:eType
@@ -59,7 +59,6 @@ CLASS FillUsingPickerDlg INHERIT Form
 	EXPORT oValue AS FillUsingClass
 
 CONSTRUCTOR(cControl AS STRING , _oValue AS FillUsingClass)
-
 	SUPER()
 
 	SELF:InitializeForm()

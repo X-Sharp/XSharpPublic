@@ -1,7 +1,12 @@
-#using System.Collections
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections
 //#using XSharp.ProjectAPI
 
-SEALED CLASS Vulcan.EntityParser //IMPLEMENTS ILanguageService
+SEALED CLASS EntityParser //IMPLEMENTS ILanguageService
 	//PRIVATE lParsing AS LOGIC
 	CONSTRUCTOR()
 	RETURN
@@ -31,7 +36,7 @@ SEALED CLASS Vulcan.EntityParser //IMPLEMENTS ILanguageService
 			oTypeList:Add(oGlobalScope)
 
 			aSourceLines := System.IO.File.ReadAllLines(oModule:Name)
-			aEntities := VulcanEditor.ParseEntities(aSourceLines)
+			aEntities := VOEditor.ParseEntities(aSourceLines)
 
 			FOR n := 0 UPTO aEntities:Count - 1
 				oInfo := (ParseInfo)aEntities[n]

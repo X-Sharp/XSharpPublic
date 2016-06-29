@@ -1,59 +1,13 @@
-#using System.Collections.Generic
-#using System.Collections
-
-INTERNAL ENUM EntityType AS Int32
-	MEMBER _None := -1
-
-	MEMBER _Class //:= ElementType.Class
-	MEMBER _Structure //:= ElementType.Structure
-	MEMBER _Interface //:= ElementType.Interface
-	MEMBER _VOStruct //:= ElementType.VoStruct
-	MEMBER _Union //:= ElementType.VoStruct
-	MEMBER _Enum //:= ElementType.Enum
-	MEMBER _Delegate //:= ElementType.Delegate
-
-	MEMBER _Constructor //:= ElementType.Constructor
-	MEMBER _Destructor //:= ElementType.Destructor
-
-	MEMBER _IVar //:= ElementType.IVar
-	MEMBER _Method //:= ElementType.Method
-	MEMBER _Access //:= ElementType.Access
-	MEMBER _Assign //:= ElementType.Assign
-	MEMBER _Event //:= ElementType.Event
-
-	MEMBER _Function //:= ElementType.Function
-	MEMBER _Global //:= ElementType.Global
-END ENUM
-
-INTERNAL ENUM AccessLevel
-	MEMBER @@Hidden
-	MEMBER @@Internal
-	MEMBER @@Protected
-	MEMBER @@Public
-	MEMBER @@Static
-END ENUM
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections.Generic
+using System.Collections
 
 
-INTERNAL ENUM LexerStep
-	MEMBER None
-	MEMBER Quote
-	MEMBER DoubleQuote
-	MEMBER Comment
-	MEMBER BlockComment
-END ENUM
-
-INTERNAL ENUM ParseStep
-	MEMBER None
-	MEMBER AfterAs
-	MEMBER AfterInherit
-	MEMBER AfterEnd
-	MEMBER AfterBegin
-	MEMBER AfterBeginNamespace
-	MEMBER AfterSharp
-	MEMBER AfterDefine
-END ENUM
-
-INTERNAL SEALED CLASS ParseInfo
+SEALED CLASS ParseInfo
 	EXPORT cName AS STRING
 	EXPORT cClass AS STRING
 	EXPORT cNameSpace AS STRING
@@ -113,54 +67,10 @@ INTERNAL SEALED CLASS ParseInfo
 	RETURN cRet
 END CLASS
 
-CLASS DefineInfo
-	EXPORT cDefine AS STRING
-	EXPORT nLine AS INT
-	CONSTRUCTOR(_cDefine AS STRING , _nLine AS INT)
-		SUPER()
-		SELF:cDefine := _cDefine
-		SELF:nLine := _nLine
-	RETURN
-END CLASS
 
-INTERNAL STRUCTURE ParseState
-	EXPORT lVisFound AS LOGIC
-	EXPORT lEntityFound AS LOGIC
-	EXPORT lEntityIsClass AS LOGIC
-	EXPORT lFirstChar AS LOGIC
-	EXPORT lFirstWord AS LOGIC
-	EXPORT lInParams AS LOGIC
-	EXPORT lNameFound AS LOGIC
-	EXPORT lField AS LOGIC
-	EXPORT lParam AS LOGIC
-	EXPORT lIgnore AS LOGIC
-	EXPORT lPartial AS LOGIC
-	EXPORT lStatic AS LOGIC
-	EXPORT lFindingType AS LOGIC
-	EXPORT nBracketCount AS INT
-	EXPORT cBracketOpen , cBracketClose AS Char
-	METHOD Reset() AS VOID
-		lVisFound := FALSE
-		lEntityFound := FALSE
-		lEntityIsClass := FALSE
-		lFirstChar := TRUE
-		lFirstWord := TRUE
-		lInParams := FALSE
-		lNameFound := FALSE
-		lField := FALSE
-		lParam := FALSE
-		lIgnore := FALSE
-		lPartial := FALSE
-		lStatic := FALSE
-		lFindingType := FALSE
-		nBracketCount := 0
-		cBracketOpen := ' '
-		cBracketClose := ' '
-	RETURN
-END STRUCTURE
-
-SEALED CLASS VulcanEditor
+SEALED CLASS CodeManager
 	PRIVATE aLines AS List<STRING>
+
 	INTERNAL CONSTRUCTOR(_aLines AS List<STRING>)
 		SUPER()
 		SELF:aLines := _aLines
@@ -169,18 +79,17 @@ SEALED CLASS VulcanEditor
 	RETURN
 
 	METHOD DisplayEntities() AS VOID
-		LOCAL aEntities , aDefines AS ArrayList
 		LOCAL oInfo AS ParseInfo
 		LOCAL cText AS STRING
 		LOCAL n AS INT
 
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aEntities := List<ParseInfo>{}
+		VAR aDefines := List<DefineInfo>{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cText := ""
 		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			cText += oInfo:eType:ToString()
 			cText += e"\t"
 			cText += oInfo:cName
@@ -201,15 +110,14 @@ SEALED CLASS VulcanEditor
 	RETURN
 	
 	INTERNAL METHOD DeleteDefines(aDefines AS List<STRING>) AS VOID
-		LOCAL aOldDefines , aEntities AS ArrayList
 		LOCAL oDefine AS DefineInfo
 		LOCAL n , m AS INT
 		
-		aOldDefines := ArrayList{}
-		aEntities := ArrayList{}
+		VAR aEntities   := List<ParseInfo>{}
+		VAR aOldDefines := List<DefineInfo>{}
 		SELF:Parse(aEntities , aOldDefines)
 		FOR n := aOldDefines:Count -1 DOWNTO 0
-			oDefine := (DefineInfo)aOldDefines[n]
+			oDefine := aOldDefines[n]
 			FOR m := 0 UPTO aDefines:Count - 1
 				IF oDefine:cDefine == aDefines[m]:ToUpper()
 					SELF:aLines:RemoveAt(oDefine:nLine)
@@ -220,15 +128,14 @@ SEALED CLASS VulcanEditor
 	RETURN
 
 	INTERNAL METHOD ReplaceDefines(aDefines AS List<STRING> , aDefineValues AS List<STRING> , lEnd AS LOGIC) AS VOID
-		LOCAL aOldDefines , aEntities AS ArrayList
 		LOCAL oDefine AS DefineInfo
 		LOCAL n , m AS INT
 		
-		aOldDefines := ArrayList{}
-		aEntities := ArrayList{}
+		VAR aEntities   := List<ParseInfo>{}
+		VAR aOldDefines := List<DefineInfo>{}
 		SELF:Parse(aEntities , aOldDefines)
 		FOR n := aOldDefines:Count -1 DOWNTO 0
-			oDefine := (DefineInfo)aOldDefines[n]
+			oDefine := aOldDefines[n]
 			FOR m := 0 UPTO aDefines:Count - 1
 				IF oDefine:cDefine == aDefines[m]:ToUpper()
 					SELF:aLines:RemoveAt(oDefine:nLine)
@@ -246,18 +153,18 @@ SEALED CLASS VulcanEditor
 	RETURN
 	
 	INTERNAL METHOD FindEntityLine(cName AS STRING , cClass AS STRING , eType AS EntityType) AS INT
-		LOCAL aEntities , aDefines AS ArrayList
-		LOCAL oInfo AS ParseInfo
+
+        LOCAL oInfo AS ParseInfo
 		LOCAL n AS INT
 		
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aEntities := List<ParseInfo>{}
+		VAR aDefines  := List<DefineInfo>{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cName := cName:ToUpper()
 		cClass := cClass:ToUpper()
 		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			IF oInfo:eType == eType .and. oInfo:cName:ToUpper() == cName .and. oInfo:cClass:ToUpper() == cClass
 				RETURN oInfo:nLine
 			ENDIF
@@ -265,19 +172,18 @@ SEALED CLASS VulcanEditor
 	RETURN 0
 
 	INTERNAL METHOD DeleteEntity(cName AS STRING , cClass AS STRING , eType AS EntityType) AS LOGIC
-		LOCAL aEntities , aDefines AS ArrayList
-		LOCAL oInfo AS ParseInfo
+        LOCAL oInfo AS ParseInfo
 		LOCAL nLine AS INT
 		LOCAL n,m AS INT
 		
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aDefines := List<DefineInfo>{}
+		VAR aEntities := List<ParseInfo>{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cName := cName:ToUpper()
 		cClass := cClass:ToUpper()
 		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			IF oInfo:eType == eType .and. oInfo:cName:ToUpper() == cName .and. oInfo:cClass:ToUpper() == cClass
 				nLine := oInfo:nLine
 				FOR m := 1 UPTO oInfo:nLength
@@ -289,19 +195,18 @@ SEALED CLASS VulcanEditor
 	RETURN FALSE
 
 	INTERNAL METHOD DeleteClass(cClass AS STRING) AS LOGIC
-		LOCAL aEntities , aDefines AS ArrayList
 		LOCAL oInfo AS ParseInfo
 		LOCAL lFound := FALSE AS LOGIC
 		LOCAL nLine AS INT
 		LOCAL n,m AS INT
 		
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aEntities := List<ParseInfo>{}
+		VAR aDefines := List<DefineInfo>{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cClass := cClass:ToUpper()
 		FOR n := aEntities:Count - 1 DOWNTO 0
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			IF oInfo:cClass:ToUpper() == cClass
 				lFound := TRUE
 				IF oInfo:nEndClassLine != 0
@@ -316,21 +221,20 @@ SEALED CLASS VulcanEditor
 	RETURN lFound
 
 	INTERNAL METHOD ReplaceEntity(cName AS STRING , cClass AS STRING , eType AS EntityType , aEntity AS List<STRING>) AS LOGIC
-		LOCAL aEntities , aDefines AS ArrayList
 		LOCAL oInfo AS ParseInfo
 		LOCAL lProceed := FALSE AS LOGIC
 		LOCAL nInsert := 0 AS INT
 		LOCAL nLine AS INT
 		LOCAL n,m AS INT
 		
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aEntities := List<ParseInfo>{}
+		VAR aDefines := List<DefineInfo>{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cName := cName:ToUpper()
 		cClass := cClass:ToUpper()
 		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			IF oInfo:eType == eType .and. oInfo:cName:ToUpper() == cName .and. oInfo:cClass:ToUpper() == cClass
 				IF eType == EntityType._Class
 					aEntity[0] := oInfo:cModifiers + aEntity[0]
@@ -358,7 +262,7 @@ SEALED CLASS VulcanEditor
 				aEntity:Add("END CLASS")
 			CASE eType == EntityType._Constructor // Create it, after the class definition
 				FOR n := 0 UPTO aEntities:Count - 1
-					oInfo := (ParseInfo)aEntities[n]
+					oInfo := aEntities[n]
 					IF oInfo:eType == EntityType._Class .and. oInfo:cName:ToUpper() == cClass .and. oInfo:cClass:ToUpper() == cClass
 						lProceed := TRUE
 						nInsert := oInfo:nLine + oInfo:nLength - 1
@@ -367,7 +271,7 @@ SEALED CLASS VulcanEditor
 				NEXT
 			CASE eType == EntityType._Access .or. eType == EntityType._Assign .or. eType == EntityType._Method // Create it, at the end of the class
 				FOR n := 0 UPTO aEntities:Count - 1
-					oInfo := (ParseInfo)aEntities[n]
+					oInfo := aEntities[n]
 					IF oInfo:cClass:ToUpper() == cClass
 						lProceed := TRUE
 						nInsert := oInfo:nLine + oInfo:nLength - 1
@@ -385,27 +289,26 @@ SEALED CLASS VulcanEditor
 	RETURN lProceed
 
 	INTERNAL METHOD AddEntity(cName AS STRING , cClass AS STRING , eType AS EntityType , aEntity AS List<STRING>) AS LOGIC
-		LOCAL aEntities , aDefines AS ArrayList
-		LOCAL oInfo AS ParseInfo
+        LOCAL oInfo AS ParseInfo
 		LOCAL lProceed:= FALSE  AS LOGIC
 		LOCAL nInsert := 0 AS INT
 		LOCAL n AS INT
 		
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aEntities := List<ParseInfo>{}
+		VAR aDefines := List<DefineInfo>{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cName := cName:ToUpper()
 		cClass := cClass:ToUpper()
 		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			IF oInfo:eType == eType .and. oInfo:cName:ToUpper() == cName .and. oInfo:cClass:ToUpper() == cClass
 				RETURN TRUE
 			ENDIF
 		NEXT
 		
 		FOR n := 0 UPTO aEntities:Count - 1 // find last entity in class
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			IF oInfo:cClass:ToUpper() == cClass
 				lProceed := TRUE
 				nInsert := oInfo:nLine + oInfo:nLength - 1
@@ -421,18 +324,17 @@ SEALED CLASS VulcanEditor
 	RETURN lProceed
 
 	INTERNAL METHOD GetLastClassLine(cClass AS STRING) AS INT
-		LOCAL aEntities , aDefines AS ArrayList
 		LOCAL oInfo AS ParseInfo
 		LOCAL nLine := 0 AS INT
 		LOCAL n AS INT
 		
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aEntities := List<ParseInfo>{}
+		VAR aDefines := List<DefineInfo>{}
 		
 		SELF:Parse(aEntities , aDefines)
 		cClass := cClass:ToUpper()
 		FOR n := 0 UPTO aEntities:Count - 1
-			oInfo := (ParseInfo)aEntities[n]
+			oInfo := aEntities[n]
 			IF oInfo:cClass:ToUpper() == cClass
 				nLine := oInfo:nLine + oInfo:nLength - 1
 			ENDIF
@@ -440,28 +342,29 @@ SEALED CLASS VulcanEditor
 	RETURN nLine
 
 	INTERNAL METHOD GetFirstEntity() AS ParseInfo
-		LOCAL aEntities , aDefines AS ArrayList
-		aEntities := ArrayList{}
-		aDefines := ArrayList{}
+		VAR aEntities := List<ParseInfo>{}
+		VAR aDefines := List<DefineInfo>{}
 		SELF:Parse(aEntities , aDefines)
 		IF aEntities:Count != 0
-			RETURN (ParseInfo)aEntities[0]
+			RETURN aEntities[0]
 		END IF
 	RETURN NULL
 	
-	INTERNAL STATIC METHOD ParseEntities(oSource AS IEnumerable) AS ArrayList
-		LOCAL oEditor AS VulcanEditor
-		oEditor := VulcanEditor{}
-	RETURN oEditor:Parse(oSource , TRUE)
-	METHOD Parse(oSource AS IEnumerable , lIntellisense AS LOGIC) AS ArrayList
-		LOCAL aEntities AS ArrayList
-		aEntities := ArrayList{}
+	INTERNAL STATIC METHOD ParseEntities(oSource AS IEnumerable) AS IList<ParseInfo>
+		LOCAL oManager AS CodeManager
+		oManager := CodeManager{}
+	RETURN oManager:Parse(oSource , TRUE)
+
+	METHOD Parse(oSource AS IEnumerable , lIntellisense AS LOGIC) AS IList<ParseInfo>
+		VAR aEntities := List<ParseInfo>{}
 		SELF:Parse(oSource , aEntities , NULL , lIntellisense)
 	RETURN aEntities
-	PRIVATE METHOD Parse(aEntities AS ArrayList , aDefines AS ArrayList) AS VOID
+
+	PRIVATE METHOD Parse(aEntities AS IList<ParseInfo> , aDefines AS IList<DefineInfo>) AS VOID
 		SELF:Parse(SELF:aLines , aEntities , aDefines , FALSE)
 	RETURN
-	PRIVATE METHOD Parse(oSource AS IEnumerable , aEntities AS ArrayList , aDefines AS ArrayList , lIntellisense AS LOGIC) AS VOID
+    
+	PRIVATE METHOD Parse(oSource AS IEnumerable , aEntities AS IList<ParseInfo> , aDefines AS IList<DefineInfo> , lIntellisense AS LOGIC) AS VOID
 	
 		LOCAL oEnumerator AS IEnumerator
 		LOCAL cLine AS STRING
@@ -489,7 +392,7 @@ SEALED CLASS VulcanEditor
 		LOCAL eAccessLevel AS AccessLevel
 		LOCAL eLexer AS LexerStep
 		LOCAL eStep AS ParseStep
-		LOCAL aFields AS ArrayList
+		LOCAL aFields AS List<ParseInfo>
 		LOCAL aNameSpaces AS Stack<STRING>
 		LOCAL cNameSpace AS STRING
 		LOCAL n,n1,n2 AS INT
@@ -503,7 +406,7 @@ SEALED CLASS VulcanEditor
 		IF aDefines != NULL
 			aDefines:Clear()
 		END IF
-		aFields := ArrayList{}
+		aFields := List<ParseInfo>{}
 		
 		cNameSpace := ""
 		cClass := ""
@@ -577,34 +480,18 @@ SEALED CLASS VulcanEditor
 
 				IF state:nBracketCount == 0 .and. .not. state:lFindingType
 					IF cOldChar == '{' .or. cOldChar == '['
-						DO CASE
-						CASE cOldChar == '{'
+						SWITCH cOldChar
+						CASE  '{'
 							state:cBracketOpen := '{'
 							state:cBracketClose := '}'
-						CASE cOldChar == '['
+						CASE '['
 							state:cBracketOpen := '['
 							state:cBracketClose := ']'
-						END CASE
+						END SWITCH
 						state:nBracketCount := 1
 					END IF
 				END IF
 
-				
-/*				// performance hack
-				IF state:lIgnore
-					DO WHILE nChar < nLineLen
-						cChar := cLine[nChar]
-						IF cChar != '/' .and. cChar != '"' .and. cChar != '*' .and. cChar != ';'
-							cRealChar := cChar
-							nChar ++
-						ELSE
-							EXIT
-						END IF
-					END DO
-					IF nChar >= nLineLen
-						EXIT
-					END IF
-				END IF*/
 
 				IF nChar == nLineLen
 					cChar := ' '
@@ -690,7 +577,7 @@ SEALED CLASS VulcanEditor
 					END IF
 					lIsBreakChar := FALSE
 				ELSE
-					lIsBreakChar := VulcanEditor.hBrk:ContainsKey(cChar)
+					lIsBreakChar := CodeManager.hBrk:ContainsKey(cChar)
 				END IF
 				IF .not. (lIsBreakChar .or. lIsSpaceChar)
 					sWord:Append(cChar)
@@ -721,7 +608,7 @@ SEALED CLASS VulcanEditor
 							state:lInParams := TRUE
 						END IF
 					END IF
-				CASE .not. lEscapedWord .and. VulcanEditor.hVis:ContainsKey(cUpperWord)
+				CASE .not. lEscapedWord .and. CodeManager.hVis:ContainsKey(cUpperWord)
 					state:lVisFound := TRUE
 					IF .not. lIntellisense
 						cModifiers += cUpperWord + " "
@@ -747,7 +634,7 @@ SEALED CLASS VulcanEditor
 							state:lField := TRUE
 						END IF
 					END IF
-				CASE .not. lEscapedWord .and. VulcanEditor.hEnt:ContainsKey(cUpperWord)
+				CASE .not. lEscapedWord .and. CodeManager.hEnt:ContainsKey(cUpperWord)
 					lInEnum := FALSE
 					state:lField := FALSE
 					IF state:lEntityFound
@@ -772,7 +659,7 @@ SEALED CLASS VulcanEditor
 							oInfo:nLength := nLine - oInfo:nLine
 						ENDIF
 						oInfo := ParseInfo{}
-						oInfo:eType := VulcanEditor.GetEntityType(cUpperWord)
+						oInfo:eType := CodeManager.GetEntityType(cUpperWord)
 						IF state:lEntityIsClass
 							DO CASE
 							CASE cUpperWord == "CLASS"
@@ -905,7 +792,7 @@ SEALED CLASS VulcanEditor
 								cEnumType := cWord
 							ELSEIF state:lField
 								FOR n := 0 UPTO aFields:Count - 1
-									((ParseInfo)aFields[n]):cRetType := cWord
+									aFields[n]:cRetType := cWord
 								NEXT
 							END IF
 							eStep := ParseStep.None
@@ -1094,8 +981,9 @@ SEALED CLASS VulcanEditor
 	STATIC PRIVATE  hVis , hEnt AS Dictionary<STRING,STRING>
 	STATIC PRIVATE  hBrk AS Dictionary<Char,Char>
 	STATIC CONSTRUCTOR()
-		VulcanEditor.InitHashTables()
+		CodeManager.InitHashTables()
 	RETURN
+
 	PRIVATE STATIC METHOD InitHashTables() AS VOID
 		LOCAL aWords AS STRING[]
 		LOCAL cBreak AS STRING
@@ -1103,23 +991,23 @@ SEALED CLASS VulcanEditor
 		
 		aWords := <STRING>{"VIRTUAL", "PARTIAL", "_DLL", "ABSTRACT", "SEALED", ;
 		"INTERNAL", "HIDDEN", "STATIC", "PROTECTED", "INSTANCE", "PROTECT", "PRIVATE", "PUBLIC", "EXPORT", "CONST", "INITONLY", "MEMBER" , "GLOBAL"}
-		VulcanEditor.hVis := Dictionary<STRING,STRING>{20}
+		CodeManager.hVis := Dictionary<STRING,STRING>{20}
 		FOR n := 1 UPTO aWords:Length
-			VulcanEditor.hVis:Add(aWords[n] , aWords[n])
+			CodeManager.hVis:Add(aWords[n] , aWords[n])
 		NEXT
 	
 		aWords := <STRING>{"CLASS", "METHOD", "ACCESS", "ASSIGN", ;
 		"CONSTRUCTOR" , "DESTRUCTOR", "FUNCTION", "PROCEDURE", "FUNC", "PROC",;
 		"GLOBAL", "ENUM", "STRUCTURE", "VOSTRUCT", "STRUCT", "UNION", "DELEGATE", "EVENT"}
-		VulcanEditor.hEnt := Dictionary<STRING,STRING>{20}
+		CodeManager.hEnt := Dictionary<STRING,STRING>{20}
 		FOR n := 1 UPTO aWords:Length
-			VulcanEditor.hEnt:Add(aWords[n] , aWords[n])
+			CodeManager.hEnt:Add(aWords[n] , aWords[n])
 		NEXT
 
 		cBreak := e",./;:[]<>?{}`~!@#$%^&*()-=\\+|'\""
-		VulcanEditor.hBrk := Dictionary<Char,Char>{50}
+		CodeManager.hBrk := Dictionary<Char,Char>{50}
 		FOR n := 0 UPTO cBreak:Length - 1
-			VulcanEditor.hBrk:Add(cBreak[n] , cBreak[n])
+			CodeManager.hBrk:Add(cBreak[n] , cBreak[n])
 		NEXT
 		
 	RETURN

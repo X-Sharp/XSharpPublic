@@ -1,122 +1,19 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
-#using System.IO
-#using System.Text
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Windows.Forms
+using System.Drawing
+using System.Collections.Generic
+using System.Collections
+using System.IO
+using System.Text
 
 
 //#include "C:\dotNet\vonet\VOEdit\Win32-GlobalDefines.vh"
 #include "VOWin32APILibrary.vh"
 
-[Flags];
-ENUM Direction
-	MEMBER None := 0
-	MEMBER Left := 1
-	MEMBER Right := 2
-	MEMBER Up := 4
-	MEMBER Down := 8
-END ENUM
-
-ENUM WEDAction
-	MEMBER None
-	MEMBER Create
-	MEMBER Resize
-	MEMBER Move
-	MEMBER Select
-END ENUM
-
-ENUM DesignerActionType
-	
-	MEMBER Select
-	MEMBER SelectAdd
-	MEMBER SelectAll
-	MEMBER SelectAllChildren
-	MEMBER SelectDefault
-	MEMBER DeSelect
-	MEMBER DeSelectAll
-	MEMBER RemoveSelected
-	
-	MEMBER AlignLeft
-	MEMBER AlignRight
-	MEMBER AlignTop
-	MEMBER AlignBottom
-	MEMBER AlignCenterHorz
-	MEMBER AlignCenterVert
-	MEMBER ResizeAlignLeft
-	MEMBER ResizeAlignRight
-	MEMBER ResizeAlignTop
-	MEMBER ResizeAlignBottom
-	MEMBER SameSize
-	MEMBER SameHorSize
-	MEMBER SameVerSize
-
-	MEMBER CenterHorz
-	MEMBER CenterVert
-
-	MEMBER SpacingVertInc
-	MEMBER SpacingVertDec
-	MEMBER SpacingVertRem
-	MEMBER SpacingVertEqual
-
-	MEMBER SpacingHorzInc
-	MEMBER SpacingHorzDec
-	MEMBER SpacingHorzRem
-	MEMBER SpacingHorzEqual
-	
-	MEMBER Cut
-	MEMBER Copy
-	MEMBER Paste
-
-	MEMBER Undo
-	MEMBER Redo
-
-	MEMBER ToggleLock
-	MEMBER BringToFront
-	MEMBER SendToBack
-
-	MEMBER AddPage
-	MEMBER DeletePage
-	MEMBER AddColumn
-	
-	MEMBER Properties
-	MEMBER AttachToolStripDesigner
-	MEMBER AttachDataGridViewDesigner
-	
-	MEMBER TestDesigner
-
-	MEMBER Promote
-	MEMBER Demote
-	MEMBER Add
-	MEMBER AddSub
-	MEMBER Insert
-	MEMBER Edit
-	MEMBER MoveUp
-	MEMBER MoveDown
-
-	MEMBER ComponentMainMenu
-	MEMBER ComponentContextMenu
-
-	MEMBER ComponentToolStrip
-	MEMBER ComponentMenuStrip
-	MEMBER ComponentContextMenuStrip
-	MEMBER ComponentStatusStrip
-	MEMBER ComponentBindingNavigator
-
-	MEMBER ComponentImageList
-	
-END ENUM
-
-ENUM DesignerBasicActionType
-	MEMBER Create
-	MEMBER Remove
-	MEMBER SetParent
-	MEMBER SetIndex
-	MEMBER SetProperty
-
-	MEMBER Promote
-	MEMBER Demote
-END ENUM
 
 CLASS DesignerBasicAction
 	EXPORT eAction AS DesignerBasicActionType
@@ -469,50 +366,47 @@ ABSTRACT CLASS WindowDesignerBase INHERIT DesignerBase
 
 	STATIC INTERNAL METHOD HandleWndProc(oDesign AS DesignWindowItem , m REF Message) AS LOGIC
 	LOCAL oPoint AS Point
-	
-	DO CASE
-	CASE m:Msg == WM_SETFOCUS
-		RETURN TRUE
-	CASE m:Msg == WM_NCHITTEST
-//		m:Result := 0x12
+    LOCAL lHandled as LOGIC	
+    lHandled := TRUE
+	SWITCH m:Msg
+	CASE WM_SETFOCUS
+		NOP
+
+	CASE WM_NCHITTEST
 		m:Result := 0x02
-		RETURN TRUE
-	CASE m:Msg == WM_NCLBUTTONDBLCLK
+
+	CASE WM_NCLBUTTONDBLCLK
 		oPoint := IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDoubleClick(oDesign,MouseButtons.Left,oPoint)
-		RETURN TRUE
-	CASE m:Msg == WM_NCMOUSEMOVE
+        
+	CASE WM_NCMOUSEMOVE
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseMove(oDesign,MouseButtons.None,oPoint)
-		RETURN TRUE
 	
-	CASE m:Msg == WM_NCLBUTTONDOWN
+	CASE WM_NCLBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Left,oPoint)
-		RETURN TRUE
-	CASE m:Msg == WM_NCLBUTTONUP
+
+	CASE WM_NCLBUTTONUP
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseUp(oDesign,MouseButtons.Left,oPoint)
-		RETURN TRUE
 	
-	CASE m:Msg == WM_NCRBUTTONDOWN
+	CASE WM_NCRBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Right,oPoint)
-		RETURN TRUE
-	CASE m:Msg == WM_NCMBUTTONDOWN
+
+	CASE WM_NCMBUTTONDOWN
 		oPoint := WindowDesignerBase.IntPtrToPoint(m:LParam)
 		((VOWindowEditor)oDesign:Designer):ControlMouseDown(oDesign,MouseButtons.Middle,oPoint)
-		RETURN TRUE
 
-	CASE m:Msg == WM_SETCURSOR
-		RETURN TRUE
+	CASE WM_SETCURSOR
+		NOP
 
-	END CASE
+    OTHERWISE
+        lHandled := FALSE
+	END SWITCH
 	
-	RETURN FALSE
-
-// make sure overflow checks are off. On a multi monitor system we may get negative screen
-// coordinates that would otherwise cause an overflow
+	RETURN lHandled
 
     STATIC METHOD IntPtrToPoint(LParam AS IntPtr) AS Point
         LOCAL d := (DWORD)LParam AS DWORD
@@ -529,73 +423,60 @@ END CLASS
 
 
 CLASS DesignItem
-//	PROTECT aProperties AS List<DesignProperty>
 	EXPORT aProperties AS ArrayList
 	PROTECT oDesigner AS DesignerBase
-//	PROTECT oControl AS OBJECT
 	EXPORT cGuid AS STRING
 	EXPORT lSelected AS LOGIC
 	EXPORT lDefault AS LOGIC
 	EXPORT lLocked AS LOGIC
 	EXPORT aPages AS List<STRING>
 	CONSTRUCTOR(_oDesigner AS DesignerBase)
-//	CONSTRUCTOR(_oDesigner AS DesignerBase , _oControl AS OBJECT)
 		SUPER()
 		SELF:aProperties := ArrayList{}
-//		SELF:oControl := _oControl
 		SELF:oDesigner := _oDesigner
 		SELF:cGuid := Guid.NewGuid():ToString()
 	RETURN
 
 	ACCESS Designer() AS DesignerBase
-	RETURN SELF:oDesigner
-//	ACCESS Control() AS OBJECT
-//	RETURN SELF:oControl
+    	RETURN SELF:oDesigner
 
 	METHOD AddProperty(oProp AS DesignProperty) AS VOID
 		SELF:aProperties:Add(oProp)
 	RETURN
+
 	METHOD GetProperty(nProp AS INT) AS VODesignProperty
-	RETURN (VODesignProperty)SELF:aProperties[nProp]
-	METHOD GetProperty(cName AS STRING) AS VODesignProperty
-		LOCAL oProp AS VODesignProperty
-		LOCAL n AS INT
+	    RETURN (VODesignProperty)SELF:aProperties[nProp]
+	
+    METHOD GetProperty(cName AS STRING) AS VODesignProperty
 		cName := cName:ToUpper()
-		FOR n := 0 UPTO SELF:aProperties:Count - 1
-			oProp := (VODesignProperty)SELF:aProperties[n]
+		FOREACH oProp as VODesignProperty in SELF:aProperties
 			IF oProp:Name:ToUpper() == cName
 				RETURN oProp
 			ENDIF
 		NEXT
 	RETURN NULL
+
 	METHOD GetPropertyByCaption(cCaption AS STRING) AS VODesignProperty
-		LOCAL oProp AS VODesignProperty
-		LOCAL n AS INT
 		cCaption := cCaption:ToUpper()
-		FOR n := 0 UPTO SELF:aProperties:Count - 1
-			oProp := (VODesignProperty)SELF:aProperties[n]
+		FOREACH oProp as VODesignProperty in SELF:aProperties
 			IF oProp:Caption:ToUpper() == cCaption
 				RETURN oProp
 			ENDIF
 		NEXT
 	RETURN NULL
-	METHOD GetPropertyByMember(cMember AS STRING) AS VODesignProperty
-		LOCAL oProp AS VODesignProperty
-		LOCAL n AS INT
+	
+    METHOD GetPropertyByMember(cMember AS STRING) AS VODesignProperty
 		cMember := cMember:ToUpper()
-		FOR n := 0 UPTO SELF:aProperties:Count - 1
-			oProp := (VODesignProperty)SELF:aProperties[n]
+		FOREACH oProp as VODesignProperty in SELF:aProperties
 			IF oProp:cMember != NULL .and. oProp:cMember:ToUpper() == cMember
 				RETURN oProp
 			ENDIF
 		NEXT
 	RETURN NULL
-	METHOD GetPropertyByMemberAndPos(cMember AS STRING , nMultiPos AS INT) AS VODesignProperty
-		LOCAL oProp AS VODesignProperty
-		LOCAL n AS INT
+	
+    METHOD GetPropertyByMemberAndPos(cMember AS STRING , nMultiPos AS INT) AS VODesignProperty
 		cMember := cMember:ToUpper()
-		FOR n := 0 UPTO SELF:aProperties:Count - 1
-			oProp := (VODesignProperty)SELF:aProperties[n]
+		FOREACH oProp as VODesignProperty in SELF:aProperties
 			IF oProp:cMember != NULL .and. oProp:cMember:ToUpper() == cMember .and. oProp:nMultiPos == nMultiPos
 				RETURN oProp
 			ENDIF

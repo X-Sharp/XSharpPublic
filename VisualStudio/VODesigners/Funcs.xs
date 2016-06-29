@@ -1,52 +1,23 @@
-//#include "..\..\Common\Constants.prg"
-#using System.Collections.Generic
-#using SWF := System.Windows.Forms
-#using System.Drawing
-#using System.Runtime.InteropServices
-#using System.IO
-#using System.Xml
-#using XSharp.VOEditors
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+//
+
+using System.Collections.Generic
+using SWF := System.Windows.Forms
+using System.Drawing
+using System.Runtime.InteropServices
+using System.IO
+using System.Xml
+using XSharp.VOEditors
 
 
 INTERNAL _DLL FUNCTION GetDialogBaseUnits() AS LONG PASCAL:USER32.GetDialogBaseUnits
 INTERNAL _DLL FUNCTION SelectObject(hDC AS IntPtr, hgdiobj AS IntPtr) AS IntPtr PASCAL:GDI32.SelectObject
 INTERNAL _DLL FUNCTION GetTextExtentPoint32 ( hDC AS IntPtr , lpString AS STRING,cbString AS Int32 , lpSize REF _winSIZE) AS LOGIC PASCAL:GDI32.GetTextExtentPoint32W
 INTERNAL _DLL FUNC GetTextMetrics(hDC AS IntPtr, lpMetries REF _winTEXTMETRIC) AS LOGIC PASCAL:GDI32.GetTextMetricsA
-[StructLayout(LayoutKind.Sequential)];
-INTERNAL STRUCT _winTEXTMETRIC
-   EXPORT tmHeight AS LONG
-   EXPORT tmAscent AS LONG
-   EXPORT tmDescent AS LONG
-   EXPORT tmInternalLeading AS LONG
-   EXPORT tmExternalLeading AS LONG
-   EXPORT tmAveCharWidth AS LONG
-   EXPORT tmMaxCharWidth AS  LONG
-   EXPORT tmWeight AS LONG
-   EXPORT tmOverhang AS LONG
-   EXPORT tmDigitizedAspectX AS LONG
-   EXPORT tmDigitizedAspectY AS LONG
-   EXPORT tmFirstChar AS BYTE
-   EXPORT tmLastChar AS BYTE
-   EXPORT tmDefaultChar AS BYTE
-   EXPORT tmBreakChar AS BYTE
-   EXPORT tmItalic AS BYTE
-   EXPORT tmUnderlined AS BYTE
-   EXPORT tmStruckOut AS BYTE
-   EXPORT tmPitchAndFamily AS BYTE
-   EXPORT tmCharSet AS BYTE
-END STRUCTURE
-[StructLayout(LayoutKind.Sequential)];
-INTERNAL STRUCT _winSIZE
-   EXPORT cx AS Int32
-   EXPORT cy AS Int32
-END STRUCTURE
-
-INTERNAL STRUCTURE UnitTranslateInfo
-   EXPORT tmWidth AS INT
-   EXPORT tmHeight AS INT
-   EXPORT nBaseUnitX AS INT
-   EXPORT nBaseUnitY AS INT
-END STRUCTURE
 
 INTERNAL STATIC PARTIAL CLASS Funcs
    STATIC PRIVATE cInstallTemplatesFolder := NULL AS STRING

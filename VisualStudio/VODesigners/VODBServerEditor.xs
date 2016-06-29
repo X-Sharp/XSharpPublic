@@ -1,9 +1,14 @@
-#using System.Collections
-#using System.Collections.Generic
-#using System.Windows.Forms
-#using System.Drawing
-#using System.IO
-#using XSharp.VOEditors
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections
+using System.Collections.Generic
+using System.Windows.Forms
+using System.Drawing
+using System.IO
+using XSharp.VOEditors
 
 PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	
@@ -98,7 +103,6 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		
 		SELF:oExportButton:Click += EventHandler{SELF , @ExportDbfClicked()}
 		SELF:oImportButton:Click += EventHandler{SELF , @ImportDbfClicked()}
-//		SELF:oExportButton:Enabled := FALSE
 		SELF:oNameEdit:ReadOnly := TRUE
 
 		SELF:oTimer:Start()
@@ -158,9 +162,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	RETURN
 
 	METHOD CheckIfValid() AS LOGIC
-		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL aDesign AS ArrayList
-		LOCAL n AS INT
 
 		IF .not. IsNameValid(SELF:oMainDesign)
 			Funcs.WarningBox("DBServer name is not valid." , "DBServer Editor")
@@ -176,8 +178,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			Funcs.WarningBox("No fields included in the DBServer" , "DBServer Editor")
 			RETURN FALSE
 		ENDIF
-		FOR n := 0 UPTO aDesign:Count - 1
-			oDesign := (DBEDesignDBServer)aDesign[n]
+		FOREACH oDesign as DBEDesignDBServer in aDesign
 			IF oDesign:GetProperty("fldname"):TextValue:Trim() == "" .or. oDesign:GetProperty("classname"):TextValue:Trim() == "" .or. ;
 					oDesign:GetProperty("hlname"):TextValue:Trim() == "" .or. oDesign:GetProperty("type"):IsAuto .or. ;
 					oDesign:GetProperty("len"):IsAuto .or. .not. IsNameValid(oDesign)
@@ -187,8 +188,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 		NEXT
 		
 		aDesign := SELF:GetAllDesignItems(DBServerItemType.Index)
-		FOR n := 0 UPTO aDesign:Count - 1
-			oDesign := (DBEDesignDBServer)aDesign[n]
+		FOREACH oDesign as DBEDesignDBServer in aDesign
 			IF .not. IsFileNameValid(oDesign:GetProperty("filename"):TextValue)
 				Funcs.WarningBox("Index Filename " + oDesign:GetProperty("filename"):TextValue + " is not valid." , "DBServer Editor")
 				RETURN FALSE
@@ -532,11 +532,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	RETURN TRUE
 
 	METHOD ExportIndexes(cDbfFileName AS STRING) AS LOGIC
-		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL aDesign AS ArrayList
 		LOCAL lSuccess AS LOGIC
 		LOCAL cDriver AS STRING
-		LOCAL n AS INT
 
 		cDriver := SELF:oMainDesign:GetProperty("rdd"):TextValue:Trim():ToUpper()
 		IF cDriver == String.Empty
@@ -545,8 +543,7 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 		aDesign := SELF:GetAllDesignItems(DBServerItemType.Index)
 		lSuccess := TRUE
-		FOR n := 0 UPTO aDesign:Count - 1
-			oDesign := (DBEDesignDBServer)aDesign[n]
+        FOREACH oDesign as DBEDesignDBServer in aDesign
 			TRY
 				lSuccess := lSuccess .and. SELF:ExportIndex(oDesign , cDbfFileName , cDriver)
 			CATCH e AS Exception
@@ -730,11 +727,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 			END CASE
 			
 			IF System.Array.IndexOf(<STRING>{"fldname","pos","included","caption","description","classname"} , oProp:Name) == -1
-				LOCAL oTestField AS DBEDesignDBServer
 				LOCAL aDesign AS ArrayList
 				aDesign := SELF:GetAllDesignItems(DBServerItemType.Field)
-				FOR n := 0 UPTO aDesign:Count - 1
-					oTestField := (DBEDesignDBServer)aDesign[n]
+				FOREACH oTestField as DBEDesignDBServer in aDesign
 					IF oTestField != oDesign .and. oTestField:GetProperty("classname"):TextValue:ToUpper() == oDesign:GetProperty("classname"):TextValue:ToUpper()
 						IF oProp:TextValue != oTestField:GetProperty(oProp:Name):TextValue
 							SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oTestField:cGuid , oProp:Name , oProp:Value})
@@ -783,22 +778,23 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	METHOD GetAllDesignItems(eType AS DBServerItemType) AS ArrayList
 		LOCAL aDesign := ArrayList{} AS ArrayList
 		LOCAL oDesign AS DBEDesignDBServer
-		LOCAL n,m AS INT
+		LOCAL m AS INT
 		DO CASE
 		CASE eType == DBServerItemType.DBServer
 			aDesign:Add(SELF:oMainDesign)
 		CASE eType == DBServerItemType.Field
-			FOR n := 0 UPTO SELF:oFieldList:Items:Count - 1
-				aDesign:Add(((DBEDesignListViewItem)SELF:oFieldList:Items[n]):oDesign)
+			FOREACH oItem as DBEDesignListViewItem in SELF:oFieldList:Items
+				oDesign := oItem:oDesign
+				aDesign:Add(oDesign)
 			NEXT
 		CASE eType == DBServerItemType.Index
-			FOR n := 0 UPTO SELF:oIndexList:Items:Count - 1
-				oDesign := ((DBEDesignListViewItem)SELF:oIndexList:Items[n]):oDesign
+			FOREACH oItem as DBEDesignListViewItem in SELF:oFieldList:Items
+				oDesign := oItem:oDesign
 				aDesign:Add(oDesign)
 			NEXT
 		CASE eType == DBServerItemType.Order
-			FOR n := 0 UPTO SELF:oIndexList:Items:Count - 1
-				oDesign := ((DBEDesignListViewItem)SELF:oIndexList:Items[n]):oDesign
+			FOREACH oItem as DBEDesignListViewItem in SELF:oFieldList:Items
+				oDesign := oItem:oDesign
 				FOR m := 0 UPTO oDesign:aOrders:Count - 1
 					aDesign:Add((DBEDesignDBServer)oDesign:aOrders[m])
 				NEXT
@@ -809,13 +805,13 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	METHOD GetAllDesignItems() AS ArrayList
 		LOCAL aDesign := ArrayList{} AS ArrayList
 		LOCAL oDesign AS DBEDesignDBServer
-		LOCAL n,m AS INT
+		LOCAL m AS INT
 		
-		FOR n := 0 UPTO SELF:oFieldList:Items:Count - 1
-			aDesign:Add(((DBEDesignListViewItem)SELF:oFieldList:Items[n]):oDesign)
+		FOREACH oItem as DBEDesignListViewItem in SELF:oFieldList:Items
+			aDesign:Add(oItem:oDesign)
 		NEXT
-		FOR n := 0 UPTO SELF:oIndexList:Items:Count - 1
-			oDesign := ((DBEDesignListViewItem)SELF:oIndexList:Items[n]):oDesign
+		FOREACH oItem as DBEDesignListViewItem in SELF:oIndexList:Items
+            oDesign := oItem:oDesign
 			aDesign:Add(oDesign)
 			FOR m := 0 UPTO oDesign:aOrders:Count - 1
 				aDesign:Add((DBEDesignDBServer)oDesign:aOrders[m])
@@ -824,15 +820,12 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	RETURN aDesign
 
 	VIRTUAL METHOD GetDesignItemFromGuid(cGuid AS STRING) AS DBEDesignDBServer
-		LOCAL oDesign AS DBEDesignDBServer
 		LOCAL aItems AS ArrayList
-		LOCAL n AS INT
 		IF SELF:oMainDesign:cGuid == cGuid
 			RETURN SELF:oMainDesign
 		ENDIF
 		aItems := SELF:GetAllDesignItems()
-		FOR n := 0 UPTO aItems:Count - 1
-			oDesign := (DBEDesignDBServer)aItems[n]
+    	FOREACH oDesign as DBEDesignDBServer in aItems
 			IF oDesign:cGuid == cGuid
 				RETURN oDesign
 			ENDIF
@@ -842,9 +835,9 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 	VIRTUAL METHOD GetIndexFromOrder(cGuid AS STRING) AS DBEDesignDBServer
 		LOCAL oIndex AS DBEDesignDBServer
 		LOCAL oOrder AS DBEDesignDBServer
-		LOCAL n,m AS INT
-		FOR n := 0 UPTO SELF:oIndexList:Items:Count - 1
-			oIndex := ((DBEDesignListViewItem)SELF:oIndexList:Items[n]):oDesign
+		LOCAL m AS INT
+		FOREACH oItem as  DBEDesignListViewItem in SELF:oIndexList:Items
+			oIndex := oItem:oDesign
 			FOR m := 0 UPTO oIndex:aOrders:Count - 1
 				oOrder := (DBEDesignDBServer)oIndex:aOrders[m]
 				IF oOrder:cGuid == cGuid
@@ -929,61 +922,53 @@ PARTIAL CLASS VODBServerEditor INHERIT DesignerBase
 
 	METHOD RetrieveClassNamesHandler(cClass AS STRING) AS STRING[]
 		LOCAL aValues AS STRING[]
-		LOCAL n AS INT
+        LOCAL n := 0 as INT
 		IF SELF:oGrid:oActiveDesigner != SELF
 			RETURN NULL
 		END IF
 		aValues := STRING[]{SELF:aAvailableFieldSpecs:Count}
-		FOR n := 0 UPTO SELF:aAvailableFieldSpecs:Count - 1
-			aValues[n + 1] := ((FSEDesignFieldSpec)SELF:aAvailableFieldSpecs[n]):Name
+		FOREACH oItem as FSEDesignFieldSpec in SELF:aAvailableFieldSpecs
+			aValues[++n ] := oItem:Name
 		NEXT
 	RETURN aValues
 
 	METHOD PropertyModifiedInGrid(cProp AS STRING , oValue AS OBJECT) AS VOID
 		LOCAL aSelected AS ArrayList
-		LOCAL oDesign AS DBEDesignDBServer
-		LOCAL n AS INT
 		
 		IF cProp:ToUpper() == "TAG" .and. !SELF:MultipleOrdersSupported
 			RETURN
 		END IF
-/*		IF cProp == "rdd"
-			IF MessageBox.Show("Changing the driver will invalidate your indexes. Do you wish to proceed?" , "DBServer Editor" , MessageBoxButtons.YesNo , MessageBoxIcon.Question) != DialogResult.Yes
-				RETURN
-			END IF
-		END IF*/
 		
 		aSelected := SELF:GetSelected()
 		SELF:BeginAction()
-		FOR n := 0 UPTO aSelected:Count - 1
-			oDesign := (DBEDesignDBServer)aSelected[n]
+		FOREACH oDesign as DBEDesignDBServer IN aSelected
 			SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , cProp , oValue})
 			IF cProp == "type"
 				LOCAL nLength,nDecimal AS INT
                 nLength := nDecimal := 0
-				DO CASE
-				CASE (INT)oValue == 0
+				SWITCH (int) oValue
+				CASE 0
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 1
+				CASE 1
 					nLength := 12
 					nDecimal := 2
-				CASE (INT)oValue == 2
+				CASE 2
 					nLength := 8
 					nDecimal := 0
-				CASE (INT)oValue == 3
+				CASE 3
 					nLength := 1
 					nDecimal := 0
-				CASE (INT)oValue == 4
+				CASE 4
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 5
+				CASE 5
 					nLength := 10
 					nDecimal := 0
-				CASE (INT)oValue == 6
+				CASE 6
 					nLength := 8
 					nDecimal := 0
-				END CASE
+				END SWITCH
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "Len" , nLength})
 				SELF:StartAction(DesignerBasicActionType.SetProperty , ActionData{oDesign:cGuid , "Dec" , nDecimal})
 				oDesign:GetProperty("Len"):lReadOnly := (INT)oValue > 1

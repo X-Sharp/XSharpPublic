@@ -1,18 +1,15 @@
-#using System.Collections.Generic
-#using System.Collections
-#using System.Windows.Forms
-#using System.Drawing
-#using System.IO
-#using XSharp.VOEditors
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Collections.Generic
+using System.Collections
+using System.Windows.Forms
+using System.Drawing
+using System.IO
+using XSharp.VOEditors
 
-INTERNAL ENUM CavoWedInfSection
-	MEMBER None
-	MEMBER Control
-	MEMBER StdProp
-	MEMBER AssignMap
-	MEMBER Supplemental
-	MEMBER options
-END ENUM
 
 STATIC CLASS VOWindowEditorTemplate
 	STATIC PRIVATE aControls AS ArrayList

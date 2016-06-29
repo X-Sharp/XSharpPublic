@@ -1,7 +1,10 @@
-﻿using System;
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
 using System.Runtime.InteropServices;
-using EnvDTE;
-//using tom;
+
 
 namespace XSharp.Project
 {
@@ -14,20 +17,9 @@ namespace XSharp.Project
     [InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
     public interface IEditor
     {
-        float DefaultTabStop { get; set; }
-        int SelectionProperties { get; set; }
-        int FindText(string textToFind);
-        int SetText(string textToSet);
-        int TypeText(string textToType);
         int Cut();
         int Copy();
         int Paste();
         int Delete(long unit, long count);
-        int MoveUp(int unit, int count, int extend);
-        int MoveDown(int unit, int count, int extend);
-        int MoveLeft(int unit, int count, int extend);
-        int MoveRight(int unit, int count, int extend);
-        int EndKey(int unit, int extend);
-        int HomeKey(int unit, int extend);
-    }
+       }
 }

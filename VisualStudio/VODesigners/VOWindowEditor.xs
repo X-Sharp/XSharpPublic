@@ -1,15 +1,16 @@
-#using System.Windows.Forms
-#using System.Drawing
-#using System.Collections.Generic
-#using System.Collections
-#using System.IO
-#using XSharp.VOEditors
+//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+using System.Windows.Forms
+using System.Drawing
+using System.Collections.Generic
+using System.Collections
+using System.IO
+using XSharp.VOEditors
 
-ENUM ViewMode
-	MEMBER Auto
-	MEMBER Form
-	MEMBER Browse
-END ENUM
+
 
 PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	INTERNAL  oWindowDesign AS DesignWindowItem
@@ -888,7 +889,7 @@ RETURN
 						CASE cMap:Length != 0
 							cValue := cMap + "{ " + cValue + " }"
 						END CASE
-/*						IF oProp:cSpecialClass != NULL
+/*						IF oProp:HasSpecialClass
 							DO CASE
 							CASE oProp:cSpecialClass == "Color"
 								cValue := "Color{ " + cValue + " }"
@@ -1146,15 +1147,8 @@ RETURN
 		IF oDialog:ShowDialog() == DialogResult.OK
 			SELF:Open(oDialog:FileName)
 		ENDIF
-//		SELF:OpenVNfrm("C:\Documents and Settings\Cpc\My Documents\Visual Studio Projects\Default Project\VODCApp\Resources\Customer.CustomerWin.vnfrm")
-//		SELF:OpenVNfrm("C:\dotNet\_VODC\__DEVFEST_08_CD\speakers\pikop\sessions\VO To Vulcan\DemoNew\Orders\Resources\WINORDER.vnfrm")
-//		SELF:OpenVNfrm("C:\Documents and Settings\Cpc\My Documents\Visual Studio Projects\Default Project1\DS_Test\Resources\TestForm1.Test_Form1.vnfrm")
-//		SELF:OpenVNfrm("C:\Documents and Settings\Cpc\My Documents\Visual Studio Projects\TestProject\TestWin\Resources\DialogWin.DialogWin.vnfrm")
-//		SELF:OpenVNfrm("C:\Documents and Settings\Cpc\My Documents\Visual Studio Projects\TestProject\TestWin\Resources\DataWin.DataWin.vnfrm")
-
-//		SELF:OpenVNfrm("C:\Documents and Settings\Cpc\My Documents\Visual Studio Projects\TestProject\TestWin\Resources\DataWin.DataWinName.vnfrm")
-//		SELF:OpenVNfrm("C:\Documents and Settings\Cpc\My Documents\Visual Studio Projects\TestProject\TestWin\Resources\TabWin.TabWin.vnfrm")
 	RETURN
+
 	METHOD Save() AS VOID
 		LOCAL oDlg AS SaveFileDialog
 		IF SELF:lReadOnly
@@ -3166,7 +3160,7 @@ RETURN
 		LOCAL oModule AS XSharp.ProjectAPI.Module
 		LOCAL oMember AS XSharp.ProjectAPI.Member
 		LOCAL oType AS XSharp.ProjectAPI.TypeInfo
-		LOCAL oEditor AS VulcanEditor
+		LOCAL oManager AS CodeManager
 		LOCAL aLines AS List<STRING>
 		LOCAL lManaged AS LOGIC
 		LOCAL cClass AS STRING
@@ -3223,7 +3217,7 @@ RETURN
 			RETURN
 		END IF
 		
-		oEditor := VulcanEditor{Funcs.BufferToLines(oModule:SourceCode)} 
+		oManager := CodeManager{Funcs.BufferToLines(oModule:SourceCode)} 
         /*
 		IF cName:ToUpper() == "CLASSDECLARATION"
 			nLine := oEditor:FindEntityLine(cClass , cClass , EntityType._Class)
@@ -3239,7 +3233,7 @@ RETURN
 			RETURN
 		END IF
 		*/
-		nLine := oEditor:GetLastClassLine(cClass)
+		nLine := oManager:GetLastClassLine(cClass)
 		IF nLine <= 0 .or. nLine > oModule:GetLineCount()
 			RETURN
 		END IF
@@ -3551,17 +3545,14 @@ RETURN
     	END IF
     RETURN
 	
-	STATIC PROTECT aTpl AS ArrayList
+	STATIC PROTECT aTpl AS List<TemplateCode>
 
 	METHOD GetTemplate(cName AS STRING) AS List<STRING>
-		LOCAL oTemplate AS TemplateCode
-		LOCAL n AS INT
 		cName := cName:ToUpper()
 		IF .not. LoadTpl(FileInfo{SELF:cDefaultFileName}:Directory:FullName)
 			RETURN NULL
 		END IF
-		FOR n := 0 UPTO aTpl:Count - 1
-			oTemplate := (TemplateCode)aTpl[n]
+		FOREACH VAR oTemplate in aTpl
 			IF oTemplate:cName:ToUpper() == cName
 				RETURN oTemplate:aLines
 			END IF
@@ -3621,7 +3612,7 @@ RETURN
 			RETURN FALSE
 		ENDIF
 		
-		aTpl := ArrayList{}
+		aTpl := List<TemplateCode>{}
 		
 		oStream := StreamReader{cCavoWed , System.Text.Encoding.Default}
 		DO WHILE oStream:Peek() != - 1

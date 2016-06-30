@@ -134,8 +134,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return false;
         }
-
+#if XSHARP
+        private BoundExpression StripImplicitCasts(BoundExpression expr)
+#else
         private static BoundExpression StripImplicitCasts(BoundExpression expr)
+#endif
         {
             BoundExpression current = expr;
             while (true)
@@ -147,11 +150,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return current;
                 }
 
+#if XSHARP
+                // These checks will only be performed when /vo4 Signed-Unsigned conversions is selected
+                // That is the only situation where an implicitNumeric conversion is performed.
+                // We Check for integral types only 
+                if (conversion.Operand.Type.SpecialType.IsIntegralType() && conversion.Operand.Type.IsIntegralType())
+                {
+                    // Find sources that do not fit in the target
+                    if (conversion.Operand.Type.SpecialType.SizeInBytes() > conversion.Type.SpecialType.SizeInBytes())
+                    {
+                        Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, expr, conversion.Operand.Type, conversion.Type);
+                    }
+                    // Generate warning about signed / unsigned conversions
+                    if (conversion.Operand.Type.SpecialType.IsSignedIntegralType() != conversion.Type.SpecialType.IsSignedIntegralType())
+                    {
+                        Error(ErrorCode.WRN_SignedUnSignedConversion, expr, conversion.Operand.Type, conversion.Type);
+                    }
+                }
+#endif
                 current = conversion.Operand;
             }
         }
-
+#if XSHARP
+        private bool IsSameLocalOrField(BoundExpression expr1, BoundExpression expr2)
+#else
         private static bool IsSameLocalOrField(BoundExpression expr1, BoundExpression expr2)
+#endif
         {
             if (expr1 == null && expr2 == null)
             {

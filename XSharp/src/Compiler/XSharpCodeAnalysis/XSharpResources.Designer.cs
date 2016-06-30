@@ -2717,6 +2717,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compiler option &apos;{0}&apos; ({1}) is not supported for dialect {2}.
+        /// </summary>
+        internal static string ERR_CompilerOptionNotSupportedForDialect {
+            get {
+                return ResourceManager.GetString("ERR_CompilerOptionNotSupportedForDialect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression tree lambda may not contain a COM call with ref omitted on arguments.
         /// </summary>
         internal static string ERR_ComRefCallInExpressionTree {

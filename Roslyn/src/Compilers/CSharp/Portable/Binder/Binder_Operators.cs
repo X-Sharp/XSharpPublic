@@ -468,12 +468,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool leftNull = left.IsLiteralNull();
             bool rightNull = right.IsLiteralNull();
             bool isEquality = kind == BinaryOperatorKind.Equal || kind == BinaryOperatorKind.NotEqual;
-
             if (isEquality && leftNull && rightNull)
             {
                 return new BoundLiteral(node, ConstantValue.Create(kind == BinaryOperatorKind.Equal), GetSpecialType(SpecialType.System_Boolean, diagnostics, node));
             }
-
+#if XSHARP
+            // Check for Single equals comparison for Strings.
+            bool isStringSingleEquals = false;
+            if (isEquality)
+            {
+                if (left.Type.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String)
+                {
+                    var xnode = node.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.BinaryExpressionContext;
+                    if (xnode.Op.Type == LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.EQ)
+                    {
+                        isStringSingleEquals = true;
+                    }
+                }
+            }
+#endif
             // SPEC: For an operation of one of the forms x == null, null == x, x != null, null != x,
             // SPEC: where x is an expression of nullable type, if operator overload resolution
             // SPEC: fails to find an applicable operator, the result is instead computed from
@@ -508,26 +521,117 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol resultType;
             bool hasErrors;
 
+#if XSHARP
+            if (!best.HasValue || isStringSingleEquals)
+#else
             if (!best.HasValue)
+#endif
             {
+
 #if XSHARP
                 // TODO: (nvk) This should be done in the local rewriter
                 if (left.Type.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String &&
                     (node.Kind() == SyntaxKind.LessThanExpression || node.Kind() == SyntaxKind.LessThanOrEqualExpression ||
                     node.Kind() == SyntaxKind.GreaterThanExpression || node.Kind() == SyntaxKind.GreaterThanOrEqualExpression
-                    || node.Kind() == SyntaxKind.SubtractExpression))
+                    || node.Kind() == SyntaxKind.SubtractExpression || node.Kind() == SyntaxKind.EqualsExpression))
                 {
+                    MethodSymbol opMeth = null;
+                    TypeSymbol type;
+                    BoundCall opCall= null;
+                    bool lCompare = true;
+                    string methodName;
+                    // prepare the "standard call". This call is also used when the lookup of the special method fails
+                    type = this.GetSpecialType(SpecialType.System_String,diagnostics, node);
+                    TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);
+                    opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                    // STRING - STRING  -> Vulcan.Internal.CompilerServices.StringSubtract 
                     if (node.Kind() == SyntaxKind.SubtractExpression)
                     {
-                        Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "Minus Operator for strings");
+                        if (Compilation.Options.IsDialectVO)
+                        {
+                            type = this.GetWellKnownType(WellKnownType.Vulcan_Internal_CompilerServices, diagnostics, node);
+                            methodName = "StringSubtract";
+                            var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
+                            if (symbols.Length ==1 )
+                            {
+                                opMeth = (MethodSymbol) symbols[0];                        
+                                opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                                lCompare = false;
+                            }
+                            else
+                            {
+                                var typeName = "Vulcan.Internal.CompilerServices";
+                                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Subtract method "+typeName+"."+ methodName, Compilation.Options.Dialect.ToString());
+                            }
+                        }
+                        else
+                        {
+                            Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Subtract (-)", Compilation.Options.Dialect.ToString());
+                        }
+
                     }
-                    MethodSymbol opMeth;
-                    TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);
-                    var opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
-                    int compoundStringLength1 = 0;
-                    return BindSimpleBinaryOperator(node, diagnostics, opCall,
-                        new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)),
-                        ref compoundStringLength1);
+                    // STRING = STRING -> VulcanRTFuncs.Functions.__StringEquals
+                    else if (node.Kind() == SyntaxKind.EqualsExpression)
+                    {
+                        // Single Equals Comparison
+                        if (Compilation.Options.IsDialectVO)
+                        {
+                            type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
+                            methodName = "__StringEquals";
+                            var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
+                            if (symbols.Length ==1 )
+                            {
+                                opMeth = (MethodSymbol) symbols[0];                        
+                                opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                                lCompare = false;
+                            }
+                            else
+                            {
+                                var typeName = "Vulcan.Internal.CompilerServices";
+                                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Equals (=) method "+typeName+"."+ methodName, Compilation.Options.Dialect.ToString());
+                            }
+                        }
+                        else
+                        {
+                            Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Equals (=)", Compilation.Options.Dialect.ToString());
+                        }
+                    }
+                    // STRING <op> STRING -> VulcanRTFuncs.Functions.__StringCompare
+                    else if (this.Compilation.Options.VOStringComparisons)    
+                    {
+                        type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
+                        methodName = "__StringCompare";
+                        var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
+                        if (symbols.Length == 1)
+                        {
+                            opMeth = (MethodSymbol) symbols[0];                        
+                            opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                        }
+                        else
+                        {
+                            var typeName = "VulcanRTFuncs.Functions";
+                            Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Compare method "+typeName+"."+ methodName, Compilation.Options.Dialect.ToString());
+                        }
+                    }
+                    else
+                    {
+                        ;  // Nothing special needed. the opCall is already prepared above
+                    }
+                    if (lCompare)    
+                    {
+                        // the code STRING <OPERATOR> STRING
+                        // has to be changed to 
+                        // MethodCall(STRING, STRING) <OPERATOR> 0
+                        int compoundStringLength1 = 0;
+                        return BindSimpleBinaryOperator(node, diagnostics, opCall,
+                            new BoundLiteral(node, ConstantValue.Create((int)0), GetSpecialType(SpecialType.System_Int32, diagnostics, node)),
+                            ref compoundStringLength1);
+                    }
+                    else
+                    {
+                        return opCall;
+                    }
+                    
                 }
                 else
                 {

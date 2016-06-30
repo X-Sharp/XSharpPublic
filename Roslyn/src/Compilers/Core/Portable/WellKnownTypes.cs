@@ -250,6 +250,7 @@ namespace Microsoft.CodeAnalysis
         System_Runtime_CompilerServices_IsConst,
 
         Vulcan_Internal_VulcanClassLibraryAttribute,
+        Vulcan_Internal_CompilerServices,
         Vulcan_VulcanImplicitNamespaceAttribute,
         VulcanRTFuncs_Functions,
         Vulcan_Codeblock,
@@ -505,6 +506,7 @@ namespace Microsoft.CodeAnalysis
             "System.Runtime.CompilerServices.IsConst",
 
             "Vulcan.Internal.VulcanClassLibraryAttribute",
+            "Vulcan.Internal.CompilerServices",
             "Vulcan.VulcanImplicitNamespaceAttribute",
             "VulcanRTFuncs.Functions",
             "Vulcan.Codeblock",

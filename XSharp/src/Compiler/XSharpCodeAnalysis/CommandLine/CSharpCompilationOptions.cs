@@ -32,9 +32,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string SystemDir { get; set; }
         public bool InitStringVarsToEmpty { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
+        public bool VOCompatibleArtitheticConversions { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOFloatConstants { get; private set; }
         public bool VOImplicitCasts { get; private set; }
+        public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
         public bool VOUntypedAllowed { get; private set; }
         public XSharpDialect Dialect { get; private set; }
@@ -52,9 +54,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 InitStringVarsToEmpty = opt.Vo2;
                 Dialect = opt.Dialect;
                 VOClipperCallingConvention = opt.Vo5;
+                VOCompatibleArtitheticConversions = opt.Vo11;
                 VOCompatibleIIF = opt.Vo10;
                 VOFloatConstants = opt.Vo14;
                 VOImplicitCasts = opt.Vo7;
+                VOSignedUnsignedConversion = opt.Vo4;
                 VOStringComparisons = opt.Vo13;
                 VOUntypedAllowed = opt.Vo15;
                 LateBinding = opt.LateBinding;
@@ -74,9 +78,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
+            VOCompatibleArtitheticConversions = opt.VOCompatibleArtitheticConversions;
             VOCompatibleIIF = opt.VOCompatibleIIF;
             VOFloatConstants = opt.VOFloatConstants;
             VOImplicitCasts = opt.VOImplicitCasts;
+            VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion;
             VOStringComparisons = opt.VOStringComparisons;
             VOUntypedAllowed = opt.VOUntypedAllowed;
             LateBinding = opt.LateBinding;

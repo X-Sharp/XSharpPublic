@@ -173,8 +173,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (this is Conversions)
             {
-                Conversions xconv = this as Conversions;
-                if (xconv.Compilation.Options.VOImplicitCasts && source != null && destination != null)
+                Conversions conv = this as Conversions;
+                if (source != null && destination != null && conv.Compilation.Options.VOSignedUnsignedConversion )
                 {
                     var srctype = (int) source.SpecialType;
                     var dsttype = (int) destination.SpecialType;

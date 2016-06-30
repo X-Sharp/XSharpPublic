@@ -11169,6 +11169,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Narrowing conversion from &apos;{0}&apos; to &apos;{1}&apos; may lead to loss of data or overlow errors.
+        /// </summary>
+        internal static string WRN_ConversionMayLeadToLossOfData {
+            get {
+                return ResourceManager.GetString("WRN_ConversionMayLeadToLossOfData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The fully qualified name for &apos;{0}&apos; is too long for debug information. Compile without &apos;/debug&apos; option..
         /// </summary>
         internal static string WRN_DebugFullNameTooLong {
@@ -12703,6 +12712,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_SequentialOnPartialClass_Title {
             get {
                 return ResourceManager.GetString("WRN_SequentialOnPartialClass_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signed/unsigned conversions from &apos;{0}&apos; to &apos;{1}&apos; may leed to loss of data or overlow errors.
+        /// </summary>
+        internal static string WRN_SignedUnSignedConversion {
+            get {
+                return ResourceManager.GetString("WRN_SignedUnSignedConversion", resourceCulture);
             }
         }
         

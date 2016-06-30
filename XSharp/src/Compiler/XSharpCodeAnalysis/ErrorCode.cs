@@ -1385,5 +1385,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_InvalidDialect = 9017,
         ERR_InvalidDLLEntryPoint=9018,
         ERR_CompilerOptionNotSupportedForDialect = 9019,
+        WRN_ConversionMayLeadToLossOfData = 9020,
+        WRN_SignedUnSignedConversion = 9021,
     }
 }

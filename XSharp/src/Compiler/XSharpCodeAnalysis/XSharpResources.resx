@@ -4756,6 +4756,12 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_CompilerOptionNotSupportedForDialect" xml:space="preserve">
     <value>Compiler option '{0}' ({1}) is not supported for dialect {2}</value>
   </data>
-
+  <data name="WRN_ConversionMayLeadToLossOfData" xml:space="preserve">
+    <value>Narrowing conversion from '{0}' to '{1}' may lead to loss of data or overlow errors</value>
+  </data>
+  <data name="WRN_SignedUnSignedConversion" xml:space="preserve">
+    <value>Signed/unsigned conversions from '{0}' to '{1}' may leed to loss of data or overlow errors</value>
+  </data>
+  
 
 </root>

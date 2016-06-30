@@ -34,6 +34,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOClipperCallingConvention { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOFloatConstants { get; private set; }
+        public bool VOImplicitCasts { get; private set; }
         public bool VOStringComparisons { get; private set; }
         public bool VOUntypedAllowed { get; private set; }
         public XSharpDialect Dialect { get; private set; }
@@ -52,8 +53,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 VOClipperCallingConvention = opt.Vo5;
                 VOCompatibleIIF = opt.Vo10;
-                VOStringComparisons = opt.Vo13;
                 VOFloatConstants = opt.Vo14;
+                VOImplicitCasts = opt.Vo7;
+                VOStringComparisons = opt.Vo13;
                 VOUntypedAllowed = opt.Vo15;
                 LateBinding = opt.LateBinding;
                 CreatingRuntime = opt.CreatingRuntime;
@@ -72,10 +74,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
-            VOUntypedAllowed = opt.VOUntypedAllowed;
             VOCompatibleIIF = opt.VOCompatibleIIF;
-            VOStringComparisons = opt.VOStringComparisons;
             VOFloatConstants = opt.VOFloatConstants;
+            VOImplicitCasts = opt.VOImplicitCasts;
+            VOStringComparisons = opt.VOStringComparisons;
+            VOUntypedAllowed = opt.VOUntypedAllowed;
             LateBinding = opt.LateBinding;
             CreatingRuntime = opt.CreatingRuntime;
         }

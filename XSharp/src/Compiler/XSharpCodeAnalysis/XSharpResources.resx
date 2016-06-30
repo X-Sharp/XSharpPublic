@@ -4753,4 +4753,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_InvalidDLLEntryPoint" xml:space="preserve">
     <value>Using a numeric DLL entrypoint '{0}' is not supported in .NET</value>
   </data>
+  <data name="ERR_CompilerOptionNotSupportedForDialect" xml:space="preserve">
+    <value>Compiler option '{0}' ({1}) is not supported for dialect {2}</value>
+  </data>
+
+
 </root>

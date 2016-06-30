@@ -244,19 +244,29 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private void ValidateXSharpSettings(List<Diagnostic> diagnostics) {
+            bool isVo = false;
+            var newDialect = options.Dialect;
             if (options.Dialect == XSharpDialect.VO || options.Dialect == XSharpDialect.Vulcan) {
                 if (options.VulcanRTFuncsIncluded && options.VulcanRTIncluded) {
                     // Ok;
+                    isVo = true;
                 }
                 else if(options.CreatingRuntime) {
                     // Ok
+                    isVo = true;
                 }
                 else {
                     AddDiagnostic(diagnostics, ErrorCode.ERR_DialectRequiresReferenceToRuntime, options.Dialect.ToString(), "VulcanRT.DLL and VulcanRTFuncs.DLL");
-                    options.Dialect = XSharpDialect.Core;
+                    newDialect = XSharpDialect.Core;
                 }
             }
-
+            if (options.Vo13 && ! isVo)
+            {
+                AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo13", "VO Compatible string comparisons", options.Dialect.ToString());
+                options.Vo13 = false;
+            }
+            options.Dialect = newDialect;
         }
+        
     }
 }

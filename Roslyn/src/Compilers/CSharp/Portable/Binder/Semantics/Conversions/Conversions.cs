@@ -137,7 +137,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return new Conversion(kind);
             }
-
             switch (sourceExpression.Kind)
             {
                 case BoundKind.Literal:
@@ -171,8 +170,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     break;
             }
-
 #if XSHARP
+            if (this is Conversions)
+            {
+                Conversions xconv = this as Conversions;
+                if (xconv.Compilation.Options.VOImplicitCasts && source != null && destination != null)
+                {
+                    var srctype = (int) source.SpecialType;
+                    var dsttype = (int) destination.SpecialType;
+                    if ( (srctype >= (int) SpecialType.System_SByte && srctype <= (int) SpecialType.System_Double)
+                        &&
+                        (dsttype >= (int) SpecialType.System_SByte && dsttype <= (int) SpecialType.System_Double))
+                    {
+                        return Conversion.ImplicitNumeric;
+                    }
+                }
+            }
             if (source != null)
             {
                 if ((source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr) && destination.IsPointerType())
@@ -668,7 +681,6 @@ namespace Microsoft.CodeAnalysis.CSharp
     internal sealed class Conversions : ConversionsBase
     {
         private readonly Binder _binder;
-
         public Conversions(Binder binder)
             : this(binder, currentRecursionDepth: 0)
         {
@@ -684,9 +696,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             return new Conversions(_binder, currentRecursionDepth);
         }
-
+#if XSHARP
+        internal CSharpCompilation Compilation { get { return _binder.Compilation; } }
+#else
         private CSharpCompilation Compilation { get { return _binder.Compilation; } }
-
+#endif
         public override Conversion GetMethodGroupConversion(BoundMethodGroup source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // Must be a bona fide delegate type, not an expression tree type.

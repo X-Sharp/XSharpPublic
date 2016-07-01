@@ -154,17 +154,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // These checks will only be performed when /vo4 Signed-Unsigned conversions is selected
                 // That is the only situation where an implicitNumeric conversion is performed.
                 // We Check for integral types only 
-                if (conversion.Operand.Type.SpecialType.IsIntegralType() && conversion.Operand.Type.IsIntegralType())
+                if (conversion.Operand.Type != null  && conversion.Type != null )
                 {
-                    // Find sources that do not fit in the target
-                    if (conversion.Operand.Type.SpecialType.SizeInBytes() > conversion.Type.SpecialType.SizeInBytes())
+                    var type = conversion.Type;
+                    var opType = conversion.Operand.Type;
+                    if (type.SpecialType.IsIntegralType() && 
+                        opType.SpecialType.IsIntegralType() )
                     {
-                        Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, expr, conversion.Operand.Type, conversion.Type);
-                    }
-                    // Generate warning about signed / unsigned conversions
-                    if (conversion.Operand.Type.SpecialType.IsSignedIntegralType() != conversion.Type.SpecialType.IsSignedIntegralType())
-                    {
-                        Error(ErrorCode.WRN_SignedUnSignedConversion, expr, conversion.Operand.Type, conversion.Type);
+                        // Find sources that do not fit in the target
+                        if (opType.SpecialType.SizeInBytes() > type.SpecialType.SizeInBytes())
+                        {
+                            Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, expr, conversion.Operand.Type, conversion.Type);
+                        }
+                        // Generate warning about signed / unsigned conversions
+                        if (opType.SpecialType.IsSignedIntegralType() != type.SpecialType.IsSignedIntegralType())
+                        {
+                            Error(ErrorCode.WRN_SignedUnSignedConversion, expr, conversion.Operand.Type, conversion.Type);
+                        }
                     }
                 }
 #endif

@@ -2695,5 +2695,72 @@ END CLASS
 
 
 
+        // 180
+        [Test(Author = "Chris", Id = "C180", Title = "error XS9002: Parser: extraneous input 'FUNCTION' expecting {BEGIN, BREAK,...")]
+        public static void Error_with_parens_in_UNTIL_expression()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL l:= TRUE AS LOGIC
+REPEAT
+UNTIL (l)
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+        // 181
+        [Test(Author = "Chris", Id = "C181", Title = "error XS0121: The call is ambiguous between the following methods or properties: 'TestClass.MyMethod(ref int)' and 'TestClass.MyMethod(ref double)'")]
+        public static void Problem_resolving_correct_REF_overload()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan allows passing params by reference without specifying REF in the caller code, 
+// so that must be fully supported in x# as well, but I think it would be btter to make 
+// the compiler report a warning in such calls with missing REF 
+FUNCTION Start() AS VOID
+TestClass{}:CallMethod()
+	
+CLASS TestClass
+METHOD CallMethod() AS VOID
+LOCAL nInt := 0 AS INT
+LOCAL nDouble := 0 AS Double
+LOCAL nDecimal := 0 AS Decimal
+
+SELF:MyMethod( REF nInt ) // ok
+SELF:MyMethod( nInt ) // error
+SELF:MyMethod( nDouble ) // ok
+SELF:MyMethod( nDecimal ) // ok
+
+METHOD MyMethod( nInt REF INT ) AS VOID
+METHOD MyMethod( nDouble REF Double ) AS VOID
+METHOD MyMethod( nDecimal REF Decimal ) AS VOID
+END CLASS
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 182
+        [Test(Author = "Chris", Id = "C182", Title = "error XS0034: Operator '>' is ambiguous on operands of type 'uint' and 'int'")]
+        public static void Ambiguous_operands_INT_DWORD()
+        {
+            var s = ParseSource(@"/vo4+ /dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// /vo4+ enabled
+FUNCTION Start( ) AS VOID
+LOCAL d := 0 AS DWORD
+? d > 0
+? d != 1
+? d < 2L
+? d + 3
+d += 4 
+");
+            CompileAndRunWithoutExceptions("/vo4+ /dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+
     }
 }

@@ -2816,6 +2816,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Conflicting commandline options &apos;{0}&apos; and &apos;{1}&apos; are not allowed (both are internally mapped to /checked).
+        /// </summary>
+        internal static string ERR_ConflictingCommandLineOptions {
+            get {
+                return ResourceManager.GetString("ERR_ConflictingCommandLineOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assembly and module &apos;{0}&apos; cannot target different processors..
         /// </summary>
         internal static string ERR_ConflictingMachineModule {

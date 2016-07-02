@@ -79,6 +79,7 @@ namespace Antlr4.Runtime {
             string SourceFileName { get; }
             string MappedFileName { get; }
             int MappedLine { get; }
+            IToken SourceSymbol { get; }
         }
         public partial class TerminalNodeImpl : Microsoft.CodeAnalysis.IMessageSerializable {
             public object CsNode { get; set; }
@@ -88,6 +89,7 @@ namespace Antlr4.Runtime {
             public string SourceFileName { get { return (Symbol as CommonToken).SourceFileName; } }
             public string MappedFileName { get { return (Symbol as CommonToken).MappedFileName; } }
             public int MappedLine { get { return (Symbol as CommonToken).MappedLine; } }
+            public IToken SourceSymbol { get { return (Symbol as CommonToken).SourceSymbol; } }
             public override string ToString() { return this.GetText(); }
         }
     }
@@ -104,6 +106,7 @@ namespace Antlr4.Runtime {
         public virtual string SourceFileName { get; }
         public virtual string MappedFileName { get; }
         public virtual int MappedLine { get; }
+        public virtual IToken SourceSymbol { get; }
 
         internal List<ParseErrorData> ErrorData;
 
@@ -151,6 +154,7 @@ namespace Antlr4.Runtime {
         public override string SourceFileName { get { return (Start as CommonToken).SourceFileName; } }
         public override string MappedFileName { get { return (Start as CommonToken).MappedFileName; } }
         public override int MappedLine { get { return (Start as CommonToken).MappedLine; } }
+        public override IToken SourceSymbol { get { return (Start as CommonToken).SourceSymbol; } }
         public override string ToString() {
             /*return this.GetText();*/
             var s = this.GetType().ToString();
@@ -166,6 +170,7 @@ namespace Antlr4.Runtime {
         internal string SourceFileName;
         internal string MappedFileName;
         internal int MappedLine = -1;
+        internal IToken SourceSymbol;
     }
 
     internal static class RuleExtensions {

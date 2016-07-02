@@ -711,6 +711,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 position = (position < node.Position + node.FullWidth) ? 
                                 node.XNode?.Position ?? 0 : node.XNode?.Position + node.XNode?.FullWidth ?? 0;
                 string file = node.XNode?.SourceFileName;
+                if (node.XNode?.SourceSymbol != null)
+                {
+                    position = node.XNode.SourceSymbol.StartIndex;
+                    file = (node.XNode.SourceSymbol as Antlr4.Runtime.CommonToken).SourceFileName;
+                }
                 SourceText ntext;
                 if (!string.IsNullOrEmpty(file) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(file, out ntext))
                     text = ntext;
@@ -775,9 +780,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 var start = snode.XNode?.Position ?? 0;
                 var length = enode.XNode?.FullWidth ?? 0;
+                string fn = snode.XNode?.SourceFileName;
+                if (snode.XNode?.SourceSymbol != null)
+                {
+                    start = snode.XNode.SourceSymbol.StartIndex;
+                    length = snode.XNode.SourceSymbol.StopIndex - start + 1;
+                    fn = (snode.XNode.SourceSymbol as Antlr4.Runtime.CommonToken).SourceFileName;
+                }
                 if (length < 0)
                     length = 0;
-                string fn = snode.XNode?.SourceFileName;
                 SourceText ntext;
                 if (!string.IsNullOrEmpty(fn) && (root as CompilationUnitSyntax).IncludedFiles.TryGetValue(fn, out ntext))
                 {

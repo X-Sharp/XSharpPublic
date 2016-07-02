@@ -169,8 +169,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             Error(ErrorCode.WRN_ConversionMayLeadToLossOfData, expr, conversion.Operand.Type, conversion.Type);
                         }
-                        // Generate warning about signed / unsigned conversions
-                        if (opType.SpecialType.IsSignedIntegralType() != type.SpecialType.IsSignedIntegralType())
+                        else if (opType.SpecialType.SizeInBytes() == type.SpecialType.SizeInBytes())
+                        {
+                            // Generate warning about signed / unsigned conversions
+                            if (opType.SpecialType.IsSignedIntegralType() != type.SpecialType.IsSignedIntegralType())
+                            {
+                                Error(ErrorCode.WRN_SignedUnSignedConversion, expr, conversion.Operand.Type, conversion.Type);
+                            }
+                        }
+                        // Optype.Size < Type.Size, only a problem when Optype is Signed and Type is Unsiged
+                        else if (opType.SpecialType.IsSignedIntegralType() && ! type.SpecialType.IsSignedIntegralType())
                         {
                             Error(ErrorCode.WRN_SignedUnSignedConversion, expr, conversion.Operand.Type, conversion.Type);
                         }

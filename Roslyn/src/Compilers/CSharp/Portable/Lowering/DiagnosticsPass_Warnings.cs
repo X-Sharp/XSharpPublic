@@ -158,8 +158,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     var type = conversion.Type;
                     var opType = conversion.Operand.Type;
-                    if (type.SpecialType.IsIntegralType() && 
-                        opType.SpecialType.IsIntegralType() )
+                    var opKind = conversion.Operand.Kind;
+                    if (type.SpecialType.IsIntegralType() &&                
+                        opType.SpecialType.IsIntegralType() && 
+                        opKind != BoundKind.Literal &&
+                        opKind != BoundKind.UnaryOperator)       //  Unary operators will be handled in the next level
                     {
                         // Find sources that do not fit in the target
                         if (opType.SpecialType.SizeInBytes() > type.SpecialType.SizeInBytes())

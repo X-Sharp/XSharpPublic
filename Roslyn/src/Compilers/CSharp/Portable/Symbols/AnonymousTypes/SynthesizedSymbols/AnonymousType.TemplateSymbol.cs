@@ -119,11 +119,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         _nameToSymbols.Add(symbol.Name, symbol);
                     }
 
-                    MethodSymbol[] cbSpecialMembers = new MethodSymbol[4];
-                    cbSpecialMembers[0] = new AnonymousTypeEqualsMethodSymbol(this);
-                    cbSpecialMembers[1] = new AnonymousTypeGetHashCodeMethodSymbol(this);
-                    cbSpecialMembers[2] = new AnonymousTypeToStringMethodSymbol(this);
-                    cbSpecialMembers[3] = new CodeblockEvalMethod(this);
+                    MethodSymbol[] cbSpecialMembers = new MethodSymbol[1];
+                    cbSpecialMembers[0] = new CodeblockEvalMethod(this);
                     this.SpecialMembers = cbSpecialMembers.AsImmutable();
 
                     return;

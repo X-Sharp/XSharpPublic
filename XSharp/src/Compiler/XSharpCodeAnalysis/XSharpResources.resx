@@ -4762,6 +4762,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_SignedUnSignedConversion" xml:space="preserve">
     <value>Signed/unsigned conversions from '{0}' to '{1}' may leed to loss of data or overlow errors</value>
   </data>
+  <data name="ERR_ConflictingCommandLineOptions" xml:space="preserve">
+    <value>Conflicting commandline options '{0}' and '{1}' are not allowed (both are internally mapped to /checked)</value>
+  </data>
+
   
 
 </root>

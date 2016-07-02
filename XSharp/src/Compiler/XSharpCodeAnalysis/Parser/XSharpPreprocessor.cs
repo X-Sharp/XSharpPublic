@@ -36,7 +36,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal string MappedFileName;
             internal int MappedLineDiff;
             internal bool isSymbol;
-            internal string Symbol;
+            internal string SymbolName;
+            internal IToken Symbol;
             internal InputState parent;
 
             internal InputState(ITokenStream tokens)
@@ -279,6 +280,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        IToken GetSourceSymbol()
+        {
+            IToken s = null;
+            if (inputs.isSymbol)
+            {
+                var baseInputState = inputs;
+                while (baseInputState.parent?.isSymbol == true)
+                    baseInputState = baseInputState.parent;
+                s = baseInputState.Symbol;
+            }
+            return s;
+        }
+
         CommonToken FixToken(IToken t)
         {
             if (inputs.MappedLineDiff != 0)
@@ -287,6 +301,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ((CommonToken)t).MappedFileName = inputs.MappedFileName;
             if (!string.IsNullOrEmpty(inputs.SourceFileName))
                 ((CommonToken)t).SourceFileName = inputs.SourceFileName;
+            if (inputs.isSymbol)
+                ((CommonToken)t).SourceSymbol = GetSourceSymbol();
             return (CommonToken)t;
         }
 
@@ -327,21 +343,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (!inputs.Consume() && inputs.parent != null)
             {
                 if (inputs.isSymbol)
-                    activeSymbols.Remove(inputs.Symbol);
+                    activeSymbols.Remove(inputs.SymbolName);
                 inputs = inputs.parent;
             }
         }
 
-        void InsertStream(string filename, ITokenStream input, string symbol = null)
+        void InsertStream(string filename, ITokenStream input, IToken symbol = null)
         {
             InputState s = new InputState(input);
             s.parent = inputs;
             s.SourceFileName = filename;
+            s.SymbolName = symbol?.Text;
             s.Symbol = symbol;
             s.isSymbol = symbol != null;
             if (s.isSymbol)
             {
-                activeSymbols.Add(s.Symbol);
+                activeSymbols.Add(s.SymbolName);
                 s.MappedLineDiff = inputs.MappedLineDiff;
             }
             inputs = s;
@@ -755,7 +772,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     {
                                         var ts = new CommonTokenStream(new ListTokenSource(tl));
                                         ts.Fill();
-                                        InsertStream(null, ts, t.Text);
+                                        InsertStream(null, ts, t);
                                     }
                                 }
                             }

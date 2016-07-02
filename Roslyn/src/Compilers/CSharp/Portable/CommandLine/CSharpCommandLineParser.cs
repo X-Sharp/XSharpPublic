@@ -157,7 +157,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
 
 #if XSHARP
-                if (ParseXSharpArgument(ref name, ref value, diagnostics))
+                if (ParseXSharpArgument(ref name, ref value, arg, diagnostics))
                     continue;
 #endif
                 switch (name)

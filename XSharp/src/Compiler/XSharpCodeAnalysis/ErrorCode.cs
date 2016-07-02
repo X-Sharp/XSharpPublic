@@ -1387,5 +1387,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_CompilerOptionNotSupportedForDialect = 9019,
         WRN_ConversionMayLeadToLossOfData = 9020,
         WRN_SignedUnSignedConversion = 9021,
+        ERR_ConflictingCommandLineOptions = 9022,
     }
 }

@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
 begin namespace XSharp.RDD
 	#region functions
 	/// <summary>
@@ -13,7 +14,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBAlias(nArea AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Return the alias of a specified work area as a symbol.
@@ -21,7 +22,7 @@ begin namespace XSharp.RDD
 	/// <param name="nArea"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBAliasSym(nArea AS DWORD) AS SYMBOL
+	FUNCTION VODBAliasSym(nArea AS DWORD) AS __SYMBOL
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -155,7 +156,7 @@ begin namespace XSharp.RDD
 	/// <param name="lOpen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBCreate(cName AS STRING,aStru AS ARRAY,rddL AS _RDDLIST,lNew AS LOGIC,cAlias AS STRING,cDelim AS STRING,lKeep AS LOGIC,lOpen AS LOGIC) AS LOGIC
+	FUNCTION VODBCreate(cName AS STRING,aStru AS __Array,rddL AS _RDDLIST,lNew AS LOGIC,cAlias AS STRING,cDelim AS STRING,lKeep AS LOGIC,lOpen AS LOGIC) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -197,7 +198,7 @@ begin namespace XSharp.RDD
 	/// <param name="lRest"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBEval(uBlock AS USUAL,uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC) AS LOGIC
+	FUNCTION VODBEval(uBlock AS __Usual,uCobFor AS __Usual,uCobWhile AS __Usual,nNext AS __Usual,nRecno AS __Usual,lRest AS LOGIC) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -239,7 +240,7 @@ begin namespace XSharp.RDD
 	/// <param name="xValue"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS USUAL) AS LOGIC
+	FUNCTION VODBFieldPut(nPos AS DWORD,xValue AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -270,7 +271,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBFilter() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Lock an opened and shared database file.
@@ -322,7 +323,7 @@ begin namespace XSharp.RDD
 	/// <param name="uRecId"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBGoto(uRecId AS USUAL) AS LOGIC
+	FUNCTION VODBGoto(uRecId AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -375,7 +376,7 @@ begin namespace XSharp.RDD
 	/// <param name="lRest"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBLocate(uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS LONG,uRecId AS USUAL,lRest AS LOGIC) AS LOGIC
+	FUNCTION VODBLocate(uCobFor AS __Usual,uCobWhile AS __Usual,nNext AS LONG,uRecId AS __Usual,lRest AS LOGIC) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -386,7 +387,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBMemoExt(cDriver AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Return the default index file extension for a work area as defined by the its RDD.
@@ -395,7 +396,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBOrdBagExt() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Set the condition and scope for an order.
@@ -418,7 +419,7 @@ begin namespace XSharp.RDD
 	/// <param name="ptrCondInfo"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBOrdCreate(cBagName AS STRING,uOrder AS USUAL,cExpr AS STRING,uCobExpr AS USUAL,lUnique AS LOGIC,ptrCondInfo AS PTR) AS LOGIC
+	FUNCTION VODBOrdCreate(cBagName AS STRING,uOrder AS __Usual,cExpr AS STRING,uCobExpr AS __Usual,lUnique AS LOGIC,ptrCondInfo AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -429,7 +430,7 @@ begin namespace XSharp.RDD
 	/// <param name="uOrder"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBOrdDestroy(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
+	FUNCTION VODBOrdDestroy(cOrdBag AS STRING,uOrder AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -442,7 +443,7 @@ begin namespace XSharp.RDD
 	/// <param name="ptrRet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS USUAL,ptrRet AS PTR) AS LOGIC
+	FUNCTION VODBOrderInfo(nOrdinal AS DWORD,cBagName AS STRING,uOrder AS __Usual,ptrRet AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -462,7 +463,7 @@ begin namespace XSharp.RDD
 	/// <param name="uOrder"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBOrdListAdd(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
+	FUNCTION VODBOrdListAdd(cOrdBag AS STRING,uOrder AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -473,7 +474,7 @@ begin namespace XSharp.RDD
 	/// <param name="uOrder"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBOrdListClear(cOrdBag AS STRING,uOrder AS USUAL) AS LOGIC
+	FUNCTION VODBOrdListClear(cOrdBag AS STRING,uOrder AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -494,7 +495,7 @@ begin namespace XSharp.RDD
 	/// <param name="pszOrder"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS USUAL,pszOrder AS USUAL) AS LOGIC
+	FUNCTION VODBOrdSetFocus(cOrdBag AS STRING,uOrder AS __Usual,pszOrder AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -544,7 +545,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBRddName() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Return and optionally change the default RDD for the application.
@@ -554,7 +555,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBRddSetDefault(cDrv AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Restore the current record if it is marked for deletion.
@@ -570,9 +571,9 @@ begin namespace XSharp.RDD
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBRecno() AS USUAL
+	FUNCTION VODBRecno() AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -580,7 +581,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION VODBRecordGet() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Retrieve information about a record.
@@ -590,7 +591,7 @@ begin namespace XSharp.RDD
 	/// <param name="ptrRet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS USUAL,ptrRet AS PTR) AS LOGIC
+	FUNCTION VODBRecordInfo(nOrdinal AS DWORD,uRecId AS __Usual,ptrRet AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -599,7 +600,7 @@ begin namespace XSharp.RDD
 	/// <param name="pszRecord"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBRecordPut(pszRecord AS PSZ) AS LOGIC
+	FUNCTION VODBRecordPut(pszRecord AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -610,7 +611,7 @@ begin namespace XSharp.RDD
 	/// <param name="pszRel"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBRelation(nPos AS DWORD,pszRel AS USUAL) AS LOGIC
+	FUNCTION VODBRelation(nPos AS DWORD,pszRel AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -620,7 +621,7 @@ begin namespace XSharp.RDD
 	/// <param name="uRecId"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBRlock(uRecId AS USUAL) AS LOGIC
+	FUNCTION VODBRlock(uRecId AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -641,7 +642,7 @@ begin namespace XSharp.RDD
 	/// <param name="lSoft"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBSeek(xValue AS USUAL,lSoft AS LOGIC) AS LOGIC
+	FUNCTION VODBSeek(xValue AS __Usual,lSoft AS LOGIC) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -652,7 +653,7 @@ begin namespace XSharp.RDD
 	/// <param name="riOld"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBSelect(nNew AS DWORD,riOld AS USUAL) AS LOGIC
+	FUNCTION VODBSelect(nNew AS DWORD,riOld AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -663,7 +664,7 @@ begin namespace XSharp.RDD
 	/// <param name="cFilter"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBSetFilter(uCobFilter AS USUAL,cFilter AS STRING) AS LOGIC
+	FUNCTION VODBSetFilter(uCobFilter AS __Usual,cFilter AS STRING) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -683,7 +684,7 @@ begin namespace XSharp.RDD
 	/// <param name="uCobFor"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBSetLocate(uCobFor AS USUAL) AS LOGIC
+	FUNCTION VODBSetLocate(uCobFor AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -695,7 +696,7 @@ begin namespace XSharp.RDD
 	/// <param name="cKey"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS USUAL,cKey AS STRING) AS LOGIC
+	FUNCTION VODBSetRelation(cAlias AS STRING,uCobKey AS __Usual,cKey AS STRING) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -750,7 +751,7 @@ begin namespace XSharp.RDD
 	/// <param name="fnSortNames"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBSort(nDest AS DWORD,fnNames AS _FIELDNAMES,uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC,fnSortNames AS _FIELDNAMES) AS LOGIC
+	FUNCTION VODBSort(nDest AS DWORD,fnNames AS _FIELDNAMES,uCobFor AS __Usual,uCobWhile AS __Usual,nNext AS __Usual,nRecno AS __Usual,lRest AS LOGIC,fnSortNames AS _FIELDNAMES) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -769,7 +770,7 @@ begin namespace XSharp.RDD
 	/// <param name="sAlias"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBSymSelect(sAlias AS SYMBOL) AS INT
+	FUNCTION VODBSymSelect(sAlias AS __SYMBOL) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -784,7 +785,7 @@ begin namespace XSharp.RDD
 	/// <param name="lRest"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBTrans(nDest AS DWORD,fldNames AS _FIELDNAMES,uCobFor AS USUAL,uCobWhile AS USUAL,nNext AS USUAL,nRecno AS USUAL,lRest AS LOGIC) AS LOGIC
+	FUNCTION VODBTrans(nDest AS DWORD,fldNames AS _FIELDNAMES,uCobFor AS __Usual,uCobWhile AS __Usual,nNext AS __Usual,nRecno AS __Usual,lRest AS LOGIC) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -804,7 +805,7 @@ begin namespace XSharp.RDD
 	/// <param name="uRecno"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VODBUnlock(uRecno AS USUAL) AS LOGIC
+	FUNCTION VODBUnlock(uRecno AS __Usual) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 

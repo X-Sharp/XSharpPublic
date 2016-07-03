@@ -3,17 +3,19 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.IO
 	#region functions
 	/// <summary>
-	/// Remove spaces from a file name specified as a PSZ, changing the contents of the original file name as well as the returned file name.
+	/// Remove spaces from a file name specified as a __Psz, changing the contents of the original file name as well as the returned file name.
 	/// </summary>
 	/// <param name="pszFileName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AdjustFNamePSZ(pszFileName AS PSZ) AS PSZ
+	FUNCTION AdjustFNamePSZ(pszFileName AS __Psz) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Convert a specified number of ANSI characters in a source buffer to a buffer of corresponding OEM characters.
@@ -23,19 +25,19 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Ansi2OemBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
+	FUNCTION Ansi2OemBuff(pszDest AS __Psz,pszSource AS __Psz,dwCount AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
-	/// Convert a value to a static PSZ.
+	/// Convert a value to a static __Psz.
 	/// </summary>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AsPsz(u AS USUAL) AS PSZ
+	FUNCTION AsPsz(u AS __Usual) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Convert a string containing an 8-bit logical into a logical value.
@@ -43,19 +45,19 @@ begin namespace XSharp.IO
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Bin2Logic(pszC AS PSZ) AS LOGIC
+	FUNCTION Bin2Logic(pszC AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Check a strongly typed string for NULL_STRING and return a valid (non-zero) PSZ.
+	/// Check a strongly typed string for String.Empty and return a valid (non-zero) __Psz.
 	/// </summary>
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Cast2Psz(cSource AS STRING) AS PSZ
+	FUNCTION Cast2Psz(cSource AS STRING) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Change the current Windows directory.
@@ -63,7 +65,7 @@ begin namespace XSharp.IO
 	/// <param name="pszDir"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DirChange(pszDir AS PSZ) AS INT
+	FUNCTION DirChange(pszDir AS __Psz) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -73,7 +75,7 @@ begin namespace XSharp.IO
 	/// <param name="pszDir"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DirMake(pszDir AS PSZ) AS INT
+	FUNCTION DirMake(pszDir AS __Psz) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -83,7 +85,7 @@ begin namespace XSharp.IO
 	/// <param name="pszDir"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DirRemove(pszDir AS PSZ) AS INT
+	FUNCTION DirRemove(pszDir AS __Psz) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -93,7 +95,7 @@ begin namespace XSharp.IO
 	/// <param name="pszDisk"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DiskChange(pszDisk AS PSZ) AS LOGIC
+	FUNCTION DiskChange(pszDisk AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -102,7 +104,7 @@ begin namespace XSharp.IO
 	/// <param name="PSZValue"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EmptyPSZ(PSZValue AS PSZ) AS LOGIC
+	FUNCTION EmptyPSZ(PSZValue AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -115,7 +117,7 @@ begin namespace XSharp.IO
 	/// <param name="dwB3"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ErrorMessageBox(pszText AS PSZ,pszCapt AS PSZ,dwB1 AS DWORD,dwB2 AS DWORD,dwB3 AS DWORD) AS DWORD
+	FUNCTION ErrorMessageBox(pszText AS __Psz,pszCapt AS __Psz,dwB1 AS DWORD,dwB2 AS DWORD,dwB3 AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0     
 
@@ -125,7 +127,7 @@ begin namespace XSharp.IO
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsAlNum(pszC AS PSZ) AS LOGIC
+	FUNCTION IsAlNum(pszC AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -135,7 +137,7 @@ begin namespace XSharp.IO
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsAlpha(pszSource AS PSZ) AS LOGIC
+	FUNCTION IsAlpha(pszSource AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -144,7 +146,7 @@ begin namespace XSharp.IO
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsAlphaNum(pszSource AS PSZ) AS LOGIC
+	FUNCTION IsAlphaNum(pszSource AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -154,7 +156,7 @@ begin namespace XSharp.IO
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsBDigit(pszC AS PSZ) AS LOGIC
+	FUNCTION IsBDigit(pszC AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -164,7 +166,7 @@ begin namespace XSharp.IO
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsDigit(pszC AS PSZ) AS LOGIC
+	FUNCTION IsDigit(pszC AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -174,7 +176,7 @@ begin namespace XSharp.IO
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsLower(pszSource AS PSZ) AS LOGIC
+	FUNCTION IsLower(pszSource AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -184,7 +186,7 @@ begin namespace XSharp.IO
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsSpace(pszC AS PSZ) AS LOGIC
+	FUNCTION IsSpace(pszC AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -194,7 +196,7 @@ begin namespace XSharp.IO
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsUpper(pszSource AS PSZ) AS LOGIC
+	FUNCTION IsUpper(pszSource AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -204,7 +206,7 @@ begin namespace XSharp.IO
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsXDigit(pszC AS PSZ) AS LOGIC
+	FUNCTION IsXDigit(pszC AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -215,7 +217,7 @@ begin namespace XSharp.IO
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemCopyC(pszVal AS PSZ,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
+	FUNCTION ItemCopyC(pszVal AS __Psz,ptrAny AS IntPtr,dwLen AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -224,7 +226,7 @@ begin namespace XSharp.IO
 	/// <param name="pszVal"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemFreeC(pszVal AS PSZ) AS LOGIC
+	FUNCTION ItemFreeC(pszVal AS __Psz) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -233,9 +235,9 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetC(ptrAny AS IntPtr) AS PSZ
+	FUNCTION ItemGetC(ptrAny AS IntPtr) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// </summary>
@@ -243,9 +245,9 @@ begin namespace XSharp.IO
 	/// <param name="pszDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS PSZ) AS PSZ
+	FUNCTION ItemGetDS(ptrAny AS IntPtr,pszDate AS __Psz) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// </summary>
@@ -254,9 +256,9 @@ begin namespace XSharp.IO
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
+	FUNCTION ItemGetNS(ptrAny AS IntPtr,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// </summary>
@@ -264,7 +266,7 @@ begin namespace XSharp.IO
 	/// <param name="pszVal"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS PSZ) AS IntPtr
+	FUNCTION ItemPutC(ptrAny AS IntPtr,pszVal AS __Psz) AS IntPtr
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -275,7 +277,7 @@ begin namespace XSharp.IO
 	/// <param name="uilen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS PSZ,uilen AS DWORD) AS IntPtr
+	FUNCTION ItemPutCL(ptrAny AS IntPtr,pszVal AS __Psz,uilen AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -285,7 +287,7 @@ begin namespace XSharp.IO
 	/// <param name="pszDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS PSZ) AS IntPtr
+	FUNCTION ItemPutDS(ptrAny AS IntPtr,pszDate AS __Psz) AS IntPtr
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -297,7 +299,7 @@ begin namespace XSharp.IO
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS PSZ,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
+	FUNCTION ItemPutNS(ptrAny AS IntPtr,pszVal AS __Psz,dwLen AS DWORD,dwDec AS DWORD) AS IntPtr
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -306,9 +308,9 @@ begin namespace XSharp.IO
 	/// <param name="pObj"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ObjAsPsz(pObj AS IntPtr) AS PSZ
+	FUNCTION ObjAsPsz(pObj AS IntPtr) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Convert a specified number of OEM characters in a source buffer to a buffer of corresponding, if any, ANSI characters.
@@ -318,9 +320,9 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Oem2AnsiBuff(pszDest AS PSZ,pszSource AS PSZ,dwCount AS DWORD) AS PSZ
+	FUNCTION Oem2AnsiBuff(pszDest AS __Psz,pszSource AS __Psz,dwCount AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Return the name of an activated entity.
@@ -328,9 +330,9 @@ begin namespace XSharp.IO
 	/// <param name="dwActivation"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ProcName(dwActivation AS USUAL) AS PSZ
+	FUNCTION ProcName(dwActivation AS __Usual) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Convert a null-terminated string to a strongly typed string.
@@ -338,27 +340,27 @@ begin namespace XSharp.IO
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Psz2String(pszSource AS PSZ) AS STRING
+	FUNCTION Psz2String(pszSource AS __Psz) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Copy a buffer pointed to by a PSZ to a newly allocated block of memory and return a new pointer to that memory.
+	/// Copy a buffer pointed to by a __Psz to a newly allocated block of memory and return a new pointer to that memory.
 	/// </summary>
 	/// <param name="ptrSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PszAlloc(ptrSource AS IntPtr) AS PSZ
+	FUNCTION PszAlloc(ptrSource AS IntPtr) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
-	/// Return the length of a PSZ.
+	/// Return the length of a __Psz.
 	/// </summary>
 	/// <param name="pszX"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PszLen(pszX AS PSZ) AS DWORD
+	FUNCTION PszLen(pszX AS __Psz) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -367,7 +369,7 @@ begin namespace XSharp.IO
 	/// <param name="pszUnicode"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PszLenW(pszUnicode AS PSZ) AS DWORD
+	FUNCTION PszLenW(pszUnicode AS __Psz) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -375,9 +377,9 @@ begin namespace XSharp.IO
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION ReleaseString() AS PSZ
+	FUNCTION ReleaseString() AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Break a path name into its components.
@@ -389,21 +391,21 @@ begin namespace XSharp.IO
 	/// <param name="pszExt"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SplitPath(pzsPath AS PSZ,pszDrive AS PSZ,pszDir AS PSZ,pszName AS PSZ,pszExt AS PSZ) AS VOID
+	FUNCTION SplitPath(pzsPath AS __Psz,pszDrive AS __Psz,pszDir AS __Psz,pszName AS __Psz,pszExt AS __Psz) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
 
 	/// <summary>
-	/// Convert a float expression to a PSZ.
+	/// Convert a __VOFloat expression to a __Psz.
 	/// </summary>
 	/// <param name="flSource"></param>
 	/// <param name="dwLen"></param>
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrFloat(flSource AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
+	FUNCTION Str__VOFloat(flSource AS __VOFloat,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// Convert a strongly typed string to a null-terminated string.
@@ -411,61 +413,61 @@ begin namespace XSharp.IO
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION String2Psz(cSource AS STRING) AS PSZ
+	FUNCTION String2Psz(cSource AS STRING) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
-	/// Copy a string to a newly allocated block of memory and return a PSZ to the memory.
+	/// Copy a string to a newly allocated block of memory and return a __Psz to the memory.
 	/// </summary>
 	/// <param name="cSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StringAlloc(cSource AS STRING) AS PSZ
+	FUNCTION StringAlloc(cSource AS STRING) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
-	/// Convert an integer expression to a PSZ.
+	/// Convert an integer expression to a __Psz.
 	/// </summary>
 	/// <param name="l"></param>
 	/// <param name="dwLen"></param>
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
+	FUNCTION StrInt(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
-	/// Convert a long integer expression to a PSZ.
+	/// Convert a long integer expression to a __Psz.
 	/// </summary>
 	/// <param name="l"></param>
 	/// <param name="dwLen"></param>
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
+	FUNCTION StrLong(l AS LONG,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
-	/// Convert a null-terminated string to a symbol and add it to the atom table.
+	/// Convert a null-terminated string to a __Symbol and add it to the atom table.
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysAddAtom(p AS PSZ) AS SYMBOL
+	FUNCTION SysAddAtom(p AS __Psz) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
 	/// <summary>
-	/// Convert a null-terminated string to an uppercase symbol and add it to the atom table.
+	/// Convert a null-terminated string to an uppercase __Symbol and add it to the atom table.
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysAddAtomUpperA(p AS PSZ) AS SYMBOL
+	FUNCTION SysAddAtomUpperA(p AS __Psz) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -474,45 +476,45 @@ begin namespace XSharp.IO
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysAddAtomUpperBuff(p AS PSZ) AS SYMBOL
+	FUNCTION SysAddAtomUpperBuff(p AS __Psz) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
 	/// <summary>
-	/// Determine whether a symbol is in the atom table.
+	/// Determine whether a __Symbol is in the atom table.
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysFindAtom(p AS PSZ) AS SYMBOL
+	FUNCTION SysFindAtom(p AS __Psz) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
 	/// <summary>
-	/// Convert a symbol to a null-terminated string.
+	/// Convert a __Symbol to a null-terminated string.
 	/// </summary>
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysGetAtomName(s AS SYMBOL) AS PSZ
+	FUNCTION SysGetAtomName(s AS __Symbol) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION TimePsz() AS PSZ
+	FUNCTION TimePsz() AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	/// <summary>
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION TimePsz24() AS PSZ
+	FUNCTION TimePsz24() AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ
+	RETURN __PSZ._NULL_PSZ 
 
 	#endregion
 end namespace

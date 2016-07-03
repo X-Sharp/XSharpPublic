@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
@@ -11,30 +13,30 @@ begin namespace XSharp.Runtime
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ClassTreeClass(symClassName AS SYMBOL) AS ARRAY
+	FUNCTION ClassTreeClass(symClassName AS __Symbol) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
 	/// <summary>
-	/// Concatenate two symbols.
+	/// Concatenate two __Symbols.
 	/// </summary>
 	/// <param name="s1"></param>
 	/// <param name="s2"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ConcatAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS SYMBOL
+	FUNCTION ConcatAtom(s1 AS __Symbol,s2 AS __Symbol) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
 	/// <summary>
-	/// Concatenate three symbols.
+	/// Concatenate three __Symbols.
 	/// </summary>
 	/// <param name="s1"></param>
 	/// <param name="s2"></param>
 	/// <param name="s3"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ConcatAtom3(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL) AS SYMBOL
+	FUNCTION ConcatAtom3(s1 AS __Symbol,s2 AS __Symbol,s3 AS __Symbol) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -47,7 +49,7 @@ begin namespace XSharp.Runtime
 	/// <param name="s5"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ConcatAtom5(s1 AS SYMBOL,s2 AS SYMBOL,s3 AS SYMBOL,s4 AS SYMBOL,s5 AS SYMBOL) AS SYMBOL
+	FUNCTION ConcatAtom5(s1 AS __Symbol,s2 AS __Symbol,s3 AS __Symbol,s4 AS __Symbol,s5 AS __Symbol) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -60,17 +62,17 @@ begin namespace XSharp.Runtime
 	/// <param name="nArgs"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DeclareMethod(symClass AS SYMBOL,symMeth AS SYMBOL,nType AS DWORD,pFunc AS PTR,nArgs AS DWORD) AS INT
+	unsafe FUNCTION DeclareMethod(symClass AS __Symbol,symMeth AS __Symbol,nType AS DWORD,pFunc AS PTR,nArgs AS DWORD) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Return a set-get code block for a field that is identified by a symbol.
+	/// Return a set-get code block for a field that is identified by a __Symbol.
 	/// </summary>
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldBlockSym(symVar AS SYMBOL) AS OBJECT
+	FUNCTION FieldBlockSym(symVar AS __Symbol) AS OBJECT
 		/// THROW NotImplementedException{}
 	RETURN NULL_OBJECT   
 
@@ -81,27 +83,27 @@ begin namespace XSharp.Runtime
 	/// <param name="symField"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldGetAlias(symAlias AS SYMBOL,symField AS SYMBOL) AS USUAL
+	FUNCTION FieldGetAlias(symAlias AS __Symbol,symField AS __Symbol) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
-	/// Retrieve the contents of a field that is identified by its symbolic name.
+	/// Retrieve the contents of a field that is identified by its __Symbolic name.
 	/// </summary>
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldGetSym(symVar AS SYMBOL) AS USUAL
+	FUNCTION FieldGetSym(symVar AS __Symbol) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
-	/// Return the position of a field that is identified by a symbol.
+	/// Return the position of a field that is identified by a __Symbol.
 	/// </summary>
 	/// <param name="sField"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldPosSym(sField AS SYMBOL) AS DWORD
+	FUNCTION FieldPosSym(sField AS __Symbol) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -113,29 +115,29 @@ begin namespace XSharp.Runtime
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldPutAlias(symAlias AS SYMBOL,symField AS SYMBOL,u AS USUAL) AS USUAL
+	FUNCTION FieldPutAlias(symAlias AS __Symbol,symField AS __Symbol,u AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
-	/// Set the value of a field that is identified by its symbolic name.
+	/// Set the value of a field that is identified by its __Symbolic name.
 	/// </summary>
 	/// <param name="symVar"></param>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
+	FUNCTION FieldPutSym(symVar AS __Symbol,u AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
-	/// Return a set-get code block for a field, specified as a symbol, in a specified work area.
+	/// Return a set-get code block for a field, specified as a __Symbol, in a specified work area.
 	/// </summary>
 	/// <param name="symVar"></param>
 	/// <param name="nArea"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldWBlockSym(symVar AS SYMBOL,nArea AS DWORD) AS OBJECT
+	FUNCTION FieldWBlockSym(symVar AS __Symbol,nArea AS DWORD) AS OBJECT
 		/// THROW NotImplementedException{}
 	RETURN NULL_OBJECT   
 
@@ -145,7 +147,7 @@ begin namespace XSharp.Runtime
 	/// <param name="symFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FParamCount(symFunc AS SYMBOL) AS DWORD
+	FUNCTION FParamCount(symFunc AS __Symbol) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -154,18 +156,18 @@ begin namespace XSharp.Runtime
 	/// <param name="symFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FunctionSym2Ptr(symFunc AS SYMBOL) AS PTR
+	unsafe FUNCTION FunctionSym2Ptr(symFunc AS __Symbol) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION GSG9(symVar AS SYMBOL) AS USUAL
+	FUNCTION GSG9(symVar AS __Symbol) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Determine if a class exists.
@@ -173,7 +175,7 @@ begin namespace XSharp.Runtime
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsClass(symClassName AS SYMBOL) AS LOGIC
+	FUNCTION IsClass(symClassName AS __Symbol) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -184,7 +186,7 @@ begin namespace XSharp.Runtime
 	/// <param name="symSuperClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsClassOf(symClassName AS SYMBOL,symSuperClassName AS SYMBOL) AS LOGIC
+	FUNCTION IsClassOf(symClassName AS __Symbol,symSuperClassName AS __Symbol) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -195,17 +197,17 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethodName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsMethodClass(symClassName AS SYMBOL,symMethodName AS SYMBOL) AS LOGIC
+	FUNCTION IsMethodClass(symClassName AS __Symbol,symMethodName AS __Symbol) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Store all instance variables of a class into an array.
+	/// Store all instance variables of a class into an __Array.
 	/// </summary>
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IvarListClass(symClassName AS SYMBOL) AS ARRAY
+	FUNCTION IvarListClass(symClassName AS __Symbol) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -215,7 +217,7 @@ begin namespace XSharp.Runtime
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarBlockSym(symVar AS SYMBOL) AS OBJECT
+	FUNCTION MemVarBlockSym(symVar AS __Symbol) AS OBJECT
 		/// THROW NotImplementedException{}
 	RETURN NULL_OBJECT   
 
@@ -224,9 +226,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarGetSym(symVar AS SYMBOL) AS USUAL
+	FUNCTION MemVarGetSym(symVar AS __Symbol) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -234,17 +236,17 @@ begin namespace XSharp.Runtime
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
+	FUNCTION MemVarPutSym(symVar AS __Symbol,u AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
-	/// Create a class list in the form of an array for the specified class.
+	/// Create a class list in the form of an __Array for the specified class.
 	/// </summary>
 	/// <param name="symClassName"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MethodListClass(symClassName AS SYMBOL) AS ARRAY
+	FUNCTION MethodListClass(symClassName AS __Symbol) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -255,29 +257,29 @@ begin namespace XSharp.Runtime
 	/// <param name="symMethod"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MParamCount(symClass AS SYMBOL,symMethod AS SYMBOL) AS DWORD
+	FUNCTION MParamCount(symClass AS __Symbol,symMethod AS __Symbol) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Return a multidimensional array of all object-oriented programming symbols that constitute the class of an object.
+	/// Return a multidimensional __Array of all object-oriented programming __Symbols that constitute the class of an object.
 	/// </summary>
 	/// <param name="s"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION OOPTreeClass(s AS SYMBOL) AS ARRAY
+	FUNCTION OOPTreeClass(s AS __Symbol) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
 	/// <summary>
-	/// Convert a symbol to a string.
+	/// Convert a __Symbol to a string.
 	/// </summary>
 	/// <param name="sym"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Symbol2String(sym AS SYMBOL) AS STRING
+	FUNCTION __Symbol2String(sym AS __Symbol) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -285,7 +287,7 @@ begin namespace XSharp.Runtime
 	/// <param name="s2"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SysCompAtom(s1 AS SYMBOL,s2 AS SYMBOL) AS INT
+	FUNCTION SysCompAtom(s1 AS __Symbol,s2 AS __Symbol) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -294,7 +296,7 @@ begin namespace XSharp.Runtime
 	/// <param name="symClass"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION UnDeclareClass(symClass AS SYMBOL) AS INT
+	FUNCTION UnDeclareClass(symClass AS __Symbol) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -303,9 +305,9 @@ begin namespace XSharp.Runtime
 	/// <param name="symVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VarGetSym(symVar AS SYMBOL) AS USUAL
+	FUNCTION VarGetSym(symVar AS __Symbol) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -313,9 +315,9 @@ begin namespace XSharp.Runtime
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VarPutSym(symVar AS SYMBOL,u AS USUAL) AS USUAL
+	FUNCTION VarPutSym(symVar AS __Symbol,u AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	#endregion
 end namespace

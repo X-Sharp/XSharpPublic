@@ -138,10 +138,10 @@
     <Compile Include="Functions\functions_string.prg" />
     <Compile Include="Functions\functions_unsafe.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="Structures\PSZ.prg" />
     <Compile Include="Structures\Various.prg" />
     <Compile Include="Structures\Float.prg" />
     <Compile Include="Structures\Date.prg" />
-    <Compile Include="Structures\PSZ.prg" />
     <Compile Include="Structures\Symbol.prg" />
     <Compile Include="Structures\Usual.prg" />
   </ItemGroup>

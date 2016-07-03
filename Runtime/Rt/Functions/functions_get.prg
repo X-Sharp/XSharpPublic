@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
@@ -12,7 +14,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetAMExt() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
@@ -29,7 +31,7 @@ begin namespace XSharp.Runtime
 	/// <param name="nSize"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION GetCallStack(pBuffer AS PSZ,nSize AS INT) AS LOGIC
+	FUNCTION GetCallStack(pBuffer AS __Psz,nSize AS INT) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -43,7 +45,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetChunkBase64(b1 AS BYTE,b2 AS BYTE,b3 AS BYTE,nPad AS INT) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Get the current <%APP%> search path for opening file.
@@ -52,7 +54,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetCurPath() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -63,13 +65,13 @@ begin namespace XSharp.Runtime
 	RETURN IntPtr.Zero   
 
 	/// <summary>
-	/// Return the current date format.
+	/// Return the current __VODate format.
 	/// </summary>
 	/// <returns>
 	/// </returns>
 	FUNCTION GetDateFormat() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the <%APP%> default drive and directory.
@@ -78,7 +80,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetDefault() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the current SetDefaultDir() setting.
@@ -87,7 +89,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetDefaultDir() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the DOS error code from any application.
@@ -106,7 +108,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetEnv(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert file attributes to numbers.
@@ -114,7 +116,7 @@ begin namespace XSharp.Runtime
 	/// <param name="uxFileAttr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION GetFAttr(uxFileAttr AS USUAL) AS DWORD
+	FUNCTION GetFAttr(uxFileAttr AS __Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -124,9 +126,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cFileMask"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION GetFMask(cFileMask AS USUAL) AS PSZ
+	FUNCTION GetFMask(cFileMask AS __Usual) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ   
+	RETURN __PSZ._NULL_PSZ   
 
 	/// <summary>
 	/// </summary>
@@ -135,7 +137,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetMimType(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Get the current DLL for nation-dependent operations and messages.
@@ -144,7 +146,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetNatDLL() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Returns a string representing the evening extension for time strings in 12-hour format.
@@ -153,7 +155,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetPMExt() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -169,7 +171,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetRTFullPath() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -179,16 +181,16 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION GetStgServer(pStgRoot AS IntPtr,cSubStorage AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="dwRes"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION GetStringDXAX(dwRes AS DWORD) AS PSZ
+	FUNCTION GetStringDXAX(dwRes AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL_PSZ   
+	RETURN __PSZ._NULL_PSZ   
 
 	/// <summary>
 	/// </summary>

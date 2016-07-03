@@ -3,45 +3,50 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-#using System
-#using System.Collections
-#using System.IO
-#using System.Linq
-#using System.Runtime.InteropServices
+using System
+using System.Collections
+using System.IO
+using System.Linq
+using System.Runtime.InteropServices
+using Vulcan
+using System.Security
+using Microsoft.Win32.SafeHandles
+using System.Runtime
+using System.Runtime.ConstrainedExecution
 
 begin namespace XSharp.IO
 
-	private static class FileHelper
+	static class FileHelper
         static foundEntries	:= ArrayList{} as ArrayList
         static enumerator   := null as IEnumerator 
         static currentItem	:= null as object
         static isAtEnd		:= true as logic
-        static int errorCode:= 0 as int
+        static errorCode:= 0 as dword
 
-		private static METHOD FFCount( fileSpec as PSZ , attributes as int ) as int
+		public static METHOD FFCount( fileSpec as __Psz , attributes as dword ) as dword
 			FFirst(fileSpec,attributes)
-		return foundEntries:Count
+		return (dword)foundEntries:Count
 
-		private static METHOD FFirst( fielSpec as PSZ , attributes as int )
+		public static METHOD FFirst( fileSpec as __Psz , attributes as dword ) as logic
 			foundEntries:Clear()
-			local fileSpecification := Marshal.PtrToStringAnsi(fileSpec) as string
+			local fileSpecification := Marshal.PtrToStringAnsi((IntPtr)fileSpec) as string
 			if attributes == 0x00000008
-			   local allDrives =: DriveInfo.GetDrives() as DriveInfo[]
+			   local allDrives := DriveInfo.GetDrives() as DriveInfo[]
 			   foreach  Drive as DriveInfo in allDrives
 				foundEntries:Add(drive)
 			   next
 			else
-				if ((FileAttributes)attributes & FileAttibutes.Directory) == FileAttibutes.Directory
-				   local directories := DirectoryInfo{fileSpecification}.GetDirectories()
-				   attributes -= (int) FileAttibutes.Directory
-				   attributes += (int) FileAttibutes.Normal
+				if ((FileAttributes)attributes & FileAttributes.Directory) == FileAttributes.Directory
+				   local directories := DirectoryInfo{fileSpecification}.GetDirectories() as DirectoryInfo[]
+				   attributes -= (int) FileAttributes.Directory
+				   attributes += (int) FileAttributes.Normal
 				   var selectedDirs := FROM DirectoryInfo IN directories WHERE (DirectoryInfo:Attributes & (FileAttributes) attributes ) != 0 SELECT DirectoryInfo
 				   foreach directory as DirectoryInfo in selectedDirs
-					foundEntries:Addd(directory)
+					foundEntries:Add(directory)
 				   next 
 				else
-				   attributes += (int) FileAttibutes.Normal
-				   local files := DirectoryInfo{fileSpecification}.GetFiles()
+				   attributes += (int) FileAttributes.Normal
+				   local files := DirectoryInfo{fileSpecification}.GetFiles() as FileInfo[]
 				   var selectedFiles := FROM FileInfo IN files WHERE ( FileInfo:Attributes & (FileAttributes) attributes) != 0 SELECT FileInfo
 				   foreach file as FileInfo in files
 					foundEntries:Add(file)
@@ -55,7 +60,7 @@ begin namespace XSharp.IO
 			endif
 		return (foundEntries:Count > 0)
 
-		private static METHOD FNext() as logic
+		public static METHOD FNext() as logic
 			if !isAtEnd
 				isAtEnd := enumerator:MoveNext()
 				if !isAtEnd
@@ -64,36 +69,36 @@ begin namespace XSharp.IO
 			endif
 		return isAtEnd
 
-		private static METHOD FName() as string
+		public static METHOD FName() as string
 			local name := "" as string
 			if !isAtEnd
 			   if currentItem is DriveInfo
-				name := ((DriveInfo) currentInfo):Name
-			   elseif currentItem is FileInfo)
-			    name := ((FileInfo)currentItem):Name
-			   elseif currentItem is DirectoryInfo
-			    name := ((DirectoryInfo) currentItem):Name
-			   endif						
+				name := ((DriveInfo) currentItem):Name
+ 			    elseif (currentItem is FileInfo)
+						name := ((FileInfo)currentItem):Name
+				elseif (currentItem is DirectoryInfo)
+						name := ((DirectoryInfo) currentItem):Name
+				endif
 			endif
 		return name
 
-		private static METHOD FSize() as DWORD
-			local size := 0 as LONG
+		public static METHOD FSize() as DWORD
+			local size := 0 as int
 			if !isAtEnd
 			   if currentItem is DriveInfo
-				size := ((DriveInfo) currentInfo):TotalSize
-			   elseif currentItem is FileInfo)
-			    size := ((FileInfo)currentItem):Length
+				size := (int)((DriveInfo) currentItem):TotalSize
+			   elseif (currentItem is FileInfo)
+			    size := (int)((FileInfo)currentItem):Length
 			   elseif currentItem is DirectoryInfo
-			    size := ((DirectoryInfo) currentItem):GetFileSystemInfos().LongLength
+			    size := (int)((DirectoryInfo) currentItem):GetFileSystemInfos().LongLength
 			   endif						
 			endif
 		return (DWORD) size
 
-		private static METHOD FTime() as string
+		public static METHOD FTime() as string
 			local time := "00:00:00" as string
 			if !isAtEnd
-			   if currentItem is FileInfo)
+			   if (currentItem is FileInfo)
 			    time := ((FileInfo)currentItem):LastWriteTime.ToString("HH:MM:ss")
 			   elseif currentItem is DirectoryInfo
 			    time := ((DirectoryInfo) currentItem):LastWriteTime.ToString("HH:MM:ss")
@@ -101,10 +106,10 @@ begin namespace XSharp.IO
 			endif
 		return  time
 
-		private static METHOD FDate() as DATE
+		public static METHOD FDate() as __VODate
 			local time := DateTime.MinValue as DateTime
 			if !isAtEnd
-			   if currentItem is FileInfo)
+			   if (currentItem is FileInfo)
 			    time := ((FileInfo)currentItem):LastWriteTime
 			   elseif currentItem is DirectoryInfo
 			    time := ((DirectoryInfo) currentItem):LastWriteTime
@@ -113,10 +118,10 @@ begin namespace XSharp.IO
 		return  Vulcan.__VODate{time}
 
 
-		private static METHOD FAttrib() as DWORD
+		public static METHOD FAttrib() as DWORD
 			local attributes := 0x00000008 as int
 			if !isAtEnd
-			   if currentItem is FileInfo)
+			   if (currentItem is FileInfo)
 			    attributes := (int)((FileInfo)currentItem):Attributes
 			   elseif currentItem is DirectoryInfo
 			    attributes := (int)((DirectoryInfo) currentItem):Attributes
@@ -124,149 +129,200 @@ begin namespace XSharp.IO
 			endif
 		return  (DWORD)attributes
 
-		[DllImport("kernel32.dll", CharSet := CharSet.Auto, SetLastError := true , EntryPoint := "CreateFileW" , ExactSpelling := true)]
-		public static unsafe extern CreateFile(
-		 [MarshalAs(UnmanagedType.LPTStr)] filename as string,
-		 [MarshalAs(UnmanagedType.U4)] accessMode as FileAccess,
-		 [MarshalAs(UnmanagedType.U4)] share as FileShare ,
-		 IntPtr securityAttributes, // optional SECURITY_ATTRIBUTES struct or IntPtr.Zero
-		 [MarshalAs(UnmanagedType.U4)] creationDisposition as FileMode,
-		 [MarshalAs(UnmanagedType.U4)] flagsAndAttributes as FileAttributes ,
+		[DllImport("kernel32.dll", CharSet := CharSet.Auto, SetLastError := true , EntryPoint := "CreateFileW" , ExactSpelling := true)];
+		public static unsafe extern Method CreateFile(;
+		 [MarshalAs(UnmanagedType.LPTStr)] filename as string,;
+		 [MarshalAs(UnmanagedType.U4)] accessMode as FileAccess,;
+		 [MarshalAs(UnmanagedType.U4)] share as FileShare ,;
+		 securityAttributes as IntPtr,; // optional SECURITY_ATTRIBUTES struct or IntPtr.Zero
+		 [MarshalAs(UnmanagedType.U4)] creationDisposition as FileMode,;
+		 [MarshalAs(UnmanagedType.U4)] flagsAndAttributes as FileAttributes ,;
 		 templateFile as PTR) as PTR
 
-		[DllImport("kernel32.dll",SetLastError := true, ExactSpelling := true, CharSet := CharSet.Auto)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool WriteFile(hFile as PTR,  lpBuffer as byte[],
-			nNumberOfBytesToWrite as dword, out lpNumberOfBytesWritten as dword,
-			[In] lpOverlapped ref System.Threading.NativeOverlapped )
+		[DllImport("kernel32.dll",SetLastError := true, ExactSpelling := true, CharSet := CharSet.Auto)];
+		[return: MarshalAs(UnmanagedType.Bool)];
+		public static extern unsafe Method WriteFile(hFile as PTR,  lpBuffer as byte[],;
+			nNumberOfBytesToWrite as dword, lpNumberOfBytesWritten ref dword,;
+			[In] lpOverlapped ref System.Threading.NativeOverlapped ) as logic
 
-		[DllImport("kernel32.dll", SetLastError := true, ExactSpelling := true, CharSet := CharSet.Auto)]
-		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-		[SuppressUnmanagedCodeSecurity]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static unsafe extern CloseHandle(hObject as PTR) as logic
+		[DllImport("kernel32.dll", SetLastError := true, ExactSpelling := true, CharSet := CharSet.Auto)];
+		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)];
+		[SuppressUnmanagedCodeSecurity];
+		[return: MarshalAs(UnmanagedType.Bool)];
+		public static unsafe extern method CloseHandle(hObject as PTR) as logic
 
-		[DllImport("Kernel32.dll", SetLastError := true, CharSet := CharSet.Auto, ExactSpelling := true)]
-		static extern uint SetFilePointer(
-        [In]  hFile as SafeFileHandle, 
-        [In]  lDistanceToMove as int,
-        [Out] out lpDistanceToMoveHigh as int,
-        [In]  dwMoveMethod as EMoveMethod)
+		[DllImport("Kernel32.dll", SetLastError := true, CharSet := CharSet.Auto, ExactSpelling := true)];
+		public static extern unsafe method SetFilePointer(;
+        [In]  hFile as SafeFileHandle,; 
+        [In]  lDistanceToMove as int,;
+        [Out] lpDistanceToMoveHigh as int,;
+        [In]  dwMoveMethod as EMoveMethod) as dword
 
 
-		public static method FCreate( file as string ) as PTR
+		public static unsafe method FCreate( file as string ) as PTR
 		return FCreate(file, 0)
 
-		public static method FCreate( file as string , attributes as dword) as PTR
-		    VOFileMode mode := new VOFileMode(0x100, attributes)
+		public static unsafe method FCreate( file as string , attributes as dword) as PTR
+		    local mode := VOFileMode{0x100, (int)attributes} as VOFileMode
         return FCreate(file, mode)
 
-		public static method FCreate(file as string, mode as VOFileMode) as PTR
-            local handle := CreateFile(file, mode.AccessCode, mode.ShareCode, IntPtr.Zero, mode.CreateCode, mode.AttributesCode, IntPtr.Zero) as PTR
-            if (handle:ToInt32() == -1)
-                FError((int)Marshal.GetLastWin32Error())
+		public static unsafe method FCreate(file as string, mode as VOFileMode) as PTR
+            local handle := CreateFile(file, (FileAccess)mode.AccessCode, (FileShare)mode.ShareCode, IntPtr.Zero, (FileMode)mode.CreateCode, (FileAttributes)mode.AttributesCode, IntPtr.Zero) as PTR
+            if (((IntPtr)handle):ToInt32() == -1)
+                FError((dword)Marshal.GetLastWin32Error())
             else
                 FError(0)
 			endif
         return handle
 
-		public static FError( code as dword) as dword
+		public static method FError( code as dword) as dword
             local lastError := errorCode as dword
             errorCode := code 
         return lastError
 
-		public static FWrite( handle as PTR,string buffer as string) as dword	
-        return FWrite(handle, buffer, buffer:Length)
+		public static unsafe method FWrite( handle as PTR,buffer as string) as dword	
+        return FWrite(handle, buffer, (dword)buffer:Length)
 
-		public unsafe static FWrite( handle as PTR, buffer as string, count as dword) as dword
+		public unsafe static method FWrite( handle as PTR, buffer as string, count as dword) as dword
             local successFull := false as logic
             local bytes := System.Text.Encoding.ASCII.GetBytes(buffer) as byte[]
-            local bytesRead := 0 
-            successFull := WriteFile(handle, bytes, count, out bytesRead, 0)
+            local bytesRead := 0 as dword
+			local overlapped := default(System.Threading.NativeOverlapped) as System.Threading.NativeOverlapped
+            successFull := WriteFile(handle, bytes, count,ref bytesRead, ref overlapped)
             if !successFull 
-                FError((int)Marshal.GetLastWin32Error())
+                FError((dword)Marshal.GetLastWin32Error())
             endif
-            return (dword) bytesRead
-        }
+        return (dword) bytesRead
 
-        public static FClose(handle as PTR) as logic
+        public static unsafe method FClose(handle as PTR) as logic
             local  isClosed := CloseHandle(handle) as logic
             if (!isClosed)
-                FError((int)Marshal.GetLastWin32Error())
+                FError((dword)Marshal.GetLastWin32Error())
             endif
         return isClosed
 
-	    public static unsafe FSeek(handle as PTR, lOffset as long, dwOrigin as dword) as long
-            local position := SetFilePointer(handle, lOffset, IntPtr.Zero, dwOrigin) as int
-            if (position == int.MaxValue)
-                FError((int)Marshal.GetLastWin32Error())
+	    public static unsafe method FSeek(handle as PTR, lOffset as long, dwOrigin as dword) as long
+            local position := (int) SetFilePointer(SafeFileHandle{(IntPtr)handle,true}, lOffset, 0, (EMoveMethod)dwOrigin) as int
+            if (position == System.Int32.MaxValue)
+                FError((dword)Marshal.GetLastWin32Error())
             else
                 FError(0)
 			endif
         return (long)position
 
-		public static unsafe FSeek( handle as PTR, lOffset as long) as long
+		public static unsafe method FSeek( handle as PTR, lOffset as long) as long
 	    return FSeek(handle,lOffset,0)
 
-        public static unsafe FTell(handle as PTR) as long
+        public static unsafe method FTell(handle as PTR) as long
         return FSeek(handle, 0, 1)
 
-		private structure VOFileMode
-		        public AccessCode		as int auto
-		        public AttributesCode	as int auto
-		        public CreateCode		as int auto
-				public ShareCode		as int auto
-				
-				constructor(mode as int,atrribs as int)
-					/// see File.C ( __PrepareMode )
-					if (mode & 0x10000) == 0x10000
-						mode -= 0x10000
-					endif
+        public static unsafe method FEof(handle as PTR) as logic
+            local offset := FTell(handle) as int
+            local position := FSeek(handle, 0, 2) as int
+            local isEof := ( offset == position ) as logic
+            if !isEof
+                FSeek(handle, offset, 0)
+			endif
+        return isEof
 
-					if attribs > 0 
-					   AttributesCode := attribs
-					else
-					   AttributesCode := FileAttributes.Normal
-					endif
-					AccessCode = unchecked((int)0x80000000)
+        public static unsafe method FRewind(handle as PTR) as int
+        return (int)FSeek(handle, 0, 0)
 
-					if ((inMode & 2) == 2)
-						AccessCode += 0x40000000
-					else if ((mode & 1) == 1)
-						AccessCode := 0x40000000
-					endif
+        public static unsafe method FOpen(file as string ) as PTR
+        return FOpen(file, 0)
 
-					CreateCode = 3
-					if ((mode & 0x1000) == 0x1000)
-						CreateCode := 2
-						AccessCode := unchecked((int)0xc0000000)
-					endif
-					ShareCode := 0
-					local num := 0x70 as int
-					switch (mode & num)
-						case 0x40
-							ShareCode := 3
-						case 0x20
-							ShareCode := 1
-						case 0x30
-							ShareCode := 2
-						case 0x10
-							ShareCode := 0
-						case 0
-							ShareCode := 0
-					end switch
-				return
+        public static unsafe method FOpen(file as string,mode as int) as PTR
+            local fileMode := VOFileMode{mode, 0} as VOFileMode 
+        return FCreate(file, fileMode)
 
+        public static method FRename( oldFile as string , newFile as string) as logic
+            local renamed := true as logic
+            try
+                System.IO.File.Move(oldFile, newFile)
+            catch ex as Exception 
+                FError((dword)Marshal.GetLastWin32Error())
+                renamed := false
+            end try
+        return renamed
 
-		end class
+        public static method MoveFile(oldFile as string,newFile as string) as logic
+        return FRename(oldFile, newFile)
+        
+        public static method FErase(fileName as string) as logic
+            local isDeleted := true as logic
+            try
+                System.IO.File.Delete(fileName)
+            catch ex as Exception
+                FError((dword)Marshal.GetLastWin32Error())
+                isDeleted := false
+            end try
+        return isDeleted
 
-		private enum EMoveMethod as dword
-			@@Begin := 0,
-			@@Current := 1,
-			@@End := 2
-		end enum
+        public static method FCopy(fileName as string,destination as string) as logic
+            local isDeleted := true as logic
+            try
+                System.IO.File.Copy(fileName,destination,true)
+            catch ex as Exception
+                FError((dword)Marshal.GetLastWin32Error())
+                isDeleted := false
+			end try
+        return isDeleted
 
 	end class
+	public structure VOFileMode
+		public PROPERTY AccessCode		as int auto
+		public PROPERTY AttributesCode	as int auto
+		public PROPERTY CreateCode		as int auto
+		public PROPERTY ShareCode		as int auto
+				
+		constructor(mode as int,attribs as int)
+			/// see File.C ( __PrepareMode )
+			if (mode & 0x10000) == 0x10000
+				mode -= 0x10000
+			endif
+
+			if attribs > 0 
+				AttributesCode := attribs
+			else
+				AttributesCode := FileAttributes.Normal
+			endif
+			AccessCode := unchecked((int)0x80000000)
+
+			if ((mode & 2) == 2)
+				AccessCode += 0x40000000
+			elseif ((mode & 1) == 1)
+				AccessCode := 0x40000000
+			endif
+
+			CreateCode := 3
+			if ((mode & 0x1000) == 0x1000)
+				CreateCode := 2
+				AccessCode := unchecked((int)0xc0000000)
+			endif
+			ShareCode := 0
+			local num := 0x70 as int
+			switch (mode & num)
+				case 0x40
+					ShareCode := 3
+				case 0x20
+					ShareCode := 1
+				case 0x30
+					ShareCode := 2
+				case 0x10
+					ShareCode := 0
+				case 0
+					ShareCode := 0
+			end switch
+		return
+
+	end structure
+
+	enum EMoveMethod as dword
+		@@Begin := 0
+		@@Current := 1
+		@@End := 2
+	end enum
+
 
 	#region functions
 	/// <summary>
@@ -276,8 +332,8 @@ begin namespace XSharp.IO
 	/// <param name="nAttr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFCount(pszFile AS PSZ,nAttr AS DWORD) AS DWORD
-	return FileHelper.FFCount(pszFile,nAttr) 
+	FUNCTION FFCount(pszFile AS __Psz,nAttr AS DWORD) AS DWORD
+	return XSharp.IO.FileHelper.FFCount(pszFile,nAttr) 
 
 	/// <summary>
 	/// Find the first file that matches a given file specification or attribute.
@@ -286,9 +342,8 @@ begin namespace XSharp.IO
 	/// <param name="nAttr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFirst(pszFile AS PSZ,nAttr AS DWORD) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE 
+	FUNCTION FFirst(pszFile AS __Psz,nAttr AS DWORD) AS LOGIC
+	RETURN XSharp.IO.FileHelper.FFirst(pszFile,nAttr)
 
 	/// <summary>
 	/// Determine the attributes of the file found after FFCount(), FFirst(), or FNext().
@@ -296,8 +351,7 @@ begin namespace XSharp.IO
 	/// <returns>
 	/// </returns>
 	FUNCTION FAttrib() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN XSharp.IO.FileHelper.FAttrib() 
 
 	/// <summary>
 	/// Return the number of fields in the current database file.
@@ -305,17 +359,15 @@ begin namespace XSharp.IO
 	/// <returns>
 	/// </returns>
 	FUNCTION FCount() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN XSharp.IO.FileHelper.FCount()
 
 	/// <summary>
-	/// Return the date stamp of the file found by FFCount(), FFirst(), or FNext().
+	/// Return the __VODate stamp of the file found by FFCount(), FFirst(), or FNext().
 	/// </summary>
 	/// <returns>
 	/// </returns>
-	FUNCTION FDate() AS DATE
-		/// THROW NotImplementedException{}
-	RETURN (DATE)0   
+	FUNCTION FDate() AS __VODate
+	RETURN XSharp.IO.FileHelper.FDate()
 
 	/// <summary>
 	/// Get or set the error code for a file operation.
@@ -323,9 +375,8 @@ begin namespace XSharp.IO
 	/// <param name="nSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FError(nSet AS USUAL) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	FUNCTION FError(nSet AS __Usual) AS DWORD
+	RETURN XSharp.IO.FileHelper.FError(nSet)  
 
 	/// <summary>
 	/// Read a line from an open file.
@@ -334,9 +385,9 @@ begin namespace XSharp.IO
 	/// <param name="nBuffLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FGetS(pFile AS USUAL,nBuffLen AS USUAL) AS STRING
+	FUNCTION FGetS(pFile AS __Usual,nBuffLen AS __Usual) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Change the size of a file opened with a low-level file function.
@@ -345,7 +396,7 @@ begin namespace XSharp.IO
 	/// <param name="nOffset"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FChSize(pFile AS PTR,nOffset AS DWORD) AS DWORD
+	unsafe FUNCTION FChSize(pFile AS PTR,nOffset AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -355,9 +406,8 @@ begin namespace XSharp.IO
 	/// <param name="pFile"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FClose(pFile AS PTR) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	unsafe FUNCTION FClose(pFile AS PTR) AS LOGIC
+	RETURN XSharp.IO.FileHelper.FClose(pFile)   
 
 	/// <summary>
 	/// Flush file buffers.
@@ -376,8 +426,7 @@ begin namespace XSharp.IO
 	/// <returns>
 	/// </returns>
 	UNSAFE FUNCTION FEof(pFILE AS PTR) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	RETURN XSharp.IO.FileHelper.FEof() 
 
 	/// <summary>
 	/// Lock a portion of an open file.
@@ -387,7 +436,7 @@ begin namespace XSharp.IO
 	/// <param name="dwLength"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFLock(pHandle AS PTR,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	unsafe FUNCTION FFLock(pHandle AS PTR,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -397,7 +446,7 @@ begin namespace XSharp.IO
 	/// <param name="phandle"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFlush(phandle AS PTR) AS VOID
+	unsafe FUNCTION FFlush(phandle AS PTR) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -409,7 +458,7 @@ begin namespace XSharp.IO
 	/// <param name="dwLength"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FFUnLock(phandle AS PTR,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
+	unsafe FUNCTION FFUnLock(phandle AS PTR,dwOffset AS DWORD,dwLength AS DWORD) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -420,9 +469,9 @@ begin namespace XSharp.IO
 	/// <param name="nBuffLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FGetS2(pFile AS PTR,nBuffLen AS DWORD) AS STRING
+	unsafe FUNCTION FGetS2(pFile AS PTR,nBuffLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -431,7 +480,7 @@ begin namespace XSharp.IO
 	/// <param name="nDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldVal(ptrBuff AS PTR,nLen AS INT,nDec AS INT) AS FLOAT
+	unsafe FUNCTION FieldVal(ptrBuff AS PTR,nLen AS INT,nDec AS INT) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -442,9 +491,9 @@ begin namespace XSharp.IO
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Float2Psz(ptrUsual AS PTR,dwLen AS DWORD,dwDec AS DWORD) AS PSZ
+	unsafe FUNCTION __VOFloat2Psz(ptrUsual AS PTR,dwLen AS DWORD,dwDec AS DWORD) AS __Psz
 		/// THROW NotImplementedException{}
-	RETURN NULL   
+	RETURN __Psz._NULL_PSZ
 
 	/// <summary>
 	/// Write a string, a carriage-return character, and a linefeed character to an open file, specifying three strongly-typed arguments.
@@ -454,7 +503,7 @@ begin namespace XSharp.IO
 	/// <param name="nCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FPutS3(pFILE AS PTR,c AS STRING,nCount AS DWORD) AS DWORD
+	unsafe FUNCTION FPutS3(pFILE AS PTR,c AS STRING,nCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -466,7 +515,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRead(pHandle AS PTR,refC AS USUAL,dwCount AS DWORD) AS DWORD
+	unsafe FUNCTION FRead(pHandle AS PTR,refC AS __Usual,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -478,7 +527,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRead3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	unsafe FUNCTION FRead3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -491,7 +540,7 @@ begin namespace XSharp.IO
 	/// <param name="lAnsi"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRead4(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
+	unsafe FUNCTION FRead4(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -502,9 +551,9 @@ begin namespace XSharp.IO
 	/// <param name="nBuffLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadLine2(pFile AS PTR,nBuffLen AS DWORD) AS STRING
+	unsafe FUNCTION FReadLine2(pFile AS PTR,nBuffLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Read characters from a file.
@@ -513,9 +562,9 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadStr(pHandle AS PTR,dwCount AS DWORD) AS STRING
+	unsafe FUNCTION FReadStr(pHandle AS PTR,dwCount AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Read characters from a file into a buffer variable that is passed by reference.
@@ -525,7 +574,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadText(pHandle AS PTR,refC AS USUAL,dwCount AS DWORD) AS DWORD
+	unsafe FUNCTION FReadText(pHandle AS PTR,refC AS __Usual,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -537,7 +586,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FReadText3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	unsafe FUNCTION FReadText3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -547,7 +596,7 @@ begin namespace XSharp.IO
 	/// <param name="pFile"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FRewind(pFile AS PTR) AS VOID
+	unsafe FUNCTION FRewind(pFile AS PTR) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN   
 
@@ -559,7 +608,7 @@ begin namespace XSharp.IO
 	/// <param name="dwOrigin"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FSeek3(pHandle AS PTR,lOffset AS LONG,dwOrigin AS DWORD) AS LONG
+	unsafe FUNCTION FSeek3(pHandle AS PTR,lOffset AS LONG,dwOrigin AS DWORD) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -569,7 +618,7 @@ begin namespace XSharp.IO
 	/// <param name="pHandle"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FTell(pHandle AS PTR) AS LONG
+	unsafe FUNCTION FTell(pHandle AS PTR) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -578,7 +627,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrFunc"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FunctionPtr2Sym(ptrFunc AS PTR) AS SYMBOL
+	unsafe FUNCTION FunctionPtr2Sym(ptrFunc AS PTR) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -590,7 +639,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWrite3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	unsafe FUNCTION FWrite3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -603,7 +652,7 @@ begin namespace XSharp.IO
 	/// <param name="lAnsi"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWrite4(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
+	unsafe FUNCTION FWrite4(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD,lAnsi AS LOGIC) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -615,7 +664,7 @@ begin namespace XSharp.IO
 	/// <param name="nCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWriteLine3(pFILE AS PTR,c AS STRING,nCount AS DWORD) AS DWORD
+	unsafe FUNCTION FWriteLine3(pFILE AS PTR,c AS STRING,nCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -627,7 +676,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FWriteText3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
+	unsafe FUNCTION FWriteText3(pHandle AS PTR,ptrBuffer AS PTR,dwCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

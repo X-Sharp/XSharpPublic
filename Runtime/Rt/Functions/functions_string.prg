@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
@@ -29,7 +31,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION AdjustFNameA(cName AS STRING) AS STRING
 		THROW NotImplementedException{}
-	    /// RETURN NULL_STRING   
+	    /// RETURN String.Empty   
 
 	/// <summary>
 	/// Remove leading and trailing spaces from a string.
@@ -50,7 +52,7 @@ begin namespace XSharp.Runtime
 	/// </summary>
 	/// <param name="cTime"> A valid military time in the form hh:mm:ss, where hh is hours in 24-hour format, mm is minutes, and ss is seconds.</param>
 	/// <returns>
-	/// An 11-character string in 12-hour format with either "am" or "pm."  If <cTime> does not represent a valid military time, a NULL_STRING is returned.
+	/// An 11-character string in 12-hour format with either "am" or "pm."  If <cTime> does not represent a valid military time, a String.Empty is returned.
 	/// </returns>
 	FUNCTION AmPm(cTime AS STRING) AS STRING
 		local result:=null as string
@@ -72,7 +74,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Ansi2Oem(cSource AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a string of ANSI characters to OEM characters, changing the contents of the original string as well as the returned string.
@@ -82,7 +84,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Ansi2OemA(cSource AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a character to its ASCII value.
@@ -220,7 +222,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION B64EncFile(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -229,17 +231,17 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION B64EncString(cIn AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Convert a string containing a 32-bit binary date to a date data type.
+	/// Convert a string containing a 32-bit binary __VODate to a __VODate data type.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Bin2Date(c AS STRING) AS DATE
+	FUNCTION Bin2Date(c AS STRING) AS __VODate
 		/// THROW NotImplementedException{}
-	RETURN (DATE)0   
+	RETURN (__VODate)0   
 
 	/// <summary>
 	/// Convert a string containing a 32-bit unsigned integer to a double word.
@@ -252,12 +254,12 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
-	/// Convert a string containing a 80-bit floating point number to a float value.
+	/// Convert a string containing a 80-bit __VOFloating point number to a __VOFloat value.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Bin2F(c AS STRING) AS FLOAT
+	FUNCTION Bin2F(c AS STRING) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -286,12 +288,12 @@ begin namespace XSharp.Runtime
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Bin2Ptr(c AS STRING) AS PTR
+	unsafe FUNCTION Bin2Ptr(c AS STRING) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
-	/// Convert a string containing a 32-bit floating point number to a Real4 value.
+	/// Convert a string containing a 32-bit __VOFloating point number to a Real4 value.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
@@ -301,7 +303,7 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
-	/// Convert a string containing a 32-bit floating point number to a Real8 value.
+	/// Convert a string containing a 32-bit __VOFloating point number to a Real8 value.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
@@ -327,7 +329,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION C2Hex(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the even-numbered characters in a string.
@@ -339,7 +341,7 @@ begin namespace XSharp.Runtime
 	FUNCTION CharEven(c AS STRING) AS STRING
 	    local evenChars:=null as string
 		if ( !string.IsNullOrEmpty(c) ) 
-			//local chars  := c:ToCharArray() as char[]
+			//local chars  := c:ToChar__Array() as char[]
 			local isEven := false as  logic
 			local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
 
@@ -362,7 +364,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION CharMix(c1 AS STRING,c2 AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the odd-numbered characters in a string.
@@ -373,7 +375,7 @@ begin namespace XSharp.Runtime
 	FUNCTION CharOdd(c AS STRING) AS STRING
 	    local oddChars:=null as string
 		if ( !string.IsNullOrEmpty(c) ) 
-			//local chars  := c:ToCharArray() as char[]
+			//local chars  := c:ToChar__Array() as char[]
 			local isOdd  := true as  logic
 			local sb     := System.Text.StringBuilder{} as System.Text.StringBuilder
 
@@ -395,7 +397,7 @@ begin namespace XSharp.Runtime
 	/// <param name="nStart">The position of the reuested charachter</param>
 	/// <returns>
 	/// The character at the given position as a string, if position is beyond the length
-	/// of the length of the string null_string is returned.
+	/// of the length of the string String.Empty is returned.
 	/// </returns>
 	FUNCTION CharPos(c AS STRING,nStart AS DWORD) AS STRING
 		local searchedChar := string.Empty as string
@@ -413,7 +415,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Crypt(cSource AS STRING,cKey AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Encrypt or decrypt a string, changing the contents of the original string as well as returning the encrypted string.
@@ -424,15 +426,15 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION CryptA(cSource AS STRING,cKey AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Convert a date string to date format.
+	/// Convert a __VODate string to __VODate format.
 	/// </summary>
 	/// <param name="cDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION CToD(cDate AS STRING) AS DATE
+	FUNCTION CToD(cDate AS STRING) AS __VODate
 		local parsedDate as DateTime
 		if !DateTime.TryParse(cDate,out parsedDate)
 		   parsedDate := DateTime.MinValue
@@ -440,14 +442,14 @@ begin namespace XSharp.Runtime
 	RETURN __VODate{parsedDate}   
 
 	/// <summary>
-	/// Convert an ANSI date string to date format.
+	/// Convert an ANSI __VODate string to __VODate format.
 	/// </summary>
 	/// <param name="cDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION CToDAnsi(cDate AS STRING) AS DATE
+	FUNCTION CToDAnsi(cDate AS STRING) AS __VODate
 		/// THROW NotImplementedException{}
-	RETURN (DATE)0   
+	RETURN (__VODate)0   
 
 	/// <summary>
 	/// Decode a file from an e-mail transfer.
@@ -456,7 +458,7 @@ begin namespace XSharp.Runtime
 	/// <param name="hfOut"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS PTR) AS INT
+	unsafe FUNCTION DecodeBase64(cMailPart AS STRING,hfOut AS PTR) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -487,7 +489,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION DynToOldSpaceString(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the difference between two time strings.
@@ -518,9 +520,9 @@ begin namespace XSharp.Runtime
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Evaluate(c AS STRING) AS USUAL
+	FUNCTION Evaluate(c AS STRING) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Copy a file to a new file or to a device.
@@ -540,9 +542,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwAttr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FCreate2(cFile AS STRING,dwAttr AS DWORD) AS PTR
+	unsafe FUNCTION FCreate2(cFile AS STRING,dwAttr AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Delete a file from disk.
@@ -602,9 +604,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwMode"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FOpen2(cName AS STRING,dwMode AS DWORD) AS PTR
+	unsafe FUNCTION FOpen2(cName AS STRING,dwMode AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Change the name of a file.
@@ -625,9 +627,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cPath"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS PTR
+	unsafe FUNCTION FxOpen(cFile AS STRING,dwMode AS DWORD,cPath AS STRING) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Replace all soft carriage returns (Chr(141)) in a string with hard carriage returns (Chr(13)).
@@ -637,7 +639,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION HardCR(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -646,7 +648,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Hex2C(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Indicate whether a substring is contained in a string.
@@ -731,7 +733,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION LowerA(cSorce AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Remove leading spaces from a string.
@@ -754,9 +756,9 @@ begin namespace XSharp.Runtime
 	/// <param name="xValue"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MAssign(cExp AS STRING,xValue AS USUAL) AS USUAL
+	FUNCTION MAssign(cExp AS STRING,xValue AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Macro compile a string.
@@ -766,7 +768,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MCompile(s AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Count the number of lines in a string or memo field.
@@ -794,9 +796,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarGet(cVar AS STRING) AS USUAL
+	FUNCTION MemVarGet(cVar AS STRING) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Assign a value to a memory variable of a given name.
@@ -805,9 +807,9 @@ begin namespace XSharp.Runtime
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemVarPut(cVar AS STRING,u AS USUAL) AS USUAL
+	FUNCTION MemVarPut(cVar AS STRING,u AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Evaluate a macro-compiled string.
@@ -815,9 +817,9 @@ begin namespace XSharp.Runtime
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MExec(c AS STRING) AS USUAL
+	FUNCTION MExec(c AS STRING) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -826,7 +828,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MPrepare(s AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -835,7 +837,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Multi2Wide(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the number of times a substring occurs in a string.
@@ -890,7 +892,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Oem2Ansi(cSource AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a string of OEM characters to ANSI characters, changing the contents of the argument as well as the return value.
@@ -900,7 +902,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Oem2AnsiA(cSource AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -933,7 +935,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION ProperA(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -942,14 +944,14 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION QPEncString(cIn AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="cSubKey"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION QueryRTRegArray(cSubKey AS STRING) AS ARRAY
+	FUNCTION QueryRTReg__Array(cSubKey AS STRING) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -973,7 +975,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION QueryRTRegString(cSubKey AS STRING,cKeyName AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the position of the last occurrence of a substring within a string.
@@ -1113,7 +1115,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SBTODB(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Create new character variable with the same characters as the original string.
@@ -1161,15 +1163,15 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION SoundEx(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Convert an ANSI date string to date format.
+	/// Convert an ANSI __VODate string to __VODate format.
 	/// </summary>
 	/// <param name="cDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SToD(cDate AS STRING) AS DATE
+	FUNCTION SToD(cDate AS STRING) AS __VODate
 		local convertedDate := __VODate{} as __VODate
 		try
 			convertedDate := (__VODate)DateTime.ParseExact(cDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
@@ -1186,15 +1188,15 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION StrEvaluate(s AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Convert a string to a symbol.
+	/// Convert a string to a __Symbol.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION String2Atom(c AS STRING) AS SYMBOL
+	FUNCTION String2Atom(c AS STRING) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -1208,12 +1210,12 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
-	/// Convert a string to an uppercase symbol.
+	/// Convert a string to an uppercase __Symbol.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION String2Symbol(c AS STRING) AS SYMBOL
+	FUNCTION String2__Symbol(c AS STRING) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
@@ -1223,7 +1225,7 @@ begin namespace XSharp.Runtime
 	/// <param name="dwRadix"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrToFloat(c AS STRING,dwRadix AS DWORD) AS FLOAT
+	FUNCTION StrTo__VOFloat(c AS STRING,dwRadix AS DWORD) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -1233,7 +1235,7 @@ begin namespace XSharp.Runtime
 	/// <param name="dwRadix"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS FLOAT
+	FUNCTION StrToLong(c AS STRING,dwRadix AS DWORD) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -1313,7 +1315,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION TOHIRA(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert the single-byte and double-byte numbers in a string to double-byte kanji numbers.
@@ -1323,7 +1325,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION TOJNUM(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert single-byte katakana and double-byte hiragana characters in a string to their double-byte katakana equivalents.
@@ -1333,7 +1335,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION TOKATA(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Remove trailing spaces from a string.
@@ -1356,7 +1358,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION TYPE(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert the lowercase and mixed case characters in a string to uppercase.
@@ -1379,7 +1381,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION UpperA(cSorce AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -1387,7 +1389,7 @@ begin namespace XSharp.Runtime
 	/// <param name="hfOut"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
+	unsafe FUNCTION UUDecodeLine(cLine AS STRING,hfOut AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -1398,7 +1400,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION UUEncFile(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -1407,7 +1409,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION UUEncLine(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a string containing a numeric value to a numeric data type.
@@ -1415,9 +1417,9 @@ begin namespace XSharp.Runtime
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Val(c AS STRING) AS USUAL
+	FUNCTION Val(c AS STRING) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Return the contents of a field or a memory variable.
@@ -1425,9 +1427,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VarGet(cVar AS STRING) AS USUAL
+	FUNCTION VarGet(cVar AS STRING) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Assign a value to a field or a memory variable of a given name.
@@ -1436,9 +1438,9 @@ begin namespace XSharp.Runtime
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VarPut(cVar AS STRING,u AS USUAL) AS USUAL
+	FUNCTION VarPut(cVar AS STRING,u AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -1447,7 +1449,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Wide2Multi(cBstr AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	#endregion
 end namespace

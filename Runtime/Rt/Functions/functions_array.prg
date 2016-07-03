@@ -3,48 +3,48 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+using Vulcan
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
-	/// Add a new element to the end of an array.
+	/// Add a new element to the end of an __Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="x"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AAdd(a AS ARRAY,x AS USUAL) AS USUAL
+	FUNCTION AAdd(a AS __Array,x AS __Usual) AS __Usual
 		a:Add(x)
 	RETURN x 
 
 	/// <summary>
-	/// Duplicate a multidimensional array.
+	/// Duplicate a multidimensional __Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AClone(a AS ARRAY) AS ARRAY
+	FUNCTION AClone(a AS __Array) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
 	/// <summary>
-	/// Duplicate an array without its subarrays.
+	/// Duplicate an __Array without its sub__Arrays.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ACloneShallow(a AS ARRAY) AS ARRAY
+	FUNCTION ACloneShallow(a AS __Array) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
 	/// <summary>
-	/// Delete an array element.
+	/// Delete an __Array element.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ADel(a AS ARRAY,dwEl AS DWORD) AS ARRAY
+	FUNCTION ADel(a AS __Array,dwEl AS DWORD) AS __Array
 		a:RemoveAt(dwEl)  
 	RETURN a
 
@@ -53,7 +53,7 @@ begin namespace XSharp.Runtime
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ADim(a AS ARRAY) AS DWORD
+	FUNCTION ADim(a AS __Array) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -62,28 +62,28 @@ begin namespace XSharp.Runtime
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ADimPic(a AS ARRAY) AS STRING
+	FUNCTION ADimPic(a AS __Array) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Insert an element into an array and assign it a NIL value.
+	/// Insert an element into an __Array and assign it a __Usual._NIL value.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AIns(a AS ARRAY,dwEl AS DWORD) AS ARRAY
+	FUNCTION AIns(a AS __Array,dwEl AS DWORD) AS __Array
 		a:Insert(dwEl)
 	RETURN a
 
 	/// <summary>
-	/// Return the number of elements in an array.
+	/// Return the number of elements in an __Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ALen(a AS ARRAY) AS DWORD
+	FUNCTION ALen(a AS __Array) AS DWORD
 	RETURN a:Length
 
 	/// <summary>
@@ -91,7 +91,7 @@ begin namespace XSharp.Runtime
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AMemSize(a AS ARRAY) AS DWORD
+	FUNCTION AMemSize(a AS __Array) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -100,28 +100,28 @@ begin namespace XSharp.Runtime
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION APageCount(a AS ARRAY) AS DWORD
+	FUNCTION APageCount(a AS __Array) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Removes write protection from an entire array.
+	/// Removes write protection from an entire __Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayDeProtect(a AS ARRAY) AS LOGIC
+	FUNCTION __ArrayDeProtect(a AS __Array) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Read an array element.
+	/// Read an __Array element.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayGet(a AS ARRAY,dwEl AS DWORD) AS USUAL
+	FUNCTION __ArrayGet(a AS __Array,dwEl AS DWORD) AS __Usual
 	return a[dwEl]
 
 	/// <summary>
@@ -130,95 +130,95 @@ begin namespace XSharp.Runtime
 	/// <param name="dwEl"></param>
 	/// <returns>
 	/// </returns>
-	UNSAFE FUNCTION ArrayGetPtr(a AS ARRAY,dwEl AS DWORD) AS PTR
+	UNSAFE FUNCTION __ArrayGetPtr(a AS __Array,dwEl AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN NULL   
 
 	/// <summary>
-	/// Protect an array from change in all functions except the one in which it was declared.
+	/// Protect an __Array from change in all functions except the one in which it was declared.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayProtect(a AS ARRAY) AS LOGIC
+	FUNCTION __ArrayProtect(a AS __Array) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Write a value to an array element.
+	/// Write a value to an __Array element.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayPut(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
+	FUNCTION __ArrayPut(a AS __Array,dwEl AS DWORD,u AS __Usual) AS __Usual
 		a:__SetElement(u, (int)dwEl -1)
 	RETURN u
 
 	/// <summary>
-	/// Store an array to a buffer.
+	/// Store an __Array to a buffer.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="Buff"></param>
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	UNSAFE FUNCTION ArrayStore(a AS ARRAY,Buff AS PTR,dwLen AS DWORD) AS DWORD
+	UNSAFE FUNCTION __ArrayStore(a AS __Array,Buff AS PTR,dwLen AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Replace an array element with a new value and return the old value.
+	/// Replace an __Array element with a new value and return the old value.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwEl"></param>
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArraySwap(a AS ARRAY,dwEl AS DWORD,u AS USUAL) AS USUAL
+	FUNCTION __ArraySwap(a AS __Array,dwEl AS DWORD,u AS __Usual) AS __Usual
 	RETURN a:Swap(dwEl, u)
 
 	/// <summary>
-	/// Scan a sorted array until a value is found or a code block returns 0.
+	/// Scan a sorted __Array until a value is found or a code block returns 0.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="x"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AScanBin(a AS ARRAY,x AS USUAL) AS DWORD
+	FUNCTION AScanBin(a AS __Array,x AS __Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Scan a sorted array until there is an exact match or a code block returns 0.
+	/// Scan a sorted __Array until there is an exact match or a code block returns 0.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="x"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AScanBinExact(a AS ARRAY,x AS USUAL) AS DWORD
+	FUNCTION AScanBinExact(a AS __Array,x AS __Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Grow or shrink an array.
+	/// Grow or shrink an __Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="dwDim"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ASize(a AS ARRAY,dwDim AS DWORD) AS ARRAY
+	FUNCTION ASize(a AS __Array,dwDim AS DWORD) AS __Array
 		a:Resize(dwDim) 
 	RETURN a  
 
 	/// <summary>
-	/// Return the highest numbered element of an array.
+	/// Return the highest numbered element of an __Array.
 	/// </summary>
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ATail(a AS ARRAY) AS USUAL
+	FUNCTION ATail(a AS __Array) AS __Usual
 	RETURN a:Tail()
 
 	/// <summary>
@@ -227,7 +227,7 @@ begin namespace XSharp.Runtime
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DynToOldSpaceArray(a AS ARRAY) AS ARRAY
+	FUNCTION DynToOldSpace__Array(a AS __Array) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -237,7 +237,7 @@ begin namespace XSharp.Runtime
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsOldSpaceArray(a AS ARRAY) AS LOGIC
+	FUNCTION IsOldSpace__Array(a AS __Array) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -246,7 +246,7 @@ begin namespace XSharp.Runtime
 	/// <param name="a"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION OldSpaceFreeArray(a AS ARRAY) AS VOID
+	FUNCTION OldSpaceFree__Array(a AS __Array) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 

@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
@@ -11,8 +13,8 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION AbsFloat(f AS FLOAT) AS FLOAT
-	RETURN Float{Math.Abs(f:Value)}
+	FUNCTION Abs__VOFloat(f AS __VOFloat) AS __VOFloat
+	RETURN __VOFloat{Math.Abs(f:Value)}
 
 	/// <summary>
 	/// Return the absolute value of a strongly typed numeric expression, regardless of its sign.
@@ -60,23 +62,23 @@ begin namespace XSharp.Runtime
 	RETURN Math.Abs(si)
 
 	/// <summary>
-	/// Create an uninitialized, one-dimensional array.
+	/// Create an uninitialized, one-dimensional __Array.
 	/// </summary>
-	/// <param name="dwDim">The number of elements in the new array.</param>
+	/// <param name="dwDim">The number of elements in the new __Array.</param>
 	/// <returns>
 	/// An uninitialized of the given length.
 	/// </returns>
-	FUNCTION ArrayCreate(dwDim AS DWORD) AS ARRAY
+	FUNCTION __ArrayCreate(dwDim AS DWORD) AS __Array
 	RETURN __Array{(int)dwDim}
 
 	/// <summary>
-	/// Create an initialized array.
+	/// Create an initialized __Array.
 	/// </summary>
 	/// <param name="dwDim"></param>
 	/// <param name="ptrBuff"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS ARRAY
+	unsafe FUNCTION __ArrayInit(dwDim AS DWORD,ptrBuff AS PTR) AS __Array
 		/// THROW NotImplementedException{}
 	RETURN NULL_ARRAY   
 
@@ -88,7 +90,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION Buffer(dwSize AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert an ASCII code to a character value.
@@ -102,14 +104,14 @@ begin namespace XSharp.Runtime
 	RETURN System.Text.Encoding:ASCII:GetString(buf)
 
 	/// <summary>
-	/// Format a set of numbers representing a year, month, and day as a date.
+	/// Format a set of numbers representing a year, month, and day as a __VODate.
 	/// </summary>
 	/// <param name="dwY"></param>
 	/// <param name="dwM"></param>
 	/// <param name="dwDay"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS DATE
+	FUNCTION ConDate(dwY AS DWORD,dwM AS DWORD,dwDay AS DWORD) AS __VODate
 	RETURN __VODate{dwY,dwM,dwDay}   
 
 	/// <summary>
@@ -143,7 +145,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION DosErrString(nDosErr AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a double word to a string containing a 32-bit unsigned integer.
@@ -152,8 +154,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION DW2Bin(n AS DWORD) AS STRING
-		local byteArray := BitConverter.GetBytes( n ) as byte[]
-	RETURN System.Text.Encoding.ASCII:GetString(byteArray)
+		local byte__Array := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)
 
 	/// <summary>
 	/// Resize the dynamic memory pool to a specific number of pages.
@@ -171,7 +173,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DynToOldSpaceFloat(f AS FLOAT) AS FLOAT
+	FUNCTION DynToOldSpace__VOFloat(f AS __VOFloat) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -181,9 +183,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwType"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EmptyUsual(dwType AS DWORD) AS USUAL
+	FUNCTION EmptyUsual(dwType AS DWORD) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Return an error message associated with a system-generated error code.
@@ -193,7 +195,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION ErrString(nGenCode AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -205,14 +207,14 @@ begin namespace XSharp.Runtime
 	RETURN   
 
 	/// <summary>
-	/// Convert a float to a string containing an 80-bit floating point number.
+	/// Convert a __VOFloat to a string containing an 80-bit __VOFloating point number.
 	/// </summary>
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION F2Bin(f AS FLOAT) AS STRING
+	FUNCTION F2Bin(f AS __VOFloat) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN null_string
+	RETURN String.Empty
 
 	/// <summary>
 	/// Calculate the factorial of a number.
@@ -220,7 +222,7 @@ begin namespace XSharp.Runtime
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Fact(n AS DWORD) AS FLOAT
+	FUNCTION Fact(n AS DWORD) AS __VOFloat
 		local result := 1 as double
 		if  n > 0
 		    local i as dword
@@ -228,7 +230,7 @@ begin namespace XSharp.Runtime
 			    result := result * i
 			next
 		endif
-	RETURN (float)result    
+	RETURN (__VOFloat)result    
 
 	/// <summary>
 	/// Display file attributes as a string.
@@ -238,27 +240,27 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION FAttr2String(nAttrib AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="o"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FClone(o AS FLOAT) AS FLOAT
+	FUNCTION FClone(o AS __VOFloat) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Get the contents of a field that is identified by its work area and a symbol.
+	/// Get the contents of a field that is identified by its work area and a __Symbol.
 	/// </summary>
 	/// <param name="dwArea"></param>
 	/// <param name="symField"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldGetArea(dwArea AS DWORD,symField AS SYMBOL) AS USUAL
+	FUNCTION FieldGetArea(dwArea AS DWORD,symField AS __Symbol) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// Return the name of a field as a string.
@@ -268,7 +270,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION FieldName(dwFieldPos AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Set the value of a field identified by its work area number and field name.
@@ -278,29 +280,29 @@ begin namespace XSharp.Runtime
 	/// <param name="u"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldPutArea(dwArea AS DWORD,symField AS SYMBOL,u AS USUAL) AS USUAL
+	FUNCTION FieldPutArea(dwArea AS DWORD,symField AS __Symbol,u AS __Usual) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
-	/// Return the name of a field as a symbol.
+	/// Return the name of a field as a __Symbol.
 	/// </summary>
 	/// <param name="dwPos"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FieldSym(dwPos AS DWORD) AS SYMBOL
+	FUNCTION FieldSym(dwPos AS DWORD) AS __Symbol
 		/// THROW NotImplementedException{}
 	RETURN NULL_SYMBOL   
 
 	/// <summary>
-	/// Set the display format for a floating point numeric.
+	/// Set the display format for a __VOFloating point numeric.
 	/// </summary>
 	/// <param name="f"></param>
 	/// <param name="nLen"></param>
 	/// <param name="nDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FloatFormat(f AS FLOAT,nLen AS INT,nDec AS INT) AS FLOAT
+	FUNCTION __VOFloatFormat(f AS __VOFloat,nLen AS INT,nDec AS INT) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -309,7 +311,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FloatNext(f AS FLOAT) AS FLOAT
+	FUNCTION __VOFloatNext(f AS __VOFloat) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -319,7 +321,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Frac(f AS FLOAT) AS FLOAT
+	FUNCTION Frac(f AS __VOFloat) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -350,8 +352,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION I2Bin(n AS SHORT) AS STRING
-		local byteArray := BitConverter.GetBytes( n ) as byte[]
-	RETURN System.Text.Encoding.ASCII:GetString(byteArray)  
+		local byte__Array := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)  
 
 	/// <summary>
 	/// Check to see if a typed dynamic object is static.
@@ -359,7 +361,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsOldSpaceFloat(f AS FLOAT) AS LOGIC
+	FUNCTION IsOldSpace__VOFloat(f AS __VOFloat) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -368,9 +370,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwSize"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemArrayNew(dwSize AS DWORD) AS USUAL
+	FUNCTION Item__ArrayNew(dwSize AS DWORD) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -379,7 +381,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION JNTOCMONTH(wMonth AS WORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
@@ -388,7 +390,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION JNTOCYEAR(wYear AS WORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a long integer to a string containing a 32-bit signed integer.
@@ -397,8 +399,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION L2Bin(n AS LONG) AS STRING
-		local byteArray := BitConverter.GetBytes( n ) as byte[]
-	RETURN System.Text.Encoding.ASCII:GetString(byteArray)     
+		local byte__Array := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)     
 
 	/// <summary>
 	/// Return the low-order (rightmost) byte in a number.
@@ -424,18 +426,18 @@ begin namespace XSharp.Runtime
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemAlloc(cb AS DWORD) AS PTR
+	unsafe FUNCTION MemAlloc(cb AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemAllocBlk(cb AS DWORD) AS PTR
+	unsafe FUNCTION MemAllocBlk(cb AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Allocate static memory buffers of a specified size.
@@ -444,9 +446,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cbCell"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS PTR
+	unsafe FUNCTION MemCAlloc(ui AS DWORD,cbCell AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Allocate a new memory buffer in a group.
@@ -455,9 +457,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemGrpAlloc(dwGroup AS DWORD,cb AS DWORD) AS PTR
+	unsafe FUNCTION MemGrpAlloc(dwGroup AS DWORD,cb AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// </summary>
@@ -466,9 +468,9 @@ begin namespace XSharp.Runtime
 	/// <param name="cbCell"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS PTR
+	unsafe FUNCTION MemGrpCAlloc(dwGroup AS DWORD,cb AS DWORD,cbCell AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
-	RETURN PTR.Zero
+	RETURN IntPtr.Zero
 
 	/// <summary>
 	/// Close a memory group.
@@ -495,7 +497,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pFunction"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemGrpEnum(dwGroup AS DWORD,pFunction AS PTR) AS LONG
+	unsafe FUNCTION MemGrpEnum(dwGroup AS DWORD,pFunction AS PTR) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -505,7 +507,7 @@ begin namespace XSharp.Runtime
 	/// <param name="wDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MyDalFloatVal(xd AS REAL8,wDec AS WORD) AS FLOAT
+	FUNCTION MyDal__VOFloatVal(xd AS REAL8,wDec AS WORD) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -543,7 +545,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION OldSpaceFreeFloat(f AS FLOAT) AS VOID
+	FUNCTION OldSpaceFree__VOFloat(f AS __VOFloat) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
 
@@ -557,24 +559,24 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
-	/// Convert a Real4 value to a string containing a 32-bit floating point number.
+	/// Convert a Real4 value to a string containing a 32-bit __VOFloating point number.
 	/// </summary>
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
 	FUNCTION Real42Bin(n AS REAL4) AS STRING
-		local byteArray := BitConverter.GetBytes( n ) as byte[]
-	RETURN System.Text.Encoding.ASCII:GetString(byteArray)        
+		local byte__Array := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)        
 
 	/// <summary>
-	/// Convert a Real8 value to a string containing an 8-byte floating point number.
+	/// Convert a Real8 value to a string containing an 8-byte __VOFloating point number.
 	/// </summary>
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
 	FUNCTION Real82Bin(n AS REAL8) AS STRING
-		local byteArray := BitConverter.GetBytes( n ) as byte[]
-	RETURN System.Text.Encoding.ASCII:GetString(byteArray)        
+		local byte__Array := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)        
 
 	/// <summary>
 	/// Create a string of spaces.
@@ -591,9 +593,9 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Str1(f AS FLOAT) AS STRING
+	FUNCTION Str1(f AS __VOFloat) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a numeric expression to a string of a specified length.
@@ -602,9 +604,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Str2(f AS FLOAT,dwLen AS DWORD) AS STRING
+	FUNCTION Str2(f AS __VOFloat,dwLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a numeric expression to a string of specific length and decimal places.
@@ -614,9 +616,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Str3(f AS FLOAT,dwLen AS DWORD,dwDec AS DWORD) AS STRING
+	FUNCTION Str3(f AS __VOFloat,dwLen AS DWORD,dwDec AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Exchange the right and left halves of a double word.
@@ -670,9 +672,9 @@ begin namespace XSharp.Runtime
 	/// <param name="dwDur"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Tone(dwFreq AS DWORD,dwDur AS DWORD) AS USUAL
+	FUNCTION Tone(dwFreq AS DWORD,dwDur AS DWORD) AS __Usual
 		System.Media.SystemSounds.Beep:Play()
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -681,7 +683,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION TypeString(dwType AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Convert a word to a string containing a 16-bit unsigned integer.
@@ -690,8 +692,8 @@ begin namespace XSharp.Runtime
 	/// <returns>
 	/// </returns>
 	FUNCTION W2Bin(n AS WORD) AS STRING
-		local byteArray := BitConverter.GetBytes( n ) as byte[]
-	RETURN System.Text.Encoding.ASCII:GetString(byteArray)    
+		local byte__Array := BitConverter.GetBytes( n ) as byte[]
+	RETURN System.Text.Encoding.ASCII:GetString(byte__Array)    
 
 	/// <summary>
 	/// </summary>

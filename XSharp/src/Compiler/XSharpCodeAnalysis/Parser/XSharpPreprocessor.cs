@@ -302,7 +302,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!string.IsNullOrEmpty(inputs.SourceFileName))
                 ((CommonToken)t).SourceFileName = inputs.SourceFileName;
             if (inputs.isSymbol)
+            {
                 ((CommonToken)t).SourceSymbol = GetSourceSymbol();
+                ((CommonToken)t).SourceFileName = (((CommonToken)t).SourceSymbol as CommonToken).SourceFileName;
+            }
             return (CommonToken)t;
         }
 
@@ -772,6 +775,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     {
                                         var ts = new CommonTokenStream(new ListTokenSource(tl));
                                         ts.Fill();
+                                        FixToken(t);
                                         InsertStream(null, ts, t);
                                     }
                                 }

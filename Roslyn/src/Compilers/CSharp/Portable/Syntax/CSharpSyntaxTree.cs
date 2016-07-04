@@ -796,11 +796,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = fn;
                 }
                 if (start + length > text.Length)
-                    {
-                        if (start > text.Length)
-                            start = text.Length;
-                        length = text.Length - start;
-                    }
+                {
+                    // this should not happen, but we fix it anyway to prevent a nasty crash when generating
+                    // pdb information
+                    if (start > text.Length)
+                        start = text.Length;
+                    length = text.Length - start;
+                }
                 span = new TextSpan(start, length);
             }
             var s = text.Lines.GetLinePosition(span.Start);

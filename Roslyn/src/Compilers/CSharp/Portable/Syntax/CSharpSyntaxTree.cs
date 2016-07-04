@@ -780,7 +780,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 var start = snode.XNode?.Position ?? 0;
                 var length = enode.XNode?.FullWidth ?? 0;
-                string fn = snode.XNode?.SourceFileName;
+                string fn = file;
                 if (snode.XNode?.SourceSymbol != null)
                 {
                     start = snode.XNode.SourceSymbol.StartIndex;
@@ -796,7 +796,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = fn;
                 }
                 if (start + length > text.Length)
-                    length = text.Length - start;
+                    {
+                        if (start > text.Length)
+                            start = text.Length;
+                        length = text.Length - start;
+                    }
                 span = new TextSpan(start, length);
             }
             var s = text.Lines.GetLinePosition(span.Start);

@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string SystemDir { get; set; }
         public bool InitStringVarsToEmpty { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
-        public bool VOCompatibleArtitheticConversions { get; private set; }
+        public bool VOCompatibleArtithmeticConversions { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOFloatConstants { get; private set; }
         public bool VOImplicitCasts { get; private set; }
@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 InitStringVarsToEmpty = opt.Vo2;
                 Dialect = opt.Dialect;
                 VOClipperCallingConvention = opt.Vo5;
-                VOCompatibleArtitheticConversions = opt.Vo11;
+                VOCompatibleArtithmeticConversions = opt.Vo11;
                 VOCompatibleIIF = opt.Vo10;
                 VOFloatConstants = opt.Vo14;
                 VOImplicitCasts = opt.Vo7;
@@ -78,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
-            VOCompatibleArtitheticConversions = opt.VOCompatibleArtitheticConversions;
+            VOCompatibleArtithmeticConversions = opt.VOCompatibleArtithmeticConversions;
             VOCompatibleIIF = opt.VOCompatibleIIF;
             VOFloatConstants = opt.VOFloatConstants;
             VOImplicitCasts = opt.VOImplicitCasts;

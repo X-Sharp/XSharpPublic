@@ -1472,24 +1472,51 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
         {
             // CUSTOMER->(<Expression>)
-            // translate to 
-            // __pushWorkarea(CUSTOMER)
-            // expr2
-            // __popWorkarea()
-            context.Put(NotInDialect(GenerateLiteral(true), "Aliased Expression"));
-            /*
-            var exprs = _pool.Allocate<ExpressionSyntax>();
-            ExpressionSyntax expr;
-            expr = GenerateLiteral(context.Id.GetText());
-            var args = MakeArgumentList(MakeArgument(expr));
-            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", args);
-            exprs.Add(expr);
-            exprs.Add(context.Expr.Get<ExpressionSyntax>());
-            expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList());
-            exprs.Add(expr);
-            context.Put(exprs.ToListNode());
-            _pool.Free(exprs);
-            */
+            //
+            // translate to :
+            //
+            // {||
+            //   __pushWorkarea(CUSTOMER)
+            //   try
+            //     return expr2
+            //   finally
+            //     __popWorkarea()
+            //   end
+            // }:Eval()
+            context.Put(_syntaxFactory.InvocationExpression(
+                _syntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    _syntaxFactory.CastExpression(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        _codeblockType,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        _syntaxFactory.ParenthesizedLambdaExpression(
+                            asyncKeyword: null,
+                            parameterList: EmptyParameterList(),
+                            arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                            body: MakeBlock(MakeList<StatementSyntax>(
+                                GenerateExpressionStatement(GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", MakeArgumentList(MakeArgument(GenerateLiteral(context.Id.GetText()))))),
+                                _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword), 
+                                    MakeBlock(MakeList<StatementSyntax>(
+                                        _syntaxFactory.ReturnStatement(
+                                            SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
+                                            context.Expr.Get<ExpressionSyntax>(),
+                                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                                        )),
+                                    EmptyList<CatchClauseSyntax>(),
+                                    _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                                        MakeBlock(MakeList<StatementSyntax>(
+                                            GenerateExpressionStatement(GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList()))
+                                            ))
+                                        )
+                                    )
+                                ))
+                            )
+                        ),
+                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("Eval"))
+                    ),
+                EmptyArgumentList()));
         }
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)

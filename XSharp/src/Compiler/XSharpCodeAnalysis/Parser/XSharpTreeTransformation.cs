@@ -5026,10 +5026,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(NoAlias());
             return;
         }
-        public override void ExitExtendedaliasExpr([NotNull] XP.ExtendedaliasExprContext context) {
-            context.Put(NoAlias());
-            return;
-        }
 
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {

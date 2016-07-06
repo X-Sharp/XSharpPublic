@@ -955,522 +955,522 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public override void ExitAssignmentExpression([NotNull] XP.AssignmentExpressionContext context)
+    public override void ExitAssignmentExpression([NotNull] XP.AssignmentExpressionContext context)
+    {
+        // when /vo12 is used then for the types .ASSIGN_DIV add conversion for the LHS and RHS to Double
+        // Check for Field or MemVar assignments
+        ExpressionSyntax left = context.Left.Get<ExpressionSyntax>();
+        ExpressionSyntax right = context.Right.Get<ExpressionSyntax>();
+        if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)left.XNode).Expr is XP.AliasedFieldContext)
         {
-            // when /vo12 is used then for the types .ASSIGN_DIV add conversion for the LHS and RHS to Double
-            // Check for Field or MemVar assignments
-            ExpressionSyntax left = context.Left.Get<ExpressionSyntax>();
-            ExpressionSyntax right = context.Right.Get<ExpressionSyntax>();
-            if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)left.XNode).Expr is XP.AliasedFieldContext)
-            {
-                XP.AliasedFieldContext fieldNode = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.AliasedFieldContext;
-                //ToDo
-                // Convert _FIELD->NAME += 1 to _FIELD->NAME := _FIELD->NAME + 1
+            XP.AliasedFieldContext fieldNode = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.AliasedFieldContext;
+            //ToDo
+            // Convert _FIELD->NAME += 1 to _FIELD->NAME := _FIELD->NAME + 1
 
-                ExpressionSyntax expr;
-                if (context.Op.Type == XP.ASSIGN_OP)
+            ExpressionSyntax expr;
+            if (context.Op.Type == XP.ASSIGN_OP)
+            {
+                expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), right);
+            }
+            else
+            {
+                // AREA->NAME+= 1 gets converted to
+                // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1) 
+                // left already has the FieldGet
+                var op = context.Op.ComplexToSimpleBinaryOp();
+                var token = context.Op.ComplexToSimpleToken();
+                if (op == SyntaxKind.EmptyStatement ) 
                 {
                     expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), right);
+                    expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
                 }
                 else
                 {
-                    // AREA->NAME+= 1 gets converted to
-                    // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1) 
-                    // left already has the FieldGet
-                    var op = context.Op.ComplexToSimpleBinaryOp();
-                    var token = context.Op.ComplexToSimpleToken();
-                    if (op == SyntaxKind.EmptyStatement ) 
-                    {
-                        expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), right);
-                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
-                    }
-                    else
-                    {
-                        expr = _syntaxFactory.BinaryExpression(op,left,token,right);
-                        expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), expr);
-                    }
-
+                    expr = _syntaxFactory.BinaryExpression(op,left,token,right);
+                    expr = GenerateFieldSet(fieldNode.Alias?.GetText(), fieldNode.Field.GetText(), expr);
                 }
-                context.Put(expr);
-                return;
 
             }
-            else if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)left.XNode).Expr is XP.NameExpressionContext)
-            {
-                XP.NameExpressionContext namecontext = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.NameExpressionContext;
-                string name = namecontext.Name.GetText();
-                var fieldInfo = CurrentEntity.Data.GetField(name);
-                if (fieldInfo != null)
-                {
-                    ExpressionSyntax expr;
-                    if (fieldInfo.IsField)
-                    {
-                        if (context.Op.Type == XP.ASSIGN_OP)
-                        {
-                            expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, right);
-                        }
-                        else
-                        {
-                            var op = context.Op.ComplexToSimpleBinaryOp();
-                            var token = context.Op.ComplexToSimpleToken();
-                            if (op == SyntaxKind.EmptyStatement  )
-                            {
-                                expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, right);
-                                expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
-                            }
-                            else
-                            {
+            context.Put(expr);
+            return;
 
-                                // AREA->NAME+= 1 gets converted to
-                                // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1) 
-                                // left already has the FieldGet
-                                expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                                expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, expr);
-                            }
-                        }
-                    }
-                    else
-                        if (context.Op.Type == XP.ASSIGN_OP)
+        }
+        else if (left.XNode is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)left.XNode).Expr is XP.NameExpressionContext)
+        {
+            XP.NameExpressionContext namecontext = ((XP.PrimaryExpressionContext)left.XNode).Expr as XP.NameExpressionContext;
+            string name = namecontext.Name.GetText();
+            var fieldInfo = CurrentEntity.Data.GetField(name);
+            if (fieldInfo != null)
+            {
+                ExpressionSyntax expr;
+                if (fieldInfo.IsField)
+                {
+                    if (context.Op.Type == XP.ASSIGN_OP)
                     {
-                        expr = GenerateMemVarPut(fieldInfo.Name, right);
+                        expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, right);
                     }
                     else
                     {
                         var op = context.Op.ComplexToSimpleBinaryOp();
                         var token = context.Op.ComplexToSimpleToken();
-                        if (op == SyntaxKind.EmptyStatement)
+                        if (op == SyntaxKind.EmptyStatement  )
                         {
-                            expr = GenerateMemVarPut(fieldInfo.Name, right);
+                            expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, right);
                             expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
                         }
                         else
                         {
 
-                            // NAME+= 1 gets converted to MemVarPut("Name", MemVarGet("Name") + 1)
-                            // left already has the MemVarGet
-                            // MemVarPut( "Name", __MemVarGet("Name") + 1) 
+                            // AREA->NAME+= 1 gets converted to
+                            // __FieldSet("Area", "Name", __FieldGet("Area","Name") + 1) 
+                            // left already has the FieldGet
                             expr = _syntaxFactory.BinaryExpression(op, left, token, right);
-                            expr = GenerateMemVarPut(fieldInfo.Name, expr);
+                            expr = GenerateFieldSet(fieldInfo.Alias, fieldInfo.Name, expr);
                         }
                     }
-                     context.Put(expr);
-                    return;
                 }
-            }
-            base.ExitAssignmentExpression(context);
-        }
-
- 
-
-        private bool GenerateSLen(XP.MethodCallContext context) {
-            // Pseudo function SLen
-            ArgumentListSyntax argList;
-            ExpressionSyntax expr;
-            if(context.ArgList != null) {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            } else {
-                return false;
-            }
-
-            expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _stringType,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                argList.Arguments[0].Expression);
-
-            expr = _syntaxFactory.ConditionalAccessExpression( expr,
-                                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                                    _syntaxFactory.MemberBindingExpression(
-                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                        GenerateSimpleName("Length")
-                                        ));
-            expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                expr);
-
-            context.Put(expr);
-            return true;
-        }
-        private bool GenerateString2Psz(XP.MethodCallContext context, string name) {
-            // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
-            // and the reference to the String2Psz() in the Vulcan Runtime.
-            ArgumentListSyntax argList;
-            ExpressionSyntax expr;
-            if(context.ArgList != null) {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            } else {
-                argList = EmptyArgumentList();
-            }
-            if(CurrentEntity != null ) {
-                // Add reference to compiler generated List<IntPtr> to the argList
-                if (argList.Arguments.Count != 1) {
-                    expr = GenerateNIL().WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
-                }
-                else {
-                    CurrentEntity.Data.UsesPSZ = true;
-                    NameSyntax pszlist = GenerateSimpleName(VoPszList);
-                    expr = argList.Arguments[0].Expression;
-                    argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
-                    expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
-                    var args = MakeArgumentList(MakeArgument(expr));
-                    expr = CreateObject(this._pszType, args, null);
-                }
-                context.Put(expr);
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        private bool GenerateChr(XP.MethodCallContext context) {
-            // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
-            // and the reference to the String2Psz() in the Vulcan Runtime.
-            ArgumentListSyntax argList;
-            if(context.ArgList != null) {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            } else {
-                argList = EmptyArgumentList();
-            }
-            context.Put(GenerateMethodCall("global::VulcanRTFuncs.Functions.Chr", argList));
-            return true;
-        }
-
-        private bool GenerateClipCallFunc(XP.MethodCallContext context, string name) {
-            ArgumentListSyntax argList;
-            ExpressionSyntax expr;
-            if(context.ArgList != null) {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            } else {
-                argList = EmptyArgumentList();
-            }
-            if(name == "PCOUNT") {
-                expr = GenerateSimpleName(ClipperPCount);
-                if(argList.Arguments.Count != 0) {
-                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount,name, argList.Arguments.Count));
-                }
-                context.Put(expr);
-                CurrentEntity.Data.UsesPCount = true;
-                return true;
-            } else { 
-                if(argList.Arguments.Count != 1) {
-                    expr = GenerateNIL().WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
-                    context.Put(expr);
-                    return true;
-                }
-
-                // _GETMPARAM or _GETFPARAM
-                CurrentEntity.Data.UsesGetMParam = true;
-                var indices = _pool.AllocateSeparated<ArgumentSyntax>();
-                indices.Add(MakeArgument(argList.Arguments[0].Expression));
-
-                expr = _syntaxFactory.ElementAccessExpression(
-                GenerateSimpleName(ClipperArgs),
-                _syntaxFactory.BracketedArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    indices,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
-                context.Put(expr);
-                return true;
-            } 
-        }
-        public override void ExitMethodCall([NotNull] XP.MethodCallContext context) {
-            var expr = context.Expr.Get<ExpressionSyntax>();
-            string name = null;
-            if(expr is IdentifierNameSyntax) {
-                // Intrinsic functions that depend on Vulcan types
-                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
-                name = ins.Identifier.Text.ToUpper();
-                switch(name) {
-                    case "SLEN":
-                        if (GenerateSLen(context))
-                            return;
-                        break;
-                    case "STRING2PSZ":
-                    case "CAST2PSZ":
-                        if (GenerateString2Psz(context,name))
-                            return;
-                        break;
-                    case "PCOUNT":
-                    case "_GETMPARAM":
-                    case "_GETFPARAM":
-                        if(CurrentEntity.Data.HasClipperCallingConvention) {
-                            if(GenerateClipCallFunc(context, name))
-                                return;
-                        }
-                        expr = GenerateLiteral("", 0).WithAdditionalDiagnostics(
-                            new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
-                        context.Put(expr);
-                        return;
-                    case "_CHR":
-                        if(GenerateChr(context))
-                            return;
-                        break;
-
-                    default:
-                        break;
-                }
-            } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
-                // SUPER(..) and SELF(..)
-                expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                    _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
-                ArgumentListSyntax argList;
-                if(context.ArgList != null) {
-                    argList = context.ArgList.Get<ArgumentListSyntax>();
-                } else {
-                    argList = EmptyArgumentList();
-                }
-                context.Put(_syntaxFactory.InvocationExpression(expr, argList));
-                return;
-            }
-            // all other method names or syntaxes
-            base.ExitMethodCall(context);
-            return;
-        }
-
-
-        public override void EnterFunction([NotNull] XP.FunctionContext context) {
-            base.EnterFunction(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, true);
-        }
-
-        public override void EnterProcedure([NotNull] XP.ProcedureContext context) {
-            base.EnterProcedure(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
-        }
-
-        public override void EnterClsctor([NotNull] XP.ClsctorContext context) {
-            base.EnterClsctor(context);
-            Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
-        }
-
-        public override void EnterVodll([NotNull] XP.VodllContext context) {
-            base.EnterVodll(context);
-           Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type, true);
-        }
-
-        public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
-        {
-            // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
-            string Name = context.Name.GetText();
-            ExpressionSyntax expr = context.Name.Get<NameSyntax>();
-            MemVarFieldInfo fieldInfo= null;
-            if (CurrentEntity != null)
-                fieldInfo = CurrentEntity.Data.GetField(Name);
-            if (fieldInfo != null )
-            {
-                if (fieldInfo.IsField)
+                else
+                    if (context.Op.Type == XP.ASSIGN_OP)
                 {
-                    expr = GenerateFieldGet(fieldInfo.Alias, fieldInfo.Name);
-                    
+                    expr = GenerateMemVarPut(fieldInfo.Name, right);
                 }
                 else
                 {
-                    expr = GenerateMemVarGet(fieldInfo.Name);
+                    var op = context.Op.ComplexToSimpleBinaryOp();
+                    var token = context.Op.ComplexToSimpleToken();
+                    if (op == SyntaxKind.EmptyStatement)
+                    {
+                        expr = GenerateMemVarPut(fieldInfo.Name, right);
+                        expr = (ExpressionSyntax)NotInDialect(expr, "Complex operation: " + context.Op.Text);
+                    }
+                    else
+                    {
+
+                        // NAME+= 1 gets converted to MemVarPut("Name", MemVarGet("Name") + 1)
+                        // left already has the MemVarGet
+                        // MemVarPut( "Name", __MemVarGet("Name") + 1) 
+                        expr = _syntaxFactory.BinaryExpression(op, left, token, right);
+                        expr = GenerateMemVarPut(fieldInfo.Name, expr);
+                    }
                 }
-            }
-            context.Put(expr);
-        }
-
-
-
-        public override void ExitIif([NotNull] XP.IifContext context)
-        {
-            // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
-            if(_options.VOCompatibleIIF) {
-                ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
-                ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
-                left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
-                right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), right);
-
-                context.Put(_syntaxFactory.ConditionalExpression(
-                    context.Cond.Get<ExpressionSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                    left,
-                    SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                    right));
-            } else
-                base.ExitIif(context);
-        }
-
-        public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
-        {
-            ExpressionSyntax expr = null;
-            // detect typed arrays.
-            // <LONG> {...} indicates an array of type LONG -> Handled by base class
-            if(context.Type != null) {
-                base.ExitLiteralArray(context);
+                 context.Put(expr);
                 return;
             }
-            // when no type is specified and the dialect VO or Vulcan the type is USUAL
-            TypeSyntax type = _usualType;
-            SeparatedSyntaxList<ExpressionSyntax> exprs ;
-            if((context._Elements?.Count ?? 0) > 0) {
-                // Literal array with optional elements. 
-                // ExitArrayElement has left the CsNode empty for missing Expressions
-                var l = _pool.AllocateSeparated<ExpressionSyntax>();
-                foreach(var item in context._Elements){ 
-                    if(l.Count > 0)
-                        l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                    if(item.Expr != null)
-                        l.Add(item.Expr.Get<ExpressionSyntax>());
-                    else
-                        l.Add(GenerateNIL());
+        }
+        base.ExitAssignmentExpression(context);
+    }
 
-                }
-                exprs = l.ToList();
-                _pool.Free(l);
+
+
+    private bool GenerateSLen(XP.MethodCallContext context) {
+        // Pseudo function SLen
+        ArgumentListSyntax argList;
+        ExpressionSyntax expr;
+        if(context.ArgList != null) {
+            argList = context.ArgList.Get<ArgumentListSyntax>();
+        } else {
+            return false;
+        }
+
+        expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+            _stringType,
+            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+            argList.Arguments[0].Expression);
+
+        expr = _syntaxFactory.ConditionalAccessExpression( expr,
+                                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                _syntaxFactory.MemberBindingExpression(
+                                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                    GenerateSimpleName("Length")
+                                    ));
+        expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
+            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+            expr);
+
+        context.Put(expr);
+        return true;
+    }
+    private bool GenerateString2Psz(XP.MethodCallContext context, string name) {
+        // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
+        // and the reference to the String2Psz() in the Vulcan Runtime.
+        ArgumentListSyntax argList;
+        ExpressionSyntax expr;
+        if(context.ArgList != null) {
+            argList = context.ArgList.Get<ArgumentListSyntax>();
+        } else {
+            argList = EmptyArgumentList();
+        }
+        if(CurrentEntity != null ) {
+            // Add reference to compiler generated List<IntPtr> to the argList
+            if (argList.Arguments.Count != 1) {
+                expr = GenerateNIL().WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
             }
             else {
-                exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
+                CurrentEntity.Data.UsesPSZ = true;
+                NameSyntax pszlist = GenerateSimpleName(VoPszList);
+                expr = argList.Arguments[0].Expression;
+                argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
+                expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
+                var args = MakeArgumentList(MakeArgument(expr));
+                expr = CreateObject(this._pszType, args, null);
             }
-            var initializer = MakeArrayInitializer(exprs);
-            expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                _syntaxFactory.ArrayType(type,
-                MakeList(_syntaxFactory.ArrayRankSpecifier(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    MakeSeparatedList<ExpressionSyntax>(
-                        _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
-                initializer);
-            context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr)), null));
-
+            context.Put(expr);
+            return true;
         }
-        public override void ExitLiteralValue([NotNull] XP.LiteralValueContext context)
-        {
-            string[] args;
-            
-            // Map some literals to static member access or static method calls
-            ArgumentSyntax arg0, arg1, arg2;
-            ExpressionSyntax expr = null;
-            switch (context.Token.Type)
-            {
-                case XP.NIL:
-                    expr = GenerateNIL();
-                    break;
-                case XP.NULL_PTR:
-                    expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            _ptrType,
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        GenerateSimpleName("Zero"));
-                    break;
-                case XP.NULL_PSZ:
-                    arg0 = MakeArgument(GenerateLiteral(""));
-                    expr = CreateObject(_pszType, MakeArgumentList(arg0), null);
-                    break;
-                case XP.NULL_DATE:
-                    expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
-                    break;
-                case XP.DATE_CONST:
-                    args = context.Token.Text.Split('.');
-                    if (args.Length == 3)
-                    {
-                        int year, month, day;
-                        if (Int32.TryParse(args[0], out year) &&
-                            Int32.TryParse(args[1], out month) &&
-                            Int32.TryParse(args[2], out day))
-                        {
-                            arg0 = MakeArgument(GenerateLiteral(args[0], year));
-                            arg1 = MakeArgument(GenerateLiteral(args[1], month));
-                            arg2 = MakeArgument(GenerateLiteral(args[2], day));
-                            expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2), null);
-                        }
-                    }
-                    break;
-                case XP.SYMBOL_CONST:
-                    arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
-                    expr = CreateObject(_symbolType, MakeArgumentList(arg0), null);
-                    break;
-                case XP.REAL_CONST:
-                    if (_options.VOFloatConstants)
-                    {
-                        // check to see if the token contains an 'S', 'D' or 'M'. In that case leave as is, since the user has specified
-                        // single, double or decimal
-                        var text = context.Token.Text;
-                        if (text.IndexOfAny("sdmSDM".ToCharArray()) == -1)
-                        { 
-                            args = text.Split('.');
-                            if (args.Length == 2)
-                            {
-                                int len = context.Token.Text.Length;
-                                int dec = args[1].Length;
-                                arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
-                                arg1 = MakeArgument(GenerateLiteral(len.ToString(), len));
-                                arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
-                                expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2), null);
-                            }
-                        }
-                    }
-                    break;
+        else {
+            return false;
+        }
+    }
+
+    private bool GenerateChr(XP.MethodCallContext context) {
+        // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
+        // and the reference to the String2Psz() in the Vulcan Runtime.
+        ArgumentListSyntax argList;
+        if(context.ArgList != null) {
+            argList = context.ArgList.Get<ArgumentListSyntax>();
+        } else {
+            argList = EmptyArgumentList();
+        }
+        context.Put(GenerateMethodCall("global::VulcanRTFuncs.Functions.Chr", argList));
+        return true;
+    }
+
+    private bool GenerateClipCallFunc(XP.MethodCallContext context, string name) {
+        ArgumentListSyntax argList;
+        ExpressionSyntax expr;
+        if(context.ArgList != null) {
+            argList = context.ArgList.Get<ArgumentListSyntax>();
+        } else {
+            argList = EmptyArgumentList();
+        }
+        if(name == "PCOUNT") {
+            expr = GenerateSimpleName(ClipperPCount);
+            if(argList.Arguments.Count != 0) {
+                expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount,name, argList.Arguments.Count));
             }
-            if (expr != null)
-            {
+            context.Put(expr);
+            CurrentEntity.Data.UsesPCount = true;
+            return true;
+        } else { 
+            if(argList.Arguments.Count != 1) {
+                expr = GenerateNIL().WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
                 context.Put(expr);
-                return;
+                return true;
             }
-            base.ExitLiteralValue(context);
-        }
 
-        public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
-        {
-            TypeSyntax type = null;
-            switch (context.Token.Type)
-            {
-                case XP.ARRAY:
-                    type = _arrayType;
+            // _GETMPARAM or _GETFPARAM
+            CurrentEntity.Data.UsesGetMParam = true;
+            var indices = _pool.AllocateSeparated<ArgumentSyntax>();
+            indices.Add(MakeArgument(argList.Arguments[0].Expression));
+
+            expr = _syntaxFactory.ElementAccessExpression(
+            GenerateSimpleName(ClipperArgs),
+            _syntaxFactory.BracketedArgumentList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                indices,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+            context.Put(expr);
+            return true;
+        } 
+    }
+    public override void ExitMethodCall([NotNull] XP.MethodCallContext context) {
+        var expr = context.Expr.Get<ExpressionSyntax>();
+        string name = null;
+        if(expr is IdentifierNameSyntax) {
+            // Intrinsic functions that depend on Vulcan types
+            IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
+            name = ins.Identifier.Text.ToUpper();
+            switch(name) {
+                case "SLEN":
+                    if (GenerateSLen(context))
+                        return;
                     break;
-                case XP.CODEBLOCK:
-                    type = _codeblockType;
+                case "STRING2PSZ":
+                case "CAST2PSZ":
+                    if (GenerateString2Psz(context,name))
+                        return;
                     break;
-                case XP.DATE:
-                    type = _dateType;
+                case "PCOUNT":
+                case "_GETMPARAM":
+                case "_GETFPARAM":
+                    if(CurrentEntity.Data.HasClipperCallingConvention) {
+                        if(GenerateClipCallFunc(context, name))
+                            return;
+                    }
+                    expr = GenerateLiteral("", 0).WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
+                    context.Put(expr);
+                    return;
+                case "_CHR":
+                    if(GenerateChr(context))
+                        return;
                     break;
-                case XP.FLOAT:
-                    type = _floatType;
-                    break;
-                case XP.PSZ:
-                    type = _pszType;
-                    break;
-                case XP.USUAL:
-                    type = _usualType ;
-                    break;
-                case XP.SYMBOL:
-                    type = _symbolType;
-                    break;
+
                 default:
-                    type = null;
                     break;
             }
-            if (type == null) {
-                type = (TypeSyntax)NotInDialect(_objectType, context.Token.Text);
+        } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
+            // SUPER(..) and SELF(..)
+            expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+            ArgumentListSyntax argList;
+            if(context.ArgList != null) {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            } else {
+                argList = EmptyArgumentList();
             }
-            context.Put(type);
-        }
-        public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
-        {
-            var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            context.Put(stmt);
+            context.Put(_syntaxFactory.InvocationExpression(expr, argList));
             return;
         }
-        public override void EnterFielddecl([NotNull] XP.FielddeclContext context)
+        // all other method names or syntaxes
+        base.ExitMethodCall(context);
+        return;
+    }
+
+
+    public override void EnterFunction([NotNull] XP.FunctionContext context) {
+        base.EnterFunction(context);
+        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, true);
+    }
+
+    public override void EnterProcedure([NotNull] XP.ProcedureContext context) {
+        base.EnterProcedure(context);
+        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+    }
+
+    public override void EnterClsctor([NotNull] XP.ClsctorContext context) {
+        base.EnterClsctor(context);
+        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+    }
+
+    public override void EnterVodll([NotNull] XP.VodllContext context) {
+        base.EnterVodll(context);
+       Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type, true);
+    }
+
+    public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
+    {
+        // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
+        string Name = context.Name.GetText();
+        ExpressionSyntax expr = context.Name.Get<NameSyntax>();
+        MemVarFieldInfo fieldInfo= null;
+        if (CurrentEntity != null)
+            fieldInfo = CurrentEntity.Data.GetField(Name);
+        if (fieldInfo != null )
         {
-            // register field names with current entity
-            // so we can check for the field name in the ExitNameExpr method
-            string Alias = "";
-            if (context.Alias != null)
-                Alias = context.Alias.GetText();
-            foreach (var field in context._Fields)
+            if (fieldInfo.IsField)
             {
-                CurrentEntity.Data.AddField(field.Id.GetText(), Alias, true);
+                expr = GenerateFieldGet(fieldInfo.Alias, fieldInfo.Name);
+
+            }
+            else
+            {
+                expr = GenerateMemVarGet(fieldInfo.Name);
             }
         }
+        context.Put(expr);
+    }
 
-        public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
+
+
+    public override void ExitIif([NotNull] XP.IifContext context)
+    {
+        // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
+        if(_options.VOCompatibleIIF) {
+            ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
+            ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
+            left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
+            right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), right);
+
+            context.Put(_syntaxFactory.ConditionalExpression(
+                context.Cond.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                left,
+                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
+                right));
+        } else
+            base.ExitIif(context);
+    }
+
+    public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
+    {
+        ExpressionSyntax expr = null;
+        // detect typed arrays.
+        // <LONG> {...} indicates an array of type LONG -> Handled by base class
+        if(context.Type != null) {
+            base.ExitLiteralArray(context);
+            return;
+        }
+        // when no type is specified and the dialect VO or Vulcan the type is USUAL
+        TypeSyntax type = _usualType;
+        SeparatedSyntaxList<ExpressionSyntax> exprs ;
+        if((context._Elements?.Count ?? 0) > 0) {
+            // Literal array with optional elements. 
+            // ExitArrayElement has left the CsNode empty for missing Expressions
+            var l = _pool.AllocateSeparated<ExpressionSyntax>();
+            foreach(var item in context._Elements){ 
+                if(l.Count > 0)
+                    l.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                if(item.Expr != null)
+                    l.Add(item.Expr.Get<ExpressionSyntax>());
+                else
+                    l.Add(GenerateNIL());
+
+            }
+            exprs = l.ToList();
+            _pool.Free(l);
+        }
+        else {
+            exprs = default(SeparatedSyntaxList<ExpressionSyntax>);
+        }
+        var initializer = MakeArrayInitializer(exprs);
+        expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+            _syntaxFactory.ArrayType(type,
+            MakeList(_syntaxFactory.ArrayRankSpecifier(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                MakeSeparatedList<ExpressionSyntax>(
+                    _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
+            initializer);
+        context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr)), null));
+
+    }
+    public override void ExitLiteralValue([NotNull] XP.LiteralValueContext context)
+    {
+        string[] args;
+
+        // Map some literals to static member access or static method calls
+        ArgumentSyntax arg0, arg1, arg2;
+        ExpressionSyntax expr = null;
+        switch (context.Token.Type)
         {
+            case XP.NIL:
+                expr = GenerateNIL();
+                break;
+            case XP.NULL_PTR:
+                expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                        _ptrType,
+                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                    GenerateSimpleName("Zero"));
+                break;
+            case XP.NULL_PSZ:
+                arg0 = MakeArgument(GenerateLiteral(""));
+                expr = CreateObject(_pszType, MakeArgumentList(arg0), null);
+                break;
+            case XP.NULL_DATE:
+                expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
+                break;
+            case XP.DATE_CONST:
+                args = context.Token.Text.Split('.');
+                if (args.Length == 3)
+                {
+                    int year, month, day;
+                    if (Int32.TryParse(args[0], out year) &&
+                        Int32.TryParse(args[1], out month) &&
+                        Int32.TryParse(args[2], out day))
+                    {
+                        arg0 = MakeArgument(GenerateLiteral(args[0], year));
+                        arg1 = MakeArgument(GenerateLiteral(args[1], month));
+                        arg2 = MakeArgument(GenerateLiteral(args[2], day));
+                        expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2), null);
+                    }
+                }
+                break;
+            case XP.SYMBOL_CONST:
+                arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                expr = CreateObject(_symbolType, MakeArgumentList(arg0), null);
+                break;
+            case XP.REAL_CONST:
+                if (_options.VOFloatConstants)
+                {
+                    // check to see if the token contains an 'S', 'D' or 'M'. In that case leave as is, since the user has specified
+                    // single, double or decimal
+                    var text = context.Token.Text;
+                    if (text.IndexOfAny("sdmSDM".ToCharArray()) == -1)
+                    { 
+                        args = text.Split('.');
+                        if (args.Length == 2)
+                        {
+                            int len = context.Token.Text.Length;
+                            int dec = args[1].Length;
+                            arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+                            arg1 = MakeArgument(GenerateLiteral(len.ToString(), len));
+                            arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
+                            expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2), null);
+                        }
+                    }
+                }
+                break;
+        }
+        if (expr != null)
+        {
+            context.Put(expr);
+            return;
+        }
+        base.ExitLiteralValue(context);
+    }
+
+    public override void ExitXbaseType([NotNull] XP.XbaseTypeContext context)
+    {
+        TypeSyntax type = null;
+        switch (context.Token.Type)
+        {
+            case XP.ARRAY:
+                type = _arrayType;
+                break;
+            case XP.CODEBLOCK:
+                type = _codeblockType;
+                break;
+            case XP.DATE:
+                type = _dateType;
+                break;
+            case XP.FLOAT:
+                type = _floatType;
+                break;
+            case XP.PSZ:
+                type = _pszType;
+                break;
+            case XP.USUAL:
+                type = _usualType ;
+                break;
+            case XP.SYMBOL:
+                type = _symbolType;
+                break;
+            default:
+                type = null;
+                break;
+        }
+        if (type == null) {
+            type = (TypeSyntax)NotInDialect(_objectType, context.Token.Text);
+        }
+        context.Put(type);
+    }
+    public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
+    {
+        var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+        context.Put(stmt);
+        return;
+    }
+    public override void EnterFielddecl([NotNull] XP.FielddeclContext context)
+    {
+        // register field names with current entity
+        // so we can check for the field name in the ExitNameExpr method
+        string Alias = "";
+        if (context.Alias != null)
+            Alias = context.Alias.GetText();
+        foreach (var field in context._Fields)
+        {
+            CurrentEntity.Data.AddField(field.Id.GetText(), Alias, true);
+        }
+    }
+
+    public ExpressionSyntax GenerateAliasedExpression( ExpressionSyntax wa, ExpressionSyntax expr)
+    {
             // CUSTOMER->(<Expression>)
             //
             // translate to :
@@ -1483,41 +1483,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //     __popWorkarea()
             //   end
             // }:Eval()
-            context.Put(_syntaxFactory.InvocationExpression(
-                _syntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    _syntaxFactory.CastExpression(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        _codeblockType,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                        _syntaxFactory.ParenthesizedLambdaExpression(
-                            asyncKeyword: null,
-                            parameterList: EmptyParameterList(),
-                            arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                            body: MakeBlock(MakeList<StatementSyntax>(
-                                GenerateExpressionStatement(GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", MakeArgumentList(MakeArgument(GenerateLiteral(context.Id.GetText()))))),
-                                _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword), 
+
+            return _syntaxFactory.InvocationExpression(
+            _syntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                _syntaxFactory.CastExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    _codeblockType,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    _syntaxFactory.ParenthesizedLambdaExpression(
+                        asyncKeyword: null,
+                        parameterList: EmptyParameterList(),
+                        arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                        body: MakeBlock(MakeList<StatementSyntax>(
+                            GenerateExpressionStatement(GenerateMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", MakeArgumentList(MakeArgument(wa)))),
+                            _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                                MakeBlock(MakeList<StatementSyntax>(
+                                    _syntaxFactory.ReturnStatement(
+                                        SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
+                                        expr,
+                                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                                    )),
+                                EmptyList<CatchClauseSyntax>(),
+                                _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                                     MakeBlock(MakeList<StatementSyntax>(
-                                        _syntaxFactory.ReturnStatement(
-                                            SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                                            context.Expr.Get<ExpressionSyntax>(),
-                                            SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
-                                        )),
-                                    EmptyList<CatchClauseSyntax>(),
-                                    _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                                        MakeBlock(MakeList<StatementSyntax>(
-                                            GenerateExpressionStatement(GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList()))
-                                            ))
-                                        )
+                                        GenerateExpressionStatement(GenerateMethodCall("global::VulcanRTFuncs.Functions.__popWorkarea", EmptyArgumentList()))
+                                        ))
                                     )
-                                ))
-                            )
-                        ),
-                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                    _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("Eval"))
+                                )
+                            ))
+                        )
                     ),
-                EmptyArgumentList()));
-        }
+                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("Eval"))
+                ),
+            EmptyArgumentList());
+    }
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
         {
@@ -1536,39 +1537,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
             return;
         }
-        public override void ExitExtendedaliasExpr([NotNull] XP.ExtendedaliasExprContext context)
+        public override void ExitAliasedExpr([NotNull] XP.AliasedExprContext context)
         {
-            // (e1) -> ID
-            // or
-            // (e1) -> (e2)
-            // first is translated to 
-            // __FieldGetWa(expr, ID)
-            // second is translated to 
-            // __pushWorkarea(expr1)
-            // expr2
-            // __popWorkarea()
-            if (context.Id != null) {
-                string method = "global::VulcanRTFuncs.Functions.__FieldGetWa";
-                var arg1 = MakeArgument(context.Alias.Get<ExpressionSyntax>());
-                var arg2 = MakeArgument(GenerateLiteral(context.Id.GetText()));
-                var args = MakeArgumentList(arg1, arg2);
-                context.Put(GenerateMethodCall(method, args));
-            } else {
-                /*
-                var exprs = _pool.Allocate<ExpressionSyntax>();
-                ExpressionSyntax expr;
-                expr = context.Alias.Get<ExpressionSyntax>();
-                var args = MakeArgumentList(MakeArgument(expr));
-                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.pushWorkarea", args);
-                exprs.Add(expr);
-                exprs.Add(context.Expr.Get<ExpressionSyntax>());
-                expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.popWorkarea", EmptyArgumentList());
-                exprs.Add(expr);
-                context.Put(exprs.ToListNode());
-                _pool.Free(exprs);
-                */
-                context.Put(NotInDialect(GenerateLiteral(true), "Extended Aliased Expression"));
+            ExpressionSyntax alias = context.Alias.Get<ExpressionSyntax>();
+            if (context.Id != null)
+            {
+                if (context.Expr is XP.PrimaryExpressionContext && 
+                    ((XP.PrimaryExpressionContext) context.Expr).Expr is XP.NameExpressionContext)
+                {
+                    string field = context.Expr.GetText();
+                    context.Put(GenerateFieldGet(context.Id.GetText(), field));
+                    return;
+                }
+                alias = GenerateLiteral(context.Id.GetText());
             }
+            ExpressionSyntax expr =
+                GenerateAliasedExpression(
+                        alias,     // workarea
+                        context.Expr.Get<ExpressionSyntax>()        // expression
+                    );
+            context.Put(expr);
         }
         public override void ExitMacro([NotNull] XP.MacroContext context)
         {

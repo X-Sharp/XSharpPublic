@@ -43,6 +43,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
         private readonly Flags _flags;
 
+#if XSHARP
+        private readonly bool _namedIndexer = false;
+#endif
+
         [Flags]
         private enum Flags : byte
         {
@@ -166,6 +170,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 _flags |= Flags.IsRuntimeSpecialName;
             }
         }
+
+#if XSHARP
+        internal PEPropertySymbol(
+            PEModuleSymbol moduleSymbol,
+            PEPropertySymbol indexer)
+            : this(moduleSymbol, indexer._containingType, indexer._handle, indexer._getMethod, indexer._setMethod)
+        {
+            Debug.Assert(indexer.IsIndexer);
+
+            _namedIndexer = true;
+        }
+
+        public bool IsIndexerWithAccessibleName
+        {
+            get { return this.IsIndexer && WellKnownMemberNames.Indexer != _name; }
+        }
+#endif
 
         private bool MustCallMethodsDirectlyCore()
         {
@@ -415,9 +436,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 {
                     string defaultMemberName = _containingType.DefaultMemberName;
 #if XSHARP
-                    return CaseInsensitiveComparison.Equals(_name, defaultMemberName) || //NB: not Name property (break mutual recursion)
+                    return !_namedIndexer && (
+                        CaseInsensitiveComparison.Equals(_name, defaultMemberName) || //NB: not Name property (break mutual recursion)
                         ((object)this.GetMethod != null && CaseInsensitiveComparison.Equals(this.GetMethod.Name, defaultMemberName)) ||
-                        ((object)this.SetMethod != null && CaseInsensitiveComparison.Equals(this.SetMethod.Name, defaultMemberName));
+                        ((object)this.SetMethod != null && CaseInsensitiveComparison.Equals(this.SetMethod.Name, defaultMemberName)) );
 #else
                     return _name == defaultMemberName || //NB: not Name property (break mutual recursion)
                         ((object)this.GetMethod != null && this.GetMethod.Name == defaultMemberName) ||
@@ -435,7 +457,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                 // Indexed property support is limited to types marked [ComImport],
                 // to match the native compiler where the feature was scoped to
                 // avoid supporting property groups.
+#if XSHARP
+                return (this.ParameterCount > 0);
+#else
                 return (this.ParameterCount > 0) && _containingType.IsComImport;
+#endif
             }
         }
 

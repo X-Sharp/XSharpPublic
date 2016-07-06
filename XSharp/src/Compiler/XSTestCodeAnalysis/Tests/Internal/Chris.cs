@@ -2760,6 +2760,70 @@ d += 4
         }
 
 
+         // 183
+        [Test(Author = "Chris", Id = "C183", Title = "error XS7036: There is no argument given that corresponds to the required formal parameter 'n' of 'TestClass.Xs$Access$TestAccess(int)'")]
+        public static void Cannot_declare_indexed_ACCESS()
+        {
+            var s = ParseSource(@"
+CLASS TestClass
+	ACCESS TestAccess( n AS INT ) AS INT
+	RETURN 1
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+         // 184
+        [Test(Author = "Chris", Id = "C184", Title = "error XS1061: 'SomeClass' does not contain a definition for 'IndProp' and no extension method 'IndProp' accepting a first argument of type 'SomeClass' could be found (are you missing a using directive or an assembly reference?)")]
+        public static void Problem_declaring_and_using_indexed_property()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL o AS SomeClass
+o := SomeClass{}
+? o:IndProp[1]
+
+CLASS SomeClass
+	PROPERTY IndProp[n AS INT] AS INT
+		GET
+			RETURN 0
+		END
+	END PROPERTY
+END CLASS
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+         // 185
+        [Test(Author = "Chris", Id = "C185", Title = "error XS0111: Type 'SomeClass' already defines a member called 'this' with the same parameter types")]
+        public static void Problem_declaring_multiple_indexed_properties_in_the_same_class()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL o AS SomeClass
+o := SomeClass{}
+? o:IndProp1[1]
+? o:IndProp2[1]
+
+CLASS SomeClass
+	PROPERTY IndProp1[n AS INT] AS INT
+		GET
+			RETURN 0
+		END
+	END PROPERTY
+	PROPERTY IndProp2[n AS INT] AS INT
+		GET
+			RETURN 0
+		END
+	END PROPERTY
+END CLASS
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
 
 
     }

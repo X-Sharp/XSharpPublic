@@ -698,18 +698,16 @@ primary				: Key=SELF													#selfExpression
                     | Type=nativeType											#typeExpression			// Standard DotNet Types
                     | XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
-                    | LPAREN ( Expr=expression ) RPAREN							#parenExpression		// ( expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
                       (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
-                    | FIELD_ ALIAS (Alias=identifierName ALIAS)? Field=identifierName #aliasedField		// _FIELD->CUSTOMER->NAME or _FIELD->NAME
-                    | Alias=identifierName ALIAS Field=identifierName			#aliasedField			// CUSTOMER->NAME												
-                    | Id=identifierName ALIAS LPAREN Expr=expression RPAREN		#aliasedExpr			// CUSTOMER->(<Expression>)											
-                    | LPAREN Alias=expression RPAREN ALIAS
-                        ( Id=identifierName																// (expr) -> ID
-                        | Expr=expression																// (expr) -> expr			// expr includes (expr)
-                        )														#extendedaliasExpr											
+                    | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME 
+                    | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
+                          Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME 
+                    | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr	
+                    | LPAREN Alias=primary RPAREN ALIAS Expr=expression         #aliasedExpr            // (expr) -> expr	
                     | AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                     | AMP Id=identifierName										#macro					// &id
+                    | LPAREN Expr=expression RPAREN							    #parenExpression		// ( expr )
                     ;
 
 boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new

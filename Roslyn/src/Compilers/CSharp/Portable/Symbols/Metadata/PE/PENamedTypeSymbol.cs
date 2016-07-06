@@ -1893,7 +1893,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
                         if (((object)getMethod != null) || ((object)setMethod != null))
                         {
+#if XSHARP
+                            var prop = new PEPropertySymbol(moduleSymbol, this, propertyDef, getMethod, setMethod);
+                            members.Add(prop);
+                            if (prop.IsIndexerWithAccessibleName)
+                                members.Add(new PEPropertySymbol(moduleSymbol, prop));
+#else
                             members.Add(new PEPropertySymbol(moduleSymbol, this, propertyDef, getMethod, setMethod));
+#endif
                         }
                     }
                     catch (BadImageFormatException)

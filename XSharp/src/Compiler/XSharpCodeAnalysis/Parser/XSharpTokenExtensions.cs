@@ -610,7 +610,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.PercentEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_BITAND:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
+                    r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandEqualsToken);
                     break;
                 case XSharpParser.ASSIGN_BITOR:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BarEqualsToken);

@@ -4,12 +4,12 @@
   <Import Project="$(MSBuildThisFileDirectory)\XSharp.Default.targets" />
   <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll"/>
   <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll"/>
+  <UsingTask TaskName="NativeResourceCompiler" AssemblyFile="$(MSBuildThisFileDirectory)XSharp.Build.dll" />
+
 
   <ItemGroup>
     <ProjectCapability Include="ReferencesFolder"/>
-
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\ProjectItemsSchema.xaml;"/>
-
     <PropertyPageSchema Include="$(MSBuildThisFileDirectory)Rules\debugger_general.xaml;">
       <Context>Project</Context>
     </PropertyPageSchema>
@@ -33,7 +33,6 @@
            so only if NoStdLib isn't set to true, will we provide the standard references
       -->
     <NoCompilerStandardLib Condition=" '$(NoCompilerStandardLib)' == '' ">true</NoCompilerStandardLib>
-
     <ErrorEndLocation Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(ErrorEndLocation)' == ''">true</ErrorEndLocation>
     <!-- When building inside VS, by default use the same language for compiler messages as VS itself does. -->
     <PreferredUILang Condition="'$(BuildingInsideVisualStudio)' == 'true' and '$(PreferredUILang)' == ''">$([System.Globalization.CultureInfo]::CurrentUICulture.Name)</PreferredUILang>
@@ -137,17 +136,15 @@
 
   <Target Name="AfterResGen">
 
-    <GenerateNativeResource
+    <NativeResourceCompiler
        Sources="@(NativeResource)"
-       UseSourcePath="$(UseSourcePath)"
        IncludePaths="$(IncludePaths)"
        OutputPath="$(IntermediateOutputPath)"
-       TargetFrameworkVersion="$(TargetFrameworkVersion)"
        EmitDebugInformation="$(EmitDebugInformation)"
        Condition="'@(NativeResource)' != ''">
-    </GenerateNativeResource>
+    </NativeResourceCompiler>
 
-    <CreateItem Include="$(IntermediateOutputPath)NativeResources.res" Condition="'@(NativeResource)' != ''">
+    <CreateItem Include="$(IntermediateOutputPath)NativeResources.Res" Condition="'@(NativeResource)' != ''">
 
       <Output TaskParameter="Include" ItemName="Win32Resource" />
       <!-- this causes the .res file to be deleted on a Clean -->
@@ -158,7 +155,6 @@
   </Target>
 
   <Target Name="GetTargetPath" DependsOnTargets="PrepareForBuild" Outputs="$(TargetPath)" />
-
 
   <Target
           Name="CoreCompile"
@@ -192,7 +188,7 @@
 	  AddModules="@(AddModules)"
 	  AdditionalFiles="@(AdditionalFiles)"
 	  Analyzers="@(Analyzer)"
-    AllowUnsafeBlocks="$(AllowUnsafeBlocks)"
+      AllowUnsafeBlocks="$(Unsafe)"
 	  ApplicationConfiguration="$(AppConfigForCompiler)"
 	  BaseAddress="$(BaseAddress)"
 	  CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
@@ -277,6 +273,7 @@
 	  VO12="$(VO12)"
 	  VO13="$(VO13)"
     VO14="$(VO14)"
+    VO15="$(VO15)"
     />
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />

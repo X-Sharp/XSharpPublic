@@ -180,6 +180,11 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			// Only insert code before the first propertygroup
 			IF ++nGroup == 1
 				LOCAL oImport AS XmlNode
+				// Add Extensions Path
+				oChild := oDoc:CreateElement( "XSharpProjectExtensionsPath", cSchema)
+				oChild:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
+				oElement:AppendChild(oChild)   
+				
 				// Add Import
 				oImport := oDoc:CreateElement("Import",cSchema)
 				oAttribute := oDoc:CreateAttribute("Project")
@@ -187,15 +192,15 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				oImport:Attributes:Append(oAttribute)
 				oParent:InsertBefore(oImport, oElement)
 				// Add propertygroup before Import with Label="Globals" and child <XSharpProjectExtensionsPath>
-				LOCAL oGroup AS XmlNode
-				oGroup := oDoc:CreateElement("PropertyGroup",cSchema)
-				oAttribute := oDoc:CreateAttribute("Label")
-				oAttribute:Value := "Globals"
-				oGroup:Attributes:Append(oAttribute)
-				oParent:InsertBefore(oGroup, oImport)
-				oChild := oDoc:CreateElement( "XSharpProjectExtensionsPath", cSchema)
-				oChild:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
-				oGroup:AppendChild(oChild)   
+//				LOCAL oGroup AS XmlNode
+//				oGroup := oDoc:CreateElement("PropertyGroup",cSchema)
+//				oAttribute := oDoc:CreateAttribute("Label")
+//				oAttribute:Value := "Globals"
+//				oGroup:Attributes:Append(oAttribute)
+//				oParent:InsertBefore(oGroup, oImport)
+//				oChild := oDoc:CreateElement( "XSharpProjectExtensionsPath", cSchema)
+//				oChild:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
+//				oGroup:AppendChild(oChild)   
 	
 				LOCAL lHasCondition := FALSE AS LOGIC
 				IF oElement:HasAttributes    

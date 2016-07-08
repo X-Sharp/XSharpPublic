@@ -169,9 +169,7 @@ CLASS VOWEDControl INHERIT Panel
     RETURN
 
     METHOD TestForm() AS VOID
-        IF SELF:oEditor IS VOWindowEditor
-            SELF:oWed:TestForm()
-        ENDIF
+        SELF:oEditor:TestForm()
     RETURN
     
     METHOD RecordCommand(cCommand AS STRING) AS VOID

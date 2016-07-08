@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectSystemBase>$(MSBuildThisFileDirectory)</ProjectSystemBase>
+    <ProjectName>$(MSBuildProjectName)</ProjectName>
+    <ProjectExt>$(MSBuildProjectExtension)</ProjectExt>
+    <ProjectDir>$(MSBuildProjectDirectory)\</ProjectDir>
+    <ProjectFileName>$(MSBuildProjectFile)</ProjectFileName>
+    <ProjectPath>$(MSBuildProjectDirectory)\$(MSBuildProjectFile)</ProjectPath>
+    <TargetPlatformVersion>7.0</TargetPlatformVersion>
+  	<UseOSWinMdReferences>true</UseOSWinMdReferences>
+    <OutputType>exe</OutputType>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebuggerFlavor>XSharpDebugger</DebuggerFlavor>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WinRTReferenceTabs>TAB_SDK_ALL</WinRTReferenceTabs>
+    <AssemblyReferenceTabs>TAB_ASSEMBLY_ALL</AssemblyReferenceTabs>
+    <Name>$(MSBuildProjectName)</Name>
+    <RootNamespace>$(Name)</RootNamespace>
+    <AssemblyName>$(Name)</AssemblyName>
+    <Dialect>Core</Dialect>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+</Project>

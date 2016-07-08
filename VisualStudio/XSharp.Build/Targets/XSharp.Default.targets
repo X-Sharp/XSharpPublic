@@ -7,9 +7,17 @@
       <Configuration>Debug</Configuration>
       <Platform>AnyCPU</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|AnyCPU">
       <Configuration>Release</Configuration>
       <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
     </ProjectConfiguration>
   </ItemGroup>
 
@@ -25,7 +33,6 @@
   
   <ItemGroup>
     <ProjectCapability Include="XSharp;Managed" />
-    
     <ProjectCapability Include="AssemblyReferences;
                                 COMReferences;
                                 ProjectReferences;
@@ -41,69 +48,68 @@
   </ItemGroup>
 
   <ItemGroup>
-<!-- 		<PropertyPageSchema Include="
-												$(XamlResourcesDirectory)PropertyPage_Application.xaml;
+	<PropertyPageSchema Include="
+			$(XamlResourcesDirectory)PropertyPage_Application.xaml;
                         $(XamlResourcesDirectory)PropertyPage_Language.xaml;
-												$(XamlResourcesDirectory)PropertyPage_Build.xaml;
-                        $(XamlResourcesDirectory)PropertyPage_Debugger.xaml 
-												">
-        <Context>Project</Context>
-		</PropertyPageSchema>
- -->		
+			$(XamlResourcesDirectory)PropertyPage_Build.xaml;
+                        $(XamlResourcesDirectory)PropertyPage_Debugger.xaml;
+			$(XamlResourcesDirectory)PropertyPage_Advanced.xaml;
+			">
+        	<Context>Project</Context>
+	</PropertyPageSchema>
+
 	<PropertyPageSchema Include="$(XamlResourcesDirectory)ProjectItemsSchema.xaml;"/>
-    <PropertyPageSchema Include="$(XamlResourcesDirectory)XSharp.ProjectItemsSchema.xaml;"/>
-    <PropertyPageSchema Include="$(XamlResourcesDirectory)Debugger_general.xaml;">
-      <Context>Project</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(XamlResourcesDirectory)General_File  .xaml">
-      <Context>File</Context>
-    </PropertyPageSchema>
+    	<PropertyPageSchema Include="$(XamlResourcesDirectory)XSharp.ProjectItemsSchema.xaml;"/>
+    	<PropertyPageSchema Include="$(XamlResourcesDirectory)Debugger_general.xaml;">
+      		<Context>Project</Context>
+    	</PropertyPageSchema>
+    	<PropertyPageSchema Include="$(XamlResourcesDirectory)General_File.xaml">
+      		<Context>File</Context>
+    	</PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(XamlResourcesDirectory)\Scc.xaml">
-      <Context>Invisible</Context>
-    </PropertyPageSchema>
+    	<PropertyPageSchema Include="$(XamlResourcesDirectory)\Scc.xaml">
+      		<Context>Invisible</Context>
+    	</PropertyPageSchema>
 
-    <PropertyPageSchema Include="
+    	<PropertyPageSchema Include="
                         $(XamlResourcesDirectory)Folder.xaml;
                         $(XamlResourcesDirectory)None.xaml;
                         $(XamlResourcesDirectory)Content.xaml;
                         $(XamlResourcesDirectory)XSharp.xaml;
                         $(XamlResourcesDirectory)EmbeddedResource.xaml;
-                            ">
-      <Context>File;BrowseObject</Context>
-    </PropertyPageSchema>
+                        $(XamlResourcesDirectory)NativeResource.xaml;
+                        $(XamlResourcesDirectory)VOBinary.xaml;
+			">
+      		<Context>File;BrowseObject</Context>
+    	</PropertyPageSchema>
     
-    <PropertyPageSchema Include="$(XamlResourcesDirectory)SpecialFolder.xaml;">
-        <Context>File;ProjectSubscriptionService</Context>
-    </PropertyPageSchema>
+	<PropertyPageSchema Include="$(XamlResourcesDirectory)SpecialFolder.xaml;">
+        	<Context>File;ProjectSubscriptionService</Context>
+	</PropertyPageSchema>
 
-    <PropertyPageSchema Include="
-												$(XamlResourcesDirectory)Assemblyreference.xaml;
-												$(XamlResourcesDirectory)Comreference.xaml;
-												$(XamlResourcesDirectory)Projectreference.xaml;
-												$(XamlResourcesDirectory)Sdkreference.xaml;
-                        ">
-      <Context>;BrowseObject</Context>
-    </PropertyPageSchema>
+	<PropertyPageSchema Include="
+		$(XamlResourcesDirectory)Assemblyreference.xaml;
+		$(XamlResourcesDirectory)Comreference.xaml;
+		$(XamlResourcesDirectory)Projectreference.xaml;
+		$(XamlResourcesDirectory)Sdkreference.xaml;
+                ">
+		<Context>;BrowseObject</Context>
+	</PropertyPageSchema>
 
-    <PropertyPageSchema Include="
-												$(XamlResourcesDirectory)ResolvedAssemblyReference.xaml;
-												$(XamlResourcesDirectory)ResolvedCOMReference.xaml;
-												$(XamlResourcesDirectory)ResolvedProjectReference.xaml;
-												$(XamlResourcesDirectory)ResolvedSDKReference.xaml;
-                        ">
-      <Context>ProjectSubscriptionService;BrowseObject</Context>
-    </PropertyPageSchema>
+	<PropertyPageSchema Include="
+		$(XamlResourcesDirectory)ResolvedAssemblyReference.xaml;
+		$(XamlResourcesDirectory)ResolvedCOMReference.xaml;
+		$(XamlResourcesDirectory)ResolvedProjectReference.xaml;
+		$(XamlResourcesDirectory)ResolvedSDKReference.xaml;
+                ">
+		<Context>ProjectSubscriptionService;BrowseObject</Context>
+	</PropertyPageSchema>
 
-    <PropertyPageSchema Include="$(XamlResourcesDirectory)General.browseobject.xaml">
-      <Context>BrowseObject</Context>
-    </PropertyPageSchema>
-    <PropertyPageSchema Include="$(XamlResourcesDirectory)XSharp.browseobject.xaml">
-      <Context>BrowseObject</Context>
-    </PropertyPageSchema>
-
+	<PropertyPageSchema Include="$(XamlResourcesDirectory)General.browseobject.xaml">
+		<Context>BrowseObject</Context>
+	</PropertyPageSchema>
+	<PropertyPageSchema Include="$(XamlResourcesDirectory)XSharp.browseobject.xaml">
+      		<Context>BrowseObject</Context>
+	</PropertyPageSchema>
   </ItemGroup>
-  
-  
-  
 </Project>

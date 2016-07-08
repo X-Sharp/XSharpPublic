@@ -3112,7 +3112,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
-            
+            if (context.Init != null )
+            {
+                context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_FeatureNotAvailableInDialect,"Init procedure", _options.Dialect.ToString()));
+            }
+
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();

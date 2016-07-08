@@ -81,22 +81,12 @@ ABSTRACT CLASS DesignerBase
 		ENDIF
 	RETURN
 
-	ACCESS Surface() AS Control
-	RETURN SELF:oSurface
-	ACCESS Loading AS LOGIC
-	RETURN SELF:lLoading
+	PROPERTY Surface	AS Control GET SELF:oSurface
+	PROPERTY Loading	AS LOGIC GET SELF:lLoading
 
-	ASSIGN ReadOnly(_lReadOnly AS LOGIC)
-		SELF:lReadOnly := _lReadOnly
-	RETURN
-	ACCESS ReadOnly AS LOGIC
-	RETURN SELF:lReadOnly
+	PROPERTY ReadOnly	AS LOGIC GET lReadOnly		SET lReadOnly := Value
+	PROPERTY Standalone AS LOGIC GET lStandalone	SET lStandalone := Value
 
-	ASSIGN StandAlone(lSet AS LOGIC)
-		SELF:lStandalone := lSet
-	RETURN
-	ACCESS StandAlone AS LOGIC
-	RETURN SELF:lStandalone
 			
     VIRTUAL METHOD ShowHideTools(lShow AS LOGIC) AS VOID
     	LOCAL oGridForm := NULL AS Form

@@ -228,10 +228,6 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 	RETURN
 	
 	VIRTUAL METHOD TimerTicked(o AS OBJECT,e AS EventArgs) AS VOID
-//	PRIVATE METHOD TimerTicked(o AS OBJECT,e AS EventArgs) AS VOID // TODO: should be allowed?
-/*		IF SELF:eCurrent == WEDAction.None
-			SELF:oSurface:Invalidate(TRUE)
-		ENDIF*/
 		// Check periodically if the WED is active and if not, hide the toolwindows
 		IF SELF:oGrid != NULL .and. SELF:oGrid:oActiveDesigner == SELF
 			IF SELF:eCurrent == WEDAction.None .and. !SELF:oSurface:ContainsFocus
@@ -797,15 +793,12 @@ RETURN
 		aConstructor:Add(e"RETURN")
 
 		aConstructor:Add("")
-//		aConstructor:Add("END CLASS")
 		
 	RETURN oCode
 
 	INTERNAL METHOD GetCode(oDesign AS DesignWindowItem , cVar AS STRING , aCode AS List<STRING> , lFontUsed REF LOGIC) AS VOID
-		LOCAL oProp AS VODesignProperty
 		LOCAL oTemp AS VODesignProperty
 		LOCAL cValue AS STRING
-//		LOCAL aMultiple AS Dictionary<STRING,ArrayList>
 		LOCAL aMultiple AS SortedList<STRING,ArrayList>
 		LOCAL aList AS ArrayList
 		LOCAL cMap AS STRING
@@ -815,11 +808,10 @@ RETURN
 			RETURN
 		ENDIF
 		
-//		aMultiple := Dictionary<STRING,ArrayList>{}
+
 		aMultiple := SortedList<STRING,ArrayList>{}
-		FOR n := 0 UPTO oDesign:aProperties:Count - 1
-			oProp := (VODesignProperty)oDesign:aProperties[n]
-//			IF oProp:eVOStyle == VOStyle.None  .and. !oProp:lNoCode .and. !oProp:IsAuto .and. oProp:Name[0] != '_'
+		FOREACH oProp AS VODesignProperty IN oDesign:aProperties
+
 			IF oProp:eVOStyle == VOStyle.None  .and. !oProp:lNoCode .and. oProp:Name[0] != '_'
 
 				IF oProp:lMultiple 
@@ -842,7 +834,6 @@ RETURN
 							IF oProp:IsAuto
 								cValue := "NULL_STRING"
 							ELSE
-//								cValue := e"\"" + oProp:TextValue + e"\""
 								cValue := Funcs.TranslateCaption(oProp:TextValue , TRUE)
 							ENDIF
 						CASE oProp:Type == PropertyType.Numeric
@@ -861,9 +852,8 @@ RETURN
 					DO CASE
 					CASE oProp:cSymbolProp != NULL .and. oProp:cSymbolProp != ""
 						cValue := "#" + oDesign:GetProperty(oProp:cSymbolProp):TextValue
+
 					CASE oProp:Type == PropertyType.Text
-//						cValue := e"\"" + oProp:TextValue + e"\""
-//						cValue := Funcs.TranslateCaption(oProp:TextValue , TRUE)
 						cValue := oProp:TextValue
 						cValue := Funcs.TranslateCaption(cValue , TRUE)
 						cMap := VOWindowEditorTemplate.GetAssignMap(oProp:cMember)
@@ -889,16 +879,7 @@ RETURN
 						CASE cMap:Length != 0
 							cValue := cMap + "{ " + cValue + " }"
 						END CASE
-/*						IF oProp:HasSpecialClass
-							DO CASE
-							CASE oProp:cSpecialClass == "Color"
-								cValue := "Color{ " + cValue + " }"
-							CASE oProp:cSpecialClass == "Brush"
-								cValue := "Brush{ Color{ " + cValue + " } }"
-							CASE oProp:cSpecialClass == "Font"
-								cValue := "Font{ " + cValue + " }"
-							END CASE
-						END IF*/
+
 					CASE oProp:Type == PropertyType.Type
 						cValue := oProp:TextValue + "{}"
 					END CASE
@@ -957,7 +938,6 @@ RETURN
 	RETURN
 
 	INTERNAL METHOD GetRadioGroupCode(oGroup AS DesignWindowItem , cGroup AS STRING , aRadioGroups AS List<STRING>) AS VOID
-		LOCAL oDesign AS DesignWindowItem 
 		LOCAL oProp AS VODesignProperty
 		LOCAL aRadios AS List<STRING>
 		LOCAL aDesign AS ArrayList
@@ -971,8 +951,7 @@ RETURN
 		
 		oRect := Rectangle{(INT)oGroup:GetProperty("_Left"):Value , (INT)oGroup:GetProperty("_Top"):Value , (INT)oGroup:GetProperty("_Width"):Value , (INT)oGroup:GetProperty("_Height"):Value}
 		aDesign := SELF:GetAllDesignItemsByCreationOrder()
-		FOR n := 0 UPTO aDesign:Count - 1
-			oDesign := (DesignWindowItem)aDesign[n]
+		FOREACH oDesign as DesignWindowItem IN aDesign
 			IF oDesign:cFullClass:ToUpper():StartsWith("CONTROL:TEXTCONTROL:BUTTON:RADIOBUTTON")
 				IF oRect:Contains(Point{(INT)oDesign:GetProperty("_Left"):Value , (INT)oDesign:GetProperty("_Top"):Value})
 					lAdded := TRUE
@@ -1013,23 +992,23 @@ RETURN
 			RETURN
 		ENDIF
 
-		DO CASE
-		CASE e:KeyCode == Keys.Escape
+		SWITCH e:KeyCode
+		CASE Keys.Escape
 			SELF:CancelAction()
 
-		CASE e:KeyData == Keys.G + Keys.Control
+		CASE Keys.G + Keys.Control
 			SELF:ToggleGrid()
 
-		CASE e:KeyData == Keys.K + Keys.Control
+		CASE Keys.K + Keys.Control
 			SELF:ShowTabOrder()
 
-		CASE e:KeyData == Keys.T + Keys.Control
+		CASE Keys.T + Keys.Control
 			SELF:TestForm()
 
-		CASE e:KeyData == Keys.D + Keys.Control
+		CASE Keys.D + Keys.Control
 			SELF:ShowCode()
 
-		END CASE
+		END SWITCH
 
 		IF SELF:lStandalone
 			DO CASE
@@ -1170,6 +1149,7 @@ RETURN
 			SELF:GiveFocus()
 		ENDIF
 	RETURN lSuccess
+
 	METHOD Save(cFileName AS STRING , lVnfrmOnly AS LOGIC) AS LOGIC
 		LOCAL oPrgStream , oVhStream  , oRCStream AS EditorStream
 		LOCAL oVNFrmStream := NULL AS FileStream
@@ -1196,7 +1176,6 @@ RETURN
 		
 		oCode := SELF:GetCodeContents()
 		IF SELF:GetSaveFileStreams(cFileName , oVNFrmStream , oRCStream , oPrgStream , oVhStream , cVhName , lVnfrmOnly , lRcInSameFolder)
-//			SELF:SaveVNfrm(oVNFrmStream)
 			SELF:SaveToXml(oVNFrmStream)
 			IF !lVnfrmOnly
 				SELF:SaveRC(oRCStream , oCode , cVhName , .not. oVhStream:IsValid , lRcInSameFolder)
@@ -1261,7 +1240,6 @@ RETURN
 				cVhFileName := oBaseDir:Parent:FullName + "\" + cFileName + ".vh"
 			ENDIF
 			cVhName := cFileName + ".vh"
-//			MessageBox.Show(cVNFrmFileName + Chr(13)+ Chr(13) + cRCFileName + Chr(13)+ Chr(13) + cPrgFileName , (File.Exists(cVNFrmFileName) .and. File.Exists(cRCFileName) .and. File.Exists(cPrgFileName)):ToString())
 
 			lError := FALSE
 			IF !lVnfrmOnly
@@ -3759,24 +3737,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 		NEXT
 		SELF:ResetSelectors(FALSE)
 
-//		SELF:AddProperty(VODesignProperty{"Name" , "Name" , PropertyType.Text , PropertyStyles.NoAuto + PropertyStyles.NoCode} , "")
-/*		SELF:AddProperty(VODesignProperty{"_Left","Left",PropertyType.Numeric,PropertyStyles.NoCode + PropertyStyles.NoNULL} , 0 )
-		SELF:AddProperty(VODesignProperty{"_Top","Top",PropertyType.Numeric,PropertyStyles.NoCode + PropertyStyles.NoNULL} , 0 )
-		SELF:AddProperty(VODesignProperty{"_Width","Width",PropertyType.Numeric,PropertyStyles.NoCode + PropertyStyles.NoNULL} , 0 )
-		SELF:AddProperty(VODesignProperty{"_Height","Height",PropertyType.Numeric,PropertyStyles.NoCode + PropertyStyles.NoNULL} , 0 )*/
-/*
-		FOR n := 0 UPTO oTemplate:aProperties:Count - 1
-			oProp := (VODesignProperty)oTemplate:aProperties[n]
-			DO CASE
-			CASE oProp:eVOStyle != VOStyle.None
-				SELF:AddProperty(VODesignProperty{oProp:Name , oProp:Caption , oProp:eVOStyle})
-			CASE oProp:Type == PropertyType.Enumerated
-				SELF:AddProperty(VODesignProperty{oProp:Name , oProp:Caption , oProp:cEnum})
-			OTHERWISE
-				SELF:AddProperty(VODesignProperty{oProp:Name , oProp:Caption , oProp:Type})
-			ENDCASE
-		NEXT
-*/
 		IF .not. SELF:IsForm
 			SELF:AddHiddenStyle("WS_CHILD" , oTemplate)
 		ENDIF
@@ -3816,31 +3776,19 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 			ELSE
 				cCaption := cPage:Substring(nAt + 1)
 				cPage := cPage:Substring(0 , nAt)
-//				SELF:aPages[n] := cCaption
 			ENDIF
 			IF n == 0
 				cFirstPage := cCaption
 			END IF
 //			TRY
 				aPages := (List<STRING>)VOWindowEditorTemplate.aPages[cPage:ToUpper()]
-//				MessageBox.Show((aPages == NULL):ToString() , cPage)
 				FOR m := 0 UPTO aPages:Count - 1
 					LOCAL lBasic AS LOGIC
 					cProp := aPages[m]:ToUpper()
 					lBasic := cProp[0] == '_'
-/*					oProp := SELF:GetPropertyByCaption(cProp)
-					IF oProp != NULL
-						oProp:cPage := cCaption
-					ENDIF*/
-//					lFound := FALSE
 					FOR k := 0 UPTO oTemplate:aProperties:Count - 1
 						oTest := (VODesignProperty)oTemplate:aProperties[k]
 						IF (!lBasic .and. oTest:Caption:ToUpper() == cProp) .or. (lBasic .and. oTest:Name:ToUpper() == cProp)
-//							lFound := TRUE
-//							IF oTest:Name:ToUpper() == "TAB KEY" .and. SELF:cFullClass:IndexOf("FORM:DIALOGWINDOW") == 0
-								// TODO : in the VO WED, the Tab Key property has an empty option
-//								LOOP
-//							ENDIF
 							DO CASE
 							CASE oTest:eVOStyle != VOStyle.None
 								oProp := VODesignProperty{oTest:Name , oTest:cEnumType , oTest:cEnumValues , oTest:eVOStyle}
@@ -3862,9 +3810,7 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 							oProp:lNoAuto := oTest:lNoAuto
 							oProp:nMultiPos := oTest:nMultiPos
 							oProp:cSymbolProp := oTest:cSymbolProp
-//							oProp:cSpecialClass := oTest:cSpecialClass
 							oProp:cPage := cCaption
-//							IF "ExpCtls|PixPos|NoAcc|Modeless":ToUpper():IndexOf(oProp:Name:ToUpper()) != -1
 							IF oProp:cMember != NULL .and. "|ExpCtls|PixPos|NoAcc|Modeless|Use|InheritClassName|Block|BlockOwner|ViewAs|":ToUpper():IndexOf("|" + oProp:cMember:ToUpper() + "|") != -1
 								oProp:lNoCode := TRUE
 							ENDIF
@@ -3879,14 +3825,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 						ENDIF
 					NEXT
 				
-/*					IF !lFound
-						DO CASE
-						CASE cProp:ToUpper() == "NAME"
-							oProp := VODesignProperty{cProp , cProp , cProp , PropertyType.Text}
-							oProp:lNoCode := TRUE
-							SELF:AddProperty(oProp)
-						END CASE
-					ENDIF*/
 
 
 				NEXT
@@ -3898,11 +3836,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 			oTest := (VODesignProperty)oTemplate:aProperties[n]
 			cProp := oTest:Name
 			IF SELF:GetProperty(cProp) == NULL // TODO code duplication
-//				IF cProp:ToUpper() == "TAB KEY" .and. SELF:cFullClass:IndexOf("FORM:DIALOGWINDOW") == 0
-					// TODO : in the VO WED, the Tab Key property has an empty option
-//					LOOP
-//				ENDIF
-//				MessageBox.Show(oTest:Name)
 				DO CASE
 				CASE oTest:eVOStyle != VOStyle.None
 					oProp := VODesignProperty{oTest:Name , oTest:cEnumType , oTest:cEnumValues , oTest:eVOStyle}
@@ -3924,7 +3857,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 				oProp:lNoAuto := oTest:lNoAuto
 				oProp:nMultiPos := oTest:nMultiPos
 				oProp:cSymbolProp := oTest:cSymbolProp
-//				oProp:cSpecialClass := oTest:cSpecialClass
 				oProp:cPage := "_Hidden"
 				IF oProp:cMember != NULL .and. "|ExpCtls|PixPos|NoAcc|Modeless|Use|InheritClassName|":ToUpper():IndexOf("|" + oProp:cMember:ToUpper() + "|") != -1
 					oProp:lNoCode := TRUE
@@ -3944,7 +3876,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 			oProp := VODesignProperty{cProp , cProp , cProp , PropertyType.Text}
 			oProp:lNoCode := TRUE
 			oProp:cPage := cFirstPage
-//			SELF:AddProperty(oProp)
 			SELF:aProperties:Insert(0 , oProp)
 		ENDIF
 
@@ -3965,7 +3896,7 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 			oProp:Value := 1000
 		ENDIF
 
-//		IF SELF:Column != NULL
+
 		SELF:oBIProp := VODesignProperty{"_BrowseIndex" , "_BrowseIndex" , "_BrowseIndex" , PropertyType.Numeric}
 		SELF:oBIProp:cPage := "_Hidden"
 		SELF:AddProperty(SELF:oBIProp)
@@ -3975,7 +3906,7 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 		SELF:oDelProp := VODesignProperty{"_Deleted" , "_Deleted" , "_Deleted" , PropertyType.Numeric}
 		SELF:oDelProp:cPage := "_Hidden"
 		SELF:AddProperty(SELF:oDelProp)
-//		END IF
+
 		
 		IF SELF:IsGroupBox
 			SELF:oControl:Paint += PaintEventHandler{ SELF , @ControlPaint() }
@@ -3985,7 +3916,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 
 	PROTECTED METHOD AddHiddenStyle(cName AS STRING , oTemplate AS VOControlTemplate) AS VOID
 		LOCAL oProp AS VODesignProperty
-//		oProp := VODesignProperty{"_WSChild" , "BOOL" , "WS_CHILD" , VOStyle.Style}
 		IF SELF:GetProperty("_" + cName) != NULL
 			RETURN
 		ENDIF
@@ -4040,22 +3970,12 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 		ENDIF
 	RETURN 0
 	
-/*	ASSIGN BrowseSize(nValue AS INT)
-		IF SELF:oBSProp != NULL
-			SELF:oBSProp:Value := nValue
-		ENDIF
-	RETURN*/
 	ACCESS BrowseSize AS INT
 		IF SELF:oBSProp != NULL
 			RETURN (INT)SELF:oBSProp:Value
 		ENDIF
 	RETURN 0
 	
-/*	ASSIGN Deleted(nValue AS INT)
-		IF SELF:oDelProp != NULL
-			SELF:oDelProp:Value := nValue
-		ENDIF
-	RETURN*/
 	ACCESS Deleted AS INT
 		IF SELF:oDelProp != NULL
 			RETURN (INT)SELF:oDelProp:Value
@@ -4065,7 +3985,7 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 	ACCESS InheritClassName AS STRING
 		LOCAL oProp AS VODesignProperty
 		oProp := SELF:GetPropertyByMember("InheritClassName")
-//		IF oProp == NULL .or. oProp:TextValue:Trim():Length == 0
+
 		IF oProp == NULL .or. oProp:IsAuto
 			RETURN SELF:cControl
 		ENDIF
@@ -4111,21 +4031,12 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 	RETURN SELF:cFullClass:IndexOf("CONTROL:CUSTOMCONTROL:BBROWSER") == 0
 	ACCESS IsColumn() AS LOGIC
 	RETURN SELF:cFullClass:IndexOf("CONTROL:BDATACOLUMN") == 0
-	
-/*	VIRTUAL METHOD AddProperty(oProp AS VODesignProperty , oValue AS OBJECT) AS VOID
-		oProp:Value := oValue
-		SELF:AddProperty(oProp)
-	RETURN*/
-	
+
 	VIRTUAL METHOD PropertyValueSelected(cProp AS STRING , oValue AS OBJECT) AS VOID
 		LOCAL oProp AS VODesignProperty
 	    oProp := SELF:GetProperty(cProp)
 	    IF oProp != NULL
-//	    	IF SELF:AllowPropertyUpdate_(oProp , uValue)
-				((VOWindowEditor)SELF:oDesigner):StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:cGuid , oProp:Name , oValue})
-/*		    	oProp:AssignValue_ := uValue
-		    	SELF:PropertyGotUpdated_(oProp)*/
-//	    	ENDIF
+			((VOWindowEditor)SELF:oDesigner):StartAction(DesignerBasicActionType.SetProperty , ActionData{SELF:cGuid , oProp:Name , oValue})
 	    ENDIF
 	RETURN
 	
@@ -4227,7 +4138,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 				SELF:aSelectors[n] := NULL
 			ENDIF
 		NEXT
-//		SELF:lDeleted := TRUE
 	RETURN
 
 	METHOD GetVOStylesString(eVOStyle AS VOStyle) AS STRING
@@ -4243,8 +4153,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 		FOR n := 0 UPTO SELF:aProperties:Count - 1
 			oProp := (VODesignProperty)SELF:aProperties[n]
 			IF oProp:eVOStyle == eVOStyle
-//				IF !oProp:IsAuto .and. VODefines.GetValue(oProp:aEnumValues[(INT)oProp:Value]) != 0
-//				MessageBox.Show(oProp:aEnumValues[(INT)oProp:Value]:ToString())
 				cDefine := oProp:aEnumValues[(INT)oProp:Value]
 				cDefine := cDefine:ToUpper()
 				aDefines := cDefine:Split('|')
@@ -4274,7 +4182,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 							IF cRet:Length != 0
 								cRet += "|"
 							ENDIF
-//							cRet += oProp:aEnumValues[(INT)oProp:Value]
 							cRet += cDefine
 							aStyles:Add(cDefine)
 						ENDIF
@@ -4327,7 +4234,6 @@ INTERNAL CLASS DesignWindowItem INHERIT DesignItem
 		oItem := VOWEDItem{}
 		oItem:cName := SELF:Name
 		oItem:nOrder := SELF:Order
-//		oItem:cControl := SELF:cControl
 		oItem:cControl := SELF:cFullClass
 		oItem:cCaption := SELF:Caption
 	

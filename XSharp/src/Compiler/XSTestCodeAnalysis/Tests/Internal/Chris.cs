@@ -2825,6 +2825,186 @@ END CLASS
         }
 
 
+         // 186
+        [Test(Author = "Chris", Id = "C186", Title = "error XS9002: Parser: missing EOS at 'CLASS'")]
+        public static void Problem_with_class_name_specified_in_constructor_definition()
+        {
+            var s = ParseSource(@"
+// vulcan incompatibility and parser goes out of sync later 
+// reporting many other errors, making it very difficult 
+// to understand what the compiler is complaining about
+CLASS TestClass
+	CONSTRUCTOR() CLASS TestClass
+END CLASS
+");
+            CompileAndLoadWithoutErrors(s);
+        }
+
+
+
+        // 187
+        [Test(Author = "Chris", Id = "C187", Title = "compiler crash with FLOAT operations")]
+        public static void compiler_crash_with_FLOAT_operations()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// without enabling /vo14
+FUNCTION Start() AS VOID
+LOCAL f AS FLOAT
+f := 1.0
+f := f + 1.5
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 188
+        [Test(Author = "Chris", Id = "C188", Title = "Argument 1: cannot convert from 'Vulcan.__VOFloat' to 'float'")]
+        public static void Problem_converting_FLOAT_to_REAL4()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL f AS FLOAT
+f := 1.0
+Real4Func(f)
+
+FUNCTION Real4Func(r AS REAL4) AS VOID
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 189
+        [Test(Author = "Chris", Id = "C189", Title = "Operator '*' is ambiguous on operands of type 'byte' and 'double'")]
+        public static void ambiguous_Operator_on_operands_of_type_byte_and_double()
+        {
+            var s = ParseSource(@"/dialect:vulcan /vo4 /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// /vo4+ enabled (only then)
+FUNCTION Start() AS VOID
+LOCAL b AS BYTE
+b := 1
+? b * 0.114
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan /vo4", s, VulcanRuntime);
+        }
+
+
+
+        // 190
+        [Test(Author = "Chris", Id = "C190", Title = "error XS1503: Argument 1: cannot convert from 'string' to 'int'")]
+        public static void Problem_accessing_indexer_with_non_integer_index()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL o AS System.Collections.Generic.Dictionary<STRING,STRING>
+o := System.Collections.Generic.Dictionary<STRING,STRING>{}
+o:Add(""test"" , ""test"")
+? o:Item[""test""]
+");
+            CompileAndRunWithoutExceptions(s, VulcanRuntime);
+        }
+
+
+
+         // 191
+        [Test(Author = "Chris", Id = "C191", Title = "error XS0034: Operator '+' is ambiguous on operands of type '__VODate' and 'ushort'")]
+        public static void ambiguous_Operator_on_operands_of_type_DATE_and_WORD()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL w AS WORD
+w := 1
+? Today() + w 
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+         // 192
+        [Test(Author = "Chris", Id = "C192", Title = "error XS0119: 'int' is a type, which is not valid in the given context")]
+        public static void Problem_using_type_keywords_as_literal_values()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+FUNCTION Start() AS VOID
+LOCAL u AS USUAL
+u := 1
+DO CASE
+CASE UsualType(u) == INT
+CASE UsualType(u) == LOGIC
+CASE UsualType(u) == FLOAT
+END CASE
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+         // 193
+        [Test(Author = "Chris", Id = "C193", Title = "error XS1527: Elements defined in a namespace cannot be explicitly declared as private, protected, or protected internal")]
+        public static void Vulcan_incompatibility_in_declaring_INTERNAL_class_with_PRIVATE_keyword()
+        {
+            var s = ParseSource(@"
+// looks like vulcan translates private to internal here
+PRIVATE STRUCTURE TestClass
+EXPORT n AS INT
+END STRUCTURE
+");
+            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+        }
+
+
+
+         // 194
+        [Test(Author = "Chris", Id = "C194", Title = "Assertion failed at OverloadResolution.BetterOperator")]
+        public static void Failed_assertion_with_operation_on_enum_and_int()
+        {
+            var s = ParseSource(@"
+ENUM TestEnum
+MEMBER m1 := 1
+MEMBER m2 := 2
+END ENUM
+
+FUNCTION Start() AS VOID
+LOCAL n AS INT
+n := 10
+? n - TestEnum.m2
+");
+            CompileAndRunWithoutExceptions(s, VulcanRuntime);
+        }
+
+
+
+
+         // 195
+        [Test(Author = "Chris", Id = "C195", Title = "error XS1540: Cannot access protected member 'ParentClass.ProtectedMethod()' via a qualifier of type 'ParentClass'; the qualifier must be of type 'ChildClass' (or derived from it)")]
+        public static void incompatibility_with_vulcans_stupid_behavior_allowing_accessing_protected_members()
+        {
+            var s = ParseSource(@"
+// in vulcan it compiles without errors and runs as 'expected' at runtime!
+// not sure we must allow it in x# (most probably not!), but it is a vulcan incompatibility and there's code like that out there..
+// VO also compiles it without errors or warnings, too, but throws an error at runtime 'NO EXPORTED METHOD'
+CLASS ParentClass
+PROTECTED METHOD ProtectedMethod() AS VOID
+? ""protected method called"" // gets called in vulcan
+END CLASS
+
+CLASS ChildClass INHERIT ParentClass
+METHOD Test() AS VOID
+	LOCAL o AS ParentClass
+	o := ParentClass{}
+	o:ProtectedMethod()
+END CLASS
+
+FUNCTION Start() AS VOID
+	ChildClass{}:Test()	
+");
+            CompileAndRunWithoutExceptions(s, VulcanRuntime);
+        }
+
+
+
 
     }
 }

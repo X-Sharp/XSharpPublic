@@ -991,9 +991,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (left.Type.SpecialType.IsSignedIntegralType())     // When signed, always Ok
                     return BetterResult.Left;
-                else if ( ((BoundLiteral) right).ConstantValue.Int32Value >= 0) // Unsigned and Constant > 0 also Ok.
+                else if ( ((BoundLiteral) right).ConstantValue.IsIntegral && ((BoundLiteral)right).ConstantValue.Int32Value >= 0) // Unsigned and Constant > 0 also Ok.
                     return BetterResult.Left;
-
+                else if (!left.Type.IsUsual() && !op1.RightType.IsUsual() && op2.RightType.IsUsual())
+                    return BetterResult.Left;
+                else if (!left.Type.IsUsual() && !op2.RightType.IsUsual() && op1.RightType.IsUsual())
+                    return BetterResult.Right;
             }
 #endif
 

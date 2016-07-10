@@ -1577,6 +1577,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             CSharpSyntaxNode syntax = expr.Syntax;
             switch (syntax.Kind())
             {
+#if XSHARP
+                case SyntaxKind.QualifiedName:
+                    eventSyntax = ((QualifiedNameSyntax)syntax).Right;
+                    break;
+#endif
                 case SyntaxKind.SimpleMemberAccessExpression:
                 case SyntaxKind.PointerMemberAccessExpression:
                     eventSyntax = ((MemberAccessExpressionSyntax)syntax).Name;

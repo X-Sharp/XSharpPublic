@@ -499,6 +499,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(typeArguments.Count == 0 || typeArguments.Count == member.GetMemberArity());
 
             // Second, we need to determine if the method is applicable in its normal form or its expanded form.
+#if XSHARP
+            if (allowUnexpandedForm && Compilation.Options.IsDialectVO && arguments.Arguments.Count == 1 && arguments.Arguments[0].Type.IsUsual())
+            {
+                allowUnexpandedForm = false;
+            }
+#endif
 
             var normalResult = (allowUnexpandedForm || !IsValidParams(leastOverriddenMember))
                 ? IsMemberApplicableInNormalForm(member, leastOverriddenMember, typeArguments, arguments, isMethodGroupConversion, allowRefOmittedArguments, inferWithDynamic, ref useSiteDiagnostics)

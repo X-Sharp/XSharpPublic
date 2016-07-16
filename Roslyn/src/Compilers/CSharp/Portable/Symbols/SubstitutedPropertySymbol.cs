@@ -150,6 +150,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             get { return _originalDefinition.IsIndexer; }
         }
 
+#if XSHARP
+        public override bool IsIndexedProperty
+        {
+            get { return _originalDefinition.IsIndexedProperty; }
+        }
+#endif
+
         public override ImmutableArray<CustomModifier> TypeCustomModifiers
         {
             get { return _containingType.TypeSubstitution.SubstituteCustomModifiers(_originalDefinition.Type, _originalDefinition.TypeCustomModifiers); }

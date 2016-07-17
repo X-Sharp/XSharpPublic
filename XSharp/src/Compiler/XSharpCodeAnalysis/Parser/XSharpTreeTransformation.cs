@@ -1092,7 +1092,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        protected PropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop) {
+        protected BasePropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop) {
             var getMods = _pool.Allocate();
             var setMods = _pool.Allocate();
             var outerMods = _pool.Allocate();
@@ -1157,23 +1157,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var AssMet = vop.AssignMethodCtx;
             if (AssMet != null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
             {
-                voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>();
-                if (voPropType == null)
-                {
-                    voPropType = _getMissingLocalType();
-                }
+                voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? _getMissingLocalType();
             }
             else if (AccMet != null)
             {
-                voPropType = AccMet.Type?.Get<TypeSyntax>();
-                if (voPropType == null)
-                {
-                    voPropType = _getMissingLocalType();
-                }
+                voPropType = AccMet.Type?.Get<TypeSyntax>() ?? _getMissingLocalType();
             }
             else
             {
                 voPropType = _getMissingLocalType();
+            }
+
+            object voPropParams;
+            ArgumentSyntax[] voPropArgs;
+            if (AssMet?.ParamList?._Params?.Count > 1)
+            {
+                voPropParams = _syntaxFactory.BracketedParameterList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeSeparatedList<ParameterSyntax>(AssMet.ParamList._Params.Skip(1)),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                voPropArgs = AssMet.ParamList._Params.Skip(1).Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
+            }
+            else if (AccMet?.ParamList?._Params?.Count > 0)
+            {
+                voPropParams = _syntaxFactory.BracketedParameterList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeSeparatedList<ParameterSyntax>(AccMet.ParamList._Params),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                voPropArgs = AccMet.ParamList._Params.Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
+            }
+            else
+            {
+                voPropParams = null;
+                voPropArgs = new ArgumentSyntax[0];
             }
 
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
@@ -1185,7 +1201,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null
                         : MakeBlock(
                             MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                                GenerateMethodCall(VoPropertyAccessPrefix+vop.idName.Text,MakeArgumentList()),
+                                GenerateMethodCall(VoPropertyAccessPrefix+vop.idName.Text,MakeArgumentList(voPropArgs)),
                                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)))
                             ),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
@@ -1201,25 +1217,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         : MakeBlock(
                             MakeList<StatementSyntax>(GenerateExpressionStatement(
                                 GenerateMethodCall(VoPropertyAssignPrefix+vop.idName.Text,
-                                    MakeArgumentList(MakeArgument(GenerateSimpleName("value"))))))
+                                    MakeArgumentList(voPropArgs.InsertAt(0, MakeArgument(GenerateSimpleName("value")))))))
                             ),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                         : null)
                     );
             }
 
-            var prop = _syntaxFactory.PropertyDeclaration(
-                attributeLists: EmptyList<AttributeListSyntax>(),
-                modifiers: outerMods.ToTokenList(),
-                type: voPropType,
-                explicitInterfaceSpecifier: null,
-                identifier: vop.idName,
-                accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    accessors,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
-                expressionBody: null,
-                initializer: null,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            BasePropertyDeclarationSyntax prop;
+
+            if (voPropParams != null)
+            {
+                prop = _syntaxFactory.IndexerDeclaration(
+                    attributeLists: EmptyList<AttributeListSyntax>(),
+                    modifiers: outerMods.ToTokenList(),
+                    type: voPropType,
+                    explicitInterfaceSpecifier: null,
+                    thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, vop.idName.Text),
+                    parameterList: (BracketedParameterListSyntax)voPropParams,
+                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        accessors,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                    expressionBody: null,
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            }
+            else
+            {
+                prop = _syntaxFactory.PropertyDeclaration(
+                    attributeLists: EmptyList<AttributeListSyntax>(),
+                    modifiers: outerMods.ToTokenList(),
+                    type: voPropType,
+                    explicitInterfaceSpecifier: null,
+                    identifier: vop.idName,
+                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        accessors,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                    expressionBody: null,
+                    initializer: null,
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            }
 
             _pool.Free(accessors);
             _pool.Free(getMods);

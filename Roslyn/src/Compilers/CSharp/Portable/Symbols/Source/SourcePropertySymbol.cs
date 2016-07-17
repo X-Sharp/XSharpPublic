@@ -46,6 +46,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private SynthesizedSealedPropertyAccessor _lazySynthesizedSealedAccessor;
         private CustomAttributesBag<CSharpAttributeData> _lazyCustomAttributesBag;
 
+#if XSHARP
+        private bool _isIndexedProperty;
+#endif
+
         // CONSIDER: if the parameters were computed lazily, ParameterCount could be overridden to fall back on the syntax (as in SourceMemberMethodSymbol).
 
         private SourcePropertySymbol(
@@ -60,6 +64,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             bool isIndexer = syntax.Kind() == SyntaxKind.IndexerDeclaration;
             var interfaceSpecifier = GetExplicitInterfaceSpecifier(syntax);
             bool isExplicitInterfaceImplementation = (interfaceSpecifier != null);
+#if XSHARP
+            _isIndexedProperty = false;
+            if (isIndexer && !string.IsNullOrEmpty((syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText))
+            {
+                name = (syntax as IndexerDeclarationSyntax).ThisKeyword.ValueText;
+                isIndexer = false;
+                _isIndexedProperty = true;
+            }
+#endif
 
             _location = location;
             _containingType = containingType;
@@ -110,9 +123,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 ? propertySyntax.ExpressionBody
                 : ((IndexerDeclarationSyntax)syntax).ExpressionBody;
             bool hasExpressionBody = arrowExpression != null;
+#if XSHARP
+            bool hasInitializer = !isIndexer && !_isIndexedProperty && propertySyntax.Initializer != null;
+
+            bool notRegularProperty = (!IsAbstract && !IsExtern && !isIndexer && !_isIndexedProperty && hasAccessorList);
+#else
             bool hasInitializer = !isIndexer && propertySyntax.Initializer != null;
 
             bool notRegularProperty = (!IsAbstract && !IsExtern && !isIndexer && hasAccessorList);
+#endif
             AccessorDeclarationSyntax getSyntax = null;
             AccessorDeclarationSyntax setSyntax = null;
             if (hasAccessorList)
@@ -519,6 +538,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             get { return (_modifiers & DeclarationModifiers.Indexer) != 0; }
         }
+#if XSHARP
+
+        public override bool IsIndexedProperty
+        {
+            get { return _isIndexedProperty; }
+        }
+#endif
 
         public override bool IsOverride
         {

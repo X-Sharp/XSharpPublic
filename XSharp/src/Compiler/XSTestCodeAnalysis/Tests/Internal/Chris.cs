@@ -2902,7 +2902,7 @@ o := System.Collections.Generic.Dictionary<STRING,STRING>{}
 o:Add(""test"" , ""test"")
 ? o:Item[""test""]
 ");
-            CompileAndRunWithoutExceptions(s, VulcanRuntime);
+            CompileAndRunWithoutExceptions(s);
         }
 
 
@@ -2951,7 +2951,7 @@ PRIVATE STRUCTURE TestClass
 EXPORT n AS INT
 END STRUCTURE
 ");
-            CompileAndLoadWithoutErrors(s, VulcanRuntime);
+            CompileAndLoadWithoutErrors(s);
         }
 
 
@@ -2971,7 +2971,7 @@ LOCAL n AS INT
 n := 10
 ? n - TestEnum.m2
 ");
-            CompileAndRunWithoutExceptions(s, VulcanRuntime);
+            CompileAndRunWithoutExceptions(s);
         }
 
 
@@ -3000,10 +3000,121 @@ END CLASS
 FUNCTION Start() AS VOID
 	ChildClass{}:Test()	
 ");
-            CompileAndRunWithoutExceptions(s, VulcanRuntime);
+            CompileAndRunWithoutExceptions(s);
+        }
+
+ 
+         // 196
+        [Test(Author = "Chris", Id = "C196", Title = "error XS0102: The type 'TestClass' already contains a definition for 'TestProp'")]
+        public static void problem_with_overloaded_indexed_properties()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+LOCAL o AS TestClass
+o := TestClass{}
+? o:TestProp[2]
+? o:TestProp[""a""]
+
+CLASS TestClass
+	PROPERTY TestProp[n AS INT] AS INT
+	GET
+		RETURN n * 2
+	END GET
+	END PROPERTY
+	PROPERTY TestProp[c AS STRING] AS STRING
+	GET
+		RETURN c + ""a""
+	END GET
+	END PROPERTY
+END CLASS
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+ 
+
+
+         // 197
+        [Test(Author = "Chris", Id = "C197", Title = "compiler crash with bad function call")]
+        public static void compiler_crash_with_bad_function_call()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan dialect
+// should report an error
+FUNCTION Start() AS VOID
+? test
+
+FUNCTION test() AS INT
+RETURN 0
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
         }
 
 
+
+         // 198
+        [Test(Author = "Chris", Id = "C198", Title = "error XS1656: Cannot assign to 'n' because it is a 'foreach iteration variable'")]
+        public static void cannot_modify_foreach_iteration_variable()
+        {
+            var s = ParseSource(@"
+// incompatibility with vulcan
+// convert error to warning?
+FUNCTION Start( ) AS VOID
+	LOCAL a AS INT[]
+	a := <INT>{1,2,3}
+	FOREACH n AS INT IN a
+		? n
+		n := 1
+		? n
+	NEXT
+RETURN
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+ 
+
+
+         // 199
+        [Test(Author = "Chris", Id = "C199", Title = "error XS0175: Use of keyword 'SUPER' is not valid in this context")]
+        public static void Use_of_keyword_SUPER_not_valid()
+        {
+            var s = ParseSource(@"
+// vulcan incompatibility, using SELF instead works fine
+// not sure if we should allow this code and report a waring instead of an error
+FUNCTION Start() AS VOID
+
+CLASS TestClass
+	METHOD Test() AS OBJECT
+	RETURN SUPER
+END CLASS
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+ 
+
+
+         // 200
+        [Test(Author = "Chris", Id = "C200", Title = "error XS1061: 'Dictionary<int, int>.KeyCollection' does not contain a definition for 'ToArray' and no extension method 'ToArray' accepting a first argument of type 'Dictionary<int, int>.KeyCollection' could be found (are you missing a using directive or an assembly reference?)")]
+        public static void cannot_resolve_extension_method()
+        {
+            var s = ParseSource(@"
+// make sure there's a reference to System.Core, ToArray() is an extenstio mehod declared in it
+// USING System.Linq // it works with that, but why is it required?
+USING System.Collections.Generic
+
+FUNCTION Start() AS VOID
+LOCAL a AS Dictionary<INT, INT>
+a := Dictionary<INT, INT>{}
+a:Add(1,100)
+a:Add(2,200)
+? a:Keys:ToArray():Length
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+ 
 
 
     }

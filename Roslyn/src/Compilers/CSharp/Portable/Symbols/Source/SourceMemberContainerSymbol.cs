@@ -1411,6 +1411,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 {
                     if (symbol.Kind == SymbolKind.NamedType ||
                         symbol.IsAccessor() ||
+#if XSHARP
+                        symbol.IsIndexedProperty() ||
+#endif
                         symbol.IsIndexer())
                     {
                         continue;
@@ -1599,7 +1602,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 indexersBySignature.Clear();
                 foreach (var symbol in membersByName[name])
                 {
+#if XSHARP
+                    if (symbol.IsIndexer() || symbol.IsIndexedProperty())
+#else
                     if (symbol.IsIndexer())
+#endif
                     {
                         PropertySymbol indexer = (PropertySymbol)symbol;
                         CheckIndexerSignatureCollisions(
@@ -1634,6 +1641,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             Dictionary<PropertySymbol, PropertySymbol> indexersBySignature,
             ref string lastIndexerName)
         {
+#if XSHARP
+            if (indexer.IsIndexer())
+#endif
             if (!indexer.IsExplicitInterfaceImplementation) //explicit implementation names are not checked
             {
                 string indexerName = indexer.MetadataName;
@@ -1668,7 +1678,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 // Type '{1}' already defines a member called '{0}' with the same parameter types
                 // NOTE: Dev10 prints "this" as the name of the indexer.
+#if XSHARP
+                diagnostics.Add(ErrorCode.ERR_MemberAlreadyExists, indexer.Locations[0], indexer.IsIndexer() ? SyntaxFacts.GetText(SyntaxKind.ThisKeyword) : indexer.MetadataName, this);
+#else
                 diagnostics.Add(ErrorCode.ERR_MemberAlreadyExists, indexer.Locations[0], SyntaxFacts.GetText(SyntaxKind.ThisKeyword), this);
+#endif
             }
             else
             {

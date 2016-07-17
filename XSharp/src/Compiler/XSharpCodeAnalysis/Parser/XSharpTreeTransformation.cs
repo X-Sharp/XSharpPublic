@@ -2103,7 +2103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
-                    thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword),
+                    thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, context.Id?.Start.Text ?? ""),
                     parameterList: context.ParamList.Get<BracketedParameterListSyntax>(),
                     accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         (context.Auto != null) ? 

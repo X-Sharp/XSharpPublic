@@ -3114,7 +3114,51 @@ a:Add(2,200)
             CompileAndRunWithoutExceptions(s);
         }
 
- 
+
+
+        // 201
+        [Test(Author = "Chris", Id = "C201", Title = "error XS0118: 'System' is a namespace but is used like a type")]
+        public static void cannot_use_type_named_same_as_reference_or_current_assembly_name()
+        {
+            var s = ParseSource(@"
+// real problem is that if there is a reference with name 'Somename' or the 
+// current assembly has that name, then it is not possible to use a class
+// that has the same name ('Somename'). Could not enter it as such in the test suite,
+// thus used the 'System' name as a class. Underlying problem is the same, though.
+
+USING SomeNamespace
+
+CLASS SomeNamespace.System
+END CLASS
+
+FUNCTION Start() AS VOID
+LOCAL o AS System
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+         // 202
+        [Test(Author = "Chris", Id = "C202", Title = "error XS1501: No overload for method 'Left' takes 2 arguments")]
+        public static void cannot_call_runtime_function_with_same_name_with_method()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan dialect
+// does not resolve to the vulcan function
+FUNCTION Start() AS VOID
+TestClass{}:Left(321)
+
+CLASS TestClass
+	METHOD Left(n AS INT) AS VOID
+	? Left(n:ToString(),1)
+END CLASS
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
 
 
     }

@@ -76,8 +76,8 @@ BEGIN NAMESPACE Vulcan
 				var varType := o:GetType()
 				if ( varType == typeof(___Usual) )
 				   /// unbox usual
-				   dyn := ((___Usual)o).Value
-				   votype := ((___Usual)o).VODataType
+				   dyn := ((___Usual)o):Value
+				   votype := ((___Usual)o):VODataType
 				else
 					var typeCode := System.Type.GetTypeCode(varType)
 					switch typeCode

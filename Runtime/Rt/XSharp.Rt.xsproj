@@ -37,7 +37,7 @@
     <Name>XSharp.Rt</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
+    <Dialect>Vulcan</Dialect>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -74,7 +74,7 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption>/unsafe</CommandLineOption>
+    <CommandLineOption>/creatingruntime</CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
@@ -114,13 +114,13 @@
   <ItemGroup>
     <Folder Include="Functions" />
     <Folder Include="Classes" />
+    <Folder Include="Internal" />
     <Folder Include="Structures" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Array.prg" />
     <Compile Include="Classes\Error.prg" />
-    <Compile Include="Dummy.prg" />
     <Compile Include="Functions\functions_array.prg" />
     <Compile Include="Functions\functions_byte.prg" />
     <Compile Include="Functions\functions_date.prg" />
@@ -137,11 +137,13 @@
     <Compile Include="Functions\functions_set.prg" />
     <Compile Include="Functions\functions_string.prg" />
     <Compile Include="Functions\functions_unsafe.prg" />
+    <Compile Include="Internal\CompilerSupport.prg" />
+    <Compile Include="Internal\RuntimeState.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="Structures\PSZ.prg" />
     <Compile Include="Structures\Various.prg" />
     <Compile Include="Structures\Float.prg" />
     <Compile Include="Structures\Date.prg" />
+    <Compile Include="Structures\PSZ.prg" />
     <Compile Include="Structures\Symbol.prg" />
     <Compile Include="Structures\Usual.prg" />
   </ItemGroup>

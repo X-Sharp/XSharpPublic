@@ -3,9 +3,9 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using Vulcan
+// Most of these settings will Get and Set properties of the Runtime.State class
 
-begin namespace XSharp.Runtime
+begin namespace XSharp.Runtime 
 	#region functions
 	/// <summary>
 	/// Set the morning extension for time strings in 12-hour format.
@@ -23,7 +23,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetAmPm(lSet AS __Usual) AS LOGIC
+	FUNCTION SetAmPm(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -33,7 +33,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetAnsi(lSet AS __Usual) AS LOGIC
+	FUNCTION SetAnsi(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -53,17 +53,17 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetBeep(lSet AS __Usual) AS LOGIC
+	FUNCTION SetBeep(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Return and optionally change the setting that determines whether to include or omit century digits in the __VODate format.
+	/// Return and optionally change the setting that determines whether to include or omit century digits in the date format.
 	/// </summary>
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetCentury(lSet AS __Usual) AS LOGIC
+	FUNCTION SetCentury(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -72,7 +72,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pFunc"></param>
 	/// <returns>
 	/// </returns>
-	unsafe FUNCTION SetClipCompFunc(pFunc AS __Usual) AS PTR
+	FUNCTION SetClipCompFunc(pFunc AS USUAL) AS IntPtr
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -82,22 +82,22 @@ begin namespace XSharp.Runtime
 	/// <param name="nCpu"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetCpu(nCpu AS __Usual) AS DWORD
+	FUNCTION SetCpu(nCpu AS USUAL) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Return and optionally change the setting that determines the <%APP%> __VODate format by selecting from a list of constants with corresponding __VODate formats.
+	/// Return and optionally change the setting that determines the <%APP%> date format by selecting from a list of constants with corresponding date formats.
 	/// </summary>
 	/// <param name="dwCountry"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDateCountry(dwCountry AS __Usual) AS DWORD
+	FUNCTION SetDateCountry(dwCountry AS USUAL) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Change the setting that determines the <%APP%> __VODate format.
+	/// Change the setting that determines the <%APP%> date format.
 	/// </summary>
 	/// <param name="cDateFormat"></param>
 	/// <returns>
@@ -112,7 +112,7 @@ begin namespace XSharp.Runtime
 	/// <param name="nDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDecimal(nDec AS __Usual) AS DWORD
+	FUNCTION SetDecimal(nDec AS USUAL) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -122,7 +122,7 @@ begin namespace XSharp.Runtime
 	/// <param name="wSep"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDecimalSep(wSep AS __Usual) AS WORD
+	FUNCTION SetDecimalSep(wSep AS USUAL) AS WORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -142,7 +142,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pszNew"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDefaultDir(pszNew AS __Psz) AS VOID
+	FUNCTION SetDefaultDir(pszNew AS PSZ) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -152,7 +152,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDeleted(lSet AS __Usual) AS LOGIC
+	FUNCTION SetDeleted(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -162,7 +162,7 @@ begin namespace XSharp.Runtime
 	/// <param name="nDig"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDigit(nDig AS __Usual) AS DWORD
+	FUNCTION SetDigit(nDig AS USUAL) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -172,7 +172,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDigitFixed(f AS __Usual) AS LOGIC
+	FUNCTION SetDigitFixed(f AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -194,7 +194,7 @@ begin namespace XSharp.Runtime
 	/// <param name="wYear"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetEpoch(wYear AS __Usual) AS DWORD
+	FUNCTION SetEpoch(wYear AS USUAL) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -204,7 +204,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetErrorLog(lSet AS __Usual) AS LOGIC
+	FUNCTION SetErrorLog(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -214,7 +214,7 @@ begin namespace XSharp.Runtime
 	/// <param name="fExact"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetExact(fExact AS __Usual) AS LOGIC
+	FUNCTION SetExact(fExact AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -224,7 +224,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetExclusive(lSet AS __Usual) AS LOGIC
+	FUNCTION SetExclusive(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -234,7 +234,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetFieldStore(lSet AS __Usual) AS LOGIC
+	FUNCTION SetFieldStore(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -244,17 +244,17 @@ begin namespace XSharp.Runtime
 	/// <param name="fFixed"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetFixed(fFixed AS __Usual) AS LOGIC
+	FUNCTION SetFixed(fFixed AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
 	/// <summary>
-	/// Return and optionally change the setting that determines the point at which 2 __VOFloating point numbers would be considered equal even though they are different.
+	/// Return and optionally change the setting that determines the point at which 2 floating point numbers would be considered equal even though they are different.
 	/// </summary>
 	/// <param name="fDelta"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Set__VOFloatDelta(fDelta AS __Usual) AS __VOFloat
+	FUNCTION SetFloatDelta(fDelta AS USUAL) AS FLOAT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -278,12 +278,12 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	/// <summary>
-	/// Return and optionally change the setting that determines the internal operational characteristics of the underlying __VOFloating-point system.
+	/// Return and optionally change the setting that determines the internal operational characteristics of the underlying floating-point system.
 	/// </summary>
 	/// <param name="nFPU"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetMath(nFPU AS __Usual) AS DWORD
+	FUNCTION SetMath(nFPU AS USUAL) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -376,7 +376,7 @@ begin namespace XSharp.Runtime
 	/// <param name="f"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetScience(f AS __Usual) AS LOGIC
+	FUNCTION SetScience(f AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -386,7 +386,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetSoftSeek(lSet AS __Usual) AS LOGIC
+	FUNCTION SetSoftSeek(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -396,7 +396,7 @@ begin namespace XSharp.Runtime
 	/// <param name="wSep"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetThousandSep(wSep AS __Usual) AS WORD
+	FUNCTION SetThousandSep(wSep AS USUAL) AS WORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -416,7 +416,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetUnique(lSet AS __Usual) AS LOGIC
+	FUNCTION SetUnique(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -425,7 +425,7 @@ begin namespace XSharp.Runtime
 	/// <param name="n"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetWinCompFlags(n AS __Usual) AS LONG
+	FUNCTION SetWinCompFlags(n AS USUAL) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -434,7 +434,7 @@ begin namespace XSharp.Runtime
 	/// <param name="pFunc"></param>
 	/// <returns>
 	/// </returns>
-	unsafe FUNCTION SetWinCompFunc(pFunc AS __Usual) AS PTR
+	FUNCTION SetWinCompFunc(pFunc AS USUAL) AS IntPtr
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -453,7 +453,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetYield(lSet AS __Usual) AS LOGIC
+	FUNCTION SetYield(lSet AS USUAL) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 

@@ -36,7 +36,7 @@
     <Name>XSharp.Runtime.Tests</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
-    <Dialect>Core</Dialect>
+    <Dialect>Vulcan</Dialect>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -73,7 +73,7 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
+    <CommandLineOption>/creatingruntime</CommandLineOption>
     <PPO>false</PPO>
     <NoStdDef>false</NoStdDef>
     <IncludePaths />
@@ -124,7 +124,6 @@
     <Compile Include="RuntimeArrayTests.prg" />
     <Compile Include="RuntimeByteTests.prg" />
     <Compile Include="RuntimeDateTests.prg" />
-    <Compile Include="RuntimeFileTests.prg" />
     <Compile Include="RuntimeIOTests.prg" />
     <Compile Include="RuntimeMiscTests.prg" />
     <Compile Include="RuntimeNumericTest.prg" />

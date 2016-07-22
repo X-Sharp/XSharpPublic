@@ -124,6 +124,7 @@
     <Compile Include="RuntimeArrayTests.prg" />
     <Compile Include="RuntimeByteTests.prg" />
     <Compile Include="RuntimeDateTests.prg" />
+    <Compile Include="RuntimeFileTests.prg" />
     <Compile Include="RuntimeIOTests.prg" />
     <Compile Include="RuntimeMiscTests.prg" />
     <Compile Include="RuntimeNumericTest.prg" />

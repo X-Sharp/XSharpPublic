@@ -296,7 +296,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;
             }
         }
-
+ 
         protected StatementSyntax CachedIfBlock = null;
         protected StatementSyntax GetClipperCallingConventionIfStatement()
         {
@@ -306,52 +306,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax ifExpr;
             StatementSyntax exprStmt;
             // This method generates the common block that is used for all Clipper calling convention methods
-            // to retrieve the PCount and also to fix the problem where Roslyn passes a boxed usual in stead of a USUAL[]
-            // please note that there may be an error when a Clipper calling convention method is called with a single USUAL param
-            // In that case Roslyn will pass the boxed usual as parameter
-            // that is why we have to check for the type of the param and convert it to a usual[]
-            // when it is of the wrong type
+            // to retrieve the PCount 
             // the pseudo code for that is 
 
             // IF Xs$Args != NULL
-            //      IF Xs$Args:GetType() != typeof(USUAL[])
-            //          Xs$Args := <USUAL> {Xs$Args}
-            //      ENDIF 
             //      Xs$PCount := Xs$Args.Length
             // ENDIF
 
             InitializeArrayTypes();
             var blockstmts = _pool.Allocate<StatementSyntax>();
-            // lhs : Xs$Args.GetType()
-            var ma = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, GenerateSimpleName(ClipperArgs), SyntaxFactory.MakeToken(SyntaxKind.DotToken), GenerateSimpleName("GetType"));
-            var Lhs = _syntaxFactory.InvocationExpression(ma, EmptyArgumentList());
-            // typeof(USUAL[])
-            var rhs = _syntaxFactory.TypeOfExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    arrayOfUsual,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-
-            // lhs != rhs
-            var notEqExpr = _syntaxFactory.BinaryExpression(SyntaxKind.NotEqualsExpression,
-                    Lhs, SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken), rhs);
-
-
-            // { Xs$Args }
-            var arrayinitializer = MakeArrayInitializer(GenerateSimpleName(ClipperArgs));
-
-            //  new USUAL [] {..}
-            var arraycreateexpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                                    arrayOfUsual,
-                                    arrayinitializer);
-
-            // Xs$Args := <USUAL> { Xs$Args }
-            var assignExp = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                                            GenerateSimpleName(ClipperArgs),
-                                                            SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                                                            arraycreateexpr);
-            // if <NotEqExpr> <AssignmentExpression>
-            blockstmts.Add(GenerateIfStatement(notEqExpr, GenerateExpressionStatement(assignExp)));
             // Xs$PCount = Xs$Args:Length
             assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                     GenerateSimpleName(ClipperPCount),

@@ -1152,7 +1152,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                                         RefineAccessThroughType(options, accessThroughType),
                                         out inaccessibleViaQualifier,
                                         ref useSiteDiagnostics,
-                                        basesBeingResolved))
+                                        basesBeingResolved)
+#if XSHARP
+                    && (!Compilation.Options.IsDialectVO || !inaccessibleViaQualifier)
+#endif
+                                        )
             {
                 if (inaccessibleViaQualifier)
                 {

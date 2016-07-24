@@ -171,10 +171,10 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Yes</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Yes</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
@@ -470,7 +470,7 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Ye, 4</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 4</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 4</text></para>

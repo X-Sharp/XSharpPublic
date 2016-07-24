@@ -995,10 +995,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BetterResult.Left;
                 else if ( ((BoundLiteral) right).ConstantValue.IsIntegral && ((BoundLiteral)right).ConstantValue.Int32Value >= 0) // Unsigned and Constant > 0 also Ok.
                     return BetterResult.Left;
-                else if (!left.Type.IsUsual() && !op1.RightType.IsUsual() && op2.RightType.IsUsual())
-                    return BetterResult.Left;
-                else if (!left.Type.IsUsual() && !op2.RightType.IsUsual() && op1.RightType.IsUsual())
-                    return BetterResult.Right;
+            }
+            if (Compilation.Options.IsDialectVO)
+            {
+                if (!left.Type.IsUsual())
+                {
+                    if (!op1.RightType.IsUsual() && op2.RightType.IsUsual())
+                        return BetterResult.Left;
+                    if (!op2.RightType.IsUsual() && op1.RightType.IsUsual())
+                        return BetterResult.Right;
+                }
+                if (!right.Type.IsUsual())
+                {
+                    if (!op1.LeftType.IsUsual() && op2.LeftType.IsUsual())
+                        return BetterResult.Left;
+                    if (!op2.LeftType.IsUsual() && op1.LeftType.IsUsual())
+                        return BetterResult.Right;
+                }
             }
 #endif
 

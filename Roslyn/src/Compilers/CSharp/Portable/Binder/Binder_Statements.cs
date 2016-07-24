@@ -1866,6 +1866,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool isAccessible = this.IsAccessible(setMethod, accessThroughType, out failedThroughTypeCheck, ref useSiteDiagnostics);
                     diagnostics.Add(node, useSiteDiagnostics);
 
+#if XSHARP
+                    if (Compilation.Options.IsDialectVO && !isAccessible && failedThroughTypeCheck)
+                    {
+                        isAccessible = true;
+                    }
+#endif
                     if (!isAccessible)
                     {
                         if (failedThroughTypeCheck)
@@ -1917,6 +1923,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     bool isAccessible = this.IsAccessible(getMethod, accessThroughType, out failedThroughTypeCheck, ref useSiteDiagnostics);
                     diagnostics.Add(node, useSiteDiagnostics);
 
+#if XSHARP
+                    if (Compilation.Options.IsDialectVO && !isAccessible && failedThroughTypeCheck)
+                    {
+                        isAccessible = true;
+                    }
+#endif
                     if (!isAccessible)
                     {
                         if (failedThroughTypeCheck)

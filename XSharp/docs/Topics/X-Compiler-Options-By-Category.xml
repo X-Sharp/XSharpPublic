@@ -191,7 +191,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo4" styleclass="Normal" translate="true">/vo4</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Allows implicit signed/unsigned integer conversions </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Allows implicit signed/unsigned integer conversions </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -263,7 +263,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo13" styleclass="Normal" translate="true">/vo13</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Enables Visual Objects compatible string comparisons </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Enables Visual Objects compatible string comparisons </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

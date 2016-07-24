@@ -22,7 +22,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
     <para style="margin-bottom:11px; line-height:1.05;"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This documentation is also still under development. Most sections in the documentation are incomplete. We have included it so you can see a list of the supported compiler options as well as the version history.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">More information will follow </text></para>
   </body>

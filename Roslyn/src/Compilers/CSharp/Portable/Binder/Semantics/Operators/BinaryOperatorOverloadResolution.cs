@@ -860,7 +860,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private BetterResult BetterOperator(BinaryOperatorSignature op1, BinaryOperatorSignature op2, BoundExpression left, BoundExpression right, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
+#if !XSHARP
             Debug.Assert(op1.Priority.HasValue == op2.Priority.HasValue);
+#endif
 
             // We use Priority as a tie-breaker to help match native compiler bugs.
             if (op1.Priority.HasValue && op2.Priority.HasValue && op1.Priority.GetValueOrDefault() != op2.Priority.GetValueOrDefault())

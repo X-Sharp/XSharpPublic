@@ -2211,7 +2211,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
-        public override void ExitExpressionListStmt([NotNull] XP.ExpressionListStmtContext context)
+        public override void ExitExpressionList([NotNull] XP.ExpressionListContext context)
         {
             var stmts = _pool.Allocate<StatementSyntax>();
             foreach(var eCtx in context._Exprs) {

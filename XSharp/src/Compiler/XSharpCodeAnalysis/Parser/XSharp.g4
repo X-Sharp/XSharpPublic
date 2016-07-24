@@ -320,8 +320,8 @@ eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
 
 
 eventLineAccessor   : Attributes=attributes? Modifiers=eventModifiers? 
-                      ( {InputStream.La(2) != REMOVE}? Key=ADD ExprList=expressionListStmt?
-                      | {InputStream.La(2) != ADD}?    Key=REMOVE ExprList=expressionListStmt?
+                      ( {InputStream.La(2) != REMOVE}? Key=ADD ExprList=expressionList?
+                      | {InputStream.La(2) != ADD}?    Key=REMOVE ExprList=expressionList?
                       | Key=(ADD|REMOVE) )
                     ;
 eventAccessor       : Attributes=attributes? Modifiers=eventModifiers? 
@@ -372,11 +372,11 @@ propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET
 
 propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
                       ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
-                      | {InputStream.La(2) != GET}? Key=SET ExprList=expressionListStmt?
+                      | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
                       | Key=(GET|SET) )
                     ;
 
-expressionListStmt	: Exprs+=expression (COMMA Exprs+=expression)*
+expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
 
 propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers? 

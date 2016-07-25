@@ -712,6 +712,7 @@ lexer grammar XSharpLexer;
 					{"ARRAY", ARRAY},
 					{"BYTE", BYTE},
 					{"CHAR", CHAR},
+					{"_CODEBLOCK", CODEBLOCK},
 					{"CODEBLOCK", CODEBLOCK},
 					{"DATE", DATE},
 					{"DWORD", DWORD},

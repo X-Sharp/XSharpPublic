@@ -23,6 +23,7 @@ using XSharp.VOEditors;
 
 namespace XSharp.Project
 {
+    
     /// <summary>
     /// This class implements the package exposed by this assembly.
     /// </summary>
@@ -119,36 +120,36 @@ namespace XSharp.Project
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Class", 500)]
     [ProvideProjectItem(typeof(XSharpProjectFactory), "XSharp Items", @"ItemTemplates\Form", 500)]
 
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", Int32.MaxValue,DefaultName = "XSharp Source Code Editor",NameResourceID =109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", Int32.MaxValue, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = "XSharp Source Code Editor",NameResourceID =109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Code
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), GuidStrings.LOGVIEWID_Code)]  
 
 
     // Editors for VOBinaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory),        ".xsfrm",   Int32.MaxValue, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
-    [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu",   Int32.MaxValue, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
-    [ProvideEditorExtension(typeof(VODBServerEditorFactory),    ".xsdbs",   Int32.MaxValue, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
-    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory),   ".xsfs",    Int32.MaxValue, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    [ProvideEditorExtension(typeof(VOFormEditorFactory),        ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
+    [ProvideEditorExtension(typeof(VODBServerEditorFactory),    ".xsdbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
+    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory),   ".xsfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
     // Vulcan Binaries
-    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", Int32.MaxValue, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
-    [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", Int32.MaxValue, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
-    [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", Int32.MaxValue, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
-    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", Int32.MaxValue, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
+    [ProvideEditorExtension(typeof(VOFormEditorFactory), ".vnfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
+    [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
+    [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
+    [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
 
 
 
     // Attention! The LOGVIEWID guids are magic numbers provided by Microsoft. Don't change them.
     // This tells the project system if we allow to open in Code or Designer view
-    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
-    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
-    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
-    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}")]  //LOGVIEWID_Designer
+    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
+    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
+    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
+    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
 
 
 
@@ -186,7 +187,7 @@ namespace XSharp.Project
             if (null != mcs)
             {
                 // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidList.guidXSharpLanguageServiceCmdSet, (int)PkgCmdIDList.cmdidInsertSnippet);
+                CommandID menuCommandID = new CommandID(GuidStrings.guidXSharpLanguageServiceCmdSet, (int)PkgCmdIDList.cmdidInsertSnippet);
                 MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
                 mcs.AddCommand(menuItem);
             }

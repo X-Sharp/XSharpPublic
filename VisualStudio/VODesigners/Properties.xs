@@ -10,8 +10,6 @@ using System.Collections.Generic
 
 #include "VOWin32APILibrary.vh"
 
-
-
 CLASS VODesignProperty INHERIT DesignProperty
 	EXPORT eVOStyle AS VOStyle
 

@@ -88,6 +88,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Structures.xs" />
+    <Compile Include="Win32.xs" />
     <Compile Include="_ProjectSystem.prg" />
     <Compile Include="Template.xs" />
     <Compile Include="ToolBox.xs" />

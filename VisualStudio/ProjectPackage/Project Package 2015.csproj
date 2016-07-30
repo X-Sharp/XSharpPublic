@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +13,7 @@
     <AssemblyName>XSharpProject2015</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>XSharp.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ProjectGuid>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</ProjectGuid>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -129,7 +129,6 @@
     </Compile>
     <Compile Include="VOEditorSupport\EditorPane.cs" />
     <Compile Include="VOEditorSupport\Factories.cs" />
-    <Compile Include="LanguageService\Guids.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpAuthoringScope.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
@@ -185,6 +184,7 @@
     <Compile Include="XSharpDependentFileNode.cs" />
     <Compile Include="XSharpEditorFactory.cs" />
     <Compile Include="XSharpFileNodeProperties.cs" />
+    <Compile Include="XSharpFileType.cs" />
     <Compile Include="XSharpProjectAutomation.cs" />
     <Compile Include="XSharpProjectFactory.cs" />
     <Compile Include="XSharpFileNode.cs" />
@@ -194,7 +194,9 @@
     <Compile Include="XSharpProjectPackage.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="XSharpVSMDProvider.cs" />
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.xsdbs" />
     <ZipItem Include="Templates\ProjectItems\VO\VOFieldspec\VOFieldSpec.xsfs" />
     <ZipItem Include="Templates\ProjectItems\VO\VOMenu\VOMenu.xsmnu" />
@@ -482,7 +484,7 @@
   </ItemGroup>
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <PropertyGroup>
@@ -500,7 +502,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" Condition="false" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -509,9 +510,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <CopyPkgDefDependsOn>$(CopyPkgDefDependsOn);FixPkgdefTarget</CopyPkgDefDependsOn>
-  </PropertyGroup>
-  <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
@@ -519,23 +517,4 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Target Name="FixPkgdefTarget">
-    <FixPkgdef PkgdefPath="$(IntermediateOutputPath)$(TargetName).pkgdef" />
-  </Target>
-  <UsingTask TaskName="FixPkgdef" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-    <ParameterGroup>
-      <PkgdefPath ParameterType="System.String" Required="true" />
-    </ParameterGroup>
-    <Task>
-      <Using Namespace="System" />
-      <Using Namespace="System.IO" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
-            // Replace all "$PackageFolder$" with the actual path in the pkgdef
-            String content = File.ReadAllText(PkgdefPath);
-            //String dllPath = Path.GetDirectoryName(PkgdefPath);
-            //content = content.Replace("$PackageFolder$", dllPath);
-            File.WriteAllText(PkgdefPath, content);
-         ]]></Code>
-    </Task>
-  </UsingTask>
 </Project>

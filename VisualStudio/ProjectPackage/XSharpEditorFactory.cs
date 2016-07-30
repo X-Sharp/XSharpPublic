@@ -26,14 +26,9 @@ namespace XSharp.Project
     /// Factory for creating our editor
     /// </summary>
     [Guid(XSharpConstants.EditorFactoryGuidString)]
+    [ProvideView(LogicalView.Code, "")]
     public class XSharpEditorFactory : IVsEditorFactory
     {
-        #region Consts
-
-        internal static readonly Guid EditorFactoryGuid = new Guid(XSharpConstants.EditorFactoryGuidString);
-
-        #endregion
-
         #region fields
         private XSharpProjectPackage _package;
         private ServiceProvider _serviceProvider;
@@ -43,6 +38,24 @@ namespace XSharp.Project
         public XSharpEditorFactory(XSharpProjectPackage package)
         {
             _package = package;
+        }
+        #endregion
+
+        #region Helpers
+        protected bool CalledFromVulcanDLL()
+        {
+            var trace = new System.Diagnostics.StackTrace(false);
+            foreach (var frame in trace.GetFrames())
+            {
+                var dll = frame.GetMethod().Module.Assembly;
+                String name = dll.GetName().Name.ToLower();
+                if (name.Contains("vulcanproject2015"))
+                {
+                    return true;
+                }
+            }
+            return false;
+
         }
         #endregion
 
@@ -91,29 +104,16 @@ namespace XSharp.Project
         //
         public virtual int MapLogicalView(ref Guid logicalView, out string physicalView)
         {
-            // initialize out parameter
             physicalView = null;
-
-            bool isSupportedView = false;
-            // Determine the physical view
-            if (VSConstants.LOGVIEWID_Primary == logicalView)
+            if (logicalView == VSConstants.LOGVIEWID_Code ||
+                logicalView == VSConstants.LOGVIEWID_TextView ||
+                logicalView == VSConstants.LOGVIEWID_Debugging ||
+                logicalView == VSConstants.LOGVIEWID_Primary)
             {
-                // primary view uses NULL as pbstrPhysicalView
-                isSupportedView = true;
-            }
-            else if (VSConstants.LOGVIEWID_Designer == logicalView)
-            {
-                physicalView = "Design";
-                isSupportedView = true;
-            }
-
-            if (isSupportedView)
+                physicalView = null;
                 return VSConstants.S_OK;
-            else
-            {
-                // E_NOTIMPL must be returned for any unrecognized rguidLogicalView values
-                return VSConstants.E_NOTIMPL;
             }
+            return VSConstants.E_NOTIMPL;
         }
 
         public virtual int Close()
@@ -135,10 +135,11 @@ namespace XSharp.Project
                        out int createDocumentWindowFlags)
         {
             // Initialize output parameters
+            bool vulcan = CalledFromVulcanDLL();
             docView = IntPtr.Zero;
             docData = IntPtr.Zero;
-            commandUIGuid = EditorFactoryGuid;
             createDocumentWindowFlags = 0;
+            commandUIGuid = Guid.Empty;
             editorCaption = null;
 
             // Validate inputs
@@ -147,8 +148,36 @@ namespace XSharp.Project
 
             // Get a text buffer
             IVsTextLines textLines = GetTextBuffer(docDataExisting);
+            IVsTextBuffer textbuffer = textLines as IVsTextBuffer;
+            if (vulcan)
+            {
+                /*
+                    These properties can be set on IVsUserData
 
-            // Assign docData IntPtr to either existing docData or the new text buffer
+                    public static readonly Guid VsBufferMoniker = new Guid(0x978A8E17, 0x4DF8, 0x432A, 0x96, 0x23, 0xD5, 0x30, 0xA2, 0x64, 0x52, 0xBC);
+                    public static readonly Guid VsBufferIsDiskFile = new Guid(0xd9126592, 0x1473, 0x11d3, 0xbe, 0xc6, 0x0, 0x80, 0xc7, 0x47, 0xd9, 0xa0);
+                    public static readonly Guid VsBufferDetectLangSID = new Guid(0x17f375ac, 0xc814, 0x11d1, 0x88, 0xad, 0x0, 0x0, 0xf8, 0x75, 0x79, 0xd2);
+                    public static readonly Guid VsBufferEncodingVSTFF = new Guid(0x16417f39, 0xa6b7, 0x4c90, 0x89, 0xfa, 0x77, 0xd, 0x2c, 0x60, 0x44, 0xb );
+                    public static readonly Guid VsBufferEncoding = new Guid(0x212729ac, 0xd6bb, 0x11d0, 0xae, 0x75, 0x0, 0xc0, 0x4f, 0xb6, 0x80, 0x6);
+                    public static readonly Guid VsBufferEncodingPromptOnLoad = new Guid(0x99ec03f0, 0xc843, 0x4c09, 0xbe, 0x74, 0xcd, 0xca, 0x51, 0x58, 0xd3, 0x6c);
+                    // from textmgr100.idl; guids for IVsUserData.{Get/Set}Data()
+                    public static readonly Guid VsBufferContentType = new Guid(0x1beb4195, 0x98f4, 0x4589, 0x80, 0xe0, 0x48, 0xc, 0xe3, 0x2f, 0xf0, 0x59);
+                    public static readonly Guid VsTextViewRoles = new Guid(0x297078ff, 0x81a2, 0x43d8, 0x9c, 0xa3, 0x44, 0x89, 0xc5, 0x3c, 0x99, 0xba);
+                    public static readonly Guid UseLazyInitialization = new Guid(0xfea19c13, 0x32ce, 0x447b, 0x8c, 0xc3, 0x72, 0x0d, 0xdf, 0x13, 0x8b, 0xb8);
+
+                 */
+                Guid vsCoreLanguageService = new Guid("{8239bec4-ee87-11d0-8c98-00c04fc2ab22}");
+                Guid activeLanguageService;
+                textbuffer.GetLanguageServiceID(out activeLanguageService);
+                if (activeLanguageService == vsCoreLanguageService)
+                {
+                    Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
+                    int result = textbuffer.SetLanguageServiceID(ref guidVulcanLanguageService);
+                    IVsUserData vud = (IVsUserData)textbuffer;
+                    Guid bufferDetectLang = Microsoft.VisualStudio.Package.EditorFactory.GuidVSBufferDetectLangSid;
+                    vud.SetData(ref bufferDetectLang, false);
+                }
+            }
             if (docDataExisting != IntPtr.Zero)
             {
                 docData = docDataExisting;
@@ -162,7 +191,7 @@ namespace XSharp.Project
             try
             {
                 docView = CreateDocumentView(
-                    physicalView, hierarchy, itemid, textLines, out editorCaption, out commandUIGuid);
+                    physicalView, hierarchy, itemid, textLines, out editorCaption, ref commandUIGuid);
             }
             finally
             {
@@ -224,11 +253,11 @@ namespace XSharp.Project
             uint itemid, 
             IVsTextLines textLines, 
             out string editorCaption, 
-            out Guid cmdUI)
+            ref Guid cmdUI)
         {
             //Init out params
             editorCaption = string.Empty;
-            cmdUI = Guid.Empty;
+           // cmdUI = Guid.Empty;
 
             if (string.IsNullOrEmpty(physicalView))
             {

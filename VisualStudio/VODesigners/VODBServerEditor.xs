@@ -2816,7 +2816,6 @@ END CLASS
 
 
 
-
 CLASS DBServerCode
 	EXPORT aClass,aInit AS List<STRING>
 	EXPORT aFieldDesc,aIndexList AS List<STRING>

@@ -2515,7 +2515,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>true if the file is a resx file, otherwise false.</returns>
         public virtual bool IsEmbeddedResource(string fileName)
         {
-            if (String.Compare(Path.GetExtension(fileName), ".ResX", StringComparison.OrdinalIgnoreCase) == 0)
+            if (XSharpFileNode.GetFileType(fileName) == XSharpFileType.NativeResource)
                 return true;
             return false;
         }

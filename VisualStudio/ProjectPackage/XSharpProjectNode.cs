@@ -29,7 +29,7 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : ProjectNode
+    public class XSharpProjectNode : ProjectNode//, IVsProjectSpecificEditorMap2
     {
         #region Enum for image list
         internal enum XSharpProjectImageName
@@ -248,7 +248,7 @@ namespace XSharp.Project
             //provider.AddService(typeof(VSProject), this.VSProject, false);
 
             string include = item.GetMetadata(ProjectFileConstants.Include);
-            if (!string.IsNullOrEmpty(include) && Path.GetExtension(include).Equals(".xaml", StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(include) && XSharpFileNode.GetFileType(include) == XSharpFileType.XAML)
             {
                 //Create a DesignerContext for the XAML designer for this file
                 // Use the CreateServices of the Node
@@ -292,25 +292,41 @@ namespace XSharp.Project
         }
 
         private Guid guidPublishPage = Guid.Parse("CC4014F5-B18D-439C-9352-F99D984CCA85");
-        private Guid guidSignPagePage = Guid.Parse("1e78f8db-6c07-4d61-a18f-7514010abd56");
 
         /// <summary>
-        /// Generate new Guid value and update it with GeneralPropertyPage GUID.
-        /// This is the Common Properties Dialog
+        /// Return list of guids of all property pages 
         /// </summary>
-        /// <returns>Returns the property pages that are independent of configuration.</returns>
-        protected override Guid[] GetConfigurationIndependentPropertyPages()
+        /// <returns>List of pages GUIDs.</returns>
+        protected override Guid[] GetPriorityProjectDesignerPages()
         {
             Guid[] result = new Guid[]
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
-                guidSignPagePage
+                typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpDebugPropertyPage).GUID
                 };
             return result;
         }
 
-        // These pages have a content which depends on the Configuration Release/Debug
+        /// <summary>
+        /// Return list of guids of property pages that are independent of the configuration
+        /// </summary>
+        /// <returns>List of pages GUIDs.</returns>
+        protected override Guid[] GetConfigurationIndependentPropertyPages()
+        {
+            Guid[] result = new Guid[]
+                {
+                typeof(XSharpGeneralPropertyPage).GUID,
+                typeof(XSharpLanguagePropertyPage).GUID
+                };
+            return result;
+        }
+
+        /// <summary>
+        /// Return list of guids of property pages that are dependent of the configuration
+        /// </summary>
+        /// <returns>List of pages GUIDs.</returns>
         protected override Guid[] GetConfigurationDependentPropertyPages()
         {
             Guid[] result = new Guid[]
@@ -410,22 +426,6 @@ namespace XSharp.Project
 
             return VSConstants.S_OK;
         }
-        /// <summary>
-        /// Overriding to provide project general property page.
-        /// </summary>
-        /// <returns>Returns the GeneralPropertyPage GUID value.</returns>
-        protected override Guid[] GetPriorityProjectDesignerPages()
-        {
-            Guid[] result = new Guid[]
-                {
-                typeof(XSharpGeneralPropertyPage).GUID,
-                typeof(XSharpLanguagePropertyPage).GUID,
-                typeof(XSharpBuildPropertyPage).GUID,
-                typeof(XSharpDebugPropertyPage).GUID,
-                guidSignPagePage
-                };
-            return result;
-        }
 
         /// <summary>
         /// Adds the file from template.
@@ -489,12 +489,23 @@ namespace XSharp.Project
             }
             // there are other possible parents. For Example Window1.prg is the parent of Window1.Windows.vnfrm
             // In this case the children are a VOBinary, Header or NativeResource
-            if (IsVoBinary(fileName) || IsNativeResource(fileName) || IsHeaderFile(fileName)) { 
-                // dependent file
-                HierarchyNode newParent = parentNode.FindChild(parentFile + ".prg");
-                if(newParent != null) {
-                    parentNode = newParent;
-                }
+            switch (XSharpFileNode.GetFileType(fileName))
+            {
+                case XSharpFileType.Header:
+                case XSharpFileType.NativeResource:
+                case XSharpFileType.VOFieldSpec:
+                case XSharpFileType.VOForm:
+                case XSharpFileType.VODBServer:
+                case XSharpFileType.VOMenu:
+                case XSharpFileType.VOOrder:
+                case XSharpFileType.VOIndex:
+                    // dependent file
+                    HierarchyNode newParent = parentNode.FindChild(parentFile + ".prg");
+                    if (newParent != null)
+                    {
+                        parentNode = newParent;
+                    }
+                    break;
             }
             base.AddNewFileNodeToHierarchy(parentNode, fileName);
         }
@@ -506,49 +517,39 @@ namespace XSharp.Project
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
             Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
 
-            string ext = Path.GetExtension(file);
             string type = XSharpFileNode.GetItemType(file);
             if(String.IsNullOrEmpty(type))
                 type = "None";
             newItem = this.CreateMsBuildFileItem(itemPath, type);
-            if(this.IsEmbeddedResource(itemPath)) {
-                newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
-                newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
-            } else if(this.IsSettings(itemPath)) {
-                newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
+            switch (XSharpFileNode.GetFileType(itemPath))
+            {
+                case XSharpFileType.ManagedResource:
+                    newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
+                    newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
+                    break;
+                case XSharpFileType.Settings:
+                    newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
+                    break;
             }
             return newItem;
         }
 
   
         public bool IsVoBinary(string fileName) {
-            return XSharpFileNode.GetItemType(fileName) == XSharpConstants.VOBinary;
-        }
-        public bool IsHeaderFile(string fileName) {
-            switch (Path.GetExtension(fileName).ToLower()) {
-                case ".vh":
-                case ".xh":
+            switch (XSharpFileNode.GetFileType(fileName))
+            {
+                case XSharpFileType.VOMenu:
+                case XSharpFileType.VODBServer:
+                case XSharpFileType.VOFieldSpec:
+                case XSharpFileType.VOForm:
+                case XSharpFileType.VOIndex:
+                case XSharpFileType.VOOrder:
                     return true;
-                default:
-                    return false;
+
             }
-        }
-
-        public bool IsNativeResource(string fileName) {
-            return XSharpFileNode.GetItemType(fileName) == XSharpConstants.NativeResource;
-        }
-
-        public bool IsSettings(string fileName)
-        {
-            if (String.Compare(Path.GetExtension(fileName), ".settings", StringComparison.OrdinalIgnoreCase) == 0)
-                return true;
             return false;
         }
-        public bool IsXaml(string fileName) {
-            if(String.Compare(Path.GetExtension(fileName), ".xaml", StringComparison.OrdinalIgnoreCase) == 0)
-                return true;
-            return false;
-        }
+
 
         /// <summary>
         /// Evaluates if a file is an XSharp code file based on is extension
@@ -684,8 +685,95 @@ namespace XSharp.Project
             //return new XSharpProjectNodeProperties( this );
             return new ProjectNodeProperties(this);
         }
+/*
+       /// <summary>
+       ///  IVsProjectSpecificEditorMap2 interface
+       /// </summary>
+       /// <param name="pszMkDocument"></param>
+       /// <param name="pguidEditorType"></param>
+       /// <returns></returns>
+        public int GetSpecificEditorType(string pszMkDocument, out Guid pguidEditorType)
+        {
+            switch (XSharpFileNode.GetFileType(pszMkDocument))
+            {
+                case XSharpFileType.VODBServer:
+                    pguidEditorType = GuidStrings.guidVOServerEditorFactory;
+                    break;
+                case XSharpFileType.VOFieldSpec:
+                    pguidEditorType = GuidStrings.guidVOFieldSpecEditorFactory;
+                    break;
+                case XSharpFileType.VOMenu:
+                    pguidEditorType = GuidStrings.guidVOMenuEditorFactory;
+                    break;
+                case XSharpFileType.VOForm:
+                    pguidEditorType = GuidStrings.guidVOFormEditorFactory;
+                    break;
+                case XSharpFileType.SourceCode:
+                case XSharpFileType.Header:
+                case XSharpFileType.PreprocessorOutput:
+                    pguidEditorType = GuidStrings.guidSourcecodeEditorFactory;
+                    break;
+                default:
+                    pguidEditorType = Guid.Empty;
+                    break;
+            }
+            return VSConstants.S_OK; 
+        }
 
+        public int GetSpecificLanguageService(string pszMkDocument, out Guid pguidLanguageService)
+        {
+            pguidLanguageService = Guid.Empty;
+            return VSConstants.S_OK;
+        }
 
+        public int GetSpecificEditorProperty(string pszMkDocument, int propid, out object pvar)
+        {
+            pvar = true;
+            switch (XSharpFileNode.GetFileType(pszMkDocument))
+            {
+                case XSharpFileType.VODBServer:
+                case XSharpFileType.VOFieldSpec:
+                case XSharpFileType.VOMenu:
+                case XSharpFileType.VOForm:
+                case XSharpFileType.SourceCode:
+                case XSharpFileType.Header:
+                case XSharpFileType.PreprocessorOutput:
+                default:
+                    if (propid == (int)__VSPSEPROPID.VSPSEPROPID_ProjectDefaultEditorName)
+                    { 
+                        pvar = "XSharp Editor";
+                    }
+                    else if (propid == (int)__VSPSEPROPID.VSPSEPROPID_UseGlobalEditorByDefault)
+                    {
+                        pvar = false;
+                    }
+                    else
+                    {
+                        pvar = false;
+                    }
+                    break;
+            }
+            return VSConstants.S_OK;
+        }
+
+        public int SetSpecificEditorProperty(string pszMkDocument, int propid, object var)
+        {
+            switch (XSharpFileNode.GetFileType(pszMkDocument))
+            {
+                case XSharpFileType.VODBServer:
+                case XSharpFileType.VOFieldSpec:
+                case XSharpFileType.VOMenu:
+                case XSharpFileType.VOForm:
+                case XSharpFileType.SourceCode:
+                case XSharpFileType.Header:
+                case XSharpFileType.PreprocessorOutput:
+                default:
+                    break;
+            }
+            return VSConstants.S_OK;
+        }
+
+*/
         #endregion
 
 

@@ -15,7 +15,7 @@ namespace XSharpLanguage
     public class XSharpDebuggerLaunchProvider : DebugLaunchProviderBase
     {
         // 
-        [ExportPropertyXamlRuleDefinition(Constants.ProjectDll+", Version=" + Constants.Version + ", Culture=neutral, PublicKeyToken=9be6e469bc4921f1", "XamlRuleToCode:PropertyPage_Debugger.xaml", "Project")]
+        [ExportPropertyXamlRuleDefinition(Constants.ProjectDllCPS+", Version=" + Constants.Version + ", Culture=neutral, PublicKeyToken=9be6e469bc4921f1", "XamlRuleToCode:PropertyPage_Debugger.xaml", "Project")]
         [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
         private object DebuggerXaml { get { throw new NotImplementedException(); } }
 

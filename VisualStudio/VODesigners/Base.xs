@@ -66,7 +66,6 @@ ABSTRACT CLASS DesignerBase
 	CONSTRUCTOR(_oSurface AS Control)
 		SUPER()
 		SELF:oSurface := _oSurface
-
 		SELF:oTimer := Timer{}
 		SELF:oTimer:Interval := 500
 		SELF:oTimer:Tick += EventHandler{ SELF , @TimerTicked() }

@@ -12,9 +12,11 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
-
+using System.Runtime.InteropServices;
+using XSharp.Project;
 namespace XSharp.LanguageService
 {
+    [Guid(GuidStrings.guidXSharpLanguageServicePkgString)]
     public class XSharpLanguageService : Microsoft.VisualStudio.Package.LanguageService
     {
         private LanguagePreferences m_preferences;

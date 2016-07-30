@@ -8,9 +8,6 @@ using System.Drawing
 using System.Collections.Generic
 using System.Collections
 
-//#include "C:\dotNet\vonet\VOEdit\Win32-GlobalDefines.vh"
-#include "VOWin32APILibrary.vh"
-
 CLASS DesignerClipboard
 	PROTECT aEntries AS ArrayList
 	CONSTRUCTOR()

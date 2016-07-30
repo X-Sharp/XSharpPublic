@@ -115,12 +115,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProjectPackage\Project Package 2015.csproj">
-      <Project>{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}</Project>
-      <Name>Project Package 2015</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Templates\MyCustomProject.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -154,6 +148,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectPackageCPS\Project Package 2015 CPS.csproj">
+      <Project>{679502ac-264c-40ac-9e3a-587f2a27f08b}</Project>
+      <Name>Project Package 2015 CPS</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

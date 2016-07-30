@@ -339,7 +339,6 @@ CLASS PropertyPanel INHERIT PictureBox
 		IF SELF:nCurY >= SELF:aProperties:Count
 			SELF:nCurY := SELF:aProperties:Count - 1
 		END IF
-//		SELF:oDummy:Top := SELF:nItemHeight * (SELF:aProperties:Count - 1) + 2
 
 		SELF:oDummy:Size := Size{0 , SELF:nItemHeight * SELF:aProperties:Count}
 		SELF:oDummy:Top := 0
@@ -588,8 +587,6 @@ CLASS PropertyPanel INHERIT PictureBox
 
 END CLASS
 
-
-
 INTERNAL CLASS PropertyTextBox INHERIT TextBox
 	EXPORT oPropertyPanel AS PropertyPanel
 	EXPORT oProperty AS DesignProperty
@@ -646,7 +643,7 @@ INTERNAL CLASS PropertyTextBox INHERIT TextBox
 	PROTECTED METHOD OnLostFocus(e AS EventArgs) AS VOID
 		SUPER:OnLostFocus(e)
 		IF !SELF:lCanceled .and. (SELF:Text != SELF:cOldText .or. (SELF:lEntered .and. SELF:lMultiple))
-				SELF:SetProperty()
+			SELF:SetProperty()
 		ENDIF
 		SELF:Hide()
 	RETURN

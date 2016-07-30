@@ -195,7 +195,10 @@ namespace XSharp.CodeDom
                     FillCodeSource(newMethod, context.StmtBlk);
 
                     // The designer will need to locate the code in the file, so we must add the location
-                    FillCodeDomDesignerData(newMethod, context.StmtBlk.Start.Line, context.StmtBlk.Start.Column);
+                    if ( context.StmtBlk.ChildCount > 0 )
+                        FillCodeDomDesignerData(newMethod, context.StmtBlk.Start.Line, context.StmtBlk.Start.Column);
+                    else
+                        FillCodeDomDesignerData(newMethod, context.Start.Line+1, context.Start.Column);
                 }
             }
             //
@@ -594,10 +597,11 @@ namespace XSharp.CodeDom
         private void FillCodeDomDesignerData(CodeObject newElement, int line, int col)
         {
             CodeDomDesignerData data = new CodeDomDesignerData();
-            // point is where the designer will try to focus if the
-            // user wants to add event handler stuff.  
+            //
             data.CaretPosition = new System.Drawing.Point(col, line);
             data.FileName = this.CurrentFile;
+            // point is where the designer will try to focus if the
+            // user wants to add event handler stuff.  
             newElement.UserData[typeof(CodeDomDesignerData)] = data;
             newElement.UserData[typeof(System.Drawing.Point)] = data.CaretPosition;
         }

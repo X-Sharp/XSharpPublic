@@ -52,7 +52,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>$(BaseOutputPath)\$(Configuration)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XSHARP</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XSHARP; DESIGNERSUPPORT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -127,6 +127,7 @@
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="VOEditorSupport\EditorPane.cs" />
     <Compile Include="VOEditorSupport\Factories.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />

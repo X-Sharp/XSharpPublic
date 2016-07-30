@@ -20,8 +20,14 @@ namespace XSharp.CodeDom
         /// <returns></returns>
         internal static CodeCompileUnit MergeCodeCompileUnit(CodeCompileUnit compileUnit, CodeCompileUnit designerCompileUnit)
         {
+            return MergeCodeCompileUnit(null, compileUnit, designerCompileUnit);
+        }
+
+        internal static CodeCompileUnit MergeCodeCompileUnit(CodeCompileUnit mergedCodeCompileUnit, CodeCompileUnit compileUnit, CodeCompileUnit designerCompileUnit)
+        {
             // Create the merged CodeCompileUnit
-            CodeCompileUnit mergedCodeCompileUnit = new CodeCompileUnit();
+            if ( mergedCodeCompileUnit == null )
+                mergedCodeCompileUnit = new CodeCompileUnit();
             //
             CodeNamespace designerNamespace;
             CodeTypeDeclaration designerClass = FindDesignerClass(designerCompileUnit, out designerNamespace);

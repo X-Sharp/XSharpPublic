@@ -550,7 +550,7 @@ namespace XSharp.CodeDom
                     {
                         String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
                         this.Output.Write(sourceCode);
-                        this.Output.WriteLine();
+                        //this.Output.WriteLine();
                     }
                     else
                         this.GenerateStatements(e.Statements);

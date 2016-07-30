@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="XSharpCodeCompiler.cs" />
     <Compile Include="XSharpCodeConstants.cs" />
-    <Compile Include="XSharpCodeDomHelper.cs" />
     <Compile Include="XSharpCodeGenerator.cs" />
     <Compile Include="XSharpCodeDomProvider.cs">
       <SubType>Component</SubType>

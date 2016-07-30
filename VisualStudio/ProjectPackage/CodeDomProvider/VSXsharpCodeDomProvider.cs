@@ -285,43 +285,6 @@ namespace XSharp.Project
                 }
 
             }
-            /*
-            // Retrieve the original elements
-            CodeNamespace originNamespace;
-            CodeTypeDeclaration originClass = XSharpCodeDomHelper.FindFirstClass(compileUnit, out originNamespace);
-            // and see, what has been generated
-            CodeCompileUnit resultCcu;
-            CodeNamespace resultNamespace;
-            CodeTypeDeclaration resultClass=null;
-            // The access to the document is stored in UserData
-            RelatedDocDataCollection docCollection;
-            docCollection = compileUnit.UserData[typeof(RelatedDocDataCollection)] as RelatedDocDataCollection;
-            if (docCollection != null)
-            {
-                // a forEach, but just to grab the first
-                foreach (DocData docData in docCollection)
-                {
-                    DocDataTextReader textReader = new DocDataTextReader(docData);
-                    XSharpCodeParser parser = new XSharpCodeParser();
-                    parser.FileName = this.FileName;
-                    resultCcu = parser.Parse(textReader);
-                    // Retrieve the first type declaration
-                    resultClass = XSharpCodeDomHelper.FindFirstClass(compileUnit, out resultNamespace);
-                    break;
-                }
-                // just to be sure...
-                if ((originClass != null) && (resultClass != null))
-                {
-                    // Now push all elements from resultClass to formClass
-                    originClass.Members.Clear();
-                    foreach (CodeTypeMember ctm in resultClass.Members)
-                    {
-                        originClass.Members.Add(ctm);
-
-                    }
-                }
-            }
-            */
         }
     }
 }

@@ -61,6 +61,12 @@ namespace XSharp.Project
             return automationObject;
         }
 
+        protected internal override DocumentManager GetDocumentManager()
+        {
+            return new FileDocumentManager(this);
+        }
+
+
         public bool IsFormSubType
         {
             get
@@ -270,11 +276,9 @@ namespace XSharp.Project
         private int RetrieveImageIndex()
         {
             int ret = -1;
-            string ext = Path.GetExtension(this.Url);
-            switch (ext)
+            switch (GetFileType(this.Url))
             {
-                case ".prg":
-                case ".xs":
+                case XSharpFileType.SourceCode:
                     ret = XSharpConstants.ImageListIndex.Source;
                     //
                     if (IsFormSubType)
@@ -283,29 +287,25 @@ namespace XSharp.Project
                         return ret;
                     }
                     break;
-                case ".vh":
-                case ".xh":
-                case ".ppo":
+                case XSharpFileType.Header:
+                case XSharpFileType.PreprocessorOutput:
+
                     ret = XSharpConstants.ImageListIndex.Source;
                     break;
-                case ".xsfrm":
-                case ".vnfrm":
+                case XSharpFileType.VOForm:
                     ret = XSharpConstants.ImageListIndex.Form;
                     break;
-                case ".xsmnu":
-                case ".vnmnu":
+                case XSharpFileType.VOMenu:
                     ret = XSharpConstants.ImageListIndex.Menu;
                     break;
-                case ".xsdbs":
-                case ".vndbs":
+                case XSharpFileType.VODBServer:
                     ret = XSharpConstants.ImageListIndex.Server;
                     break;
-                case ".xsfs":
-                case ".vnfs":
+                case XSharpFileType.VOFieldSpec:
                     ret = XSharpConstants.ImageListIndex.FieldSpec;
                     break;
+
             }
-            //
             if (ret != -1)
             {
                 // Don't forget that we have two Images bitmap,
@@ -315,8 +315,38 @@ namespace XSharp.Project
             //
             return ret;
         }
+        static internal XSharpFileType GetFileType(string filename)
+        {
+            string ext = Path.GetExtension(filename);
+            switch (ext)
+            {
+                case ".prg":
+                case ".xs":
+                    return XSharpFileType.SourceCode;
+                case ".vh":
+                case ".xh":
+                    return XSharpFileType.Header;
+                case ".xsfrm":
+                case ".vnfrm":
+                    return XSharpFileType.VOForm;
+                case ".xsmnu":
+                case ".vnmnu":
+                    return XSharpFileType.VOMenu;
+                case ".xsdbs":
+                case ".vndbs":
+                    return XSharpFileType.VODBServer;
+                case ".xsfs":
+                case ".vnfs":
+                    return XSharpFileType.VOFieldSpec;
+                case ".xaml":
+                    return XSharpFileType.XAML;
+                case ".settings":
+                    return XSharpFileType.Settings;
+                default:
+                    return XSharpFileType.Unknown;
 
-
+            }
+        }
 
         ////////////////////////////////////////////////////
         ////////////////////////////////////////////////////
@@ -358,36 +388,27 @@ namespace XSharp.Project
 
     */
 
-        public static string GetItemType(string file) {
-            switch(Path.GetExtension(file).ToLower()) {
-                case ".prg":
-                case ".xs":
+        public static string GetItemType(string file)
+        {
+            switch (GetFileType(file))
+            {
+                case XSharpFileType.SourceCode:
                     return ProjectFileConstants.Compile;
-                case ".rc":
+                case XSharpFileType.NativeResource:
                     return XSharpConstants.NativeResource;
-                case ".vnmnu":
-                case ".vnfrm":
-                case ".vndbs":
-                case ".vnfs":
-                case ".vnind":
-                case ".vnord":
-                case ".vnfld":
-                case ".xsmnu":  // Special xsharp versions of the VO Binary
-                case ".xsfrm":
-                case ".xsdbs":
-                case ".xsfs":
-                case ".xsind":
-                case ".xsord":
-                case ".xsfld":
+                case XSharpFileType.VOForm:
+                case XSharpFileType.VODBServer:
+                case XSharpFileType.VOFieldSpec:
+                case XSharpFileType.VOMenu:
+                case XSharpFileType.VOIndex:
+                case XSharpFileType.VOOrder:
                     return XSharpConstants.VOBinary;
-                case ".resx":
+                case XSharpFileType.ManagedResource:
                     return ProjectFileConstants.Resource;
-                case ".settings":
+                case XSharpFileType.Settings:
                     return XSharpConstants.Settings;
-                case ".xaml":
+                case XSharpFileType.XAML:
                     return ProjectFileConstants.Page;
-                case ".vh":
-                case ".xh":
                 default:
                     return ProjectFileConstants.None;
             }

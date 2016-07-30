@@ -46,7 +46,7 @@ namespace XSharpLanguage
         /// <summary>
         /// The file extension of this project type.  No preceding period.
         /// </summary>
-        public const string ProjectExtension = "xsprj";
+        public const string ProjectExtension = "xsproj";
 
         /// <summary>
         /// The default namespace this project compiles with, so that manifest

@@ -15,6 +15,7 @@ INTERNAL CLASS DesignWindow INHERIT Panel
 		SELF:Size := Size{600,400}
 		SELF:BorderStyle := BorderStyle.FixedSingle
 		SELF:BackColor := Color.FromKnownColor(KnownColor.Control)
+
 	RETURN
 	PROTECTED METHOD WndProc(m REF Message) AS VOID
 		DO CASE
@@ -27,8 +28,6 @@ INTERNAL CLASS DesignWindow INHERIT Panel
 		SUPER:WndProc( REF m)
 	RETURN
 END CLASS
-
-
 
 INTERNAL CLASS DesignPushButton INHERIT Button IMPLEMENTS ITestableControl
 	PROPERTY oItem AS DesignWindowItem AUTO
@@ -764,11 +763,6 @@ INTERNAL CLASS DesignDataColumn INHERIT PictureBox IMPLEMENTS ITestableControl
 	PROTECT oBrushBlack AS SolidBrush
 	PROTECT oBrushWhite AS SolidBrush
 	PROTECT oPenGray AS Pen
-	//PROTECT nCurX,nCurY AS DWORD
-	//PROTECT lMovingSplitter AS LOGIC
-	//PROTECT nMovingSplitter AS INT
-	//PROTECT nMovingColumn AS INT
-	//PROTECT nMovingStartLength AS INT
 	PROTECT oSF_Right,oSF_Left,oSF_Center AS StringFormat
 
 
@@ -780,7 +774,7 @@ INTERNAL CLASS DesignDataColumn INHERIT PictureBox IMPLEMENTS ITestableControl
 
 		SELF:BackColor:=Color.White
 		SELF:BorderStyle:=BorderStyle.Fixed3D
-		
+
 		SELF:oSF_Right:=StringFormat{}
 		SELF:oSF_Right:Trimming:=StringTrimming.None
 		SELF:oSF_Right:FormatFlags:=StringFormatFlags.NoWrap + StringFormatFlags.DirectionRightToLeft

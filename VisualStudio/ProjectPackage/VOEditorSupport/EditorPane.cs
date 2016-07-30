@@ -133,6 +133,7 @@ namespace XSharp.Project
            : base(null)
         {
             PrivateInit(package);
+            
         }
 
         protected override void OnClose()

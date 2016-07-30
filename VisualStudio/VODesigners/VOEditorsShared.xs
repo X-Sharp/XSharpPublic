@@ -8,8 +8,6 @@ using System.Collections
 using System.Xml
 using System.Text
 
-
-
 CLASS DBServerBinary
 	PROTECT cName AS STRING
 	PROTECT eType AS DBServerItemType
@@ -870,19 +868,24 @@ CLASS NameValueCollection IMPLEMENTS ICollection
 	RETURN
 	METHOD Add(cName AS STRING , oValue AS OBJECT) AS VOID
 		SELF:aCollection:Add(NameValue{cName , oValue})
-	RETURN
+		RETURN
+	
 	METHOD Get(nIndex AS INT) AS NameValue
-	RETURN ((NameValue)SELF:aCollection[nIndex])
+		RETURN ((NameValue)SELF:aCollection[nIndex])
+	
 	METHOD Set(nIndex AS INT , oValue AS OBJECT) AS VOID
 		LOCAL oPair AS NameValue
 		oPair := SELF:Get(nIndex)
 		oPair:Value := oValue
 		SELF:aCollection[nIndex] := oPair
-	RETURN
+		RETURN
+	
 	METHOD GetName(nIndex AS INT) AS STRING
-	RETURN ((NameValue)SELF:aCollection[nIndex]):Name
+		RETURN ((NameValue)SELF:aCollection[nIndex]):Name
+	
 	METHOD GetValue(nIndex AS INT) AS OBJECT
-	RETURN ((NameValue)SELF:aCollection[nIndex]):Value
+		RETURN ((NameValue)SELF:aCollection[nIndex]):Value
+	
 	METHOD GetNameIndex(cName AS STRING) AS INT
 		LOCAL n AS INT
 		cName := cName:ToUpper()
@@ -891,7 +894,8 @@ CLASS NameValueCollection IMPLEMENTS ICollection
 				RETURN n
 			END IF
 		NEXT
-	RETURN -1
+		RETURN -1
+	
 	METHOD GetValueIndex(oValue AS OBJECT) AS INT
 		LOCAL n AS INT
 		FOR n := 0 UPTO SELF:aCollection:Count - 1
@@ -899,19 +903,19 @@ CLASS NameValueCollection IMPLEMENTS ICollection
 				RETURN n
 			END IF
 		NEXT
-	RETURN -1
+		RETURN -1
 	
 	VIRTUAL ACCESS Count() AS INT
-	RETURN SELF:aCollection:Count
+		RETURN SELF:aCollection:Count
 	VIRTUAL ACCESS IsSynchronized() AS LOGIC
-	RETURN FALSE
+		RETURN FALSE
 	VIRTUAL ACCESS SyncRoot() AS OBJECT
-	RETURN NULL
+		RETURN NULL
 	VIRTUAL METHOD CopyTo(aArray AS System.Array , nIndex AS INT) AS VOID
-	RETURN
+		RETURN
 	VIRTUAL METHOD GetEnumerator() AS IEnumerator
 		SELF:oEnumerator:Reset()
-	RETURN SELF:oEnumerator
+		RETURN SELF:oEnumerator
 END CLASS
 
 CLASS NameValueEnumerator IMPLEMENTS IEnumerator

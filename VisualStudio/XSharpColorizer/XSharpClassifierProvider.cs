@@ -34,6 +34,13 @@ namespace XSharpColorizer
 
 #pragma warning restore 649
 
+
+        [Import]
+        internal IContentTypeRegistryService ContentTypeRegistryService { get; set; }
+
+        [Import]
+        internal IFileExtensionRegistryService registryService = null;
+
         #region IClassifierProvider
 
         /// <summary>
@@ -43,6 +50,17 @@ namespace XSharpColorizer
         /// <returns>A classifier for the text buffer, or null if the provider cannot do so in its current state.</returns>
         public IClassifier GetClassifier(ITextBuffer buffer)
         {
+            // Change content type to Vulcan
+            
+            //foreach (var type in ContentTypeRegistryService.ContentTypes)
+            //{
+            //    if (type.TypeName.ToLower() == "vulcan.net")
+            //    {
+            //        buffer.ChangeContentType(type, null);
+            //        return null;
+            //    }
+            //}
+
             return buffer.Properties.GetOrCreateSingletonProperty<XSharpClassifier>(creator: () => XSharpClassifier.GetColorizer(buffer, this.classificationRegistry, this.factory));
         }
 

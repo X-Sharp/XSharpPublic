@@ -11,8 +11,7 @@ using System.IO
 using System.Text
 
 
-//#include "C:\dotNet\vonet\VOEdit\Win32-GlobalDefines.vh"
-#include "VOWin32APILibrary.vh"
+#include "VOWin32APILibrary.xh"
 
 
 CLASS DesignerBasicAction

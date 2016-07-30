@@ -113,6 +113,7 @@
     <None Include="cavofed.tpl" />
     <None Include="cavowed.inf" />
     <None Include="cavowed.tpl" />
+    <None Include="VOWin32APILibrary.xh" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

@@ -34,6 +34,14 @@ namespace XSharp.CodeDom
             XSharpCodeDomProvider.TabSize = 1;
         }
 
+        public override string FileExtension
+        {
+            get
+            {
+                return ".prg";
+            }
+        }
+
         [Obsolete]
         public override ICodeCompiler CreateCompiler()
         {

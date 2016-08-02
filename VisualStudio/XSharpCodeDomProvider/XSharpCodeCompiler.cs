@@ -21,7 +21,7 @@ namespace XSharp.CodeDom
         {
             get
             {
-                return "*.prg";
+                return ".prg";
             }
         }
 

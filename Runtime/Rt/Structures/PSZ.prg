@@ -5,9 +5,14 @@
 //
 
 UNSAFE STRUCTURE Vulcan.__Psz
+	public static _NULL_PSZ := __Psz{""} as __Psz
 	PRIVATE Value as Byte PTR
 	OPERATOR IMPLICIT( s as STRING) AS __Psz
 		RETURN __Psz{}
+	OPERATOR IMPLICIT( p as IntPtr) AS __Psz
+		RETURN __Psz{}
+	OPERATOR IMPLICIT( p as __Psz) AS IntPtr
+		RETURN IntPtr.Zero
 	CONSTRUCTOR(s as STRING)
 		Value := NULL
 		RETURN

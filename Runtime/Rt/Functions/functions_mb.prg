@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
@@ -13,7 +14,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBALLTRIM(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the position of the first occurrence of a substring within a string — both the substring and the string can contain double-byte characters.
@@ -102,15 +103,15 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBLEFT(c AS STRING,wLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Return the length of a string containing double-byte characters or an array.
+	/// Return the length of a string containing double-byte characters or an __Array.
 	/// </summary>
 	/// <param name="c"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MBLEN(c AS USUAL) AS DWORD
+	FUNCTION MBLEN(c AS __Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -122,15 +123,15 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBLTRIM(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Return the length of a PSZ containing double-byte characters.
+	/// Return the length of a __Psz containing double-byte characters.
 	/// </summary>
 	/// <param name="pszC"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MBPSZLEN(pszC AS PSZ) AS DWORD
+	FUNCTION MBPSZLEN(pszC AS __Psz) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -177,7 +178,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBRIGHT(c AS STRING,wLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Remove trailing spaces — including double-byte spaces — from a string.
@@ -187,7 +188,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBRTRIM(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the length of a strongly typed string containing double-byte characters.
@@ -210,7 +211,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBSTUFF(cSearch AS STRING,wStart AS DWORD,wDel AS DWORD,cIns AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Extract a substring from a string — both the substring and the string can contain double-byte characters.
@@ -220,9 +221,9 @@ begin namespace XSharp.Runtime
 	/// <param name="wLen"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MBSUBSTR(c AS USUAL,iStart AS USUAL,wLen AS USUAL) AS STRING
+	FUNCTION MBSUBSTR(c AS __Usual,iStart AS __Usual,wLen AS __Usual) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Extract a substring from a string, using strong typing and only two arguments — both the substring and the string can contain double-byte characters.
@@ -233,7 +234,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBSUBSTR2(c AS STRING,wStart AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Extract a substring from a string, using strong typing and three required arguments — both the substring and the string can contain double-byte characters.
@@ -245,7 +246,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBSUBSTR3(c AS STRING,wStart AS DWORD,wLen AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Remove trailing spaces — including double-byte spaces — from a string.
@@ -255,7 +256,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MBTRIM(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	#endregion
 end namespace

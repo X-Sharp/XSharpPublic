@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
@@ -15,9 +17,9 @@ begin namespace XSharp.Runtime
 	/// <param name="lWrap"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemoLine(cMemo AS USUAL,wWidth AS USUAL,wLineNum AS USUAL,wTabSize AS USUAL,lWrap AS USUAL) AS STRING
+	FUNCTION MemoLine(cMemo AS __Usual,wWidth AS __Usual,wLineNum AS __Usual,wTabSize AS __Usual,lWrap AS __Usual) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the contents of a text file as a string.
@@ -27,7 +29,7 @@ begin namespace XSharp.Runtime
 	/// </returns>
 	FUNCTION MemoRead(cFile AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Report the status of memory. 
@@ -47,9 +49,9 @@ begin namespace XSharp.Runtime
 	/// <param name="nCharSoft"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemoTran(cSource AS USUAL,nCharHard AS USUAL,nCharSoft AS USUAL) AS STRING
+	FUNCTION MemoTran(cSource AS __Usual,nCharHard AS __Usual,nCharSoft AS __Usual) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Write a string to a disk file.
@@ -71,7 +73,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lWrap"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MLCount(c AS USUAL,nWidth AS USUAL,nTabsize AS USUAL,lWrap AS USUAL) AS DWORD
+	FUNCTION MLCount(c AS __Usual,nWidth AS __Usual,nTabsize AS __Usual,lWrap AS __Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -96,7 +98,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lWrap"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MLcToPos(cMemo AS USUAL,nWidth AS USUAL,nLineNum AS USUAL,nCol AS USUAL,nTabSize AS USUAL,lWrap AS USUAL) AS DWORD
+	FUNCTION MLcToPos(cMemo AS __Usual,nWidth AS __Usual,nLineNum AS __Usual,nCol AS __Usual,nTabSize AS __Usual,lWrap AS __Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -108,9 +110,9 @@ begin namespace XSharp.Runtime
 	/// <param name="nOffset"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MLine(c AS USUAL,nLine AS USUAL,nOffset AS USUAL) AS STRING
+	FUNCTION MLine(c AS __Usual,nLine AS __Usual,nOffset AS __Usual) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Extract a line of text from a string, specifying a required offset argument.
@@ -120,9 +122,9 @@ begin namespace XSharp.Runtime
 	/// <param name="PtrN"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MLine3(c AS STRING,nLine AS DWORD,PtrN AS USUAL) AS STRING
+	FUNCTION MLine3(c AS STRING,nLine AS DWORD,PtrN AS __Usual) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Determine the position of a line in a string.
@@ -134,7 +136,7 @@ begin namespace XSharp.Runtime
 	/// <param name="lWrap"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MLPos(cMemo AS USUAL,nWidth AS USUAL,nLineNum AS USUAL,nTabSize AS USUAL,lWrap AS USUAL) AS DWORD
+	FUNCTION MLPos(cMemo AS __Usual,nWidth AS __Usual,nLineNum AS __Usual,nTabSize AS __Usual,lWrap AS __Usual) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

@@ -55,14 +55,14 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 			local testArray := __Array{values} as __Array
 			__Array.ArrayDelete(testArray,1)
 			AreEqual( (dword)3 , testArray:Length)
-			AreEqual( __Usual._NIL ,  testArray[3])
+			AreEqual( __Usual.___Usual._NIL ,  testArray[3])
 		return
 		[TestMethod];
 		METHOD ArraySizeTest() as void
 			local values := <object>{1,2,3} as object[]
 			local testArray := __Array{values} as __Array
 			testArray:Size(4)
-			AreEqual( __Usual._NIL ,  testArray[4])
+			AreEqual( __Usual.___Usual._NIL ,  testArray[4])
 			testArray:Size(2)
 			AreEqual((dword)2,testArray:Length)
 		return

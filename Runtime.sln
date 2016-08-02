@@ -9,6 +9,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.RDD", "Runtime\Rdd\X
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharp.Runtime.Tests", "XSharp.Runtime.Tests\XSharp.Runtime.Tests.xsproj", "{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Playground", "Playground\Playground.xsproj", "{973320C4-FDE1-4505-A86A-A17866B2D0EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2376BBC-9FF4-47EB-BF57-913CBD850DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{973320C4-FDE1-4505-A86A-A17866B2D0EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

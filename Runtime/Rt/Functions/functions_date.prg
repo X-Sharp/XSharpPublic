@@ -3,17 +3,19 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
-	/// Extract the name of the day of the week from a date.
+	/// Extract the name of the day of the week from a __VODate.
 	/// </summary>
-	/// <param name="d">The date to calculate the day of week from.</param>
+	/// <param name="d">The __VODate to calculate the day of week from.</param>
 	/// <returns>
 	/// A string for the calculated day of the week.
 	/// </returns>
-	FUNCTION CDoW(d AS DATE) AS STRING		
-		local result := null_string as string
+	FUNCTION CDoW(d AS __VODate) AS STRING		
+		local result := String.Empty as string
 		if d != null
 		   local dt := d as Datetime
 		   result := dt:ToString("dddd")
@@ -21,14 +23,14 @@ begin namespace XSharp.Runtime
 	RETURN result
 
 	/// <summary>
-	/// Extract the name of the month from a date.
+	/// Extract the name of the month from a __VODate.
 	/// </summary>
-	/// <param name="d">The date to calculate the month from.</param>
+	/// <param name="d">The __VODate to calculate the month from.</param>
 	/// <returns>
 	/// A string with the name of the month.
 	/// </returns>
-	FUNCTION CMonth(d AS DATE) AS STRING
-		local result := null_string as string
+	FUNCTION CMonth(d AS __VODate) AS STRING
+		local result := String.Empty as string
 		if d != null
 		   local dt := d as Datetime
 		   result := dt:ToString("MMMM")
@@ -36,23 +38,23 @@ begin namespace XSharp.Runtime
 	RETURN result 
 
 	/// <summary>
-	/// Convert a date to a 32-bit binary date string.
+	/// Convert a __VODate to a 32-bit binary __VODate string.
 	/// </summary>
 	/// <param name="d"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Date2Bin(d AS DATE) AS STRING
+	FUNCTION Date2Bin(d AS __VODate) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Extract the number of the day of the month from a date.
+	/// Extract the number of the day of the month from a __VODate.
 	/// </summary>
-	/// <param name="d">The date to extract the day from.</param>
+	/// <param name="d">The __VODate to extract the day from.</param>
 	/// <returns>
-	/// The day part of the given date.
+	/// The day part of the given __VODate.
 	/// </returns>
-	FUNCTION Day(d AS DATE) AS DWORD
+	FUNCTION Day(d AS __VODate) AS DWORD
 		local day := 0  as dword
 		if d != null
            local dt := d as Datetime
@@ -61,13 +63,13 @@ begin namespace XSharp.Runtime
 	return day
 
 	/// <summary>
-	/// Extract the number of the day of the week from a date.
+	/// Extract the number of the day of the week from a __VODate.
 	/// </summary>
-	/// <param name="d">The date to extract the day of the week from.</param>
+	/// <param name="d">The __VODate to extract the day of the week from.</param>
 	/// <returns>
-	/// The day of the week of the given date.
+	/// The day of the week of the given __VODate.
 	/// </returns>
-	FUNCTION DoW(d AS DATE) AS DWORD
+	FUNCTION DoW(d AS __VODate) AS DWORD
 		local day := 0  as dword
 		if d != null
            local dt := d as Datetime
@@ -77,13 +79,13 @@ begin namespace XSharp.Runtime
   
 
 	/// <summary>
-	/// Convert a date to a string.
+	/// Convert a __VODate to a string.
 	/// </summary>
-	/// <param name="d">The date to be converted.</param>
+	/// <param name="d">The __VODate to be converted.</param>
 	/// <returns>
-	/// A string representation of the given date, formatted in the current date format.
+	/// A string representation of the given __VODate, formatted in the current __VODate format.
 	/// </returns>
-	FUNCTION DToC(d AS DATE) AS STRING
+	FUNCTION DToC(d AS __VODate) AS STRING
 		local result:="" as string		
 
 		if d != null
@@ -95,13 +97,13 @@ begin namespace XSharp.Runtime
 	return result 
 
 	/// <summary>
-	/// Convert a date value to a string formatted as string in ANSI format
+	/// Convert a __VODate value to a string formatted as string in ANSI format
 	/// </summary>
-	/// <param name="d">The date to be converted</param>
+	/// <param name="d">The __VODate to be converted</param>
 	/// <returns>
-	/// The given date as string in ANSI format
+	/// The given __VODate as string in ANSI format
 	/// </returns>
-	FUNCTION DToS(d AS DATE) AS STRING
+	FUNCTION DToS(d AS __VODate) AS STRING
 		local result:="        " as string		
 		if d != null
            local dt := d as Datetime
@@ -114,36 +116,36 @@ begin namespace XSharp.Runtime
 	/// <param name="d"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION JCDOW(d AS DATE) AS STRING
+	FUNCTION JCDOW(d AS __VODate) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="d"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION JCMONTH(d AS DATE) AS STRING
+	FUNCTION JCMONTH(d AS __VODate) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="d"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION JCYEAR(d AS DATE) AS STRING
+	FUNCTION JCYEAR(d AS __VODate) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
-	/// Extract the number of the month from a date.
+	/// Extract the number of the month from a __VODate.
 	/// </summary>
-	/// <param name="d">The date to extract the month from.</param>
+	/// <param name="d">The __VODate to extract the month from.</param>
 	/// <returns>
-	/// The month of the given date.
+	/// The month of the given __VODate.
 	/// </returns>
-	FUNCTION Month(d AS DATE) AS DWORD
+	FUNCTION Month(d AS __VODate) AS DWORD
 		local month := 0  as dword
 		if d != null
            local dt := d as Datetime
@@ -152,13 +154,13 @@ begin namespace XSharp.Runtime
 	return month
 
 	/// <summary>
-	/// Extract the number of the year from a date.
+	/// Extract the number of the year from a __VODate.
 	/// </summary>
-	/// <param name="d">The date to extract the year from.</param>
+	/// <param name="d">The __VODate to extract the year from.</param>
 	/// <returns>
-	/// The year from the give date.
+	/// The year from the give __VODate.
 	/// </returns>
-	FUNCTION Year(d AS DATE) AS DWORD
+	FUNCTION Year(d AS __VODate) AS DWORD
 		local year := 0  as dword
 		if d != null
            local dt := d as Datetime

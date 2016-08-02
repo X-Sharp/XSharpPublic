@@ -4,7 +4,7 @@
 // Created for   : 
 // WorkStation   : MSMLENOVO
 
-
+/*
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -17,7 +17,7 @@ BEGIN NAMESPACE Vulcan
 
 		#region constructors
 		constructor()
-			voType := VODataType.VONIL
+			voType := VODataType.VO__Usual._NIL
 		return 
 		constructor(i as int)
 			dyn := i
@@ -59,7 +59,7 @@ BEGIN NAMESPACE Vulcan
 			dyn := d
 			voType := VODataType:VODATE
 		return
-		public constructor(p as PSZ)
+		public constructor(p as __Psz)
 			dyn := p
 			voType := VODataType:VOPSZ
 		return
@@ -83,7 +83,7 @@ BEGIN NAMESPACE Vulcan
 					switch typeCode
 					case  System.TypeCode.DBNull
 						dyn := null
-						voType := VODataType.VONIL
+						voType := VODataType.VO__Usual._NIL
 					case System.TypeCode.Boolean
 						self( (Logic)o )
 					case System.TypeCode.SByte
@@ -194,3 +194,4 @@ BEGIN NAMESPACE Vulcan
 		member VOUnknown := -1
 	end enum
 END NAMESPACE // XSharp.Runtime.Tests
+*/

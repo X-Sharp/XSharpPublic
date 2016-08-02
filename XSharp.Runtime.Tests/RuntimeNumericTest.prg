@@ -24,7 +24,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 		[TestMethod];
 		METHOD FracTest() as void
-			AreEqual((float)120,Fact((dword)5))
+			AreEqual((__VOFloat)120,Fact((dword)5))
 		RETURN
 
 		[TestMethod];

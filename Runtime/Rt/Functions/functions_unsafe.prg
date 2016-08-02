@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
+
 begin namespace XSharp.IO
 	#region functions
 	/// <summary>
@@ -16,7 +18,7 @@ begin namespace XSharp.IO
 	/// <param name="pdwID"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION CreateVOThread(pSecAttr AS IntPtr,nStackSize AS DWORD,pFunc AS IntPtr,pParam AS IntPtr,dwFlags AS DWORD,pdwID REF DWORD ) AS IntPtr
+	unsafe FUNCTION CreateVOThread(pSecAttr AS PTR,nStackSize AS DWORD,pFunc AS PTR,pParam AS PTR,dwFlags AS DWORD,pdwID REF DWORD ) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -27,7 +29,7 @@ begin namespace XSharp.IO
 	/// <param name="fAsynchWork"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DoSendMail(hWndOwner AS IntPtr,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
+	unsafe FUNCTION DoSendMail(hWndOwner AS PTR,cFiles AS STRING,fAsynchWork AS LOGIC) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -38,7 +40,7 @@ begin namespace XSharp.IO
 	/// <param name="hfOut"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EncodeBase64(hfIn AS IntPtr,hfOut AS IntPtr) AS INT
+	unsafe FUNCTION EncodeBase64(hfIn AS PTR,hfOut AS PTR) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -47,9 +49,9 @@ begin namespace XSharp.IO
 	/// <param name="ptrEvInf"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EvalLaunch(ptrEvInf AS IntPtr) AS USUAL
+	unsafe FUNCTION EvalLaunch(ptrEvInf AS PTR) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -57,7 +59,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EvalNew(ptrEvInf AS IntPtr,ptrAny AS IntPtr) AS LOGIC
+	unsafe FUNCTION EvalNew(ptrEvInf AS PTR,ptrAny AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -67,7 +69,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EvalPutParam(ptrEvInf AS IntPtr,ptrAny AS IntPtr) AS LOGIC
+	unsafe FUNCTION EvalPutParam(ptrEvInf AS PTR,ptrAny AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -76,7 +78,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrEvInf"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION EvalRelease(ptrEvInf AS IntPtr) AS LOGIC
+	unsafe FUNCTION EvalRelease(ptrEvInf AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -87,7 +89,7 @@ begin namespace XSharp.IO
 	/// <param name="uxFileAttr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FCreate(cFile AS USUAL,uxFileAttr AS USUAL) AS IntPtr
+	unsafe FUNCTION FCreate(cFile AS __Usual,uxFileAttr AS __Usual) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -98,7 +100,7 @@ begin namespace XSharp.IO
 	/// <param name="wMode"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION FOpen(cFile AS USUAL,wMode AS USUAL) AS IntPtr
+	unsafe FUNCTION FOpen(cFile AS __Usual,wMode AS __Usual) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -108,7 +110,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrVar"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION IsDynPtr(ptrVar AS IntPtr) AS LOGIC
+	unsafe FUNCTION IsDynPtr(ptrVar AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -118,9 +120,9 @@ begin namespace XSharp.IO
 	/// <param name="dwElem"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemArrayGet(ptrAny AS IntPtr,dwElem AS DWORD) AS USUAL
+	unsafe FUNCTION Item__ArrayGet(ptrAny AS PTR,dwElem AS DWORD) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
@@ -129,7 +131,7 @@ begin namespace XSharp.IO
 	/// <param name="pa"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemArrayPut(px AS IntPtr,dw AS DWORD,pa AS IntPtr) AS IntPtr
+	unsafe FUNCTION Item__ArrayPut(px AS PTR,dw AS DWORD,pa AS PTR) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -138,7 +140,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetDL(ptrAny AS IntPtr) AS LONG
+	unsafe FUNCTION ItemGetDL(ptrAny AS PTR) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -147,7 +149,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetL(ptrAny AS IntPtr) AS LOGIC
+	unsafe FUNCTION ItemGetL(ptrAny AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -156,7 +158,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetND(ptrAny AS IntPtr) AS REAL8
+	unsafe FUNCTION ItemGetND(ptrAny AS PTR) AS REAL8
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -165,7 +167,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemGetNL(ptrAny AS IntPtr) AS LONG
+	unsafe FUNCTION ItemGetNL(ptrAny AS PTR) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -175,7 +177,7 @@ begin namespace XSharp.IO
 	/// <param name="lDate"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutDL(ptrAny AS IntPtr,lDate AS LONG) AS IntPtr
+	unsafe FUNCTION ItemPutDL(ptrAny AS PTR,lDate AS LONG) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -185,7 +187,7 @@ begin namespace XSharp.IO
 	/// <param name="fVal"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutL(ptrAny AS IntPtr,fVal AS LOGIC) AS IntPtr
+	unsafe FUNCTION ItemPutL(ptrAny AS PTR,fVal AS LOGIC) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -195,7 +197,7 @@ begin namespace XSharp.IO
 	/// <param name="r8"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutND(ptrAny AS IntPtr,r8 AS REAL8) AS IntPtr
+	unsafe FUNCTION ItemPutND(ptrAny AS PTR,r8 AS REAL8) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -205,7 +207,7 @@ begin namespace XSharp.IO
 	/// <param name="lNum"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemPutNL(ptrAny AS IntPtr,lNum AS LONG) AS IntPtr
+	unsafe FUNCTION ItemPutNL(ptrAny AS PTR,lNum AS LONG) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -214,7 +216,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemRegister(ptrAny AS IntPtr) AS LOGIC
+	unsafe FUNCTION ItemRegister(ptrAny AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -223,7 +225,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemRelease(ptrAny AS IntPtr) AS LOGIC
+	unsafe FUNCTION ItemRelease(ptrAny AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -232,16 +234,16 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemReturn(ptrAny AS IntPtr) AS USUAL
+	unsafe FUNCTION ItemReturn(ptrAny AS PTR) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemSize(ptrAny AS IntPtr) AS DWORD
+	unsafe FUNCTION ItemSize(ptrAny AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -250,7 +252,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrAny"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ItemType(ptrAny AS IntPtr) AS DWORD
+	unsafe FUNCTION ItemType(ptrAny AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -260,7 +262,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrLabel"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION LabelPush(ptrLabel AS IntPtr) AS VOID
+	unsafe FUNCTION LabelPush(ptrLabel AS PTR) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN 
 
@@ -271,9 +273,9 @@ begin namespace XSharp.IO
 	/// <param name="dwSize"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Mem2String(ptrSource AS IntPtr,dwSize AS DWORD) AS STRING
+	unsafe FUNCTION Mem2String(ptrSource AS PTR,dwSize AS DWORD) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Get the location of the first special console character in a buffer.
@@ -282,7 +284,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemAtSpecial(ptrBuff AS IntPtr,wCount AS DWORD) AS DWORD
+	unsafe FUNCTION MemAtSpecial(ptrBuff AS PTR,wCount AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -294,7 +296,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemByte(ptrBuff AS IntPtr,b AS BYTE,dwCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemByte(ptrBuff AS PTR,b AS BYTE,dwCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -306,7 +308,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemCCopy(ptrDest AS IntPtr,ptrSrc AS IntPtr,wCh AS DWORD,wCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemCCopy(ptrDest AS PTR,ptrSrc AS PTR,wCh AS DWORD,wCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -317,7 +319,7 @@ begin namespace XSharp.IO
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemCheckPtr(ptrMem AS IntPtr,cb AS DWORD) AS LOGIC
+	unsafe FUNCTION MemCheckPtr(ptrMem AS PTR,cb AS DWORD) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -329,7 +331,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemChr(ptrBuff AS IntPtr,wChar AS DWORD,dwCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemChr(ptrBuff AS PTR,wChar AS DWORD,dwCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -340,7 +342,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemClear(ptrBuff AS IntPtr,wCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemClear(ptrBuff AS PTR,wCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -352,7 +354,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemComp(ptr1 AS IntPtr,ptr2 AS IntPtr,wCount AS DWORD) AS INT
+	unsafe FUNCTION MemComp(ptr1 AS PTR,ptr2 AS PTR,wCount AS DWORD) AS INT
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -364,7 +366,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemCopy(ptrDest AS IntPtr,ptrSrc AS IntPtr,wCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemCopy(ptrDest AS PTR,ptrSrc AS PTR,wCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -376,7 +378,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemCopyString(ptrDest AS IntPtr,ptrSrc AS STRING,wCount AS DWORD) AS VOID
+	unsafe FUNCTION MemCopyString(ptrDest AS PTR,ptrSrc AS STRING,wCount AS DWORD) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
 
@@ -388,7 +390,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemDWord(ptrBuff AS IntPtr,dw AS DWORD,dwCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemDWord(ptrBuff AS PTR,dw AS DWORD,dwCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -397,7 +399,7 @@ begin namespace XSharp.IO
 	/// <param name="pFunction"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemEnum(pFunction AS IntPtr) AS LONG
+	unsafe FUNCTION MemEnum(pFunction AS PTR) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -407,7 +409,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrMem"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemFree(ptrMem AS IntPtr) AS DWORD
+	unsafe FUNCTION MemFree(ptrMem AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -416,7 +418,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrMem"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemFreeBlk(ptrMem AS IntPtr) AS DWORD
+	unsafe FUNCTION MemFreeBlk(ptrMem AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -425,7 +427,7 @@ begin namespace XSharp.IO
 	/// <param name="pMem"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemGetHeader(pMem AS IntPtr) AS IntPtr
+	unsafe FUNCTION MemGetHeader(pMem AS PTR) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -437,7 +439,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemInt(ptrBuff AS IntPtr,i AS INT,dwCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemInt(ptrBuff AS PTR,i AS INT,dwCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -446,7 +448,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrMem"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemLen(ptrMem AS IntPtr) AS DWORD
+	unsafe FUNCTION MemLen(ptrMem AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -458,7 +460,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemLong(ptrBuff AS IntPtr,li AS LONG,dwCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemLong(ptrBuff AS PTR,li AS LONG,dwCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -470,7 +472,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemMove(ptrDest AS IntPtr,ptrSrc AS IntPtr,wCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemMove(ptrDest AS PTR,ptrSrc AS PTR,wCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -480,7 +482,7 @@ begin namespace XSharp.IO
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemRealloc(ptrMem AS IntPtr,cb AS DWORD) AS IntPtr
+	unsafe FUNCTION MemRealloc(ptrMem AS PTR,cb AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -490,7 +492,7 @@ begin namespace XSharp.IO
 	/// <param name="cb"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemReallocBlk(ptrMem AS IntPtr,cb AS DWORD) AS IntPtr
+	unsafe FUNCTION MemReallocBlk(ptrMem AS PTR,cb AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -502,7 +504,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemSet(ptrBuff AS IntPtr,b AS BYTE,wCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemSet(ptrBuff AS PTR,b AS BYTE,wCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -514,7 +516,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemShort(ptrBuff AS IntPtr,si AS SHORT,dwCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemShort(ptrBuff AS PTR,si AS SHORT,dwCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -524,7 +526,7 @@ begin namespace XSharp.IO
 	/// <param name="wCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemUpper(ptrBuff AS IntPtr,wCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemUpper(ptrBuff AS PTR,wCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -536,7 +538,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION MemWord(ptrBuff AS IntPtr,w AS WORD,dwCount AS DWORD) AS IntPtr
+	unsafe FUNCTION MemWord(ptrBuff AS PTR,w AS WORD,dwCount AS DWORD) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
@@ -547,28 +549,28 @@ begin namespace XSharp.IO
 	/// <param name="nDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Psz2Float(ptrBuff AS IntPtr,nLen AS INT,nDec AS INT) AS FLOAT
+	unsafe FUNCTION Psz2__VOFloat(ptrBuff AS PTR,nLen AS INT,nDec AS INT) AS __VOFloat
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
 	/// <summary>
-	/// Convert a PSZ to a USUAL with a PSZ tag.
+	/// Convert a __Psz to a __Usual with a __Psz tag.
 	/// </summary>
 	/// <param name="ptrSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Psz2Usual(ptrSource AS IntPtr) AS USUAL
+	unsafe FUNCTION Psz2Usual(ptrSource AS PTR) AS __Usual
 		/// THROW NotImplementedException{}
-	RETURN NIL   
+	RETURN __Usual._NIL   
 
 	/// <summary>
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Ptr2Bin(p AS IntPtr) AS STRING
+	unsafe FUNCTION Ptr2Bin(p AS PTR) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN String.Empty   
 
 	/// <summary>
 	/// Determine the number of bytes that can be read at a given pointer.
@@ -576,7 +578,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrP"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PtrLen(ptrP AS IntPtr) AS DWORD
+	unsafe FUNCTION PtrLen(ptrP AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -586,7 +588,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrP"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION PtrLenWrite(ptrP AS IntPtr) AS DWORD
+	unsafe FUNCTION PtrLenWrite(ptrP AS PTR) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -598,7 +600,7 @@ begin namespace XSharp.IO
 	/// <param name="dwFuncCount"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION RddInherit(pThis AS USUAL,pSuper AS USUAL,pSelf AS IntPtr,dwFuncCount AS DWORD) AS LONG
+	unsafe FUNCTION RddInherit(pThis AS __Usual,pSuper AS __Usual,pSelf AS PTR,dwFuncCount AS DWORD) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
@@ -610,7 +612,7 @@ begin namespace XSharp.IO
 	/// <param name="lItem"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION RegisterKid(ptrKid AS IntPtr,dwCount AS DWORD,lItem AS LOGIC) AS VOID
+	unsafe FUNCTION RegisterKid(ptrKid AS PTR,dwCount AS DWORD,lItem AS LOGIC) AS VOID
 		/// THROW NotImplementedException{}
 	RETURN
 
@@ -622,7 +624,7 @@ begin namespace XSharp.IO
 	/// <param name="cTitle"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION ShowBitmap(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
+	unsafe FUNCTION ShowBitmap(hWnd AS PTR,cFileName AS STRING,cTitle AS STRING) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -634,7 +636,7 @@ begin namespace XSharp.IO
 	/// <param name="cTitle"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION StretchBitmap(hWnd AS IntPtr,cFileName AS STRING,cTitle AS STRING) AS LOGIC
+	unsafe FUNCTION StretchBitmap(hWnd AS PTR,cFileName AS STRING,cTitle AS STRING) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -644,7 +646,7 @@ begin namespace XSharp.IO
 	/// <param name="dwCode"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION TerminateVOThread(pH AS IntPtr,dwCode AS DWORD) AS LOGIC
+	unsafe FUNCTION TerminateVOThread(pH AS PTR,dwCode AS DWORD) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -654,7 +656,7 @@ begin namespace XSharp.IO
 	/// <param name="ptrKid"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION UnRegisterKid(ptrKid AS IntPtr) AS LOGIC
+	unsafe FUNCTION UnRegisterKid(ptrKid AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -664,7 +666,7 @@ begin namespace XSharp.IO
 	/// <param name="pvarg"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Usual2Variant(pItem AS IntPtr,pvarg AS IntPtr) AS LOGIC
+	unsafe FUNCTION Usual2Variant(pItem AS PTR,pvarg AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -674,7 +676,7 @@ begin namespace XSharp.IO
 	/// <param name="pItem"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION Variant2Usual(pvarg AS IntPtr,pItem AS IntPtr) AS LOGIC
+	unsafe FUNCTION Variant2Usual(pvarg AS PTR,pItem AS PTR) AS LOGIC
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
@@ -687,7 +689,7 @@ begin namespace XSharp.IO
 	/// <param name="lParam"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION VOSendMessage(hwnd AS IntPtr,nMsg AS DWORD,dwParam AS DWORD,lParam AS LONG) AS LONG
+	unsafe FUNCTION VOSendMessage(hwnd AS PTR,nMsg AS DWORD,dwParam AS DWORD,lParam AS LONG) AS LONG
 		/// THROW NotImplementedException{}
 	RETURN 0   
 

@@ -194,7 +194,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 	[ExpectedException(typeof(InvalidOperationException))];
 	METHOD SLenExceptionTest() as void
 		local s as string
-		s:=null_string
+		s:=string.Empty
 		AreEqual((dword)0,SLen(s))
 	RETURN
 

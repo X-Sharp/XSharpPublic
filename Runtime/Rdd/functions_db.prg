@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
+using Vulcan
 begin namespace XSharp.RDD
 	#region functions
 	/// <summary>
@@ -10,7 +11,7 @@ begin namespace XSharp.RDD
 	/// <param name="pszSource"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DbcsNext(pszSource AS PSZ) AS PSZ
+	FUNCTION DbcsNext(pszSource AS __Psz) AS __Psz
 		/// THROW NotImplementedException{}
 	RETURN NULL   
 
@@ -20,7 +21,7 @@ begin namespace XSharp.RDD
 	/// <param name="pszCurr"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION DbcsPrev(pszSource AS PSZ,pszCurr AS PSZ) AS PSZ
+	FUNCTION DbcsPrev(pszSource AS __Psz,pszCurr AS __Psz) AS __Psz
 		/// THROW NotImplementedException{}
 	RETURN NULL   
 
@@ -31,7 +32,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION DBF() AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	/// <summary>
 	/// Convert double-byte kana characters in a string to their single-byte equivalents.
@@ -41,7 +42,7 @@ begin namespace XSharp.RDD
 	/// </returns>
 	FUNCTION DBTOSB(c AS STRING) AS STRING
 		/// THROW NotImplementedException{}
-	RETURN NULL_STRING   
+	RETURN string.Empty   
 
 	#endregion
 end namespace

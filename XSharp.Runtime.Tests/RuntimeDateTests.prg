@@ -15,9 +15,9 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 		[TestMethod];
 		METHOD CTODTest() as void
 			var u := ctod("03/13/2016")
-			AreEqual(2016.01.01 ,ctod("01/01/2016"))
-			AreEqual(2016.02.13 ,ctod("13/02/2016"))
-			AreEqual(0001.01.01 ,ctod("03/13/2016"))	
+			AreEqual(__VODate{"20160101"} ,ctod("01/01/2016"))
+			AreEqual(__VODate{"20160213"} ,ctod("13/02/2016"))
+			AreEqual(__VODate{"00010101"} ,ctod("03/13/2016"))	
 		RETURN
 
 		[TestMethod];
@@ -29,7 +29,7 @@ BEGIN NAMESPACE XSharp.Runtime.Tests
 
 		[TestMethod];
 		METHOD STODTest() as void
-			AreEqual(2016.05.06,STOD("20160506"))
+			AreEqual(__VODate{"20160506"},STOD("20160506"))
 		RETURN
 
 		[TestMethod];

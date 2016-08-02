@@ -34,6 +34,14 @@ namespace XSharp.CodeDom
             XSharpCodeDomProvider.TabSize = 1;
         }
 
+        public override string FileExtension
+        {
+            get
+            {
+                return ".prg";
+            }
+        }
+
         [Obsolete]
         public override ICodeCompiler CreateCompiler()
         {
@@ -188,25 +196,28 @@ namespace XSharp.CodeDom
                 CodeTypeDeclaration originClass = XSharpCodeDomHelper.FindDesignerClass(compileUnit, out originNamespace);
                 //
                 // Now, we must re-read it and parse again
-                IServiceProvider provider = (DocDataTextWriter)writer;
-                DocData docData = (DocData)provider.GetService(typeof(DocData));
-                DocDataTextReader ddtr = new DocDataTextReader(docData);
-                // Retrieve 
-                XSharpCodeParser parser = new XSharpCodeParser();
-                parser.FileName = this.FileName;
-                string generatedSource = ddtr.ReadToEnd();
-                CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
-                CodeNamespace resultNamespace;
-                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner, out resultNamespace);
-                // just to be sure...
-                if (resultClass != null)
+                if (writer is DocDataTextWriter)
                 {
-                    // Now push all elements from resultClass to formClass
-                    originClass.Members.Clear();
-                    foreach (CodeTypeMember ctm in resultClass.Members)
+                    IServiceProvider provider = (DocDataTextWriter)writer;
+                    DocData docData = (DocData)provider.GetService(typeof(DocData));
+                    DocDataTextReader ddtr = new DocDataTextReader(docData);
+                    // Retrieve 
+                    XSharpCodeParser parser = new XSharpCodeParser();
+                    parser.FileName = this.FileName;
+                    string generatedSource = ddtr.ReadToEnd();
+                    CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
+                    CodeNamespace resultNamespace;
+                    CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner, out resultNamespace);
+                    // just to be sure...
+                    if (resultClass != null)
                     {
-                        originClass.Members.Add(ctm);
+                        // Now push all elements from resultClass to formClass
+                        originClass.Members.Clear();
+                        foreach (CodeTypeMember ctm in resultClass.Members)
+                        {
+                            originClass.Members.Add(ctm);
 
+                        }
                     }
                 }
                 //

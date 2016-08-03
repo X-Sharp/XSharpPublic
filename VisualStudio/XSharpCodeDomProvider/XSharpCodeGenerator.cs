@@ -1334,51 +1334,61 @@ namespace XSharp.CodeDom
             {
                 return "\"\"";
             }
-            //
             StringBuilder sb = new StringBuilder(value.Length + 10);
-            sb.Append("e\"");
+            bool extended = false;
+            sb.Append("\"");
             foreach (Char ch in value)
             {
                 switch (ch)
                 {
                     case (Char)0:
                         sb.Append(@"\0");
+                        extended = true;
                         break;
 
                     case '\a':
                         sb.Append(@"\a");
+                        extended = true;
                         break;
 
                     case '\b':
                         sb.Append(@"\b");
+                        extended = true;
                         break;
 
                     case '\f':
                         sb.Append(@"\f");
+                        extended = true;
                         break;
 
                     case '\n':
                         sb.Append(@"\n");
+                        extended = true;
                         break;
 
                     case '\r':
                         sb.Append(@"\r");
+                        extended = true;
                         break;
 
                     case '\t':
                         sb.Append(@"\t");
+                        extended = true;
                         break;
 
                     case '\v':
                         sb.Append(@"\v");
+                        extended = true;
                         break;
 
                     case '\\':
                         sb.Append(@"\\");
+                        extended = true;
                         break;
 
                     case '\"':
                         sb.Append("\\\"");
+                        extended = true;
                         break;
 
                     default:
@@ -1386,6 +1396,7 @@ namespace XSharp.CodeDom
                         {
                             // Hexa code
                             sb.Append(String.Format("\\x{0:x4}", (int)ch));
+                            extended = true;
                         }
                         else
                         {
@@ -1397,8 +1408,13 @@ namespace XSharp.CodeDom
             }
 
             sb.Append('"');
-
-            return sb.ToString();
+            string result;
+            result = sb.ToString();
+            if (extended)
+            {
+                result = "e" + result;
+            }
+            return result;
         }
 
         protected override bool Supports(GeneratorSupport support)
@@ -1505,6 +1521,22 @@ namespace XSharp.CodeDom
                 }
             }
         }
+        protected override void OutputAttributeArgument(CodeAttributeArgument arg)
+        {
+            // Base class outputs "=" in stead of ":=" for named arguments
+            string name = null;
+            if ((arg.Name != null) && (arg.Name.Length > 0))
+            {
+                name = arg.Name;
+                this.OutputIdentifier(arg.Name);
+                this.Output.Write(":=");
+                arg.Name = null;
+            }
+            base.OutputAttributeArgument(arg);
+            //restore name
+            arg.Name = name; 
+        }
+
 
         private void OutputGenericParameters(CodeTypeParameterCollection typeParameters)
         {

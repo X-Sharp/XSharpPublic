@@ -128,9 +128,9 @@ namespace XSharp.Project
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), GuidStrings.LOGVIEWID_Code)]  
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), GuidStrings.LOGVIEWID_Code)]
 
-
+#if VODESIGNER
     // Editors for VOBinaries
     [ProvideEditorExtension(typeof(VOFormEditorFactory),        ".xsfrm", 0x42, DefaultName = "XSharp VO Form Editor", NameResourceID = 80110)]
     [ProvideEditorExtension(typeof(VOMenuEditorFactory),        ".xsmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
@@ -141,16 +141,11 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
-
-
-
-    // Attention! The LOGVIEWID guids are magic numbers provided by Microsoft. Don't change them.
-    // This tells the project system if we allow to open in Code or Designer view
     [ProvideEditorLogicalView(typeof(VOFormEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
     [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
     [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
     [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
-
+#endif
 
 
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
@@ -159,7 +154,7 @@ namespace XSharp.Project
         private uint m_componentID;
 
 
-        #region Overridden Implementation
+#region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -173,14 +168,13 @@ namespace XSharp.Project
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             this.RegisterProjectFactory(new XSharpWPFProjectFactory(this));
 
+#if VODESIGNER
             // editors for the binaries
             base.RegisterEditorFactory(new VOFormEditorFactory(this));
             base.RegisterEditorFactory(new VOMenuEditorFactory(this));
             base.RegisterEditorFactory(new VODBServerEditorFactory(this));
             base.RegisterEditorFactory(new VOFieldSpecEditorFactory(this));
-
-
-
+#endif
             // Register the language service
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
@@ -243,9 +237,9 @@ namespace XSharp.Project
                        out result));
         }
 
-        #endregion
+#endregion
 
-        #region IOleComponent Members
+#region IOleComponent Members
 
         public int FDoIdle(uint grfidlef)
         {
@@ -316,7 +310,7 @@ namespace XSharp.Project
         {
         }
 
-        #endregion
+#endregion
 
     }
 

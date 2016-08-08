@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">EVENT (Add and Remove)</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">EVENT (Add and Remove)</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">XSharp now supports an extended Event syntax. Both a single line syntax is supported as a multi line:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Old style syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; &#160;// Old Style</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Single Line syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; [ADD &lt;ExpressionList] [REMOVE &lt;ExpressionList] &#160; &#160; &#160; &#160;// Single Line</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Multi line syntax</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">[Attributes] [Modifiers] EVENT [&lt;ExplicitInterface&gt;.] &lt;Id&gt; AS &lt;Type&gt; &#160; &#160; // Multi line</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">ADD</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;&lt;Statements&gt;</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">END [ADD]</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">REMOVE</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;&lt;Statements&gt;</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">END [REMOVE]</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">END [EVENT]</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example </text></para>
+    <para styleclass="Code Example"><br/><snippet src="EVENT-Example" inline="false"/></para>
+  </body>
+</topic>

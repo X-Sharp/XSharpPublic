@@ -51,6 +51,9 @@
         <topicref type="topic" id="423996909584445" build="ALL" modified="2016-01-30T21:22:44.657Z" icon="0" href="DEFAULT-Expressions">
           <caption translate="true">DEFAULT Expressions</caption>
         </topicref>
+        <topicref type="topic" id="425845216712740" build="ALL" modified="2016-08-02T16:39:01.126Z" icon="0" href="EVENT-(Add-and-Remove)">
+          <caption translate="true">EVENT (Add and Remove)</caption>
+        </topicref>
         <topicref type="topic" id="424000368292699" build="ALL" modified="2016-01-30T21:22:44.766Z" icon="0" href="Expression-IS-Type">
           <caption translate="true">Expression IS Type</caption>
         </topicref>
@@ -885,6 +888,9 @@
       </topicref>
       <topicref type="topic" id="424265406124180" build="ALL" modified="2016-02-26T16:40:46.271Z" icon="0" href="CHECKED-Example">
         <caption translate="true">CHECKED Example</caption>
+      </topicref>
+      <topicref type="topic" id="425847391702785" build="ALL" modified="2016-08-02T16:42:18.866Z" icon="0" href="EVENT-Example">
+        <caption translate="true">EVENT Example</caption>
       </topicref>
       <topicref type="topic" id="424265813808443" build="ALL" modified="2016-02-26T17:33:35.007Z" icon="0" href="Expression-Examples">
         <caption translate="true">Expression Examples</caption>

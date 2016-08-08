@@ -10,23 +10,29 @@
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.6</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Compiler</text></para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added alternative syntax for event definition. See </text><link displaytype="text" defaultstyle="true" type="topiclink" href="EVENT" styleclass="Normal" translate="true">event</link><text styleclass="Normal" translate="true"> keyword in the documentation</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added alternative syntax for event definition. See </text><link displaytype="text" defaultstyle="true" type="topiclink" href="EVENT-(Add-and-Remove)" styleclass="Normal" translate="true">event</link><text styleclass="Normal" translate="true"> keyword in the documentation</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Added Code Block Support</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Implemented /vo13 VO (compatible string comparisons)</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for /vo4 (implicit numeric conversions)</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Aliased expressions are now fully suported</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Implemented /vo13 (VO compatible string comparisons)</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for /vo4 (VO compatible implicit numeric conversions)</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Aliased expressions are now fully supported</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a problem with the &amp;= operator</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed several crashes for incorrect source code.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed several problems related to implicit conversions from/to usual, float and date</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Indexed properties (such as String:Chars) can now be used by name</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Indexed properties can now have overloads with different parameter types</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for indexed ACCESS and ASSIGN</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for multiple properties with the same name but a different parameter type</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a problem when calling Clipper Calling Convention functions and/or methods with a single parameter</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a crash with defines in the preprocessor</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">_CODEBLOCK is now an alias for the CODEBLOCK type</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Visual Studio Integration</text></para>
-    <para styleclass="Normal"></para>
+    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Completed support for .designer.prg for Windows.Forms</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed an issue in the CodeDom generator for generating wrappers for Services</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The XSharp Language service will no longer be used for Vulcan PRG files in a Side by Side installation</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The VO Compatible editors have been added to this version. There are still some issues with these editors.</text></li>
+    </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.51</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Visual Studio Integration &amp; Build System</text></para>

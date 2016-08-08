@@ -60,10 +60,14 @@ namespace XSharpColorizer
 			else if (context is XSharpParser.IdentifierContext)
 			{
 				LanguageService.SyntaxTree.IToken sym = context.Start;
-	            TextSpan tokenSpan;
-		        tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-        	    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpIdentifierType));
-			}
+                // Add tag for Keyword that is used as Identifier
+                if (XSharpLexer.IsKeyword(sym.Type))
+                {
+                    TextSpan tokenSpan;
+                    tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpIdentifierType));
+                }
+            }
         }
 
         private void TagRegion(ParserRuleContext context, int endChild)

@@ -9,10 +9,14 @@ using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Text.Tagging;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.Text;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Tagging;
+using System.Windows.Threading;
+using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace XSharpColorizer
 {
@@ -21,7 +25,7 @@ namespace XSharpColorizer
     /// </summary>
     internal class XSharpClassifier : IClassifier, IDisposable
     {
-        private ITextBuffer Buffer;
+        private ITextBuffer buffer;
         public ITextSnapshot Snapshot { get; set; }
         private IClassificationType xsharpKeywordType;
         private IClassificationType xsharpIdentifierType;
@@ -34,9 +38,10 @@ namespace XSharpColorizer
         private IClassificationType xsharpRegionStop;
         private XSharpTagger xsTagger;
         private List<ClassificationSpan> tags;
-
         private ITextDocumentFactoryService txtdocfactory;
         private int versionNumber = 0;
+        private bool isBusy = false;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpClassifier"/> class.
@@ -44,11 +49,10 @@ namespace XSharpColorizer
         /// <param name="registry">Classification registry.</param>
         internal XSharpClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
-            this.Buffer = buffer;
-            //this.Snapshot = buffer.CurrentSnapshot;
+            this.buffer = buffer;
+            
             txtdocfactory = factory;
             xsTagger = new XSharpTagger(registry);
-
             tags = new List<ClassificationSpan>();
             //
             xsharpKeywordType = registry.GetClassificationType(ColorizerConstants.XSharpKeywordFormat);
@@ -60,37 +64,26 @@ namespace XSharpColorizer
             xsharpBraceCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
             xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
             xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
-            this.Buffer.Changed += OnBufferChanged;
             //
-            Colorize();
+            Parse(buffer.CurrentSnapshot);
+            isBusy = false;
         }
 
-        void OnBufferChanged(object sender, TextContentChangedEventArgs e)
+        private void Parse( ITextSnapshot snapshot)
         {
-            // If this isn't the most up-to-date version of the buffer, then ignore it for now (we'll eventually get another change event).
-            if (this.versionNumber == e.After.Version.VersionNumber)
-                return;
-            Colorize();
-            this.versionNumber = e.After.Version.VersionNumber;
-
-
-        }
-
-        private void Colorize()
-        {
-            var snapshot = this.Buffer.CurrentSnapshot;
             Snapshot = snapshot;
             ITokenStream TokenStream = null;
             // parse for positional keywords that change the colors
             // and get a reference to the tokenstream
+            System.Diagnostics.Debug.WriteLine("Starting parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
             string path = String.Empty;
+            isBusy = true;
             if (txtdocfactory != null)
             {
                 ITextDocument doc = null;
-                if (txtdocfactory.TryGetTextDocument(this.Buffer, out doc))
+                if (txtdocfactory.TryGetTextDocument(this.buffer, out doc))
                 {
                     path = doc.FilePath;
-
                 }
             }
             // Parse the source and get the (Lexer) Tokenstream to locate comments, keywords and other tokens.
@@ -98,7 +91,7 @@ namespace XSharpColorizer
             xsTagger.Parse(snapshot, out TokenStream, path);
             if (TokenStream != null)
             {
-                tags.Clear();
+                List<ClassificationSpan> newtags = new List<ClassificationSpan>();
                 for (var iToken = 0; iToken < TokenStream.Size; iToken++)
                 {
                     var token = TokenStream.Get(iToken);
@@ -106,11 +99,11 @@ namespace XSharpColorizer
                     TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
                     if (XSharpLexer.IsKeyword(tokenType))
                     {
-                        tags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
+                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
                     }
                     else if (XSharpLexer.IsConstant(tokenType))
                     {
-                        tags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpConstantType));
+                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpConstantType));
 
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
@@ -120,43 +113,40 @@ namespace XSharpColorizer
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LPAREN:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LCURLY:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.LBRKT:
-                                tags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpBraceOpenType));
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpBraceOpenType));
                                 break;
 
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RPAREN:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RCURLY:
                             case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpLexer.RBRKT:
-                                tags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpBraceCloseType));
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpBraceCloseType));
                                 break;
                             default:
-                                tags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
                                 break;
                         }
                     }
                     else if (XSharpLexer.IsIdentifier(tokenType))
                     {
-                        tags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
+                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
                     }
                     else if (XSharpLexer.IsComment(tokenType))
                     {
-                        tags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
+                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
                     }
                 }
                 foreach (var tag in xsTagger.Tags)
                 {
-                    tags.Add(tag);
+                    newtags.Add(tag);
                 }
-                //
+                tags = newtags;
+                System.Diagnostics.Debug.WriteLine("Ending parse at {0}, version {1}", DateTime.Now, snapshot.Version.ToString());
                 if (ClassificationChanged != null)
                 {
-                    ClassificationChanged(this, new ClassificationChangedEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot,
-                        0, this.Buffer.CurrentSnapshot.Length)));
+                    ClassificationChanged(this, new ClassificationChangedEventArgs(new SnapshotSpan(snapshot, 0, snapshot.Length)));
                 }
             }
         }
-
-
-
         #region IClassifier
 
 #pragma warning disable 67
@@ -184,33 +174,42 @@ namespace XSharpColorizer
         /// <returns>A list of ClassificationSpans that represent spans identified to be of this classification.</returns>
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
-            /*
-            var result = new List<ClassificationSpan>()
+            var snapshot = buffer.CurrentSnapshot;
+            if (snapshot.Version.VersionNumber != this.versionNumber  && ! isBusy )
             {
-                new ClassificationSpan(new SnapshotSpan(span.Snapshot, new Span(span.Start, span.Length)), this.classificationType)
-            };
-
-            return result;
-
-            if ((spans.Count == 0) || (this.tags == null) || (this.tags.Count == 0))
-            {
-                //return Enumerable.Empty<ITagSpan<IClassificationTag>>();
-                yield break;
+                isBusy = true;
+                this.versionNumber = snapshot.Version.VersionNumber;
+                var bw = new BackgroundWorker();
+                bw.DoWork += Bw_DoWork;
+                bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
+                bw.RunWorkerAsync(span.Snapshot);
             }
-            //
-            SnapshotSpan entire = span
-            //
-            foreach (var tag in this.tags)
+            var result = new List<ClassificationSpan>();
+            var originaltags = tags;        // create copy in case the tags property gets changed in the background
+            foreach (var tag in originaltags)
             {
-                if (tag.Span.End.Position >= entire.Start.Position &&
-                     tag.Span.Start.Position <= entire.End.Position)
+                if (tag.Span.End.Position < span.Start.Position || tag.Span.Start.Position >= span.End.Position)
                 {
-                    yield return tag;
+                    // skip tags that are completely before or after the selected span;
                 }
-            }*/
-
-            return this.tags;
+                else
+                {
+                    result.Add(tag);
+                }
+            }
+            return result;
         }
+
+        private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            isBusy = false;
+        }
+
+        private void Bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Parse((ITextSnapshot)e.Argument);
+        }
+
 
         #endregion
 
@@ -235,9 +234,9 @@ namespace XSharpColorizer
             {
                 if (disposing)
                 {
-                    if (hashtable.ContainsKey(this.Buffer))
+                    if (hashtable.ContainsKey(this.buffer))
                     {
-                        hashtable.Remove(this.Buffer);
+                        hashtable.Remove(this.buffer);
                     }
                 }
 

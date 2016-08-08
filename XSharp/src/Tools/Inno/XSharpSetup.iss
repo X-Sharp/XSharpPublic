@@ -33,6 +33,18 @@
 #define MetadataVersion  "System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
+#define VulcanEditorGuid "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
+#define VS14RegPath      "Software\Microsoft\VisualStudio\14.0"
+#define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"
+#define VS14LocalDir     "{localappdata}\Microsoft\VisualStudio\14.0"
+#define VS15LocalDir     "{localappdata}\Microsoft\VisualStudio\15.0"
+
+#define HelpInstall1  "/operation install /catalogname "
+#define HelpInstall2  "/locale en-us /sourceuri """"{app}\help\XSharp.msha"""" /wait 0"
+#define HelpUninstall1 "/silent /operation uninstall /catalogname"
+#define HelpUninstall2 "/locale en-us /vendor """"XSharp"""" /productname """"X#"""" /booklist """"X# Documentation"""" /wait 0"
+
+
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -94,7 +106,6 @@ Minversion=6.0.600
 [Components]
 Name: "main";             Description: "The XSharp Compiler and Build System";        Types: full compact custom; Flags: fixed; 
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";              Types: full custom;         Check: Vs2015IsInstalled;
-Name: "vs2015\vulcanprg"; Description: "Keep Vulcan associated with PRG files";       Types: full custom;         Check: VulcanPrgAssociated;
 Name: "vs2015\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer22Found;
 Name: "vsnext";           Description: "Visual Studio 15 Preview Integration";        Types: full custom;         Check: VsNextIsInstalled;
 Name: "vsnext\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer23Found;
@@ -193,7 +204,7 @@ Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:GetVs2
 Source: "{#BinPFolder}XSharpProject2015.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpProject2015.dll.config";      DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpProject2015.pdb";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinPFolder}XSharpProject2015.pkgdef";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015; AfterInstall: AdjustPkgDef;
+Source: "{#BinPFolder}XSharpProject2015.pkgdef";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015; 
 Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 
 Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
@@ -268,9 +279,18 @@ Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help22Insta
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help23Installed"; ValueType: string; ValueData: "yes" ;  Components: vsnext\help;
 
 ; set the VSHelp to Offline
-Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\14.0\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vs2015\help; Flags: noerror;
-Root: HKCU; Subkey: "Software\Microsoft\VisualStudio\15.0\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vsnext\help; Flags: noerror;
+Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vs2015\help; Flags: noerror;
+Root: HKCU; Subkey: "{#Vs15RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vsnext\help; Flags: noerror;
 
+; When Vulcan is Installed then update its extension registration so we can handle the priorities in our project system
+
+Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "ppo"; ValueData: 1; Components: vs2015; Check: VulcanPrgAssociated;
+Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "prg"; ValueData: 1; Components: vs2015; Check: VulcanPrgAssociated;
+Root: HKLM; Subkey: "{#Vs14RegPath}\{#VulcanEditorGuid}"; ValueName: "vh";  ValueData: 1; Components: vs2015; Check: VulcanPrgAssociated;
+
+Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "ppo"; ValueData: 1; Components: vs2015; Check: VulcanPrgAssociated;
+Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "prg"; ValueData: 1; Components: vs2015; Check: VulcanPrgAssociated;
+Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "vh";  ValueData: 1; Components: vs2015; Check: VulcanPrgAssociated;
 
 [Ini]
 Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vs2015;
@@ -280,19 +300,17 @@ Filename: "{code:GetVsNextIdeDir}\Extensions\extensions.configurationchanged"; S
 Filename: "{app}\Tools\RegisterProvider.exe";
 
 ; Remove old Help contents
-Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";        Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
 
-Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio14 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vs2015\help; StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/operation install /catalogname VisualStudio15 /locale en-us /sourceuri ""{app}\help\XSharp.msha"" /wait 0";     Components: vsnext\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
+
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio14 {#HelpInstall2}";     Components: vs2015\help; StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     Components: vsnext\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
 Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]
-; This XSharp program deletes the templates cache folder and the extensionmanager key in the registry
-;Filename: "{app}\uninst\XsVsUnInst.exe"; Flags: runhidden;  Components: vs2015 ;
-
-Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio14 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015";        Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation uninstall /catalogname VisualStudio15 /locale en-us /vendor ""XSharp"" /productname ""X#"" /booklist ""X# Documentation"" /wait 0";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
+Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
 
 
 [InstallDelete]
@@ -301,14 +319,14 @@ Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "/silent /operation 
 ; vs2015
 Type: files;          Name: "{app}\License.rtf"; 
 
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"    ; Components: vs2015
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"    ; Components: vs2015
+Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            Components: vs2015
+Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            Components: vs2015
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       Components: vs2015
 Type: files;          Name: "{code:GetVs2015IdeDir}\XSharp.CodeAnalysis.dll"; Components: vs2015
 Type: files;          Name: "{code:GetVs2015IdeDir}\XSharp.CodeAnalysis.pdb"; Components: vs2015
 ; vsnext
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\vtc"    ; Components: vsnext
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\ComponentModelCache"    ; Components: vsnext
+Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vsnext
+Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vsnext
 Type: filesandordirs; Name: "{code:GetVsNextIdeDir}\Extensions\XSharp";       Components: vsnext
 Type: files;          Name: "{code:GetVsNextIdeDir}\XSharp.CodeAnalysis.dll"; Components: vsnext
 Type: files;          Name: "{code:GetVsNextIdeDir}\XSharp.CodeAnalysis.pdb"; Components: vsnext
@@ -337,11 +355,11 @@ Type: dirifempty;     Name: "{commondocs}\XSharp";
 
 ; Template cache and component cache
 ;vs2015
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\vtc"; 			Components: vs2015
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\14.0\ComponentModelCache"; 	Components: vs2015
+Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            Components: vs2015
+Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            Components: vs2015
 ;vsnext
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\vtc"; 			Components: vsnext
-Type: filesandordirs; Name: "{localappdata}\Microsoft\VisualStudio\15.0\ComponentModelCache"; 	Components: vsnext
+Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vsnext
+Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vsnext
 
 [Messages]
 WelcomeLabel1=Welcome to {# Product} (X#)
@@ -394,7 +412,7 @@ begin
   VulcanPrgAssociation := false;
   if Vs2015Installed then
   begin
-  VulcanPrgAssociation := RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\WOW6432Node\Microsoft\VisualStudio\14.0\Languages\File Extensions\.prg', '', VulcanGuid) ;
+  VulcanPrgAssociation := RegQueryStringValue(HKEY_LOCAL_MACHINE, '{#Vs14RegPath}\Languages\File Extensions\.prg', '', VulcanGuid) ;
   if VulcanPrgAssociation then 
       begin
       VulcanPrgAssociation := (UpperCase(VulcanGuid) = '{8D3F6D25-C81C-4FD8-9599-2F72B5D4B0C9}');
@@ -404,13 +422,6 @@ begin
   OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;
 end;
 
-
-{function ResetExtensionManager: Boolean;
-begin
-  RegDeleteKeyIncludingSubKeys(HKEY_CURRENT_USER,'SOFTWARE\Microsoft\VisualStudio\14.0\ExtensionManager');
-  result := True;
-end;
-}
 
 function VulcanIsInstalled: Boolean;
 begin
@@ -510,32 +521,6 @@ begin
     end
   end;
   
-end;
-
-procedure AdjustPkgDef();
-var pkgdeffile: String;
-var section: String;
-begin
-  if IsComponentSelected('vs2015\vulcanprg') then
-  begin
-        pkgdeffile := Vs2015Path+'\Extensions\XSharp\XSharpProject2015.pkgdef'
-        section    := '$RootKey$\Languages\File Extensions\';
-        DeleteIniSection(section+'.prg', pkgdeffile);
-        DeleteIniSection(section+'.ppo', pkgdeffile);
-        DeleteIniSection(section+'.vh',  pkgdeffile);
-        { There are duplicate sections in the file. We want to delete the 1st 3 sections for the extensions prg, ppo and vh}
-        section := '$RootKey$\Editors\{b4829761-2bfa-44b7-8f8f-d2625ebcf218}\Extensions';
-        DeleteIniSection(section,pkgdeffile);
-        DeleteIniSection(section,pkgdeffile);
-        DeleteIniSection(section,pkgdeffile);
-        //{ Another section is in there 5 times. We can remove 4 of them }
-        //section := '$RootKey$\Editors\{b4829761-2bfa-44b7-8f8f-d2625ebcf218}';
-        //DeleteIniSection(section,pkgdeffile);
-        //DeleteIniSection(section,pkgdeffile);
-        //DeleteIniSection(section,pkgdeffile);
-        //DeleteIniSection(section,pkgdeffile);
-
-  end;
 end;
 
 #expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")

@@ -15,7 +15,7 @@ namespace XSharp
         internal const string RegistryKey = @"Software\" + Company + @"\" + Product;
         internal const string RegistryKey64 = @"Software\WOW6432Node\" + Company + @"\" + Product;
         internal const string RegistryValue = "XSharpPath";
-        internal const string ProjectDll = "XSharp.ProjectSystem";
+        internal const string ProjectDll = "XSharpProject2015";
         internal const string ProjectDllCPS = "XSharpProject2015CPS";
 
 

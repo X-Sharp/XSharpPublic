@@ -1,17 +1,17 @@
 ; Please note that the "deregistering" of the XSharp association is done in a script step at the end of this file
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.5.2"
+#define ProdVer         "XSharp 0.2.6.0"
 #define ProdBuild       "XSharp Beta 5b"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.5.2504"
-#define VITextVersion   "0.2.5.2504 (Beta 5b)"
-#define TouchDate       "2016-06-27"
-#define TouchTime       "02:05:04"
-#define SetupExeName    "XSharpSetup0252"
+#define VIVersion       "0.2.6.2600"
+#define VITextVersion   "0.2.6.2600 (Beta 6)"
+#define TouchDate       "2016-08-08"
+#define TouchTime       "02:06:00"
+#define SetupExeName    "XSharpSetup0260"
 #define InstallPath     "XSharpPath"
 
 ;Folders

@@ -10,7 +10,7 @@
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.6</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Compiler</text></para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added alternative syntax for event definition. See </text><link displaytype="text" defaultstyle="true" type="topiclink" href="EVENT-(Add-and-Remove)" styleclass="Normal" translate="true">event</link><text styleclass="Normal" translate="true"> keyword in the documentation</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added alternative syntax for event definition. See </text><link displaytype="text" defaultstyle="true" type="topiclink" href="EVENT-(Add-and-Remove)" styleclass="Normal" translate="true">EVENT</link><text styleclass="Normal" translate="true"> keyword in the documentation</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Added Code Block Support</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Implemented /vo13 (VO compatible string comparisons)</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for /vo4 (VO compatible implicit numeric conversions)</text></li>
@@ -31,7 +31,7 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Completed support for .designer.prg for Windows.Forms</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed an issue in the CodeDom generator for generating wrappers for Services</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The XSharp Language service will no longer be used for Vulcan PRG files in a Side by Side installation</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">The VO Compatible editors have been added to this version. There are still some issues with these editors.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Editor performance for large source files has been improved.</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.51</text></para>

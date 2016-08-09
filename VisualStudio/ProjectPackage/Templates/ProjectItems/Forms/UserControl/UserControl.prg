@@ -1,4 +1,4 @@
-﻿using System
+using System
 using System.Collections.Generic
 using System.ComponentModel
 using System.Data
@@ -12,11 +12,12 @@ using System.Windows.Forms
 
 begin namespace $rootnamespace$
 
-    public partial class $safeitemrootname$ inherit System.Windows.Forms.Form
-    
-        public CONSTRUCTOR()  //$safeitemrootname$
+    PARTIAL CLASS $safeitemrootname$ INHERIT System.Windows.Forms.UserControl
+
+        public CONSTRUCTOR()  
             InitializeComponent()
 			return
-        
-    end class
+
+   
+    END CLASS
 end namespace

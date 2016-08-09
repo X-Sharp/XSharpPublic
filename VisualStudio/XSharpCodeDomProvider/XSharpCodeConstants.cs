@@ -14,5 +14,6 @@ namespace XSharp.CodeDom
         public static string USERDATA_CCU_DESIGNER = "XSharp:Designer";
         public static string USERDATA_HASDESIGNER = "XSharp:HasDesigner";
         public static string USERDATA_FROMDESIGNER = "XSharp:FromDesigner";
+        public static string USERDATA_NOHEADER = "XSharp:NoHeader";
     }
 }

@@ -8,7 +8,5 @@ BEGIN NAMESPACE $safeprojectname$
 	CONSTRUCTOR()
 		RETURN		
  
-	
-	
 	END CLASS
 END NAMESPACE

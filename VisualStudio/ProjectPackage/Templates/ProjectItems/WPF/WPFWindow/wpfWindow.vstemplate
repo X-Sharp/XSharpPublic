@@ -3,7 +3,7 @@
   <TemplateData>
     <Name>WPF Window</Name>
     <Description>A WPF Window</Description>
-    <Icon>__TemplateIcon.ico</Icon>
+    <Icon Package="{b3bae735-386c-4030-8329-ef48eeda4036}" ID="4593" />
     <TemplateID>XSharp.WPF.Window</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

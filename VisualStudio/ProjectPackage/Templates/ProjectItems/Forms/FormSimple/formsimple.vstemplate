@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
-    <DefaultName>WinForm.prg</DefaultName>
-    <Name>Windows.Forms form</Name>
-    <Description>A Windows form with separate designer prg</Description>
+    <DefaultName>simpleform.prg</DefaultName>
+    <Name>Windows Forms Simple Form</Name>
+    <Description>A simple Windows Forms Form without designer.prg</Description>
     <ProjectType>XSharp</ProjectType>
-    <SortOrder>10</SortOrder>
-    <Icon>__TemplateIcon.ico</Icon>
-    <TemplateID>XSharp.FormDesigner</TemplateID>
-    <Hidden>true</Hidden>
+    <SortOrder>11</SortOrder>
+    <Icon>Form.png</Icon>
+    <TemplateID>XSharp.FormSimple</TemplateID>
   </TemplateData>
   <TemplateContent>
 		<References>
@@ -28,8 +27,6 @@
 				<Assembly>System.Xml</Assembly>
 			</Reference>
 		</References>
-
-    <ProjectItem ReplaceParameters="true" SubType="Form" TargetFileName="$fileinputname$.prg">form.prg</ProjectItem>
-    <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.Designer.prg">form.Designer.prg</ProjectItem>
+    <ProjectItem ReplaceParameters="true" SubType="Form" TargetFileName="$fileinputname$.prg">formsimple.prg</ProjectItem>
   </TemplateContent>
 </VSTemplate>

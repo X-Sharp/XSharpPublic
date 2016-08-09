@@ -4,6 +4,7 @@
     <Name>TextFile</Name>
     <Description>An empty text file</Description>
     <TemplateID>Microsoft.XSharp.TextFile</TemplateID>
+    <Icon>Textfile.png</Icon>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

@@ -3,7 +3,7 @@
   <TemplateData>
     <Name>CodeFile</Name>
     <Description>An empty Code File</Description>
-    <Icon>CodeFile.ico</Icon>
+    <Icon>Code.png</Icon>
     <TemplateID>XSharp.CodeFile</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>

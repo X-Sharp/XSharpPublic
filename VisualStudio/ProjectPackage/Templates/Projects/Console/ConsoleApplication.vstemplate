@@ -4,10 +4,10 @@
     <Name>Console Application</Name>
     <Description>Basic XSharp Console Application.</Description>
     <Icon>XSharp.ico</Icon>
+    <TemplateID>XSharp.ConsoleApplication</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <SortOrder>1</SortOrder>
-    <TemplateID>A868BDE2-111B-4058-B098-E9EACBBA565B</TemplateID>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>ConsoleApplication</DefaultName>

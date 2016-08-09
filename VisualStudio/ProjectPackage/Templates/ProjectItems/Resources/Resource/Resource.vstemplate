@@ -4,6 +4,7 @@
       <Name>Managed resource file (.resx)</Name>
       <Description>A file to store managed resources</Description>
       <TemplateID>XSharp.Resource</TemplateID>
+      <Icon>Resource.PNG</Icon>
       <ProjectType>XSharp</ProjectType>
       <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
       <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

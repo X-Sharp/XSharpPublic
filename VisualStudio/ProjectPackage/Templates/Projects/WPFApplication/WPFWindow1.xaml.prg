@@ -1,29 +1,28 @@
-﻿#using System
-#using System.Collections.Generic
-#using System.Linq
-#using System.Text
-#using System.Threading.Tasks
-#using System.Windows
-#using System.Windows.Controls
-#using System.Windows.Data
-#using System.Windows.Documents
-#using System.Windows.Input
-#using System.Windows.Media
-#using System.Windows.Media.Imaging
-#using System.Windows.Navigation
-#using System.Windows.Shapes
+USING System
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING System.Threading.Tasks
+USING System.Windows
+USING System.Windows.Controls
+USING System.Windows.Data
+USING System.Windows.Documents
+USING System.Windows.Input
+USING System.Windows.Media
+USING System.Windows.Media.Imaging
+USING System.Windows.Navigation
+USING System.Windows.Shapes
 
-begin namespace $safeprojectname$
+BEGIN NAMESPACE $safeprojectname$
 
     /// <summary>
     /// Interaction logic for $safeitemname$.xaml
     /// </summary>
-    public partial class $safeitemname$ INHERIT Window
+    PUBLIC PARTIAL CLASS $safeitemname$ INHERIT Window
     
-        public CONSTRUCTOR() //$safeitemname$()
+        PUBLIC CONSTRUCTOR() 
             InitializeComponent()
 			RETURN
-		
-		
-    end class
-End NameSpace
+
+    END CLASS
+END NAMESPACE

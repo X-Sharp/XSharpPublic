@@ -4,7 +4,8 @@
      <Name>Native Resource File (.rc)</Name>
      <Description>A file in which native resources can be defined</Description>
       <TemplateID>XSharp.NativeResource</TemplateID>
-      <ProjectType>XSharp</ProjectType>
+      <Icon>Rc.PNG</Icon>
+     <ProjectType>XSharp</ProjectType>
       <SortOrder>300</SortOrder>
       <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
       <DefaultName>NativeResources.rc</DefaultName>

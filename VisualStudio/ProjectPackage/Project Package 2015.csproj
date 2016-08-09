@@ -166,6 +166,23 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
     <Content Include="Template.ico" />
+    <ZipProject Include="Templates\Projects\WinFormApp\Form1.designer.prg" />
+    <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.designer.prg" />
+    <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.prg" />
+    <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.vstemplate" />
+    <ZipItem Include="Templates\ProjectItems\WcfService\WCF.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\CodeFile\Code.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Class\Class.png" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResBitMap\Bitmap.png" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResCursor\Cursor.png" />
+    <ZipItem Include="Templates\ProjectItems\Resources\ResIcon\Icon.png" />
+    <ZipItem Include="Templates\ProjectItems\Resources\Rc\Rc.png" />
+    <ZipItem Include="Templates\ProjectItems\Resources\Resource\Resource.png" />
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\Form.png" />
+    <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\Form.png" />
+    <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\TextFile\TextFile.png" />
+    <ZipItem Include="Templates\ProjectItems\Code\Header\Include.png" />
     <Content Include="XSharp.png" />
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -217,6 +234,7 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Internal\SettingsInternal\Settings.settings">
     </ZipItem>
+    <ZipProject Include="Templates\Projects\WinFormApp\App.config" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -241,35 +259,23 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ZipItem Include="Templates\ProjectItems\Code\Class\Class.ico">
-    </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\Class\Class.prg">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\Class\Class.vstemplate">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Code\CodeFile\CodeFile.ico">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\CodeFile\Codefile.prg">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\CodeFile\Codefile.vstemplate">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\Class.vstemplate">
+    <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\formsimple.prg">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\simpleform.prg">
+    <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\formsimple.vstemplate">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\simpeform.vstemplate">
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\Form.designer.prg">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormSimple\__TemplateIcon.ico">
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\Form.prg">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\form.designer.prg">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\Form.ico">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\form.prg">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\form.vstemplate">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\FormDesigner\__TemplateIcon.ico">
+    <ZipItem Include="Templates\ProjectItems\Forms\Form\form.vstemplate">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\VO\VODBServer\VODBServer.prg">
     </ZipItem>
@@ -296,7 +302,7 @@
     <ZipItem Include="Templates\ProjectItems\VO\VOWindow\VOWindow.vstemplate">
     </ZipItem>
     <ZipProject Include="Templates\Projects\ClassLibrary\AssemblyInfo.prg" />
-    <ZipProject Include="Templates\Projects\ClassLibrary\Class.prg" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\Class1.prg" />
     <ZipProject Include="Templates\Projects\ClassLibrary\ClassLibrary.vstemplate" />
     <ZipProject Include="Templates\Projects\ClassLibrary\XSharp.ico" />
     <ZipProject Include="Templates\Projects\Console\AssemblyInfo.prg" />
@@ -305,7 +311,7 @@
     <ZipProject Include="Templates\Projects\Console\XSharp.ico" />
     <ZipProject Include="Templates\Projects\WinFormApp\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\WinFormApp\Program.prg" />
-    <ZipProject Include="Templates\Projects\WinFormApp\WinForm1.prg" />
+    <ZipProject Include="Templates\Projects\WinFormApp\Form1.prg" />
     <ZipProject Include="Templates\Projects\WinFormApp\WinFormApp.vstemplate" />
     <ZipProject Include="Templates\Projects\WinFormApp\XSharp.ico" />
     <ZipProject Include="Templates\Projects\WPFApplication\App.xaml.prg" />
@@ -321,13 +327,9 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\Page1.xaml.prg">
     </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\__TemplateIcon.ico">
-    </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\UserControl1.xaml.prg">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.xaml.prg">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\__TemplateIcon.ico">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Resources\Rc\NativeResources.rc">
     </ZipItem>
@@ -364,14 +366,6 @@
     <ZipItem Include="Templates\ProjectItems\Code\TextFile\TextFile.txt">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\TextFile\TextFile.vstemplate">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\Form\__TemplateIcon.ico">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\Form\Form.ico">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\Form\form.prg">
-    </ZipItem>
-    <ZipItem Include="Templates\ProjectItems\Forms\Form\form.vstemplate">
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\Code\Header\Header.vh">
     </ZipItem>

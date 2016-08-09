@@ -1,10 +1,10 @@
-#using System
-#using System.Collections.Generic
-#using System.Configuration
-#using System.Data
-$if$ ($targetframeworkversion$ >= 3.5)#using System.Linq
-$endif$$if$ ($targetframeworkversion$ >= 4.5)#using System.Threading.Tasks
-$endif$#using System.Windows
+USING System
+USING System.Collections.Generic
+USING System.Configuration
+USING System.Data
+$if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
+$endif$$if$ ($targetframeworkversion$ >= 4.5)USING System.Threading.Tasks
+$endif$USING System.Windows
 
 
 BEGIN NAMESPACE $safeprojectname$

@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
     <Name>Windows Forms Application</Name>
     <Description>Basic XSharp Windows Forms Application.</Description>
     <Icon>XSharp.ico</Icon>
+    <TemplateID>XSharp.WindowsFormsApplication</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>
     <SortOrder>100</SortOrder>
-    <TemplateID>EDE95018-F40E-4303-9753-899D00052897</TemplateID>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <CreateNewFolder>true</CreateNewFolder>
-    <DefaultName>WinFormApplication</DefaultName>
+    <DefaultName>WindowsFormsApplication</DefaultName>
     <ProvideDefaultName>true</ProvideDefaultName>
+    <CreateInPlace>false</CreateInPlace>
   </TemplateData>
   <TemplateContent>
     <Project File="WinFormApp.xsproj" ReplaceParameters="true">
-         <ProjectItem ReplaceParameters="true">Program.prg</ProjectItem>
-         <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem> 
-         <ProjectItem ReplaceParameters="true" OpenInEditor="true" OpenOrder="10" SubType="Form">WinForm1.prg</ProjectItem>
-         <ProjectItem TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
-         <ProjectItem TargetFileName="Properties\Settings.settings">Settings.settings</ProjectItem>
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.prg">AssemblyInfo.prg</ProjectItem>
+      <ProjectItem TargetFileName="Properties\Resources.resx">Resources.resx</ProjectItem>
+      <ProjectItem TargetFileName="Properties\Settings.settings">Settings.settings</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Form1.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Form1.designer.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Program.prg</ProjectItem>
+      <ProjectItem ReplaceParameters="true">App.config</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>

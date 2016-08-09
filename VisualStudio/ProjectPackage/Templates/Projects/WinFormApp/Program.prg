@@ -9,11 +9,11 @@ USING $safeprojectname$
 BEGIN NAMESPACE $safeprojectname$
 
 [STAThread] ;
-	Function Start() as void
+	FUNCTION Start() AS VOID
     
     Application.EnableVisualStyles()
-    Application.SetCompatibleTextRenderingDefault( false )
-    Application.Run( WinForm1{} )
+    Application.SetCompatibleTextRenderingDefault( FALSE )
+    Application.Run( Form1{} )
    
     RETURN
 	

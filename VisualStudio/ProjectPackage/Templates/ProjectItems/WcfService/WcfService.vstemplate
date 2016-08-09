@@ -4,6 +4,7 @@
     <Name>WCF Service</Name>
     <Description>A WCF Service</Description>
     <TemplateID>XSharp.WcfItem</TemplateID>
+    <Icon>WCF.png</Icon>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>3.0</RequiredFrameworkVersion>
   </TemplateData>

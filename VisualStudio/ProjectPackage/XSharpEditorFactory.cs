@@ -104,16 +104,29 @@ namespace XSharp.Project
         //
         public virtual int MapLogicalView(ref Guid logicalView, out string physicalView)
         {
+            // initialize out parameter
             physicalView = null;
-            if (logicalView == VSConstants.LOGVIEWID_Code ||
-                logicalView == VSConstants.LOGVIEWID_TextView ||
-                logicalView == VSConstants.LOGVIEWID_Debugging ||
-                logicalView == VSConstants.LOGVIEWID_Primary)
+
+            bool isSupportedView = false;
+            // Determine the physical view
+            if (VSConstants.LOGVIEWID_Primary == logicalView)
             {
-                physicalView = null;
-                return VSConstants.S_OK;
+                // primary view uses NULL as pbstrPhysicalView
+                isSupportedView = true;
             }
-            return VSConstants.E_NOTIMPL;
+            else if (VSConstants.LOGVIEWID_Designer == logicalView)
+            {
+                physicalView = "Design";
+                isSupportedView = true;
+            }
+
+            if (isSupportedView)
+                return VSConstants.S_OK;
+            else
+            {
+                // E_NOTIMPL must be returned for any unrecognized rguidLogicalView values
+                return VSConstants.E_NOTIMPL;
+            }
         }
 
         public virtual int Close()

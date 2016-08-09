@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <DefaultName>UserControl.prg</DefaultName>
+    <Name>Windows Forms User Control</Name>
+    <Description Package="{FAE04EC1-301F-11d3-BF4B-00C04F79EFBC}" ID="2296" />
+    <ProjectType>XSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>UserControl.png</Icon>
+    <TemplateID>XSharp.UserControl</TemplateID>
+  </TemplateData>
+   <TemplateContent>
+      <References>
+         <Reference>
+            <Assembly>System</Assembly>
+         </Reference>
+         <Reference>
+            <Assembly>System.Data</Assembly>
+         </Reference>
+         <Reference>
+            <Assembly>System.Drawing</Assembly>
+         </Reference>
+         <Reference>
+            <Assembly>System.Windows.Forms</Assembly>
+         </Reference>
+         <Reference>
+            <Assembly>System.Xml</Assembly>
+         </Reference>
+      </References>
+
+     <ProjectItem ReplaceParameters="true" SubType="UserControl">UserControl.prg</ProjectItem>
+     <ProjectItem ReplaceParameters="true" TargetFileName="$fileinputname$.Designer.prg">UserControl.designer.prg</ProjectItem>
+
+   </TemplateContent>
+</VSTemplate>

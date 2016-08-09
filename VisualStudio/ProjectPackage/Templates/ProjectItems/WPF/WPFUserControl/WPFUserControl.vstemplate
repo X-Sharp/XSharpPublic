@@ -3,7 +3,7 @@
   <TemplateData>
     <Name>WPF UserControl</Name>
     <Description>A WPF User Control</Description>
-    <Icon>__TemplateIcon.ico</Icon>
+    <Icon Package="{b3bae735-386c-4030-8329-ef48eeda4036}" ID="4594" />
     <TemplateID>XSharp.WPF.UserControl</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

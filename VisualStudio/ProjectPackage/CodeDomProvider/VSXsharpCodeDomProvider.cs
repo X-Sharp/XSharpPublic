@@ -135,6 +135,7 @@ namespace XSharp.Project
                 // Retrieve Both CodeCompileUnit
                 CodeCompileUnit formCCU = (CodeCompileUnit)compileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_FORM];
                 CodeCompileUnit designCCU = (CodeCompileUnit)compileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_DESIGNER];
+                formCCU.UserData[XSharpCodeConstants.USERDATA_NOHEADER] = true;
                 //
                 CodeNamespace formNamespace;
                 CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(formCCU, out formNamespace);

@@ -33,7 +33,6 @@
     </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Visual Studio</text></para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">No support for .Designer.prg</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">No intellisense yet</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">No editors for VOBinary entities</text></li>
     </list>

@@ -10,16 +10,16 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="35" colcount="5">
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Feature</text></para>
         </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Core dialect</text></para>
+        <td style="width:290px;">
+          <para styleclass="Normal" style="text-indent:1px; margin-right:0px; margin-left:38px; tabstops:none;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Core dialect</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">VO Dialect 1,2</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Vulcan dialect 1,2</text></para>
         </td>
         <td>
@@ -27,17 +27,17 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">4 Letter </text><text styleclass="Normal" style="font-weight:normal;" translate="true">abbreviations of keywords</text></para>
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">(FUNC, WHIL etc). </text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes, 11</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td>
@@ -45,16 +45,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">&amp;&amp;</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> as single line comment character</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td>
@@ -62,16 +62,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-size:12pt; font-weight:bold;" translate="true">*</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> at beginning of line as comment character</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -79,16 +79,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">ALIAS</text><text styleclass="Normal" translate="true"> (-&gt;) operator</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -96,16 +96,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">ARRAY</text><text styleclass="Normal" translate="true"> type, Including Array literals &amp; NULL_ARRAY, including missing elements</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -113,16 +113,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">BREAK</text><text styleclass="Normal" translate="true"> statement</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -130,16 +130,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">BEGIN SEQUENCE .. RECOVER .. END SEQUENCE</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -147,16 +147,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">CLIPPER</text><text styleclass="Normal" translate="true"> calling convention (also requires USUAL support)</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -164,16 +164,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">CODEBLOCK</text><text styleclass="Normal" translate="true"> type</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Yes</text></para>
         </td>
         <td>
@@ -181,16 +181,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">DATE</text><text styleclass="Normal" translate="true"> type, including Date literals &amp; NULL_DATE</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -198,16 +198,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">DEFINE </text><text styleclass="Normal" style="font-weight:normal;" translate="true">statement</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -215,16 +215,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">FIELD</text><text styleclass="Normal" translate="true"> statement, and recognition of Field names in stead of locals or instance variables</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -232,16 +232,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">FLOAT</text><text styleclass="Normal" translate="true"> type, including Float literals &amp; the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">/vo14</text><text styleclass="Normal" translate="true"> compiler option</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -249,16 +249,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">FUNCTION</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">PROCEDURE </text><text styleclass="Normal" style="font-weight:normal;" translate="true"> inside class are compiled as Static Method of that class</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -266,16 +266,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">GLOBAL</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> statement</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -283,16 +283,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">IIF</text><text styleclass="Normal" translate="true">() expression and the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">/vo10</text><text styleclass="Normal" translate="true"> compiler option</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 7</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 7</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 7</text></para>
         </td>
         <td>
@@ -300,16 +300,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">MEMVAR statement</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">NO</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td>
@@ -317,16 +317,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">PSZ</text><text styleclass="Normal" translate="true"> Type, including NULL_PSZ and (pseudo) PSZ conversion functions (String2Psz(), Cast2Psz()</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -334,16 +334,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">NULL_STRING</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 9</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 9</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 9</text></para>
         </td>
         <td>
@@ -351,16 +351,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">SYMBOL</text><text styleclass="Normal" translate="true"> type, including Symbol literals &amp; NULL_SYMBOL</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -368,16 +368,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">USUAL</text><text styleclass="Normal" translate="true"> type, including NIL literal</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -385,30 +385,30 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Special features</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
         </td>
-        <td>
+        <td style="width:275px;">
         </td>
-        <td>
+        <td style="width:256px;">
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Untyped Literal Arrays</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 8</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 8</text></para>
         </td>
         <td>
@@ -416,16 +416,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing types allowed</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 3</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 3</text></para>
         </td>
         <td>
@@ -433,16 +433,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing arguments in function/method calls MyFunc(1,,2)</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -450,29 +450,29 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; font-style:italic;" translate="true">Pseudo functions</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
         </td>
-        <td>
+        <td style="width:275px;">
         </td>
-        <td>
+        <td style="width:256px;">
         </td>
         <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;PCount(), _GetMParam(), _GetFParam()</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 4</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 4</text></para>
         </td>
         <td>
@@ -480,16 +480,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;SLen()</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 5</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 5</text></para>
         </td>
         <td>
@@ -497,16 +497,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">_Chr()</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
@@ -514,16 +514,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;AltD()</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 6</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes 6</text></para>
         </td>
         <td>
@@ -531,23 +531,23 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Other information</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
         </td>
-        <td>
+        <td style="width:275px;">
         </td>
-        <td>
+        <td style="width:256px;">
         </td>
         <td>
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Function class name</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Xs$Globals</text><br/><text styleclass="Normal" translate="true">X$&lt;ModuleName&gt;$Globals for static functions and globals</text></para>
         </td>
         <td colspan="2">
@@ -558,16 +558,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">VOSTRUCT </text><text styleclass="Normal" style="font-weight:normal;" translate="true">and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">AS/IS </text><text styleclass="Normal" style="font-weight:normal;" translate="true">syntax</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No 10</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
         </td>
         <td>
@@ -575,16 +575,16 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="width:340px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">UNION </text><text styleclass="Normal" style="font-weight:normal;" translate="true">and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">AS/IS </text><text styleclass="Normal" style="font-weight:normal;" translate="true">syntax</text></para>
         </td>
-        <td>
+        <td style="width:290px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No 10</text></para>
         </td>
-        <td>
+        <td style="width:275px;">
           <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
         </td>
-        <td>
+        <td style="width:256px;">
           <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
         </td>
         <td>

@@ -2,16 +2,16 @@
 
 #define Product         "XSharp"
 #define ProdVer         "XSharp 0.2.6.0"
-#define ProdBuild       "XSharp Beta 5b"
+#define ProdBuild       "XSharp Beta 6"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.6.2600"
-#define VITextVersion   "0.2.6.2600 (Beta 6)"
-#define TouchDate       "2016-08-08"
-#define TouchTime       "02:06:00"
-#define SetupExeName    "XSharpSetup0260"
+#define VIVersion       "0.2.6.2601"
+#define VITextVersion   "0.2.6.2601 (Beta 6)"
+#define TouchDate       "2016-08-10"
+#define TouchTime       "02:06:01"
+#define SetupExeName    "XSharpSetup026a"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -24,8 +24,8 @@
 #define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
-#define XIDESetup       "XIDE_Set_up_1.04.exe"
-#define XIDEVersion     "1.04"
+#define XIDESetup       "XIDE_Set_up_1.05.exe"
+#define XIDEVersion     "1.05"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
@@ -194,6 +194,7 @@ Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVs2
 Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}Itemtemplates\U*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2015
@@ -207,9 +208,9 @@ Source: "{#BinPFolder}XSharpProject2015.pdb";             DestDir: "{code:GetVs2
 Source: "{#BinPFolder}XSharpProject2015.pkgdef";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015; 
 Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 
-Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharp.ico ";                        DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
+Source: "{#BinFolder}XSharp.CodeAnalysis.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
 ;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";  Flags: {#StdFlags}; Components: vs2015
 
 
@@ -230,6 +231,7 @@ Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVsN
 Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}Itemtemplates\U*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext

@@ -1,4 +1,4 @@
-begin namespace $rootnamespace$
+﻿begin namespace $rootnamespace$
 
     PARTIAL CLASS $safeitemrootname$ INHERIT System.Windows.Forms.UserControl
        /// <summary>

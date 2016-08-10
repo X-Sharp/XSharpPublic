@@ -126,8 +126,7 @@ namespace XSharp.Project
             if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_HASDESIGNER))
             {
                 // Retrieve the Form Class
-                CodeNamespace designerNamespace;
-                CodeTypeDeclaration designerClass = XSharpCodeDomHelper.FindDesignerClass(compileUnit, out designerNamespace);
+                CodeTypeDeclaration designerClass = XSharpCodeDomHelper.FindDesignerClass(compileUnit);
                 // and retrieve the filename of the prg file
                 String prgFileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
                 // Build the Designer FileName
@@ -135,12 +134,11 @@ namespace XSharp.Project
                 // Retrieve Both CodeCompileUnit
                 CodeCompileUnit formCCU = (CodeCompileUnit)compileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_FORM];
                 CodeCompileUnit designCCU = (CodeCompileUnit)compileUnit.UserData[XSharpCodeConstants.USERDATA_CCU_DESIGNER];
+                // suppress generating the "generated code" header in the form.prg
                 formCCU.UserData[XSharpCodeConstants.USERDATA_NOHEADER] = true;
                 //
-                CodeNamespace formNamespace;
-                CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(formCCU, out formNamespace);
-                CodeNamespace designNamespace;
-                CodeTypeDeclaration designClass = XSharpCodeDomHelper.FindFirstClass(designCCU, out designNamespace);
+                CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(formCCU);
+                CodeTypeDeclaration designClass = XSharpCodeDomHelper.FindFirstClass(designCCU);
                 // Now, remove the members
                 formClass.Members.Clear();
                 designClass.Members.Clear();
@@ -182,19 +180,20 @@ namespace XSharp.Project
                 // First, let's make in Memory
                 String generatedSource;
                 MemoryStream inMemory = new MemoryStream();
-                StreamWriter designerStream = new StreamWriter(inMemory, System.Text.Encoding.Default);
+                StreamWriter designerStream = new StreamWriter(inMemory, Encoding.UTF8);
                 // 
                 base.GenerateCodeFromCompileUnit(designCCU, designerStream, options);
                 // and force Flush
                 designerStream.Flush();
                 // Reset and read to String
                 inMemory.Position = 0;
-                StreamReader reader = new StreamReader(inMemory, System.Text.Encoding.Default);
+                StreamReader reader = new StreamReader(inMemory, Encoding.UTF8, true);
                 generatedSource = reader.ReadToEnd();
+                Encoding realencoding = reader.CurrentEncoding;
                 reader.Close();
                 designerStream.Close();
                 // and now write the "real" file
-                designerStream = new StreamWriter(designerPrgFile, false, System.Text.Encoding.Default);
+                designerStream = new StreamWriter(designerPrgFile, false, realencoding);
                 designerStream.Write(generatedSource);
                 designerStream.Flush();
                 designerStream.Close();
@@ -203,8 +202,7 @@ namespace XSharp.Project
                 parser.TabSize = XSharpCodeDomProvider.TabSize;
                 parser.FileName = designerPrgFile;
                 CodeCompileUnit resultDesigner = parser.Parse(generatedSource);
-                CodeNamespace resultNamespace;
-                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner, out resultNamespace);
+                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindDesignerClass(resultDesigner);
                 // just to be sure...
                 if (resultClass != null)
                 {
@@ -229,7 +227,7 @@ namespace XSharp.Project
                 // Don't forget to set the name of the file where the source is... 
                 parser.FileName = prgFileName;
                 resultDesigner = parser.Parse(generatedSource);
-                resultClass = XSharpCodeDomHelper.FindFirstClass(resultDesigner, out resultNamespace);
+                resultClass = XSharpCodeDomHelper.FindFirstClass(resultDesigner);
                 // just to be sure...
                 if (resultClass != null)
                 {
@@ -258,11 +256,12 @@ namespace XSharp.Project
             else
 #endif
             {
+                // suppress generating the "generated code" header
+                compileUnit.UserData[XSharpCodeConstants.USERDATA_NOHEADER] = true;
                 base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
                 writer.Flush();
                 // Designer gave us these informations
-                CodeNamespace formNamespace;
-                CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(compileUnit, out formNamespace);
+                CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(compileUnit);
                 // Now, we must re-read it and parse again
                 IServiceProvider provider = (DocDataTextWriter)writer;
                 DocData docData = (DocData)provider.GetService(typeof(DocData));
@@ -271,9 +270,12 @@ namespace XSharp.Project
                 string generatedSource = ddtr.ReadToEnd();
                 XSharpCodeParser parser = new XSharpCodeParser();
                 parser.TabSize = XSharpCodeDomProvider.TabSize;
+                if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_FILENAME))
+                {
+                    parser.FileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
+                }
                 CodeCompileUnit resultCcu = parser.Parse(generatedSource);
-                CodeNamespace resultNamespace;
-                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindFirstClass(resultCcu, out resultNamespace);
+                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindFirstClass(resultCcu);
                 // just to be sure...
                 if (resultClass != null)
                 {

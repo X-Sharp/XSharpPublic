@@ -1,4 +1,4 @@
-#include "VOSystemClasses.vh"
+﻿#include "VOSystemClasses.vh"
 #include "VOSystemLibrary.vh"
 
 CLASS $safeitemrootname$ INHERIT DBSERVER

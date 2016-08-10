@@ -1,2 +1,2 @@
-#include "VOGUIClasses.vh"
+﻿#include "VOGUIClasses.vh"
 #include "$safeitemname$.vh"

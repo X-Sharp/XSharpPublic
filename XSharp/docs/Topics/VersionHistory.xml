@@ -32,6 +32,7 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed an issue in the CodeDom generator for generating wrappers for Services</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The XSharp Language service will no longer be used for Vulcan PRG files in a Side by Side installation</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Editor performance for large source files has been improved.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">All generated files are now stored in UTF, to make sure that special characters are stored correctly. If you are seeing warnings about code page conversions when generating code, then save files as UTF by choosing &quot;File - Advanced Save Options&quot;, and select a Unicode file format, from the Visual Studio Menu.</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.51</text></para>

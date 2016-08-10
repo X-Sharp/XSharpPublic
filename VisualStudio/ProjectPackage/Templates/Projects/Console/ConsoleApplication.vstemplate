@@ -2,8 +2,8 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
     <Name>Console Application</Name>
-    <Description>Basic XSharp Console Application.</Description>
-    <Icon>XSharp.ico</Icon>
+    <Description>A project for creating a command-line application.</Description>
+    <Icon>ConsoleApplication.png</Icon>
     <TemplateID>XSharp.ConsoleApplication</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>

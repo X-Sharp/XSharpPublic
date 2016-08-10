@@ -35,7 +35,6 @@ namespace XSharp.CodeDom
         {
             this.selector = ":";
             this.staticSelector = ".";
-            //System.Diagnostics.Debugger.Launch();
         }
 
         protected override string NullToken
@@ -266,7 +265,7 @@ namespace XSharp.CodeDom
                 {
                     String sourceCode = e.UserData[XSharpCodeConstants.USERDATA_CODE] as string;
                     this.Output.Write(sourceCode);
-                    this.Output.WriteLine();
+                    //this.Output.WriteLine();
                 }
                 else
                     this.GenerateStatements(e.Statements);
@@ -669,10 +668,10 @@ namespace XSharp.CodeDom
             this.GenerateCommentStatements(e.Comments);
             // Generate Imports BEFORE the NameSpace
             this.GenerateNamespaceImports(e);
-            this.Output.WriteLine("");
+            //this.Output.WriteLine("");
             //
             this.GenerateNamespaceStart(e);
-            this.Output.WriteLine("");
+            //this.Output.WriteLine("");
             this.GenerateTypes(e);
             this.GenerateNamespaceEnd(e);
         }

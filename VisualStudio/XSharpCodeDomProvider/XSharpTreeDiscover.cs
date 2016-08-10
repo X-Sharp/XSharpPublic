@@ -192,7 +192,7 @@ namespace XSharp.CodeDom
                 {
                     // Copy all source code to User_Data
                     // --> See XSharpCodeGenerator.GenerateMethod for writing
-                    FillCodeSource(newMethod, context.StmtBlk);
+                    FillCodeSource(newMethod, context.end, context);
 
                     // The designer will need to locate the code in the file, so we must add the location
                     if ( context.StmtBlk.ChildCount > 0 )
@@ -263,7 +263,7 @@ namespace XSharp.CodeDom
             {
                 // Copy all source code to User_Data
                 // --> See XSharpCodeGenerator.GenerateMethod for writing
-                FillCodeSource(ctor, context.StmtBlk);
+                FillCodeSource(ctor, context.end, context);
             }
             //
             this.CurrentClass.Members.Add(ctor);
@@ -606,13 +606,13 @@ namespace XSharp.CodeDom
             newElement.UserData[typeof(System.Drawing.Point)] = data.CaretPosition;
         }
 
-        private void FillCodeSource(CodeObject element, XSharpParser.StatementBlockContext statement)
+        private void FillCodeSource(CodeObject element, IToken endOfFirstLine, ParserRuleContext context)
         {
-            int length = statement.Stop.StopIndex - statement.Start.StartIndex;
+            int length = context.Stop.StopIndex - endOfFirstLine.StopIndex-2;
             string extract = "";
             if (length > 0)
-                extract = this.SourceCode.Substring(statement.Start.StartIndex, length);
-            element.UserData[XSharpCodeConstants.USERDATA_CODE] = extract;
+                extract = this.SourceCode.Substring(endOfFirstLine.StopIndex+1, length).TrimStart();
+             element.UserData[XSharpCodeConstants.USERDATA_CODE] = extract;
         }
 
         private CodeSnippetTypeMember CreateSnippetMember(ParserRuleContext context)

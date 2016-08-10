@@ -1,4 +1,4 @@
-USING System
+﻿USING System
 USING System.Collections.Generic
 $if$ ($targetframeworkversion$ >= 3.5)USING System.Linq
 $endif$USING System.Text

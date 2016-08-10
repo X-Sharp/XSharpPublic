@@ -1,4 +1,4 @@
-#include "VOGUIClasses.vh"
+﻿#include "VOGUIClasses.vh"
 #include "GlobalDefines.vh"
 
 CLASS $safeitemrootname$ INHERIT Menu

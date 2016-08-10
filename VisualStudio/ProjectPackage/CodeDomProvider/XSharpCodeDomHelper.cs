@@ -86,25 +86,10 @@ namespace XSharp.CodeDom
         /// </summary>
         /// <param name="ccu"></param>
         /// <returns></returns>
-        private static CodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu)
+        public static CodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu)
         {
-            CodeTypeDeclaration rstClass = null;
-            if (ccu != null)
-            {
-                foreach (CodeNamespace namespace2 in ccu.Namespaces)
-                {
-                    foreach (CodeTypeDeclaration declaration in namespace2.Types)
-                    {
-                        //  The first Type == The first Class declaration
-                        if (declaration.IsClass)
-                        {
-                            rstClass = declaration;
-                            break;
-                        }
-                    }
-                }
-            }
-            return rstClass;
+            CodeNamespace namespaceName;
+            return FindFirstClass(ccu, out namespaceName);
         }
 
         public static CodeTypeDeclaration FindFirstClass(CodeCompileUnit ccu, out CodeNamespace namespaceName)
@@ -136,6 +121,12 @@ namespace XSharp.CodeDom
         /// <param name="ccu"></param>
         /// <param name="namespaceName"></param>
         /// <returns></returns>
+        internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu)
+        {
+            CodeNamespace namespaceName;
+            return FindDesignerClass(ccu, out namespaceName);
+        }
+
         internal static CodeTypeDeclaration FindDesignerClass(CodeCompileUnit ccu, out CodeNamespace namespaceName)
         {
             namespaceName = null;
@@ -260,7 +251,7 @@ namespace XSharp.CodeDom
         static public void DumpCodeCompileUnit(CodeCompileUnit ccu, string FileName, bool append)
         {
             //
-            writer = new StreamWriter(FileName, append, System.Text.Encoding.Default);
+            writer = new StreamWriter(FileName, append, System.Text.Encoding.UTF8);
             String Delimiter = new String('-', 5);
             String Line = new String('=', 25);
             indent = 0;

@@ -183,6 +183,10 @@
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.png" />
     <ZipItem Include="Templates\ProjectItems\Code\TextFile\TextFile.png" />
     <ZipItem Include="Templates\ProjectItems\Code\Header\Include.png" />
+    <ZipProject Include="Templates\Projects\ClassLibrary\ClassLibrary.png" />
+    <ZipProject Include="Templates\Projects\Console\ConsoleApplication.png" />
+    <ZipProject Include="Templates\Projects\WinFormApp\WinFormApp.png" />
+    <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.png" />
     <Content Include="XSharp.png" />
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -304,21 +308,17 @@
     <ZipProject Include="Templates\Projects\ClassLibrary\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\ClassLibrary\Class1.prg" />
     <ZipProject Include="Templates\Projects\ClassLibrary\ClassLibrary.vstemplate" />
-    <ZipProject Include="Templates\Projects\ClassLibrary\XSharp.ico" />
     <ZipProject Include="Templates\Projects\Console\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\Console\ConsoleApplication.vstemplate" />
     <ZipProject Include="Templates\Projects\Console\Program.prg" />
-    <ZipProject Include="Templates\Projects\Console\XSharp.ico" />
     <ZipProject Include="Templates\Projects\WinFormApp\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\WinFormApp\Program.prg" />
     <ZipProject Include="Templates\Projects\WinFormApp\Form1.prg" />
     <ZipProject Include="Templates\Projects\WinFormApp\WinFormApp.vstemplate" />
-    <ZipProject Include="Templates\Projects\WinFormApp\XSharp.ico" />
     <ZipProject Include="Templates\Projects\WPFApplication\App.xaml.prg" />
     <ZipProject Include="Templates\Projects\WPFApplication\AssemblyInfo.prg" />
     <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.vstemplate" />
     <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml.prg" />
-    <ZipProject Include="Templates\Projects\WPFApplication\XSharp.ico" />
     <Content Include="LanguageService\LanguageService.vsct" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\WPFPage.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\WPFUserControl.vstemplate">

@@ -2,8 +2,8 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
     <Name>Windows Forms Application</Name>
-    <Description>Basic XSharp Windows Forms Application.</Description>
-    <Icon>XSharp.ico</Icon>
+    <Description>A project for creating an application with a Windows Forms user interface.</Description>
+    <Icon>WinFormApp.png</Icon>
     <TemplateID>XSharp.WindowsFormsApplication</TemplateID>
     <ProjectType>XSharp</ProjectType>
     <RequiredFrameworkVersion>2.0</RequiredFrameworkVersion>

@@ -24,6 +24,7 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a problem when calling Clipper Calling Convention functions and/or methods with a single parameter</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a crash with defines in the preprocessor</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">_CODEBLOCK is now an alias for the CODEBLOCK type</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a crash for properties defined with parentheses or square brackets, but without actual parameters</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Visual Studio Integration</text></para>

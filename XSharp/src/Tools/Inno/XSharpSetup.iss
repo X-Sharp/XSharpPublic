@@ -7,11 +7,11 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.6.2603"
-#define VITextVersion   "0.2.6.2603 (Beta 6)"
-#define TouchDate       "2016-08-10"
-#define TouchTime       "02:06:03"
-#define SetupExeName    "XSharpSetup026c"
+#define VIVersion       "0.2.6.2604"
+#define VITextVersion   "0.2.6.2604 (Beta 6)"
+#define TouchDate       "2016-08-15"
+#define TouchTime       "02:06:04"
+#define SetupExeName    "XSharpSetup026d"
 #define InstallPath     "XSharpPath"
 
 ;Folders
@@ -320,7 +320,7 @@ Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} V
 ; Template cache, component cache and previous installation of our project system
 ; vs2015
 Type: files;          Name: "{app}\License.rtf"; 
-
+Type: filesandordirs; Name: "{app}\Xide"; 
 Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            Components: vs2015
 Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            Components: vs2015
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       Components: vs2015
@@ -350,8 +350,8 @@ Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Componen
 Type: filesandordirs; Name: "{code:GetVsNextIdeDir}\Extensions\XSharp"; Components: vsnext;  
 Type: filesandordirs; Name: "{commondocs}\XSharp\Examples";
 Type: dirifempty;     Name: "{app}\Include"; 
-Type: dirifempty;     Name: "{app}\Xide"; 
 Type: dirifempty;     Name: "{app}"; 
+Type: filesandordirs; Name: "{app}\Xide"; 
 
 Type: dirifempty;     Name: "{commondocs}\XSharp"; 
 

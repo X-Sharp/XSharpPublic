@@ -2106,7 +2106,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m.ToTokenList();
                 _pool.Free(m);
             }
-            if (context.ParamList == null)
+            if (context.ParamList == null || context.ParamList._Params.Count == 0)
                 context.Put(_syntaxFactory.PropertyDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: mods,
@@ -2159,17 +2159,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitPropertyParameterList([NotNull] XP.PropertyParameterListContext context)
         {
             var @params = _pool.AllocateSeparated<ParameterSyntax>();
-            foreach (var paramCtx in context._Params)
+            if (context._Params.Count > 0)
             {
-                if (@params.Count>0)
-                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
-                @params.Add(paramCtx.Get<ParameterSyntax>());
+                foreach (var paramCtx in context._Params)
+                {
+                    if (@params.Count > 0)
+                        @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    @params.Add(paramCtx.Get<ParameterSyntax>());
+                }
+                context.Put(_syntaxFactory.BracketedParameterList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    @params,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                _pool.Free(@params);
             }
-            context.Put(_syntaxFactory.BracketedParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                @params,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
-            _pool.Free(@params);
         }
 
         public override void ExitPropertyAutoAccessor([NotNull] XP.PropertyAutoAccessorContext context)

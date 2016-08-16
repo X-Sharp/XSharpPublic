@@ -326,6 +326,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 type.Name == "__Usual" &&
                 CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
         }
+
+        public static bool IsVulcanRT(this AssemblySymbol _asm)
+        {
+            // TODO (nvk): there must be a better way!
+            return
+                (object)_asm != null &&
+                (_asm.Name == "VulcanRTFuncs" || _asm.Name == "VulcanRT");
+        }
 #endif
 
 

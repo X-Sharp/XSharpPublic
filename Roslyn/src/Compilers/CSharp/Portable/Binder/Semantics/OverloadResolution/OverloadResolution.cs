@@ -1202,6 +1202,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(m2.Result.IsValid);
             Debug.Assert(arguments != null);
 
+#if XSHARP
+            // Prefer the member not declared in VulcanRT, if applicable
+            if (Compilation.Options.IsDialectVO && m1.Member.ContainingAssembly != m2.Member.ContainingAssembly)
+            {
+                if (m1.Member.ContainingAssembly.IsVulcanRT())
+                {
+                    return BetterResult.Right;
+                }
+                else if (m2.Member.ContainingAssembly.IsVulcanRT())
+                {
+                    return BetterResult.Left;
+                }
+            }
+#endif
+
             // SPEC:
             //   Parameter lists for each of the candidate function members are constructed in the following way: 
             //   The expanded form is used if the function member was applicable only in the expanded form.
@@ -1552,21 +1567,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return (m1ModifierCount < m2ModifierCount) ? BetterResult.Left : BetterResult.Right;
             }
-
-#if XSHARP
-            // Prefer the member not declared in VulcanRT, if applicable
-            if (Compilation.Options.IsDialectVO && m1.Member.ContainingAssembly != m2.Member.ContainingAssembly)
-            {
-                if (m1.Member.ContainingAssembly.IsVulcanRT())
-                {
-                    return BetterResult.Right;
-                }
-                else if (m2.Member.ContainingAssembly.IsVulcanRT())
-                {
-                    return BetterResult.Left;
-                }
-            }
-#endif
 
             // Otherwise, neither function member is better.
             return BetterResult.Neither;

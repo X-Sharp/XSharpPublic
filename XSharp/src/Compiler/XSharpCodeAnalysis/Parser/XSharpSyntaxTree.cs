@@ -253,7 +253,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public IParseTree XNode { get; internal set; }
         public ITokenStream XTokens { get; internal set; }
         public Dictionary<string, SourceText> IncludedFiles { get; internal set; }
-
+        public bool XVoDecl { get; internal set; }
+        public bool XVoIsDecl { get; internal set; }
     }
 }
 
@@ -262,6 +263,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     public abstract partial class CSharpSyntaxNode
     {
         internal IParseTree XNode { get { return (((InternalSyntax.CSharpSyntaxNode)(Green)).XNode) ?? Parent?.XNode; } }
+        internal bool XVoDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoDecl; } }
+        internal bool XVoIsDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDecl; } }
     }
 }
 

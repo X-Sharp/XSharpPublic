@@ -198,8 +198,8 @@ vostruct			: (Modifiers=votypeModifiers)?
                     { SetSequencePoint(_localctx,$end); }
                     ;
 
-vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT ((AS | IS) DataType=datatype)? end=EOS
-                    | MEMBER Id=identifier ((AS | IS) DataType=datatype)? end=EOS
+vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? end=EOS
+                    | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? end=EOS
                     { SetSequencePoint(_localctx,$end); }
                     ;
 
@@ -214,8 +214,8 @@ votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
                     ;
 
 
-vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT ((AS | IS) DataType=datatype)? end=EOS
-                    | MEMBER Id=identifier ((AS | IS) DataType=datatype)? end=EOS
+vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? end=EOS
+                    | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? end=EOS
                     { SetSequencePoint(_localctx,$end); }
                     ;
 
@@ -340,7 +340,7 @@ classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=class
 classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE) )+
                     ;
 
-classVarList		: Var+=classvar (COMMA Var+=classvar)* ((AS | IS) DataType=datatype)?
+classVarList		: Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
                        { SetSequencePoint(_localctx); }
                     ;
 
@@ -602,7 +602,7 @@ localdecl          : (Static=STATIC LOCAL? | LOCAL)
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
-                     (ASSIGN_OP Expression=expression)? ((AS | IS) DataType=datatype)?
+                     (ASSIGN_OP Expression=expression)? (As=(AS | IS) DataType=datatype)?
                      { SetSequencePoint(_localctx); }
                    ;
                       

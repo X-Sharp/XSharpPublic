@@ -233,6 +233,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // alias to a type) we report the obsolete type here.
                     ReportDiagnosticsIfObsolete(diagnostics, result, syntax, hasBaseReceiver: false);
                 }
+#if XSHARP
+                if (syntax.XVoDecl)
+                {
+                    if ((symbol as TypeSymbol)?.IsVoStructOrUnion() == true)
+                    {
+                        if (!syntax.XVoIsDecl)
+                        {
+                            symbol = new PointerTypeSymbol((TypeSymbol)symbol);
+                        }
+                    }
+                    else if (syntax.XVoIsDecl)
+                    {
+                        var _diagnosticInfo = diagnostics.Add(ErrorCode.ERR_BadSKknown, syntax.Location, syntax, symbol.GetKindText(), "VOSTRUCT/UNION");
+                        symbol = new ExtendedErrorTypeSymbol(GetContainingNamespaceOrType(symbol), symbol, LookupResultKind.NotATypeOrNamespace, _diagnosticInfo);
+                    }
+                }
+#endif
 
                 return symbol;
             }

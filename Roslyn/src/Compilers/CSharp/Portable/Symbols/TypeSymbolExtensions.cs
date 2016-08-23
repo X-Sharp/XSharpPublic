@@ -302,6 +302,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
 
         private static readonly string[] s_VulcanNamespace = { "Vulcan", "" };
+        private static readonly string[] s_VulcanInternalNamespace = { "Internal", "Vulcan", "" };
 
         public static bool IsCodeblock(this TypeSymbol _type)
         {
@@ -325,6 +326,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 !type.MangleName &&
                 type.Name == "__Usual" &&
                 CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
+        }
+
+        public static bool IsVoStructOrUnion(this TypeSymbol _type)
+        {
+            // TODO (nvk): there must be a better way!
+            var type = _type.OriginalDefinition as NamedTypeSymbol;
+            if ((object)type != null && type.Arity == 0 && !type.MangleName)
+            {
+                var attrs = type.GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.Name == "VOStructAttribute" && CheckFullName(atype.ContainingSymbol, s_VulcanInternalNamespace))
+                        return true;
+                }
+            }
+            return false;
         }
 
         public static bool IsVulcanRT(this AssemblySymbol _asm)

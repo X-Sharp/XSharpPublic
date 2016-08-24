@@ -1417,24 +1417,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
             var ch = context.children[0];
-            XP.FuncprocModifiersContext modifiers = null;
+            bool bProcess = false, bStaticVisibility = false;
             if (ch is XP.FunctionContext)
             {
-                modifiers = ((XP.FunctionContext)ch).Modifiers;
+                bProcess = true;
+                var modifiers =  ((XP.FunctionContext)ch).Modifiers;
+                if (modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
             else if (ch is XP.ProcedureContext)
             {
-                modifiers = ((XP.ProcedureContext)ch).Modifiers;
+                bProcess = true;
+                var modifiers = ((XP.ProcedureContext)ch).Modifiers;
+                if (modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
-            else if (ch is XP.VoglobalContext) {
-                modifiers = ((XP.VoglobalContext)ch).Modifiers;
+            else if (ch is XP.VoglobalContext)
+            {
+                bProcess = true;
+                var modifiers = ((XP.VoglobalContext)ch).Modifiers;
+                if (modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
-            else if(ch is XP.VodefineContext) {
-                modifiers = ((XP.VodefineContext)ch).Modifiers;
+            else if (ch is XP.VodefineContext)
+            {
+                bProcess = true;
+                var modifiers = ((XP.VodefineContext)ch).Modifiers;
+                if (modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
             }
-            if(modifiers != null) {
+            else if (ch is XP.VodllContext)
+            {
+                bProcess = true;
+                var modifiers = ((XP.VodllContext)ch).Modifiers;
+                if (modifiers != null)
+                    bStaticVisibility = modifiers.IsStaticVisible;
+            }
+            if (bProcess) {
                 string className = GlobalClassName;
-                if (modifiers.IsStaticVisible) {
+                if (bStaticVisibility) {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
                     if(className.Contains(".Functions"))
@@ -1443,7 +1464,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         className = className.Replace("$Globals", "$" + filename + "$Globals");
                 }
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, modifiers.IsStaticVisible, ch.Get<MemberDeclarationSyntax>()));
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, bStaticVisibility, ch.Get<MemberDeclarationSyntax>()));
             }
              else {
                 context.Put(ch.Get<CSharpSyntaxNode>());

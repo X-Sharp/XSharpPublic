@@ -118,9 +118,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public const string XSharpGlobalClassName = "Xs$Globals";
         protected const string ImpliedTypeName = "Xs$var";
-        protected const string ForStartNamePrefix = "Xs$ForStart$";
-        protected const string ForEndNamePrefix = "Xs$ForEnd$";
-        protected const string ForIndNamePrefix = "Xs$ForInd$";
         protected const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
         protected const string StaticLocalInitFieldNameSuffix = "$init";
         protected const string StaticLocalLockFieldNameSuffix = "$lock";
@@ -3543,16 +3540,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Step.Put(GenerateLiteral("1", 1));
             }
             switch (context.Dir.Type) {
-                case XP.UPTO:
-                    whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
-                        iterExpr,
-                        SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
-                        context.FinalExpr.Get<ExpressionSyntax>());
-                    incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
-                        iterExpr,
-                        SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
-                        context.Step.Get<ExpressionSyntax>());
-                    break;
                 case XP.DOWNTO:
                     whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression,
                         iterExpr,
@@ -3563,44 +3550,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.MinusEqualsToken),
                         context.Step.Get<ExpressionSyntax>());
                     break;
+                case XP.UPTO:
                 case XP.TO:
                 default:
-                    var startToken = ForStartNamePrefix+context.Dir.StartIndex;
-                    var endToken = ForEndNamePrefix+context.Dir.StartIndex;
-                    var indToken = ForIndNamePrefix+context.Dir.StartIndex;
-                    var stmts = _pool.Allocate<StatementSyntax>();
-                    blockStmts = stmts;
-                    stmts.Add(GenerateLocalDecl(startToken, _impliedType, initExpr));
-                    stmts.Add(GenerateLocalDecl(endToken, _impliedType, context.FinalExpr.Get<ExpressionSyntax>()));
-                    var ltEExpr = _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
-                                GenerateSimpleName(startToken),
-                                SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
-                                GenerateSimpleName(endToken));
-                    stmts.Add(GenerateLocalDecl(indToken, _impliedType, ltEExpr));
-                    whileExpr = _syntaxFactory.ConditionalExpression(
-                        GenerateSimpleName(indToken),
-                        SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                        _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
+                    whileExpr = _syntaxFactory.BinaryExpression(SyntaxKind.LessThanOrEqualExpression,
                             iterExpr,
                             SyntaxFactory.MakeToken(SyntaxKind.LessThanEqualsToken),
-                            GenerateSimpleName(endToken)),
-                        SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                        _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression,
-                            iterExpr,
-                            SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken),
-                            GenerateSimpleName(endToken)));
+                            context.FinalExpr.Get<ExpressionSyntax>());
                     incrExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
-                        iterExpr,
-                        SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
-                        _syntaxFactory.ConditionalExpression(
-                            GenerateSimpleName(indToken),
-                            SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                            context.Step.Get<ExpressionSyntax>(),
-                            SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                            _syntaxFactory.PrefixUnaryExpression(SyntaxKind.UnaryMinusExpression,
-                                SyntaxFactory.MakeToken(SyntaxKind.MinusToken),
-                                context.Step.Get<ExpressionSyntax>())));
-                    break;
+                                iterExpr,
+                                SyntaxFactory.MakeToken(SyntaxKind.PlusEqualsToken),
+                                context.Step.Get<ExpressionSyntax>());
+                                break;
             }
             var decl = default(VariableDeclarationSyntax);
             var init = _pool.AllocateSeparated<ExpressionSyntax>();

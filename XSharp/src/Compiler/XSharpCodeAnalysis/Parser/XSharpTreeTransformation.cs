@@ -998,18 +998,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string nameSpace;
             splitClassNameAndNamespace(ref className, out nameSpace);
             if(members.Length == 0) {
+                var statements = _pool.Allocate<StatementSyntax>();
+                GenerateAttributeList(attributeLists, CompilerGenerated);
+                statements.Add(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                var block = MakeBlock(statements);
+                _pool.Free(statements);
+
                 members = new MemberDeclarationSyntax[] {
-                    _syntaxFactory.FieldDeclaration(EmptyList<AttributeListSyntax>(),
-                        TokenList(SyntaxKind.ConstKeyword,SyntaxKind.PublicKeyword),
-                        _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword)),
-                            MakeSeparatedList<VariableDeclaratorSyntax>(
-                                GenerateVariable("Xs$Dummy",GenerateLiteral("", 0))
-                                )),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                    _syntaxFactory.ConstructorDeclaration(
+                    attributeLists: attributeLists,
+                    modifiers: TokenList(SyntaxKind.StaticKeyword),
+                    identifier: SyntaxFactory.Identifier(className),
+                    parameterList: EmptyParameterList(),
+                    initializer: null, 
+                    body: block,
+                    semicolonToken: null )
+
                 };
-                GenerateAttributeList(attributeLists,
-                    CompilerGenerated,
-                    "global::System.Runtime.CompilerServices.CompilerGlobalScope");
+                GenerateAttributeList(attributeLists,"global::System.Runtime.CompilerServices.CompilerGlobalScope");
             }
             if(members.Length > 0) {
                 foreach(var m in members)
@@ -1024,7 +1030,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
             MemberDeclarationSyntax r = 
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: attributeLists,
+                attributeLists: attributeLists, // will only be filled when the static constructor is created
                 modifiers: modifiers.ToTokenList(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -1411,42 +1417,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
             var ch = context.children[0];
-            bool bStaticVisibility = false;
-            bool bProcess = false;
-
-            if(ch is XP.FunctionContext ) {
-                bProcess = true;
-                XP.FuncprocModifiersContext modifiers = ((XP.FunctionContext)ch).Modifiers;
-                if (modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
+            XP.FuncprocModifiersContext modifiers = null;
+            if (ch is XP.FunctionContext)
+            {
+                modifiers = ((XP.FunctionContext)ch).Modifiers;
             }
-            else if(ch is XP.ProcedureContext) {
-                bProcess = true;
-                XP.FuncprocModifiersContext modifiers = ((XP.ProcedureContext)ch).Modifiers;
-                if(modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
+            else if (ch is XP.ProcedureContext)
+            {
+                modifiers = ((XP.ProcedureContext)ch).Modifiers;
             }
-            else if(ch is XP.VoglobalContext) {
-                bProcess = true;
-                XP.FuncprocModifiersContext modifiers = ((XP.VoglobalContext)ch).Modifiers;
-                if(modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
+            else if (ch is XP.VoglobalContext) {
+                modifiers = ((XP.VoglobalContext)ch).Modifiers;
             }
             else if(ch is XP.VodefineContext) {
-                bProcess = true;
-                XP.FuncprocModifiersContext modifiers = ((XP.VodefineContext)ch).Modifiers;
-                if(modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
+                modifiers = ((XP.VodefineContext)ch).Modifiers;
             }
-            else if(ch is XP.VodllContext) {
-                bProcess = true;
-                XP.FuncprocModifiersContext modifiers = ((XP.VodllContext)ch).Modifiers;
-                if(modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
-            }
-            if(bProcess) {
+            if(modifiers != null) {
                 string className = GlobalClassName;
-                if (bStaticVisibility) {
+                if (modifiers.IsStaticVisible) {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
                     if(className.Contains(".Functions"))
@@ -1455,7 +1443,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         className = className.Replace("$Globals", "$" + filename + "$Globals");
                 }
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, bStaticVisibility, ch.Get<MemberDeclarationSyntax>()));
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, modifiers.IsStaticVisible, ch.Get<MemberDeclarationSyntax>()));
             }
              else {
                 context.Put(ch.Get<CSharpSyntaxNode>());

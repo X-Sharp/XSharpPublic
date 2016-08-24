@@ -1950,6 +1950,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var varType = context.Vars?.DataType?.Get<TypeSyntax>() ?? MissingType();
+            varType.XVoDecl = true;
+            if (context.Vars?.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
+            }
             foreach (var varCtx in context.Vars._Var) {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
@@ -2851,6 +2856,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var varType = context.Vars.DataType?.Get<TypeSyntax>() ?? MissingType();
+            varType.XVoDecl = true;
+            if (context.Vars?.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
+            }
             foreach (var varCtx in context.Vars._Var) {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
@@ -3004,7 +3014,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 : _syntaxFactory.LiteralExpression(context.Alignment.ExpressionKindLiteral(), context.Alignment.SyntaxLiteralValue(_options)))
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                )
+                                ),
+                            _options.IsDialectVO ?
+                                _syntaxFactory.Attribute(
+                                    name: GenerateQualifiedName("global::Vulcan.Internal.VOStruct"),
+                                    argumentList: _syntaxFactory.AttributeArgumentList(
+                                        openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                        arguments: MakeSeparatedList(
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0)),
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0))
+                                        ),
+                                        closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                    )
+                                : null
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
@@ -3018,6 +3040,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: null );
+            m.XVoDecl = true;
             if (context.Namespace != null) {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
@@ -3030,6 +3053,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
             if (isDim) {
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
+            }
+            varType.XVoDecl = true;
+            if (context.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
             }
             context.Put(_syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
@@ -3055,7 +3083,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         _syntaxFactory.AttributeArgument(null,null,GenerateQualifiedName("global::System.Runtime.InteropServices.LayoutKind.Explicit"))
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                )
+                                ),
+                            _options.IsDialectVO ?
+                                _syntaxFactory.Attribute(
+                                    name: GenerateQualifiedName("global::Vulcan.Internal.VOStruct"),
+                                    argumentList: _syntaxFactory.AttributeArgumentList(
+                                        openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                        arguments: MakeSeparatedList(
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0)),
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0))
+                                        ),
+                                        closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                    )
+                                : null
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
@@ -3069,6 +3109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: null);
+            m.XVoDecl = true;
             if (context.Namespace != null) {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
@@ -3081,6 +3122,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
             if (isDim) {
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
+            }
+            varType.XVoDecl = true;
+            if (context.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
             }
             context.Put(_syntaxFactory.FieldDeclaration(
                 MakeList(
@@ -3212,6 +3258,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitParameter([NotNull] XP.ParameterContext context)
         {
             TypeSyntax type = _getParameterType(context);
+            type.XVoDecl = true;
+            if (context.Modifiers._IS != null)
+            {
+                type.XVoIsDecl = true;
+            }
             context.Put(_syntaxFactory.Parameter(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
@@ -3353,6 +3404,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         null);
                 }
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
+            }
+            varType.XVoDecl = true;
+            if (context.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
             }
             if (isStatic) {
                 staticName = StaticLocalFieldNamePrefix+context.Id.Get<SyntaxToken>().Text+UniqueNameSuffix;

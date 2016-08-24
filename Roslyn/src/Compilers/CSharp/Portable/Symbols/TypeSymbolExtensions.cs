@@ -304,34 +304,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         private static readonly string[] s_VulcanNamespace = { "Vulcan", "" };
         private static readonly string[] s_VulcanInternalNamespace = { "Internal", "Vulcan", "" };
 
-        public static bool IsCodeblock(this TypeSymbol _type)
+        public static bool IsVulcanType(this TypeSymbol _type, string TypeName)
         {
             // TODO (nvk): there must be a better way!
-            var type = _type.OriginalDefinition as NamedTypeSymbol;
+            NamedTypeSymbol type = null;
+            if (_type != null)
+                type = _type.OriginalDefinition as NamedTypeSymbol;
             return
                 (object)type != null &&
                 type.Arity == 0 &&
                 !type.MangleName &&
-                type.Name == "Codeblock" &&
+                type.Name == TypeName &&
                 CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
+        }
+        public static bool IsCodeblock(this TypeSymbol _type)
+        {
+            return _type.IsVulcanType("Codeblock");
         }
 
         public static bool IsUsual(this TypeSymbol _type)
         {
-            // TODO (nvk): there must be a better way!
-            var type = _type.OriginalDefinition as NamedTypeSymbol;
-            return
-                (object)type != null &&
-                type.Arity == 0 &&
-                !type.MangleName &&
-                type.Name == "__Usual" &&
-                CheckFullName(type.ContainingSymbol, s_VulcanNamespace);
+            return _type.IsVulcanType("__Usual");
         }
 
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
         {
             // TODO (nvk): there must be a better way!
-            var type = _type.OriginalDefinition as NamedTypeSymbol;
+            NamedTypeSymbol type = null;
+            if (_type != null)
+                type = _type.OriginalDefinition as NamedTypeSymbol;
             if ((object)type != null && type.Arity == 0 && !type.MangleName)
             {
                 var attrs = type.GetAttributes();

@@ -3268,7 +3268,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             TypeSyntax type = _getParameterType(context);
             type.XVoDecl = true;
-            if (context.Modifiers._IS != null)
+            if (context.Modifiers?._IS != null)
             {
                 type.XVoIsDecl = true;
             }

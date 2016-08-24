@@ -2068,18 +2068,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isExtern) {
                 if (context.Auto != null) {
-                    context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_ExternHasBody));
+                    context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_ExternHasBody,"Property"));
                 }
                 else if (context.Multi != null) {
-                    context.AddError(new ParseErrorData(context.Multi, ErrorCode.ERR_ExternHasBody));
+                    context.AddError(new ParseErrorData(context.Multi, ErrorCode.ERR_ExternHasBody, "Property"));
                 }
                 else {
                     foreach(var aCtx in context._LineAccessors) {
                         if (aCtx.Expr != null && aCtx.ExprList != null) {
                             if (aCtx.Expr != null)
-                                context.AddError(new ParseErrorData(aCtx.Expr, ErrorCode.ERR_ExternHasBody));
+                                context.AddError(new ParseErrorData(aCtx.Expr, ErrorCode.ERR_ExternHasBody, "Property"));
                             else
-                                context.AddError(new ParseErrorData(aCtx.ExprList, ErrorCode.ERR_ExternHasBody));
+                                context.AddError(new ParseErrorData(aCtx.ExprList, ErrorCode.ERR_ExternHasBody, "Property"));
                         }
                     }
                 }
@@ -2270,7 +2270,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (isExtern) {
                 if (context.StmtBlk?._Stmts?.Count > 0) {
-                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody));
+                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Method"));
                 }
                 context.StmtBlk = null;
             }
@@ -2523,7 +2523,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Modifiers?._EXTERN != null) {
                 if (context.StmtBlk?._Stmts?.Count > 0) {
-                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody));
+                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody,"Operator"));
                 }
                 context.StmtBlk = null;
             }
@@ -2613,10 +2613,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
-            
             if (context.Modifiers?._EXTERN != null) {
                 if (context.StmtBlk?._Stmts?.Count > 0) {
-                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody));
+                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Constructor"));
                 }
                 context.StmtBlk = null;
             }
@@ -2651,7 +2650,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (context.Modifiers?._EXTERN != null) {
                 if (context.StmtBlk?._Stmts?.Count > 0) {
-                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody));
+                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Destructor"));
                 }
                 context.StmtBlk = null;
             }

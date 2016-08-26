@@ -282,6 +282,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
 
 
     public partial class XSharpParser : Parser {
+        public interface ILoopStmtContext
+        {
+            StatementBlockContext Statements { get; }
+        }
+
         public interface IEntityContext : IRuleNode {
             EntityData Data { get; }
         }
@@ -355,6 +360,24 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
 
 
         }
+
+        public partial class RepeatStmtContext : ILoopStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+        public partial class WhileStmtContext : ILoopStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+        public partial class ForeachStmtContext : ILoopStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+        public partial class ForStmtContext : ILoopStmtContext
+        {
+            public StatementBlockContext Statements { get { return StmtBlk; } }
+        }
+
         public partial class ProcedureContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
             public EntityData Data { get { return data; } }

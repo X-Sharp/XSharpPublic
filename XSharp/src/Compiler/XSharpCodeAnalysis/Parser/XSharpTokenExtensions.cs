@@ -1059,26 +1059,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        public static SyntaxKind StatementKind(this IToken token)
-        {
-            SyntaxKind r;
-            switch (token.Type)
-            {
-                case XSharpParser.UNSAFE:
-                    r = SyntaxKind.UnsafeStatement;
-                    break;
-                case XSharpParser.CHECKED:
-                    r = SyntaxKind.CheckedStatement;
-                    break;
-                case XSharpParser.UNCHECKED:
-                    r = SyntaxKind.UncheckedStatement;
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
-            return r;
-        }
-
+  
         public static SyntaxKind ExpressionKind(this IToken token)
         {
             SyntaxKind r;

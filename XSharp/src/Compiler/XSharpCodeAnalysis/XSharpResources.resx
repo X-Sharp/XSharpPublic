@@ -4768,4 +4768,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_AddrOfMovable" xml:space="preserve">
     <value>You are taking the address of an unfixed expression</value>
   </data>
+  <data name="ERR_ExitInsideSwitchStatementNotAllowed" xml:space="preserve">
+    <value>the EXIT statement is not allowed inside a SWITCH statement</value>
+  </data>
 </root>

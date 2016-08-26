@@ -3800,19 +3800,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        public override void ExitLockStmt([NotNull] XP.LockStmtContext context)
-        {
-            context.Put(_syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.StmtBlk.Get<BlockSyntax>()));
-        }
-
-        public override void ExitScopeStmt([NotNull] XP.ScopeStmtContext context)
-        {
-            context.Put(context.StmtBlk.Get<BlockSyntax>());
-        }
 
 
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
@@ -3851,9 +3838,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitSwitchStmt([NotNull] XP.SwitchStmtContext context)
         {
             var sections = _pool.Allocate<SwitchSectionSyntax>();
-            foreach(var switchBlkCtx in context._SwitchBlock) {
-                sections.Add(switchBlkCtx.Get<SwitchSectionSyntax>());
-                // Add check for switch block without statements and insert a Jump to the next Switch block in the statement list
+            var emptyLabels = _pool.Allocate<SwitchLabelSyntax>();
+            foreach (var switchBlkCtx in context._SwitchBlock) {
+                // check for block with empty statement list
+                // And concatenate it with the next switch block
+                // but not the last block
+                var sectionSyntax = switchBlkCtx.Get<SwitchSectionSyntax>();
+                if (sectionSyntax.Statements.Count == 0 && switchBlkCtx != context._SwitchBlock.Last())
+                {
+                    emptyLabels.Add(sectionSyntax.Labels[0]);
+                }
+                else
+                {
+                    if (emptyLabels.Count != 0)
+                    {
+                        // create new labels for sectionSyntax that include the preceding labels
+                        emptyLabels.Add(sectionSyntax.Labels[0]);
+                        sectionSyntax = _syntaxFactory.SwitchSection(emptyLabels, sectionSyntax.Statements);
+                    }
+                    if (ContainsExitStatement(switchBlkCtx.StmtBlk._Stmts))
+                    {
+                        sectionSyntax = sectionSyntax.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_ExitInsideSwitchStatementNotAllowed));
+                    }
+                    sections.Add(sectionSyntax);
+                    emptyLabels.Clear();
+                }
             }
             context.Put(_syntaxFactory.SwitchStatement(SyntaxFactory.MakeToken(SyntaxKind.SwitchKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -3863,6 +3872,125 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 sections,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
             _pool.Free(sections);
+            _pool.Free(emptyLabels);
+        }
+
+        private bool ContainsExitStatement(IList<XP.StatementContext> stmts)
+        {
+            // Checks for EXIT statements that are not inside a LoopStmt
+            // Because these are not allowed inside a Switch 
+            foreach (var stmt in stmts)
+            {
+                if (stmt is XP.ExitStmtContext)
+                    return true;
+                if (stmt is XP.ILoopStmtContext)    // // For, Foreach, While, Repeat may have private exits
+                    continue;
+                if (stmt is XP.BlockStmtContext)    // Non looping block
+                {
+                    var blockstmt = stmt as XP.BlockStmtContext;
+                    if (ContainsExitStatement(blockstmt.StmtBlk._Stmts))
+                        return true;
+                }
+                if (stmt is XP.IfStmtContext)
+                {
+                    var ifstmt = stmt as XP.IfStmtContext;
+                    var ifelsestmt = ifstmt.IfStmt;
+                    if (ContainsExitStatement(ifelsestmt.StmtBlk._Stmts))           // First IF Block
+                        return true;
+                    while (ifelsestmt.ElseIfBlock != null)                          // Subsequent elseif blocks 
+                    {
+                        ifelsestmt = ifelsestmt.ElseIfBlock;
+                        if (ContainsExitStatement(ifelsestmt.StmtBlk._Stmts))
+                            return true;
+                    }
+                    if (ifelsestmt.ElseIfBlock != null &&                           // Else block
+                         ContainsExitStatement(ifelsestmt.ElseBlock._Stmts))
+                        return true;
+                }
+                if (stmt is XP.CaseStmtContext)
+                {
+                    var docasestmt = stmt as XP.CaseStmtContext;
+                    var casestmt = docasestmt.CaseStmt;     // CaseBlock
+                    while (casestmt != null)                // Handles the all case and otherwise blocks
+                    {
+                        if (ContainsExitStatement(casestmt.StmtBlk._Stmts))
+                            return true;
+                        casestmt = casestmt.NextCase;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool NeedsBreak(IList<XP.StatementContext> stmts, bool inSideLoop = false)
+        {
+            // This code checks only the last statement. When there is a return or throw
+            // on another line then the system will report 'Unreachable code' anyway.
+            var stmt = stmts.Last();
+            if (stmt is XP.ReturnStmtContext || stmt is XP.ThrowStmtContext)
+            {
+                return false;
+            }
+            if ((stmt is XP.LoopStmtContext || stmt is XP.ExitStmtContext ) && !inSideLoop)
+            {
+                // LOOP or EXIT inside a nested Loop block
+                return false;
+            }
+            if (stmt is XP.IfStmtContext)
+            {
+                var ifstmt = stmt as XP.IfStmtContext;
+                var ifelsestmt = ifstmt.IfStmt;
+                var elsestmt = ifelsestmt?.ElseBlock;           // The first ifelsestmt should always have a value, but better safe than sorry
+                // process to the end of the list
+                // when there is no else, then we need a break
+                // otherwise process every statement list
+                while (ifelsestmt != null )                     // 
+                {
+                    if (NeedsBreak(ifelsestmt.StmtBlk._Stmts))
+                    {
+                        return true;
+                    }
+                    elsestmt = ifelsestmt.ElseBlock;
+                    ifelsestmt = ifelsestmt.ElseIfBlock;
+                }
+                // No Else, so there is at least one block that does not end with a RETURN etc.
+                if (elsestmt == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return NeedsBreak(ifelsestmt.ElseBlock._Stmts);
+                }
+            }
+            if (stmt is XP.CaseStmtContext)
+            {
+                var docasestmt = stmt as XP.CaseStmtContext;
+                var casestmt = docasestmt.CaseStmt;     // CaseBlock, there may be no blocks at all.
+                int lastkey = XP.CASE;
+                while (casestmt != null)                // otherwise is also a CaseBlock stored in NextCase
+                {
+                    if (NeedsBreak(casestmt.StmtBlk._Stmts))
+                        return true;
+                    lastkey = casestmt.Key.Type;
+                    casestmt = casestmt.NextCase;
+                }
+                if (lastkey == XP.CASE) // There is no otherwise
+                    return true;
+                return false;           // all branches end with a breaking statement
+            }
+            if (stmt is XP.BlockStmtContext)
+            {
+                var blockstmt = stmt as XP.BlockStmtContext;
+                return NeedsBreak(blockstmt.StmtBlk._Stmts);
+            }
+            if (stmt is XP.ILoopStmtContext)        // For, Foreach, While, Repeat
+            {
+                var blockstmt = stmt as XP.ILoopStmtContext;
+                return NeedsBreak(blockstmt.Statements._Stmts, true);
+            }
+
+            return true;
         }
 
         public override void ExitSwitchBlock([NotNull] XP.SwitchBlockContext context)
@@ -3881,23 +4009,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stmts = _pool.Allocate<StatementSyntax>();
             if (context.StmtBlk._Stmts.Count > 0) {
                 stmts.Add(context.StmtBlk.Get<BlockSyntax>());
-                stmts.Add(_syntaxFactory.BreakStatement(SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); // TODO: add it implicitly in the backend (catch error CS0163)
+                if (NeedsBreak(context.StmtBlk._Stmts))
+                {
+                    stmts.Add(_syntaxFactory.BreakStatement(SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); // TODO: add it implicitly in the backend (catch error CS0163)
+                }
             }
             context.Put(_syntaxFactory.SwitchSection(labels, stmts));
             _pool.Free(labels);
             _pool.Free(stmts);
         }
 
-        public override void ExitUsingStmt([NotNull] XP.UsingStmtContext context)
-        {
-            context.Put(_syntaxFactory.UsingStatement(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.VarDecl?.Get<VariableDeclarationSyntax>(),
-                context.Expr?.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.Stmtblk.Get<BlockSyntax>()));
-        }
 
         public override void ExitVariableDeclaration([NotNull] XP.VariableDeclarationContext context)
         {
@@ -3953,17 +4075,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public override void ExitUnsafeStmt([NotNull] XP.UnsafeStmtContext context)
-        {
-            context.Put(_syntaxFactory.UnsafeStatement(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword),
-                context.StmtBlk.Get<BlockSyntax>()));
-        }
 
-        public override void ExitCheckedStmt([NotNull] XP.CheckedStmtContext context)
+        public override void ExitBlockStmt([NotNull] XP.BlockStmtContext context)
         {
-            context.Put(_syntaxFactory.CheckedStatement(context.Ch.StatementKind(),
-                context.Ch.SyntaxKeyword(),
-                context.StmtBlk.Get<BlockSyntax>()));
+
+            switch (context.Key.Type)
+            {
+                case XP.SCOPE:
+                    context.Put(context.StmtBlk.Get<BlockSyntax>());
+                    break;
+                case XP.LOCK:
+                    context.Put(_syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        context.Expr.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        context.StmtBlk.Get<BlockSyntax>()));
+                    break;
+                case XP.UNSAFE:
+                    context.Put(_syntaxFactory.UnsafeStatement(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword),
+                        context.StmtBlk.Get<BlockSyntax>()));
+                    break;
+                case XP.CHECKED:
+                    context.Put(_syntaxFactory.CheckedStatement(SyntaxKind.CheckedStatement,
+                        SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword),
+                        context.StmtBlk.Get<BlockSyntax>()));
+                    break;
+                case XP.UNCHECKED:
+                    context.Put(_syntaxFactory.CheckedStatement(SyntaxKind.UncheckedStatement,
+                        SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
+                        context.StmtBlk.Get<BlockSyntax>()));
+                    break;
+                case XP.USING:
+                    context.Put(_syntaxFactory.UsingStatement(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+                           SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                           context.VarDecl?.Get<VariableDeclarationSyntax>(),
+                           context.Expr?.Get<ExpressionSyntax>(),
+                           SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                           context.StmtBlk.Get<BlockSyntax>()));
+                    break;
+                default:
+                    // what else;
+                    break;
+            }
+
         }
 
         public override void ExitNopStmt([NotNull] XP.NopStmtContext context)

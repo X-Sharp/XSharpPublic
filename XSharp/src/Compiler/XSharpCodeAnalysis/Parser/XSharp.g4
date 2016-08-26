@@ -518,12 +518,12 @@ statement           : Decl=localdecl                                            
                       (CATCH CatchBlock+=catchBlock?)*
                       (FINALLY EOS FinBlock=statementBlock)?
                       END TRY? EOS												{ SetSequencePoint(_localctx,$end); }#tryStmt
-                    | BEGIN LOCK Expr=expression end=EOS
+                    | BEGIN Key=LOCK Expr=expression end=EOS
                       StmtBlk=statementBlock
-                      END LOCK? EOS												{ SetSequencePoint(_localctx,$end); }#lockStmt
-                    | BEGIN SCOPE end=EOS
+                      END LOCK? EOS												{ SetSequencePoint(_localctx,$end); }#blockStmt
+                    | BEGIN Key=SCOPE end=EOS
                       StmtBlk=statementBlock
-                      END SCOPE? EOS											{ SetSequencePoint(_localctx,$end); }#scopeStmt
+                      END SCOPE? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
                     //
                     // New XSharp Statements
                     //
@@ -532,18 +532,18 @@ statement           : Decl=localdecl                                            
                     | SWITCH Expr=expression end=EOS
                       (SwitchBlock+=switchBlock)+
                       END SWITCH?  EOS											{ SetSequencePoint(_localctx,$end); }#switchStmt
-                    | BEGIN USING ( Expr=expression | VarDecl=variableDeclaration ) end=EOS
-                        Stmtblk=statementBlock
-                      END USING? EOS											{ SetSequencePoint(_localctx,$end); }#usingStmt
-                    | BEGIN UNSAFE end=EOS
+                    | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=EOS
+                        StmtBlk=statementBlock
+                      END USING? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                    | BEGIN Key=UNSAFE end=EOS
                       StmtBlk=statementBlock
-                      END UNSAFE? EOS											{ SetSequencePoint(_localctx,$end); }#unsafeStmt
-                    | BEGIN Ch=CHECKED end=EOS
+                      END UNSAFE? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                    | BEGIN Key=CHECKED end=EOS
                       StmtBlk=statementBlock
-                      END CHECKED? EOS											{ SetSequencePoint(_localctx,$end); }#checkedStmt
-                    | BEGIN Ch=UNCHECKED end=EOS
+                      END CHECKED? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                    | BEGIN Key=UNCHECKED end=EOS
                       StmtBlk=statementBlock
-                      END UNCHECKED? EOS										{ SetSequencePoint(_localctx,$end); }#checkedStmt
+                      END UNCHECKED? EOS										{ SetSequencePoint(_localctx,$end); }#blockStmt
                     | {InputStream.La(2) != LPAREN ||
                        (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
                       Exprs+=expression (COMMA Exprs+=expression)* end=EOS		{ SetSequencePoint(_localctx,$end); }#expressionStmt
@@ -911,12 +911,13 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
                     | HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
                     | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
                     | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
-                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT) 
+                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT | DEFAULT )
                     ;
                     // Entity Keywords are added to the keywordvo list, although not strictly VO keyword. 
                     // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
+                    // Default has also been added as Keyword because it would not work in Switch otherwise
 
-keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST | DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
+keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST |  EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
                     | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
                     ;
 

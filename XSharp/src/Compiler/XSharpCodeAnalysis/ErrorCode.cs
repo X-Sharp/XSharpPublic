@@ -1389,5 +1389,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_SignedUnSignedConversion = 9021,
         ERR_ConflictingCommandLineOptions = 9022,
         WRN_AddrOfMovable = 9023,
+        ERR_ExitInsideSwitchStatementNotAllowed = 9024,
     }
 }

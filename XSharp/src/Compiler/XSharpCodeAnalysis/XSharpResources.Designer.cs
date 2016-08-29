@@ -3680,7 +3680,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the EXIT statement is not allowed inside a SWITCH statement.
+        ///   Looks up a localized string similar to The EXIT statement is not allowed inside a SWITCH statement.
         /// </summary>
         internal static string ERR_ExitInsideSwitchStatementNotAllowed {
             get {
@@ -12121,6 +12121,24 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_MissingParamTag_Title {
             get {
                 return ResourceManager.GetString("WRN_MissingParamTag_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing RETURN statement. A statement with a default &apos;empty&apos; return value is returned..
+        /// </summary>
+        internal static string WRN_MissingReturnStatement {
+            get {
+                return ResourceManager.GetString("WRN_MissingReturnStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing RETURN value. A default &apos;empty&apos; return value is returned.
+        /// </summary>
+        internal static string WRN_MissingReturnValue {
+            get {
+                return ResourceManager.GetString("WRN_MissingReturnValue", resourceCulture);
             }
         }
         

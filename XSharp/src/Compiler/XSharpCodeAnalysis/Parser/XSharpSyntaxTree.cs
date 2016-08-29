@@ -301,47 +301,54 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             HasTypedParameter = 32,
             UsesPCount = 64,
             UsesGetMParam = 128,
+            HasReturnStatementWithoutValue = 256
         }
 
         public class EntityData {
             MethodFlags flags;
 
             public bool HasClipperCallingConvention {
-                get { return (flags & MethodFlags.ClipperCallingConvention) == MethodFlags.ClipperCallingConvention; }
+                get { return flags.HasFlag( MethodFlags.ClipperCallingConvention) ; }
                 set { if(value) flags |= MethodFlags.ClipperCallingConvention; else flags &= ~MethodFlags.ClipperCallingConvention; }
             }
 
-
             public bool HasMissingReturnType {
-                get { return (flags & MethodFlags.MissingReturnType) == MethodFlags.MissingReturnType; }
+                get { return flags.HasFlag( MethodFlags.MissingReturnType) ; }
                 set { if(value) flags |= MethodFlags.MissingReturnType; else flags &= ~MethodFlags.MissingReturnType; }
             }
             public bool HasTypedParameter {
-                get { return (flags & MethodFlags.HasTypedParameter) == MethodFlags.HasTypedParameter; }
+                get { return flags.HasFlag(MethodFlags.HasTypedParameter) ; }
                 set { if(value) flags |= MethodFlags.HasTypedParameter; else flags &= ~MethodFlags.HasTypedParameter; }
             }
             public bool UsesPSZ {
-                get { return (flags & MethodFlags.UsesPSZ) == MethodFlags.UsesPSZ; }
+                get { return flags.HasFlag(MethodFlags.UsesPSZ); }
                 set { if(value) flags |= MethodFlags.UsesPSZ; else flags &= ~MethodFlags.UsesPSZ; }
             }
             public bool MustBeUnsafe {
-                get { return (flags & MethodFlags.MustBeUnsafe) == MethodFlags.MustBeUnsafe; }
+                get { return flags.HasFlag(MethodFlags.MustBeUnsafe) ; }
                 set { if(value) flags |= MethodFlags.MustBeUnsafe; else flags &= ~MethodFlags.MustBeUnsafe; }
             }
 
             public bool MustHaveReturnType {
-                get { return (flags & MethodFlags.MustHaveReturnType) == MethodFlags.MustHaveReturnType; }
+                get { return flags.HasFlag(MethodFlags.MustHaveReturnType) ; }
                 set { if(value) flags |= MethodFlags.MustHaveReturnType; else flags &= ~MethodFlags.MustHaveReturnType; }
             }
             public bool UsesPCount {
-                get { return (flags & MethodFlags.UsesPCount) == MethodFlags.UsesPCount; }
+                get { return flags.HasFlag(MethodFlags.UsesPCount) ; }
                 set { if(value) flags |= MethodFlags.UsesPCount; else flags &= ~MethodFlags.UsesPCount; }
             }
             public bool UsesGetMParam
             {
-                get { return (flags & MethodFlags.UsesGetMParam) == MethodFlags.UsesGetMParam; }
+                get { return flags.HasFlag( MethodFlags.UsesGetMParam) ; }
                 set { if(value) flags |= MethodFlags.UsesGetMParam; else flags &= ~MethodFlags.UsesGetMParam; }
             }
+
+            public bool HasReturnStatementWithoutValue
+            {
+                get { return flags.HasFlag(MethodFlags.HasReturnStatementWithoutValue) ; }
+                set { if (value) flags |= MethodFlags.HasReturnStatementWithoutValue; else flags &= ~MethodFlags.HasReturnStatementWithoutValue; }
+            }
+
             private List<MemVarFieldInfo> Fields;
             public void AddField(string Name, string Alias, bool Field) {
                 if(Fields == null)

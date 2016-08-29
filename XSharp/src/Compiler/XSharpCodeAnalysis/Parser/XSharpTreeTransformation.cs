@@ -3817,9 +3817,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
             var expr = context.Expr?.Get<ExpressionSyntax>();
-            // when / vo9 is enabled then add missing Expression
-            //if (expr == null)
-            //    dosomething();
+            // / vo9 is handled in the Subclass
             context.Put(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword), 
                 expr,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));

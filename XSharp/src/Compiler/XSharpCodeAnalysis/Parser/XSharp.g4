@@ -561,7 +561,7 @@ caseBlock			: Key=CASE Cond=expression end=EOS StmtBlk=statementBlock NextCase=c
                     ;
 
 // Note that literalValue is not enough. We also need to support members of enums
-switchBlock         : (Key=CASE Const=expression | Key=(OTHERWISE|DEFAULT)) end=EOS StmtBlk=statementBlock			 
+switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=EOS StmtBlk=statementBlock			 
                     { SetSequencePoint(_localctx,$end); }
                     ;
 
@@ -911,13 +911,12 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
                     | HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
                     | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
                     | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
-                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT | DEFAULT )
+                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   )
                     ;
                     // Entity Keywords are added to the keywordvo list, although not strictly VO keyword. 
                     // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
-                    // Default has also been added as Keyword because it would not work in Switch otherwise
 
-keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST |  EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
+keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
                     | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
                     ;
 

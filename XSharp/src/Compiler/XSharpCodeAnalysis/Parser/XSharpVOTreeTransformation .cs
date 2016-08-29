@@ -450,8 +450,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var statements = _pool.Allocate<StatementSyntax>();
                     statements.AddRange(body.Statements);
-                    statements.Add(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword), result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-                    body = MakeBlock(statements);
+                    statements.Add(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword), 
+                        result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+
+                    body = MakeBlock(statements).WithAdditionalDiagnostics(
+                                new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnStatement));
                     _pool.Free(statements);
 
                 }
@@ -673,13 +676,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(stmts);
             }
             // Add missing return type when needed. OBJECT or USUAL depending on the dialect.
-            // Of course the return value must be specified as well, but that should be done in the return statement
-            // when /vo9 is enabled.
             if(context.Data.HasMissingReturnType && context.Data.MustHaveReturnType) {
-                if(_options.VOUntypedAllowed) 
-                    dataType = _usualType;
-                else
-                    dataType = MissingType();
+                dataType = _getMissingVOType();
             }
         }
 
@@ -745,26 +743,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitCallingconvention(context); 
         }
 
+        
+
         protected override TypeSyntax _getParameterType([NotNull] XP.ParameterContext context) {
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
             if(type == null) {
                 if(CurrentEntity.Data.HasTypedParameter && _options.VOUntypedAllowed) 
                     type = _usualType;
                  else
-                    type = MissingType();
+                    type = _getMissingVOType();
             }
             return type;
         }
 
+
         protected override TypeSyntax _getMissingLocalType() {
+            return _getMissingVOType();
+        }
+
+        private TypeSyntax _getMissingVOType()
+        {
             TypeSyntax varType;
-            if(_options.VOUntypedAllowed) 
+            if (_options.VOUntypedAllowed)
                 varType = _usualType;
-             else
+            else
                 varType = MissingType();
             return varType;
         }
-
 
         public override void EnterMethod([NotNull] XP.MethodContext context) {
             base.EnterMethod(context);
@@ -1019,7 +1024,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(catchClause);
             _pool.Free(stmts);
         }
-
+        public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
+        {
+            var expr = context.Expr?.Get<ExpressionSyntax>();
+            // when / vo9 is enabled then add missing Expression
+            if (expr == null && _options.VOAllowMissingReturns)
+            {
+                var ent = CurrentEntity;
+                if (ent is XP.MethodContext || ent is XP.FunctionContext)
+                {
+                    ent.Data.HasReturnStatementWithoutValue = true;
+                    TypeSyntax dataType;
+                    if (ent.Data.HasMissingReturnType)
+                    {
+                        dataType = _getMissingVOType();
+                    }
+                    else
+                    {
+                        dataType = ent is XP.MethodContext ? ((XP.MethodContext)ent).Type.Get<TypeSyntax>() :
+                            dataType = ((XP.FunctionContext)ent).Type.Get<TypeSyntax>();
+                    }
+                    expr = GetReturnExpression(dataType).WithAdditionalDiagnostics(
+                                        new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                }
+            }
+            var result = _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
+                expr,
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            context.Put(result);
+        }
 
         public override void ExitQoutStmt([NotNull] XP.QoutStmtContext context) {
             // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut

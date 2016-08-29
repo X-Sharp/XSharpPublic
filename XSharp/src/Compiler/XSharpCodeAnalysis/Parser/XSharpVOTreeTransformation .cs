@@ -296,7 +296,169 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;
             }
         }
- 
+
+        private bool NeedsReturn(IList<XP.StatementContext> stmts)
+        {
+            // This code checks only the last statement. When there is a return or throw
+            // on another line then the system will report 'Unreachable code' anyway.
+            if (stmts.Count == 0)
+                    return true;
+            var stmt = stmts.Last();
+            if (stmt is XP.ReturnStmtContext || stmt is XP.ThrowStmtContext)
+            {
+                return false;
+            }
+            if (stmt is XP.IfStmtContext)
+            {
+                var ifstmt = stmt as XP.IfStmtContext;
+                var ifelsestmt = ifstmt.IfStmt;
+                var elsestmt = ifelsestmt?.ElseBlock;           
+                // The first ifelsestmt should always have a value, but better safe than sorry
+                // process to the end of the list
+                // when there is no else, then we need a break
+                // otherwise process every statement list
+                while (ifelsestmt != null)                     // 
+                {
+                    if (NeedsReturn(ifelsestmt.StmtBlk._Stmts))
+                    {
+                        return true;
+                    }
+                    elsestmt = ifelsestmt.ElseBlock;
+                    ifelsestmt = ifelsestmt.ElseIfBlock;
+                }
+                // No Else, so there is at least one block that does not end with a RETURN etc
+                if (elsestmt == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return NeedsReturn(ifelsestmt.ElseBlock._Stmts);
+                }
+            }
+            if (stmt is XP.CaseStmtContext)
+            {
+                var docasestmt = stmt as XP.CaseStmtContext;
+                var casestmt = docasestmt.CaseStmt;     // CaseBlock, there may be no blocks at all.
+                int lastkey = XP.CASE;
+                while (casestmt != null)                // otherwise is also a CaseBlock stored in NextCase
+                {
+                    if (NeedsReturn(casestmt.StmtBlk._Stmts))
+                        return true;
+                    lastkey = casestmt.Key.Type;
+                    casestmt = casestmt.NextCase;
+                }
+                if (lastkey == XP.CASE) // There is no otherwise
+                    return true;
+                return false;           // all branches end with a return  statement
+            }
+            if (stmt is XP.SwitchStmtContext)
+            {
+                var swstmt = stmt as XP.SwitchStmtContext;
+                bool hasdefault = false;
+                foreach (var swBlock in swstmt._SwitchBlock)
+                { 
+                    if (swBlock.StmtBlk._Stmts.Count > 0 && NeedsReturn(swBlock.StmtBlk._Stmts))
+                       return true;
+                    if (swBlock.Key.Type != XP.CASE)
+                        hasdefault = true;
+                }
+                if (! hasdefault)
+                    return true;
+                return false;           // all branches end with a return statement
+            }
+
+            if (stmt is XP.BlockStmtContext)
+            {
+                var blockstmt = stmt as XP.BlockStmtContext;
+                return NeedsReturn(blockstmt.StmtBlk._Stmts);
+            }
+            if (stmt is XP.ILoopStmtContext)        // For, Foreach, While, Repeat
+            {
+                var blockstmt = stmt as XP.ILoopStmtContext;
+                return NeedsReturn(blockstmt.Statements._Stmts);
+            }
+
+            return true;
+        }
+
+        private ExpressionSyntax GetReturnExpression(TypeSyntax returnType)
+        {
+            ExpressionSyntax result = null;
+            if (returnType is PredefinedTypeSyntax)
+            {
+                var pretype = returnType as PredefinedTypeSyntax;
+                switch (pretype.keyword.Kind)
+                {
+                    case SyntaxKind.VoidKeyword:
+                        return null;
+                    case SyntaxKind.SByteKeyword:
+                    case SyntaxKind.ShortKeyword:
+                    case SyntaxKind.IntKeyword:
+                    case SyntaxKind.LongKeyword:
+                    case SyntaxKind.ByteKeyword:
+                    case SyntaxKind.UShortKeyword:
+                    case SyntaxKind.UIntKeyword:
+                    case SyntaxKind.ULongKeyword:
+                    case SyntaxKind.DoubleKeyword:
+                    case SyntaxKind.FloatKeyword:
+                    case SyntaxKind.DecimalKeyword:
+                        result = GenerateLiteral(0);
+                        break;
+                    case SyntaxKind.ObjectKeyword:
+                    case SyntaxKind.StringKeyword:
+                    default:
+                        result = _syntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+                        break;
+                }
+            }
+            else
+            {
+                if (returnType == _usualType)
+                {
+                    result = GenerateNIL();
+                }
+                else if (returnType == _floatType)
+                {
+                    // Ignore float literals for now.
+                    result = GenerateLiteral(0);
+                }
+                else if (returnType == _dateType)
+                {
+                    result = GenerateMethodCall("global::Vulcan.__VODate.NullDate", EmptyArgumentList());
+                }
+                else if (returnType == _pszType || returnType == _symbolType)
+                {
+                    result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))), null);
+                }
+                else
+                {
+                    // _arrayType , _codeblockType 
+                    // other reference types all use the default null literal
+                    result = _syntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+                }
+            }
+            return result;
+        }
+
+        protected override BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext stmtBlock, TypeSyntax returnType)
+        {
+            if (_options.VOAllowMissingReturns && NeedsReturn(stmtBlock._Stmts))
+            {
+                var result = GetReturnExpression(returnType);
+                if (result != null) // this happens for the Void Type
+                {
+                    var statements = _pool.Allocate<StatementSyntax>();
+                    statements.AddRange(body.Statements);
+                    statements.Add(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword), result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    body = MakeBlock(statements);
+                    _pool.Free(statements);
+
+                }
+            }
+            return body;
+        }
+
         protected StatementSyntax CachedIfBlock = null;
         protected StatementSyntax GetClipperCallingConventionIfStatement()
         {
@@ -1432,6 +1594,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
     }
 
+    
     public ExpressionSyntax GenerateAliasedExpression( ExpressionSyntax wa, ExpressionSyntax expr)
     {
             // CUSTOMER->(<Expression>)

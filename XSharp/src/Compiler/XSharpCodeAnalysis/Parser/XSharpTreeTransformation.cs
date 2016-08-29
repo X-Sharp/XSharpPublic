@@ -261,6 +261,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return name;
             
         }
+        protected virtual BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext block, TypeSyntax returnType)
+        {
+            return body;
+        }
         protected string GetEntityName(Boolean Full)
         {
             string name = "";
@@ -1050,7 +1054,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
 
         }
-
+        /*
         protected MethodDeclarationSyntax GenerateMainMethod(string startMethodName)
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
@@ -1094,7 +1098,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(modifiers);
             return r;
         }
-
+        */
         protected BasePropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop) {
             var getMods = _pool.Allocate();
             var setMods = _pool.Allocate();
@@ -2344,6 +2348,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
 
                 MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                     attributeLists: attributes,
@@ -2628,6 +2633,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var body = context.StmtBlk?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+                // no return statement needed  in CONSTRUCTOR
+                // body = AddMissingReturnStatement(body, context.StmtBlk, null);
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
@@ -2658,6 +2665,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.DESTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
             }
             else {
+                // no return statement needed in DESTRUCTOR
+                // body = AddMissingReturnStatement(body, context.StmtBlk, null);
                 var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
                     ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
@@ -3182,6 +3191,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!isInInterface)
             {
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
             }
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,
@@ -3211,6 +3221,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
             var returntype = VoidType();
+            // no return statement needed in PROCEDURE
+            // body = AddMissingReturnStatement(body, context.StmtBlk, null);
             ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,
@@ -3926,6 +3938,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // This code checks only the last statement. When there is a return or throw
             // on another line then the system will report 'Unreachable code' anyway.
+            if (stmts.Count == 0)
+                return true;
             var stmt = stmts.Last();
             if (stmt is XP.ReturnStmtContext || stmt is XP.ThrowStmtContext)
             {
@@ -3988,6 +4002,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var blockstmt = stmt as XP.ILoopStmtContext;
                 return NeedsBreak(blockstmt.Statements._Stmts, true);
+            }
+            if (stmt is XP.SwitchStmtContext)
+            {
+                var swstmt = stmt as XP.SwitchStmtContext;
+                bool hasdefault = false;
+                foreach (var swBlock in swstmt._SwitchBlock)
+                {
+                    if (swBlock.StmtBlk._Stmts.Count > 0 && NeedsBreak(swBlock.StmtBlk._Stmts))
+                        return true;
+                    if (swBlock.Key.Type != XP.CASE)
+                        hasdefault = true;
+                }
+                if (!hasdefault)
+                    return true;
+                return false;           // all branches end with a breaking statement
             }
 
             return true;

@@ -35,6 +35,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string SystemDir { get; private set; }
         public bool NoStdDef { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
+        public bool VOAllowMissingReturns { get; private set; }
         public bool VOFloatConstants { get; private set; }
         public bool VONullStrings { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
@@ -68,6 +69,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOClipperCallingConvention = opt.Vo5;
                 VOCompatibleIIF = opt.Vo10;
                 VOUntypedAllowed = opt.Vo15;
+                VOAllowMissingReturns = opt.Vo9;
                 VulcanRTFuncsIncluded = opt.VulcanRTFuncsIncluded;
                 VulcanRTIncluded = opt.VulcanRTIncluded;
             }
@@ -90,6 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             VirtualInstanceMethods = opt.VirtualInstanceMethods;
+            VOAllowMissingReturns = opt.VOAllowMissingReturns;
             DefaultNamespace = opt.DefaultNamespace;
             IncludePaths = opt.IncludePaths;
         }

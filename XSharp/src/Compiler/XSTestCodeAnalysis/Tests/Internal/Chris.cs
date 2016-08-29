@@ -3159,6 +3159,118 @@ END CLASS
 
 
 
+        // 203
+        [Test(Author = "Chris", Id = "C203", Title = "error XS0034: Operator '+' is ambiguous on operands of type 'int' and 'uint'")]
+        public static void ambiguous_operand_with_int_and_uint()
+        {
+            var s = ParseSource("/vo4+" , @"
+// /vo4+
+FUNCTION Start() AS VOID
+LOCAL d := 1 AS DWORD
+? 1 + d
+");
+            CompileAndRunWithoutExceptions("/vo4+" , s);
+        }
+
+
+
+
+         // 204
+        [Test(Author = "Chris", Id = "C204", Title = "compiler crash with NULL passed as USUAL argument")]
+        public static void compiler_crash_with_NULL_passed_as_USUAL_argument()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan dialect
+FUNCTION Start() AS VOID
+Test(NULL)
+
+FUNCTION Test(u AS USUAL) AS VOID
+IF u != NIL
+	THROW Exception{""value not NIL""}
+END IF
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+         // 205
+        [Test(Author = "Chris", Id = "C205", Title = "error XS0266: Cannot implicitly convert type 'Vulcan.Codeblock' to 'Vulcan._Codeblock'")]
+        public static void Cannot_implicitly_convert_type_odeblock_to__Codeblock()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan dialect
+// vulcan incompatibility
+FUNCTION Start() AS VOID
+LOCAL cb AS CODEBLOCK
+LOCAL _cb AS _CODEBLOCK
+cb := {||1+1}
+_cb := cb
+cb := _cb
+? Eval(cb)
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+         // 206
+        [Test(Author = "Chris", Id = "C206", Title = "compiler crash with missing parameter type")]
+        public static void compiler_crash_with_missing_parameter_type()
+        {
+            var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// vulcan dialect
+FUNCTION TestFunc( something )
+RETURN NIL
+
+CLASS TestClass
+METHOD TestMethod(n) AS INT
+RETURN 1
+END CLASS
+");
+            CompileAndLoadWithoutErrors("/dialect:vulcan", s, VulcanRuntime);
+        }
+
+
+
+        // 207
+        [Test(Author = "Chris", Id = "C207", Title = "error XS9002: Parser: no viable alternative at input 'Default'")]
+        public static void problem_with_identifier_named_Default()
+        {
+            var s = ParseSource(@"
+FUNCTION Start() AS VOID
+	TestClass{}:Default()
+
+CLASS TestClass
+	METHOD Default() AS VOID
+	METHOD Test() AS VOID
+		SELF:Default()
+END CLASS
+");
+            CompileAndRunWithoutExceptions(s);
+        }
+
+
+
+
+         // 208
+        [Test(Author = "Chris", Id = "C208", Title = "Unhandled Exception: Error Code: 13 [No exported method]")]
+        public static void runtime_exception_with_super_call()
+        {
+            var s = ParseSource("/dialect:vulcan /lb+ /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
+// /lb /dialect:vulcan
+FUNCTION Start( ) AS VOID
+TestClass{}
+
+CLASS TestClass
+CONSTRUCTOR()
+SUPER()	
+END CLASS
+");
+            CompileAndRunWithoutExceptions("/dialect:vulcan /lb+ ", s, VulcanRuntime);
+        }
+
+
 
 
     }

@@ -625,6 +625,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(sizes);
             return r;
         }
+        protected ExpressionSyntax MakeCastTo(TypeSyntax type, ExpressionSyntax expr)
+        {
+            return _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), expr);
+        }
+
+
+        protected AssignmentExpressionSyntax MakeSimpleAssignment(ExpressionSyntax lhs, ExpressionSyntax rhs)
+        {
+            return _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                     lhs, SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), rhs);
+        }
 
         protected TypeSyntax VoidType()
         {
@@ -3495,15 +3507,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             GenerateIfStatement(GenerateSimpleName(staticName+StaticLocalInitFieldNameSuffix),
                                 
                                 MakeBlock(MakeList<StatementSyntax>(
+                                        GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(staticName),initExpr)),
                                         GenerateExpressionStatement(
-                                            _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                                GenerateSimpleName(staticName),
-                                                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                                                initExpr)),
-                                        GenerateExpressionStatement(
-                                            _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                            MakeSimpleAssignment(
                                                 GenerateSimpleName(staticName+StaticLocalInitFieldNameSuffix),
-                                                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                                                 GenerateLiteral(false)))
                                         ))))));
                 }
@@ -3606,10 +3613,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 iterExpr = _syntaxFactory.IdentifierName(context.ForIter.Get<SyntaxToken>());
                 initExpr = context.Expr.Get<ExpressionSyntax>();
-                assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                    iterExpr,
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    initExpr);
+                assignExpr = MakeSimpleAssignment(iterExpr, initExpr);
             }
             if (context.Step == null) {
                 context.Step = FixPosition(new XP.PrimaryExpressionContext(FixPosition(new XP.ExpressionContext(),context.Stop)),context.Stop);
@@ -4039,7 +4043,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (NeedsBreak(context.StmtBlk._Stmts))
                 {
                     stmts.Add(_syntaxFactory.BreakStatement(SyntaxFactory.MakeToken(SyntaxKind.BreakKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); // TODO: add it implicitly in the backend (catch error CS0163)
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))); 
                 }
             }
             context.Put(_syntaxFactory.SwitchSection(labels, stmts));
@@ -4068,37 +4072,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             ArgumentSyntax arg;
             ExpressionSyntax expr;
-            // todo: If dialect VO and VulcanRTFuncs included
+            // If dialect VO and VulcanRTFuncs included
             // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
-            // and pass list of expressions as argument
-            if (context.Q.Type == XP.QQMARK && !(context._Exprs?.Count > 0)) {
-                context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-            }
-            else {
-                var block = _pool.Allocate<StatementSyntax>();
+            // This is done in VOTreeTransForm
+            if (!(context._Exprs?.Count > 0)) {
                 if (context.Q.Type == XP.QMARK)
-                    block.Add(GenerateExpressionStatement(
-                        GenerateMethodCall("global::System.Console.WriteLine",EmptyArgumentList()
-                        )));
-                bool first = true;
-                if (context._Exprs != null) {
-                    foreach (var eCtx in context._Exprs) {
-                        if (!first)
-                        {
-                            expr = GenerateLiteral(" ");
-                            arg = MakeArgument(expr);
-                            block.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.Write", MakeArgumentList(arg))));
-                        }
-                        // And the ? operator is for these dialects 
-                        expr = eCtx.Get<ExpressionSyntax>();
-                        arg = MakeArgument(expr);
-                        expr = GenerateMethodCall("global::System.Console.Write", MakeArgumentList(arg));
-                        block.Add(GenerateExpressionStatement(expr));
-                        first = false;
-                    }
+                {
+                    expr = GenerateMethodCall("global::System.Console.WriteLine", EmptyArgumentList());
+                    context.Put(GenerateExpressionStatement(expr));
                 }
-                context.Put(MakeBlock(block));
-                _pool.Free(block);
+                else
+                {
+                    context.Put(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                }
+            }
+            else
+            {
+                // build list of arguments and a matching string.Format mask
+                // when single question mark, then start with newline
+                string mask = context.Q.Type == XP.QMARK ? "\n" : String.Empty;
+                var args = new List<ArgumentSyntax>();
+                foreach (var eCtx in context._Exprs)
+                {
+                    if (args.Count > 0)
+                    {
+                        mask += " ";
+                    }
+                    mask += "{" + args.Count.ToString() + "}";
+                    expr = eCtx.Get<ExpressionSyntax>();
+                    arg = MakeArgument(expr);
+                    args.Add(arg);
+                }
+                args.Insert(0, MakeArgument(GenerateLiteral(mask)));
+                // convert args to Array because the overload that receives a collection expects another kind of object
+                var arglist = _syntaxFactory.ArgumentList(
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                MakeSeparatedList<ArgumentSyntax>(args.ToArray()),
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+
+                expr = GenerateMethodCall("global::System.Console.Write", arglist);
+                context.Put(GenerateExpressionStatement(expr));
             }
         }
 
@@ -4301,10 +4314,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     );
                     break;
                 case XP.ASSIGN_EXP:
-                    context.Put(_syntaxFactory.AssignmentExpression(
-                        SyntaxKind.SimpleAssignmentExpression,
+                    context.Put(MakeSimpleAssignment(
                         context.Left.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                         GenerateMethodCall("global::System.Math.Pow", 
                             _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                 MakeSeparatedList(MakeArgument(context.Left.Get<ExpressionSyntax>()),
@@ -4481,11 +4492,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitDelegateCtorCall([NotNull] XP.DelegateCtorCallContext context)
         {
             if (((context.Obj as XP.PrimaryExpressionContext)?.Expr as XP.LiteralExpressionContext)?.Literal.Token.Type == XP.NULL) {
-                context.Put(_syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    context.Type.Get<TypeSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    context.Func.Get<NameSyntax>()
-                    ));
+                context.Put(MakeCastTo(context.Type.Get<TypeSyntax>(),context.Func.Get<NameSyntax>()));
             }
             else {
                 var fobj = context.Obj.Get<ExpressionSyntax>();
@@ -4496,10 +4503,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else {
                     var fCtx = context.Func as XP.QualifiedNameContext;
                     if (fCtx != null) {
-                        fobj = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            fCtx.Left.Get<NameSyntax>(),
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                            fobj);
+                        fobj = MakeCastTo(fCtx.Left.Get<NameSyntax>(),fobj);
                         fname = fCtx.Right.Get<SimpleNameSyntax>();
                     }
                     else {
@@ -4507,9 +4511,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.AddError(new ParseErrorData(fCtx, ErrorCode.ERR_IdentifierExpected));
                     }
                 }
-                context.Put(_syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                context.Put(MakeCastTo(
                     context.Type.Get<TypeSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                     _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
                         fobj,
                         SyntaxFactory.MakeToken(SyntaxKind.DotToken),
@@ -4607,30 +4610,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTypeCast([NotNull] XP.TypeCastContext context)
         {
-            context.Put(_syntaxFactory.CastExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                context.Expr.Get<ExpressionSyntax>()));
+            context.Put(MakeCastTo(context.Type.Get<TypeSyntax>(),context.Expr.Get<ExpressionSyntax>()));
         }
 
         public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
         {
             if (context.Type != null)
             {
-                context.Put(_syntaxFactory.CastExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    context.Type.Get<TypeSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    context.Expr.Get<ExpressionSyntax>()));
+                context.Put(MakeCastTo(context.Type.Get<TypeSyntax>(),context.Expr.Get<ExpressionSyntax>()));
             }
             else if (context.XType != null)
             {
-                context.Put(_syntaxFactory.CastExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    context.XType.Get<TypeSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    context.Expr.Get<ExpressionSyntax>()));
+                context.Put(MakeCastTo(context.XType.Get<TypeSyntax>(),context.Expr.Get<ExpressionSyntax>()));
             }
         }
 
@@ -4639,20 +4630,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression,
                 SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _syntaxFactory.CastExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    context.Type.Get<TypeSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    context.Expr.Get<ExpressionSyntax>()),
+                MakeCastTo(context.Type.Get<TypeSyntax>(),context.Expr.Get<ExpressionSyntax>()),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
         }
 
         public override void ExitVoCastPtrExpression([NotNull] XP.VoCastPtrExpressionContext context)
         {
-            context.Put(_syntaxFactory.CastExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+            context.Put(MakeCastTo(
                 _syntaxFactory.PointerType(context.Type.Get<TypeSyntax>(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 _syntaxFactory.PrefixUnaryExpression(SyntaxKind.AddressOfExpression,
                     SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
                     context.Expr.Get<ExpressionSyntax>())));
@@ -4885,6 +4870,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(context.AnonType.Get<AnonymousObjectCreationExpressionSyntax>());
         }
 
+
         public override void ExitIif([NotNull] XP.IifContext context)
         {
             // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
@@ -4892,12 +4878,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
             if (_options.VOCompatibleIIF)
             {
-                var type = (TypeSyntax) _objectType;
-                left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
-                right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), right);
-
+                left = MakeCastTo(_objectType, left);
+                right = MakeCastTo(_objectType, right);
             }
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),

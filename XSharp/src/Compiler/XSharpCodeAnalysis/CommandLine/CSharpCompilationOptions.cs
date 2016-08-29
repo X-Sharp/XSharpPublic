@@ -33,6 +33,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool InitStringVarsToEmpty { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
+        public bool VOClipperIntegerDivisions { get; private set; }
         public bool VOCompatibleArtithmeticConversions { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOFloatConstants { get; private set; }
@@ -56,6 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 VOAllowMissingReturns = opt.Vo9;
                 VOClipperCallingConvention = opt.Vo5;
+                VOClipperIntegerDivisions = opt.Vo12;
                 VOCompatibleArtithmeticConversions = opt.Vo11;
                 VOCompatibleIIF = opt.Vo10;
                 VOFloatConstants = opt.Vo14;
@@ -81,6 +83,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
             VOAllowMissingReturns = opt.VOAllowMissingReturns;
+            VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions;
+            VOClipperCallingConvention = opt.VOClipperCallingConvention;
             VOCompatibleArtithmeticConversions = opt.VOCompatibleArtithmeticConversions;
             VOCompatibleIIF = opt.VOCompatibleIIF;
             VOFloatConstants = opt.VOFloatConstants;

@@ -36,6 +36,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
+        public bool VOClipperIntegerDivisions { get; private set; }
+
         public bool VOFloatConstants { get; private set; }
         public bool VONullStrings { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
@@ -64,12 +66,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
+
+                VOAllowMissingReturns = opt.Vo9;
+                VOClipperCallingConvention = opt.Vo5;
+                VOClipperIntegerDivisions = opt.Vo12;
+                VOCompatibleIIF = opt.Vo10;
                 VOFloatConstants = opt.Vo14;
                 VONullStrings = opt.Vo2;
-                VOClipperCallingConvention = opt.Vo5;
-                VOCompatibleIIF = opt.Vo10;
                 VOUntypedAllowed = opt.Vo15;
-                VOAllowMissingReturns = opt.Vo9;
                 VulcanRTFuncsIncluded = opt.VulcanRTFuncsIncluded;
                 VulcanRTIncluded = opt.VulcanRTIncluded;
             }
@@ -93,6 +97,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             SystemDir = opt.SystemDir;
             VirtualInstanceMethods = opt.VirtualInstanceMethods;
             VOAllowMissingReturns = opt.VOAllowMissingReturns;
+            VOClipperCallingConvention = opt.VOClipperCallingConvention;
+            VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions;
+            VOCompatibleIIF = opt.VOCompatibleIIF;
+            VOFloatConstants = opt.VOFloatConstants;
+            VONullStrings = opt.VONullStrings;
+            VOUntypedAllowed = opt.VOUntypedAllowed;
             DefaultNamespace = opt.DefaultNamespace;
             IncludePaths = opt.IncludePaths;
         }

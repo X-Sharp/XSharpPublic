@@ -481,9 +481,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             InitializeArrayTypes();
             var blockstmts = _pool.Allocate<StatementSyntax>();
             // Xs$PCount = Xs$Args:Length
-            assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+            assignExpr = MakeSimpleAssignment(
                     GenerateSimpleName(ClipperPCount),
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                                 _syntaxFactory.MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
                                     GenerateSimpleName(ClipperArgs),
@@ -561,9 +560,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var name = paramNames[i];
                             var indices = _pool.AllocateSeparated<ArgumentSyntax>();
                             indices.Add(MakeArgument(GenerateLiteral("", i + iAdd)));
-                            assignExpr = _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                                GenerateSimpleName(name),
-                                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                            assignExpr = MakeSimpleAssignment(GenerateSimpleName(name),
                                     _syntaxFactory.ElementAccessExpression(
                                     GenerateSimpleName(ClipperArgs),
                                     _syntaxFactory.BracketedArgumentList(
@@ -813,6 +810,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(GenerateMethodCall(method, args));
                 return;
             }
+            else if (context.Op.Type == XP.DIV && _options.VOClipperIntegerDivisions)
+            {
+                var lhs = MakeCastTo(_usualType, context.Left.Get<ExpressionSyntax>());
+                var rhs = MakeCastTo(_usualType, context.Right.Get<ExpressionSyntax>());
+                context.Put(_syntaxFactory.BinaryExpression(
+                    context.Op.ExpressionKindBinaryOp(),
+                    lhs,
+                    context.Op.SyntaxOp(),
+                    rhs));
+                return;
+            }
             base.ExitBinaryExpression(context);
         }
 
@@ -937,36 +945,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     GenerateQualifiedName("global::System.Exception"));
 
                 var assign1 = GenerateExpressionStatement(
-                    _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                    idName,
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    _syntaxFactory.MemberAccessExpression(
+                    MakeSimpleAssignment(idName,
+                       _syntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
-                       _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                        objName),
+                       MakeCastTo(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"),objName),
                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                          GenerateSimpleName("Value"))));
 
-                var assign2 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                     idName,
-                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                     objName));
+                var assign2 = GenerateExpressionStatement(MakeSimpleAssignment(idName, objName));
 
-                var assign3 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                    idName,
-                    SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                    _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    _usualType,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-                    GenerateMethodCall("global::Vulcan.Error._WrapRawException",
+                var assign3 = GenerateExpressionStatement(MakeSimpleAssignment(
+                    idName,MakeCastTo(_usualType,GenerateMethodCall("global::Vulcan.Error._WrapRawException",
                     MakeArgumentList(MakeArgument(objName))))));
 
-                var assign4 = GenerateExpressionStatement(_syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-                     idName,
-                     SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
-                     objName));
+                var assign4 = GenerateExpressionStatement(MakeSimpleAssignment(idName, objName));
 
                 var elseClause = _syntaxFactory.ElseClause(
                    SyntaxFactory.MakeToken(SyntaxKind.ElseKeyword),
@@ -1230,10 +1222,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return false;
         }
 
-        expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-            _stringType,
-            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-            argList.Arguments[0].Expression);
+        expr = MakeCastTo(_stringType, argList.Arguments[0].Expression);
 
         expr = _syntaxFactory.ConditionalAccessExpression( expr,
                                 SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
@@ -1241,10 +1230,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                                     GenerateSimpleName("Length")
                                     ));
-        expr = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-            _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
-            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
-            expr);
+        expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
 
         context.Put(expr);
         return true;
@@ -1433,17 +1419,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     }
 
 
-
     public override void ExitIif([NotNull] XP.IifContext context)
     {
         // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
         if(_options.VOCompatibleIIF) {
-            ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
-            ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
-            left = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), left);
-            right = _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                _usualType, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), right);
+            ExpressionSyntax left = MakeCastTo(_usualType, context.TrueExpr.Get<ExpressionSyntax>());
+            ExpressionSyntax right = MakeCastTo(_usualType, context.FalseExpr.Get<ExpressionSyntax>());
 
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),
@@ -1646,10 +1627,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _syntaxFactory.InvocationExpression(
             _syntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
-                _syntaxFactory.CastExpression(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    _codeblockType,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                MakeCastTo(_codeblockType,
                     _syntaxFactory.ParenthesizedLambdaExpression(
                         asyncKeyword: null,
                         parameterList: EmptyParameterList(),

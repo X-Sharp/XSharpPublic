@@ -286,7 +286,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (!binder.InUnsafeRegion)
                     {
 #if XSHARP
-                        diagnosticsForFirstDeclarator.Add(binder.Compilation.Options.AllowUnsafe ? ErrorCode.WRN_UnsafeImplied : ErrorCode.ERR_UnsafeNeeded, declarator.Location);
+                        if (! binder.Compilation.Options.IsDialectVO)
+                        {
+                            diagnosticsForFirstDeclarator.Add(binder.Compilation.Options.AllowUnsafe ? ErrorCode.WRN_UnsafeImplied : ErrorCode.ERR_UnsafeNeeded, declarator.Location);
+                        }
 #else
                         diagnosticsForFirstDeclarator.Add(ErrorCode.ERR_UnsafeNeeded, declarator.Location);
 #endif

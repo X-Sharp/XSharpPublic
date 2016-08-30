@@ -268,6 +268,36 @@ namespace Microsoft.CodeAnalysis
                 return base.Equals(other) && _value == other.IntPtrValue;
             }
         }
+
+        private sealed class ConstantValueVoid : ConstantValue
+        {
+            public ConstantValueVoid()
+            {
+            }
+
+            public override ConstantValueTypeDiscriminator Discriminator
+            {
+                get
+                {
+                    return ConstantValueTypeDiscriminator.Void;
+                }
+            }
+
+            internal override SpecialType SpecialType
+            {
+                get { return SpecialType.System_Void; }
+            }
+
+            public override int GetHashCode()
+            {
+                return Hash.Combine(base.GetHashCode(), 0.GetHashCode());
+            }
+
+            public override bool Equals(ConstantValue other)
+            {
+                return base.Equals(other) && other.IsVoid;
+            }
+        }
 #endif
         // base for constant classes that may represent more than one 
         // constant type

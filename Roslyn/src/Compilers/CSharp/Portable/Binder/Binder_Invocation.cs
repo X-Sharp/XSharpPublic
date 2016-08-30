@@ -222,17 +222,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 boundExpression.Kind != BoundKind.MethodGroup && (object)boundExpression.Type != null && 
                 (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)))
             {
-                ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
-                bool hasErrors = ReportBadDynamicArguments(node, argArray, diagnostics, queryClause);
-                result = new BoundDynamicInvocation(
-                    node,
-                    boundExpression,
-                    argArray,
-                    analyzedArguments.GetNames(),
-                    analyzedArguments.RefKinds.ToImmutableOrNull(),
-                    ImmutableArray<MethodSymbol>.Empty,
-                    Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
-                    hasErrors);
+                if (expression.IsKind(SyntaxKind.SimpleMemberAccessExpression) && CaseInsensitiveComparison.Equals(GetName((ExpressionSyntax)expression), ".ctor"))
+                {
+                    return new BoundLiteral(node, ConstantValue.CreateVoid(), Compilation.GetSpecialType(SpecialType.System_Void));
+                }
+                else
+                {
+                    ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
+                    bool hasErrors = ReportBadDynamicArguments(node, argArray, diagnostics, queryClause);
+                    result = new BoundDynamicInvocation(
+                        node,
+                        boundExpression,
+                        argArray,
+                        analyzedArguments.GetNames(),
+                        analyzedArguments.RefKinds.ToImmutableOrNull(),
+                        ImmutableArray<MethodSymbol>.Empty,
+                        Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                        hasErrors);
+                }
             }
 #endif
             else if (boundExpression.Kind == BoundKind.MethodGroup)

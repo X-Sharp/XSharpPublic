@@ -565,6 +565,9 @@ namespace Microsoft.CodeAnalysis.CodeGen
                 case ConstantValueTypeDiscriminator.IntPtr:
                     EmitIntConstant((int)value.IntPtrValue);
                     break;
+                case ConstantValueTypeDiscriminator.Void:
+                    EmitNullConstant();
+                    break;
 #endif
                 default:
                     throw ExceptionUtilities.UnexpectedValue(discriminator);

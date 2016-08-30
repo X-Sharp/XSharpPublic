@@ -28,6 +28,7 @@ namespace Microsoft.CodeAnalysis
         DateTime,
 #if XSHARP
         IntPtr,
+        Void,
 #endif
     }
 
@@ -318,6 +319,11 @@ namespace Microsoft.CodeAnalysis
 
             return new ConstantValueIntPtr(value);
         }
+
+        public static ConstantValue CreateVoid()
+        {
+            return new ConstantValueVoid();
+        }
 #endif
         public static ConstantValue Create(object value, SpecialType st)
         {
@@ -360,6 +366,7 @@ namespace Microsoft.CodeAnalysis
                 case ConstantValueTypeDiscriminator.String: return Create((string)value);
 #if XSHARP
                 case ConstantValueTypeDiscriminator.IntPtr: return Create((IntPtr)value);
+                case ConstantValueTypeDiscriminator.Void: return CreateVoid();
 #endif
                 default:
                     throw new InvalidOperationException();  //Not using ExceptionUtilities.UnexpectedValue() because this failure path is tested.
@@ -395,6 +402,7 @@ namespace Microsoft.CodeAnalysis
                 case ConstantValueTypeDiscriminator.DateTime: return ConstantValueDefault.DateTime;
 #if XSHARP
                 case ConstantValueTypeDiscriminator.IntPtr: return ConstantValueDefault.IntPtr;
+                case ConstantValueTypeDiscriminator.Void: return Null;
 #endif
 
                 case ConstantValueTypeDiscriminator.Null:
@@ -425,6 +433,7 @@ namespace Microsoft.CodeAnalysis
                 case SpecialType.System_String: return ConstantValueTypeDiscriminator.String;
 #if XSHARP
                 case SpecialType.System_IntPtr: return ConstantValueTypeDiscriminator.IntPtr;
+                case SpecialType.System_Void: return ConstantValueTypeDiscriminator.Void;
 #endif
             }
 
@@ -452,6 +461,7 @@ namespace Microsoft.CodeAnalysis
                 case ConstantValueTypeDiscriminator.String: return SpecialType.System_String;
 #if XSHARP
                 case ConstantValueTypeDiscriminator.IntPtr: return SpecialType.System_IntPtr;
+                case ConstantValueTypeDiscriminator.Void: return SpecialType.System_Void;
 #endif
                 default: return SpecialType.None;
             }
@@ -482,6 +492,7 @@ namespace Microsoft.CodeAnalysis
                     case ConstantValueTypeDiscriminator.String: return StringValue;
 #if XSHARP
                     case ConstantValueTypeDiscriminator.IntPtr: return IntPtrValue;
+                    case ConstantValueTypeDiscriminator.Void: return null;
 #endif
                     default: throw ExceptionUtilities.UnexpectedValue(this.Discriminator);
                 }
@@ -661,6 +672,14 @@ namespace Microsoft.CodeAnalysis
             get
             {
                 return this.Discriminator == ConstantValueTypeDiscriminator.IntPtr;
+            }
+        }
+
+        public bool IsVoid
+        {
+            get
+            {
+                return this.Discriminator == ConstantValueTypeDiscriminator.Void;
             }
         }
 #endif

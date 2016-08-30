@@ -6017,8 +6017,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (exprs.Count > 0)
                                 exprs.AddSeparator(SyntaxFactory.MissingToken(SyntaxKind.CommaToken));
                             exprs.Add(arg.Syntax as ExpressionSyntax);
+                            argsBuilder.Add(BindCastCore(arg.Syntax as ExpressionSyntax, arg, Compilation.GetSpecialType(SpecialType.System_Int32), wasCompilerGenerated: true, diagnostics: diagnostics));
                         }
                         var initSyntax = SyntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression, exprs);
+                        args = argsBuilder.ToImmutable();
+                        argsBuilder.Clear();
                         argsBuilder.Add(BindArrayCreationWithInitializer(diagnostics,
                             creationSyntax: null,
                             initSyntax: initSyntax,

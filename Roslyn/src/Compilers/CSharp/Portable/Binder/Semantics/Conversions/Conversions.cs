@@ -263,15 +263,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return conversion;
                     }
                 }
-            }
+
 
 #if XSHARP
-            if (source.SpecialType == SpecialType.System_Void)
-            {
-                return Conversion.NoConversion;
-            }
+                if (source.SpecialType == SpecialType.System_Void)
+                {
+                    return Conversion.NoConversion;
+                }
 #endif
-
+            }
             return GetImplicitUserDefinedConversion(sourceExpression, source, destination, ref useSiteDiagnostics);
         }
 
@@ -421,15 +421,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return conversion;
                     }
                 }
-            }
+
 
 #if XSHARP
-            if (source.SpecialType == SpecialType.System_Void)
-            {
-                return Conversion.NoConversion;
-            }
+                if (source.SpecialType == SpecialType.System_Void)
+                {
+                    return Conversion.NoConversion;
+                }
 #endif
-
+            }
             return GetExplicitUserDefinedConversion(sourceExpression, source, destination, ref useSiteDiagnostics);
         }
 

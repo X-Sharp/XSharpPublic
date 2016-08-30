@@ -552,7 +552,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9" styleclass="Normal" translate="true">/vo9</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Allows missing RETURN statements </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Allows missing RETURN statements </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -576,7 +576,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo12" styleclass="Normal" translate="true">/vo12</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Enables Clipper compatible integer divisions </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Enables Clipper compatible integer divisions </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

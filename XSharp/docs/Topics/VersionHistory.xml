@@ -7,6 +7,15 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Version History</text></para>
     </header>
     <para styleclass="Normal"><snippet src="Disclaimer" inline="false"/></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.7</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Compiler</text></para>
+    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Empty switch labels inside </text><link displaytype="text" defaultstyle="true" type="topiclink" href="SWITCH" styleclass="Normal" translate="true">SWITCH</link><text styleclass="Normal" translate="true"> statements are now allowed. They can share the implementation with the next label</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">RETURN and THROW statements inside a Switch statement would generate an &apos;unreachable code&apos; warning. This has been fixed</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for the /vo9 (Allow missing return statements) compiler option</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for the /vo12 (Clipper Integer divisions) compiler option.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.6</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Compiler</text></para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

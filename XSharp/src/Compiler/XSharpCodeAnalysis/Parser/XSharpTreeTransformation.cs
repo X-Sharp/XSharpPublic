@@ -4197,7 +4197,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(_syntaxFactory.ElementAccessExpression(
                 context.Expr.Get<ExpressionSyntax>(),
-                context.ArgList?.Get<BracketedArgumentListSyntax>() 
+                context.ArgList?.Get<BracketedArgumentListSyntax>()
                     ?? _syntaxFactory.BracketedArgumentList(
                         SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                         default(SeparatedSyntaxList<ArgumentSyntax>),
@@ -4526,7 +4526,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var expr = context.Expr.Get<ExpressionSyntax>();
             BracketedArgumentListSyntax argList;
             if (context.ArgList != null)
+            {
                 argList = context.ArgList.Get<BracketedArgumentListSyntax>();
+                TypeSyntax intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+
+                var args = _pool.AllocateSeparated<ArgumentSyntax>();
+                foreach (var arg in argList.Arguments.GetWithSeparators())
+                {
+                    if (arg is ArgumentSyntax)
+                    {
+                        args.Add(MakeArgument(MakeCastTo(intType, ((ArgumentSyntax)arg).Expression)));
+                    }
+                    else
+                        args.AddSeparator((SyntaxToken)arg);
+                }
+                argList = _syntaxFactory.BracketedArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    args,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                _pool.Free(args);
+            }
             else
             {
                 var openBracket = SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken);
@@ -4534,9 +4553,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                 argList = _syntaxFactory.BracketedArgumentList(openBracket, args, closeBracket);
             }
-            context.Put(_syntaxFactory.ElementAccessExpression(
-                expr,
-                argList));
+            context.Put(_syntaxFactory.ElementAccessExpression(expr,argList));
         }
 
         public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)

@@ -86,6 +86,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
             {
+                // HACK: This fixes the case where methodname is empty
+                if (string.IsNullOrEmpty(name))
+                {
+                    if (node.Syntax.XNode is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.MethodCallContext)
+                    {
+                        var Xnode = node.Syntax.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.MethodCallContext;
+                        var Xnode2 = Xnode.Expr as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AccessMemberContext;
+                        name = Xnode2.Name.GetText();
+                    }
+                    // This does not work
+                    //else if (node.Syntax.XNode is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.ClsctorContext)
+                    //{
+                    //    name = ".ctor";
+                    //}
+
+                }
+
                 return MakeVODynamicInvokeMember(loweredReceiver, name, loweredArguments);
             }
 #endif
@@ -1160,7 +1177,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (_compilation.Options.IsDialectVO && _compilation.Options.LateBinding && !loweredReceiver.HasDynamicType())
             {
-                return MakeVODynamicGetMember(loweredReceiver, node.Name);
+                string propName = node.Name;
+                // HACK: This fixes the case where IVarGet for OBJECT has an empty name
+                if (string.IsNullOrEmpty(propName))
+                {
+	                var Xnode = node.Syntax.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AccessMemberContext;
+	                propName = Xnode.Name.GetText();
+                }
+                return MakeVODynamicGetMember(loweredReceiver, propName);
             }
 #endif
             return _dynamicFactory.MakeDynamicGetMember(loweredReceiver, node.Name, node.Indexed).ToExpression();

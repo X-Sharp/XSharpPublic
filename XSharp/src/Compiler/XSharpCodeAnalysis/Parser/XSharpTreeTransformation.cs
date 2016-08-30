@@ -4528,23 +4528,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.ArgList != null)
             {
                 argList = context.ArgList.Get<BracketedArgumentListSyntax>();
-                TypeSyntax intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
-
-                var args = _pool.AllocateSeparated<ArgumentSyntax>();
-                foreach (var arg in argList.Arguments.GetWithSeparators())
-                {
-                    if (arg is ArgumentSyntax)
-                    {
-                        args.Add(MakeArgument(MakeCastTo(intType, ((ArgumentSyntax)arg).Expression)));
-                    }
-                    else
-                        args.AddSeparator((SyntaxToken)arg);
-                }
-                argList = _syntaxFactory.BracketedArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    args,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
-                _pool.Free(args);
             }
             else
             {

@@ -919,6 +919,8 @@ lexer grammar XSharpLexer;
 					{"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern> 
 					{"#UNDEF", PP_UNDEF},			// #undef <identifier>
 					{"#WARNING", PP_WARNING},		// #warning [warningMessage]
+					{"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  
+					{"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern> 
 				};
 
 				foreach (var text in PpSymbols.Keys) {
@@ -1049,6 +1051,14 @@ DOC_COMMENT,SL_COMMENT,ML_COMMENT,
 // Separators
 LINE_CONT,LINE_CONT_OLD,
 SEMI,WS,NL,EOS,
+
+
+// Preprocessor Rules
+// Match markers
+PP_MM_REGULAR, PP_MM_LIST, PP_MM_RESTRICTED, PP_MM_WILD, PP_MM_EXTENDED, PP_MM_OPTIONAL,
+
+// Result Markers
+PP_RM_REGULAR, PP_RM_DUMB_STRINGIFY, PP_RM_NORMAL_STRINGIFY, PP_RM_SMART_STRINGIFY, PP_RM_BLOCKIFY, PP_RM_LOGIFY, PP_RM_OPTIONAL,
 
 // Error
 UNRECOGNIZED
@@ -1210,3 +1220,4 @@ fragment W	: 'w' | 'W';
 fragment X	: 'x' | 'X';
 fragment Y	: 'y' | 'Y';
 fragment Z	: 'z' | 'Z';
+

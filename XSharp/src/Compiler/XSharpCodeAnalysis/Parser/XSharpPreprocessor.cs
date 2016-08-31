@@ -133,7 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
 
-            // Note that Vulcan emits Macros such as __ENTITY__ and  __SIG__ in the code generation phase.
+            // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
 
             macroDefines.Add("__ARRAYBASE__", () => new CommonToken(XSharpLexer.INT_CONST,_options.ArrayZero ? "0" : "1"));
             macroDefines.Add("__CLR2__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLR2__\""));
@@ -744,6 +744,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XSharpLexer.PP_COMMAND:
                     case XSharpLexer.PP_TRANSLATE:
+                        var not = Lt();
+                        Consume();
+                        _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Directive '"+not.Text +"' not supported yet"));
+                        var udc = ConsumeList();
+                        break;
                     case XSharpLexer.PP_ENDREGION:
                     case XSharpLexer.PP_REGION:
                         if (IsActiveElseSkip())

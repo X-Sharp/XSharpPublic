@@ -746,9 +746,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_TRANSLATE:
                         var not = Lt();
                         Consume();
-                        _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Directive '"+not.Text +"' not supported yet"));
                         var udc = ConsumeList();
+#if UDCSUPPORT
+                        var rule = new XSharpPreprocessorRule(nextType, udc);
+                        if (rule.Type == RuleType.None)
+                        {
+                            if (rule.ErrorMessages?.Count > 0)
+                            {
+                                _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Invalid directive '" + not.Text + "' (are you missing the => operator?)"));
+                                foreach (var s in rule.ErrorMessages)
+                                {
+                                    _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, s));
+                                }
+                            }
+                        }
+                        else
                         break;
+#else
+                        _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Directive '" + not.Text + "' not supported yet"));
+                        break;
+#endif
                     case XSharpLexer.PP_ENDREGION:
                     case XSharpLexer.PP_REGION:
                         if (IsActiveElseSkip())

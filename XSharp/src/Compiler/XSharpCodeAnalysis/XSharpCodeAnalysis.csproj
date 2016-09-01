@@ -51,12 +51,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;UDCSUPPORT</DefineConstants>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
+    <DefineConstants>COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;UDCSUPPORT;</DefineConstants>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -297,6 +297,7 @@
     <Compile Include="Parser\XSharpLanguageParser.cs" />
     <Compile Include="CommandLine\XSharpParseOptions.cs" />
     <Compile Include="Parser\XSharpPreprocessor.cs" />
+    <Compile Include="Parser\XSharpPreprocessorRule.cs" />
     <Compile Include="Parser\XSharpSyntaxTree.cs" />
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
     <Compile Include="Parser\XSharpVOTreeTransformation .cs" />

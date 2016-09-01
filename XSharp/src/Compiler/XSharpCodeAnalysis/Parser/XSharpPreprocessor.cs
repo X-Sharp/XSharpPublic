@@ -107,6 +107,79 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public int MaxSymbolDepth { get; set; } = 16;
 
         public string StdDefs { get; set; } = string.Empty;
+        private void initStdDefines(CSharpParseOptions options, string fileName)
+        {
+            // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
+            macroDefines.Add("__ARRAYBASE__", () => new CommonToken(XSharpLexer.INT_CONST, _options.ArrayZero ? "0" : "1"));
+            macroDefines.Add("__CLR2__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLR2__\""));
+            macroDefines.Add("__CLR4__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLR4__\""));
+            macroDefines.Add("__CLRVERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLRVERSION__\""));
+            macroDefines.Add("__DATE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
+            macroDefines.Add("__DATETIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
+            if (_options.DebugEnabled)
+                macroDefines.Add("__DEBUG__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+            macroDefines.Add("__DIALECT__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + options.Dialect.ToString() + '"'));
+            switch (_options.Dialect)
+            {
+                case XSharpDialect.Core:
+                    macroDefines.Add("__DIALECT_CORE__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+                    break;
+                case XSharpDialect.VO:
+                    macroDefines.Add("__DIALECT_VO__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+                    break;
+                case XSharpDialect.Vulcan:
+                    macroDefines.Add("__DIALECT_VULCAN__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+                    break;
+                default:
+                    break;
+            }
+            macroDefines.Add("__ENTITY__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\""));  // Handled later in Transformation phase
+            macroDefines.Add("__FILE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"'));
+            macroDefines.Add("__LINE__", () => new CommonToken(XSharpLexer.INT_CONST, inputs.Lt().Line.ToString()));
+            macroDefines.Add("__MODULE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"'));
+            macroDefines.Add("__SIG__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__SIG__\"")); // Handled later in Transformation phase
+            macroDefines.Add("__SRCLOC__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line " + inputs.Lt().Line.ToString() + '"'));
+            macroDefines.Add("__SYSDIR__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + options.SystemDir + '"'));
+            macroDefines.Add("__TIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"'));
+            macroDefines.Add("__UTCTIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"'));
+            macroDefines.Add("__VERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
+            macroDefines.Add("__WINDIR__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir + '"'));
+            macroDefines.Add("__WINDRIVE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir?.Substring(0, 2) + '"'));
+            macroDefines.Add("__XSHARP__", () => new CommonToken(XSharpLexer.TRUE_CONST));
+
+            bool[] flags  = { options.VoInitAxitMethods ,  // vo1
+                                options.VONullStrings,  // vo2
+                                options.VirtualInstanceMethods, // vo3
+                                options.VOImplicitCastsAndConversions, // vo4
+                                options.VOClipperCallingConvention, // vo5
+                                options.VOResolveTypedFunctionPointersToPtr, // vo6
+                                options.VOImplicitCastsAndConversions, // vo7
+                                options.VOPreprocessorBehaviour, // vo8
+                                options.VOAllowMissingReturns, // vo9
+                                options.VOCompatibleIIF, // vo10
+                                options.VOArithmeticConversions, // vo11
+                                options.VOClipperIntegerDivisions, // vo12
+                                options.VOStringComparisons, // vo13
+                                options.VOFloatConstants, // vo14
+                                options.VOUntypedAllowed // vo15
+            };
+            for (int iOpt = 0; iOpt < flags.Length; iOpt++)
+            {
+                string flagName = String.Format("__VO{0}__", iOpt + 1);
+                if (flags[iOpt])
+                    macroDefines.Add(flagName, () => new CommonToken(XSharpLexer.TRUE_CONST));
+                else
+                    macroDefines.Add(flagName, () => new CommonToken(XSharpLexer.FALSE_CONST));
+            }
+            if (!options.NoStdDef)
+            {
+                // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
+                // and automatically include it.
+                // read XsharpDefs.xh
+                StdDefs = "xSharpDefs.xh";
+                //includeFile(null, StdDefs);
+            }
+        }
 
         internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
@@ -133,53 +206,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
 
-            // Note Macros such as __ENTITY__ and  __SIG__ are handled in the transformation phase
-
-            macroDefines.Add("__ARRAYBASE__", () => new CommonToken(XSharpLexer.INT_CONST,_options.ArrayZero ? "0" : "1"));
-            macroDefines.Add("__CLR2__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLR2__\""));
-            macroDefines.Add("__CLR4__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLR4__\""));
-            macroDefines.Add("__CLRVERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__CLRVERSION__\""));
-            macroDefines.Add("__DATE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.Date.ToString("yyyyMMdd") + '"'));
-            macroDefines.Add("__DATETIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString() + '"'));
-            if (_options.DebugEnabled)
-                macroDefines.Add("__DEBUG__", () => new CommonToken(XSharpLexer.TRUE_CONST));
-            macroDefines.Add("__DIALECT__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+options.Dialect.ToString()+ '"'));
-            switch (_options.Dialect) {
-                case XSharpDialect.Core:
-                    macroDefines.Add("__DIALECT_CORE__", () => new CommonToken(XSharpLexer.TRUE_CONST));
-                    break;
-                case XSharpDialect.VO:
-                    macroDefines.Add("__DIALECT_VO__", () => new CommonToken(XSharpLexer.TRUE_CONST));
-                    break;
-                case XSharpDialect.Vulcan:
-                    macroDefines.Add("__DIALECT_VULCAN__", () => new CommonToken(XSharpLexer.TRUE_CONST));
-                    break;
-                default:
-                    break;
-            }
-            macroDefines.Add("__ENTITY__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__ENTITY__\""));  // Handled later in Transformation phase
-            macroDefines.Add("__FILE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+(inputs.SourceFileName ?? fileName)+'"'));
-            macroDefines.Add("__LINE__", () => new CommonToken(XSharpLexer.INT_CONST, inputs.Lt().Line.ToString()));
-            macroDefines.Add("__MODULE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + '"'));
-            macroDefines.Add("__SIG__", () => new CommonToken(XSharpLexer.STRING_CONST, "\"__SIG__\"")); // Handled later in Transformation phase
-            macroDefines.Add("__SRCLOC__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + (inputs.SourceFileName ?? fileName) + " line "+ inputs.Lt().Line.ToString() + '"'));
-            macroDefines.Add("__SYSDIR__", () => new CommonToken(XSharpLexer.STRING_CONST, '"'+options.SystemDir+'"'));
-            macroDefines.Add("__TIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToString("HH:mm:ss") + '"'));    
-            macroDefines.Add("__UTCTIME__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + DateTime.Now.ToUniversalTime().ToString("HH:mm:ss") + '"')); 
-            macroDefines.Add("__VERSION__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + global::XSharp.Constants.Version + '"'));
-            macroDefines.Add("__WINDIR__", () =>  new CommonToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir + '"'));
-            macroDefines.Add("__WINDRIVE__", ()  => new CommonToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir?.Substring(0,2) + '"'));
-            macroDefines.Add("__XSHARP__", () => new CommonToken(XSharpLexer.TRUE_CONST));
-            if (! options.NoStdDef)
-            {
-                // Todo: when the compiler option nostddefs is not set: read XSharpDefs.xh from the XSharp Include folder,//
-                // and automatically include it.
-                // read XsharpDefs.xh
-                StdDefs = "xSharpDefs.xh";
-                //includeFile(null, StdDefs);
-            }
-
-
+            initStdDefines(options, fileName);
 
         }
 
@@ -295,18 +322,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         CommonToken FixToken(IToken t)
         {
-            if (inputs.MappedLineDiff != 0)
-                ((CommonToken)t).MappedLine = t.Line + inputs.MappedLineDiff;
+            CommonToken ct = (CommonToken)t;
+
+             if (inputs.MappedLineDiff != 0)
+                ct.MappedLine = t.Line + inputs.MappedLineDiff;
             if (!string.IsNullOrEmpty(inputs.MappedFileName))
-                ((CommonToken)t).MappedFileName = inputs.MappedFileName;
+                ct.MappedFileName = inputs.MappedFileName;
             if (!string.IsNullOrEmpty(inputs.SourceFileName))
-                ((CommonToken)t).SourceFileName = inputs.SourceFileName;
+                ct.SourceFileName = inputs.SourceFileName;
             if (inputs.isSymbol)
             {
-                ((CommonToken)t).SourceSymbol = GetSourceSymbol();
-                ((CommonToken)t).SourceFileName = (((CommonToken)t).SourceSymbol as CommonToken).SourceFileName;
+                ct.SourceSymbol = GetSourceSymbol();
+                ct.SourceFileName = (ct.SourceSymbol as CommonToken).SourceFileName;
             }
-            return (CommonToken)t;
+            return ct;
         }
 
         IList<IToken> ConsumeList()
@@ -725,6 +754,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         var stream = new AntlrInputStream(text.ToString());
                                         var lexer = new XSharpLexer(stream);
                                         var tokens = new CommonTokenStream(lexer);
+                                        stream.name = nfp;
                                         tokens.Fill();
                                         InsertStream(nfp, tokens);
                                     }
@@ -742,25 +772,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                         break;
-                    case XSharpLexer.PP_COMMAND:
-                    case XSharpLexer.PP_TRANSLATE:
+                    case XSharpLexer.PP_COMMAND: 
+                    case XSharpLexer.PP_TRANSLATE: 
                         var not = Lt();
+                        not = FixToken(not);
                         Consume();
                         var udc = ConsumeList();
 #if UDCSUPPORT
                         var rule = new XSharpPreprocessorRule(nextType, udc);
                         if (rule.Type == RuleType.None)
                         {
+                            var err = not;
                             if (rule.ErrorMessages?.Count > 0)
                             {
-                                _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Invalid directive '" + not.Text + "' (are you missing the => operator?)"));
                                 foreach (var s in rule.ErrorMessages)
                                 {
-                                    _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, s));
+                                    _parseErrors.Add(new ParseErrorData(s.Item1,ErrorCode.ERR_PreProcessorError, "Invalid directive '" + not.Text + ": "+s.Item2));
                                 }
                             }
+                            else
+                            {
+                                _parseErrors.Add(new ParseErrorData(err, ErrorCode.ERR_PreProcessorError, "Invalid directive '" + not.Text + "' (are you missing the => operator?)"));
+                            }
                         }
-                        else
                         break;
 #else
                         _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Directive '" + not.Text + "' not supported yet"));

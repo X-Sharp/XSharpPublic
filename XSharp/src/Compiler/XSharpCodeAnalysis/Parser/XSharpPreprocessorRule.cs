@@ -13,12 +13,15 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and   
 limitations under the License.
 */
+//#define DUMP_UDC
 using System;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
+
 #if UDCSUPPORT
+
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     enum RuleType
@@ -100,6 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     }
 
+    [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal class XSharpPreprocessorRule
     {
         RuleType _type;
@@ -120,6 +124,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _type = RuleType.None;
             }
             _matchdict = null;
+#if DUMP_UDC
+            var t = tokens[0];
+            Debug.WriteLine("UDC: {0} {1,3} {2} {3}", t.InputStream.SourceName, t.Line, Type,  this.GetDebuggerDisplay());
+#endif
         }
         bool ParseRuleTokens(IToken[] _tokens)
         {
@@ -487,6 +495,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             result.CopyTo(resulttokens);
             return resulttokens;
 
+        }
+        internal string GetDebuggerDisplay()
+        {
+            if (_matchtokens.Length > 0)
+            {
+                string result = "";
+                int i = 0;
+                while (i < _matchtokens.Length && _matchtokens[i].Type == RuleMarker.Token)
+                {
+                    result += _matchtokens[i].Token.Text+" ";
+                    i++;
+                }
+                return "Rule: " + result.Trim();
+            }
+            else
+            {
+                return "Rule: (empty)";
+            }
         }
     }
 }

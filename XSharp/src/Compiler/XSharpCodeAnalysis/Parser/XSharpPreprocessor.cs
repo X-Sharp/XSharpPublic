@@ -13,9 +13,11 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and   
 limitations under the License.
 */
+//#define DUMP_UDC
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
 using Antlr4.Runtime;
@@ -98,7 +100,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         InputState inputs;
 
+#if UDCSUPPORT
+        List<XSharpPreprocessorRule> _rules = new List<XSharpPreprocessorRule>();
+        bool _hasrules = false;
+#endif
         HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
+
+
 
         internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>();
 
@@ -439,7 +447,98 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return (t.Type == XSharpLexer.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
         }
 
+        void addDefine(IToken def)
+        {
+            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+            {
+                Consume();
+                var newtokens = ConsumeList();
+                if (symbolDefines.ContainsKey(def.Text))
+                {
+                    // check to see if this is a new definition or a duplicate definition
+                    var oldtokens = symbolDefines[def.Text];
+                    bool equalDefine = (oldtokens.Count == newtokens.Count);
+                    if (equalDefine)
+                    {
+                        for (int i = 0; i < oldtokens.Count; i++)
+                        {
+                            if (String.Compare(oldtokens[i].Text, newtokens[i].Text) != 0)
+                            {
+                                equalDefine = false;
+                                break;
+                            }
+                        }
+                    }
 
+                    if (equalDefine)
+                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
+                    else
+                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text));
+                }
+                symbolDefines[def.Text] = newtokens;
+#if DUMP_UDC
+                Debug.WriteLine("DEF: {0} {1,3} {2}", def.InputStream.SourceName, def.Line, def.Text);
+#endif
+            }
+            else
+            {
+                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+            }
+
+        }
+        void removeDefine(IToken def)
+        {
+            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+            {
+                Consume();
+                SkipEmpty();
+                if (symbolDefines.ContainsKey(def.Text))
+                    symbolDefines.Remove(def.Text);
+                // undef for a symbol that is not defined is not seen as an error in VO and Vulcan
+                //else
+                //{
+                //    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol not defined: " + def.Text));
+                //}
+            }
+            else
+            {
+                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+
+            }
+        }
+
+        void addRule(int token)
+        {
+            var cmd = Lt();
+            //cmd = FixToken(cmd);
+            Consume();
+            var udc = ConsumeList();
+#if UDCSUPPORT
+            var rule = new XSharpPreprocessorRule(token, udc);
+            if (rule.Type == RuleType.None)
+            {
+                if (rule.ErrorMessages?.Count > 0)
+                {
+                    foreach (var s in rule.ErrorMessages)
+                    {
+                        _parseErrors.Add(new ParseErrorData(s.Item1, ErrorCode.ERR_PreProcessorError, "Invalid directive '" + cmd.Text + ": " + s.Item2));
+                    }
+                }
+                else
+                {
+                    _parseErrors.Add(new ParseErrorData(cmd, ErrorCode.ERR_PreProcessorError, "Invalid directive '" + cmd.Text + "' (are you missing the => operator?)"));
+                }
+            }
+            else
+            {
+                _rules.Add(rule);
+                _hasrules = true;
+            }
+#else
+            _parseErrors.Add(new ParseErrorData(cmd, ErrorCode.ERR_PreProcessorError, "Directive '" + cmd.Text + "' not supported yet"));
+#endif
+
+        }
         [return: NotNull]
         public IToken NextToken()
         {
@@ -482,38 +581,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             Consume();
                             SkipHidden();
                             var def = Lt();
-                            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
-                            {
-                                Consume();
-                                var newtokens = ConsumeList();
-                                if (symbolDefines.ContainsKey(def.Text))
-                                {
-                                    // check to see if this is a new definition or a duplicate definition
-                                    var oldtokens = symbolDefines[def.Text];
-                                    bool equalDefine = (oldtokens.Count == newtokens.Count);
-                                    if (equalDefine)
-                                    {
-                                        for (int i = 0; i < oldtokens.Count; i++)
-                                        {
-                                            if (String.Compare(oldtokens[i].Text, newtokens[i].Text) != 0)
-                                            {
-                                                equalDefine = false;
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if (equalDefine)
-                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
-                                    else
-                                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text));
-                                }
-                                symbolDefines[def.Text] = newtokens;
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
-                            }
+                            addDefine(def);
                             SkipToEol();
                         }
                         break;
@@ -523,21 +591,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             Consume();
                             SkipHidden();
                             var def = Lt();
-                            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
-                            {
-                                Consume();
-                                SkipEmpty();
-                                if (symbolDefines.ContainsKey(def.Text))
-                                    symbolDefines.Remove(def.Text);
-                                //else
-                                //{
-                                //    _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_PreProcessorWarning, "Symbol not defined: " + def.Text));
-                                //}
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(def, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
-                            }
+                            removeDefine(def);
                             SkipToEol();
                         }
                         break;
@@ -773,33 +827,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         break;
                     case XSharpLexer.PP_COMMAND: 
-                    case XSharpLexer.PP_TRANSLATE: 
-                        var not = Lt();
-                        not = FixToken(not);
-                        Consume();
-                        var udc = ConsumeList();
-#if UDCSUPPORT
-                        var rule = new XSharpPreprocessorRule(nextType, udc);
-                        if (rule.Type == RuleType.None)
-                        {
-                            var err = not;
-                            if (rule.ErrorMessages?.Count > 0)
-                            {
-                                foreach (var s in rule.ErrorMessages)
-                                {
-                                    _parseErrors.Add(new ParseErrorData(s.Item1,ErrorCode.ERR_PreProcessorError, "Invalid directive '" + not.Text + ": "+s.Item2));
-                                }
-                            }
-                            else
-                            {
-                                _parseErrors.Add(new ParseErrorData(err, ErrorCode.ERR_PreProcessorError, "Invalid directive '" + not.Text + "' (are you missing the => operator?)"));
-                            }
-                        }
+                    case XSharpLexer.PP_TRANSLATE:
+                        addRule(nextType);
                         break;
-#else
-                        _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Directive '" + not.Text + "' not supported yet"));
-                        break;
-#endif
                     case XSharpLexer.PP_ENDREGION:
                     case XSharpLexer.PP_REGION:
                         if (IsActiveElseSkip())

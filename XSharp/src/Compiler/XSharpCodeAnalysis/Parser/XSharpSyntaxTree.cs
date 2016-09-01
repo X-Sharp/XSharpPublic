@@ -86,7 +86,15 @@ namespace Antlr4.Runtime {
             public bool IsHidden { get { return false; } }
             public int Position { get { return Symbol.StartIndex; } }
             public int FullWidth { get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
-            public string SourceFileName { get { return (Symbol as CommonToken).SourceFileName; } }
+            public string SourceFileName {
+                get
+                {
+                    if (Symbol.InputStream != null)
+                        return Symbol.InputStream.SourceName;
+                    else
+                        return (Symbol as CommonToken).SourceFileName;
+                }
+            }
             public string MappedFileName { get { return (Symbol as CommonToken).MappedFileName; } }
             public int MappedLine { get { return (Symbol as CommonToken).MappedLine; } }
             public IToken SourceSymbol { get { return (Symbol as CommonToken).SourceSymbol; } }

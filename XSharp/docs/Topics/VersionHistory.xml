@@ -14,11 +14,12 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">RETURN and THROW statements inside a Switch statement would generate an &apos;unreachable code&apos; warning. This has been fixed</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for the /vo9 (Allow missing return statements) compiler option. Missing return values are also allowed when /vo9 is used.</text><br/><text styleclass="Normal" translate="true">Warnings 9025 (Missing RETURN statement) and 9026 (Missing RETURN value) have been added.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for the /vo12 (Clipper Integer divisions) compiler option.</text></li>
-      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed several problems with Array Indexes</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed several problems with mixing signed and unsigned Array Indexes</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed several problems with the FOR .. NEXT statement. The &quot;To&quot; expression will now be evaluated for every iteration of the loop, just like in VO and Vulcan.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed several compiler crashes</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Overriding functions in VulcanRTFuncs can now be done without specifying the namespace: </text><br/><text styleclass="Normal" translate="true">When the compiler finds two candidate functions and one of them is inside VulcanRTFuncs then the function that is not in VulcanRTFuncs is chosen.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Warning 9001 (unsafe modifier implied) is now suppressed for the VO/Vulcan dialect. You MUST pass the /unsafe compiler option if you are compiling unsafe code though!</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">The preprocessor now automatically defines the macros __VO1__ until __VO15__ with a value of TRUE or FALSE depending on the setting of the compiler option</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.6</text></para>

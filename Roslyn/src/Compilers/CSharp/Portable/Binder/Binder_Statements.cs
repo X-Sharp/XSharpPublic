@@ -725,7 +725,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
 #if XSHARP
-                if (this.Compilation.Options.InitStringVarsToEmpty && initializerOpt == null && declTypeOpt.SpecialType == SpecialType.System_String)
+                if (this.Compilation.Options.VONullStrings && initializerOpt == null && declTypeOpt.SpecialType == SpecialType.System_String)
                 {
                     initializerOpt = BindPossibleArrayInitializer(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal("")), declTypeOpt, new DiagnosticBag());
                     initializerOpt.WasCompilerGenerated = true;

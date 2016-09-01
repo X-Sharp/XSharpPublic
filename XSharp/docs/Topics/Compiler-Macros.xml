@@ -20,6 +20,21 @@
     <keyword translate="true">__TIME__</keyword>
     <keyword translate="true">__UTCTIME__</keyword>
     <keyword translate="true">__VERSION__</keyword>
+    <keyword translate="true">__VO1__</keyword>
+    <keyword translate="true">__VO10__</keyword>
+    <keyword translate="true">__VO11__</keyword>
+    <keyword translate="true">__VO12__</keyword>
+    <keyword translate="true">__VO13__</keyword>
+    <keyword translate="true">__VO14__</keyword>
+    <keyword translate="true">__VO15__</keyword>
+    <keyword translate="true">__VO2__</keyword>
+    <keyword translate="true">__VO3__</keyword>
+    <keyword translate="true">__VO4__</keyword>
+    <keyword translate="true">__VO5__</keyword>
+    <keyword translate="true">__VO6__</keyword>
+    <keyword translate="true">__VO7__</keyword>
+    <keyword translate="true">__VO8__</keyword>
+    <keyword translate="true">__VO9__</keyword>
     <keyword translate="true">__WINDIR__</keyword>
     <keyword translate="true">__WINDRIVE__</keyword>
     <keyword translate="true">__XSHARP__</keyword>
@@ -29,7 +44,7 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Compiler Macros</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following defines can be used in your code and will be replaced by the compiler with a literal value:</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="25" colcount="3">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="26" colcount="3">
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Name</text></para>
@@ -270,6 +285,17 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Version of the compiler</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">__VO1__ , __VO2__ ... __VO15__</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logical</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Current value of the matching VO compatibility compiler option</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

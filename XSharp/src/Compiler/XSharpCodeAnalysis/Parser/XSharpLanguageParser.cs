@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 // Uncomment this define to dump time profiling info of the parsing phases.
-#define DUMP_TIMES
+//#define DUMP_TIMES
 
 using System;
 using System.Collections.Generic;

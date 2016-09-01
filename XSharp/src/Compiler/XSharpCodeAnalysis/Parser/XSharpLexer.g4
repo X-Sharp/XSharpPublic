@@ -129,6 +129,12 @@ lexer grammar XSharpLexer;
 					_textSb.Append((char)c);
 					InputStream.Consume();
 					break;
+				case '\\':       // used inside #command to escape '<'
+					_type = BACKSLASH;
+					_textSb.Clear();
+					_textSb.Append((char)c);
+					InputStream.Consume();
+					break;
 				case '|':
 					_type = PIPE;
 					_textSb.Clear();
@@ -213,6 +219,7 @@ lexer grammar XSharpLexer;
 						InputStream.Consume();
 					}
 					break;
+
 				case '/':
 					if (InputStream.La(2) == '/' || InputStream.La(2) == '*') {
 						break;
@@ -881,6 +888,21 @@ lexer grammar XSharpLexer;
 					{"__TIME__", MACRO},
 					{"__UTCTIME__", MACRO},
 					{"__VERSION__", MACRO},
+					{"__VO1__", MACRO},
+					{"__VO2__", MACRO},
+					{"__VO3__", MACRO},
+					{"__VO4__", MACRO},
+					{"__VO5__", MACRO},
+					{"__VO6__", MACRO},
+					{"__VO7__", MACRO},
+					{"__VO8__", MACRO},
+					{"__VO9__", MACRO},
+					{"__VO10__", MACRO},
+					{"__VO11__", MACRO},
+					{"__VO12__", MACRO},
+					{"__VO13__", MACRO},
+					{"__VO14__", MACRO},
+					{"__VO15__", MACRO},
 					{"__WINDIR__", MACRO},
 					{"__WINDRIVE__", MACRO},
 					{"__XSHARP__", MACRO},
@@ -987,6 +1009,9 @@ DYNAMIC,
 
 LAST_KEYWORD,
 
+// UDC Keyword, can be any word. The PP sets this type to tokens that are matched with keywords inside an UDC
+PP_UDC,
+
 
 // Null values
 FIRST_NULL,
@@ -1023,7 +1048,7 @@ FALSE_CONST,TRUE_CONST,
 LOGIC_AND,LOGIC_OR,LOGIC_NOT,LOGIC_XOR,
 
 // Symbols
-LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,COLONCOLON,
+LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,COLONCOLON,BACKSLASH, 
 
 LAST_OPERATOR,
 
@@ -1051,14 +1076,6 @@ DOC_COMMENT,SL_COMMENT,ML_COMMENT,
 // Separators
 LINE_CONT,LINE_CONT_OLD,
 SEMI,WS,NL,EOS,
-
-
-// Preprocessor Rules
-// Match markers
-PP_MM_REGULAR, PP_MM_LIST, PP_MM_RESTRICTED, PP_MM_WILD, PP_MM_EXTENDED, PP_MM_OPTIONAL,
-
-// Result Markers
-PP_RM_REGULAR, PP_RM_DUMB_STRINGIFY, PP_RM_NORMAL_STRINGIFY, PP_RM_SMART_STRINGIFY, PP_RM_BLOCKIFY, PP_RM_LOGIFY, PP_RM_OPTIONAL,
 
 // Error
 UNRECOGNIZED

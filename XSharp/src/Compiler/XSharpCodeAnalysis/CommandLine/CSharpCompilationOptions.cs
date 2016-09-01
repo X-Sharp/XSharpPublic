@@ -30,14 +30,19 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string DefaultIncludeDir { get; set; }
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
-        public bool InitStringVarsToEmpty { get; private set; }
+        public bool VONullStrings { get; private set; }
+        public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
+        public bool VOArithmeticConversions { get; private set; }
         public bool VOClipperCallingConvention { get; private set; }
         public bool VOClipperIntegerDivisions { get; private set; }
-        public bool VOCompatibleArtithmeticConversions { get; private set; }
         public bool VOCompatibleIIF { get; private set; }
         public bool VOFloatConstants { get; private set; }
-        public bool VOImplicitCasts { get; private set; }
+        public bool VOImplicitCastsAndConversions { get; private set; }
+        public bool VOImplicitSignedUnsignedConversions { get; private set; }
+        public bool VoInitAxitMethods { get; private set; }
+        public bool VOPreprocessorBehaviour { get; private set; }
+        public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
         public bool VOUntypedAllowed { get; private set; }
@@ -53,18 +58,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (opt != null)
             {
                 ArrayZero = opt.ArrayZero;
-                InitStringVarsToEmpty = opt.Vo2;
-                Dialect = opt.Dialect;
-                VOAllowMissingReturns = opt.Vo9;
-                VOClipperCallingConvention = opt.Vo5;
-                VOClipperIntegerDivisions = opt.Vo12;
-                VOCompatibleArtithmeticConversions = opt.Vo11;
-                VOCompatibleIIF = opt.Vo10;
-                VOFloatConstants = opt.Vo14;
-                VOImplicitCasts = opt.Vo7;
+                VoInitAxitMethods = opt.Vo1;
+                VONullStrings = opt.Vo2;
+                VirtualInstanceMethods = opt.Vo3;
                 VOSignedUnsignedConversion = opt.Vo4;
+                VOClipperCallingConvention = opt.Vo5;
+                VOResolveTypedFunctionPointersToPtr = opt.Vo6;
+                VOImplicitCastsAndConversions = opt.Vo7;
+                VOPreprocessorBehaviour = opt.Vo8;
+                VOAllowMissingReturns = opt.Vo9;
+                VOCompatibleIIF = opt.Vo10;
+                VOArithmeticConversions = opt.Vo11;
+                VOClipperIntegerDivisions = opt.Vo12;
                 VOStringComparisons = opt.Vo13;
+                VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
+                Dialect = opt.Dialect;
                 LateBinding = opt.LateBinding;
                 CreatingRuntime = opt.CreatingRuntime;
             }
@@ -77,23 +86,28 @@ namespace Microsoft.CodeAnalysis.CSharp
         public void SetXSharpSpecificOptions(CSharpCompilationOptions opt)
         {
             ArrayZero = opt.ArrayZero;
-            InitStringVarsToEmpty = opt.InitStringVarsToEmpty;
             DefaultIncludeDir = opt.DefaultIncludeDir;
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
-            VOAllowMissingReturns = opt.VOAllowMissingReturns;
-            VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions;
-            VOClipperCallingConvention = opt.VOClipperCallingConvention;
-            VOCompatibleArtithmeticConversions = opt.VOCompatibleArtithmeticConversions;
-            VOCompatibleIIF = opt.VOCompatibleIIF;
-            VOFloatConstants = opt.VOFloatConstants;
-            VOImplicitCasts = opt.VOImplicitCasts;
-            VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion;
-            VOStringComparisons = opt.VOStringComparisons;
-            VOUntypedAllowed = opt.VOUntypedAllowed;
             LateBinding = opt.LateBinding;
             CreatingRuntime = opt.CreatingRuntime;
+
+            VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
+            VONullStrings = opt.VONullStrings; // vo2
+            VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3
+            VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion; // vo4
+            VOClipperCallingConvention = opt.VOClipperCallingConvention;  // vo5
+            VOResolveTypedFunctionPointersToPtr = opt.VOResolveTypedFunctionPointersToPtr; // vo6
+            VOImplicitCastsAndConversions = opt.VOImplicitCastsAndConversions; // vo7
+            VOPreprocessorBehaviour = opt.VOPreprocessorBehaviour; // vo8
+            VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9
+            VOCompatibleIIF = opt.VOCompatibleIIF; // vo10
+            VOArithmeticConversions = opt.VOArithmeticConversions; // vo11
+            VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12
+            VOStringComparisons = opt.VOStringComparisons; // vo13
+            VOFloatConstants = opt.VOFloatConstants; // vo14
+            VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
         }
     }
 }

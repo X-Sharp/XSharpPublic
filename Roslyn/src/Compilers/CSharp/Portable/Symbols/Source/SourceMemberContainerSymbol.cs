@@ -2926,7 +2926,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     }
                                 }
 #if XSHARP
-                                if (bodyBinder.Compilation.Options.InitStringVarsToEmpty && variable.Initializer == null && !this.IsStructType()) {
+                                if (bodyBinder.Compilation.Options.VONullStrings && variable.Initializer == null && !this.IsStructType()) {
                                     bool isString = (fieldSyntax.Declaration.Type as PredefinedTypeSyntax)?.Keyword.IsKind(SyntaxKind.StringKeyword) ?? false;
                                     if (!isString && fieldSyntax.Declaration.Type.ToString().IndexOf("string",StringComparison.OrdinalIgnoreCase) >= 0) {
                                         var typeBinder = this.GetBinder(fieldSyntax.Declaration.Type);

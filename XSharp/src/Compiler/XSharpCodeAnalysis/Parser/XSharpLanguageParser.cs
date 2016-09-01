@@ -14,23 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 // Uncomment this define to dump time profiling info of the parsing phases.
-//#define DUMP_TIMES
+#define DUMP_TIMES
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
@@ -138,6 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
             ParserRuleContext tree;
             var stream = new AntlrInputStream(_text.ToString());
+            stream.name = _fileName;
             var lexer = new XSharpLexer(stream);
             if(_options.Dialect == XSharpDialect.VO) {
                 lexer.AllowFourLetterAbbreviations = true;

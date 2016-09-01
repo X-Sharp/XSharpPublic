@@ -15,12 +15,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.CodeAnalysis.Text;
-using Roslyn.Utilities;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Diagnostics;
 #if UDCSUPPORT
@@ -29,28 +24,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     enum RuleType
     {
         None,
-        Define = XSharpLexer.PP_DEFINE,                 // #define
-        Command = XSharpLexer.PP_COMMAND,               // #command and #xcommand
-        Translate = XSharpLexer.PP_TRANSLATE            // #translate and #xtranslate
+        Define  = XSharpLexer.PP_DEFINE,                 // #define
+        Command = XSharpLexer.PP_COMMAND,                // #command and #xcommand
+        Translate = XSharpLexer.PP_TRANSLATE             // #translate and #xtranslate
     }
     enum RuleMarker
     {
         Token=1,
-        MatchRegular = XSharpLexer.PP_MM_REGULAR,                // <idMarker>
-        MatchList = XSharpLexer.PP_MM_LIST,                      // <idMarker,...>
-        MatchRestricted = XSharpLexer.PP_MM_RESTRICTED,          // <idMarker:word list>
-        MatchWild = XSharpLexer.PP_MM_WILD,                      // <*idMarker*>
-        MatchExtended = XSharpLexer.PP_MM_EXTENDED,              // <(idMarker)> 
-        MatchOptional = XSharpLexer.PP_MM_OPTIONAL,              // [....], can be nested
+        MatchRegular,                                           // <idMarker>
+        MatchList ,                                             // <idMarker,...>
+        MatchRestricted ,                                       // <idMarker:word list>
+        MatchWild ,                                             // <*idMarker*>
+        MatchExtended ,                                         // <(idMarker)> 
+        MatchOptional ,                                         // [....], can be nested
 
-        ResultRegular = XSharpLexer.PP_RM_REGULAR,                // <idMarker> 
-        ResultDumbStringify = XSharpLexer.PP_RM_DUMB_STRINGIFY,   // #<idMarker> 
-        ResultNormalStringify = XSharpLexer.PP_RM_NORMAL_STRINGIFY,  // <"idMarker"> 
-        ResultSmartStringify = XSharpLexer.PP_RM_SMART_STRINGIFY, // <(idMarker)>
-        ResultBlockify = XSharpLexer.PP_RM_BLOCKIFY,              // <{idMarker}> 
-        ResultLogify = XSharpLexer.PP_RM_LOGIFY,                  // <.idMarker.>
-        ResultOptional = XSharpLexer.PP_RM_OPTIONAL               // [ ... ], can not be nested
-
+        ResultRegular ,                                         // <idMarker> 
+        ResultDumbStringify ,                                   // #<idMarker> 
+        ResultNormalStringify ,                                 // <"idMarker"> 
+        ResultSmartStringify ,                                  // <(idMarker)>
+        ResultBlockify ,                                        // <{idMarker}> 
+        ResultLogify ,                                          // <.idMarker.>
+        ResultOptional                                          // [ ... ], can not be nested
     }
 
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
@@ -112,27 +106,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         RuleElement[] _matchtokens;
         RuleElement[] _resulttokens;
         Dictionary<String, RuleElement> _matchdict;
-        internal IList<String> ErrorMessages;
+        List<Tuple<IToken, String>> _errorMessages;
+        internal IList<Tuple<IToken, String>> ErrorMessages { get { return _errorMessages; } }
         internal RuleType Type { get { return _type; } }
         internal XSharpPreprocessorRule(int type, IList<IToken> tokens)
         {
             _type = (RuleType)type;
             var ltokens = new IToken[tokens.Count];
             tokens.CopyTo(ltokens, 0);
-            _matchdict = new Dictionary<string, RuleElement>();
-            if (!SplitTokens(ltokens))
+            _matchdict = new Dictionary<string, RuleElement>(StringComparer.OrdinalIgnoreCase);
+            if (!ParseRuleTokens(ltokens))
             {
                 _type = RuleType.None;
             }
             _matchdict = null;
         }
-        bool SplitTokens(IToken[] _tokens)
+        bool ParseRuleTokens(IToken[] _tokens)
         {
             int iSeperatorPos = -1;
             for (int i = 0; i < _tokens.Length - 1; i++)
             {
+                // Must be => without whitespace
                 if (_tokens[i].Type == XSharpLexer.EQ &&
-                    _tokens[i + 1].Type == XSharpLexer.GT)
+                    _tokens[i + 1].Type == XSharpLexer.GT &&
+                    _tokens[i].Column+1 == _tokens[i+1].Column)
                 {
                     iSeperatorPos = i;
                     break;
@@ -140,157 +137,160 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (iSeperatorPos >= 0)
             {
-                IToken[] _left;
-                IToken[] _right;
-                _left = new IToken[iSeperatorPos];
-                _right = new IToken[_tokens.Length - iSeperatorPos - 2];
+                IToken[] _left = new IToken[iSeperatorPos];
+                IToken[] _right = new IToken[_tokens.Length - iSeperatorPos - 2];
                 Array.Copy(_tokens, _left, iSeperatorPos);
                 Array.Copy(_tokens, iSeperatorPos + 2, _right, 0, _right.Length);
-                _matchtokens = TokenizeLeft(_left);
-                _resulttokens = TokenizeRight(_right);
+                _matchtokens = AnalyzeMatchTokens(_left);
+                _resulttokens = AnalyzeResultTokens(_right);
                 CheckMatchingTokens(_resulttokens);
-                // check to see if everything has been matched
+                // Check to see if all result tokens have been matched
+                // Unmatched Match tokens is fine (they may be deleted from the output)
 
-                String unmatched = String.Empty;
+                string unmatched = String.Empty;
                 foreach (var r in _resulttokens)
                 {
                     if (!r.IsToken && !r.IsMatched(ref unmatched))
                     {
-                        AddErrorMessage("Result Marker '" + unmatched + "' not found in match list");
+                        AddErrorMessage(r.Token , "Result Marker '" + unmatched + "' not found in match list");
+                        
                     }
                 }
                 return ErrorMessages == null || ErrorMessages.Count == 0;
             }
             return false;
         }
-        void AddErrorMessage(string message)
+        void AddErrorMessage(IToken token, string message)
         {
-            if (ErrorMessages == null)
-                ErrorMessages = new List<String>();
-            ErrorMessages.Add(message);
+            if (_errorMessages == null)
+                _errorMessages = new List<Tuple<IToken,String>>();
+            ErrorMessages.Add(new Tuple<IToken, String>( token, message));
         }
- 
-        void CheckMatchingTokens(RuleElement[] _results)
+        void CheckMatchingTokens(RuleElement[] results)
         {
-            for (int r = 0; r < _results.Length; r++)
+            for (int r = 0; r < results.Length; r++)
             {
-                if (!_results[r].IsToken && ! _results[r].Matched)
+                if (!results[r].IsToken && ! results[r].Matched)
                 {
-                    if (_matchdict.ContainsKey(_results[r].Token.Text.ToUpperInvariant()))
+                    var token = results[r].Token;
+                    var name = token.Text;
+                    if (token.Type == XSharpLexer.STRING_CONST)
+                        name = name.Substring(1, name.Length - 2);
+                    if (_matchdict.ContainsKey(name))
                     {
-                        _results[r].Matched = true;
+                        results[r].Matched = true;
                     }
                 }
-                if (_results[r].HasChildren)
+                if (results[r].HasChildren)
                 {
-                    CheckMatchingTokens(_results[r].Children);
+                    CheckMatchingTokens(results[r].Children);
                 }
             }
         }
-        RuleElement[] TokenizeLeft(IToken[] _left)
+        void addToDict(RuleElement element)
+        {
+            if (isNameToken(element.Token))
+            {
+                string name = element.Token.Text;
+                if (!_matchdict.ContainsKey(name))
+                {
+                    _matchdict.Add(name, element);
+                }
+            }
+
+        }
+        bool isNameToken(IToken token)
+        {
+            return token.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(token.Type);
+        }
+        RuleElement[] AnalyzeMatchTokens(IToken[] matchTokens)
         {
             var result = new List<RuleElement>();
+            var max = matchTokens.Length;
             List<IToken> more;
             IToken name;
             RuleElement element;
-            for (int i = 0; i < _left.Length; i++)
+            for (int i = 0; i < max; i++)
             {
-                var token = _left[i];
+                CommonToken token = (CommonToken) matchTokens[i];
                 switch (token.Type)
                 {
+
                     case XSharpLexer.LT:
-                        if (i < _left.Length - 2
-                            && (_left[i + 1].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_left[i + 1].Type))
-                            && _left[i + 2].Type == XSharpLexer.GT)
+                        if (i < max - 2
+                            && isNameToken(matchTokens[i + 1])
+                            && matchTokens[i + 2].Type == XSharpLexer.GT)
                         {
                             // <idMarker>
-                            name = _left[i + 1];
+                            name = matchTokens[i + 1];
                             element = new RuleElement(name, RuleMarker.MatchRegular);
                             result.Add(element);
-                            if (!_matchdict.ContainsKey(name.Text.ToUpperInvariant()))
-                            {
-                                _matchdict.Add(name.Text.ToUpperInvariant(), element);
-                            }
-
+                            addToDict(element);
                             i += 2;
                         }
-                        else if (i < _left.Length - 4
+                        else if (i < max - 4
                             // <*idMarker*>
-                            && _left[i + 1].Type == XSharpLexer.MULT
-                            && (_left[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_left[i + 2].Type))
-                            && _left[i + 3].Type == XSharpLexer.MULT
-                            && _left[i + 4].Type == XSharpLexer.GT)
+                            && matchTokens[i + 1].Type == XSharpLexer.MULT
+                            && isNameToken(matchTokens[i + 2])
+                            && matchTokens[i + 3].Type == XSharpLexer.MULT
+                            && matchTokens[i + 4].Type == XSharpLexer.GT)
                         {
-                            name = _left[i + 2];
+                            name = matchTokens[i + 2];
                             element = new RuleElement(name, RuleMarker.MatchWild);
                             result.Add(element);
-                            if (!_matchdict.ContainsKey(name.Text.ToUpperInvariant()))
-                            {
-                                _matchdict.Add(name.Text.ToUpperInvariant(), element);
-                            }
+                            addToDict(element);
 
                             i += 4;
                         }
-                        else if (i < _left.Length - 4
+                        else if (i < max - 4
                             // <(idMarker)>
-                            && _left[i + 1].Type == XSharpLexer.LPAREN
-                            && (_left[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_left[i + 2].Type))
-                            && _left[i + 3].Type == XSharpLexer.RPAREN
-                            && _left[i + 4].Type == XSharpLexer.GT)
+                            && matchTokens[i + 1].Type == XSharpLexer.LPAREN
+                            && isNameToken(matchTokens[i + 2])
+                            && matchTokens[i + 3].Type == XSharpLexer.RPAREN
+                            && matchTokens[i + 4].Type == XSharpLexer.GT)
                         {
-                            name = _left[i + 2];
+                            name = matchTokens[i + 2];
                             element = new RuleElement(name, RuleMarker.MatchExtended);
                             result.Add(element);
-                            if (!_matchdict.ContainsKey(name.Text.ToUpperInvariant()))
-                            {
-                                _matchdict.Add(name.Text.ToUpperInvariant(), element);
-                            }
+                            addToDict( element);
 
                             i += 4;
                         }
-                        else if (i < _left.Length - 6
-                              && (_left[i + 1].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_left[i + 1].Type))
-                              && _left[i + 2].Type == XSharpLexer.COMMA
-                              && _left[i + 3].Type == XSharpLexer.DOT
-                              && _left[i + 4].Type == XSharpLexer.DOT
-                              && _left[i + 5].Type == XSharpLexer.DOT
-                              && _left[i + 6].Type == XSharpLexer.GT)
+                        else if (i < max - 6
+                              && isNameToken(matchTokens[i + 1])
+                              && matchTokens[i + 2].Type == XSharpLexer.COMMA
+                              && matchTokens[i + 3].Type == XSharpLexer.DOT
+                              && matchTokens[i + 4].Type == XSharpLexer.DOT
+                              && matchTokens[i + 5].Type == XSharpLexer.DOT
+                              && matchTokens[i + 6].Type == XSharpLexer.GT)
                         {
                             // <idMarker,...>
-                            name = _left[i + 1];
+                            name = matchTokens[i + 1];
                             element = new RuleElement(name, RuleMarker.MatchList);
                             result.Add(element);
-                            if (!_matchdict.ContainsKey(name.Text.ToUpperInvariant()))
-                            {
-                                _matchdict.Add(name.Text.ToUpperInvariant(), element);
-                            }
-
+                            addToDict(element);
                             i += 6;
                         }
-                        else if (i < _left.Length - 3
-                              && (_left[i + 1].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_left[i + 1].Type))
-                              && _left[i + 2].Type == XSharpLexer.COLON
-                              && (_left[i + 3].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_left[i + 3].Type)))
+                        else if (i < max - 3
+                              && isNameToken(matchTokens[i + 1])
+                              && matchTokens[i + 2].Type == XSharpLexer.COLON)
                         {
                             // <idMarker:word list>
-                            name = _left[i + 1];
+                            name = matchTokens[i + 1];
                             i += 3;
                             more = new List<IToken>();
-                            while (i <_left.Length && _left[i].Type != XSharpLexer.GT)
+                            while (i <max && matchTokens[i].Type != XSharpLexer.GT)
                             {
-                                more.Add(_left[i]);
+                                token = (CommonToken)matchTokens[i];
+                                more.Add(token);
                                 i++;
                             }
                             element = new RuleElement(name, RuleMarker.MatchRestricted);
                             result.Add(element);
-                            if (!_matchdict.ContainsKey(name.Text.ToUpperInvariant()))
-                            {
-                                _matchdict.Add(name.Text.ToUpperInvariant(), element);
-                            }
+                            addToDict(element);
                             var tokens = new IToken[more.Count];
                             more.CopyTo(tokens, 0);
                             element.MoreTokens = tokens;
-                            result.Add(element);
                         }
                         break;
                     case XSharpLexer.LBRKT:
@@ -298,22 +298,69 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                          * eat block nested
                          * [...]
                          */
-                        more = new List<IToken>();
-                        i++;
-                        while (i < _left.Length && _left[i].Type != XSharpLexer.RBRKT)
+                        var lbrkt = token;
+                        if ( i < max-1 )   // must have at least [ name ] 
                         {
-                            more.Add(_left[i]);
+                            more = new List<IToken>();
                             i++;
+                            var nestlevel = 1;
+                            while (i < max )
+                            {
+                                token = (CommonToken)matchTokens[i];
+                                if (token.Type == XSharpLexer.LBRKT)
+                                    ++nestlevel;
+                                if (token.Type == XSharpLexer.RBRKT)
+                                {
+                                    --nestlevel;
+                                    if (nestlevel == 0)
+                                        break;
+                                }
+                                more.Add(matchTokens[i]);
+                                i++;
+                            }
+                            // more contains everything between the brackets including the first token
+                            if (nestlevel != 0)
+                            {
+                                if (nestlevel > 0)
+                                {
+                                    AddErrorMessage(lbrkt, "Closing bracket ']' missing");
+                                }
+                                else
+                                {
+                                    AddErrorMessage(lbrkt,"Closing bracket ']' found with missing '['");
+                                }
+                            }
+                            name = more[0];
+                            element = new RuleElement(name, RuleMarker.MatchOptional);
+                            element.Children = AnalyzeMatchTokens(more.ToArray());    
+                            result.Add(element);
+                            addToDict(element);
+
                         }
-                        // skip the closing RBRKT
-                        if (i == _left.Length)
+                        else
                         {
-                            // throw an error 'missing RBRKT'
+                            if ( i == max -1)
+                            {
+                                token = (CommonToken) matchTokens[max];
+                                if (token.Type == XSharpLexer.RBRKT)
+                                    AddErrorMessage(lbrkt, "Empty Optional Token found");
+                                else
+                                    AddErrorMessage(lbrkt,"Closing bracket ']' missing");
+                            }
+                            else
+                            {
+                                AddErrorMessage(lbrkt, "Closing bracket ']' missing");
+                            }
+
                         }
-                        element = new RuleElement(token, RuleMarker.MatchOptional);
-                        element.Children = TokenizeLeft(more.ToArray());
-                        result.Add(element);
-                        // Optinal tokens do not go into the dict. Thir children will go
+                        break;
+                    case XSharpLexer.BACKSLASH: // escape next token
+                        if (i < max)
+                        {
+                            i++;
+                            token = (CommonToken)matchTokens[i];
+                            result.Add(new RuleElement(token, RuleMarker.Token));
+                        }
                         break;
                     default:
                         result.Add(new RuleElement(token, RuleMarker.Token));
@@ -325,28 +372,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             result.CopyTo(matchtokens);
             return matchtokens;
         }
-        RuleElement[] TokenizeRight(IToken[] _right)
+        RuleElement[] AnalyzeResultTokens(IToken[] resultTokens)
         {
             var result = new List<RuleElement>();
             List<IToken> more;
             IToken name;
             RuleElement element;
 
-            for (int i = 0; i < _right.Length; i++)
+            for (int i = 0; i < resultTokens.Length; i++)
             {
-                var token = _right[i];
+                var token = resultTokens[i];
                 switch (token.Type)
                 {
                     case XSharpLexer.NEQ:
                         /*
                         * match #<idMarker> 
                         */
-                        if (i < _right.Length - 3
-                            && _right[i + 1].Type == XSharpLexer.LT
-                            && (_right[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_right[i + 3].Type))
-                            && _right[i + 3].Type == XSharpLexer.GT)
+                        if (i < resultTokens.Length - 3
+                            && resultTokens[i + 1].Type == XSharpLexer.LT
+                            && (resultTokens[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(resultTokens[i + 3].Type))
+                            && resultTokens[i + 3].Type == XSharpLexer.GT)
                         {
-                            name = _right[i + 2];
+                            name = resultTokens[i + 2];
                             result.Add(new RuleElement(name, RuleMarker.ResultDumbStringify));
                             i += 3;
                         }
@@ -356,54 +403,54 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         break;
                     case XSharpLexer.LT:
-                        if (i < _right.Length - 2
-                            && (_right[i + 1].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_right[i + 1].Type))
-                            && _right[i + 2].Type == XSharpLexer.GT)
+                        if (i < resultTokens.Length - 2
+                            && (resultTokens[i + 1].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(resultTokens[i + 1].Type))
+                            && resultTokens[i + 2].Type == XSharpLexer.GT)
                         {
                             // <idMarker>
-                            name = _right[i + 1];
+                            name = resultTokens[i + 1];
                             result.Add(new RuleElement(name, RuleMarker.ResultRegular));
                             i += 2;
                         }
-                        if (i < _right.Length - 2
-                            && _right[i + 1].Type == XSharpLexer.STRING_CONST
-                            && _right[i + 2].Type == XSharpLexer.GT)
+                        if (i < resultTokens.Length - 2
+                            && resultTokens[i + 1].Type == XSharpLexer.STRING_CONST
+                            && resultTokens[i + 2].Type == XSharpLexer.GT)
                         {
                             // <"idMarker"> 
-                            name = _right[i + 1];
+                            name = resultTokens[i + 1];
                             result.Add(new RuleElement(name, RuleMarker.ResultNormalStringify));
                             i += 2;
                         }
-                        if (i < _right.Length - 4
-                            && _right[i + 1].Type == XSharpLexer.LPAREN
-                            && (_right[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_right[i + 2].Type))
-                            && _right[i + 3].Type == XSharpLexer.RPAREN
-                            && _right[i + 4].Type == XSharpLexer.GT)
+                        if (i < resultTokens.Length - 4
+                            && resultTokens[i + 1].Type == XSharpLexer.LPAREN
+                            && (resultTokens[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(resultTokens[i + 2].Type))
+                            && resultTokens[i + 3].Type == XSharpLexer.RPAREN
+                            && resultTokens[i + 4].Type == XSharpLexer.GT)
                         {
                             // <(idMarker)>
-                            name = _right[i + 2];
+                            name = resultTokens[i + 2];
                             result.Add(new RuleElement(name, RuleMarker.ResultSmartStringify));
                             i += 4;
                         }
-                        if (i < _right.Length - 4
-                            && _right[i + 1].Type == XSharpLexer.LCURLY
-                            && (_right[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_right[i + 2].Type))
-                            && _right[i + 3].Type == XSharpLexer.RCURLY
-                            && _right[i + 4].Type == XSharpLexer.GT)
+                        if (i < resultTokens.Length - 4
+                            && resultTokens[i + 1].Type == XSharpLexer.LCURLY
+                            && (resultTokens[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(resultTokens[i + 2].Type))
+                            && resultTokens[i + 3].Type == XSharpLexer.RCURLY
+                            && resultTokens[i + 4].Type == XSharpLexer.GT)
                         {
                             // <{idMarker}> 
-                            name = _right[i + 2];
+                            name = resultTokens[i + 2];
                             result.Add(new RuleElement(name, RuleMarker.ResultBlockify));
                             i += 4;
                         }
-                        if (i < _right.Length - 4
-                            && _right[i + 1].Type == XSharpLexer.DOT
-                            && (_right[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(_right[i + 2].Type))
-                            && _right[i + 3].Type == XSharpLexer.DOT
-                            && _right[i + 4].Type == XSharpLexer.GT)
+                        if (i < resultTokens.Length - 4
+                            && resultTokens[i + 1].Type == XSharpLexer.DOT
+                            && (resultTokens[i + 2].Type == XSharpLexer.ID || XSharpLexer.IsKeyword(resultTokens[i + 2].Type))
+                            && resultTokens[i + 3].Type == XSharpLexer.DOT
+                            && resultTokens[i + 4].Type == XSharpLexer.GT)
                         {
                             // <.idMarker.>
-                            name = _right[i + 2];
+                            name = resultTokens[i + 2];
                             result.Add(new RuleElement(name, RuleMarker.ResultLogify));
                             i += 4;
                         }
@@ -416,18 +463,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                          */
                         more = new List<IToken>();
                         i++;
-                        while (i < _right.Length && _right[i].Type != XSharpLexer.RBRKT)
+                        while (i < resultTokens.Length && resultTokens[i].Type != XSharpLexer.RBRKT)
                         {
-                            more.Add(_right[i]);
+                            more.Add(resultTokens[i]);
                             i++;
                         }
                         // skip the closing RBRKT
-                        if (i == _right.Length)
+                        if (i == resultTokens.Length)
                         {
                             // throw an error 'missing RBRKT'
                         }
                         element = new RuleElement(token, RuleMarker.ResultOptional);
-                        element.Children = TokenizeRight(more.ToArray());
+                        element.Children = AnalyzeResultTokens(more.ToArray());
                         result.Add(element);
                         break;
                     default:

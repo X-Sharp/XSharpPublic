@@ -4524,34 +4524,31 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding){
-                bool earlyBoundUsualProperty = false;
+            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
+            {
                 bool leftNodeUsual = false;
-                string propName ="";
-                if ((object)leftType != null && 
-                    leftType is NamedTypeSymbol 
+                string propName = right.Identifier.ValueText;
+                bool earlyBound = propName == ".ctor";
+                if ((object)leftType != null &&
+                    leftType is NamedTypeSymbol
                     && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                 {
                     leftNodeUsual = true;
-                    if(right.Kind() != SyntaxKind.GenericName) {
-                        propName = right.Identifier.ValueText;
-                    }
-                    earlyBoundUsualProperty = String.Compare(propName, "_NIL",StringComparison.OrdinalIgnoreCase) == 0;
-                    earlyBoundUsualProperty |= String.Compare(propName, "Value",StringComparison.OrdinalIgnoreCase) == 0;
+                    earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
+                    earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
                 }
-                if ( right.Kind() != SyntaxKind.GenericName &&
-                    ! earlyBoundUsualProperty &&  (object) leftType != null && (leftType.IsObjectType() ||  leftNodeUsual) && GetName(node) != ".ctor")
-                    {
-                        return new BoundDynamicMemberAccess(
-                            syntax: node,
-                            receiver: boundLeft,
-                            typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
-                            name: propName,
-                            invoked: invoked,
-                            indexed: indexed,
-                            type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
-                            hasErrors: false);
-                    }
+                if (!earlyBound && (object)leftType != null && (leftType.IsObjectType() || leftNodeUsual))
+                {
+                    return new BoundDynamicMemberAccess(
+                        syntax: node,
+                        receiver: boundLeft,
+                        typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                        name: propName,
+                        invoked: invoked,
+                        indexed: indexed,
+                        type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                        hasErrors: false);
+                }
             }
 
 #endif

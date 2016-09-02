@@ -1643,6 +1643,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (baseType.SpecialType == SpecialType.System_Object)
                 {
+#if XSHARP
+                    if (!compilation.Options.IsDialectVO)
+#endif
                     return GenerateObjectConstructorInitializer(constructor, diagnostics);
                 }
                 else if (baseType.IsErrorType() || baseType.IsStatic)

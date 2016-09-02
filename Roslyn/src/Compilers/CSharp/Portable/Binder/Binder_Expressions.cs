@@ -4540,7 +4540,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     earlyBoundUsualProperty |= String.Compare(propName, "Value",StringComparison.OrdinalIgnoreCase) == 0;
                 }
                 if ( right.Kind() != SyntaxKind.GenericName &&
-                    ! earlyBoundUsualProperty &&  (object) leftType != null && (leftType.IsObjectType() ||  leftNodeUsual))
+                    ! earlyBoundUsualProperty &&  (object) leftType != null && (leftType.IsObjectType() ||  leftNodeUsual) && GetName(node) != ".ctor")
                     {
                         return new BoundDynamicMemberAccess(
                             syntax: node,

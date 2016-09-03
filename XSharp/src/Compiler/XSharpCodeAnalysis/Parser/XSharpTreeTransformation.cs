@@ -2064,62 +2064,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var isInInterface = context.isInInterface();
             var isExtern = context.Modifiers?._EXTERN != null;
             var isAbstract = context.Modifiers?._ABSTRACT != null;
-            if (isInInterface) {
-                if (context.Auto != null) {
-                    context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_InterfaceMemberHasBody));
-                }
-                else if (context.Multi != null) {
-                    context.AddError(new ParseErrorData(context.Multi, ErrorCode.ERR_InterfaceMemberHasBody));
-                }
-                else {
-                    foreach(var aCtx in context._LineAccessors) {
-                        if (aCtx.Expr != null && aCtx.ExprList != null) {
-                            if (aCtx.Expr != null)
-                                context.AddError(new ParseErrorData(aCtx.Expr, ErrorCode.ERR_InterfaceMemberHasBody));
-                            else
-                                context.AddError(new ParseErrorData(aCtx.ExprList, ErrorCode.ERR_InterfaceMemberHasBody));
-                        }
+            bool HasBody = (context.Auto != null || context.Multi != null);
+            if ( !HasBody)
+            {
+                foreach (var aCtx in context._LineAccessors)
+                {
+                    if (aCtx.Expr != null && aCtx.ExprList != null)
+                    {
+                        HasBody = true;
                     }
                 }
             }
-            if (isExtern) {
-                if (context.Auto != null) {
-                    context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_ExternHasBody,"Property"));
+            if (HasBody)
+            { 
+                if (isInInterface)
+                {
+                    context.AddError(new ParseErrorData(context.Start, ErrorCode.ERR_InterfaceMemberHasBody));
                 }
-                else if (context.Multi != null) {
-                    context.AddError(new ParseErrorData(context.Multi, ErrorCode.ERR_ExternHasBody, "Property"));
+                if (isExtern)
+                {
+                    context.AddError(new ParseErrorData(context.Start, ErrorCode.ERR_ExternHasBody, "Property"));
                 }
-                else {
-                    foreach(var aCtx in context._LineAccessors) {
-                        if (aCtx.Expr != null && aCtx.ExprList != null) {
-                            if (aCtx.Expr != null)
-                                context.AddError(new ParseErrorData(aCtx.Expr, ErrorCode.ERR_ExternHasBody, "Property"));
-                            else
-                                context.AddError(new ParseErrorData(aCtx.ExprList, ErrorCode.ERR_ExternHasBody, "Property"));
-                        }
-                    }
+                if (isAbstract) {
+                    context.AddError(new ParseErrorData(context.Start, ErrorCode.ERR_AbstractHasBody));
                 }
             }
-            if (isAbstract) {
-                if (context.Modifiers?._EXTERN != null) {
+            if (isAbstract && context.Modifiers?._EXTERN != null)
+            {
                     context.AddError(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
-                }
-                if (context.Auto != null) {
-                    context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_AbstractHasBody));
-                }
-                else if (context.Multi != null) {
-                    context.AddError(new ParseErrorData(context.Multi, ErrorCode.ERR_AbstractHasBody));
-                }
-                else {
-                    foreach(var aCtx in context._LineAccessors) {
-                        if (aCtx.Expr != null && aCtx.ExprList != null) {
-                            if (aCtx.Expr != null)
-                                context.AddError(new ParseErrorData(aCtx.Expr, ErrorCode.ERR_AbstractHasBody));
-                            else
-                                context.AddError(new ParseErrorData(aCtx.ExprList, ErrorCode.ERR_AbstractHasBody));
-                        }
-                    }
-                }
             }
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? DefaultMethodModifiers(isInInterface);
             if (context.ExplicitIface != null)

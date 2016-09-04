@@ -4111,6 +4111,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword),
                         context.StmtBlk.Get<BlockSyntax>()));
                     break;
+                case XP.FIXED:
+                    context.Put(_syntaxFactory.FixedStatement(
+                        SyntaxFactory.MakeToken(SyntaxKind.FixedKeyword),
+                           SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                           context.VarDecl?.Get<VariableDeclarationSyntax>(),
+                           SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        context.StmtBlk.Get<BlockSyntax>()));
+                    break;
                 case XP.UNCHECKED:
                     context.Put(_syntaxFactory.CheckedStatement(SyntaxKind.UncheckedStatement,
                         SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),

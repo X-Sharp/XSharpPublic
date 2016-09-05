@@ -151,7 +151,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (Entities.Count > 0)
                         return Entities.Peek();
                 return null;
-            }
+           }
         }
         public XSharpTreeTransformation(XSharpParser parser, CSharpParseOptions options, SyntaxListPool pool, 
             ContextAwareSyntax syntaxFactory, string fileName)
@@ -5120,33 +5120,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ));
         }
 
+
+        private ExpressionSyntax CreateInterPolatedStringExpression([NotNull] XP.LiteralValueContext context)
+        {
+            // Use the C# parser to do the parsing of the Interpolated strings.
+            // SELF: Syntax will be translated to this.
+            // All other property syntax needs use the '.' as separator
+            IToken t = context.Token;
+            var xsharpText = t.Text;
+            int nIndex = xsharpText.IndexOf("{self:", StringComparison.OrdinalIgnoreCase);
+            while (nIndex >= 0)
+            {
+                xsharpText = xsharpText.Substring(0, nIndex) + "{this." + xsharpText.Substring(nIndex + 6);
+                nIndex = xsharpText.IndexOf("{self:", StringComparison.OrdinalIgnoreCase);
+            }
+            var originalText = "$@" + xsharpText.Substring(1);
+            ExpressionSyntax result;
+            using (var lexer = new Lexer(Text.SourceText.From(originalText), this._options, allowPreprocessorDirectives: false))
+            {
+                using (var parser = new LanguageParser(lexer, oldTree: null, changes: null, cancellationToken: default(CancellationToken)))
+                {
+                    result = parser.ParseInterpolatedStringToken();
+                }
+            }
+            return result;
+        }
+
         public override void ExitLiteralValue([NotNull] XP.LiteralValueContext context)
         {
             string replacement = null;
-
-            if (context.Token.Type == XP.STRING_CONST && context.Token.Text.StartsWith("\"__"))
+            if (context.Token.Type == XP.INTERPOLATED_STRING_CONST)
             {
-                switch (context.Token.Text.ToLowerInvariant())
-                {
-                    case "\"__entity__\"":
-                        replacement = GetEntityName(false);
-                        break;
-                    case "\"__sig__\"":
-                        replacement = GetEntityName(true);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-
-            if (!String.IsNullOrEmpty(replacement))
-            {
-                context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(),
-                    SyntaxToken.WithValue(SyntaxKind.StringLiteralToken, replacement, replacement )));
+                context.Put(CreateInterPolatedStringExpression(context));
             }
             else
-                context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+            {
+                if (context.Token.Type == XP.STRING_CONST && context.Token.Text.StartsWith("\"__"))
+                {
+                    switch (context.Token.Text.ToLowerInvariant())
+                    {
+                        case "\"__entity__\"":
+                            replacement = GetEntityName(false);
+                            break;
+                        case "\"__sig__\"":
+                            replacement = GetEntityName(true);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(replacement))
+                {
+                    context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(),
+                        SyntaxToken.WithValue(SyntaxKind.StringLiteralToken, replacement, replacement)));
+                }
+                else
+                    context.Put(_syntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
+            }
         }
 
         public override void ExitIdentifierString([NotNull] XP.IdentifierStringContext context)

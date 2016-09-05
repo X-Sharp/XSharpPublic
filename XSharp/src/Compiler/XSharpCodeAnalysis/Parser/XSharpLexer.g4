@@ -508,25 +508,22 @@ lexer grammar XSharpLexer;
 						c = InputStream.La(1);
 					}
 					break;
-				case 'e': 
+				case 'e':           // escaped string
+                case 'E': 
 					if (InputStream.La(2) == '"') {
 						break;
 					}
-					_type = ID;
-					_textSb.Clear();
-					_textSb.Append((char)c);
-					InputStream.Consume();
-					c = InputStream.La(1);
-					while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_') {
-						_textSb.Append((char)c);
-						InputStream.Consume();
-						c = InputStream.La(1);
+                    goto case 'a';
+				case 'i':           
+                case 'I': 
+					if (InputStream.La(2) == '"') {
+						break;
 					}
-					break;
-                case 'a': case 'b': case 'c': case 'd': case 'f': case 'g': case 'h': case 'i': case 'j':
+                    goto case 'a';
+                case 'a': case 'b': case 'c': case 'd': case 'f': case 'g': case 'h': case 'j':
                 case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r': case 's': case 't':
                 case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
-                case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'A': case 'B': case 'C': case 'D': case 'F': case 'G': case 'H': case 'J':
                 case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T':
                 case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
                 case '_':
@@ -1054,7 +1051,7 @@ LAST_OPERATOR,
 
 FIRST_CONSTANT,
 // Consts
-HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,
+HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,STRING_CONST,ESCAPED_STRING_CONST,INTERPOLATED_STRING_CONST,
 
 LAST_CONSTANT,
 
@@ -1105,8 +1102,12 @@ STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 			| '\'' ( ~( '\'' | '\n' | '\r' ) )* '\''		// Single quoted string
 			;
 
+
+INTERPOLATED_STRING_CONST: ('i' | 'I')'"' ( ~( '"' | '\n' | '\r' ) )* '"'
+            ;
+
 ESCAPED_STRING_CONST
-			: 'e' '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
+			: ('e'| 'E') '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
 			;
 
 fragment

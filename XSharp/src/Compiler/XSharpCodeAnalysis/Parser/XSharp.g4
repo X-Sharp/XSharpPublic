@@ -885,6 +885,7 @@ literalValue		: Token=
                     | CHAR_CONST
                     | STRING_CONST
                     | ESCAPED_STRING_CONST
+                    | INTERPOLATED_STRING_CONST         
                     | SYMBOL_CONST
                     | HEX_CONST
                     | BIN_CONST

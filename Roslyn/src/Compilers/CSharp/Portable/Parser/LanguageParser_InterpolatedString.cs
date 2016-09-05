@@ -29,8 +29,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int len = last - first + 1;
             return (last > s.Length || len <= 0) ? string.Empty : s.Substring(first, len);
         }
-
+#if XSHARP
+        internal ExpressionSyntax ParseInterpolatedStringToken()
+#else
         private ExpressionSyntax ParseInterpolatedStringToken()
+#endif
         {
             // We don't want to make the scanner stateful (between tokens) if we can possibly avoid it.
             // The approach implemented here is

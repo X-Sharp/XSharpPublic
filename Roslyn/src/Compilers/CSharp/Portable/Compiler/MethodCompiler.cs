@@ -1644,9 +1644,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (baseType.SpecialType == SpecialType.System_Object)
                 {
 #if XSHARP
-                    if (!compilation.Options.IsDialectVO)
+                    //Rvdh HACK: to make sure that the ObjectConstructorInitializer is called for Codeblock types
+                    if (!compilation.Options.IsDialectVO || constructor.ContainingType.Name.Contains("<>"))
 #endif
-                    return GenerateObjectConstructorInitializer(constructor, diagnostics);
+                        return GenerateObjectConstructorInitializer(constructor, diagnostics);
                 }
                 else if (baseType.IsErrorType() || baseType.IsStatic)
                 {

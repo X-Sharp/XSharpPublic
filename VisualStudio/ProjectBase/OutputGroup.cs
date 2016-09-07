@@ -141,7 +141,8 @@ namespace Microsoft.VisualStudio.Project
             {
                 bool succeeded = false;
                 project.BuildTarget(generateDependencyList, out succeeded);
-                Debug.Assert(succeeded, "Failed to build target: " + generateDependencyList);
+                // The next line triggers an exception for a customer that works with JetBrains.
+                //Debug.Assert(succeeded, "Failed to build target: " + generateDependencyList);
             }
 
             // Rebuild the content of our list of output

@@ -2607,7 +2607,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                         }
                     }
-                    voDefaultCtorCall = true;
+                    if (containingType.BaseType.SpecialType != SpecialType.System_Object)
+                    {
+                        voDefaultCtorCall = true;
+                    }
                 }
             }
 #endif

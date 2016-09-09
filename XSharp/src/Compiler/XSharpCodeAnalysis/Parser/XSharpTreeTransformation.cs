@@ -2333,7 +2333,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
-
                 MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
                     attributeLists: attributes,
                     modifiers: mods,

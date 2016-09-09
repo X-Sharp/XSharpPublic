@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         IList<string> includeDirs;
 
-        Dictionary<string, IList<IToken>> symbolDefines = new Dictionary<string, IList<IToken>> (/*CaseInsensitiveComparison.Comparer*/);
+        Dictionary<string, IList<IToken>> symbolDefines ;
 
         Dictionary<string, Func<IToken>> macroDefines = new Dictionary<string, Func<IToken>>(/*CaseInsensitiveComparison.Comparer*/);
 
@@ -191,7 +191,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
+
             _options = options;
+            if (_options.VOPreprocessorBehaviour)
+                symbolDefines = new Dictionary<string, IList<IToken>>(CaseInsensitiveComparison.Comparer);
+            else
+                symbolDefines = new Dictionary<string, IList<IToken>>(/* case sensitive */);
             _input = input;
             _encoding = encoding;
             _checksumAlgorithm = checksumAlgorithm;
@@ -539,6 +544,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
 
         }
+
+        private bool IsDefined(string define)
+        {
+            // Handle /VO8 compiler option:
+            // When /VO8 is active and the variable is defined and has a value of FALSE or a numeric value = 0 
+            // Then #ifdef is FALSE
+            // otherwise #ifdef is TRUE
+            // and when there is more than one token, then #ifdef is also TRUE
+            bool isdefined= symbolDefines.ContainsKey(define);
+            if (isdefined && _options.VOPreprocessorBehaviour)
+            {
+                var value = symbolDefines[define];
+                if (value.Count == 1)
+                {
+                    var deftoken = value[0];
+                    if (deftoken.Type == XSharpLexer.FALSE_CONST)
+                    {
+                        isdefined = false;
+                    }
+                    else if (deftoken.Type == XSharpLexer.INT_CONST)
+                    {
+                        isdefined = Convert.ToInt64(deftoken.Text) != 0;
+                    }
+                }
+            }
+            return isdefined;
+        }
         [return: NotNull]
         public IToken NextToken()
         {
@@ -605,11 +637,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 SkipEmpty();
-                                // Todo: Handle /VO8 compiler option:
-                                // When /VO8 is active and the variable is defined and has a value of TRUE or a numeric value != 0 
-                                // Then #ifdef is TRUE
-                                // otherwise #ifdef is FALSE
-                                defStates.Push(symbolDefines.ContainsKey(def.Text));
+                                defStates.Push(IsDefined(def.Text));
                             }
                             else if (def.Type == XSharpLexer.MACRO)
                             {
@@ -637,11 +665,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 SkipEmpty();
-                                // Todo: Handle /VO8 compiler option:
-                                // When /VO8 is active and the variable is defined and has a value of TRUE or a numeric value != 0 
-                                // then #ifndef is FALSE
-                                // otherwise #ifndef is TRUE
-                                defStates.Push(!symbolDefines.ContainsKey(def.Text));
+                                defStates.Push(!IsDefined(def.Text));
                             }
                             else if (def.Type == XSharpLexer.MACRO)
                             {

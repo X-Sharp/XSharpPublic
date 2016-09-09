@@ -50,7 +50,7 @@
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Class.prg">
+    <Compile Include="Class1.prg">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

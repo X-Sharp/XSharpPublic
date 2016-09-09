@@ -20,6 +20,8 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Overriding functions in VulcanRTFuncs can now be done without specifying the namespace: </text><br/><text styleclass="Normal" translate="true">When the compiler finds two candidate functions and one of them is inside VulcanRTFuncs then the function that is not in VulcanRTFuncs is chosen.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Warning 9001 (unsafe modifier implied) is now suppressed for the VO/Vulcan dialect. You MUST pass the /unsafe compiler option if you are compiling unsafe code though!</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The preprocessor now automatically defines the macros __VO1__ until __VO15__ with a value of TRUE or FALSE depending on the setting of the compiler option</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed a problem with implicit code generation for constructors</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Added support for the /vo8 compiler option (Compatible preprocessor behavior)</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.6</text></para>

@@ -2129,6 +2129,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             var membersAndInitializers = GetMembersAndInitializers();
 
+#if XSHARP
+            if ((this as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true && DeclaringCompilation.Options.IsDialectVO)
+            {
+                foreach (var m in membersAndInitializers.NonTypeNonIndexerMembers)
+                {
+                    if (m.Kind == SymbolKind.Field)
+                    {
+                        var f = (FieldSymbol)m;
+                        if (!(f.Type.IsPointerType() ||
+                            (f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true ||
+                            (f.Type as Symbols.Metadata.PE.PENamedTypeSymbol)?.IsVoStructOrUnion() == true ||
+                            f.Type.FixedBufferElementSizeInBytes() != 0))
+                        {
+                            diagnostics.Add(ErrorCode.ERR_IllegalVoStructMemberType, f.Locations[0]);
+                        }
+                    }
+                }
+            }
+
+#endif
             // Most types don't have indexers.  If this is one of those types,
             // just reuse the dictionary we build for early attribute decoding.
             if (membersAndInitializers.IndexerDeclarations.Length == 0)

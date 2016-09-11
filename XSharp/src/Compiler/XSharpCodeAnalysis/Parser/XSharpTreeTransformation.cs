@@ -443,7 +443,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected SyntaxList<SyntaxToken> TokenList(params SyntaxKind[] kinds)
         {
             var rb = _pool.Allocate();
-            foreach(var k in kinds) {
+            foreach(var k in kinds)
+                if (k != SyntaxKind.None)
+            {
                 rb.Add(SyntaxFactory.MakeToken(k));
             }
             var r = rb.ToTokenList();
@@ -611,6 +613,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
         }
 
+        protected BracketedArgumentListSyntax MakeBracketedArgumentList(params ArgumentSyntax[] items)
+        {
+            return _syntaxFactory.BracketedArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeSeparatedList<ArgumentSyntax>(items),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+        }
+
         protected ArrayRankSpecifierSyntax MakeArrayRankSpecifier(int ranks)
         {
             var sizes = _pool.AllocateSeparated<ExpressionSyntax>();
@@ -709,6 +719,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     );
 
             }
+        }
+
+        protected VariableDeclaratorSyntax GenerateBuffer(SyntaxToken nameToken, BracketedArgumentListSyntax dims)
+        {
+            return _syntaxFactory.VariableDeclarator(nameToken, dims, null);
         }
 
         protected LocalDeclarationStatementSyntax GenerateLocalDecl(string name, TypeSyntax type, ExpressionSyntax initexpr = null)
@@ -1975,6 +1990,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             var varType = context.Vars?.DataType?.Get<TypeSyntax>() ?? MissingType();
+            bool isFixed = context.Modifiers?._FIXED != null;
             varType.XVoDecl = true;
             if (context.Vars?.As?.Type == XP.IS)
             {
@@ -1983,13 +1999,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var varCtx in context.Vars._Var) {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
-                    ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
-                        attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                        modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
-                        declaration: _syntaxFactory.VariableDeclaration(
-                            type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
-                            variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
-                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    if (isFixed)
+                    {
+                        ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
+                            attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                            modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                            declaration: _syntaxFactory.VariableDeclaration(
+                                type: varType,
+                                variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
+                            semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    }
+                    else
+                    {
+                        ClassEntities.Peek().Members.Add(_syntaxFactory.FieldDeclaration(
+                            attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                            modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                            declaration: _syntaxFactory.VariableDeclaration(
+                                type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
+                                variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
+                            semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    }
                 }
                 else {
                     if (varList.Count > 0)
@@ -2015,6 +2044,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var m in context._Tokens)
             {
                 modifiers.AddCheckUnique(m.SyntaxKeyword());
+                if (m.Type == XP.FIXED && context._FIXED == null)
+                    context._FIXED = m;
             }
             modifiers.FixDefaultVisibility();
             context.PutList(modifiers.ToTokenList());
@@ -2031,11 +2062,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isDim = context.Dim != null;
             bool hasArraySub = context.ArraySub != null;
+            bool isFixed = (context.Parent.Parent as XP.ClassvarsContext)?.Modifiers?._FIXED != null;
             if (isDim && !hasArraySub) {
                 context.AddError(new ParseErrorData(context.DIM(), ErrorCode.ERR_ArrayInitializerExpected));
             }
             if (!isDim && hasArraySub) {
                 context.ArraySub.AddError(new ParseErrorData(ErrorCode.ERR_FeatureNotAvailableInDialect, "Indexed Class variable", _options.Dialect.ToString()));
+            }
+            if (!isDim && isFixed)
+            {
+                context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_SyntaxError, "DIM"));
             }
         }
 
@@ -2048,12 +2084,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
+            bool isFixed = (context.Parent.Parent as XP.ClassvarsContext)?.Modifiers?._FIXED != null;
             if (isDim) {
-                var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? MissingType();
-                if (initExpr == null) {
-                    initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
-                        _syntaxFactory.ArrayType(varType,context.ArraySub.Get<ArrayRankSpecifierSyntax>()),
-                        null);
+                if (isFixed)
+                {
+                    if (initExpr != null)
+                    {
+                        initExpr = initExpr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_SyntaxError,"AS"));
+                        context.Initializer.Put(initExpr);
+                        context.ASSIGN_OP().Put(initExpr);
+                        context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(), initExpr));
+                    }
+                    else
+                    {
+                        context.Put(GenerateBuffer(context.Id.Get<SyntaxToken>(),
+                            MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray())
+                            ));
+                    }
+                    return;
+                }
+                else
+                {
+                    var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? MissingType();
+                    if (initExpr == null)
+                    {
+                        initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
+                            _syntaxFactory.ArrayType(varType, context.ArraySub.Get<ArrayRankSpecifierSyntax>()),
+                            null);
+                    }
                 }
             }
             context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(),initExpr));
@@ -2994,8 +3052,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        private bool voStructHasDim;
+
+        public override void EnterVostruct([NotNull] XP.VostructContext context)
+        {
+            voStructHasDim = false;
+        }
+
         public override void ExitVostruct([NotNull] XP.VostructContext context)
         {
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            if (voStructHasDim)
+            {
+                var modBuilder = _pool.Allocate();
+                modBuilder.AddRange(mods);
+                modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
+                mods = modBuilder.ToTokenList();
+            }
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
                     _syntaxFactory.AttributeList(
@@ -3014,7 +3087,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 : _syntaxFactory.LiteralExpression(context.Alignment.ExpressionKindLiteral(), context.Alignment.SyntaxLiteralValue(_options)))
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                ),
+                                )/*,
                             _options.IsDialectVO ?
                                 _syntaxFactory.Attribute(
                                     name: GenerateQualifiedName("global::Vulcan.Internal.VOStruct"),
@@ -3026,11 +3099,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         ),
                                         closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                     )
-                                : null
+                                : null*/
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
@@ -3051,24 +3124,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isDim = context.Dim != null;
             var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
-            if (isDim) {
-                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
-            }
             varType.XVoDecl = true;
             if (context.As?.Type == XP.IS)
             {
                 varType.XVoIsDecl = true;
             }
+            if (isDim)
+                voStructHasDim = true;
             context.Put(_syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
-                TokenList(SyntaxKind.PublicKeyword),
+                TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
                 _syntaxFactory.VariableDeclaration(varType, 
-                    MakeSeparatedList(GenerateVariable(context.Id.Get<SyntaxToken>()))),
+                    MakeSeparatedList(
+                        isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(),MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
+                        : GenerateVariable(context.Id.Get<SyntaxToken>()))),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void EnterVounion([NotNull] XP.VounionContext context)
+        {
+            voStructHasDim = false;
         }
 
         public override void ExitVounion([NotNull] XP.VounionContext context)
         {
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            if (voStructHasDim)
+            {
+                var modBuilder = _pool.Allocate();
+                modBuilder.AddRange(mods);
+                modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
+                mods = modBuilder.ToTokenList();
+            }
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
                     _syntaxFactory.AttributeList(
@@ -3099,7 +3186,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
@@ -3120,14 +3207,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool isDim = context.Dim != null;
             var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
-            if (isDim) {
-                varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
-            }
             varType.XVoDecl = true;
             if (context.As?.Type == XP.IS)
             {
                 varType.XVoIsDecl = true;
             }
+            if (isDim)
+                voStructHasDim = true;
             context.Put(_syntaxFactory.FieldDeclaration(
                 MakeList(
                     _syntaxFactory.AttributeList(
@@ -3148,9 +3234,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
-                TokenList(SyntaxKind.PublicKeyword),
+                TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
                 _syntaxFactory.VariableDeclaration(varType, 
-                    MakeSeparatedList(GenerateVariable(context.Id.Get<SyntaxToken>()))),
+                    MakeSeparatedList(
+                        isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
+                        : GenerateVariable(context.Id.Get<SyntaxToken>()))),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 

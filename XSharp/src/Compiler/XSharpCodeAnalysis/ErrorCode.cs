@@ -1392,5 +1392,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ExitInsideSwitchStatementNotAllowed = 9024,
         WRN_MissingReturnStatement = 9025,
         WRN_MissingReturnValue = 9026,
+        ERR_IllegalVoStructMemberType = 9027,
     }
 }

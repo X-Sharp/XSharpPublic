@@ -343,7 +343,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         return true;
                 }
             }
+            if ((type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true)
+            {
+                return true;
+            }
             return false;
+        }
+
+        public static int VoStructOrUnionSizeInBytes(this TypeSymbol _type)
+        {
+            // TODO (nvk): there must be a better way!
+            NamedTypeSymbol type = null;
+            if (_type != null)
+                type = _type.OriginalDefinition as NamedTypeSymbol;
+            if ((object)type != null && type.Arity == 0 && !type.MangleName)
+            {
+                if (type is SourceNamedTypeSymbol)
+                {
+                    var sourceType = (SourceNamedTypeSymbol)type;
+                    if (sourceType.IsSourceVoStructOrUnion)
+                    {
+                        return sourceType.VoStructSize;
+                    }
+                }
+                else
+                {
+                    var attrs = type.GetAttributes();
+                    foreach (var attr in attrs)
+                    {
+                        var atype = attr.AttributeClass;
+                        if (atype.Name == "VOStructAttribute" && CheckFullName(atype.ContainingSymbol, s_VulcanInternalNamespace))
+                        {
+                            return attr.ConstructorArguments.FirstOrNullable()?.DecodeValue<int>(SpecialType.System_Int32) ?? 0;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+
+        internal static int VoFixedBufferElementSizeInBytes(this TypeSymbol type)
+        {
+            int elementSize = type.SpecialType.FixedBufferElementSizeInBytes();
+            if (elementSize == 0)
+            {
+                if (type.IsPointerType())
+                    elementSize = 4;
+                else
+                    elementSize = type.VoStructOrUnionSizeInBytes();
+            }
+            return elementSize;
         }
 
         public static bool IsVulcanRT(this AssemblySymbol _asm)

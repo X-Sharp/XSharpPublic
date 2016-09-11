@@ -2789,7 +2789,7 @@ A catch() block after a catch (System.Exception e) block can catch non-CLS excep
     <value>Cannot convert async {0} to delegate type '{1}'. An async {0} may return void, Task or Task&lt;T&gt;, none of which are convertible to '{1}'.</value>
   </data>
   <data name="ERR_IllegalFixedType" xml:space="preserve">
-    <value>Fixed size buffer type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float or double</value>
+    <value>Fixed size buffer type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float or double (also ptr or vostruct in vo/vulcan dialect)</value>
   </data>
   <data name="ERR_FixedOverflow" xml:space="preserve">
     <value>Fixed size buffer of length {0} and type '{1}' is too big</value>
@@ -4771,10 +4771,13 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ExitInsideSwitchStatementNotAllowed" xml:space="preserve">
     <value>The EXIT statement is not allowed inside a SWITCH statement</value>
   </data>
-    <data name="WRN_MissingReturnStatement" xml:space="preserve">
+  <data name="WRN_MissingReturnStatement" xml:space="preserve">
     <value>Missing RETURN statement. A statement with a default 'empty' return value is returned.</value>
   </data>
-    <data name="WRN_MissingReturnValue" xml:space="preserve">
+  <data name="WRN_MissingReturnValue" xml:space="preserve">
     <value>Missing RETURN value. A default 'empty' return value is returned</value>
+  </data>
+  <data name="ERR_IllegalVoStructMemberType" xml:space="preserve">
+    <value>VoStruct member type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float, double, ptr or vostruct</value>
   </data>
 </root>

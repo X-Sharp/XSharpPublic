@@ -276,7 +276,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     }
 
                     var elementType = ((PointerTypeSymbol)type).PointedAtType;
+#if XSHARP
+                    int elementSize = DeclaringCompilation.Options.IsDialectVO ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
+#else
                     int elementSize = elementType.FixedBufferElementSizeInBytes();
+#endif
                     if (elementSize == 0)
                     {
                         var loc = typeSyntax.Location;

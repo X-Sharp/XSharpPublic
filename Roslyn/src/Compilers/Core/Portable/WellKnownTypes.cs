@@ -249,6 +249,7 @@ namespace Microsoft.CodeAnalysis
 #if XSHARP
         System_Runtime_CompilerServices_IsConst,
 
+        Vulcan_Internal_VOStructAttribute,
         Vulcan_Internal_VulcanClassLibraryAttribute,
         Vulcan_Internal_CompilerServices,
         Vulcan_VulcanImplicitNamespaceAttribute,
@@ -505,6 +506,7 @@ namespace Microsoft.CodeAnalysis
             ,
             "System.Runtime.CompilerServices.IsConst",
 
+            "Vulcan.Internal.VOStructAttribute",
             "Vulcan.Internal.VulcanClassLibraryAttribute",
             "Vulcan.Internal.CompilerServices",
             "Vulcan.VulcanImplicitNamespaceAttribute",

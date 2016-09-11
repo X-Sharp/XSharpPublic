@@ -102,7 +102,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     size = int32Value;
 
                                     TypeSymbol elementType = ((PointerTypeSymbol)this.Type).PointedAtType;
+#if XSHARP
+                                    int elementSize = DeclaringCompilation.Options.IsDialectVO ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
+#else
                                     int elementSize = elementType.FixedBufferElementSizeInBytes();
+#endif
                                     long totalSize = elementSize * 1L * int32Value;
                                     if (totalSize > int.MaxValue)
                                     {
@@ -180,7 +184,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 int nElements = _field.FixedSize;
                 var elementType = ((PointerTypeSymbol)_field.Type).PointedAtType;
+#if XSHARP
+                int elementSize = DeclaringCompilation.Options.IsDialectVO ? elementType.VoFixedBufferElementSizeInBytes() : elementType.FixedBufferElementSizeInBytes();
+#else
                 int elementSize = elementType.FixedBufferElementSizeInBytes();
+#endif
                 const int alignment = 0;
                 int totalSize = nElements * elementSize;
                 const LayoutKind layoutKind = LayoutKind.Sequential;

@@ -755,6 +755,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CHECKED:
                     r = SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword, token.Text);
                     break;
+                case XSharpParser.FIXED:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.FixedKeyword, token.Text);
+                    break;
                 case XSharpParser.UNCHECKED:
                     r = SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword, token.Text);
                     break;

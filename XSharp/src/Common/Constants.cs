@@ -17,9 +17,9 @@ namespace XSharp
 {
     internal static class Constants
     {
-        internal const string Company = "XSharpBV";
+        internal const string Company = "XSharp BV";
         internal const string Product = "XSharp";
-        internal const string Version = "0.2.6.1";
+        internal const string Version = "0.2.6.2";
         internal const string Copyright = "Copyright © XSharp BV 2015-2016";
 
         internal const string RegistryKey = @"Software\" + Company + @"\" + Product;

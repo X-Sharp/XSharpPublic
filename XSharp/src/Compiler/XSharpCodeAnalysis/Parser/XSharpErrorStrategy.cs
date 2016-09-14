@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
@@ -35,5 +35,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     partial class XSharpErrorStrategy : DefaultErrorStrategy
     {
+        protected internal override void ReportUnwantedToken(Parser recognizer)
+        {
+            if (InErrorRecoveryMode(recognizer))
+            {
+                return;
+            }
+            BeginErrorCondition(recognizer);
+            IToken t = recognizer.CurrentToken;
+            string tokenName = GetTokenErrorDisplay(t);
+            IntervalSet expecting = GetExpectedTokens(recognizer);
+            string msg;
+            if (expecting.Count <= 4)
+            {
+                msg = "unexpected input " + tokenName + " expecting " + expecting.ToString(recognizer.Vocabulary);
+            }
+            else
+            {
+                msg = "unexpected input " + tokenName;
+            }
+            recognizer.NotifyErrorListeners(t, msg, null);
+        }
+
     }
 }

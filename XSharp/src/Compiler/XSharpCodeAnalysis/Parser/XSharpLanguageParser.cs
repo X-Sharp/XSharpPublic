@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 // Uncomment this define to dump time profiling info of the parsing phases.
@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ITokenStream _lexerTokenStream;
 
-#if DEBUG
+//#if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
 
@@ -71,7 +71,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
         }
-#endif
+//#endif
 
         internal XSharpLanguageParser(
             String FileName,
@@ -166,10 +166,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else {                                      // memvar and private statements are not recognized in Vulcan
                 parser.AllowXBaseVariables = false;
             }
-#if DEBUG
+//#if DEBUG
             var errorListener = new XSharpErrorListener(_fileName, parseErrors);
             parser.AddErrorListener(errorListener);
-#endif
+//#endif
 #if DEBUG && DUMP_TIMES
             pp_tokens.Fill();
             {
@@ -220,9 +220,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 eof.XNode = new ErrorNodeImpl(tree.Stop);
                 var result = _syntaxFactory.CompilationUnit(
                     failedTreeTransform.GlobalEntities.Externs,
-                    failedTreeTransform.GlobalEntities.Usings, 
-                    failedTreeTransform.GlobalEntities.Attributes, 
-                    failedTreeTransform.GlobalEntities.Members, 
+                    failedTreeTransform.GlobalEntities.Usings,
+                    failedTreeTransform.GlobalEntities.Attributes,
+                    failedTreeTransform.GlobalEntities.Members,
                     eof);
                 result.XNode = (XSharpParser.SourceContext)tree;
                 result.XTokens = tokens;
@@ -257,7 +257,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                 }
                 var result = _syntaxFactory.CompilationUnit(
-                    treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings, 
+                    treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings,
                     treeTransform.GlobalEntities.Attributes, treeTransform.GlobalEntities.Members, eof);
                 // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = (XSharpParser.SourceContext)tree;
@@ -280,7 +280,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal TNode ParseWithStackGuard<TNode>(Func<TNode> parseFunc, Func<TNode> createEmptyNodeFunc) where TNode : CSharpSyntaxNode
         {
-            // If this value is non-zero then we are nesting calls to ParseWithStackGuard which should not be 
+            // If this value is non-zero then we are nesting calls to ParseWithStackGuard which should not be
             // happening.  It's not a bug but it's inefficient and should be changed.
             //Debug.Assert(_recursionDepth == 0);
 
@@ -291,7 +291,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 return parseFunc();
             }
-            // TODO (DevDiv workitem 966425): Replace exception name test with a type test once the type 
+            // TODO (DevDiv workitem 966425): Replace exception name test with a type test once the type
             // is available in the PCL
             catch (Exception ex) when (ex.GetType().Name == "InsufficientExecutionStackException")
             {

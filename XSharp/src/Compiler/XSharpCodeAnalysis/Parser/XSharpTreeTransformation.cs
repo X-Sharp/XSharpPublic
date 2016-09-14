@@ -4657,6 +4657,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(args);
         }
 
+        public override void ExitBracketedargument([NotNull] XP.BracketedargumentContext context)
+        {
+            if (context.Expr == null)
+            {
+                context.Put(NotInDialect(MakeArgument(GenerateLiteral("")), "Missing arguments"));
+                return;
+            }
+            context.Put(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+        }
+
         public override void ExitArgumentList([NotNull] XP.ArgumentListContext context)
         {
             var args = _pool.AllocateSeparated<ArgumentSyntax>();

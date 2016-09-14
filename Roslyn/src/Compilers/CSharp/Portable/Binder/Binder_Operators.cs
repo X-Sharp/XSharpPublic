@@ -477,7 +477,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool isStringSingleEquals = false;
             if (isEquality)
             {
-                if (left.Type.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String)
+                if (left.Type?.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String)
                 {
                     var xnode = node.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.BinaryExpressionContext;
                     if (xnode.Op.Type == LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.EQ)

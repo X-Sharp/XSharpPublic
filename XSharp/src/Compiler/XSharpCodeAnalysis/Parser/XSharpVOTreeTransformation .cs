@@ -793,6 +793,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
+        public override void ExitBracketedargument([NotNull] XP.BracketedargumentContext context)
+        {
+            if (context.Expr == null)
+            {
+                context.Put(MakeArgument(GenerateNIL()));
+                return;
+            }
+            base.ExitBracketedargument(context);
+        }
+
+
         public override void ExitArgument([NotNull] XP.ArgumentContext context) {
             if (context.Expr == null) {
                 context.Put(MakeArgument(GenerateNIL()));

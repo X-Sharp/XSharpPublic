@@ -390,7 +390,11 @@ classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmeth
                     | (Attributes=attributes)?
                       (Modifiers=constructorModifiers)? 
                       CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS 
-                      (Chain=(SELF | SUPER) LPAREN ArgList=argumentList? RPAREN EOS)?
+                      (Chain=(SELF | SUPER) 
+					  ( 
+						  (LPAREN RPAREN)
+						| (LPAREN ArgList=argumentList RPAREN)
+					  ) EOS)?
                       StmtBlk=statementBlock							 { SetSequencePoint(_localctx,$end); } #clsctor
                     | (Attributes=attributes)? 
                       (Modifiers=destructorModifiers)?
@@ -405,7 +409,6 @@ classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmeth
                     | Member=enum_										{ SetSequencePoint(_localctx); } #nestedEnum
                     | Member=event_										{ SetSequencePoint(_localctx); } #nestedEvent
                     | Member=interface_									{ SetSequencePoint(_localctx); } #nestedInterface
-//                    | using_											#nestedUsing	// nvk: C# does not allow using directives within a class!
                     | Pragma=pragma										#nestedPragma
                     | {_ClsFunc}? Member=function						{ SetSequencePoint(_localctx); } #clsfunction		// Equivalent to method
                     | {_ClsFunc}? Member=procedure						{ SetSequencePoint(_localctx); } #clsprocedure		// Equivalent to method
@@ -544,7 +547,7 @@ statement           : Decl=localdecl                                            
                     | BEGIN Key=UNCHECKED end=EOS
                       StmtBlk=statementBlock
                       END UNCHECKED? EOS										{ SetSequencePoint(_localctx,$end); }#blockStmt
-                    | {InputStream.La(2) != LPAREN ||
+                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
                        (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
                       Exprs+=expression (COMMA Exprs+=expression)* end=EOS		{ SetSequencePoint(_localctx,$end); }#expressionStmt
                     
@@ -640,8 +643,9 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
 //           ( 1)  unary                + - ++ -- ~
 
 expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember			// member access The ? is new
-                    | Expr=expression LPAREN ArgList=argumentList? RPAREN		#methodCall				// method call
-                    | Expr=expression LBRKT ArgList=bracketedArgumentList? RBRKT #arrayAccess			// Array element access
+                    | Expr=expression LPAREN                       RPAREN		#methodCall				// method call, no params
+                    | Expr=expression LPAREN ArgList=argumentList  RPAREN		#methodCall				// method call, with params
+                    | Expr=expression LBRKT ArgList=bracketedArgumentList  RBRKT #arrayAccess			// Array element access
                     | Left=expression Op=QMARK Right=boundExpression			#condAccessExpr			// expr ? expr
                     | LPAREN Type=datatype RPAREN Expr=expression				#typeCast			    // (typename) expr
                     | Expr=expression Op=(INC | DEC)							#postfixExpression		// expr ++/--
@@ -684,7 +688,8 @@ primary				: Key=SELF													#selfExpression
                     | Query=linqQuery											#queryExpression        // LINQ
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
-                    | Type=datatype LCURLY ArgList=argumentList? RCURLY			#ctorCall				// id{ [expr [, expr...] }
+                    | Type=datatype LCURLY                       RCURLY			#ctorCall				// id{  }
+                    | Type=datatype LCURLY ArgList=argumentList  RCURLY			#ctorCall				// id{ expr [, expr...] }
                     | ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
                     | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
                     | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
@@ -711,23 +716,30 @@ primary				: Key=SELF													#selfExpression
                     ;
 
 boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new
-                    | Expr=boundExpression LPAREN ArgList=argumentList? RPAREN	#boundMethodCall		// method call
+                    | Expr=boundExpression LPAREN						RPAREN	#boundMethodCall		// method call, no params
+                    | Expr=boundExpression LPAREN ArgList=argumentList  RPAREN	#boundMethodCall		// method call, with params
                     | Expr=boundExpression 
-                      LBRKT ArgList=bracketedArgumentList? RBRKT				#boundArrayAccess		// Array element access
+                      LBRKT ArgList=bracketedArgumentList RBRKT					#boundArrayAccess		// Array element access
                     | <assoc=right> Left=boundExpression
                       Op=QMARK Right=boundExpression							#boundCondAccessExpr	// expr ? expr
                     | Op=(DOT | COLON) Name=simpleName							#bindMemberAccess
-                    | LBRKT ArgList=bracketedArgumentList? RBRKT				#bindArrayAccess
+                    | LBRKT ArgList=bracketedArgumentList RBRKT					#bindArrayAccess
                     ;
 
-bracketedArgumentList
-                    : {TokenStream.La(1) != RBRKT }? Args+=argument (COMMA Args+=argument?)*
+bracketedArgumentList	: Args+=bracketedargument (COMMA Args+=bracketedargument)*
+						;
+
+
+bracketedargument	   // NOTE: Separate rule for bracketedarguments because they cannot use idendifierName syntax
+					:  Expr=expression?
                     ;
 
-argumentList		: {TokenStream.La(1) != RPAREN && TokenStream.La(1) != RCURLY }? Args+=argument (COMMA Args+=argument)*
+argumentList		  // NOTE: Optional argumentlist is handled in the rules that use this rule
+					:  Args+=argument (COMMA Args+=argument)*
                     ;
 
-argument			: ( COLON Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression?
+argument			   // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
+					:  ( COLON Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
 
 
@@ -773,8 +785,8 @@ typeName			: NativeType=nativeType
 
                     // Separate rule for Array with zero elements, to prevent entering the first arrayElement rule 
                     // with a missing Expression which would not work for the core dialect
-literalArray		: (LT Type=datatype GT)? LCURLY RCURLY                                                                  // {}
-                    | (LT Type=datatype GT)? LCURLY (Elements+=arrayElement (COMMA Elements+=arrayElement)*)? RCURLY        // {e,e,e} or {e,,e} or {,e,} etc
+literalArray		: (LT Type=datatype GT)? LCURLY RCURLY															// {}
+					| (LT Type=datatype GT)? LCURLY Elements+=arrayElement (COMMA Elements+=arrayElement)* RCURLY   // {e,e,e} or {e,,e} or {,e,} etc
                     ;
 
 arrayElement        : Expr=expression?      // VO Array elements are optional

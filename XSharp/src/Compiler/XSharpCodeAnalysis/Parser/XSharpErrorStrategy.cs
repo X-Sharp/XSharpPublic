@@ -56,6 +56,121 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             recognizer.NotifyErrorListeners(t, msg, null);
         }
+        protected internal override void ReportInputMismatch(Parser recognizer, InputMismatchException e)
+        {
+            IntervalSet expecting = GetExpectedTokens(recognizer);
+            string msg;
+            if (expecting.Count <= 4)
+            {
+                msg = "mismatched input " + GetTokenErrorDisplay(e.OffendingToken) + " expecting " + expecting.ToString(recognizer.Vocabulary);
+            }
+            else
+            {
+                msg = "mismatched input " + GetTokenErrorDisplay(e.OffendingToken) ;
+            }
+            NotifyErrorListeners(recognizer, msg, e);
+        }
+        protected internal override void ReportNoViableAlternative(Parser recognizer, NoViableAltException e)
+        {
+            ITokenStream tokens = ((ITokenStream)recognizer.InputStream);
+            string input;
+            if (tokens != null)
+            {
+                if (e.StartToken.Type == TokenConstants.Eof)
+                {
+                    input = "<EOF>";
+                }
+                else
+                {
+                    input = tokens.GetText(e.StartToken, e.OffendingToken);
+                }
+            }
+            else
+            {
+                input = "<unknown input>";
+            }
+            string msg;
+            char firsttoken = (Char) 0;
+            char lasttoken = (Char)0;
+            int count = 0;
+            foreach (var c in input)
+            {
+                switch (c)
+                {
+                    case '[':
+                    case '(':
+                    case '{':
+                        if (firsttoken == 0)
+                        {
+                            firsttoken = c;
+                        }
+                        count += 1;
+                        break;
+                    case ']':
+                    case ')':
+                    case '}':
+                        lasttoken = c;
+                        count -= 1;
+                        break;
+                }
+            }
+            if (e.OffendingToken.Type == XSharpLexer.EOS)
+            {
+                string eos;
+                string missing  = " token";
+                if (count > 0)
+                {
+                    switch (firsttoken)
+                    {
+                        case '(':
+                            missing = "closing ')'";
+                            break;
+                        case '{':
+                            missing = "closing '}'";
+                            break;
+                        case '[':
+                            missing = "closing ']'";
+                            break;
+                    }
+                }
+                else if (count < 0)
+                {
+                    switch (lasttoken)
+                    {
+                        case ')':
+                            missing = "opening '('";
+                            break;
+                        case '}':
+                            missing = "opening '{'";
+                            break;
+                        case ']':
+                            missing = "opening '['";
+                            break;
+                    }
+                }
+                if (e.OffendingToken.Text == "\r\n")
+                    eos = "CRLF";
+                else if (e.OffendingToken.Text == ";")
+                    eos = "';'";
+                else
+                    eos = "End of Statement";
+                msg = "unexpected " + eos + " are you missing a "+ missing + " ?";
+            }
+            else
+            {
+                msg = "no viable alternative at input " + EscapeWSAndQuote(input);
+            }
+            NotifyErrorListeners(recognizer, msg, e);
+        }
+        protected internal override string EscapeWSAndQuote(string s)
+        {
+            //		if ( s==null ) return s;
+            s = s.Replace("\r\n", "CRLF");
+            s = s.Replace("\n", "LINEFEED");
+            s = s.Replace("\r", "RETURN");
+            s = s.Replace("\t", "TAB");
+            return "'" + s + "'";
+        }
 
     }
 }

@@ -549,7 +549,7 @@ statement           : Decl=localdecl                                            
                       END UNCHECKED? EOS										{ SetSequencePoint(_localctx,$end); }#blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=EOS
                       StmtBlk=statementBlock
-                      END CHECKED? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                      END FIXED? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
                        (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
                       Exprs+=expression (COMMA Exprs+=expression)* end=EOS		{ SetSequencePoint(_localctx,$end); }#expressionStmt

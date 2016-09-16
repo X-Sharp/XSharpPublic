@@ -508,15 +508,25 @@ lexer grammar XSharpLexer;
 						c = InputStream.La(1);
 					}
 					break;
-				case 'e':           // escaped string
+				case 'e':           
                 case 'E': 
-					if (InputStream.La(2) == '"') {
+					if (InputStream.La(2) == '"') // escaped string
+					{ 
+						break;
+					}
+					if ((InputStream.La(2) == 'i' ||  InputStream.La(2) == 'I') && InputStream.La(3) == '"') // interpolated escaped string
+					{ 
 						break;
 					}
                     goto case 'a';
 				case 'i':           
-                case 'I': 
-					if (InputStream.La(2) == '"') {
+                case 'I':           
+					if (InputStream.La(2) == '"') // interpolated string
+					{ 
+						break;
+					}
+					if ((InputStream.La(2) == 'e' ||  InputStream.La(2) == 'E') && InputStream.La(3) == '"') // interpolated escaped string
+					{ 
 						break;
 					}
                     goto case 'a';
@@ -740,6 +750,7 @@ lexer grammar XSharpLexer;
 
 				if (! _Four)
 				{
+                    // These are predefined abbreviations of some keywords that are also valid in Vulcan
 					VoKeywords.Add("PROC", PROCEDURE);
 					VoKeywords.Add("FUNC", FUNCTION);
 					VoKeywords.Add("PROTECT", PROTECTED);
@@ -905,6 +916,7 @@ lexer grammar XSharpLexer;
 					{"__WINDRIVE__", MACRO},
 					{"__XSHARP__", MACRO},
 				};
+                // These keywords are inserted without abbreviations
 				foreach (var text in Keywords.Keys) {
 					var token = Keywords[text];
 					_kwIds.Add(text,token);
@@ -939,8 +951,8 @@ lexer grammar XSharpLexer;
 					{"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern> 
 					{"#UNDEF", PP_UNDEF},			// #undef <identifier>
 					{"#WARNING", PP_WARNING},		// #warning [warningMessage]
-					{"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  
-					{"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern> 
+					{"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
+					{"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
 				};
 
 				foreach (var text in PpSymbols.Keys) {
@@ -1008,6 +1020,7 @@ DYNAMIC,
 LAST_KEYWORD,
 
 // UDC Keyword, can be any word. The PP sets this type to tokens that are matched with keywords inside an UDC
+// So they can get a special color in the editor
 PP_UDC,
 
 
@@ -1104,11 +1117,12 @@ STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 			;
 
 
-INTERPOLATED_STRING_CONST: ('i' | 'I')'"' ( ~( '"' | '\n' | '\r' ) )* '"'
+INTERPOLATED_STRING_CONST: I E? '"' ( ~( '"' | '\n' | '\r' ) )* '"'		// i "..." or ie"..."
+			| E I '"' ( ~( '"' | '\n' | '\r' ) )* '"'					// ei"...."
             ;
 
 ESCAPED_STRING_CONST
-			: ('e'| 'E') '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
+			: E '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
 			;
 
 fragment
@@ -1151,10 +1165,10 @@ UNICODE_ESCAPE_SEQUENCE : '\\' U HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT (HEX_DI
 						;
 
 // When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character                            
-LINE_CONT   :   ';' (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')             ->channel(HIDDEN)
+LINE_CONT   :   SEMI (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')             ->channel(HIDDEN)
             ;
 
-LINE_CONT_OLD: {_OldComment}? ';' (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
+LINE_CONT_OLD: {_OldComment}? SEMI (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
             ;
 
 SEMI		: ';' 

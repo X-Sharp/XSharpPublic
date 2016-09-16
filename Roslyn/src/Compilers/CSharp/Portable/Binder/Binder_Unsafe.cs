@@ -45,7 +45,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// the suppress flag.</returns>
         private bool ReportUnsafeIfNotAllowed(Location location, TypeSymbol sizeOfTypeOpt, DiagnosticBag diagnostics)
         {
+#if XSHARP 
+            var diagnosticInfo = Compilation.Options.IsDialectVO && Compilation.Options.AllowUnsafe  ? null : GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
+#else
             var diagnosticInfo = GetUnsafeDiagnosticInfo(sizeOfTypeOpt);
+#endif
             if (diagnosticInfo == null || this.Flags.Includes(BinderFlags.SuppressUnsafeDiagnostics))
             {
                 return false;

@@ -382,6 +382,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return 0;
         }
 
+        public static int VoStructOrUnionLargestElementSizeInBytes(this TypeSymbol _type)
+        {
+            // TODO (nvk): there must be a better way!
+            NamedTypeSymbol type = null;
+            if (_type != null)
+                type = _type.OriginalDefinition as NamedTypeSymbol;
+            if ((object)type != null && type.Arity == 0 && !type.MangleName)
+            {
+                if (type is SourceNamedTypeSymbol)
+                {
+                    var sourceType = (SourceNamedTypeSymbol)type;
+                    if (sourceType.IsSourceVoStructOrUnion)
+                    {
+                        return sourceType.VoStructElementSize;
+                    }
+                }
+                else
+                {
+                    var attrs = type.GetAttributes();
+                    foreach (var attr in attrs)
+                    {
+                        var atype = attr.AttributeClass;
+                        if (atype.Name == "VOStructAttribute" && CheckFullName(atype.ContainingSymbol, s_VulcanInternalNamespace))
+                        {
+                            return attr.ConstructorArguments.LastOrNullable()?.DecodeValue<int>(SpecialType.System_Int32) ?? 0;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
+
         internal static int VoFixedBufferElementSizeInBytes(this TypeSymbol type)
         {
             int elementSize = type.SpecialType.FixedBufferElementSizeInBytes();

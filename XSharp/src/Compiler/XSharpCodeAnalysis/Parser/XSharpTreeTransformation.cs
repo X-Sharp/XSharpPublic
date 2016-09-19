@@ -4149,7 +4149,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // build list of arguments and a matching string.Format mask
                 // when single question mark, then start with newline
-                string mask = context.Q.Type == XP.QMARK ? "\n" : String.Empty;
+                string mask = context.Q.Type == XP.QMARK ? "\r\n" : String.Empty;
                 var args = new List<ArgumentSyntax>();
                 foreach (var eCtx in context._Exprs)
                 {
@@ -4612,13 +4612,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
         }
 
-        public override void ExitTypeExpression([NotNull] XP.TypeExpressionContext context)
-        {
-            if (context.Type != null)
-                context.Put(context.Type.Get<TypeSyntax>());
-            else
-                context.Put(context.XType.Get<TypeSyntax>());
-        }
+        //public override void ExitTypeExpression([NotNull] XP.TypeExpressionContext context)
+        //{
+        //    if (context.Type != null)
+        //        context.Put(context.Type.Get<TypeSyntax>());
+        //    else
+        //        context.Put(context.XType.Get<TypeSyntax>());
+        //}
 
         public override void ExitIifExpression([NotNull] XP.IifExpressionContext context)
         {
@@ -5351,6 +5351,120 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var type = (TypeSyntax) NotInDialect(_objectType,context.Token.Text);
             context.Put(type);
         }
+
+        public override void ExitVoTypeNameExpression([NotNull] XP.VoTypeNameExpressionContext context)
+        {
+            context.Put(context.Name.Get<LiteralExpressionSyntax>());
+        }
+
+        public override void ExitVoTypeName([NotNull] XP.VoTypeNameContext context)
+        {
+            /*
+             * Please note that these numbers must match the BT_  types in basetype.h from VO:
+             * Vulcan has added 2 numbers for 64 bit types INT64 (22) and UINT64 (23)
+             * We have added 2 numbers for CHAR (24) and DYNAMIC (25)
+             * The Vulcan Runtime has an internal UsualType Enum that has matching values.
+             *   #define BT_VOID         0       // == NIL
+             *   #define BT_LONG         1       // signed long
+             *   #define BT_DATE         2       //
+             *   #define BT_FLOAT        3       // internal real format
+             *   #define BT_FIXED        4       // internal fixed format
+             *   #define BT_ARRAY        5       // array (ptr)
+             *   #define BT_OP           6       // object pointer
+             *   #define BT_STR          7       // string
+             *   #define BT_LOGIC        8
+             *   #define BT_CODE         9       // code block
+             *   #define BT_SYMBOL       10      // atom nr in symbol atom table
+             *
+             *   #define BT_BYTE         11      // byte
+             *   #define BT_INT          12      // signed int
+             *   #define BT_WORD         13      // word
+             *   #define BT_DWORD        14      // dword
+             *   #define BT_REAL4        15      // C float
+             *   #define BT_REAL8        16      // C double
+             *   #define BT_PSZ          17      // PSZ
+             *   #define BT_PTR          18      // raw ptr
+             *   #define BT_POLY         19      // polymorphic
+             * */
+            switch (context.Token.Type)
+            {
+                case XSharpLexer.ARRAY:
+                    context.Put(GenerateLiteral( 5));
+                    break;
+                case XSharpLexer.BYTE:
+                    context.Put(GenerateLiteral(11));
+                    break;
+                case XSharpLexer.CHAR:
+                    context.Put(GenerateLiteral(24));         // New in XSharp
+                    break;
+                case XSharpLexer.CODEBLOCK:
+                    context.Put(GenerateLiteral(9));
+                    break;
+                case XSharpLexer.DATE:
+                    context.Put(GenerateLiteral(2));
+                    break;
+                case XSharpLexer.DYNAMIC:
+                    context.Put(GenerateLiteral(25));
+                    break;
+                case XSharpLexer.DWORD:
+                    context.Put(GenerateLiteral(14));
+                    break;
+                case XSharpLexer.FLOAT:
+                    context.Put(GenerateLiteral(3));
+                    break;
+                case XSharpLexer.INT:
+                case XSharpLexer.LONGINT:
+                    context.Put(GenerateLiteral(1));
+                    break;
+                case XSharpLexer.INT64:
+                    context.Put(GenerateLiteral(22));     // New in Vulcan
+                    break;
+                case XSharpLexer.LOGIC:
+                    context.Put(GenerateLiteral(8));
+                    break;
+                case XSharpLexer.OBJECT:
+                    context.Put(GenerateLiteral( 6));
+                    break;
+                case XSharpLexer.PSZ:
+                    context.Put(GenerateLiteral(17));
+                    break;
+                case XSharpLexer.PTR:
+                    context.Put(GenerateLiteral(18));
+                    break;
+                case XSharpLexer.REAL4:
+                    context.Put(GenerateLiteral(15));
+                    break;
+                case XSharpLexer.REAL8:
+                    context.Put(GenerateLiteral(16));
+                    break;
+                case XSharpLexer.SHORTINT:
+                    context.Put(GenerateLiteral(12));
+                    break;
+                case XSharpLexer.STRING:
+                    context.Put(GenerateLiteral(7));
+                    break;
+                case XSharpLexer.SYMBOL:
+                    context.Put(GenerateLiteral(10));
+                    break;
+                case XSharpLexer.UINT64:
+                    context.Put(GenerateLiteral(23));         // New in Vulcan
+                    break;
+                case XSharpLexer.USUAL:
+                    context.Put(GenerateLiteral(19));
+                    break;
+                case XSharpLexer.VOID:
+                    context.Put(GenerateLiteral(0));
+                    break;
+                case XSharpLexer.WORD:
+                    context.Put(GenerateLiteral(13));
+                    break;
+                default:
+                    context.Put(GenerateLiteral( 0).WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(ErrorCode.ERR_UnknownLiteralTypeName, context.Token.Text)));
+                    break;
+            }
+        }
+
         public override void ExitFieldStmt([NotNull] XP.FieldStmtContext context)
         {
             context.Put(context.Decl.Get<StatementSyntax>());

@@ -698,13 +698,14 @@ primary				: Key=SELF													#selfExpression
                     | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
                     | DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// default( typeORid )
+					| Name=voTypeName											#voTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     | Name=simpleName											#nameExpression			// generic name
                     | Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
                     | XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
                     | Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
-                    | Type=nativeType											#typeExpression			// Standard DotNet Types
-                    | XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
+                    //| Type=nativeType											#typeExpression			// Standard DotNet Types
+                    //| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
                       (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
@@ -894,6 +895,33 @@ nativeType			: Token=
                     | CHAR )
                     ;
 
+voTypeName			: Token=
+					( ARRAY
+					| BYTE
+					| CHAR				// New in XSharp
+					| CODEBLOCK
+					| DATE
+					| DWORD
+					| DYNAMIC			// new in XSharp
+					| FLOAT
+					| SHORTINT
+					| INT
+					| INT64				// New in Vulcan
+					| LOGIC
+					| LONGINT
+					| OBJECT
+					| PSZ
+					| PTR
+					| REAL4
+					| REAL8
+					| SHORTINT
+					| STRING
+					| SYMBOL
+					| UINT64			// New in Vulcan
+					| USUAL
+					| VOID
+					| WORD)
+					;
 literalValue		: Token=
                     ( TRUE_CONST
                     | FALSE_CONST

@@ -117,20 +117,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (m.Kind == SymbolKind.Field)
                     {
                         var f = (FieldSymbol)m;
-                        int sz;
+                        int sz, elsz;
                         if (f.IsFixed == true)
                         {
-                            sz = f.FixedSize * (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes();
+                            elsz = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes();
+                            sz = f.FixedSize * elsz;
                         }
                         else
                         {
                             sz = f.Type.VoFixedBufferElementSizeInBytes();
+                            if ((f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true)
+                            {
+                                elsz = (f.Type as SourceNamedTypeSymbol).VoStructElementSize;
+                            }
+                            else if (f.Type.IsVoStructOrUnion())
+                            {
+                                elsz = f.Type.VoStructOrUnionLargestElementSizeInBytes();
+                            }
+                            else
+                                elsz = sz;
                         }
                         if (sz != 0)
                         {
-                            if (voStructSize % align != 0)
+                            int al = align;
+                            if (elsz < al)
+                                al = elsz;
+                            if (voStructSize % al != 0)
                             {
-                                voStructSize += align - (voStructSize % align);
+                                voStructSize += al - (voStructSize % al);
                             }
                             voStructSize += sz;
                             if (voStructElementSize < sz)

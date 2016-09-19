@@ -164,9 +164,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
         }
 
-        public override void ExitTypeExpression([NotNull] XSharpParser.TypeExpressionContext context)
-        {
-        }
+        //public override void ExitTypeExpression([NotNull] XSharpParser.TypeExpressionContext context)
+        //{
+        //}
 
         public override void ExitIifExpression([NotNull] XSharpParser.IifExpressionContext context)
         {

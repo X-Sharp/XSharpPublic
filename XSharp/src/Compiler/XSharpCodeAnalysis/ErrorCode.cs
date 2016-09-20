@@ -1394,5 +1394,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_MissingReturnValue = 9026,
         ERR_IllegalVoStructMemberType = 9027,
         ERR_UnknownLiteralTypeName=9028,
+        WRN_CompilerOptionNotImplementedYet = 9029,
     }
 }

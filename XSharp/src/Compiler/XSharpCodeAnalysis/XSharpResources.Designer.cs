@@ -11178,6 +11178,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compiler Option {0} ({1}) is recognized by the compiler but not yet implemented.
+        /// </summary>
+        internal static string WRN_CompilerOptionNotImplementedYet {
+            get {
+                return ResourceManager.GetString("WRN_CompilerOptionNotImplementedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Different checksum values given for &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_ConflictingChecksum {

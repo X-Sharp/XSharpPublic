@@ -127,7 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         private static int _unique = 0;
 
-        protected string GlobalClassName = XSharpGlobalClassName;
+        protected string globalClassName = XSharpGlobalClassName;
 
         internal SyntaxListPool _pool;
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
@@ -166,6 +166,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
             _impliedType = GenerateSimpleName(ImpliedTypeName);
             _fileName = fileName;
+
+            // calculate the global class name (this code has been moved from the VO Transform class)
+            string name = options.CommandLineArguments.CompilationOptions.ModuleName;
+            string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
+            if (String.IsNullOrEmpty(name))
+            {
+                name = firstSource;
+            }
+
+            if (!String.IsNullOrEmpty(name))
+            {
+                string filename = PathUtilities.GetFileName(name);
+                filename = PathUtilities.RemoveExtension(filename);
+                filename = filename.Replace('.', '_');
+                OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
+                if (kind.GetDefaultExtension().ToLower() == ".exe")
+                    globalClassName = filename + ".Exe.Functions";
+                else
+                    globalClassName = filename + ".Functions";
+            }
+            else
+            {
+                globalClassName = XSharpGlobalClassName;
+            }
+
         }
 
         internal CSharpSyntaxNode NotInDialect(string feature)
@@ -280,7 +305,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 XP.FunctionContext fc = (XP.FunctionContext)context;
                 if (name.Length == 0)
-                    name = GlobalClassName + "." +fc.Id.GetText();
+                    name = globalClassName + "." +fc.Id.GetText();
                 else
                     name += fc.Id.GetText();
 
@@ -291,7 +316,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 XP.ProcedureContext pc = (XP.ProcedureContext)context;
                 if(name.Length == 0)
-                    name = GlobalClassName + "." + pc.Id.GetText();
+                    name = globalClassName + "." + pc.Id.GetText();
                 else
                     name += pc.Id.GetText();
                 Params = pc.ParamList;
@@ -1299,21 +1324,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return prop;
         }
 
-        private static SyntaxTree _defTree;
-        public static SyntaxTree DefaultXSharpSyntaxTree()
+        private SyntaxTree GenerateDefaultSyntaxTree()
         {
-            if (_defTree == null) {
-                var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            GlobalEntities.Members.Add(GenerateGlobalClass(globalClassName, false));
+            var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+            return CSharpSyntaxTree.Create(
+                (Syntax.CompilationUnitSyntax)_syntaxFactory.CompilationUnit(
+                    GlobalEntities.Externs, GlobalEntities.Usings, GlobalEntities.Attributes, GlobalEntities.Members, eof).CreateRed());
 
-                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName,false));
+        }
+        public static SyntaxTree DefaultSyntaxTree(CSharpParseOptions options)
+        {
+            var t = new XSharpTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            return t.GenerateDefaultSyntaxTree();
+        }
 
-                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                _defTree = CSharpSyntaxTree.Create(
-                    (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                        t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
 
-            }
-            return _defTree;
+        public static string GlobalClassName(CSharpParseOptions options)
+        {
+            var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            return t.globalClassName;
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
@@ -1389,7 +1419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var generated = ClassEntities.Pop();
             if(generated.Members.Count > 0) {
-                globalMembers.Add(GenerateGlobalClass(GlobalClassName, false, generated.Members));
+                globalMembers.Add(GenerateGlobalClass(globalClassName, false, generated.Members));
             }
             generated.Free();
 
@@ -1485,7 +1515,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     bStaticVisibility = modifiers.IsStaticVisible;
             }
             if (bProcess) {
-                string className = GlobalClassName;
+                string className = globalClassName;
                 if (bStaticVisibility) {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
@@ -3350,9 +3380,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             TypeSyntax type = _getParameterType(context);
             type.XVoDecl = true;
-            if (context.Modifiers?._IS != null)
+            foreach (var token in context.Modifiers._Tokens)
             {
-                type.XVoIsDecl = true;
+                if (token.Type == XP.IS)
+                {
+                    type.XVoIsDecl = true;
+                    break;
+                }
             }
             context.Put(_syntaxFactory.Parameter(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
@@ -4468,7 +4502,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-            TypeSyntax globaltype = GenerateQualifiedName(GlobalClassName);
+            TypeSyntax globaltype = GenerateQualifiedName(globalClassName);
             expr = _syntaxFactory.TypeOfExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),

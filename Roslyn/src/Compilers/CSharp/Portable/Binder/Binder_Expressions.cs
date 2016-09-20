@@ -4318,6 +4318,31 @@ namespace Microsoft.CodeAnalysis.CSharp
             BoundExpression boundLeft;
 
             ExpressionSyntax exprSyntax = node.Expression;
+#if XSHARP
+            // First attempt simpleMemberAccess resolution ...
+            // NOTE: CheckValue will be called explicitly in BindMemberAccessWithBoundLeft.
+            var diag = DiagnosticBag.GetInstance();
+            boundLeft = BindLeftOfPotentialColorColorMemberAccess(exprSyntax, diag);
+            if (!boundLeft.Type.IsPointerType())
+            {
+                diagnostics.AddRange(diag);
+            }
+            else
+            {
+                // Then try pointerMemberAccess resolution...
+                boundLeft = this.BindExpression(exprSyntax, diagnostics); // Not Color Color issues with ->
+                TypeSymbol pointedAtType;
+                bool hasErrors;
+                BindPointerIndirectionExpressionInternal(node, boundLeft, diagnostics, out pointedAtType, out hasErrors);
+                if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
+                {
+                    boundLeft = new BoundPointerIndirectionOperator(exprSyntax, boundLeft, pointedAtType, hasErrors)
+                    {
+                        WasCompilerGenerated = true, // don't interfere with the type info for exprSyntax.
+                    };
+                }
+            }
+#else
             if (node.Kind() == SyntaxKind.SimpleMemberAccessExpression)
             {
                 // NOTE: CheckValue will be called explicitly in BindMemberAccessWithBoundLeft.
@@ -4350,6 +4375,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     };
                 }
             }
+#endif
 
             return BindMemberAccessWithBoundLeft(node, boundLeft, node.Name, node.OperatorToken, invoked, indexed, diagnostics);
         }

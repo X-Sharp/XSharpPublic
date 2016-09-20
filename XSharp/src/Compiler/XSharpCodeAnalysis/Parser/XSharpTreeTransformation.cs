@@ -116,7 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public const string XSharpGlobalClassName = "Xs$Globals";
+        public const string XSharpGlobalClassName = "Functions";
         protected const string ImpliedTypeName = "Xs$var";
         protected const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
         protected const string StaticLocalInitFieldNameSuffix = "$init";

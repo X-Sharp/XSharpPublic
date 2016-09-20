@@ -220,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                                 var _diagnostics = DiagnosticBag.GetInstance();
-                                string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(((CSharpSyntaxTree)usingDirective.SyntaxTree).Options);
+                                string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.GlobalClassName(((CSharpSyntaxTree)usingDirective.SyntaxTree).Options);
                                 var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
                                 var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
                                 if (_imported.Kind == SymbolKind.NamedType)

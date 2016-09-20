@@ -676,7 +676,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.GlobalClassName((CSharpParseOptions)trees.First().Options);
                     }
                     def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options);
                 }
@@ -684,9 +684,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName((CSharpParseOptions)trees.First().Options);
                     }
-                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
+                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultSyntaxTree((CSharpParseOptions)trees.First().Options);
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;

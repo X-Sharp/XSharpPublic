@@ -70,29 +70,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _codeblockType = GenerateQualifiedName("global::Vulcan.Codeblock");
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
 
-            // calculate the global class name;
-            string name = options.CommandLineArguments.CompilationOptions.ModuleName;
-            string firstSource = options.CommandLineArguments.SourceFiles.FirstOrDefault().Path;
-            if (String.IsNullOrEmpty(name))
-            {
-                name = firstSource;
-            }
-
-            if (!String.IsNullOrEmpty(name))
-            {
-                string filename = PathUtilities.GetFileName(name);
-                filename = PathUtilities.RemoveExtension(filename);
-                filename = filename.Replace('.', '_');
-                OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
-                if (kind.GetDefaultExtension().ToLower() == ".exe")
-                    GlobalClassName = filename + ".Exe.Functions";
-                else
-                    GlobalClassName = filename + ".Functions";
-            }
-            else
-            {
-                GlobalClassName = XSharpGlobalClassName;
-            }
             // regenerate default tree with new name
             //CurrentGlobalClassName = GlobalClassName;
             //DefaultXSharpSyntaxTree = GetDefaultTree();
@@ -113,17 +90,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 arrayOfString = _syntaxFactory.ArrayType(_stringType, emptyrank);
             }
         }
-        private SyntaxTree GenerateDefaultSyntaxTree()
+        private SyntaxTree GenerateDefaultVOSyntaxTree()  
         {
-            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false));
-
+            // we do not call the parent class on purpose
+            GlobalEntities.Members.Add(GenerateGlobalClass(globalClassName, false));
 
             // Add global attributes 
 
             var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
             var attributes = _pool.AllocateSeparated<AttributeSyntax>();
             // VulcanClassLibrary
-            arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral(GlobalClassName)));
+            arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral(globalClassName)));
             arguments.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
             arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral(_options.DefaultNamespace)));
 
@@ -156,18 +133,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (Syntax.CompilationUnitSyntax)_syntaxFactory.CompilationUnit(
                     GlobalEntities.Externs, GlobalEntities.Usings, GlobalEntities.Attributes, GlobalEntities.Members, eof).CreateRed());
         }
-
         public static SyntaxTree DefaultVOSyntaxTree(CSharpParseOptions options)
         {
             var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
-            return t.GenerateDefaultSyntaxTree();
+            return t.GenerateDefaultVOSyntaxTree();
         }
 
-        public static string VOGlobalClassName(CSharpParseOptions options)
-        {
-            var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
-            return t.GlobalClassName;
-        }
 
         internal InitializerExpressionSyntax MakeArrayInitializer(SeparatedSyntaxList<ExpressionSyntax> exprs) {
             return _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,

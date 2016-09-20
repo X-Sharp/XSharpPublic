@@ -58,6 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "cf":  
                     options.CompactFramework = positive;
+                    OptionNotImplemented(diagnostics, "cf", "Compiling for Compact Framework");
                     break;
                 case "creatingruntime":
                     options.CreatingRuntime = true;
@@ -75,9 +76,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Dialect = dialect;
                     break;
                 case "clr": // CLR
+                    OptionNotImplemented(diagnostics, "clr", "Specify CLR version");
                     break;
                 case "cs": 
                     options.CaseSensitive = positive;
+                    OptionNotImplemented(diagnostics, "cs", "Case Sensitivity");
                     break;
                 case "i":   
                     if (value == null)
@@ -134,6 +137,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "ppo":
                     options.PreProcessorOutput = positive;
+                    OptionNotImplemented(diagnostics, "ppo", "Write preprocessor output to a file");
                     break;
                 case "r":
                 case "reference":
@@ -148,9 +152,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "showincludes":
                     options.ShowIncludes = positive;
+                    OptionNotImplemented(diagnostics, "showincludes", "Show list of included include files");
                     break;
                 case "vo1":     // Init & Axit mapped to .ctor and .dtor
                     options.Vo1 = positive;
+                    OptionNotImplemented(diagnostics, "vo1", "VO Init and Axit methods");
                     break;
                 case "vo2":     // Initialize Strings to Empty string
                     options.Vo2 = positive;
@@ -166,9 +172,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo6":     // Resolve typed function PTR to PTR
                     options.Vo6 = positive;
+                    OptionNotImplemented(diagnostics, "vo6", "resolve typed function PTR to PTR");
                     break;
                 case "vo7":     // Compatible implicit cast & conversion
                     options.Vo7 = positive;
+                    OptionNotImplemented(diagnostics, "vo7", "VO compatible implicit casts and conversions");
                     break;
                 case "vo8":     // Compatible preprocessor
                     options.Vo8 = positive;
@@ -181,6 +189,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo11":    // VO arithmetic conversions
                     options.Vo11 = positive;
+                    OptionNotImplemented(diagnostics, "vo11", "VO compatible artihmetic conversions");
                     break;
                 case "vo12":    // Clipper integer divisions
                     options.Vo12 = positive;
@@ -269,12 +278,35 @@ namespace Microsoft.CodeAnalysis.CSharp
                     newDialect = XSharpDialect.Core;
                 }
             }
-            if (options.Vo13 && ! isVo)
+            if (! isVo)
             {
-                AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo13", "VO Compatible string comparisons", options.Dialect.ToString());
-                options.Vo13 = false;
+                if (options.Vo5)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo5", "Implicit CLIPPER calling convention", options.Dialect.ToString());
+                    options.Vo5 = false;
+                }
+                if (options.Vo12)
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo12", "Clipper Integer divisions", options.Dialect.ToString());
+                    options.Vo12 = false;
+                }
+                if (options.Vo13 )
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo13", "VO Compatible string comparisons", options.Dialect.ToString());
+                    options.Vo13 = false;
+                }
+                if (options.Vo14 )
+                {
+                    AddDiagnostic(diagnostics, ErrorCode.ERR_CompilerOptionNotSupportedForDialect, "vo14", "Float literal Values", options.Dialect.ToString());
+                    options.Vo14 = false;
+                }
             }
             options.Dialect = newDialect;
+        }
+
+        private void OptionNotImplemented(List<Diagnostic> diagnostics, string option, string description )
+        {
+            AddDiagnostic(diagnostics, ErrorCode.WRN_CompilerOptionNotImplementedYet, option, description);
         }
         
     }

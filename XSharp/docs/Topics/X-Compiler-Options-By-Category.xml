@@ -223,7 +223,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8" styleclass="Normal" translate="true">/vo8</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Enables compatible preprocessor behavior </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Enables compatible preprocessor behavior </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -331,7 +331,8 @@
     <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Output files</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="8" colcount="2">
+    <para styleclass="Heading2"></para>
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="10" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -366,6 +367,14 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pathmap" styleclass="Normal" translate="true">/pathmap</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specify a mapping for source path names output by the compiler.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pdb" styleclass="Normal" translate="true">/pdb</link></para>
         </td>
         <td>
@@ -393,7 +402,15 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target" styleclass="Normal" translate="true">/target</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the format of the output file using one of five options: /target:appcontainerexe, /target:exe, /target:library, /target:module, /target:winexe, or /target:winmdobj.</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the format of the output file using one of five options: /target:</text><text styleclass="Body Text" translate="true">appcon</text><text styleclass="Normal" translate="true">tainerexe, /target:exe, /target:library, /target:module, /target:winexe, or /target:winmdobj.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Heading2"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-touchedfiles" styleclass="Body Text" translate="true">/touchedfiles</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specify filename that will be updated with list of files read and written by the compiler</text></para>
         </td>
       </tr>
     </table></para>
@@ -485,7 +502,7 @@
     <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Debugging / Error checking</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="12" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="13" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -516,6 +533,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Instruct the compiler to emit debugging information.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-errorendlocation" styleclass="Normal" translate="true">/errorendlocation</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Output line and column of the end location of each error</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -690,7 +715,7 @@
     <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Miscellaneous</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="18" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="19" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -713,6 +738,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Lists compiler options to stdout.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-appconfig" styleclass="Normal" translate="true">/appconfig</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specify an application configuration file containing assembly binding settings</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

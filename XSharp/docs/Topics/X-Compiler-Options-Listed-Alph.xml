@@ -2,15 +2,17 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">X# Compiler Options Listed Alphabetically</title>
+  <keywords>
+    <keyword translate="true">/appconfig</keyword>
+  </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# Compiler Options Listed Alphabetically</text></para>
+      <para styleclass="Body Text"><text styleclass="Body Text" translate="true">X# Compiler Options Listed Alphabetically</text></para>
     </header>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The following compiler options are sorted by category. For an alphabetical list, see : </text><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph" styleclass="Body Text" translate="true">X# Compiler Options Listed Alphabetically</link></para>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">VO/Vulcan Compatibility</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="81" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="85" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -61,6 +63,14 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:33%;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-appconfig" styleclass="Normal" translate="true">/appconfig</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specify an application configuration file containing assembly binding settings</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:33%;">
           <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-az" styleclass="Body Text" translate="true">/az</link></para>
         </td>
         <td>
@@ -84,10 +94,10 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="height:19px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked" styleclass="Normal" translate="true">/checked</link></para>
         </td>
-        <td>
+        <td style="height:19px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies whether integer arithmetic that overflows the bounds of the data type will cause an exception at run time.</text></para>
         </td>
       </tr>
@@ -153,6 +163,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies an XML file where processed documentation comments are to be written.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-errorendlocation" styleclass="Normal" translate="true">/errorendlocation</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Output line and column of the end location of each error</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -373,6 +391,14 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pathmap" styleclass="Normal" translate="true">/pathmap</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specify a mapping for source path names output by the compiler.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pdb" styleclass="Normal" translate="true">/pdb</link></para>
         </td>
         <td>
@@ -469,6 +495,14 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
+          <para styleclass="Heading2"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-touchedfiles" styleclass="Body Text" translate="true">/touchedfiles</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Specify filename that will be updated with list of files read and written by the compiler</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-unsafe" styleclass="Normal" translate="true">/unsafe</link></para>
         </td>
         <td>
@@ -544,7 +578,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo8" styleclass="Normal" translate="true">/vo8</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Enables compatible preprocessor behavior </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Enables compatible preprocessor behavior </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

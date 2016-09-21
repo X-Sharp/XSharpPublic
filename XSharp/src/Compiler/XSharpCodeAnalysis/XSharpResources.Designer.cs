@@ -4688,7 +4688,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to VoStruct member type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float, double, ptr or vostruct.
+        ///   Looks up a localized string similar to VoStruct member type must be one of the following: bool, byte, short, int, long, char, sbyte, ushort, uint, ulong, float, double, ptr, psz or vostruct.
         /// </summary>
         internal static string ERR_IllegalVoStructMemberType {
             get {

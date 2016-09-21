@@ -87,8 +87,8 @@ entity              : namespace_
                     | voglobal                  // This will become part of the 'Globals' class
                     | vodefine                  // This will become part of the 'Globals' class
                     | vodll                     // External method of the Globals class
-                    | {_VOSyntax}? vostruct     // Compatibility (unsafe) structure
-                    | {_VOSyntax}? vounion      // Compatibility (unsafe) structure with members aligned at FieldOffSet 0
+                    | vostruct					// Compatibility (unsafe) structure
+                    | vounion					// Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     ;
 
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 

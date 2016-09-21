@@ -2140,6 +2140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                         if (!(f.Type.IsPointerType() ||
                             (f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true ||
                             (f.Type as Symbols.Metadata.PE.PENamedTypeSymbol)?.IsVoStructOrUnion() == true ||
+                            (f.Type as NamedTypeSymbol) == DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan___Psz) || 
                             f.Type.FixedBufferElementSizeInBytes() != 0))
                         {
                             diagnostics.Add(ErrorCode.ERR_IllegalVoStructMemberType, f.Locations[0]);

@@ -1110,6 +1110,10 @@ REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-'
 
 SYMBOL_CONST     : '#' IDStartChar (IDChar)*;
 
+NEQ2			 : '#'			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
+				 ;
+
+
 CHAR_CONST  : '\'' ESCAPED_CHARACTER '\'';
 
 STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
@@ -1199,7 +1203,6 @@ ID						: ID_PART
 KWID					: '@' '@' ID_PART // {Text = Text.Substring(2, Text.Length-2);}
 						;
 
-DLLHINT					: '#' ( DIGIT )+ ;
 
 UNRECOGNIZED			: . ;
 

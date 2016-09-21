@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // version. Do not make any changes to the public interface without making the corresponding
         // change to the VB version.
         //
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         internal static readonly ParallelOptions DefaultParallelOptions = new ParallelOptions();
 
@@ -93,9 +93,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <summary>
         /// Holds onto data related to reference binding.
         /// The manager is shared among multiple compilations that we expect to have the same result of reference binding.
-        /// In most cases this can be determined without performing the binding. If the compilation however contains a circular 
+        /// In most cases this can be determined without performing the binding. If the compilation however contains a circular
         /// metadata reference (a metadata reference that refers back to the compilation) we need to avoid sharing of the binding results.
-        /// We do so by creating a new reference manager for such compilation. 
+        /// We do so by creating a new reference manager for such compilation.
         /// </summary>
         private ReferenceManager _referenceManager;
 
@@ -132,7 +132,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <summary>
-        /// The options the compilation was created with. 
+        /// The options the compilation was created with.
         /// </summary>
         public new CSharpCompilationOptions Options
         {
@@ -229,8 +229,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 options ?? s_defaultSubmissionOptions,
                 (syntaxTree != null) ? new[] { syntaxTree } : SpecializedCollections.EmptyEnumerable<SyntaxTree>(),
                 references,
-                previousScriptCompilation, 
-                returnType, 
+                previousScriptCompilation,
+                returnType,
                 globalsType,
                 isSubmission: true);
         }
@@ -405,8 +405,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             CheckAssemblyName(assemblyName);
 
-            // Can't reuse references since the source assembly name changed and the referenced symbols might 
-            // have internals-visible-to relationship with this compilation or they might had a circular reference 
+            // Can't reuse references since the source assembly name changed and the referenced symbols might
+            // have internals-visible-to relationship with this compilation or they might had a circular reference
             // to this compilation.
 
             return new CSharpCompilation(
@@ -426,9 +426,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// Creates a new compilation with the specified references.
         /// </summary>
         /// <remarks>
-        /// The new <see cref="CSharpCompilation"/> will query the given <see cref="MetadataReference"/> for the underlying 
-        /// metadata as soon as the are needed. 
-        /// 
+        /// The new <see cref="CSharpCompilation"/> will query the given <see cref="MetadataReference"/> for the underlying
+        /// metadata as soon as the are needed.
+        ///
         /// The new compilation uses whatever metadata is currently being provided by the <see cref="MetadataReference"/>.
         /// E.g. if the current compilation references a metadata file that has changed since the creation of the compilation
         /// the new compilation is going to use the updated version, while the current compilation will be using the previous (it doesn't change).
@@ -499,7 +499,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return this;
             }
-            
+
             // Reference binding doesn't depend on previous submission so we can reuse it.
 
             return new CSharpCompilation(
@@ -676,7 +676,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.GlobalClassName((CSharpParseOptions)trees.First().Options);
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
                     }
                     def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options);
                 }
@@ -684,9 +684,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.GlobalClassName((CSharpParseOptions)trees.First().Options);
+                        Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
                     }
-                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultSyntaxTree((CSharpParseOptions)trees.First().Options);
+                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;
@@ -706,7 +706,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         /// <summary>
         /// Creates a new compilation without the specified syntax trees. Preserves metadata info for use with trees
-        /// added later. 
+        /// added later.
         /// </summary>
         public new CSharpCompilation RemoveSyntaxTrees(params SyntaxTree[] trees)
         {
@@ -715,7 +715,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         /// <summary>
         /// Creates a new compilation without the specified syntax trees. Preserves metadata info for use with trees
-        /// added later. 
+        /// added later.
         /// </summary>
         public new CSharpCompilation RemoveSyntaxTrees(IEnumerable<SyntaxTree> trees)
         {
@@ -768,7 +768,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         /// <summary>
         /// Creates a new compilation without any syntax trees. Preserves metadata info
-        /// from this compilation for use with trees added later. 
+        /// from this compilation for use with trees added later.
         /// </summary>
         public new CSharpCompilation RemoveAllSyntaxTrees()
         {
@@ -827,7 +827,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // TODO(tomat): Consider comparing #r's of the old and the new tree. If they are exactly the same we could still reuse.
-            // This could be a perf win when editing a script file in the IDE. The services create a new compilation every keystroke 
+            // This could be a perf win when editing a script file in the IDE. The services create a new compilation every keystroke
             // that replaces the tree with a new one.
             var reuseReferenceManager = !oldTree.HasReferenceOrLoadDirectives() && !newTree.HasReferenceOrLoadDirectives();
             syntaxAndDeclarations = syntaxAndDeclarations.ReplaceSyntaxTree(oldTree, newTree);
@@ -899,7 +899,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </summary>
         /// <returns><see cref="AssemblySymbol"/> or <see cref="ModuleSymbol"/> corresponding to the given reference or null if there is none.</returns>
         /// <remarks>
-        /// Uses object identity when comparing two references. 
+        /// Uses object identity when comparing two references.
         /// </remarks>
         internal new Symbol GetAssemblyOrModuleSymbol(MetadataReference reference)
         {
@@ -1003,7 +1003,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// <summary>
         /// Get all modules in this compilation, including the source module, added modules, and all
         /// modules of referenced assemblies that do not come from an assembly with an extern alias.
-        /// Metadata imported from aliased assemblies is not visible at the source level except through 
+        /// Metadata imported from aliased assemblies is not visible at the source level except through
         /// the use of an extern alias directive. So exclude them from this list which is used to construct
         /// the global namespace.
         /// </summary>
@@ -1044,7 +1044,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <summary>
-        /// Gets the <see cref="MetadataReference"/> that corresponds to the assembly symbol. 
+        /// Gets the <see cref="MetadataReference"/> that corresponds to the assembly symbol.
         /// </summary>
         public new MetadataReference GetMetadataReference(IAssemblySymbol assemblySymbol)
         {
@@ -1092,7 +1092,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <summary>
-        /// Gets the root namespace that contains all namespaces and types defined in source code or in 
+        /// Gets the root namespace that contains all namespaces and types defined in source code or in
         /// referenced metadata, merged into a single namespace hierarchy.
         /// </summary>
         internal new NamespaceSymbol GlobalNamespace
@@ -1102,7 +1102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if ((object)_lazyGlobalNamespace == null)
                 {
                     // Get the root namespace from each module, and merge them all together
-                    // Get all modules in this compilation, ones referenced directly by the compilation 
+                    // Get all modules in this compilation, ones referenced directly by the compilation
                     // as well as those referenced by all referenced assemblies.
 
                     var modules = ArrayBuilder<ModuleSymbol>.GetInstance();
@@ -2225,8 +2225,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 //remove some errors that don't have locations in the tree, like "no suitable main method."
                 //Members in trees other than the one being examined are not compiled. This includes field
-                //initializers which can result in 'field is never initialized' warnings for fields in partial 
-                //types when the field is in a different source file than the one for which we're getting diagnostics. 
+                //initializers which can result in 'field is never initialized' warnings for fields in partial
+                //types when the field is in a different source file than the one for which we're getting diagnostics.
                 //For that reason the bag must be also filtered by tree.
                 IEnumerable<Diagnostic> methodBodyDiagnostics = GetDiagnosticsForMethodBodiesInTree(syntaxTree, filterSpanWithinTree, cancellationToken);
 
@@ -2478,7 +2478,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // Add debug documents for all pragmas. 
+            // Add debug documents for all pragmas.
             // If there are clashes with already processed directives, report warnings.
             // If there are clashes with debug documents that came from actual trees, ignore the pragma.
             foreach (var tree in syntaxTrees)
@@ -2894,7 +2894,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endregion
 
         /// <summary>
-        /// Returns if the compilation has all of the members necessary to emit metadata about 
+        /// Returns if the compilation has all of the members necessary to emit metadata about
         /// dynamic types.
         /// </summary>
         /// <returns></returns>

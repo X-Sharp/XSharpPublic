@@ -556,7 +556,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isdefined && _options.VOPreprocessorBehaviour)
             {
                 var value = symbolDefines[define];
-                if (value.Count == 1)
+                if (value?.Count == 1)
                 {
                     var deftoken = value[0];
                     if (deftoken.Type == XSharpLexer.FALSE_CONST)

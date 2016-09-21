@@ -33,14 +33,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal static readonly Imports Empty = new Imports(
             null,
             ImmutableDictionary<string, AliasAndUsingDirective>.Empty,
-            ImmutableArray<NamespaceOrTypeAndUsingDirective>.Empty, 
-            ImmutableArray<AliasAndExternAliasDirective>.Empty, 
+            ImmutableArray<NamespaceOrTypeAndUsingDirective>.Empty,
+            ImmutableArray<AliasAndExternAliasDirective>.Empty,
             null);
 
         private readonly CSharpCompilation _compilation;
         private readonly DiagnosticBag _diagnostics;
 
-        // completion state that tracks whether validation was done/not done/currently in process. 
+        // completion state that tracks whether validation was done/not done/currently in process.
         private SymbolCompletionState _state;
 
         public readonly ImmutableDictionary<string, AliasAndUsingDirective> UsingAliases;
@@ -112,7 +112,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ImmutableDictionary<string, AliasAndUsingDirective>.Builder usingAliases = null;
             if (usingDirectives.Count > 0)
             {
-                // A binder that contains the extern aliases but not the usings. The resolution of the target of a using directive or alias 
+                // A binder that contains the extern aliases but not the usings. The resolution of the target of a using directive or alias
                 // should not make use of other peer usings.
                 Binder usingsBinder;
                 if (declarationSyntax.SyntaxTree.Options.Kind != SourceCodeKind.Regular)
@@ -196,7 +196,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
 #if XSHARP
-                        // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here 
+                        // The usingDirective name contains spaces when it is nested and the GlobalClassName not , so we must eliminate them here
                         // nvk: usingDirective.Name.ToString() ONLY has spaces if it is nested. This is not supposed to be nested, as it is "Xs$Globals" even for the non-core dialects !!!
                         if (string.Compare(usingDirective.Name.ToString()/*.Replace(" ","")*/,Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName,System.StringComparison.OrdinalIgnoreCase) == 0)
                         {
@@ -220,7 +220,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                                 var _diagnostics = DiagnosticBag.GetInstance();
-                                string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.GlobalClassName(((CSharpSyntaxTree)usingDirective.SyntaxTree).Options);
+                                string n = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName(((CSharpSyntaxTree)usingDirective.SyntaxTree).Options);
                                 var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
                                 var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);
                                 if (_imported.Kind == SymbolKind.NamedType)

@@ -1758,19 +1758,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 : _syntaxFactory.LiteralExpression(context.Alignment.ExpressionKindLiteral(), context.Alignment.SyntaxLiteralValue(_options)))
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                )/*,
-                            _options.IsDialectVO ?
-                                _syntaxFactory.Attribute(
-                                    name: GenerateQualifiedName("global::Vulcan.Internal.VOStruct"),
-                                    argumentList: _syntaxFactory.AttributeArgumentList(
-                                        openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                        arguments: MakeSeparatedList(
-                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0)),
-                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0))
-                                        ),
-                                        closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                    )
-                                : null*/
+                                )
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
@@ -1845,19 +1833,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                ),
-                            _options.IsDialectVO ?
-                                _syntaxFactory.Attribute(
-                                    name: GenerateQualifiedName("global::Vulcan.Internal.VOStruct"),
-                                    argumentList: _syntaxFactory.AttributeArgumentList(
-                                        openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                        arguments: MakeSeparatedList(
-                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0)),
-                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0))
-                                        ),
-                                        closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                    )
-                                : null
+                                )
                             ),
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),

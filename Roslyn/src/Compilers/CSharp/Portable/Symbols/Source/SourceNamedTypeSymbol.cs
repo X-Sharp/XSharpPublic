@@ -146,7 +146,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 voStructSize += al - (voStructSize % al);
                             }
-                            voStructSize += sz;
+                            if (!f.TypeLayoutOffset.HasValue)
+                            {
+                                // no explicit layout
+                                voStructSize += sz;
+                            }
+                            else
+                            {
+                                // field offset is set: this is a union
+                                int fieldLen = sz + f.TypeLayoutOffset.Value;
+                                if ( fieldLen> voStructSize)
+                                {
+                                    voStructSize = fieldLen;
+                                }
+                            }
+
                             if (voStructElementSize < sz)
                                 voStructElementSize = sz;
                         }

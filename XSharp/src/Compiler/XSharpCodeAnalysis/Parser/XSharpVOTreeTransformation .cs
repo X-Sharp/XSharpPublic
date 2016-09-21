@@ -1723,5 +1723,201 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(expr);
             return;
         }
+        private bool voStructHasDim;
+
+        public override void EnterVostruct([NotNull] XP.VostructContext context)
+        {
+            voStructHasDim = false;
+        }
+
+        public override void ExitVostruct([NotNull] XP.VostructContext context)
+        {
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            if (voStructHasDim)
+            {
+                var modBuilder = _pool.Allocate();
+                modBuilder.AddRange(mods);
+                modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
+                mods = modBuilder.ToTokenList();
+            }
+            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
+                attributeLists: MakeList(
+                    _syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: null,
+                        attributes: MakeSeparatedList(
+                            _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.StructLayout"),
+                                argumentList: _syntaxFactory.AttributeArgumentList(
+                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    arguments: MakeSeparatedList(
+                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName("global::System.Runtime.InteropServices.LayoutKind.Sequential")),
+                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null,
+                                            context.Alignment == null ?
+                                                GenerateLiteral("8", 8)
+                                                : _syntaxFactory.LiteralExpression(context.Alignment.ExpressionKindLiteral(), context.Alignment.SyntaxLiteralValue(_options)))
+                                    ),
+                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                )/*,
+                            _options.IsDialectVO ?
+                                _syntaxFactory.Attribute(
+                                    name: GenerateQualifiedName("global::Vulcan.Internal.VOStruct"),
+                                    argumentList: _syntaxFactory.AttributeArgumentList(
+                                        openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                        arguments: MakeSeparatedList(
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0)),
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0))
+                                        ),
+                                        closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                    )
+                                : null*/
+                            ),
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                    ),
+                modifiers: mods,
+                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: null,
+                baseList: null,
+                constraintClauses: null,
+                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
+                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null);
+            m.XVoDecl = true;
+            if (context.Namespace != null)
+            {
+                m = AddNameSpaceToMember(context.Namespace, m);
+            }
+            context.Put(m);
+        }
+
+
+        public override void ExitVostructmember([NotNull] XP.VostructmemberContext context)
+        {
+            bool isDim = context.Dim != null;
+            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
+            varType.XVoDecl = true;
+            if (context.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
+            }
+            if (isDim)
+                voStructHasDim = true;
+            context.Put(_syntaxFactory.FieldDeclaration(
+                EmptyList<AttributeListSyntax>(),
+                TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
+                _syntaxFactory.VariableDeclaration(varType,
+                    MakeSeparatedList(
+                        isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
+                        : GenerateVariable(context.Id.Get<SyntaxToken>()))),
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+        }
+
+        public override void EnterVounion([NotNull] XP.VounionContext context)
+        {
+            voStructHasDim = false;
+        }
+
+        public override void ExitVounion([NotNull] XP.VounionContext context)
+        {
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            if (voStructHasDim)
+            {
+                var modBuilder = _pool.Allocate();
+                modBuilder.AddRange(mods);
+                modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
+                mods = modBuilder.ToTokenList();
+            }
+            MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
+                attributeLists: MakeList(
+                    _syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: null,
+                        attributes: MakeSeparatedList(
+                            _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.StructLayout"),
+                                argumentList: _syntaxFactory.AttributeArgumentList(
+                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    arguments: MakeSeparatedList(
+                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName("global::System.Runtime.InteropServices.LayoutKind.Explicit")),
+                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null, GenerateLiteral("4", 4))
+
+                                    ),
+                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                ),
+                            _options.IsDialectVO ?
+                                _syntaxFactory.Attribute(
+                                    name: GenerateQualifiedName("global::Vulcan.Internal.VOStruct"),
+                                    argumentList: _syntaxFactory.AttributeArgumentList(
+                                        openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                        arguments: MakeSeparatedList(
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0)),
+                                            _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(0))
+                                        ),
+                                        closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                    )
+                                : null
+                            ),
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                    ),
+                modifiers: mods,
+                keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
+                identifier: context.Id.Get<SyntaxToken>(),
+                typeParameterList: null,
+                baseList: null,
+                constraintClauses: null,
+                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                members: (context._Members?.Count > 0) ? MakeList<MemberDeclarationSyntax>(context._Members) : EmptyList<MemberDeclarationSyntax>(),
+                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                semicolonToken: null);
+            m.XVoDecl = true;
+            if (context.Namespace != null)
+            {
+                m = AddNameSpaceToMember(context.Namespace, m);
+            }
+            context.Put(m);
+        }
+
+
+        public override void ExitVounionmember([NotNull] XP.VounionmemberContext context)
+        {
+            bool isDim = context.Dim != null;
+            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
+            varType.XVoDecl = true;
+            if (context.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
+            }
+            if (isDim)
+                voStructHasDim = true;
+            context.Put(_syntaxFactory.FieldDeclaration(
+                MakeList(
+                    _syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: null,
+                        attributes: MakeSeparatedList(
+                            _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.FieldOffset"),
+                                argumentList: _syntaxFactory.AttributeArgumentList(
+                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    arguments: MakeSeparatedList(
+                                        _syntaxFactory.AttributeArgument(null, null,
+                                            GenerateLiteral("0", 0)
+                                        )
+                                    ),
+                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                )
+                            ),
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                    ),
+                TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
+                _syntaxFactory.VariableDeclaration(varType,
+                    MakeSeparatedList(
+                        isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
+                        : GenerateVariable(context.Id.Get<SyntaxToken>()))),
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+        }
+
     }
 }

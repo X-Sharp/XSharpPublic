@@ -158,7 +158,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var pp = new XSharpPreprocessor(tokens, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
             var parser = new XSharpParser(pp_tokens);
-            parser.VOSyntax = _options.IsDialectVO;     // VO & Vulcan
             parser.AllowFunctionInsideClass = true;     // always for now
             if(_options.Dialect == XSharpDialect.VO) {
                 parser.AllowXBaseVariables = true;

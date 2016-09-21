@@ -24,12 +24,6 @@ grammar XSharp;
 
 @parser::members
 {
-    bool _VOSyntax = true;
-    public bool VOSyntax
-    {
-        get {return _VOSyntax;}
-        set {_VOSyntax = value;}
-    }
     bool _ClsFunc = true;
     public bool AllowFunctionInsideClass
     {

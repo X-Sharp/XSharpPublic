@@ -1437,8 +1437,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 AddUsingWhenMissing(GlobalEntities.Usings, _options.DefaultNamespace, false);
             }
 
-            // Add: using static Xs$Globals
-            AddUsingWhenMissing(GlobalEntities.Usings, XSharpGlobalClassName, true);
+            // Add: using static MyDll.Functions
+            AddUsingWhenMissing(GlobalEntities.Usings, this.globalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System",false);

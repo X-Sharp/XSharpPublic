@@ -326,13 +326,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ifelsestmt = ifelsestmt.ElseIfBlock;
                 }
                 // No Else, so there is at least one block that does not end with a RETURN etc
-                if (elsestmt == null)
+                if (elsestmt == null || elsestmt._Stmts?.Count == 0)
                 {
                     return true;
                 }
                 else
                 {
-                    return NeedsReturn(ifelsestmt.ElseBlock._Stmts);
+                    return NeedsReturn(elsestmt._Stmts);
                 }
             }
             if (stmt is XP.CaseStmtContext)

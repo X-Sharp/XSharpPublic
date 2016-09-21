@@ -172,7 +172,6 @@ namespace ParserTester
 			var tokens = new CommonTokenStream(lexer);
 			var parser = new XSharpParser(tokens);
 			parser.AllowXBaseVariables = true;
-			parser.VOSyntax = true;
 			var errorListener = new XSharpErrorListener(showErrors);
 			parser.AddErrorListener(errorListener);
 			var tree = parser.source();

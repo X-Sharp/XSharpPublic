@@ -116,7 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public const string XSharpGlobalClassName = "Functions";
+
         protected const string ImpliedTypeName = "Xs$var";
         protected const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
         protected const string StaticLocalInitFieldNameSuffix = "$init";
@@ -126,8 +126,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected const string VoPropertyAssignPrefix = "Xs$Assign$";
         protected const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         private static int _unique = 0;
+        public static string globalClassName = "";
 
-        protected string globalClassName = XSharpGlobalClassName;
+        public static string XSharpGlobalClassName {  get { return globalClassName; } }
 
         internal SyntaxListPool _pool;
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
@@ -1343,7 +1344,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public static string GlobalClassName(CSharpParseOptions options)
         {
             var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
-            return t.globalClassName;
+            return XSharpVOTreeTransformation.globalClassName;
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
@@ -1438,7 +1439,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             // Add: using static MyDll.Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, this.globalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, XSharpVOTreeTransformation.globalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System",false);

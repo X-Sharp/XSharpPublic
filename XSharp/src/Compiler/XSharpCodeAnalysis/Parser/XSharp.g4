@@ -128,7 +128,7 @@ vodll				: (Modifiers=funcprocModifiers)? DLL
                       | T=PROCEDURE Id=identifier ParamList=parameterList )
                       (CallingConvention=dllcallconv) COLON 
                       Dll=identifierString (DOT Extension=identifierString)?
-                        ( DOT Entrypoint=identifierString (Hint=DLLHINT)?
+                        ( DOT Entrypoint=identifierString (NEQ2 INT_CONST)?
                         | Ordinal=REAL_CONST)
                       ( CharSet=(AUTO | ANSI | UNICODE) )?
                       end=EOS
@@ -432,7 +432,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
 
 */
 overloadedOps		: Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | 
+                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
                               GT | LT | GTE | LTE |
                               AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;
@@ -662,7 +662,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
                     | Left=expression Op=LSHIFT Right=expression				#binaryExpression		// expr << expr (shift)
                     | Left=expression Op=GT	Gt=GT Right=expression				#binaryExpression		// expr >> expr (shift)
                     | Left=expression
-                      Op=( LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ )
+                      Op=( LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ | NEQ2)
                       Right=expression											#binaryExpression		// expr >= expr (relational)
                     | Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
                     | Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)

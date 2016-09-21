@@ -549,6 +549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken);
                     break;
                 case XSharpParser.NEQ:
+                case XSharpParser.NEQ2:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken);
                     break;
                 //case XSharpParser.SUBSTR:
@@ -1186,6 +1187,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxKind.EqualsExpression;
                     break;
                 case XSharpParser.NEQ:
+                case XSharpParser.NEQ2:
                     r = SyntaxKind.NotEqualsExpression;
                     break;
                 //case XSharpParser.SUBSTR:

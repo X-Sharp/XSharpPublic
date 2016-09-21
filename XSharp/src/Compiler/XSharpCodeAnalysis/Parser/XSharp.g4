@@ -703,7 +703,8 @@ primary				: Key=SELF													#selfExpression
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
                       (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
-                    | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME 
+                    | { String.Compare(TokenStream.Lt(1).Text,"_field",StringComparison.OrdinalIgnoreCase) == 0 }? 
+						ID ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
                           Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME 
                     | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr	

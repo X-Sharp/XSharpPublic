@@ -698,12 +698,12 @@ primary				: Key=SELF													#selfExpression
                     | TYPEOF LPAREN Type=datatype RPAREN						#typeOfExpression		// typeof( typeORid )
                     | SIZEOF LPAREN Type=datatype RPAREN						#sizeOfExpression		// sizeof( typeORid )
                     | DEFAULT LPAREN Type=datatype RPAREN						#defaultExpression		// default( typeORid )
-					| Name=voTypeName											#voTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     | Name=simpleName											#nameExpression			// generic name
                     | Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
                     | XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
                     | Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
+					| Name=voTypeName											#voTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     //| Type=nativeType											#typeExpression			// Standard DotNet Types
                     //| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )

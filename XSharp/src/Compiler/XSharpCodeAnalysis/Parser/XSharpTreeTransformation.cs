@@ -3380,12 +3380,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             TypeSyntax type = _getParameterType(context);
             type.XVoDecl = true;
-            foreach (var token in context.Modifiers._Tokens)
+            if (context.Modifiers != null && context.Modifiers._Tokens != null)
             {
-                if (token.Type == XP.IS)
+                foreach (var token in context.Modifiers._Tokens)
                 {
-                    type.XVoIsDecl = true;
-                    break;
+                    if (token.Type == XP.IS)
+                    {
+                        type.XVoIsDecl = true;
+                        break;
+                    }
                 }
             }
             context.Put(_syntaxFactory.Parameter(

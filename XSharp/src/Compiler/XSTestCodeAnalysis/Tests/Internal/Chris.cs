@@ -854,7 +854,7 @@ INTERNAL VOSTRUCT _winPOINT
 
 
         // 79
-        [Test(Author = "Chris", Id = "C79", Title = "error XS0119: 'Xs$Globals.Directory()' is a method, which is not valid in the given context")]
+        [Test(Author = "Chris", Id = "C79", Title = "error XS0119: 'Functions.Directory()' is a method, which is not valid in the given context")]
         public static void error_XS0119_Directory_CreateDirectory()
         {
             var s = ParseSource("/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"
@@ -2176,7 +2176,7 @@ END IF
 
  
         // 153
-        [Test(Author = "Chris", Id = "C153", Title = "error XS0121: The call is ambiguous between the following methods or properties: 'VulcanRTFuncs.Functions.Left(string, uint)' and 'Xs$Globals.Left(string, uint)'")]
+        [Test(Author = "Chris", Id = "C153", Title = "error XS0121: The call is ambiguous between the following methods or properties: 'VulcanRTFuncs.Functions.Left(string, uint)' and 'Functions.Left(string, uint)'")]
         public static void Problem_overriding_runtime_function_with_custom_one()
         {
             var s = ParseSource(@"/dialect:vulcan /r:VulcanRTFuncs.dll /r:VulcanRT.dll", @"

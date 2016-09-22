@@ -263,7 +263,7 @@ END NAMESPACE
         public static void CompileAndRunWithoutExceptions(params CSharpSyntaxTree[] sources) { CompileAndRunWithoutExceptions("", sources); }
         public static void CompileAndRunWithoutExceptions(string cmdLine, params CSharpSyntaxTree[] sources) {
             var a = CompileAndLoadWithoutErrors(cmdLine, sources);
-            Type t = a.GetType("Xs$Globals");
+            Type t = a.GetType("Functions");
 
             var co = new System.IO.StringWriter();
             var stdo = Console.Out;
@@ -287,7 +287,7 @@ END NAMESPACE
         public static void CompileAndRunWithExceptions(params CSharpSyntaxTree[] sources) { CompileAndRunWithExceptions("", sources); }
         public static void CompileAndRunWithExceptions(string cmdLine, params CSharpSyntaxTree[] sources) {
             var a = CompileAndLoadWithoutErrors(cmdLine, sources);
-            Type t = a.GetType("Xs$Globals");
+            Type t = a.GetType("Functions");
 
             bool e = false;
 
@@ -316,7 +316,7 @@ END NAMESPACE
         public static void CompileAndRunWithoutExceptionsAndNonEmptyConsoleOutput(params CSharpSyntaxTree[] sources) { CompileAndRunWithoutExceptionsAndNonEmptyConsoleOutput("", sources); }
         public static void CompileAndRunWithoutExceptionsAndNonEmptyConsoleOutput(string cmdLine, params CSharpSyntaxTree[] sources) {
             var a = CompileAndLoadWithoutErrors(cmdLine, sources);
-            Type t = a.GetType("Xs$Globals");
+            Type t = a.GetType("Functions");
 
             var co = new System.IO.StringWriter();
             var stdo = Console.Out;

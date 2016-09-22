@@ -117,7 +117,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         public const string XSharpGlobalClassName = "Functions";
-        protected const string ImpliedTypeName = "Xs$var";
+        protected const string ImpliedTypeName = "Xs$var";                              // Please note that this is also used in the modified Roslyn Code !
         protected const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
         protected const string StaticLocalInitFieldNameSuffix = "$init";
         protected const string StaticLocalLockFieldNameSuffix = "$lock";
@@ -1489,10 +1489,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (bStaticVisibility) {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
-                    if(className.Contains(".Functions"))
-                        className = className.Replace(".Functions", ".$" + filename + "$.Functions");
-                    else
-                        className = className.Replace("$Globals", "$" + filename + "$Globals");
+                    className = className+"$" + filename + "$";
                 }
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, bStaticVisibility, ch.Get<MemberDeclarationSyntax>()));

@@ -102,15 +102,11 @@ namespace XSharp.Project
                 property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
                 if (property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    //Set the unmanged debugger
-                    //TODO change to vsconstant when it is available in VsConstants (guidNativeOnlyEng was the old name, maybe it has got a new name)
-                    info.clsidCustom = new Guid("{92EF0900-2251-11D2-B72E-0000F87572EF}"); // VSConstants2.guidCOMPlusNativeEng;
-                    //info.clsidCustom = new Guid("{3B476D35-A401-11D2-AAD4-00C04F990171}");
+                    info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedAndNative_guid;
                 }
                 else
                 {
-                    //Set the managed debugger
-                    info.clsidCustom = VSConstants.CLSID_ComPlusOnlyDebugEngine;
+                    info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;
                 }
                 info.grfLaunch = grfLaunch;
                 VsShellUtilities.LaunchDebugger(this._project.Site, info);

@@ -245,11 +245,11 @@ namespace XSharp.Project
             Guid viewGuid;
 
             if(HasDesigner) {
-                viewGuid = VSConstants.LOGVIEWID_Designer;
+                viewGuid = VSConstants.LOGVIEWID.Designer_guid;
             } else if(GetItemType(this.FileName) == ProjectFileConstants.Compile) {
-                viewGuid = VSConstants.LOGVIEWID_Code;
+                viewGuid = VSConstants.LOGVIEWID.Code_guid;
             } else {
-                viewGuid = VSConstants.LOGVIEWID_Primary;
+                viewGuid = VSConstants.LOGVIEWID.Primary_guid;
             }
 
 

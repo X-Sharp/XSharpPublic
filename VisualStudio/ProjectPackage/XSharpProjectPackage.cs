@@ -129,8 +129,8 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), GuidStrings.LOGVIEWID_Code)]
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]  
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string)]
 
 #if VODESIGNER
     // Editors for VOBinaries
@@ -143,10 +143,10 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
-    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
-    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
-    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
-    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), GuidStrings.LOGVIEWID_Designer)]  
+    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
+    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
+    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
+    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
 #endif
 
 

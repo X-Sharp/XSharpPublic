@@ -33,6 +33,9 @@
         <topicref type="topic" id="42401026480448" build="ALL" modified="2016-01-30T21:22:44.432Z" icon="0" href="BEGIN-CHECKED2">
           <caption translate="true">BEGIN CHECKED</caption>
         </topicref>
+        <topicref type="topic" id="426352866521165" build="ALL" modified="2016-09-22T11:56:37.489Z" icon="0" href="BEGIN-FIXED">
+          <caption translate="true">BEGIN FIXED</caption>
+        </topicref>
         <topicref type="topic" id="423997235399279" build="ALL" modified="2016-01-30T21:22:44.484Z" icon="0" href="BEGIN-UNCHECKED">
           <caption translate="true">BEGIN UNCHECKED</caption>
         </topicref>
@@ -60,6 +63,9 @@
         <topicref type="topic" id="423999835390226" build="ALL" modified="2016-01-30T21:26:07.826Z" icon="0" href="FUNCTION-inside-CLASS">
           <caption translate="true">FUNCTION inside CLASS</caption>
         </topicref>
+        <topicref type="topic" id="426356253849712" build="ALL" modified="2016-09-22T11:36:55.248Z" icon="0" href="Interpolated-Strings">
+          <caption translate="true">Interpolated Strings</caption>
+        </topicref>
         <topicref type="topic" id="424000721218508" build="ALL" modified="2016-01-30T21:22:44.928Z" icon="0" href="LINQ-Query-Expressions2">
           <caption translate="true">LINQ Query Expressions</caption>
         </topicref>
@@ -81,6 +87,9 @@
         <topicref type="topic" id="424000672684667" build="ALL" modified="2016-03-18T18:44:36.422Z" icon="0" href="YIELD-RETURN">
           <caption translate="true">YIELD </caption>
         </topicref>
+      </topicref>
+      <topicref type="topic" id="426353111383136" build="ALL" modified="2016-09-22T12:29:00.560Z" icon="0" href="Calling-Vulcan-Init-Procedures">
+        <caption translate="true">Calling Vulcan Init Procedures</caption>
       </topicref>
     </topicref>
     <topicref type="topic" id="423890127319554" build="ALL" modified="2016-01-19T22:41:45.448Z" icon="0" href="Visual-Studio-Integration">

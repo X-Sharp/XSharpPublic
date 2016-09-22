@@ -2,6 +2,11 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">EVENT (Add and Remove)</title>
+  <keywords>
+    <keyword translate="true">ADD</keyword>
+    <keyword translate="true">EVENT</keyword>
+    <keyword translate="true">REMOVE</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">EVENT (Add and Remove)</text></para>
@@ -30,6 +35,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example </text></para>
-    <para styleclass="Code Example"><br/><snippet src="EVENT-Example" inline="false"/></para>
+    <para styleclass="Code Example"><br/></para>
+    <para styleclass="Code Example"><snippet src="EVENT-Example" inline="false"/></para>
   </body>
 </topic>

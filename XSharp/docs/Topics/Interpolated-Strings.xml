@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Interpolated Strings</title>
+  <keywords>
+    <keyword translate="true">eu&quot;...&quot;</keyword>
+    <keyword translate="true">i&quot;...&quot;</keyword>
+    <keyword translate="true">ie&quot;...&quot;</keyword>
+    <keyword translate="true">Interpolated</keyword>
+    <keyword translate="true">String</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Interpolated Strings</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Interpolated strings is a feature that allows you to embed local variables, instance variables or other expressions inside literal strings.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">X# supports two kinds of interpolated strings:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" style="font-weight:bold;" translate="true">1.</text><tab /><text styleclass="Heading2" style="font-weight:bold;" translate="true">Normal Interpolated strings: i&quot;....&quot;</text></para>
+    <para styleclass="Normal"><tab /></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This works like a normal X# string but with an embedded expression:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">FUNCTION Start AS VOID</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">LOCAL Who AS STRING</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Who := &quot;World&quot;</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Console.Writeline( i&quot;Hello {Who}&quot;)</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Console.Read()</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">RETURN</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">2.</text><tab /><text styleclass="Heading2" translate="true">Extended Interpolated strings: ie&quot;...&quot; and ei&quot;....&quot;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This is a combination of an interpolated string and an extended string. In the example below the \t will be replaced with a tab character.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">FUNCTION Start AS VOID</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">LOCAL Who AS STRING</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Who := &quot;World&quot;</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Console.Writeline( ie&quot;Hello\t{Who}&quot;)</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Console.Read()</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">RETURN</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Notes</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The expression parsing inside the interpolated strings recognizes:</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">SELF:</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Local variables, Member variables and Properties with SELF: prefix and without this prefix</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Other expressions must be in C# syntax for now, using the dot (</text><text styleclass="Normal" style="font-weight:bold;" translate="true">.</text><text styleclass="Normal" translate="true">) operator as send operator.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The expression elements inside the string can use formatting notation just like the String.Format() notation. For example:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">FUNCTION Start AS VOID</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">LOCAL i AS INT</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">i := 42</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Console.Writeline( i&quot;Hello {i:x}&quot;)</text><tab /><text styleclass="Code Example" translate="true">// i is printed in hex notation, so Hello 2a</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">Console.Read()</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" translate="true">RETURN</text></para>
+    <para styleclass="Code Example"></para>
+  </body>
+</topic>

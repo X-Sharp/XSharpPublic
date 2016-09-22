@@ -22,10 +22,6 @@ namespace XSharp.Project
         public const string guidXSharpVOServerEditor = "C7E4C5F6-98B8-4826-9000-6B9B94DC2D97";
         public const string guidXSharpVOFieldSpecEditor = "8C5D0BAE-7A69-437B-AD0E-1E1B89721EBD";
 
-        // These two defines are hardcoded in VS and must not be changed
-        public const string LOGVIEWID_Designer = "{7651a702-06e5-11d1-8ebd-00a0c90f26ea}";
-        public const string LOGVIEWID_Code = "{7651a701-06e5-11d1-8ebd-00a0c90f26ea}";
-
         public const string guidVulcanLanguageServiceString = "8d3f6d25-c81c-4fd8-9599-2f72b5d4b0c9";
 
         public const string guidXSharpLanguageServicePkgString = "e9b6ee0f-9bfa-4cff-a60b-51a08bbc5050";

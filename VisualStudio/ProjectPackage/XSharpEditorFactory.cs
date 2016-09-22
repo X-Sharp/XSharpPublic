@@ -94,12 +94,12 @@ namespace XSharp.Project
 
             bool isSupportedView = false;
             // Determine the physical view
-            if (VSConstants.LOGVIEWID_Primary == logicalView)
+            if (VSConstants.LOGVIEWID.Primary_guid== logicalView)
             {
                 // primary view uses NULL as pbstrPhysicalView
                 isSupportedView = true;
             }
-            else if (VSConstants.LOGVIEWID_Designer == logicalView)
+            else if (VSConstants.LOGVIEWID.Designer_guid == logicalView)
             {
                 physicalView = "Design";
                 isSupportedView = true;

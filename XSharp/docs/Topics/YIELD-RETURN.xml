@@ -2,6 +2,11 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">YIELD </title>
+  <keywords>
+    <keyword translate="true">EXIT</keyword>
+    <keyword translate="true">RETURN</keyword>
+    <keyword translate="true">YIELD</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">YIELD EXIT and YIELD RETURN</text></para>

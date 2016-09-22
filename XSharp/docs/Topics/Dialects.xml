@@ -548,7 +548,7 @@
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Function class name</text></para>
         </td>
         <td style="width:290px;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Xs$Globals</text><br/><text styleclass="Normal" translate="true">X$&lt;ModuleName&gt;$Globals for static functions and globals</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Functions</text><br/><text styleclass="Normal" translate="true">X$&lt;ModuleName&gt;$Functions for static functions and globals</text></para>
         </td>
         <td colspan="2">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">&lt;AssemblyName&gt;.Functions (DLLs) </text><br/><text styleclass="Normal" translate="true">&lt;AssemblyName&gt;.Exe.Functions &#160;(EXEs)</text><br/><text styleclass="Normal" translate="true">&lt;AssemblyName&gt;.Exe.$&lt;ModuleName&gt;$.Functions for static functions and globals</text></para>
@@ -565,10 +565,10 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No 10</text></para>
         </td>
         <td style="width:275px;">
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td style="width:256px;">
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
@@ -582,10 +582,10 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No 10</text></para>
         </td>
         <td style="width:275px;">
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td style="width:256px;">
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>

@@ -456,9 +456,6 @@ statement           : Decl=localdecl                                            
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY EOS FinBlock=statementBlock)?
                       END (SEQUENCE)? EOS										#seqStmt
-                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
-                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
-                      Exprs+=expression (COMMA Exprs+=expression)* end=EOS		#expressionStmt
                     //
                     // New in Vulcan
                     //
@@ -504,6 +501,10 @@ statement           : Decl=localdecl                                            
                       StmtBlk=statementBlock
                       END FIXED? EOS											#blockStmt
                     
+					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
+                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
+                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
+                      Exprs+=expression (COMMA Exprs+=expression)* end=EOS		#expressionStmt
                     ;
 
 ifElseBlock			: Cond=expression end=EOS StmtBlk=statementBlock

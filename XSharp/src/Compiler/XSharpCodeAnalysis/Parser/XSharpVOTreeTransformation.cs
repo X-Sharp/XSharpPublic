@@ -303,9 +303,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (stmts.Count == 0)
                     return true;
             var stmt = stmts.Last();
-            if (stmt is XP.ReturnStmtContext || stmt is XP.ThrowStmtContext)
+            if (stmt is XP.ReturnStmtContext )
             {
                 return false;
+            }
+            if (stmt is XP.JumpStmtContext )
+            {
+                var jmpstmt = stmt as XP.JumpStmtContext;
+                if (jmpstmt.Key.Type == XP.THROW)
+                    return false;
             }
             if (stmt is XP.IfStmtContext)
             {
@@ -781,6 +787,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void EnterXbasedecl([NotNull] XP.XbasedeclContext context)
         {
             // declare memvars
+            context.SetSequencePoint(context.end);
             if (context.T.Type == XP.MEMVAR)
             {
                 foreach (var memvar in context._Vars)
@@ -834,19 +841,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitBinaryExpression(context);
         }
 
-        public override void ExitBreakStmt([NotNull] XP.BreakStmtContext context)
+        public override void ExitJumpStmt([NotNull] XP.JumpStmtContext context)
         {
-            ArgumentListSyntax args;
-            if (context.Expr != null)
-                args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
-            else
-                args = MakeArgumentList(MakeArgument(GenerateNIL()));
-            var expr = CreateObject(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"), args, null);
-            context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
-                expr,
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+			if (context.Key.Type == XP.BREAK)
+			{
+	            ArgumentListSyntax args;
+	            context.SetSequencePoint(context.end);
+	            if (context.Expr != null)
+	                args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+	            else
+	                args = MakeArgumentList(MakeArgument(GenerateNIL()));
+	            var expr = CreateObject(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"), args, null);
+	            context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+	                expr,
+	                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+			}
+			else
+			{
+				base.ExitJumpStmt(context);
+			}
         }
-
 
 
         public override void ExitSeqStmt([NotNull] XP.SeqStmtContext context)
@@ -856,7 +870,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    and CompilerServices.ExitBeginSequence();
             // 2) an outer try that has the try - catch - finally from the seq statement itself
 
-
+            context.SetSequencePoint(context.end);
             var stmts = _pool.Allocate<StatementSyntax>();
             stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.EnterBeginSequence",
                                     EmptyArgumentList())));
@@ -932,6 +946,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // endif
             var stmts = _pool.Allocate<StatementSyntax>();
             var catchVar = SyntaxFactory.Identifier(RecoverVarName);
+            context.SetSequencePoint(context.end);
             if(context.Id != null) {
                 var objName = GenerateSimpleName(RecoverVarName);
                 var idName = GenerateSimpleName(context.Id.GetText());
@@ -1028,6 +1043,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
+            context.SetSequencePoint(context.end);
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // when / vo9 is enabled then add missing Expression
             if (expr == null && _options.VOAllowMissingReturns)
@@ -1067,6 +1083,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             ArgumentSyntax arg;
             ExpressionSyntax expr;
             string methodName;
+            context.SetSequencePoint(context.end);
             if(context.Q.Type == XP.QQMARK)
                 methodName = "global::VulcanRTFuncs.Functions.QQOut";
             else
@@ -1607,6 +1624,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
     {
         var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+        context.SetSequencePoint();
         context.Put(stmt);
         return;
     }
@@ -1719,6 +1737,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = context.Expr.Get<ExpressionSyntax>();
             }
             var args = MakeArgumentList(MakeArgument(expr));
+            context.SetSequencePoint();
             expr = GenerateMethodCall("global::VulcanRTFuncs.Functions.Evaluate", args);
             context.Put(expr);
             return;

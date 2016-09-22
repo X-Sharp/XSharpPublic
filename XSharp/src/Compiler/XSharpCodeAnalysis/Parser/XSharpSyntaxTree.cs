@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
@@ -86,15 +86,7 @@ namespace Antlr4.Runtime {
             public bool IsHidden { get { return false; } }
             public int Position { get { return Symbol.StartIndex; } }
             public int FullWidth { get { return Symbol.StopIndex - Symbol.StartIndex + 1; } }
-            public string SourceFileName {
-                get
-                {
-                    if (Symbol.InputStream != null)
-                        return Symbol.InputStream.SourceName;
-                    else
-                        return (Symbol as CommonToken).SourceFileName;
-                }
-            }
+            public string SourceFileName { get { return (Symbol as CommonToken).SourceFileName; } }
             public string MappedFileName { get { return (Symbol as CommonToken).MappedFileName; } }
             public int MappedLine { get { return (Symbol as CommonToken).MappedLine; } }
             public IToken SourceSymbol { get { return (Symbol as CommonToken).SourceSymbol; } }
@@ -168,9 +160,32 @@ namespace Antlr4.Runtime {
             var s = this.GetType().ToString();
             return s.Substring(s.LastIndexOfAny(".+".ToCharArray()) + 1).Replace("Context", "");
         }
-        public void SetSequencePoint(int iEndPoint) {
-            if(iEndPoint > 0)
-                iBPLength = iEndPoint - this.Start.StartIndex + 1;
+        public void SetSequencePoint(IToken end)
+        {
+			if (end != null)
+			{
+	            if (end.StartIndex > this.Start.StartIndex)
+	                iBPLength = end.StartIndex - this.Start.StartIndex ;
+	            else
+	                iBPLength = 1;
+	            if (iBPLength < 0)
+	                iBPLength = 1;
+			}
+
+        }
+        public void SetSequencePoint(int len)
+        {
+            iBPLength = len;
+        }
+
+        public void SetSequencePoint()
+        {
+            if (Stop != null)
+                iBPLength = this.Stop.StopIndex - this.Start.StartIndex + 1;
+            else
+                iBPLength = this.Start.StopIndex - this.Start.StartIndex + 1;
+            if (iBPLength < 0)
+                iBPLength = 1;
         }
     }
 

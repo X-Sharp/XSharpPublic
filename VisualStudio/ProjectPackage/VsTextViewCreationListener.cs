@@ -14,7 +14,7 @@ namespace XSharp.Project
 {
     // This code is used to determine if a file is opened inside a Vulcan project
     // or another project.
-    // When the language service is 'ours' then we get the ProjectItem though DTE.
+    // When the language service is set to our language service then we get the ProjectItem through DTE.
     // When the project item type is defined inside an assembly that has 'vulcan' in its
     // name then we assume it is a vulcan filenode, and then we will set the language service
     // to that from vulcan.
@@ -35,12 +35,12 @@ namespace XSharp.Project
             {
                 Guid langId ;
                 textlines.GetLanguageServiceID(out langId);
-                if (langId == GuidStrings.guidLanguageService)
+                if (langId == GuidStrings.guidLanguageService)          // is our language service active ?
                 {
                     string fileName = FilePathUtilities.GetFilePath(textlines);
-                    if (EditorHelpers.IsVulcanFileNode(fileName))
+                    if (EditorHelpers.IsVulcanFileNode(fileName))       // is this a file node from Vulcan ?
                     {
-                        Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
+                        Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService; 
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
                     }
                 }

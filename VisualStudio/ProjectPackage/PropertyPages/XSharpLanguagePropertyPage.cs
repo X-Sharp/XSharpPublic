@@ -57,7 +57,7 @@ namespace XSharp.Project
         internal const string VO12Description = "Compatible integer divisions, integer divisions may return a float  (/vo12)";
         internal const string VO13Description = "Compatible string comparisons, respects SetExact and collation table (/vo13)";
         internal const string VO14Description = "Store floating point literals as FLOAT and not as System.Double (REAL8)  (/vo14)";
-        internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE  (/vo15)";
+        internal const string VO15Description = "Missing type clauses for locals, instance variables and parameters are treated as USUAL (VO and Vulcan dialect). The default = TRUE. We stronly recomment to set this to FALSE because this will help you to find problems in your code and non optimal code. If you have to use the USUAL type we recommend to explicitly declare variables and parameters as USUAL (/vo15)";
         internal const string CMDCaption = "Extra Command Line Options";
         internal const string AZCaption = "Use Zero Based Arrays";
         internal const string CSCaption = "Case Sensitive";
@@ -170,7 +170,7 @@ namespace XSharp.Project
         public bool VO1
         {
             get { return this.vo1; }
-            set { this.vo1 = value; this.IsDirty = true; }
+            //set { this.vo1 = value; this.IsDirty = true; }
         }
 
         [Category(CatCompatibility), DisplayName(VO2Caption), Description(VO2Description)]
@@ -203,13 +203,13 @@ namespace XSharp.Project
         public bool VO6
         {
             get { return this.vo6; }
-            set { this.vo6 = value; this.IsDirty = true; }
+            //set { this.vo6 = value; this.IsDirty = true; }
         }
         [Category(CatCompatibility), DisplayName(VO7Caption), Description(VO7Description)]
         public bool VO7
         {
             get { return this.vo7; }
-            set { this.vo7 = value; this.IsDirty = true; }
+            //set { this.vo7 = value; this.IsDirty = true; }
         }
 
         [Category(CatCompatibility), DisplayName(VO8Caption), Description(VO8Description)]
@@ -237,7 +237,7 @@ namespace XSharp.Project
         public bool VO11
         {
             get { return this.vo11; }
-            set { this.vo11 = value; this.IsDirty = true; }
+            //set { this.vo11 = value; this.IsDirty = true; }
         }
 
         [Category(CatCompatibility),DisplayName(VO12Caption), Description(VO12Description)]

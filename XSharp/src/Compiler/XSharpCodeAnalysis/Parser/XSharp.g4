@@ -36,23 +36,6 @@ grammar XSharp;
         get {return _xBaseVars;}
         set {_xBaseVars = value;}
     }
-
-    internal void SetSequencePoint (ParserRuleContext context, IToken endtoken)
-    {
-        if (context != null && endtoken != null)
-            context.SetSequencePoint(endtoken.StartIndex);
-    }
-    internal void SetSequencePoint (ParserRuleContext context)
-    {
-        if (context != null )
-        {
-                if (context.Stop != null)
-                    context.SetSequencePoint(context.Stop.StopIndex - context.Start.StartIndex+1);
-                else
-                    context.SetSequencePoint(context.Start.StopIndex - context.Start.StartIndex+1);
-        }
-    }
-
 } 
 
 
@@ -91,7 +74,6 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                        (ConstraintsClauses+=typeparameterconstraintsclause)*
                        (CallingConvention=callingconvention)? end=EOS 
                        StmtBlk=statementBlock
-                    { SetSequencePoint(_localctx, $end); }
                     ;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
@@ -99,7 +81,6 @@ procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                        (ConstraintsClauses+=typeparameterconstraintsclause)*
                        (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)? end=EOS 
                        StmtBlk=statementBlock
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 callingconvention	: Convention=(CLIPPER | STRICT | PASCAL) 
@@ -125,8 +106,7 @@ vodll				: (Modifiers=funcprocModifiers)? DLL
                         ( DOT Entrypoint=identifierString (NEQ2 INT_CONST)?
                         | Ordinal=REAL_CONST)
                       ( CharSet=(AUTO | ANSI | UNICODE) )?
-                      end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+                      EOS
                     ;
 
 dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)
@@ -150,20 +130,18 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
                     ;
 
 
-using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name     end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name EOS
                     ;
 
 // nvk: roslyn treats #pragma directives as trivia attached to parse nodes. The parser does not handle them directly.
-pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN end=EOS         #pragmaOptions
-                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN end=EOS         #pragmaWarnings
+pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN EOS         #pragmaOptions
+                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN EOS         #pragmaWarnings
                     ;
 
 pragmaswitch        : ON | OFF | DEFAULT
                     ;
 
 voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList end=EOS
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 
@@ -175,70 +153,61 @@ method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*
                       (CallingConvention=callingconvention)? (CLASS (Namespace=nameDot)? ClassId=identifier)? end=EOS 
                       StmtBlk=statementBlock		
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 methodtype			: Token=(METHOD | ACCESS | ASSIGN)
                     ;
 
 // Convert to constant on Globals class. Expression must be resolvable at compile time
-vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=nativeType)? end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=nativeType)? EOS
                     ;
 
 vostruct			: (Modifiers=votypeModifiers)? 
-                      VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? end=EOS
+                      VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? EOS
                       (Members+=vostructmember)+
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
-vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? end=EOS
-                    | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? EOS
+                    | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? EOS
                     ;
 
 
 vounion				: (Modifiers=votypeModifiers)? 
-                      UNION (Namespace=nameDot)? Id=identifier end=EOS
+                      UNION (Namespace=nameDot)? Id=identifier EOS
                       (Members+=vounionmember)+
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
                     ;
 
 
-vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? end=EOS
-                    | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? EOS
+                    | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? EOS
                     ;
 
-namespace_			: BEGIN NAMESPACE Name=name end=EOS
+namespace_			: BEGIN NAMESPACE Name=name EOS
                       (Entities+=entity)*
                       END NAMESPACE EOS
-                      { SetSequencePoint(_localctx,$end); }
                     ;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       INTERFACE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* end=EOS         // Optional typeparameterconstraints for Generic Class
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
                       END INTERFACE EOS
-                      { SetSequencePoint(_localctx,$end); }
                     ;
 
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
                     ;
 
 class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
-                      CLASS (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?						// TypeParameters indicate Generic Class
+                      CLASS (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?		// TypeParameters indicate Generic Class
                       (INHERIT BaseType=datatype)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* end=EOS         // Optional typeparameterconstraints for Generic Class
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* EOS						// Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
                       END CLASS  EOS
-                      { SetSequencePoint(_localctx,$end); }
                     ;
 
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -265,10 +234,9 @@ typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  C
 structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
                       STRUCTURE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* end=EOS
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
                       (Members+=classmember)+
                       END STRUCTURE EOS
-                      { SetSequencePoint(_localctx,$end); }
                     ;
 
 structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -278,8 +246,7 @@ structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | P
 delegate_			: (Attributes=attributes)? (Modifiers=delegateModifiers)?
                       DELEGATE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
                       ParamList=parameterList? (AS Type=datatype)?
-                      (ConstraintsClauses+=typeparameterconstraintsclause)* end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+                      (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
                     ;
 
 delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE) )+
@@ -287,26 +254,23 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 
 
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
-                      ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? end=EOS
+                      ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? EOS
                       (Members+=enummember)+
                       END (ENUM)? EOS
-                       { SetSequencePoint(_localctx,$end); }
                     ;
 
 enumModifiers		: ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
                     ;
 
-enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=expression)? EOS
                     ;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
                        EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)? 
                        ( end=EOS
-                        | (LineAccessors += eventLineAccessor)+ end=EOS
-                        | Multi=EOS (Accessors+=eventAccessor)+  END EVENT? EOS
+                        | (LineAccessors += eventLineAccessor)+ EOS
+                        | Multi=EOS (Accessors+=eventAccessor)+ END EVENT? EOS
                        )
-                       { SetSequencePoint(_localctx,$end); }
                     ;
 
 eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | STATIC | VIRTUAL | SEALED | ABSTRACT | UNSAFE) )+
@@ -322,24 +286,20 @@ eventAccessor       : Attributes=attributes? Modifiers=eventModifiers?
                       ( Key=ADD     end=EOS StmtBlk=statementBlock END ADD?
                       | Key=REMOVE  end=EOS StmtBlk=statementBlock END REMOVE? )
                       end=EOS
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 
 
-classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList end=EOS
-                       { SetSequencePoint(_localctx,$end); }
+classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList EOS
                     ; 
 
 classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
                     ;
 
 classVarList		: Var+=classvar (COMMA Var+=classvar)* (As=(AS | IS) DataType=datatype)?
-                       { SetSequencePoint(_localctx); }
                     ;
 
 classvar			: (Dim=DIM)? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? (ASSIGN_OP Initializer=expression)?
-                    { SetSequencePoint(_localctx); }
                     ;
 
 arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x][y
@@ -353,7 +313,6 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
                       | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS									// Multi Line
                       )
-                       { SetSequencePoint(_localctx, $Multi); }
                     ;
 
 propertyParameterList
@@ -377,10 +336,9 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
                       ( Key=GET end=EOS StmtBlk=statementBlock END GET?
                       | Key=SET end=EOS StmtBlk=statementBlock END SET? )
                       end=EOS
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
-classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmethod
+classmember			: Member=method										#clsmethod
                     | (Attributes=attributes)?
                       (Modifiers=constructorModifiers)? 
                       CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS 
@@ -389,23 +347,23 @@ classmember			: Member=method										{ SetSequencePoint(_localctx); } #clsmeth
 						  (LPAREN RPAREN)
 						| (LPAREN ArgList=argumentList RPAREN)
 					  ) EOS)?
-                      StmtBlk=statementBlock							 { SetSequencePoint(_localctx,$end); } #clsctor
+                      StmtBlk=statementBlock							#clsctor
                     | (Attributes=attributes)? 
                       (Modifiers=destructorModifiers)?
                       DESTRUCTOR (LPAREN RPAREN)?  end=EOS 
-                      StmtBlk=statementBlock							{ SetSequencePoint(_localctx,$end); } #clsdtor
-                    | Member=classvars									{ SetSequencePoint(_localctx); } #clsvars
-                    | Member=property									{ SetSequencePoint(_localctx); } #clsproperty
-                    | Member=operator_									{ SetSequencePoint(_localctx); } #clsoperator
-                    | Member=structure_									{ SetSequencePoint(_localctx); } #nestedStructure
-                    | Member=class_										{ SetSequencePoint(_localctx); } #nestedClass
-                    | Member=delegate_									{ SetSequencePoint(_localctx); } #nestedDelegate
-                    | Member=enum_										{ SetSequencePoint(_localctx); } #nestedEnum
-                    | Member=event_										{ SetSequencePoint(_localctx); } #nestedEvent
-                    | Member=interface_									{ SetSequencePoint(_localctx); } #nestedInterface
+                      StmtBlk=statementBlock							#clsdtor
+                    | Member=classvars									#clsvars
+                    | Member=property									#clsproperty
+                    | Member=operator_									#clsoperator
+                    | Member=structure_									#nestedStructure
+                    | Member=class_										#nestedClass
+                    | Member=delegate_									#nestedDelegate
+                    | Member=enum_										#nestedEnum
+                    | Member=event_										#nestedEvent
+                    | Member=interface_									#nestedInterface
                     | Pragma=pragma										#nestedPragma
-                    | {_ClsFunc}? Member=function						{ SetSequencePoint(_localctx); } #clsfunction		// Equivalent to method
-                    | {_ClsFunc}? Member=procedure						{ SetSequencePoint(_localctx); } #clsprocedure		// Equivalent to method
+                    | {_ClsFunc}? Member=function						#clsfunction		// Equivalent to static method
+                    | {_ClsFunc}? Member=procedure						#clsprocedure		// Equivalent to static method
                     ;
 
 
@@ -437,7 +395,6 @@ conversionOps		: Token=( IMPLICIT | EXPLICIT )
 operator_			: Attributes=attributes? Modifiers=operatorModifiers? 
                       OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
                       ParamList=parameterList (AS Type=datatype)? end=EOS StmtBlk=statementBlock
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 operatorModifiers	: ( Tokens+=(PUBLIC | STATIC | EXTERN) )+
@@ -463,8 +420,7 @@ attributeParam		: Name=identifierName ASSIGN_OP Expr=expression						#propertyAt
                     | Expr=expression													#exprAttributeParam
                     ;
 
-globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT end=EOS
-                    { SetSequencePoint(_localctx,$end); }
+globalAttributes    : LBRKT Target=globalAttributeTarget Attributes+=attribute (COMMA Attributes+=attribute)* RBRKT EOS
                     ;
 
 globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
@@ -474,8 +430,8 @@ statement           : Decl=localdecl                                            
                     | {_xBaseVars}? xbasedecl									#xbasedeclStmt
                     | Decl=fielddecl											#fieldStmt
                     | DO? WHILE Expr=expression end=EOS
-                      StmtBlk=statementBlock (END DO? | ENDDO) EOS				{ SetSequencePoint(_localctx,$end); } #whileStmt
-                    | NOP end=EOS												{ SetSequencePoint(_localctx,$end); } #nopStmt
+                      StmtBlk=statementBlock (END DO? | ENDDO) EOS				#whileStmt
+                    | NOP end=EOS												#nopStmt
                     | FOR 
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier ASSIGN_OP Expr=expression
@@ -483,94 +439,89 @@ statement           : Decl=localdecl                                            
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=EOS
-                      StmtBlk=statementBlock NEXT EOS							{ SetSequencePoint(_localctx,$end); } #forStmt
+                      StmtBlk=statementBlock NEXT EOS							#forStmt
                     | IF IfStmt=ifElseBlock
                       (END IF? | ENDIF)  EOS									#ifStmt	
                     | DO CASE end=EOS
                       CaseStmt=caseBlock?
-                      (END CASE? | ENDCASE) EOS									{ SetSequencePoint(_localctx,$end); } #caseStmt
-                    | EXIT end=EOS												{ SetSequencePoint(_localctx,$end); } #exitStmt
-                    | LOOP end=EOS												{ SetSequencePoint(_localctx,$end); } #loopStmt
-                    | BREAK Expr=expression? end=EOS							{ SetSequencePoint(_localctx,$end); } #breakStmt
-                    | RETURN (VOID | Expr=expression)? end=EOS					{ SetSequencePoint(_localctx,$end); } #returnStmt
+                      (END CASE? | ENDCASE) EOS									#caseStmt
+                    | Key=EXIT end=EOS											#jumpStmt
+                    | Key=LOOP end=EOS											#jumpStmt
+                    | Key=BREAK Expr=expression? end=EOS						#jumpStmt
+                    | RETURN (VOID | Expr=expression)? end=EOS					#returnStmt
                     | Q=(QMARK | QQMARK)
-                       (Exprs+=expression (COMMA Exprs+=expression)*)? end=EOS	{ SetSequencePoint(_localctx,$end); } #qoutStmt
+                       (Exprs+=expression (COMMA Exprs+=expression)*)? end=EOS	#qoutStmt
                     | BEGIN SEQUENCE end=EOS
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY EOS FinBlock=statementBlock)?
-                      END (SEQUENCE)? EOS									{ SetSequencePoint(_localctx,$end); } #seqStmt
+                      END (SEQUENCE)? EOS										#seqStmt
+                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
+                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
+                      Exprs+=expression (COMMA Exprs+=expression)* end=EOS		#expressionStmt
                     //
                     // New in Vulcan
                     //
                     | REPEAT end=EOS
                       StmtBlk=statementBlock
-                      UNTIL Expr=expression EOS									{ SetSequencePoint(_localctx,$end); }#repeatStmt
+                      UNTIL Expr=expression EOS									#repeatStmt
                     | FOREACH
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=EOS
-                      StmtBlk=statementBlock NEXT EOS							{ SetSequencePoint(_localctx,$end); }#foreachStmt
-                    | THROW Expr=expression? end=EOS							{ SetSequencePoint(_localctx,$end); }#throwStmt
+                      StmtBlk=statementBlock NEXT EOS							#foreachStmt
+                    | Key=THROW Expr=expression? end=EOS						#jumpStmt
                     | TRY end=EOS StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (FINALLY EOS FinBlock=statementBlock)?
-                      END TRY? EOS												{ SetSequencePoint(_localctx,$end); }#tryStmt
+                      END TRY? EOS												#tryStmt
                     | BEGIN Key=LOCK Expr=expression end=EOS
                       StmtBlk=statementBlock
-                      END LOCK? EOS												{ SetSequencePoint(_localctx,$end); }#blockStmt
+                      END LOCK? EOS												#blockStmt
                     | BEGIN Key=SCOPE end=EOS
                       StmtBlk=statementBlock
-                      END SCOPE? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                      END SCOPE? EOS											#blockStmt
                     //
                     // New XSharp Statements
                     //
-                    | YIELD RETURN (VOID | Expr=expression)? end=EOS			{ SetSequencePoint(_localctx,$end); }#yieldStmt
-                    | YIELD Break=(BREAK|EXIT) end=EOS							{ SetSequencePoint(_localctx,$end); }#yieldStmt
+                    | YIELD RETURN (VOID | Expr=expression)? end=EOS			#yieldStmt
+                    | YIELD Break=(BREAK|EXIT) end=EOS							#yieldStmt
                     | SWITCH Expr=expression end=EOS
                       (SwitchBlock+=switchBlock)+
-                      END SWITCH?  EOS											{ SetSequencePoint(_localctx,$end); }#switchStmt
+                      END SWITCH?  EOS											#switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=EOS
                         StmtBlk=statementBlock
-                      END USING? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                      END USING? EOS											#blockStmt
                     | BEGIN Key=UNSAFE end=EOS
                       StmtBlk=statementBlock
-                      END UNSAFE? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                      END UNSAFE? EOS											#blockStmt
                     | BEGIN Key=CHECKED end=EOS
                       StmtBlk=statementBlock
-                      END CHECKED? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
+                      END CHECKED? EOS											#blockStmt
                     | BEGIN Key=UNCHECKED end=EOS
                       StmtBlk=statementBlock
-                      END UNCHECKED? EOS										{ SetSequencePoint(_localctx,$end); }#blockStmt
+                      END UNCHECKED? EOS										#blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=EOS
                       StmtBlk=statementBlock
-                      END FIXED? EOS											{ SetSequencePoint(_localctx,$end); }#blockStmt
-                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
-                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
-                      Exprs+=expression (COMMA Exprs+=expression)* end=EOS		{ SetSequencePoint(_localctx,$end); }#expressionStmt
+                      END FIXED? EOS											#blockStmt
                     
                     ;
 
 ifElseBlock			: Cond=expression end=EOS StmtBlk=statementBlock
                       (ELSEIF ElseIfBlock=ifElseBlock | ELSE EOS ElseBlock=statementBlock)?
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 caseBlock			: Key=CASE Cond=expression end=EOS StmtBlk=statementBlock NextCase=caseBlock?
                     | Key=OTHERWISE end=EOS StmtBlk=statementBlock
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 // Note that literalValue is not enough. We also need to support members of enums
 switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=EOS StmtBlk=statementBlock			 
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 catchBlock			: (Id=identifier (AS Type=datatype)?)? end=EOS StmtBlk=statementBlock
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 recoverBlock		: (USING Id=identifier)? end=EOS StmtBlock=statementBlock
-                    { SetSequencePoint(_localctx,$end); }
                     ;
 
 variableDeclaration	: (LOCAL? Var=IMPLIED | Var=VAR) Decl+=variableDeclarator (COMMA Decl+=variableDeclarator)*
@@ -595,19 +546,17 @@ variableDeclarator	: Id=identifier ASSIGN_OP Expr=expression
 // then the type of the following element propagates forward until for all elements without type
 
 localdecl          : (Static=STATIC LOCAL? | LOCAL)
-                     LocalVars+=localvar (COMMA LocalVars+=localvar)*						end=EOS   { SetSequencePoint(_localctx); } #commonLocalDecl	// STATIC LOCAL or LOCAL
-                   | (Static=STATIC LOCAL? IMPLIED | LOCAL IMPLIED | Static=STATIC? VAR)							// LOCAL IMPLIED
-                     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               end=EOS   { SetSequencePoint(_localctx); }  #varLocalDecl		// VAR special for Robert !
+                     LocalVars+=localvar (COMMA LocalVars+=localvar)*						end=EOS #commonLocalDecl	// STATIC LOCAL or LOCAL
+                   | (Static=STATIC LOCAL? IMPLIED | LOCAL IMPLIED | Static=STATIC? VAR)								// LOCAL IMPLIED
+                     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               end=EOS #varLocalDecl		// VAR special for Robert !
                     
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
                      (ASSIGN_OP Expression=expression)? (As=(AS | IS) DataType=datatype)?
-                     { SetSequencePoint(_localctx); }
                    ;
                       
 impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression 
-                     { SetSequencePoint(_localctx); }
                    ;
 
 
@@ -621,7 +570,6 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
                       |MEMVAR												// MEMVAR  Foo, Bar
                       |PARAMETERS											// PARAMETERS Foo, Bar
                      )   Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS       
-                    { SetSequencePoint(_localctx,$end); }
                  ;
  
 // The operators in VO have the following precedence level:
@@ -703,8 +651,7 @@ primary				: Key=SELF													#selfExpression
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
                       (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
-                    | { String.Compare(TokenStream.Lt(1).Text,"_field",StringComparison.OrdinalIgnoreCase) == 0 }? 
-						ID ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
+                    | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
                           Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME 
                     | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr	
@@ -959,7 +906,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST |  DEFAULT | EXPLICI
                     | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
                     ;
 
-keywordxs           : Token=( ADD | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIXED | FROM | 
+keywordxs           : Token=( ADD | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM | 
                               GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP |  ORDERBY | OVERRIDE |PARAMS | REMOVE | 
                               SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
                               MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs

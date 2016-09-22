@@ -268,6 +268,11 @@ namespace XSharp.Project
             return node;
         }
 
+        protected override ConfigProvider CreateConfigProvider()
+        {
+            return new XSharpConfigProvider(this);
+        }
+
         /// <summary>
         /// Create dependent file node based on an msbuild item
         /// </summary>

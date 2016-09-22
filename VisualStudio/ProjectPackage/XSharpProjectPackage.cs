@@ -19,8 +19,9 @@ using XSharp.Project.WPF;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
+#if VODESIGNER
 using XSharp.VOEditors;
-
+#endif
 namespace XSharp.Project
 {
     
@@ -79,6 +80,7 @@ namespace XSharp.Project
                        @"%TestDocs%\Code Snippets\XSharp Language\XSharp Code Snippets"
 
          )]
+    
     /*
         [ProvideLanguageEditorOptionPageAttribute()
                  "{A2FE74E1-FFFF-3311-4342-123052450768}",  // GUID of property page

@@ -52,9 +52,9 @@ namespace XSharp.Project
         private string debuggercommand;
         private string debuggercommandarguments;
         private string debuggerworkingdirectory;
-        private bool debuggerattach;
+        //private bool debuggerattach;
         private bool enableunmanageddebugging;
-        private bool usevshostingprocess;
+        //private bool usevshostingprocess;
 
         #endregion Fields
 
@@ -101,12 +101,12 @@ namespace XSharp.Project
             set { this.debuggerworkingdirectory = value; this.IsDirty = true; }
         }
 
-        [Category(catGeneral), DisplayName(captDebuggerAttach), Description(descDebuggerAttach)]
-        public bool DebuggerAttach
-        {
-            get { return this.debuggerattach; }
-            set { this.debuggerattach = value; this.IsDirty = true; }
-        }
+        //[Category(catGeneral), DisplayName(captDebuggerAttach), Description(descDebuggerAttach)]
+        //public bool DebuggerAttach
+        //{
+        //    get { return this.debuggerattach; }
+        //    set { this.debuggerattach = value; this.IsDirty = true; }
+        //}
 
         [Category(catSpecial),DisplayName(captEnableUnmanagedDebugging), Description(descEnableUnmanagedDebugging)]
         public bool EnableUnmanagedDebugging
@@ -116,12 +116,12 @@ namespace XSharp.Project
         }
 
 
-        [Category(catSpecial), DisplayName(captUseVSHostingProcess), Description(descUseVSHostingProcess)]
-        public bool UseVSHostingProcess
-        {
-            get { return this.usevshostingprocess; }
-            set { this.usevshostingprocess  = value; this.IsDirty = true; }
-        }
+        //[Category(catSpecial), DisplayName(captUseVSHostingProcess), Description(descUseVSHostingProcess)]
+        //public bool UseVSHostingProcess
+        //{
+        //    get { return this.usevshostingprocess; }
+        //    set { this.usevshostingprocess  = value; this.IsDirty = true; }
+        //}
 
 
         #region Overriden Implementation
@@ -158,9 +158,9 @@ namespace XSharp.Project
             debuggercommand = getCfgString(nameof(DebuggerCommand), "$(TargetPath)");
             debuggercommandarguments = getCfgString(nameof(DebuggerCommandArguments),  "");
             debuggerworkingdirectory= getCfgString(nameof(DebuggerWorkingDirectory),  "");
-            debuggerattach= getCfgLogic(nameof(DebuggerAttach),  false);
+            //debuggerattach= getCfgLogic(nameof(DebuggerAttach),  false);
             enableunmanageddebugging = getCfgLogic(nameof(EnableUnmanagedDebugging),  true);
-            usevshostingprocess = getCfgLogic(nameof(UseVSHostingProcess),  true);
+            //usevshostingprocess = getCfgLogic(nameof(UseVSHostingProcess),  true);
 
         }
 
@@ -178,9 +178,9 @@ namespace XSharp.Project
             this.SetConfigProperty(nameof(DebuggerCommand), this.debuggercommand?.ToString());
             this.SetConfigProperty(nameof(DebuggerCommandArguments), this.debuggercommandarguments?.ToString());
             this.SetConfigProperty(nameof(DebuggerWorkingDirectory), this.debuggerworkingdirectory?.ToString());
-            this.SetConfigProperty(nameof(DebuggerAttach), this.debuggerattach.ToString().ToLower());
+            //this.SetConfigProperty(nameof(DebuggerAttach), this.debuggerattach.ToString().ToLower());
             this.SetConfigProperty(nameof(EnableUnmanagedDebugging), this.enableunmanageddebugging.ToString().ToLower());
-            this.SetConfigProperty(nameof(UseVSHostingProcess), this.usevshostingprocess.ToString().ToLower());
+            //this.SetConfigProperty(nameof(UseVSHostingProcess), this.usevshostingprocess.ToString().ToLower());
             if (debugtype == DebugType.none) {
                 this.SetConfigProperty("EmitDebugInformation", "false");
             } else {

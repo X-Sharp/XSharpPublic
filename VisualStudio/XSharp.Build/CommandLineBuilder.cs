@@ -20,6 +20,28 @@ namespace XSharp.Build
         internal XSharpCommandLineBuilder() : base()
         {
         }
+
+        private void AppendNewLine()
+        {
+            //this.AppendTextUnquoted("\n");
+        }
+        public new void AppendSwitch(string switchName)
+        {
+            if (!String.IsNullOrEmpty(switchName))
+            {
+                base.AppendSwitch(switchName);
+                this.AppendNewLine();
+            }
+        }
+
+        public new void AppendSwitchIfNotNull(string switchName, string parameter)
+        {
+            if (parameter != null && switchName != null)
+            {
+                base.AppendSwitchIfNotNull(switchName, parameter);
+                this.AppendNewLine();
+            }
+        }
         /// <summary>
         /// Set a boolean switch only if its value exists.
         /// </summary>
@@ -32,6 +54,7 @@ namespace XSharp.Build
                 bool value = (bool)obj;
                 // Do not quote - or + as they are part of the switch
                 this.AppendSwitchUnquotedIfNotNull(switchName, (value ? "+" : "-"));
+                this.AppendNewLine();
             }
         }
 
@@ -46,6 +69,7 @@ namespace XSharp.Build
             {
                 bool value = (bool)obj;
                 AppendSwitchUnquotedIfNotNull(switchName, (value ? choice1 : choice2));
+                this.AppendNewLine();
             }
         }
 
@@ -107,7 +131,8 @@ namespace XSharp.Build
         {
             this.AppendSwitchUnquotedIfNotNull(switchName, alias + "=");
             this.AppendTextWithQuoting(parameter);
-        }
+            this.AppendNewLine();
+        } 
 
         /// <summary>
         /// Adds a nested switch, used by SGen.exe.  For example:
@@ -116,7 +141,7 @@ namespace XSharp.Build
         internal void AppendNestedSwitch(string outerSwitchName, string innerSwitchName, string parameter)
         {
             string quotedParameter = GetQuotedText(parameter);
-            AppendSwitchIfNotNull(outerSwitchName, innerSwitchName + quotedParameter);
+            this.AppendSwitchIfNotNull(outerSwitchName, innerSwitchName + quotedParameter);
         }
         /// <summary>
         /// Returns a quoted string appropriate for appending to a command line.
@@ -141,6 +166,7 @@ namespace XSharp.Build
         internal void AppendSwitchIfNotNull(string switchName, ITaskItem[] parameters, string[] attributes)
         {
             this.AppendSwitchIfNotNull(switchName, parameters, attributes, null /* treatAsFlag */);
+            this.AppendNewLine();
         }
 
         /// <summary>
@@ -152,7 +178,7 @@ namespace XSharp.Build
         /// Where the last flag--Private--is either present or not present
         /// depending on whether the ITaskItem has a Private="True" attribute.
         /// </summary>
-        public void AppendSwitchIfNotNull(string switchName,
+        public void AppendSwitchIfNotNull(string switchName, 
             ITaskItem[] parameters, string[] metadataNames, bool[] treatAsFlags)      // May be null. In this case no metadata are treated as flags.
 
         {

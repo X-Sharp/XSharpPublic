@@ -173,7 +173,7 @@ namespace XSharp.Project
         public bool DocumentationFile
         {
             get { return this.documentationfile; }
-            set { this.documentationfile = value; this.IsDirty = true; }
+            //set { this.documentationfile = value; this.IsDirty = true; }
         }
 
         [Category(catMisc)]
@@ -284,7 +284,7 @@ namespace XSharp.Project
         public bool PPO
         {
             get { return this.ppo; }
-            set { this.ppo = value; this.IsDirty = true; }
+            //set { this.ppo = value; this.IsDirty = true; }
         }
 
         [Category(CatPreprocessor), DisplayName(DefCaption), Description(DefDescription)]
@@ -295,6 +295,7 @@ namespace XSharp.Project
         }
 
         [Category(CatPreprocessor), DisplayName(INCCaption), Description(INCDescription)]
+        [Editor(typeof(XSharpSLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public string IncludePaths
         {
             get { return this.includepaths; }

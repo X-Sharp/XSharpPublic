@@ -81,9 +81,9 @@ namespace XSharp.Project
             set { this.dialect = value; this.IsDirty = true; }
         }
 
-        [ResourcesCategory(Resources.Project)]
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName("Platform Target")]
-        [ResourcesDescription("Select the compiler dialect to use when compiling this project")]
+        [ResourcesDescription("Select the platform target when compiling this project")]
         public Platform PlatformTarget
         {
             get { return this.platformtarget; }
@@ -181,7 +181,7 @@ namespace XSharp.Project
             }
         }
 
-        [ResourcesCategory(Resources.Project)]
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.TargetFrameworkMoniker)]
         [ResourcesDescription(Resources.TargetFrameworkMonikerDescription)]
         [PropertyPageTypeConverter(typeof(FrameworkNameConverter))]

@@ -50,8 +50,16 @@ namespace XSharp.Project
                     if (prop.Name == propertyName)
                     {
                         // This triggers the evaluation of the property
-                        prop.UnevaluatedValue = prop.UnevaluatedValue;
-                        result = prop.EvaluatedValue;
+                        try
+                        {
+                            prop.UnevaluatedValue = prop.UnevaluatedValue;
+                            result = prop.EvaluatedValue;
+                        }
+                        catch (Exception)
+                        {
+                            result = null;
+                        }
+                        
                         break;
                     }
                 }

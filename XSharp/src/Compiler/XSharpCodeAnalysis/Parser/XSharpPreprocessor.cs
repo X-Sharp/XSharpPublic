@@ -838,7 +838,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     }
                                     else
                                     {
-                                        _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
+                                        if (fileReadException != null)
+                                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + fn + "': "+fileReadException.Message));
+                                        else
+                                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
                                     }
 
                                 }

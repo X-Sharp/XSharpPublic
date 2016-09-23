@@ -1,32 +1,40 @@
 ; Please note that the "deregistering" of the XSharp association is done in a script step at the end of this file
 
+;#define FOX
+#ifdef FOX
+#define SetupExeName    "XSharpSetup027Fox"
+#else
+#define SetupExeName    "XSharpSetup027Public"
+#endif
+
+
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.6.0"
-#define ProdBuild       "XSharp Beta 6"
+#define ProdVer         "XSharp 0.2.7.0"
+#define ProdBuild       "XSharp Beta 7"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.6.2604"
-#define VITextVersion   "0.2.6.2604 (Beta 6)"
-#define TouchDate       "2016-08-15"
-#define TouchTime       "02:06:04"
-#define SetupExeName    "XSharpSetup026d"
+#define VIVersion       "0.2.7.2700"
+#define VITextVersion   "0.2.7.2700 (Beta 7)"
+#define TouchDate       "2016-09-23"
+#define TouchTime       "02:07:00"
 #define InstallPath     "XSharpPath"
 
 ;Folders
-#define BinFolder       "D:\Xsharp\Dev\XSharp\Binaries\Debug\"
-#define BinPFolder      "D:\Xsharp\DevPublic\Binaries\Debug\"
-#define CommonFolder    "D:\Xsharp\Dev\XSharp\src\Common\"
-#define ToolsFolder     "d:\Xsharp\Dev\XSharp\src\Tools\"
-#define VSProjectFolder "d:\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
-#define ExamplesFolder  "D:\Xsharp\DevPublic\Samples\"
-#define OutPutFolder    "D:\XSharp\Dev\XSharp\Binaries\Setup"
-#define DocFolder       "D:\Xsharp\Dev\XSharp\Binaries\Help\"
-#define XIDEFolder      "D:\Xsharp\Dev\XSharp\Xide\"
-#define XIDESetup       "XIDE_Set_up_1.05.exe"
-#define XIDEVersion     "1.05"
-#define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname"
+#define BinDFolder       "\Xsharp\Dev\XSharp\Binaries\Debug\"
+#define BinRFolder       "\Xsharp\Dev\XSharp\Binaries\Release\"
+#define BinPFolder      "\Xsharp\DevPublic\Binaries\Debug\"
+#define CommonFolder    "\Xsharp\Dev\XSharp\src\Common\"
+#define ToolsFolder     "\Xsharp\Dev\XSharp\src\Tools\"
+#define VSProjectFolder "\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
+#define ExamplesFolder  "\Xsharp\DevPublic\Samples\"
+#define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
+#define DocFolder       "\Xsharp\Dev\XSharp\Binaries\Help\"
+#define XIDEFolder      "\Xsharp\Dev\XSharp\Xide\"
+#define XIDESetup       "XIDE_Set_up_1.06.exe"
+#define XIDEVersion     "1.06"
+#define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
 #define ImmutableVersion "System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
@@ -55,7 +63,11 @@ DisableWelcomePage=no
 DisableStartupPrompt=yes
 DisableReadyMemo=yes
 DisableFinishedPage=no
-InfoBeforeFile=Baggage\ReadmeShort.rtf
+#ifdef FOX
+InfoBeforeFile=Baggage\ReadmeShortFox.rtf
+#else
+InfoBeforeFile=Baggage\ReadmeShortPublic.rtf
+#endif
 AppName={#Product}
 AppVersion={#VIVersion}
 AppCopyright={# CopyRight}
@@ -115,6 +127,10 @@ Name: "xide";             Description: "Include the XIDE {# XIDEVersion} install
 [Dirs]
 Name: "{app}\Assemblies";
 Name: "{app}\Bin";
+#ifdef FOX
+Name: "{app}\Bin\Debug";
+Name: "{app}\Bin\Release";
+#endif
 Name: "{app}\Help";
 Name: "{app}\Images";
 Name: "{app}\Include";
@@ -135,28 +151,56 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; Main program
-Source: "{#BinFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
-Source: "{#BinFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
-Source: "{#BinFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+#ifdef FOX
+Source: "{#BinRFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "Baggage\DebugRelease.txt";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+; Release Folder
+Source: "{#BinRFolder}xsc.exe";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+; Debug Folder
+Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+#else
+Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSCompiler.exe";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+
+#endif
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinPFolder}baggage\rcdll.dll";                 DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 
 
-; PDB files
-Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
-Source: "{#BinFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
-Source: "{#BinFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 
 ; GAC files in Bin folder
-Source: "{#BinFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall}; components: main
-Source: "{#BinFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall}; components: main
+Source: "{#BinDFolder}System.Collections.Immutable.dll";   DestDir: "{app}\bin"; StrongAssemblyName: "{#ImmutableVersion}"; Flags: {#StdFlags} {#GACInstall}; components: main
+Source: "{#BinDFolder}System.Reflection.Metadata.dll";     DestDir: "{app}\bin"; StrongAssemblyName: "{#MetadataVersion}";  Flags: {#StdFlags} {#GACInstall}; components: main
 
 ; Support files
-Source: "Baggage\Readme.rtf";                             DestDir: "{app}"    ; Flags: isreadme {#StdFlags}; Components: main
+#ifdef FOX
+Source: "Baggage\ReadmeFox.rtf";                          DestDir: "{app}";   DestName:"Readme.rtf" ; Flags: isreadme {#StdFlags}; Components: main
+#else
+Source: "Baggage\ReadmePublic.rtf";                       DestDir: "{app}";   DestName:"Readme.rtf" ; Flags: isreadme {#StdFlags}; Components: main
+#endif
 Source: "Baggage\Redist.txt";                             DestDir: "{app}\Redist" ; Flags: {#StdFlags}; Components: main
 Source: "Baggage\XSharp.ico";                             DestDir: "{app}\Images"; Flags: touch {#StdFlags}; Components: main
-;Source: "Baggage\License.rtf";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
 Source: "Baggage\License.txt";                            DestDir: "{app}";        Flags: touch {#StdFlags}; Components: main
 
 ; Include Files
@@ -166,6 +210,12 @@ Source: "{#CommonFolder}*.xh";                            DestDir: "{app}\Includ
 Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main
 Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
 Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
+
+; MsBuild files VS15
+; MsBuild files from VS15 Preview 4 in a private directory per installation
+Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: vsnext
+Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: vsnext
+Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: vsnext
 
 ;Documentation
 Source: "{#DocFolder}\XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
@@ -181,8 +231,8 @@ Source: "{#XIDEFolder}{#XIDESetup}";                      DestDir: "{app}\Xide";
 ;VsProjectSystem
 Source: "{#BinPFolder}XSharpProject2015.vsix";            DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015 or vsnext
 
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vs2015
 Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpColorizer2015.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
@@ -210,7 +260,7 @@ Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVs2
 
 Source: "{#BinPFolder}XSharp.ico ";                        DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
 ;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";  Flags: {#StdFlags}; Components: vs2015
 
 
@@ -218,8 +268,8 @@ Source: "{#BinFolder}XSharp.CodeAnalysis.dll";             DestDir: "{code:GetVs
 
 
 ; VsNext
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vsnext
 Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}XSharpColorizer2015.dll";           DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vsnext
@@ -247,7 +297,7 @@ Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVsN
 
 Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext 
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext 
 ;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\Images"; Flags: {#StdFlags}; Components: vsnext
 
 ; Examples
@@ -255,6 +305,8 @@ Source: "{#ExamplesFolder}*.prg";                             DestDir: "{commond
 Source: "{#ExamplesFolder}*.txt";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.vh";                              DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.sln";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.dbf";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
+Source: "{#ExamplesFolder}*.ntx";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 Source: "{#ExamplesFolder}*.xsproj";                          DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
 
 
@@ -338,6 +390,10 @@ Type: filesandordirs; Name: "{app}\Uninst"
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\Assemblies"                    ; Components: main
+#ifdef FOX
+Type: filesandordirs; Name: "{app}\Bin\Debug"                     ; Components: main
+Type: filesandordirs; Name: "{app}\Bin\Release"                   ; Components: main
+#endif
 Type: filesandordirs; Name: "{app}\Bin"                           ; Components: main
 Type: filesandordirs; Name: "{app}\Help"                          ; Components: main
 Type: filesandordirs; Name: "{app}\Images"                        ; Components: main
@@ -388,9 +444,9 @@ var
   HelpViewer22Installed : Boolean;
   HelpViewer22Dir : String;
   OurHelp22Installed: Boolean;
-  HelpViewer23Installed : Boolean;
+  {HelpViewer23Installed : Boolean;}
   HelpViewer23Dir : String;
-  OurHelp23Installed: Boolean;
+  {OurHelp23Installed: Boolean;}
 
 procedure PrintButtonClick(Sender: TObject);
 var ResultCode :integer;
@@ -409,7 +465,7 @@ begin
   if Vs2015Installed then Vs2015Path := Vs2015BaseDir+'\Common7\Ide\';
   VsNextInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',VsNextBaseDir) ;
   HelpViewer22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.2','AppRoot',HelpViewer22Dir) ;
-  HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;
+  {HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;}
   if VsNextInstalled then VsNextPath := VsNextBaseDir+'\Common7\Ide\';
   VulcanPrgAssociation := false;
   if Vs2015Installed then
@@ -421,7 +477,7 @@ begin
       end
   end
   OurHelp22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help22Installed',temp) ;
-  OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;
+  {OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;}
 end;
 
 
@@ -447,7 +503,8 @@ end;
 
 function HelpViewer23Found: Boolean;
 begin
-  result := HelpViewer23Installed;
+  result := false; {HelpViewer23Installed;}
+
 end;
 
 
@@ -471,7 +528,12 @@ begin
   result := VsNextPath;
 end;
 
+function GetVsNextBaseDir(Param: String): String;
+begin
+  result := VsNextBaseDir;
+end;
 
+{
 function OurHelp22IsInstalled: Boolean;
 begin
   result := OurHelp22Installed;
@@ -481,7 +543,7 @@ function OurHelp23IsInstalled: Boolean;
 begin
   result := OurHelp23Installed;
 end;
-
+}
 function GetHelp22Dir(Param: String): String;
 begin
   result := HelpViewer22Dir;

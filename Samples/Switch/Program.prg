@@ -11,7 +11,6 @@ Function Start() as void
 		CASE "FABRICE"
 			? sDeveloper, "France"
 		CASE "CHRIS"
-			? sDeveloper, "Greece"
 		CASE "NIKOS"
 			? sDeveloper, "Greece"
 		CASE "ROBERT"

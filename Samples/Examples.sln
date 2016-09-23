@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Yield", "Yield\Yield.xsproj", "{AAA5D7CF-FEAE-438E-9806-685AC6709FB4}"
 EndProject
@@ -11,7 +11,7 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Generic", "Generic\Generic.
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Anonymous Methods", "Anonymous\Anonymous Methods.xsproj", "{4ABADA3C-AEBA-4682-85D0-4D757C754F29}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "BYOR", "VulcanTypes\BYOR.xsproj", "{15C497EB-929B-4000-B6C3-B6C6E7E6AADF}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "BYOR", "BYOR\BYOR.xsproj", "{15C497EB-929B-4000-B6C3-B6C6E7E6AADF}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "ASync", "ASync\ASync.xsproj", "{0C827B11-4DEC-44E1-A46F-77B96B659239}"
 EndProject

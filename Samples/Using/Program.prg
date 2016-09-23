@@ -3,12 +3,34 @@
 // You can also link to a static class and call the methods in this class as if they are functions.
 // The functions WriteLine and ReadKey() in the following code are actually resolved as System.Console.WriteLine()
 // and System.Console.ReadKey()
-using System
-using static System.Console
+// Finally there is also the BEGIN USING .. END USING construct which controls the lifetime of a variable
+// At the end of the block the Variable will be automatically disposed.
+USING System
+USING STATIC System.Console
 
-Function Start() as void
+FUNCTION Start() AS VOID
     WriteLine("Hello World!")
     WriteLine("Press any key to continue...")
-    ReadKey()
-	
+    WriteLine("Before Using Block")
+	WriteLine("------------------")
+	BEGIN USING VAR oTest := Test{}
+		oTest:DoSomething()
+	END USING 
+	WriteLine("------------------")
+    WriteLine("After Using Block")
+	ReadKey()
 
+
+
+
+CLASS Test IMPLEMENTS IDisposable
+	CONSTRUCTOR()
+		Console.WriteLine("Test:Constructor()")
+
+	METHOD DoSomething() AS VOID
+		Console.WriteLine("Test:DoSomething()")
+
+	METHOD Dispose() AS VOID
+		Console.WriteLine("Test:Dispose()")
+
+END CLASS

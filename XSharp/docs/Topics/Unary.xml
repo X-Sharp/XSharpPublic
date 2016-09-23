@@ -3,7 +3,9 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Unary</title>
   <keywords>
+    <keyword translate="true">-</keyword>
     <keyword translate="true">--</keyword>
+    <keyword translate="true">+</keyword>
     <keyword translate="true">++</keyword>
   </keywords>
   <body>

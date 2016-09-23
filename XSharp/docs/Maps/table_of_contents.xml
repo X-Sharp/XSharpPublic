@@ -418,6 +418,9 @@
             <topicref type="topic" id="423890664256386" build="ALL" modified="2016-01-19T21:05:09.895Z" icon="0" href="BEGIN-USING">
               <caption translate="true">BEGIN USING</caption>
             </topicref>
+            <topicref type="topic" id="426358377248357" build="ALL" modified="2016-09-22T18:28:47.008Z" icon="0" href="BEGIN-FIXED2">
+              <caption translate="true">BEGIN FIXED</caption>
+            </topicref>
           </topicref>
           <topicref type="topic" id="423891010974848" build="ALL" modified="2016-01-19T23:00:17.806Z" icon="0" href="Exception-Handling">
             <caption translate="true">Exception Handling</caption>

@@ -44,7 +44,6 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem with non standard command lines to Start the debugger</text></li>
     </list>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.6</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">Compiler</text></para>
     <list id="35" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">

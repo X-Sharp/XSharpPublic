@@ -1,0 +1,11 @@
+This version of the X# Compiler comes with a compiler in both Debug mode and Release mode.
+By default the compiler will run in Release mode, which should give a MUCH better performance.
+However, if you are experiencing strange compiler crashes, we recommend that you copy the files 
+from the Bin\Debug folder into the Bin folder and test again. Most likely you will then
+get assertion errors in stead of mysterious crashes.
+These assertion errors may help us locate the cause of the problem.
+
+If you want to switch back to the Release version of the compiler, you can copy the files from 
+the Bin\Release folder to the Bin folder.
+
+The XSharp Devteam.

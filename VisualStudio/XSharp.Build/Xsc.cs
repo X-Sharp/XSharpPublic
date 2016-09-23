@@ -606,20 +606,9 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/az", base.Bag, nameof(AZ));
             //commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
-            if (this.IncludePaths?.Length > 0)
-            {
-                StringBuilder sb = new StringBuilder();
-                foreach (var s in this.IncludePaths)
-                {
-                    if (sb.Length > 0)
-                        sb.Append(';');
-                    sb.Append(s);
-                }
-                commandline.AppendTextUnquoted(" /i:\"" + sb.ToString()+"\"");
-            }
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
-            commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
+            //commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
             //commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
             commandline.AppendPlusOrMinusSwitch("/vo2", base.Bag, nameof(VO2));
             commandline.AppendPlusOrMinusSwitch("/vo3", base.Bag, nameof(VO3));
@@ -629,8 +618,8 @@ namespace XSharp.Build
             //commandline.AppendPlusOrMinusSwitch("/vo7", base.Bag, nameof(VO7));
             commandline.AppendPlusOrMinusSwitch("/vo8", base.Bag, nameof(VO8));
             commandline.AppendPlusOrMinusSwitch("/vo9", base.Bag, nameof(VO9));
-            //commandline.AppendPlusOrMinusSwitch("/vo10", base.Bag, nameof(VO10));
-            commandline.AppendPlusOrMinusSwitch("/vo11", base.Bag, nameof(VO11));
+            commandline.AppendPlusOrMinusSwitch("/vo10", base.Bag, nameof(VO10));
+            //commandline.AppendPlusOrMinusSwitch("/vo11", base.Bag, nameof(VO11));
             commandline.AppendPlusOrMinusSwitch("/vo12", base.Bag, nameof(VO12));
             commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
@@ -640,6 +629,17 @@ namespace XSharp.Build
             if(!String.IsNullOrEmpty(this.CommandLineOption))
             {
                 commandline.AppendTextUnquoted("\n" + this.CommandLineOption);
+            }
+            if (this.IncludePaths?.Length > 0) 
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var s in this.IncludePaths)
+                {
+                    if (sb.Length > 0)
+                        sb.Append(';');
+                    sb.Append(s);
+                }
+                commandline.AppendTextUnquoted(" /i:\"" + sb.ToString() + "\"");
             }
         }
 
@@ -705,7 +705,7 @@ namespace XSharp.Build
             //      /warnaserror-:<all possible warnings>
             commandLine.AppendSwitchWithSplitting("/warnaserror+:", WarningsAsErrors, ",", ';', ',');
             commandLine.AppendSwitchWithSplitting("/warnaserror-:", WarningsNotAsErrors, ",", ';', ',');
-
+            
             // It's a good idea for the response file to be the very last switch passed, just 
             // from a predictability perspective.  It also solves the problem that a dogfooder
             // ran into, which is described in an email thread attached to bug VSWhidbey 146883.

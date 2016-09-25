@@ -191,6 +191,9 @@
     <ZipProject Include="Templates\Projects\Console\ConsoleApplication.png" />
     <ZipProject Include="Templates\Projects\WinFormApp\WinFormApp.png" />
     <ZipProject Include="Templates\Projects\WPFApplication\WPFApplication.png" />
+    <ZipProject Include="Templates\Projects\VulcanApp\VulcanApplication.png" />
+    <ZipProject Include="Templates\Projects\VulcanApp\VulcanApplication.vstemplate" />
+    <ZipProject Include="Templates\Projects\VulcanApp\Readme.txt" />
     <Content Include="XSharp.png" />
     <Content Include="XSharpVSIXLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -245,6 +248,9 @@
     <ZipItem Include="Templates\ProjectItems\Internal\SettingsInternal\Settings.settings">
     </ZipItem>
     <ZipProject Include="Templates\Projects\WinFormApp\App.config" />
+    <ZipProject Include="Templates\Projects\VulcanApp\AssemblyInfo.prg" />
+    <ZipProject Include="Templates\Projects\VulcanApp\Program.prg" />
+    <ZipProject Include="Templates\Projects\VulcanApp\VulcanApplication.xsproj" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -479,6 +485,7 @@
       <SubType>Designer</SubType>
     </ZipItem>
   </ItemGroup>
+  <ItemGroup />
   <!-- This import the files which makes up the project base classes -->
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>

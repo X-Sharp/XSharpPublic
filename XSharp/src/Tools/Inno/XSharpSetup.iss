@@ -17,13 +17,13 @@
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
 #define VIVersion       "0.2.7.2700"
 #define VITextVersion   "0.2.7.2700 (Beta 7)"
-#define TouchDate       "2016-09-23"
+#define TouchDate       "2016-09-25"
 #define TouchTime       "02:07:00"
 #define InstallPath     "XSharpPath"
 
 ;Folders
-#define BinDFolder       "\Xsharp\Dev\XSharp\Binaries\Debug\"
-#define BinRFolder       "\Xsharp\Dev\XSharp\Binaries\Release\"
+#define BinDFolder      "\Xsharp\Dev\XSharp\Binaries\Debug\"
+#define BinRFolder      "\Xsharp\Dev\XSharp\Binaries\Release\"
 #define BinPFolder      "\Xsharp\DevPublic\Binaries\Debug\"
 #define CommonFolder    "\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder     "\Xsharp\Dev\XSharp\src\Tools\"
@@ -240,7 +240,7 @@ Source: "{#BinPFolder}XSharpColorizer2015.pdb";           DestDir: "{code:GetVs2
 
 ; ItemTemplates per folder
 Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; Components: vs2015
-Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; Components: vs2015
+;Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vs2015
@@ -277,7 +277,7 @@ Source: "{#BinPFolder}XSharpColorizer2015.pdb";           DestDir: "{code:GetVsN
 
 ; ItemTemplates per folder
 Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; Components: vsnext
+;Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vsnext

@@ -3395,7 +3395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ClassEntities.Peek().Members.Add(
                     _syntaxFactory.FieldDeclaration(
                         EmptyList<AttributeListSyntax>(),
-                        TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PrivateKeyword),
+                        TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
                         _syntaxFactory.VariableDeclaration(varType,
                             MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName)))),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
@@ -3404,7 +3404,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ClassEntities.Peek().Members.Add(
                         _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
-                            TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PrivateKeyword),
+                            TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.BoolKeyword)),
                                 MakeSeparatedList(
 										GenerateVariable(SyntaxFactory.Identifier(staticName+StaticLocalInitFieldNameSuffix),
@@ -3414,7 +3414,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ClassEntities.Peek().Members.Add(
                         _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
-                            TokenList(SyntaxKind.StaticKeyword,SyntaxKind.PrivateKeyword),
+                            TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_objectType,
                                 MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName+StaticLocalLockFieldNameSuffix),
                                         CreateObject(_objectType,EmptyArgumentList(), null)))),

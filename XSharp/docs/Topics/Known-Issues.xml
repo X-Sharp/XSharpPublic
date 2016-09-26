@@ -16,6 +16,7 @@
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Compiler</text></para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Init procedures are not supported yet. This means that when you compile against the Vulcan VO SDK Classes you must manually add some code.</text><br/><link displaytype="text" defaultstyle="true" type="topiclink" href="Calling-Vulcan-Init-Procedures" styleclass="Normal" translate="true">Click here for this code.</link></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Some expressions that involve USUALs such as &lt;USUAL&gt; .and. &lt;USUAL&gt; may need a type cast to compile without errors.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">PCall and PCallNative are not supported</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The ellipses syntax (...) for parameters is not supported for API calls</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Default parameters are only supported when they are compile time constants.</text></li>

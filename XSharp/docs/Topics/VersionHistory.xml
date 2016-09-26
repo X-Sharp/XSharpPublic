@@ -34,6 +34,7 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several problems with the FOR .. NEXT statement. The &quot;To&quot; expression will now be evaluated for every iteration of the loop, just like in VO and Vulcan.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several compiler crashes</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem with implicit code generation for constructors</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a visibility problem with static variables inside static functions</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Visual Studio Integration</text></para>

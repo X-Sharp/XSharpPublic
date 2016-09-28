@@ -1,0 +1,45 @@
+DESIGNERSTART = Form,Form,frmProgress
+GUID=720F11A5-C6B9-445E-B7BA-5B1E44D5F816
+ControlBox=False
+FormBorderStyle=Sizable
+MaximizeBox=False
+MinimizeBox=False
+Name=frmProgress
+StartPosition=CenterScreen
+Text=Export Progress
+Location=100 , 100
+ClientSize=784 , 456
+BackColor=SystemColors.InactiveCaption
+ControlPrefix=o
+CallPreResumeLayout=No
+CallSuperInitialize=No
+UseGrid=Yes
+GridX=8
+GridY=8
+SUBCONTROLSSTART
+  
+  CONTROL=System.Windows.Forms.TextBox
+  GUID=11612C89-7032-497F-8E89-6BC2096EA3F6
+  Multiline=True
+  Name=tbMessage
+  ScrollBars=Both
+  Location=8 , 16
+  Size=768 , 392
+  BackColor=SystemColors.InactiveCaption
+  TabIndex=0
+  Anchor=Top,Bottom,Left,Right
+  
+  CONTROL=System.Windows.Forms.Button
+  GUID=27B4D662-34FB-46AD-A63E-A492A8894AB8
+  Name=btnClose
+  Text=&Close
+  Location=696 , 424
+  Size=75 , 23
+  TabIndex=1
+  Anchor=Bottom,Right
+  Click=btnCloseClick
+
+SUBCONTROLSEND
+DESIGNEREND = frmProgress
+
+

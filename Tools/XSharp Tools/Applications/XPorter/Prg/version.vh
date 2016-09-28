@@ -1,0 +1,10 @@
+#include "BuildNumber.h"
+[assembly: AssemblyVersionAttribute( VERSION_NUMBER_STR )]
+[assembly: AssemblyFileVersionAttribute( FILEVERSION_NUMBER_STR )]
+[assembly: AssemblyInformationalVersionAttribute( VERSION_NUMBER_STR )]
+[assembly: AssemblyCopyrightAttribute( COPYRIGHT_STR)]
+[assembly: AssemblyTrademarkAttribute( "")]
+[assembly: AssemblyConfigurationAttribute( ASSEMBLY_CONFIGURATION)]
+[assembly: AssemblyCompanyAttribute( COMPANY_NAME )]
+[assembly: AssemblyProductAttribute( PRODUCT_NAME )] 
+

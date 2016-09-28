@@ -1,72 +1,32 @@
+// Application : XPorter
+// XPorter.prg , Created : 28-9-2016   15:02
+// User : robert
+
 USING System.Collections.Generic
-USING System.Xml     
-USING STATIC System.Console
-FUNCTION Start AS VOID
-	LOCAL cLine AS STRING      
-	LOCAL cCopy	AS STRING
-	DO WHILE TRUE
-		WriteLine("Enter name name of the solution or the project to convert <Empty = Exit>:")
-		cLine := ReadLine():Trim()                                                    
-		IF String.IsNullOrEmpty(cLine)
-			EXIT
-		ENDIF                                                         
-		WriteLine("Copy the source files to .XS files Yes/No ? <Empty = Yes>:")       
-		cCopy := ReadLine():Trim()                                                    
-		IF String.IsNullOrEmpty(cCopy)
-			cCopy := "Y"
-		ELSE
-			cCopy := cCopy:Substring(0,1):ToUpper()
-		ENDIF                                                         
-		IF System.IO.File.Exists(cLine)
-			IF System.IO.Path.GetExtension(cLine):Tolower() == ".sln"
-				ConvertSolution(cLine, cCopy == "Y")
-			ELSEIF System.IO.Path.GetExtension(cLine):Tolower() == ".vnproj"
-				ConvertProject(cLine, cCopy == "Y")  
-			ELSE
-				WriteLine("Invalid project extension (sln or vnproj expected)")
-			ENDIF
-		ELSE
-			WriteLine(cLine +" not found")
-		ENDIF
-	END DO
-	RETURN 
-FUNCTION ConvertSolution(cFile AS STRING, lCopy AS LOGIC) AS VOID
-	LOCAL oSolutionConverter AS SolutionConverter
-	oSolutionConverter := SolutionConverter{cFile, lCopy}
-	IF oSolutionConverter:Convert()
-		WriteLine( "Converted " +cFile)
-	ELSE                     
-		WriteLine( "Error converting "+cFile)
-	ENDIF
-FUNCTION ConvertProject(cFile AS STRING, lCopy AS LOGIC) AS VOID
-	LOCAL oConverter AS ProjectFileConverter
-	LOCAL cSource AS STRING
-	LOCAL cTarget AS STRING
-	oConverter := ProjectFileConverter{}
-	cSource := cFile
-	cTarget := System.IO.Path.ChangeExtension(cSource, "xsprj")
-	IF oConverter:ConvertProjectFile(cSource, cTarget, lCopy)
-		WriteLine( "Converted "+System.IO.Path.GetFileName(cSource)+" to " +System.IO.Path.GetFileName(cTarget))
-	ELSE
-		WriteLine( "An error occurred")
-	ENDIF
-	RETURN
-CLASS ProjectFileConverter
+USING System.Xml                           
+DEFINE EXTENSION := "xsproj"  AS STRING
+
+	
+CLASS ProjectConverter
 	PROTECT oDoc 	AS XmlDocument  
 	PROTECT nGroup  AS LONG
 	PROTECT cSchema AS STRING  
 	PROTECT cGuid   AS STRING
 	PROTECT lCopyFiles AS LOGIC
-	PROTECT cPath	AS STRING
+	PROTECT cPath	AS STRING   
+	PROTECT oProgress AS IProgress         
+	PROTECT lVulcanRtWritten AS LOGIC
 	PROPERTY Guid AS STRING GET cGuid
-	CONSTRUCTOR()
+	CONSTRUCTOR(oProg AS IProgress)
 		cSchema := "http://schemas.microsoft.com/developer/msbuild/2003"
 		nGroup  := 0
         cGuid   := System.Guid.NewGuid().ToString("B"):ToUpper()
+        lVulcanRtWritten := FALSE
+        SELF:oProgress := oProg
         
-METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING, lCopy AS LOGIC) AS LOGIC
-	WriteLine("Processing ... "+System.IO.Path.GetFileName(cSource))
-	SELF:lCopyFiles := lCopy 
+METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING) AS LOGIC      
+	oProgress:WriteLine("Creating ... "+System.IO.Path.GetFileName(cTarget))
+	SELF:lCopyFiles := FALSE 
 	cPath := System.IO.Path.GetDirectoryName(cSource)+"\"
 	IF ! SELF:LoadFile(cSource)
 		RETURN FALSE
@@ -139,7 +99,7 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 						IF System.IO.File.Exists(cPath+cSource)
 							System.IO.File.Copy(cPath+cSource, cPath+cTarget, TRUE)
 							oAttribute:Value := cTarget    
-							WriteLine("Created "+cTarget)
+							oProgress:WriteLine("Created "+cTarget)
 						ENDIF
 					ENDIF
 				ENDIF
@@ -155,7 +115,7 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 						IF System.IO.File.Exists(cPath+cSource)
 							System.IO.File.Copy(cPath+cSource, cPath+cTarget, TRUE)
 							oAttribute:Value := cTarget    
-							WriteLine("Created "+cTarget)
+							oProgress:WriteLine("Created "+cTarget)
 						ENDIF
 					ENDIF
 				ENDIF
@@ -174,17 +134,12 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			// update extension in project references 
 			oAttribute := (XmlAttribute) oElement:Attributes:GetNamedItem("Include")
 			IF oAttribute != NULL
-				oAttribute:Value := oAttribute:Value:Replace(".vnproj", ".xsprj")
+				oAttribute:Value := oAttribute:Value:Replace(".vnproj", "."+EXTENSION)
 			ENDIF
 		CASE "propertygroup"
-			// Only insert code before the first propertygroup
+			// Only insert code inside the first propertygroup
 			IF ++nGroup == 1
 				LOCAL oImport AS XmlNode
-				// Add Extensions Path
-				oChild := oDoc:CreateElement( "XSharpProjectExtensionsPath", cSchema)
-				oChild:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
-				oElement:AppendChild(oChild)   
-				
 				// Add Import
 				oImport := oDoc:CreateElement("Import",cSchema)
 				oAttribute := oDoc:CreateAttribute("Project")
@@ -192,15 +147,15 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				oImport:Attributes:Append(oAttribute)
 				oParent:InsertBefore(oImport, oElement)
 				// Add propertygroup before Import with Label="Globals" and child <XSharpProjectExtensionsPath>
-//				LOCAL oGroup AS XmlNode
-//				oGroup := oDoc:CreateElement("PropertyGroup",cSchema)
-//				oAttribute := oDoc:CreateAttribute("Label")
-//				oAttribute:Value := "Globals"
-//				oGroup:Attributes:Append(oAttribute)
-//				oParent:InsertBefore(oGroup, oImport)
-//				oChild := oDoc:CreateElement( "XSharpProjectExtensionsPath", cSchema)
-//				oChild:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
-//				oGroup:AppendChild(oChild)   
+				oChild := oDoc:CreateElement( "PlatformTarget", cSchema)
+				oChild:InnerText := "x86"
+				oElement:InsertBefore(oChild,oElement:FirstChild)
+				oChild := oDoc:CreateElement( "Dialect", cSchema)
+				oChild:InnerText := "Vulcan"
+				oElement:InsertBefore(oChild,oElement:FirstChild)
+				oChild := oDoc:CreateElement( "XSharpProjectExtensionsPath", cSchema)
+				oChild:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
+				oElement:InsertBefore(oChild, oElement:FirstChild )
 	
 				LOCAL lHasCondition := FALSE AS LOGIC
 				IF oElement:HasAttributes    
@@ -226,7 +181,35 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			oChild := oDoc:CreateElement("ProjectCapabilities",cSchema)
 			oChild:AppendChild(oDoc:CreateElement("ProjectConfigurationsDeclaredAsItems",cSchema))
 			oElement:AppendChild(oChild)
-		OTHERWISE
+		CASE "reference"                               
+			// Add VulcanRT assemblies after 1st reference
+			IF !SELF:lVulcanRtWritten
+				oChild := oDoc:CreateElement("Reference",cSchema)    
+				oAttribute := oDoc:CreateAttribute("Include")
+				oAttribute:Value := "VulcanRT"
+				oChild:Attributes:Append(oAttribute)   
+				VAR oSub := oDoc:CreateElement("Name",cSchema)
+				oSub:InnerText := "VulcanRT"
+				oChild:AppendChild(oSub)                         
+				oSub := oDoc:CreateElement("AssemblyName",cSchema)
+				oSub:InnerText := "VulcanRT.DLL"
+				oChild:AppendChild(oSub)                         
+				oElement:ParentNode:AppendChild(oChild)				
+				oChild := oDoc:CreateElement("Reference",cSchema)
+				oAttribute := oDoc:CreateAttribute("Include")
+				oAttribute:Value := "VulcanRTFuncs"
+				oChild:Attributes:Append(oAttribute)
+				oSub := oDoc:CreateElement("Name",cSchema)
+				oSub:InnerText := "VulcanRTFuncs"
+				oChild:AppendChild(oSub)                         
+				oSub := oDoc:CreateElement("AssemblyName",cSchema)
+				oSub:InnerText := "VulcanRTFuncs.DLL"
+				oChild:AppendChild(oSub)                         
+				oElement:ParentNode:AppendChild(oChild)				
+				SELF:lVulcanRtWritten := TRUE
+			ENDIF
+		OTHERWISE   
+			// All other elements should not be changed
 			NOP
 		END SWITCH
 	ENDIF                                   
@@ -321,119 +304,22 @@ METHOD WalkNode(oNode AS XmlNode) AS VOID
 		
 		
 	RETURN
+
+STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress) AS VOID
+	LOCAL oConverter AS ProjectConverter
+	LOCAL cSource AS STRING
+	LOCAL cTarget AS STRING
+	oConverter := ProjectConverter{oProgress}
+	cSource := cFile
+	cTarget := System.IO.Path.ChangeExtension(cSource, EXTENSION)
+	IF oConverter:ConvertProjectFile(cSource, cTarget)
+		oProgress:WriteLine( "Converted "+System.IO.Path.GetFileName(cSource)+" to " +System.IO.Path.GetFileName(cTarget))
+	ELSE
+		oProgress:WriteLine( "An error occurred")
+	ENDIF
+	RETURN
 	
         
 END CLASS        
 
-CLASS SolutionConverter
-	PROTECT cFileName AS STRING
-	PROTECT cBackup   AS STRING    
-	PROTECT aGuids	  AS Dictionary<STRING, STRING>
-	PROTECT aFiles    AS List<STRING>
-	PROTECT cPath	  AS STRING                
-	PROTECT lCopyFiles AS LOGIC
-	CONSTRUCTOR(cName AS STRING, lCopy AS LOGIC)
-		cFileName := cName
-		cBackup   := System.IO.Path.ChangeExtension(cFileName, ".bak")
-		cPath     := System.IO.Path.GetDirectoryName(cFileName)  
-		lCopyFiles:= lCopy
-		IF ! cPath:EndsWith("\")
-			cPath += "\"
-		ENDIF
-		System.IO.File.Copy(cFileName, cBackup, TRUE)
-		aGuids := Dictionary<STRING, STRING>{}
-		aFiles := List<STRING> {}
-	METHOD Convert() AS LOGIC
-		LOCAL oReader AS System.IO.TextReader
-		LOCAL oWriter AS System.IO.TextWriter
-		WriteLine("Processing..."+cBackup)
-		oReader := System.IO.StreamReader{cBackup}
-		oWriter := System.IO.StreamWriter{cFileName}
-		DO WHILE oReader:Peek() >= 0
-			LOCAL cLine AS STRING
-			cLine := oReader:ReadLine()
-			IF cLine:Trim():StartsWith("Project(", StringComparison.OrdinalIgnoreCase) 
-				IF cLine:ToUpper():Contains("{5891B814-A2E0-4E64-9A2F-2C2ECAB940FE}")
-					// Vulcan Project
-					// Line looks like this:
-					// Project("VULCANGUID") = "Name", "Filename.vnproj", "PROJECTGUID"
-					// We can split the line based on the double quote
-					// then we get
-					// a[1] = Project(
-					// a[2] = VULCANGUID
-					// a[3] = ) = 
-					// a[4] = Name
-					// a[5] = , 
-					// a[6] = Filename.vnproj
-					// a[7] = ,
-					// a[8] = PROJECTGUID                        
-					// a[9] = <empty>
-					// We can then convert the vnproj file and change it to xsproj
-					// and replace VULCANGUID with XSHUID
-					// RelativePath with changed extension
-					// ProjectGUID with new GUID
-					LOCAL aElements AS STRING[]
-					aElements := cLine:Split(e"\"":ToCharArray(), StringSplitOptions.None)
-					IF aElements:Length == 9
-						LOCAL cNewFile AS STRING
-						LOCAL oConverter AS ProjectFileConverter
-						oConverter := ProjectFileConverter{}
-						aElements[2] := "{AA6C8D78-22FF-423A-9C7C-5F2393824E04}"	// XS Guid
-						cNewFile := System.IO.Path.ChangeExtension(aElements[6], ".xsprj")
-						oConverter:ConvertProjectFile(cPath+aElements[6], cPath+cNewFile, lCopyFiles)     
-						aFiles:Add(cPath+cNewFile)
-						aElements[6] := cNewFile      
-						IF ! aGuids:ContainsKey(aElements[8])
-							aGuids:Add(aElements[8], oConverter:Guid)
-						ENDIF
-						aElements[8] := oConverter:Guid    
-						
-						cLine := ""
-						FOREACH VAR cElement IN aElements
-							IF !String.IsNullOrEmpty(cLine)
-								cLine += e"\""
-							ENDIF
-							cLine += cElement
-						NEXT
-					ELSE
-						// Something wrong  
-						WriteLine( "Incorrect line in Solution:", cLine)
-						
-					ENDIF
-				ENDIF
-			ELSE
-				FOREACH VAR item IN aGuids
-					IF cLine:Contains(item:Key)
-						cLine := cLine:Replace(item:Key, item:Value)
-					ENDIF
-				NEXT				
-			ENDIF
-			oWriter:WriteLine(cLine)
-		ENDDO    
-		oReader:Close()
-		oWriter:Close()
-		// Now update project references in all xsprj files
-		FOREACH VAR sFile IN aFiles
-			LOCAL sContents AS STRING
-			LOCAL lChanged := FALSE AS LOGIC
-			sContents := System.IO.File.ReadAllText(sFile)
-			FOREACH VAR sItem IN aGuids
-				IF sContents:Contains(sItem:Key)
-					sContents := sContents:Replace(sItem:Key, sItem:Value)
-					lChanged := TRUE
-				ELSEIF 	sContents:Contains(sItem:Key:ToLower())
-					sContents := sContents:Replace(sItem:Key:ToLower(), sItem:Value)
-					lChanged := TRUE
-				ENDIF
-			NEXT                    
-			IF lChanged
-				System.IO.File.WriteAllText(sFile, sContents)
-			ENDIF
-		NEXT
-		
-		RETURN TRUE		
-		
-		
-		
-END CLASS	
 

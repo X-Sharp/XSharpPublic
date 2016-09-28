@@ -136,9 +136,13 @@ using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName A
 // nvk: roslyn treats #pragma directives as trivia attached to parse nodes. The parser does not handle them directly.
 pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN EOS         #pragmaOptions
                     | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN EOS         #pragmaWarnings
+					| PRAGMA WARNINGS   LPAREN Switch=pragmastack									 RPAREN EOS         #pragmaStack
                     ;
 
 pragmaswitch        : ON | OFF | DEFAULT
+                    ;
+
+pragmastack         : PUSH | POP
                     ;
 
 voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList end=EOS
@@ -904,7 +908,7 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE
                     // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
-                    | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
+                    | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | POP | PUSH | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
                     ;
 
 keywordxs           : Token=( ADD | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM | 

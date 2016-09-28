@@ -6083,7 +6083,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="item">Item to add</param>
         /// <returns>Added node</returns>
-        private HierarchyNode AddIndependentFileNode(MSBuild.ProjectItem item)
+        protected HierarchyNode AddIndependentFileNode(MSBuild.ProjectItem item)
         {
             HierarchyNode currentParent = GetItemParentNode(item);
             return AddFileNodeToNode(item, currentParent);
@@ -6095,7 +6095,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="item">msbuild item to add</param>
         /// <param name="parentNode">Parent Node</param>
         /// <returns>Added node</returns>
-        private HierarchyNode AddDependentFileNodeToNode(MSBuild.ProjectItem item, HierarchyNode parentNode)
+        protected HierarchyNode AddDependentFileNodeToNode(MSBuild.ProjectItem item, HierarchyNode parentNode)
         {
             FileNode node = this.CreateDependentFileNode(new ProjectElement(this, item, false));
             parentNode.AddChild(node);

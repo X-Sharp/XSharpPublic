@@ -21,6 +21,7 @@ using XSharp.Project.WPF;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System.Diagnostics;
+using MSBuild = Microsoft.Build.Evaluation;
 
 namespace XSharp.Project
 {
@@ -460,6 +461,69 @@ namespace XSharp.Project
             {
                 throw new FileLoadException("Failed to add template file to project", target, e);
             }
+        }
+
+
+        public override int ParseCanonicalName(string name, out uint itemId)
+        {
+            int result = base.ParseCanonicalName(name, out itemId);
+            return VSConstants.S_OK;
+
+        }
+
+        protected override HierarchyNode AddDependentFileNode(IDictionary<String, MSBuild.ProjectItem> subitems, string key)
+        {
+            if (subitems == null)
+            {
+                throw new ArgumentNullException("subitems");
+            }
+
+            MSBuild.ProjectItem item = subitems[key];
+            subitems.Remove(key);
+
+            HierarchyNode newNode;
+            HierarchyNode parent = null;
+
+            string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
+            Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
+            if (subitems.ContainsKey(dependentOf))
+            {
+                // The parent item is an other subitem, so recurse into this method to add the parent first
+                parent = AddDependentFileNode(subitems, dependentOf);
+            }
+            else
+            {
+                // See if the parent node already exist in the hierarchy
+                // Please note that for the dependent node the folder is not included
+                // so we take the folder from the child node and find the parentnode in the same folder
+                uint parentItemID;
+                string path = Path.Combine(this.ProjectFolder, item.EvaluatedInclude);
+                path = System.IO.Path.GetDirectoryName(path);
+                path = Path.Combine(path, dependentOf);
+                
+                this.ParseCanonicalName(path, out parentItemID);
+                if (parentItemID != (uint)VSConstants.VSITEMID.Nil)
+                    parent = this.NodeFromItemId(parentItemID);
+                //Debug.Assert(parent != null, "File dependent upon a non existing item or circular dependency. Ignoring the DependentUpon metadata");
+                if (parent == null)
+                {
+                    string message = $"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy";
+                    string title = string.Empty;
+                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+
+                    VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
+                }
+            }
+
+            // If the parent node was found we add the dependent item to it otherwise we add the item ignoring the "DependentUpon" metatdata
+            if (parent != null)
+                newNode = this.AddDependentFileNodeToNode(item, parent);
+            else
+                newNode = this.AddIndependentFileNode(item);
+
+            return newNode;
         }
 
         protected override void AddNewFileNodeToHierarchy(HierarchyNode parentNode, string fileName)

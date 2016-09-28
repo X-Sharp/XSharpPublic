@@ -1,5 +1,8 @@
 ; Please note that the "deregistering" of the XSharp association is done in a script step at the end of this file
 
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
+
 ;#define FOX
 #ifdef FOX
 #define SetupExeName    "XSharpSetup027Fox"
@@ -17,7 +20,7 @@
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
 #define VIVersion       "0.2.7.2700"
 #define VITextVersion   "0.2.7.2700 (Beta 7)"
-#define TouchDate       "2016-09-25"
+#define TouchDate       "2016-09-26"
 #define TouchTime       "02:07:00"
 #define InstallPath     "XSharpPath"
 
@@ -39,8 +42,6 @@
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
 #define ImmutableVersion "System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
 #define MetadataVersion  "System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
-#define Compression     "lzma2/ultra64"
-;#define Compression     "none"
 #define VulcanEditorGuid "Editors\{{e6787d5e-718e-4810-9c26-7cc920baa335}\Extensions"
 #define VS14RegPath      "Software\Microsoft\VisualStudio\14.0"
 #define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"

@@ -414,7 +414,7 @@ namespace XSharp.CodeDom
                     }
                     base.Output.Write(" AS ");
                     this.OutputType(e.Type);
-                    base.Output.WriteLine();
+                    //base.Output.WriteLine();
                 }
             }
         }
@@ -665,6 +665,7 @@ namespace XSharp.CodeDom
 
         protected override void GenerateNamespace(CodeNamespace e)
         {
+            this.Options.BlankLinesBetweenMembers = false;
             this.GenerateCommentStatements(e.Comments);
             // Generate Imports BEFORE the NameSpace
             this.GenerateNamespaceImports(e);
@@ -927,6 +928,7 @@ namespace XSharp.CodeDom
 
         protected override void GenerateTypeStart(CodeTypeDeclaration e)
         {
+            this.Options.BlankLinesBetweenMembers = true;
             if (e.CustomAttributes.Count > 0)
             {
                 this.GenerateAttributes(e.CustomAttributes);

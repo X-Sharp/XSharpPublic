@@ -23,14 +23,15 @@ namespace XSharp.CodeDom
     {
         private MemberAttributes classVarModifiers;
         private CodeMemberMethod initComponent;
+        private IList<IToken> _tokens;
 
         public XSharpTreeDiscover()
         {
             // The default (empty) CodeCompileUnit, so we can work if none is provided
             this.CodeCompileUnit = new CodeCompileUnit();
             // The default Namespace, so we can work if none is provided... :)
-            //this.CurrentNamespace = new CodeNamespace();
-            //this.CodeCompileUnit.Namespaces.Add(this.CurrentNamespace);
+            this.CurrentNamespace = new CodeNamespace();
+            this.CodeCompileUnit.Namespaces.Add(this.CurrentNamespace);
 
             // If we have some Nested Namespaces, we will need to keep track
             this.NamespaceStack = new Stack<CodeNamespace>();
@@ -38,6 +39,7 @@ namespace XSharp.CodeDom
             this.LocalDecls = new Stack<XSharpParser.LocalvarContext>();
             //
             this.CurrentFile = "";
+            _tokens = null;
         }
 
         public CodeCompileUnit CodeCompileUnit { get; internal set; }
@@ -65,6 +67,16 @@ namespace XSharp.CodeDom
         public Stack<XSharpParser.LocalvarContext> LocalDecls { get; private set; }
         public string SourceCode { get; internal set; }
 
+        public override void EnterSource([NotNull] XSharpParser.SourceContext context)
+        {
+            var source = (XSharpLexer)context.Start.TokenSource;
+            source.Reset();
+            _tokens = source.GetAllTokens();
+        }
+        public override void ExitSource([NotNull] XSharpParser.SourceContext context)
+        {
+            _tokens = null;
+        }
         public override void EnterNamespace_(XSharpParser.Namespace_Context context)
         {
             String newNamespaceName = context.Name.GetText();
@@ -114,6 +126,7 @@ namespace XSharp.CodeDom
             CurrentNamespace.Types.Add(newClass);
             // That's a Class
             newClass.IsClass = true;
+            newClass.Comments.AddRange(context.GetLeadingComments(_tokens));
             // 
             if (context.Modifiers == null)
             {
@@ -154,6 +167,7 @@ namespace XSharp.CodeDom
         public override void EnterMethod([NotNull] XSharpParser.MethodContext context)
         {
             CodeMemberMethod newMethod = new CodeMemberMethod();
+            newMethod.Comments.AddRange(context.GetLeadingComments(_tokens));
             newMethod.Name = context.Id.GetText();
             newMethod.Attributes = MemberAttributes.Public;
             newMethod.Parameters.AddRange(GetParametersList(context.ParamList));
@@ -219,6 +233,7 @@ namespace XSharp.CodeDom
         public override void EnterEvent_([NotNull] XSharpParser.Event_Context context)
         {
             CodeMemberEvent evt = new CodeMemberEvent();
+            evt.Comments.AddRange(context.GetLeadingComments(_tokens));
             evt.Name = context.Id.GetText();
             evt.Attributes = MemberAttributes.Public;
             evt.Type = new CodeTypeReference(context.Type.GetText());
@@ -249,6 +264,7 @@ namespace XSharp.CodeDom
         public override void EnterClsctor([NotNull] XSharpParser.ClsctorContext context)
         {
             CodeConstructor ctor = new CodeConstructor();
+            ctor.Comments.AddRange(context.GetLeadingComments(_tokens));
             ctor.Attributes = MemberAttributes.Public;
             ctor.Parameters.AddRange(GetParametersList(context.ParamList));
             //
@@ -274,6 +290,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
+            snippet.Comments.AddRange(context.GetLeadingComments(_tokens));
             this.CurrentClass.Members.Add(snippet);
         }
 
@@ -282,6 +299,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
+            snippet.Comments.AddRange(context.GetLeadingComments(_tokens));
             this.CurrentClass.Members.Add(snippet);
         }
 
@@ -290,6 +308,7 @@ namespace XSharp.CodeDom
             // Ok, let's "cheat" : We will not analyze the element
             // we will just copy the whole source code in a Snippet Member
             CodeSnippetTypeMember snippet = CreateSnippetMember(context);
+            snippet.Comments.AddRange(context.GetLeadingComments(_tokens));
             this.CurrentClass.Members.Add(snippet);
         }
 
@@ -1451,5 +1470,58 @@ namespace XSharp.CodeDom
         }
 
         #endregion
+
+      
+    }
+    static class ParseHelpers
+    {
+        public static CodeCommentStatement[] GetLeadingComments(this ParserRuleContext context, IList<IToken> tokens)
+        {
+            int endPos = context.Start.TokenIndex - 1;
+            int startPos = endPos;
+            var stmts = new List<CodeCommentStatement>();
+            while (startPos >= 0 && (tokens[startPos].Channel != 0 || tokens[startPos].Type == XSharpLexer.EOS))
+            {
+                var token = tokens[startPos];
+                if (XSharpLexer.IsComment(token.Type))
+                {
+                    string line = token.Text.TrimStart();
+                    switch (token.Type)
+                    {
+                        case XSharpLexer.DOC_COMMENT:
+                            stmts.Insert(0, new CodeCommentStatement(line.Substring(3), true));
+                            break;
+                        case XSharpLexer.SL_COMMENT:
+                            if (line.StartsWith("*"))
+                            {
+                                stmts.Insert(0, new CodeCommentStatement(line.Substring(1), false));
+                            }
+                            else
+                            {
+                                stmts.Insert(0, new CodeCommentStatement(line.Substring(2), false));
+                            }
+                            break;
+                        case XSharpLexer.ML_COMMENT:
+                            // remove terminators and convert to list of single line comments
+                            var lines = line.Substring(2, line.Length - 4).Replace("\r","").Split('\n');
+                            CodeCommentStatement[]  cmts = new CodeCommentStatement[lines.Length];
+                            for (int i = 0; i < lines.Length; i++)
+                            {
+                                cmts[i] = new CodeCommentStatement(lines[i], false);
+                            }
+                            for (int i = lines.Length-1; i >= 0; i--)
+                            {
+                                stmts.Insert(0, cmts[i]);
+                            }
+                            break;
+                        default:
+                            // what else
+                            break;
+                    }
+                }
+                startPos--;
+            }
+            return stmts.ToArray();
+        }
     }
 }

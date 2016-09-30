@@ -651,7 +651,7 @@ primary				: Key=SELF													#selfExpression
                     | Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
 					| Name=voTypeName											#voTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
-                    //| Type=nativeType											#typeExpression			// Standard DotNet Types
+                    | Type=typeName											    #typeExpression			// Standard DotNet Types
                     //| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
@@ -706,8 +706,8 @@ name				: Left=name Op=DOT Right=simpleName								#qualifiedName
                     | Name=aliasedName												#simpleOrAliasedName
                     ;
 
-aliasedName			: Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
-                    | Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifiedName
+aliasedName			: Global=GLOBAL Op=COLONCOLON Right=simpleName					#globalQualifiedName
+                    | Alias=identifierName Op=COLONCOLON Right=simpleName			#aliasQualifiedName
                     | Name=simpleName												#identifierOrGenericName
                     ;
 

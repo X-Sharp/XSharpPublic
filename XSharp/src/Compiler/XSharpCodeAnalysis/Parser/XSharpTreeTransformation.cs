@@ -1305,7 +1305,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (_defTree == null) {
                 var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName,false));
+                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false));
 
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 _defTree = CSharpSyntaxTree.Create(
@@ -1452,7 +1452,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (ch is XP.FunctionContext)
             {
                 bProcess = true;
-                var modifiers =  ((XP.FunctionContext)ch).Modifiers;
+                var modifiers = ((XP.FunctionContext)ch).Modifiers;
                 if (modifiers != null)
                     bStaticVisibility = modifiers.IsStaticVisible;
             }
@@ -1484,17 +1484,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (modifiers != null)
                     bStaticVisibility = modifiers.IsStaticVisible;
             }
-            if (bProcess) {
+            if (bProcess)
+            {
                 string className = GlobalClassName;
-                if (bStaticVisibility) {
+                if (bStaticVisibility)
+                {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
-                    className = className+"$" + filename + "$";
+                    className = className + "$" + filename + "$";
                 }
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
                 GlobalEntities.Members.Add(GenerateGlobalClass(className, bStaticVisibility, ch.Get<MemberDeclarationSyntax>()));
             }
-             else {
+            else
+            {
                 context.Put(ch.Get<CSharpSyntaxNode>());
             }
         }
@@ -3391,9 +3394,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varType.XVoIsDecl = true;
             }
             if (isStatic) {
-                staticName = StaticLocalFieldNamePrefix+context.Id.Get<SyntaxToken>().Text+UniqueNameSuffix;
-                ClassEntities.Peek().Members.Add(
-                    _syntaxFactory.FieldDeclaration(
+                if (isStatic)
+                {
+                    staticName = StaticLocalFieldNamePrefix + context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
+                    ClassEntities.Peek().Members.Add(
+                        _syntaxFactory.FieldDeclaration(
                         EmptyList<AttributeListSyntax>(),
                         TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
                         _syntaxFactory.VariableDeclaration(varType,
@@ -3401,8 +3406,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                     );
                 if (initExpr != null) {
-                    ClassEntities.Peek().Members.Add(
-                        _syntaxFactory.FieldDeclaration(
+                        ClassEntities.Peek().Members.Add(
+                            _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.BoolKeyword)),
@@ -3411,8 +3416,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         GenerateLiteral(true)))),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                         );
-                    ClassEntities.Peek().Members.Add(
-                        _syntaxFactory.FieldDeclaration(
+                        ClassEntities.Peek().Members.Add(
+                            _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword,SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_objectType,
@@ -5292,6 +5297,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(context.Name.Get<LiteralExpressionSyntax>());
         }
+
+
+        public override void ExitTypeExpression([NotNull] XP.TypeExpressionContext context)
+        {
+            context.Put(context.Type.Get<TypeSyntax>());
+        }
+
 
         public override void ExitVoTypeName([NotNull] XP.VoTypeNameContext context)
         {

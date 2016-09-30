@@ -2908,10 +2908,52 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitGlobalAttributes([NotNull] XP.GlobalAttributesContext context)
         {
             var attributes = _pool.AllocateSeparated<AttributeSyntax>();
-            foreach(var attrCtx in context._Attributes) {
+            // process wild cards in the AssemblyVersionAttribute, AssemblyFileVersionAttribute and AssemblyInformationalVersionAttribute
+            // [assembly: AssemblyVersionAttribute("1.0.*")]
+            // [assembly: AssemblyFileVersionAttribute("1.0.*")]
+            // [assembly: AssemblyInformationalVersionAttribute("1.0.*")]
+            foreach (var attrCtx in context._Attributes) {
                 if (attributes.Count > 0)
                 {
                     attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                }
+                if (context.Target.Token.Type == XP.ASSEMBLY)
+                {
+                    string[] names = {  "AssemblyVersionAttribute","AssemblyVersion",
+                                        "AssemblyFileVersionAttribute","AssemblyFileVersion",
+                                        "AssemblyInformationalVersionAttribute","AssemblyInformationalVersion"};
+
+                    string sSRef = "System.Reflection.";
+                    foreach (var name in names)
+                    {
+                        string ctxName = attrCtx.Name.GetText();
+                        if (String.Equals(ctxName, name, StringComparison.OrdinalIgnoreCase)  ||
+                            String.Equals(ctxName, sSRef + name, StringComparison.OrdinalIgnoreCase) )
+                        {
+                            // check to see if the attribute has a wild card
+                            if (attrCtx._Params.Count == 1 && attrCtx._Params[0].Start.Type == XP.STRING_CONST)
+                            {
+                                string version = attrCtx._Params[0].Start.Text;
+                                if (version.StartsWith("\"") && version.EndsWith("\""))
+                                    version = version.Substring(1, version.Length - 2);
+                                System.Version vers;
+                                if (VersionHelper.TryParseAssemblyVersion(version, allowWildcard: true, version: out vers))
+                                {
+                                    var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
+                                    var newarg = _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(vers.ToString()));
+                                    arguments.Add(newarg);
+                                    
+                                    attrCtx.Put(_syntaxFactory.Attribute(attrCtx.Get<AttributeSyntax>().Name,
+                                        _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                            arguments, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                                    _pool.Free(arguments);
+                                }
+
+                            }
+                            break;
+                        }
+
+                    }
                 }
                 attributes.Add(attrCtx.Get<AttributeSyntax>());
             }

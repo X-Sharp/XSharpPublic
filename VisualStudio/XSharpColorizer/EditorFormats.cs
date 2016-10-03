@@ -35,7 +35,7 @@ namespace XSharpColorizer
         public XSharpValueFormat()
         {
             this.DisplayName = "XSharp Constant";
-            this.ForegroundColor = Colors.Firebrick;
+            this.ForegroundColor = Colors.Brown;
         }
     }
 
@@ -63,7 +63,7 @@ namespace XSharpColorizer
         public XSharpOperatorFormat()
         {
             this.DisplayName = "XSharp Operator";
-            this.ForegroundColor = Colors.DarkGray;
+            this.ForegroundColor = Colors.DarkCyan;
         }
     }
 

@@ -1496,11 +1496,11 @@ namespace XSharp.CodeDom
                         case XSharpLexer.SL_COMMENT:
                             if (line.StartsWith("*"))
                             {
-                                stmts.Insert(0, new CodeCommentStatement(line.Substring(1), false));
+                                stmts.Insert(0, new CodeCommentStatement(line.Substring(1).Trim(), false));
                             }
                             else
                             {
-                                stmts.Insert(0, new CodeCommentStatement(line.Substring(2), false));
+                                stmts.Insert(0, new CodeCommentStatement(line.Substring(2).Trim(), false));
                             }
                             break;
                         case XSharpLexer.ML_COMMENT:

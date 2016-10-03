@@ -9,7 +9,7 @@ FUNCTION Start() AS VOID
 	LOCAL cbMacro as CODEBLOCK
 	LOCAL cMacro as STRING
 	VulcanLoader.InitVulcan() // required for VO/Vulcan database support
-	cMacro := "{||Today()}"
+	cMacro := "{||DTOC(Today())}"
 	cbMacro := &(cMacro)
         Console.WriteLine("Hello World today is " + (STRING) Eval(cbMacro))
 		

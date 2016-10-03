@@ -97,7 +97,39 @@ namespace XSharpColorizer
                     var token = TokenStream.Get(iToken);
                     var tokenType = token.Type;
                     TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
-                    if (XSharpLexer.IsKeyword(tokenType))
+                    if (token.Channel != 0)
+                    {
+                        if (token.Channel == XSharpLexer.PREPROCESSOR)
+                        {
+                            newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
+                        }
+                        else
+                        {
+                            switch (tokenType)
+                            {
+                                case XSharpLexer.WS:
+                                    break;
+                                case XSharpLexer.LINE_CONT:
+                                case XSharpLexer.LINE_CONT_OLD:
+                                    if (token.Text.Trim().Length > 1)
+                                    {
+                                        // Contains embedded comment
+                                        tokenSpan = new TextSpan(token.StartIndex + 1, token.StopIndex - token.StartIndex);
+                                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
+
+                                        tokenSpan = new TextSpan(token.StartIndex, 1);
+                                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
+                                    }
+                                    break;
+                                case XSharpLexer.SL_COMMENT:
+                                case XSharpLexer.ML_COMMENT:
+                                case XSharpLexer.DOC_COMMENT:
+                                    newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
+                                    break;
+                            }
+                        }
+                    }
+                    else if (XSharpLexer.IsKeyword(tokenType))
                     {
                         newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
                     }
@@ -129,10 +161,6 @@ namespace XSharpColorizer
                     else if (XSharpLexer.IsIdentifier(tokenType))
                     {
                         newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
-                    }
-                    else if (XSharpLexer.IsComment(tokenType))
-                    {
-                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
                     }
                 }
                 foreach (var tag in xsTagger.Tags)

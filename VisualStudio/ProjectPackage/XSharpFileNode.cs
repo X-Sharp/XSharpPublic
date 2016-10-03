@@ -215,7 +215,22 @@ namespace XSharp.Project
             {
                 this.ItemNode.ItemName = SR.Compile;
             }
-            //
+            else
+            {
+                var ftype = GetFileType(this.FileName);
+                switch (ftype)
+                {
+                    case XSharpFileType.ManagedResource:
+                        this.ItemNode.ItemName = ProjectFileConstants.EmbeddedResource;
+                        break;
+                    //case XSharpFileType.Settings:
+                    //    this.ItemNode.ItemName = ProjectFileConstants.None;
+                    //    break;
+                    default:
+                        break;
+                }
+                //
+            }
         }
         /// <summary>
         /// Returns the SubType of an XSharp FileNode. It is 
@@ -342,6 +357,10 @@ namespace XSharp.Project
                     return XSharpFileType.XAML;
                 case ".settings":
                     return XSharpFileType.Settings;
+                case ".resx":
+                    return XSharpFileType.ManagedResource;
+                case ".rc":
+                    return XSharpFileType.NativeResource;
                 default:
                     return XSharpFileType.Unknown;
 
@@ -405,8 +424,6 @@ namespace XSharp.Project
                     return XSharpConstants.VOBinary;
                 case XSharpFileType.ManagedResource:
                     return ProjectFileConstants.Resource;
-                case XSharpFileType.Settings:
-                    return XSharpConstants.Settings;
                 case XSharpFileType.XAML:
                     return ProjectFileConstants.Page;
                 default:

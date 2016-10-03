@@ -30,11 +30,12 @@ namespace XSharp.CodeDom
         private string selector;
         private string staticSelector;
         private string entrypointCode = null;
-
+        private List<String> _using;
         public XSharpCodeGenerator() : base()
         {
             this.selector = ":";
             this.staticSelector = ".";
+            _using = new List<String>();
         }
 
         protected override string NullToken
@@ -598,6 +599,7 @@ namespace XSharp.CodeDom
         protected override void GenerateCompileUnitStart(CodeCompileUnit e)
         {
             bool generateComment = true;
+            _using.Clear();
             base.GenerateCompileUnitStart(e);
             if (e.UserData.Contains(XSharpCodeConstants.USERDATA_NOHEADER))
             {
@@ -666,7 +668,8 @@ namespace XSharp.CodeDom
         protected override void GenerateNamespace(CodeNamespace e)
         {
             this.Options.BlankLinesBetweenMembers = false;
-            this.GenerateCommentStatements(e.Comments);
+                this.GenerateCommentStatements(e.Comments);
+
             // Generate Imports BEFORE the NameSpace
             this.GenerateNamespaceImports(e);
             //this.Output.WriteLine("");
@@ -689,9 +692,13 @@ namespace XSharp.CodeDom
 
         protected override void GenerateNamespaceImport(CodeNamespaceImport e)
         {
-            base.Output.Write("USING ");
-            this.OutputIdentifier(e.Namespace);
-            base.Output.WriteLine();
+            if (!_using.Contains(e.Namespace.ToLowerInvariant()))
+            {
+                base.Output.Write("USING ");
+                this.OutputIdentifier(e.Namespace);
+                base.Output.WriteLine();
+                _using.Add(e.Namespace.ToLowerInvariant());
+            }
         }
 
         protected override void GenerateNamespaceStart(CodeNamespace e)

@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -139,7 +105,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Gets a collection of all properties that pertain to the object. 
+        /// Gets a collection of all properties that pertain to the object.
         /// </summary>
         public virtual EnvDTE.Properties Properties
         {
@@ -193,7 +159,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Saves the project item. 
+        /// Saves the project item.
         /// </summary>
         /// <param name="fileName">The name with which to save the project or project item.</param>
         /// <remarks>Implemented by subclasses.</remarks>
@@ -261,7 +227,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Gets the ConfigurationManager object for this ProjectItem. 
+        /// Gets the ConfigurationManager object for this ProjectItem.
         /// </summary>
         /// <remarks>We do not support config management based per item.</remarks>
         public virtual EnvDTE.ConfigurationManager ConfigurationManager
@@ -328,11 +294,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                throw new NotImplementedException();
+                return false;
             }
             set
             {
-                throw new NotImplementedException();
+
             }
         }
 
@@ -347,10 +313,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
             set
             {
-                if(this.node == null || this.node.ProjectMgr == null || this.node.ProjectMgr.IsClosed || this.node.ProjectMgr.Site == null)
-                {
-                    throw new InvalidOperationException();
-                }
+                CheckProjectIsValid();
 
                 UIThread.DoOnUIThread(delegate()
                 {
@@ -361,15 +324,20 @@ namespace Microsoft.VisualStudio.Project.Automation
                 });
             }
         }
+        protected void CheckProjectIsValid() {
+            Utilities.CheckNotNull(this.node);
+            Utilities.CheckNotNull(this.node.ProjectMgr);
+            Utilities.CheckNotNull(this.node.ProjectMgr.Site);
+            if (this.node.ProjectMgr.IsClosed) {
+                throw new InvalidOperationException();
+            }
+        }
         /// <summary>
         /// Removes the project item from hierarchy.
         /// </summary>
         public virtual void Remove()
         {
-            if(this.node == null || this.node.ProjectMgr == null || this.node.ProjectMgr.IsClosed || this.node.ProjectMgr.Site == null)
-            {
-                throw new InvalidOperationException();
-            }
+            CheckProjectIsValid();
 
             UIThread.DoOnUIThread(delegate()
             {
@@ -381,14 +349,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Removes the item from its project and its storage. 
+        /// Removes the item from its project and its storage.
         /// </summary>
         public virtual void Delete()
         {
-            if(this.node == null || this.node.ProjectMgr == null || this.node.ProjectMgr.IsClosed || this.node.ProjectMgr.Site == null)
-            {
-                throw new InvalidOperationException();
-            }
+            CheckProjectIsValid();
 
             UIThread.DoOnUIThread(delegate()
             {
@@ -411,7 +376,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Gets a value indicating whether the project item is open in a particular view type. 
+        /// Gets a value indicating whether the project item is open in a particular view type.
         /// </summary>
         /// <param name="viewKind">A Constants.vsViewKind* indicating the type of view to check./param>
         /// <returns>A Boolean value indicating true if the project is open in the given view type; false if not. </returns>
@@ -441,14 +406,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Expands the view of Solution Explorer to show project items. 
+        /// Expands the view of Solution Explorer to show project items.
         /// </summary>
         public virtual void ExpandView()
         {
-            if(this.node == null || this.node.ProjectMgr == null || this.node.ProjectMgr.IsClosed || this.node.ProjectMgr.Site == null)
-            {
-                throw new InvalidOperationException();
-            }
+            CheckProjectIsValid();
 
             UIThread.DoOnUIThread(delegate()
             {

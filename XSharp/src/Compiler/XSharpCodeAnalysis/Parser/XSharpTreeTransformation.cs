@@ -217,10 +217,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        protected bool IsEntity(ParserRuleContext context)
-        {
-            return context is XP.IEntityContext;
-        }
         #region Entitynames
         protected string GetNestedName(IRuleNode ctx)
         {
@@ -1355,8 +1351,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             s = s.Replace("Context","");
             Debug.WriteLine("{0}<= ({1},{2}) {3} '{4}'",new string(' ',context.Depth()),context.Start.Line,context.Start.Column,s,context.Start.Text);
 #endif
-            if (IsEntity(context))
-                Entities.Pop();
+        if (context is XP.IEntityContext)
+            Entities.Pop();
         }
 
         public override void EnterSource([NotNull] XP.SourceContext context)

@@ -27,7 +27,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     public class OAReferenceFolderItem : OAProjectItem<ReferenceContainerNode>
     {
         #region ctors
-        public OAReferenceFolderItem(OAProject project, ReferenceContainerNode node)
+        internal OAReferenceFolderItem(OAProject project, ReferenceContainerNode node)
             : base(project, node)
         {
         }

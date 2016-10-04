@@ -32,7 +32,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     public class OAProjectItems : OANavigableProjectItems
     {
         #region ctor
-        public OAProjectItems(OAProject project, HierarchyNode nodeWithItems)
+        internal OAProjectItems(OAProject project, HierarchyNode nodeWithItems)
             : base(project, nodeWithItems)
         {
         }

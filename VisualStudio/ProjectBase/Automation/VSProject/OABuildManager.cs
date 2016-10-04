@@ -26,7 +26,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     {
         private ProjectNode projectManager;
 
-        public OABuildManager(ProjectNode project)
+        internal OABuildManager(ProjectNode project)
         {
             projectManager = project;
             AddEventSource<_dispBuildManagerEvents>(this as IEventSource<_dispBuildManagerEvents>);

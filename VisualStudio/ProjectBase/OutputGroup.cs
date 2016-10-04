@@ -45,7 +45,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="msBuildTargetName">MSBuild target name</param>
         /// <param name="projectManager">Project that produce this output</param>
         /// <param name="configuration">Configuration that produce this output</param>
-        public OutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration)
+        internal OutputGroup(string outputName, string msBuildTargetName, ProjectNode projectManager, ProjectConfig configuration)
         {
             Utilities.ArgumentNotNull("outputName", outputName);
             Utilities.ArgumentNotNull("msBuildTargetName", msBuildTargetName);
@@ -71,7 +71,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Get the project object that produces this output group.
         /// </summary>
-        protected ProjectNode Project
+        internal ProjectNode Project
         {
             get { return _project; }
         }

@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Project.Automation;
 using IServiceProvider = System.IServiceProvider;
 
 namespace Microsoft.VisualStudio.Project

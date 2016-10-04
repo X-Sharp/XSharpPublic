@@ -1,50 +1,17 @@
-/********************************************************************************************
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -69,19 +36,26 @@ namespace Microsoft.VisualStudio.Project
     public class ComReferenceNode : ReferenceNode
     {
         #region fields
-        private string typeName;
+        protected string typeName;
         private Guid typeGuid;
         private string projectRelativeFilePath;
         private string installedFilePath;
         private string minorVersionNumber;
         private string majorVersionNumber;
         private string lcid;
+        private string tmpWrapper;
+
         #endregion
 
         #region properties
         public override string Caption
         {
             get { return this.typeName; }
+        }
+
+        public virtual string Description
+        {
+            get { return typeName;}
         }
 
         public override string Url
@@ -174,7 +148,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region ctors
         /// <summary>
-        /// Constructor for the ComReferenceNode. 
+        /// Constructor for the ComReferenceNode.
         /// </summary>
         public ComReferenceNode(ProjectNode root, ProjectElement element)
             : base(root, element)
@@ -218,7 +192,9 @@ namespace Microsoft.VisualStudio.Project
             this.majorVersionNumber = selectorData.wTypeLibraryMajorVersion.ToString(CultureInfo.InvariantCulture);
             this.minorVersionNumber = selectorData.wTypeLibraryMinorVersion.ToString(CultureInfo.InvariantCulture);
             this.lcid = selectorData.lcidTypeLibrary.ToString(CultureInfo.InvariantCulture);
-            this.WrapperTool = wrapperTool;
+            if (String.IsNullOrEmpty(wrapperTool))
+               wrapperTool = WrapperToolAttributeValue.TlbImp.ToString();
+           tmpWrapper = wrapperTool;
 
             // Check to see if the COM object actually exists.
             this.SetInstalledFilePath();
@@ -235,7 +211,7 @@ namespace Microsoft.VisualStudio.Project
         {
             return new ComReferenceProperties(this);
         }
-        
+
         /// <summary>
         /// Links a reference node to the project and hierarchy.
         /// </summary>
@@ -244,7 +220,7 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(this.ItemNode != null, "The AssemblyName field has not been initialized");
 
             // We need to create the project element at this point if it has not been created.
-            // We cannot do that from the ctor if input comes from a component selector data, since had we been doing that we would have added a project element to the project file.  
+            // We cannot do that from the ctor if input comes from a component selector data, since had we been doing that we would have added a project element to the project file.
             // The problem with that approach is that we would need to remove the project element if the item cannot be added to the hierachy (E.g. It already exists).
             // It is just safer to update the project file now. This is the intent of this method.
             // Call MSBuild to build the target ResolveComReferences
@@ -272,7 +248,10 @@ namespace Microsoft.VisualStudio.Project
                 if(referenceNode != null)
                 {
                     // We check if the name and guids are the same
-                    if(referenceNode.TypeGuid == this.TypeGuid && String.Compare(referenceNode.Caption, this.Caption, StringComparison.OrdinalIgnoreCase) == 0)
+                    if (referenceNode.TypeGuid == this.TypeGuid &&
+                        referenceNode.WrapperTool == this.WrapperTool &&
+                        referenceNode.MajorVersionNumber == this.MajorVersionNumber &&
+                        referenceNode.MinorVersionNumber == this.MinorVersionNumber)
                     {
                         existingReference = referenceNode;
                         return true;
@@ -324,9 +303,11 @@ namespace Microsoft.VisualStudio.Project
             else
             {
                 // MSBuild will have to generate an interop assembly
-                element.SetMetadata(ProjectFileConstants.WrapperTool, WrapperToolAttributeValue.TlbImp.ToString().ToLowerInvariant());
-                element.SetMetadata(ProjectFileConstants.EmbedInteropTypes, true.ToString());
-                element.SetMetadata(ProjectFileConstants.Private, true.ToString());
+               element.SetMetadata(ProjectFileConstants.WrapperTool, tmpWrapper.ToLowerInvariant());
+               element.SetMetadata(ProjectFileConstants.Private, true.ToString());
+               // element.SetMetadata(ProjectFileConstants.EmbedInteropTypes, true.ToString());
+               // element.SetMetadata(ProjectFileConstants.Private, true.ToString());
+               // element.SetMetadata(ProjectFileConstants.EmbedInteropTypes, false.ToString());
             }
             return element;
         }
@@ -336,18 +317,21 @@ namespace Microsoft.VisualStudio.Project
             // Call MSBuild to build the target ResolveComReferences
             bool success;
             ErrorHandler.ThrowOnFailure(this.ProjectMgr.BuildTarget(MsBuildTarget.ResolveComReferences, out success));
-            if(!success)
-                throw new InvalidOperationException();
+            //if(!success)
+                //throw new InvalidOperationException();
 
             // Now loop through the generated COM References to find the corresponding one
-            IEnumerable<ProjectItem> comReferences = this.ProjectMgr.BuildProject.GetItems(MsBuildGeneratedItemType.ComReferenceWrappers);
+            //IEnumerable<ProjectItem> comReferences = this.ProjectMgr.BuildProject.GetItems(MsBuildGeneratedItemType.ComReferenceWrappers);
+            IEnumerable<ProjectItem> comReferences = this.ProjectMgr.BuildProject.GetItems(ProjectFileConstants.COMReference);
             foreach (ProjectItem reference in comReferences)
             {
                 if(String.Compare(reference.GetMetadataValue(ProjectFileConstants.Guid), this.typeGuid.ToString("B"), StringComparison.OrdinalIgnoreCase) == 0
                     && String.Compare(reference.GetMetadataValue(ProjectFileConstants.VersionMajor), this.majorVersionNumber, StringComparison.OrdinalIgnoreCase) == 0
                     && String.Compare(reference.GetMetadataValue(ProjectFileConstants.VersionMinor), this.minorVersionNumber, StringComparison.OrdinalIgnoreCase) == 0
-                    && String.Compare(reference.GetMetadataValue(ProjectFileConstants.Lcid), this.lcid, StringComparison.OrdinalIgnoreCase) == 0)
+                    && String.Compare(reference.GetMetadataValue(ProjectFileConstants.Lcid), this.lcid, StringComparison.OrdinalIgnoreCase) == 0
+                    && String.Compare(reference.GetMetadataValue(ProjectFileConstants.WrapperTool), this.WrapperTool, StringComparison.OrdinalIgnoreCase) == 0)
                 {
+
                     string name = reference.EvaluatedInclude;
                     if(Path.IsPathRooted(name))
                     {

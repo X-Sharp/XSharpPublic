@@ -245,6 +245,18 @@ namespace Microsoft.VisualStudio.Project
         {
         }
         #endregion
+		#region static methods
+		internal static int ForceCast(uint i)
+		{
+			unchecked { return (int)i; }
+		}
+
+		internal static uint ForceCast(int i)
+		{
+			unchecked { return (uint)i; }
+		}
+
+		#endregion
     }
 
     [SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
@@ -254,6 +266,8 @@ namespace Microsoft.VisualStudio.Project
         internal static readonly ushort CF_VSREFPROJECTITEMS;
         internal static readonly ushort CF_VSSTGPROJECTITEMS;
         internal static readonly ushort CF_VSPROJECTCLIPDESCRIPTOR;
+		internal static readonly ushort CF_VSREFPROJECTS;
+		internal static readonly ushort CF_VSSTGPROJECTS;
 #pragma warning restore 414
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
@@ -262,6 +276,10 @@ namespace Microsoft.VisualStudio.Project
             CF_VSREFPROJECTITEMS = (ushort)UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTITEMS");
             CF_VSSTGPROJECTITEMS = (ushort)UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTITEMS");
             CF_VSPROJECTCLIPDESCRIPTOR = (ushort)UnsafeNativeMethods.RegisterClipboardFormat("CF_PROJECTCLIPBOARDDESCRIPTOR");
+
+			CF_VSREFPROJECTS = (ushort) UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTS");
+			CF_VSSTGPROJECTS = (ushort) UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTS");
+
         }
 
 
@@ -275,6 +293,11 @@ namespace Microsoft.VisualStudio.Project
             fmt.tymed = (uint)TYMED.TYMED_HGLOBAL;
             return fmt;
         }
+
+		public static FORMATETC CreateFormatEtc()
+		{
+			return CreateFormatEtc(CF_VSSTGPROJECTITEMS);
+		}
 
         public static int QueryGetData(Microsoft.VisualStudio.OLE.Interop.IDataObject pDataObject, ref FORMATETC fmtetc)
         {
@@ -405,7 +428,7 @@ namespace Microsoft.VisualStudio.Project
             try
             {
                 _DROPFILES df = (_DROPFILES)Marshal.PtrToStructure(data, typeof(_DROPFILES));
-                if(df.fWide != 0)
+                if (df.fWide != 0)
                 {
                     IntPtr pdata = new IntPtr((long)data + df.pFiles);
                     return Marshal.PtrToStringUni(pdata);
@@ -413,13 +436,35 @@ namespace Microsoft.VisualStudio.Project
             }
             finally
             {
-                if(data != IntPtr.Zero)
+                if (data != IntPtr.Zero)
                 {
                     UnsafeNativeMethods.GlobalUnLock(data);
                 }
             }
 
             return null;
+        }
+		internal static void FillFormatEtc(ref FORMATETC template, ushort clipFormat, ref FORMATETC result)
+		{
+			if (clipFormat != 0)
+			{
+				result = template;
+				result.cfFormat = clipFormat;
+				result.ptd = IntPtr.Zero;
+				result.dwAspect = (uint)DVASPECT.DVASPECT_CONTENT;
+				result.lindex = -1;
+				result.tymed = (uint)TYMED.TYMED_NULL;
+			}
+		}
+
+		internal static void OleCopyFormatEtc(ref FORMATETC src, ref FORMATETC dest)
+		{
+			dest.cfFormat = src.cfFormat;
+			dest.ptd = Marshal.AllocCoTaskMem(Marshal.SizeOf(src.ptd));
+			Marshal.StructureToPtr(src.ptd, dest.ptd, false);
+			dest.dwAspect = src.dwAspect;
+			dest.lindex = src.lindex;
+			dest.tymed = src.tymed;
         }
 
         internal static IntPtr CopyHGlobal(IntPtr data)

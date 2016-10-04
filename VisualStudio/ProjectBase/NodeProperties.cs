@@ -317,7 +317,7 @@ namespace Microsoft.VisualStudio.Project
         [SRCategoryAttribute(SR.Misc)]
         [LocDisplayName(SR.FileName)]
         [SRDescriptionAttribute(SR.FileNameDescription)]
-        public string FileName
+		public virtual string FileName
         {
             get
             {

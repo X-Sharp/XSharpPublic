@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections;
@@ -54,16 +20,16 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using Microsoft.Build.Construction;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using MSBuild = Microsoft.Build.Evaluation;
-using Microsoft.Build.Construction;
 
 /* This file provides a basefunctionallity for IVsCfgProvider2.
    Instead of using the IVsProjectCfgEventsHelper object we have our own little sink and call our own helper methods
-   similiar to the interface. But there is no real benefit in inheriting from the interface in the first place. 
-   Using the helper object seems to be:  
+   similiar to the interface. But there is no real benefit in inheriting from the interface in the first place.
+   Using the helper object seems to be:
     a) undocumented
     b) not really wise in the managed world
 */
@@ -77,6 +43,8 @@ namespace Microsoft.VisualStudio.Project
         internal const string configString = " '$(Configuration)' == '{0}' ";
         internal const string AnyCPUPlatform = "Any CPU";
         internal const string x86Platform = "x86";
+        internal const string x64Platform = "x64";
+        internal const string ARMPlatform = "ARM";
 
         private ProjectNode project;
         private EventSinkCollection cfgEventSinks = new EventSinkCollection();
@@ -88,15 +56,16 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The associated project.
         /// </summary>
-        protected ProjectNode ProjectMgr
+        internal ProjectNode ProjectMgr
         {
             get
             {
                 return this.project;
             }
         }
+
         /// <summary>
-        /// If the project system wants to add custom properties to the property group then 
+        /// If the project system wants to add custom properties to the property group then
         /// they provide us with this data.
         /// Returns/sets the [(<propName, propCondition>) <propValue>] collection
         /// </summary>
@@ -116,7 +85,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctors
-        public ConfigProvider(ProjectNode manager)
+        internal ConfigProvider(ProjectNode manager)
         {
             this.project = manager;
         }
@@ -151,7 +120,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region IVsProjectCfgProvider methods
         /// <summary>
-        /// Provides access to the IVsProjectCfg interface implemented on a project's configuration object. 
+        /// Provides access to the IVsProjectCfg interface implemented on a project's configuration object.
         /// </summary>
         /// <param name="projectCfgCanonicalName">The canonical name of the configuration to access.</param>
         /// <param name="projectCfg">The IVsProjectCfg interface of the configuration identified by szProjectCfgCanonicalName.</param>
@@ -196,7 +165,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Checks whether or not this configuration provider uses independent configurations. 
+        /// Checks whether or not this configuration provider uses independent configurations.
         /// </summary>
         /// <param name="usesIndependentConfigurations">true if independent configurations are used, false if they are not used. By default returns true.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
@@ -209,7 +178,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region IVsCfgProvider2 methods
         /// <summary>
-        /// Copies an existing configuration name or creates a new one. 
+        /// Copies an existing configuration name or creates a new one.
         /// </summary>
         /// <param name="name">The name of the new configuration.</param>
         /// <param name="cloneName">the name of the configuration to copy, or a null reference, indicating that AddCfgsOfCfgName should create a new configuration.</param>
@@ -294,7 +263,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Copies an existing platform name or creates a new one. 
+        /// Copies an existing platform name or creates a new one.
         /// </summary>
         /// <param name="platformName">The name of the new platform.</param>
         /// <param name="clonePlatformName">The name of the platform to copy, or a null reference, indicating that AddCfgsOfPlatformName should create a new platform.</param>
@@ -305,7 +274,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Deletes a specified configuration name. 
+        /// Deletes a specified configuration name.
         /// </summary>
         /// <param name="name">The name of the configuration to be deleted.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
@@ -349,7 +318,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Deletes a specified platform name. 
+        /// Deletes a specified platform name.
         /// </summary>
         /// <param name="platName">The platform name to delet.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
@@ -362,13 +331,13 @@ namespace Microsoft.VisualStudio.Project
         /// Returns the existing configurations stored in the project file.
         /// </summary>
         /// <param name="celt">Specifies the requested number of property names. If this number is unknown, celt can be zero.</param>
-        /// <param name="names">On input, an allocated array to hold the number of configuration property names specified by celt. This parameter can also be a null reference if the celt parameter is zero. 
+        /// <param name="names">On input, an allocated array to hold the number of configuration property names specified by celt. This parameter can also be a null reference if the celt parameter is zero.
         /// On output, names contains configuration property names.</param>
         /// <param name="actual">The actual number of property names returned.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public virtual int GetCfgNames(uint celt, string[] names, uint[] actual)
         {
-            // get's called twice, once for allocation, then for retrieval            
+            // get's called twice, once for allocation, then for retrieval
             int i = 0;
 
             string[] configList = GetPropertiesConditionedOn(ProjectFileConstants.Configuration);
@@ -394,7 +363,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Returns the configuration associated with a specified configuration or platform name. 
+        /// Returns the configuration associated with a specified configuration or platform name.
         /// </summary>
         /// <param name="name">The name of the configuration to be returned.</param>
         /// <param name="platName">The name of the platform for the configuration to be returned.</param>
@@ -409,7 +378,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Returns a specified configuration property. 
+        /// Returns a specified configuration property.
         /// </summary>
         /// <param name="propid">Specifies the property identifier for the property to return. For valid propid values, see __VSCFGPROPID.</param>
         /// <param name="var">The value of the property.</param>
@@ -443,7 +412,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Returns the per-configuration objects for this object. 
+        /// Returns the per-configuration objects for this object.
         /// </summary>
         /// <param name="celt">Number of configuration objects to be returned or zero, indicating a request for an unknown number of objects.</param>
         /// <param name="a">On input, pointer to an interface array or a null reference. On output, this parameter points to an array of IVsCfg interfaces belonging to the requested configuration objects.</param>
@@ -479,7 +448,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Returns one or more platform names. 
+        /// Returns one or more platform names.
         /// </summary>
         /// <param name="celt">Specifies the requested number of platform names. If this number is unknown, celt can be zero.</param>
         /// <param name="names">On input, an allocated array to hold the number of platform names specified by celt. This parameter can also be a null reference if the celt parameter is zero. On output, names contains platform names.</param>
@@ -492,7 +461,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Returns the set of platforms that are installed on the user's machine. 
+        /// Returns the set of platforms that are installed on the user's machine.
         /// </summary>
         /// <param name="celt">Specifies the requested number of supported platform names. If this number is unknown, celt can be zero.</param>
         /// <param name="names">On input, an allocated array to hold the number of names specified by celt. This parameter can also be a null reference (Nothing in Visual Basic)if the celt parameter is zero. On output, names contains the names of supported platforms</param>
@@ -505,7 +474,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Assigns a new name to a configuration. 
+        /// Assigns a new name to a configuration.
         /// </summary>
         /// <param name="old">The old name of the target configuration.</param>
         /// <param name="newname">The new name of the target configuration.</param>
@@ -525,7 +494,7 @@ namespace Microsoft.VisualStudio.Project
                 if(String.Compare(config.Condition.Trim(), condition, StringComparison.OrdinalIgnoreCase) != 0)
                     continue;
 
-                // Change the name 
+                // Change the name
                 config.Condition = String.Format(CultureInfo.InvariantCulture, configString, newname);
                 // Update the name in our config list
                 if(configurationsList.ContainsKey(old))
@@ -544,7 +513,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Cancels a registration for configuration event notification. 
+        /// Cancels a registration for configuration event notification.
         /// </summary>
         /// <param name="cookie">The cookie used for registration.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
@@ -555,7 +524,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Registers the caller for configuration event notification. 
+        /// Registers the caller for configuration event notification.
         /// </summary>
         /// <param name="sink">Reference to the IVsCfgProviderEvents interface to be called to provide notification of configuration events.</param>
         /// <param name="cookie">Reference to a token representing the completed registration</param>
@@ -730,7 +699,7 @@ namespace Microsoft.VisualStudio.Project
         /// <devremark>The platforms array is never null. It is assured by the callers.</devremark>
         private static int GetPlatforms(uint celt, string[] names, uint[] actual, string[] platforms)
         {
-            Debug.Assert(platforms != null, "The plaforms array should never be null");
+            Utilities.ArgumentNotNull("platforms", platforms);
             if(names == null)
             {
                 if(actual == null || actual.Length == 0)

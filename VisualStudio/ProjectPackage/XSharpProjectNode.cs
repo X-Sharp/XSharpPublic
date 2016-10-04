@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System.Diagnostics;
 using MSBuild = Microsoft.Build.Evaluation;
+using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 namespace XSharp.Project
 {
@@ -48,6 +49,8 @@ namespace XSharp.Project
         internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
+        private bool showAllFilesEnabled;
+        private MSBuild.Project userBuildProject;
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
         #endregion
@@ -138,7 +141,30 @@ namespace XSharp.Project
                 imageList = value;
             }
         }
- 
+        /// <summary>
+        /// Gets the path to the .user file
+        /// </summary>
+        private string UserFileName
+        {
+            get { return this.FileName + ProjectNode.PerUserFileExtension; }
+        }
+        /// <summary>
+        /// Returns the MSBuild project associated with the .user file
+        /// </summary>
+        /// <value>The MSBuild project associated with the .user file.</value>
+        public MSBuild.Project UserBuildProject
+        {
+            get
+            {
+                if (this.userBuildProject == null && File.Exists(this.UserFileName))
+                {
+                    this.CreateUserBuildProject();
+                }
+
+                return this.userBuildProject;
+            }
+        }
+
         protected internal VSLangProj.VSProject VSProject
         {
             get
@@ -231,10 +257,7 @@ namespace XSharp.Project
         /// <returns></returns>
         public override FileNode CreateFileNode(ProjectElement item)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
+            Utilities.ArgumentNotNull("item", item);
 
             XSharpFileNode node = new XSharpFileNode(this, item);
 
@@ -279,7 +302,7 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="item">msbuild item</param>
         /// <returns>dependent file node</returns>
-        public override XSharpDependentFileNode CreateDependentFileNode(ProjectElement item)
+        public override FileNode CreateDependentFileNode(ProjectElement item)
         {
             XSharpDependentFileNode newNode = new XSharpDependentFileNode(this, item);
             string include = item.GetMetadata(ProjectFileConstants.Include);
@@ -464,19 +487,10 @@ namespace XSharp.Project
         }
 
 
-        public override int ParseCanonicalName(string name, out uint itemId)
-        {
-            int result = base.ParseCanonicalName(name, out itemId);
-            return VSConstants.S_OK;
-
-        }
 
         protected override HierarchyNode AddDependentFileNode(IDictionary<String, MSBuild.ProjectItem> subitems, string key)
         {
-            if (subitems == null)
-            {
-                throw new ArgumentNullException("subitems");
-            }
+            Utilities.ArgumentNotNull("subitems", subitems);
 
             MSBuild.ProjectItem item = subitems[key];
             subitems.Remove(key);
@@ -603,7 +617,18 @@ namespace XSharp.Project
             return newItem;
         }
 
-  
+        /// <summary>
+        /// Determines whether the given file is a resource file (resx file).
+        /// </summary>
+        /// <param name="fileName">Name of the file to be evaluated.</param>
+        /// <returns>true if the file is a resx file, otherwise false.</returns>
+        public override bool IsEmbeddedResource(string fileName)
+        {
+            if (XSharpFileNode.GetFileType(fileName) == XSharpFileType.ManagedResource)
+                return true;
+            return false;
+        }
+
         public bool IsVoBinary(string fileName) {
             switch (XSharpFileNode.GetFileType(fileName))
             {
@@ -689,6 +714,14 @@ namespace XSharp.Project
                 this.ImageHandler.AddImage(img);
             }
         }
+        /// <summary>
+        /// Factory method for reference container node
+        /// </summary>
+        /// <returns>ReferenceContainerNode created</returns>
+        protected override  ReferenceContainerNode CreateReferenceContainerNode()
+        {
+            return new XSharpReferenceContainerNode(this);
+        }
 
         private object CreateServices(Type serviceType)
         {
@@ -717,6 +750,7 @@ namespace XSharp.Project
 
             return service;
         }
+
 
         private DesignerContext _designerContext;
         protected internal Microsoft.Windows.Design.Host.DesignerContext DesignerContext
@@ -754,96 +788,279 @@ namespace XSharp.Project
             //return new XSharpProjectNodeProperties( this );
             return new ProjectNodeProperties(this);
         }
-/*
-       /// <summary>
-       ///  IVsProjectSpecificEditorMap2 interface
-       /// </summary>
-       /// <param name="pszMkDocument"></param>
-       /// <param name="pguidEditorType"></param>
-       /// <returns></returns>
-        public int GetSpecificEditorType(string pszMkDocument, out Guid pguidEditorType)
-        {
-            switch (XSharpFileNode.GetFileType(pszMkDocument))
-            {
-                case XSharpFileType.VODBServer:
-                    pguidEditorType = GuidStrings.guidVOServerEditorFactory;
-                    break;
-                case XSharpFileType.VOFieldSpec:
-                    pguidEditorType = GuidStrings.guidVOFieldSpecEditorFactory;
-                    break;
-                case XSharpFileType.VOMenu:
-                    pguidEditorType = GuidStrings.guidVOMenuEditorFactory;
-                    break;
-                case XSharpFileType.VOForm:
-                    pguidEditorType = GuidStrings.guidVOFormEditorFactory;
-                    break;
-                case XSharpFileType.SourceCode:
-                case XSharpFileType.Header:
-                case XSharpFileType.PreprocessorOutput:
-                    pguidEditorType = GuidStrings.guidSourcecodeEditorFactory;
-                    break;
-                default:
-                    pguidEditorType = Guid.Empty;
-                    break;
-            }
-            return VSConstants.S_OK; 
-        }
-
-        public int GetSpecificLanguageService(string pszMkDocument, out Guid pguidLanguageService)
-        {
-            pguidLanguageService = Guid.Empty;
-            return VSConstants.S_OK;
-        }
-
-        public int GetSpecificEditorProperty(string pszMkDocument, int propid, out object pvar)
-        {
-            pvar = true;
-            switch (XSharpFileNode.GetFileType(pszMkDocument))
-            {
-                case XSharpFileType.VODBServer:
-                case XSharpFileType.VOFieldSpec:
-                case XSharpFileType.VOMenu:
-                case XSharpFileType.VOForm:
-                case XSharpFileType.SourceCode:
-                case XSharpFileType.Header:
-                case XSharpFileType.PreprocessorOutput:
-                default:
-                    if (propid == (int)__VSPSEPROPID.VSPSEPROPID_ProjectDefaultEditorName)
-                    { 
-                        pvar = "XSharp Editor";
-                    }
-                    else if (propid == (int)__VSPSEPROPID.VSPSEPROPID_UseGlobalEditorByDefault)
+        /*
+               /// <summary>
+               ///  IVsProjectSpecificEditorMap2 interface
+               /// </summary>
+               /// <param name="pszMkDocument"></param>
+               /// <param name="pguidEditorType"></param>
+               /// <returns></returns>
+                public int GetSpecificEditorType(string pszMkDocument, out Guid pguidEditorType)
+                {
+                    switch (XSharpFileNode.GetFileType(pszMkDocument))
                     {
-                        pvar = false;
+                        case XSharpFileType.VODBServer:
+                            pguidEditorType = GuidStrings.guidVOServerEditorFactory;
+                            break;
+                        case XSharpFileType.VOFieldSpec:
+                            pguidEditorType = GuidStrings.guidVOFieldSpecEditorFactory;
+                            break;
+                        case XSharpFileType.VOMenu:
+                            pguidEditorType = GuidStrings.guidVOMenuEditorFactory;
+                            break;
+                        case XSharpFileType.VOForm:
+                            pguidEditorType = GuidStrings.guidVOFormEditorFactory;
+                            break;
+                        case XSharpFileType.SourceCode:
+                        case XSharpFileType.Header:
+                        case XSharpFileType.PreprocessorOutput:
+                            pguidEditorType = GuidStrings.guidSourcecodeEditorFactory;
+                            break;
+                        default:
+                            pguidEditorType = Guid.Empty;
+                            break;
                     }
-                    else
+                    return VSConstants.S_OK; 
+                }
+
+                public int GetSpecificLanguageService(string pszMkDocument, out Guid pguidLanguageService)
+                {
+                    pguidLanguageService = Guid.Empty;
+                    return VSConstants.S_OK;
+                }
+
+                public int GetSpecificEditorProperty(string pszMkDocument, int propid, out object pvar)
+                {
+                    pvar = true;
+                    switch (XSharpFileNode.GetFileType(pszMkDocument))
                     {
-                        pvar = false;
+                        case XSharpFileType.VODBServer:
+                        case XSharpFileType.VOFieldSpec:
+                        case XSharpFileType.VOMenu:
+                        case XSharpFileType.VOForm:
+                        case XSharpFileType.SourceCode:
+                        case XSharpFileType.Header:
+                        case XSharpFileType.PreprocessorOutput:
+                        default:
+                            if (propid == (int)__VSPSEPROPID.VSPSEPROPID_ProjectDefaultEditorName)
+                            { 
+                                pvar = "XSharp Editor";
+                            }
+                            else if (propid == (int)__VSPSEPROPID.VSPSEPROPID_UseGlobalEditorByDefault)
+                            {
+                                pvar = false;
+                            }
+                            else
+                            {
+                                pvar = false;
+                            }
+                            break;
                     }
-                    break;
-            }
-            return VSConstants.S_OK;
-        }
+                    return VSConstants.S_OK;
+                }
 
-        public int SetSpecificEditorProperty(string pszMkDocument, int propid, object var)
-        {
-            switch (XSharpFileNode.GetFileType(pszMkDocument))
-            {
-                case XSharpFileType.VODBServer:
-                case XSharpFileType.VOFieldSpec:
-                case XSharpFileType.VOMenu:
-                case XSharpFileType.VOForm:
-                case XSharpFileType.SourceCode:
-                case XSharpFileType.Header:
-                case XSharpFileType.PreprocessorOutput:
-                default:
-                    break;
-            }
-            return VSConstants.S_OK;
-        }
+                public int SetSpecificEditorProperty(string pszMkDocument, int propid, object var)
+                {
+                    switch (XSharpFileNode.GetFileType(pszMkDocument))
+                    {
+                        case XSharpFileType.VODBServer:
+                        case XSharpFileType.VOFieldSpec:
+                        case XSharpFileType.VOMenu:
+                        case XSharpFileType.VOForm:
+                        case XSharpFileType.SourceCode:
+                        case XSharpFileType.Header:
+                        case XSharpFileType.PreprocessorOutput:
+                        default:
+                            break;
+                    }
+                    return VSConstants.S_OK;
+                }
 
-*/
+        */
         #endregion
+
+        public override int IsDirty(out int isDirty)
+        {
+            int res = base.IsDirty(out isDirty);
+            if (isDirty == 0 && this.UserBuildProject != null)
+            {
+                isDirty = this.UserBuildProject.IsDirty ? 1 : 0;
+            }
+            return res;
+        }
+
+    public void CreateUserBuildProject()
+        {
+            this.userBuildProject = new MSBuild.Project(this.UserFileName);
+        }
+
+        /// <summary>
+        /// Gets if the ShowAllFiles is enabled or not.
+        /// </summary>
+        /// <value>true if the ShowAllFiles option is enabled, false otherwise.</value>
+        public bool ShowAllFilesEnabled
+        {
+            get
+            {
+                return this.showAllFilesEnabled;
+            }
+        }
+
+        public object VulcanProjectFileConstants { get; private set; }
+
+        protected internal int ToggleShowAllFiles()
+        {
+            if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
+            {
+                return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
+            }
+
+            using (SupportMethods.NewWaitCursor())
+            {
+                this.showAllFilesEnabled = !this.showAllFilesEnabled; // toggle the flag
+
+                if (this.showAllFilesEnabled)
+                {
+                    XSharpProjectMembers.AddNonMemberItems(this);
+                }
+                else
+                {
+                    XSharpProjectMembers.RemoveNonMemberItems(this);
+                }
+            }
+
+            return VSConstants.S_OK;
+        }
+            #region Cache URLs and other canonicalnames
+            Dictionary<string, HierarchyNode> URLNodes = new Dictionary<string, HierarchyNode>(1000);
+
+        public string CleanURL(string url)
+        {
+            url = url.ToLowerInvariant();
+            return url.TrimEnd('\\'); ;
+        }
+        public void RemoveURL(HierarchyNode node)
+        {
+            try
+            {
+                if (node.ItemNode != null)
+                {
+                    String url = node.Url;
+                    RemoveURL(url);
+                }
+            }
+            catch { }
+
+        }
+
+        public void RemoveURL(String url)
+        {
+            url = CleanURL(url);
+            if (URLNodes.ContainsKey(url))
+                URLNodes.Remove(url);
+
+        }
+
+        public void AddURL(String url, HierarchyNode node)
+        {
+            url = this.CleanURL(url);
+            if (URLNodes.ContainsKey(url))
+                URLNodes.Remove(url);
+            URLNodes.Add(url, node);
+
+        }
+
+
+        public HierarchyNode FindURL(String url)
+        {
+            if (String.IsNullOrEmpty(url))
+                return null;
+            HierarchyNode node = null;
+            url = CleanURL(url);
+            URLNodes.TryGetValue(url, out node);
+            return node;
+        }
+        public override int ParseCanonicalName(string name, out uint itemId)
+        {
+
+            if (String.Equals(name, this.Url, StringComparison.OrdinalIgnoreCase))
+                itemId = this.ID;
+            else
+            {
+                name = CleanURL(name);
+                HierarchyNode node = null;
+                if (URLNodes.TryGetValue(name, out node))
+                {
+                    itemId = node.ID;
+                }
+                else
+                {
+                    itemId = VSConstants.VSITEMID_NIL;
+                }
+            }
+            return VSConstants.S_OK;
+
+        }
+
+        #endregion
+
+        protected override void Reload()
+        {
+            base.Reload();
+
+            // read .user file
+            if (this.UserBuildProject != null)
+            {
+                // Read show all files flag
+                string propertyValue = this.UserBuildProject.GetPropertyValue("ProjectView");
+                if (String.Equals(propertyValue, "ShowAllFiles", StringComparison.OrdinalIgnoreCase))
+                {
+                    this.ToggleShowAllFiles();
+                }
+            }
+            if (MoveDependants())
+            {
+                //Vulcan.CodeModel.Projects.Delete(this.Url);
+                //URLNodes.Clear();
+                //base.UnloadProject();
+                //base.Reload();
+            }
+
+        }
+        protected virtual internal bool MoveDependants()
+        {
+            bool bMoved = false;
+            List<XSharpFileNode> FilesToMove = new List<XSharpFileNode>();
+            foreach (KeyValuePair<string, HierarchyNode> pair in URLNodes)
+            {
+                XSharpFileNode vnode = pair.Value as XSharpFileNode;
+                if (vnode != null)
+                {
+                    if (!vnode.IsDependent && vnode.IsDependent)
+                    {
+                        if (!(vnode.Parent is XSharpFileNode))
+                            FilesToMove.Add(vnode);
+                    }
+                }
+
+            }
+            foreach (XSharpFileNode NodeToMove in FilesToMove)
+            {
+
+                HierarchyNode parentNode = null;
+                String fileName = NodeToMove.Url;
+                string parentName = NodeToMove.GetParentName();
+                parentNode = FindURL(parentName);
+                if (parentNode != null && parentNode is XSharpFileNode)
+                {
+                    XSharpFileNode parent = (XSharpFileNode)parentNode;
+                    parent.AddDependant(NodeToMove);
+                    bMoved = true;
+                }
+            }
+            return bMoved;
+        }
+
 
 
     }

@@ -1,47 +1,47 @@
 /********************************************************************************************
 
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
+Copyright (c) Microsoft Corporation
+All rights reserved.
 
-Microsoft Public License: 
+Microsoft Public License:
 
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
+This license governs use of the accompanying software. If you use the software, you
+accept this license. If you do not accept the license, do not use the software.
 
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
+1. Definitions
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the
+same meaning here as under U.S. copyright law.
+A "contribution" is the original software, or any additions or changes to the software.
+A "contributor" is any person that distributes its contribution under this license.
+"Licensed patents" are a contributor's patent claims that read directly on its contribution.
 
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
+2. Grant of Rights
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
+royalty-free copyright license to reproduce its contribution, prepare derivative works of
+its contribution, and distribute its contribution or any derivative works that you create.
+(B) Patent Grant- Subject to the terms of this license, including the license conditions
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
+royalty-free license under its licensed patents to make, have made, use, sell, offer for
+sale, import, and/or otherwise dispose of its contribution in the software or derivative
+works of the contribution in the software.
 
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
+3. Conditions and Limitations
+(A) No Trademark License- This license does not grant you rights to use any contributors'
+name, logo, or trademarks.
+(B) If you bring a patent claim against any contributor over patents that you claim are
+infringed by the software, your patent license from such contributor to the software ends
+automatically.
+(C) If you distribute any portion of the software, you must retain all copyright, patent,
+trademark, and attribution notices that are present in the software.
+(D) If you distribute any portion of the software in source code form, you may do so only
+under this license by including a complete copy of this license with your distribution.
+If you distribute any portion of the software in compiled or object code form, you may only
+do so under a license that complies with this license.
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give
+no express warranties, guarantees or conditions. You may have additional consumer rights
+under your local laws which this license cannot change. To the extent permitted under your
+local laws, the contributors exclude the implied warranties of merchantability, fitness for
 a particular purpose and non-infringement.
 
 ********************************************************************************************/
@@ -114,11 +114,11 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called when one or more items are dragged over the target hierarchy or hierarchy window. 
+        /// Called when one or more items are dragged over the target hierarchy or hierarchy window.
         /// </summary>
         /// <param name="grfKeyState">Current state of the keyboard keys and the mouse modifier buttons. See <seealso cref="IVsHierarchyDropDataTarget"/></param>
         /// <param name="itemid">Item identifier of the drop data target over which the item is being dragged</param>
-        /// <param name="pdwEffect"> On entry, reference to the value of the pdwEffect parameter of the IVsHierarchy object, identifying all effects that the hierarchy supports. 
+        /// <param name="pdwEffect"> On entry, reference to the value of the pdwEffect parameter of the IVsHierarchy object, identifying all effects that the hierarchy supports.
         /// On return, the pdwEffect parameter must contain one of the effect flags that indicate the result of the drop operation. For a list of pwdEffects values, see <seealso cref="DragEnter"/></param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int DragOver(uint grfKeyState, uint itemid, ref uint pdwEffect)
@@ -126,7 +126,7 @@ namespace Microsoft.VisualStudio.Project
             pdwEffect = (uint)DropEffect.None;
 
             // Dragging items to a project that is being debugged is not supported
-            // (see VSWhidbey 144785)            
+            // (see VSWhidbey 144785)
             DBGMODE dbgMode = VsShellUtilities.GetDebugMode(this.Site) & ~DBGMODE.DBGMODE_EncMask;
             if(dbgMode == DBGMODE.DBGMODE_Run || dbgMode == DBGMODE.DBGMODE_Break)
             {
@@ -155,11 +155,11 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Called when one or more items are dropped into the target hierarchy or hierarchy window when the mouse button is released.
         /// </summary>
-        /// <param name="pDataObject">Reference to the IDataObject interface on the item being dragged. This data object contains the data being transferred in the drag-and-drop operation. 
+        /// <param name="pDataObject">Reference to the IDataObject interface on the item being dragged. This data object contains the data being transferred in the drag-and-drop operation.
         /// If the drop occurs, then this data object (item) is incorporated into the target hierarchy or hierarchy window.</param>
         /// <param name="grfKeyState">Current state of the keyboard and the mouse modifier keys. See <seealso cref="IVsHierarchyDropDataTarget"/></param>
         /// <param name="itemid">Item identifier of the drop data target over which the item is being dragged</param>
-        /// <param name="pdwEffect">Visual effects associated with the drag-and drop-operation, such as a cursor, bitmap, and so on. 
+        /// <param name="pdwEffect">Visual effects associated with the drag-and drop-operation, such as a cursor, bitmap, and so on.
         /// The value of dwEffects passed to the source object via the OnDropNotify method is the value of pdwEffects returned by the Drop method</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public override int Drop(IOleDataObject pDataObject, uint grfKeyState, uint itemid, ref uint pdwEffect)
@@ -219,13 +219,13 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Returns information about one or more of the items being dragged
         /// </summary>
-        /// <param name="pdwOKEffects">Pointer to a DWORD value describing the effects displayed while the item is being dragged, 
-        /// such as cursor icons that change during the drag-and-drop operation. 
-        /// For example, if the item is dragged over an invalid target point 
-        /// (such as the item's original location), the cursor icon changes to a circle with a line through it. 
+        /// <param name="pdwOKEffects">Pointer to a DWORD value describing the effects displayed while the item is being dragged,
+        /// such as cursor icons that change during the drag-and-drop operation.
+        /// For example, if the item is dragged over an invalid target point
+        /// (such as the item's original location), the cursor icon changes to a circle with a line through it.
         /// Similarly, if the item is dragged over a valid target point, the cursor icon changes to a file or folder.</param>
-        /// <param name="ppDataObject">Pointer to the IDataObject interface on the item being dragged. 
-        /// This data object contains the data being transferred in the drag-and-drop operation. 
+        /// <param name="ppDataObject">Pointer to the IDataObject interface on the item being dragged.
+        /// This data object contains the data being transferred in the drag-and-drop operation.
         /// If the drop occurs, then this data object (item) is incorporated into the target hierarchy or hierarchy window.</param>
         /// <param name="ppDropSource">Pointer to the IDropSource interface of the item being dragged.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
@@ -251,10 +251,10 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Notifies clients that the dragged item was dropped. 
+        /// Notifies clients that the dragged item was dropped.
         /// </summary>
         /// <param name="fDropped">If true, then the dragged item was dropped on the target. If false, then the drop did not occur.</param>
-        /// <param name="dwEffects">Visual effects associated with the drag-and-drop operation, such as cursors, bitmaps, and so on. 
+        /// <param name="dwEffects">Visual effects associated with the drag-and-drop operation, such as cursors, bitmaps, and so on.
         /// The value of dwEffects passed to the source object via OnDropNotify method is the value of pdwEffects returned by Drop method.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public override int OnDropNotify(int fDropped, uint dwEffects)
@@ -272,12 +272,12 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Allows the drag source to prompt to save unsaved items being dropped. 
-        /// Notifies the source hierarchy that information dragged from it is about to be dropped on a target. 
-        /// This method is called immediately after the mouse button is released on a drop. 
+        /// Allows the drag source to prompt to save unsaved items being dropped.
+        /// Notifies the source hierarchy that information dragged from it is about to be dropped on a target.
+        /// This method is called immediately after the mouse button is released on a drop.
         /// </summary>
-        /// <param name="o">Reference to the IDataObject interface on the item being dragged. 
-        /// This data object contains the data being transferred in the drag-and-drop operation. 
+        /// <param name="o">Reference to the IDataObject interface on the item being dragged.
+        /// This data object contains the data being transferred in the drag-and-drop operation.
         /// If the drop occurs, then this data object (item) is incorporated into the hierarchy window of the new hierarchy.</param>
         /// <param name="dwEffect">Current state of the keyboard and the mouse modifier keys.</param>
         /// <param name="fCancelDrop">If true, then the drop is cancelled by the source hierarchy. If false, then the drop can continue.</param>
@@ -295,18 +295,13 @@ namespace Microsoft.VisualStudio.Project
             bool dirty = false;
             foreach(HierarchyNode node in this.ItemsDraggedOrCutOrCopied)
             {
-                bool isDirty, isOpen, isOpenedByUs;
-                uint docCookie;
-                IVsPersistDocData ppIVsPersistDocData;
                 DocumentManager manager = node.GetDocumentManager();
-                if(manager != null)
+                if(manager != null &&
+                    manager.IsDirty &&
+                    manager.IsOpenedByUs)
                 {
-                    manager.GetDocInfo(out isOpen, out isDirty, out isOpenedByUs, out docCookie, out ppIVsPersistDocData);
-                    if(isDirty && isOpenedByUs)
-                    {
-                        dirty = true;
-                        break;
-                    }
+                    dirty = true;
+                    break;
                 }
             }
 
@@ -357,9 +352,9 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Called after your cut/copied items has been pasted
         /// </summary>
-        ///<param name="wasCut">If true, then the IDataObject has been successfully pasted into a target hierarchy. 
+        ///<param name="wasCut">If true, then the IDataObject has been successfully pasted into a target hierarchy.
         /// If false, then the cut or copy operation was cancelled.</param>
-        /// <param name="dropEffect">Visual effects associated with the drag and drop operation, such as cursors, bitmaps, and so on. 
+        /// <param name="dropEffect">Visual effects associated with the drag and drop operation, such as cursors, bitmaps, and so on.
         /// These should be the same visual effects used in OnDropNotify</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public virtual int OnPaste(int wasCut, uint dropEffect)
@@ -382,7 +377,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Called when your cut/copied operation is canceled
         /// </summary>
-        /// <param name="wasCut">This flag informs the source that the Cut method was called (true), 
+        /// <param name="wasCut">This flag informs the source that the Cut method was called (true),
         /// rather than Copy (false), so the source knows whether to "un-cut-highlight" the items that were cut.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
         public virtual int OnClear(int wasCut)
@@ -586,7 +581,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("sourceHierarchy");
             }
-            
+
             // Before we start the walk, add the current node
             object variant = null;
             HierarchyNode newNode = targetNode;
@@ -644,7 +639,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 return null;
             }
-            
+
             HierarchyNode newNode = parentNode;
             // If the file/directory exist, add a node for it
             if(File.Exists(targetPath))
@@ -752,12 +747,12 @@ namespace Microsoft.VisualStudio.Project
         protected internal override int PasteFromClipboard(HierarchyNode targetNode)
         {
             int returnValue = (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
-            
+
             if (targetNode == null)
             {
                 return VSConstants.E_INVALIDARG;
             }
-            
+
             //Get the clipboardhelper service and use it after processing dataobject
             IVsUIHierWinClipboardHelper clipboardHelper = (IVsUIHierWinClipboardHelper)GetService(typeof(SVsUIHierWinClipboardHelper));
             if(clipboardHelper == null)
@@ -969,8 +964,8 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <remarks>
         /// // A directory based project should perform as follow:
-        ///		NO MODIFIER 
-        ///			- COPY if not from current hierarchy, 
+        ///		NO MODIFIER
+        ///			- COPY if not from current hierarchy,
         ///			- MOVE if from current hierarchy
         ///		SHIFT DRAG - MOVE
         ///		CTRL DRAG - COPY
@@ -1016,7 +1011,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        ///  After a drop or paste, will use the dwEffects 
+        ///  After a drop or paste, will use the dwEffects
         ///  to determine whether we need to clean up the source nodes or not. If
         ///  justCleanup is set, it only does the cleanup work.
         /// </summary>
@@ -1035,23 +1030,10 @@ namespace Microsoft.VisualStudio.Project
                     if((moved && (cut || dropped) && !justCleanup))
                     {
                         // do not close it if the doc is dirty or we do not own it
-                        bool isDirty, isOpen, isOpenedByUs;
-                        uint docCookie;
-                        IVsPersistDocData ppIVsPersistDocData;
                         DocumentManager manager = node.GetDocumentManager();
-                        if(manager != null)
+                        if(manager != null && manager.IsDirty && manager.IsOpenedByUs )
                         {
-                            manager.GetDocInfo(out isOpen, out isDirty, out isOpenedByUs, out docCookie, out ppIVsPersistDocData);
-                            if(isDirty || (isOpen && !isOpenedByUs))
-                            {
-                                continue;
-                            }
-
-                            // close it if opened
-                            if(isOpen)
-                            {
-                                manager.Close(__FRAMECLOSE.FRAMECLOSE_NoSave);
-                            }
+                            manager.Close(__FRAMECLOSE.FRAMECLOSE_NoSave);
                         }
 
                         node.Remove(true);
@@ -1091,14 +1073,8 @@ namespace Microsoft.VisualStudio.Project
         internal bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences)
         {
             //Validate input
-            if(projectReferences == null)
-            {
-                throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "projectReferences");
-            }
-            if(targetNode == null)
-            {
-                throw new InvalidOperationException();
-            }
+            Utilities.ArgumentNotNull("projectReferences", projectReferences);
+            Utilities.CheckNotNull(targetNode);
 
             //Iteratively add files from projectref
             foreach(string projectReference in projectReferences)

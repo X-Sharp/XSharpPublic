@@ -61,15 +61,9 @@ namespace Microsoft.VisualStudio.Project.Automation
                     {
                         DocumentManager manager = this.Node.GetDocumentManager();
 
-                        if (manager == null)
-                        {
-                            throw new InvalidOperationException();
-                        }
+                        Utilities.CheckNotNull(manager);
 
-                        bool isOpen, isOpenedByUs;
-                        uint docCookie;
-                        IVsPersistDocData persistDocData;
-                        manager.GetDocInfo(out isOpen, out isDirty, out isOpenedByUs, out docCookie, out persistDocData);
+                        isDirty = manager.IsDirty;
                     }
 
                     return isDirty;
@@ -106,14 +100,9 @@ namespace Microsoft.VisualStudio.Project.Automation
                             ErrorHandler.ThrowOnFailure(windowFrame.GetProperty((int)__VSFPROPID.VSFPROPID_DocCookie, out var));
                             object documentAsObject;
                             ErrorHandler.ThrowOnFailure(scope.Extensibility.GetDocumentFromDocCookie((int)var, out documentAsObject));
-                            if (documentAsObject == null)
-                            {
-                                throw new InvalidOperationException();
-                            }
-                            else
-                            {
-                                document = (Document)documentAsObject;
-                            }
+                            Utilities.CheckNotNull(documentAsObject);
+
+                            document = (Document)documentAsObject;
                         }
 
                     }
@@ -161,10 +150,9 @@ namespace Microsoft.VisualStudio.Project.Automation
                         IVsHierarchy ivsHierarchy;
                         uint docCookie;
                         IVsRunningDocumentTable rdt = this.Node.ProjectMgr.Site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-                        Debug.Assert(rdt != null, " Could not get running document table from the services exposed by this project");
                         if (rdt == null)
-                        {
-                            throw new InvalidOperationException();
+						{
+                            throw new InvalidOperationException("Could not get running document table from the services exposed by this project");
                         }
 
                         ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, this.Node.Url, out ivsHierarchy, out itemid, out docData, out docCookie));

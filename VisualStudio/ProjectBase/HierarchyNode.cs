@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections;
@@ -65,12 +31,12 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
-
+using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 namespace Microsoft.VisualStudio.Project
 {
     /// <summary>
     /// An object that deals with user interaction via a GUI in the form a hierarchy: a parent node with zero or more child nodes, each of which
-    /// can itself be a hierarchy.  
+    /// can itself be a hierarchy.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"), CLSCompliant(false), ComVisible(true)]
     public abstract class HierarchyNode :
@@ -81,8 +47,9 @@ namespace Microsoft.VisualStudio.Project
         IVsHierarchyDropDataSource,
         IVsHierarchyDropDataTarget,
         IVsHierarchyDeleteHandler,
-        IDisposable
-    //, IVsBuildStatusCallback 
+        IDisposable,
+		IOleServiceProvider
+    //, IVsBuildStatusCallback
     {
         #region nested types
         /// <summary>
@@ -476,7 +443,7 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// Defines if a node a name relation to its parent node
-        /// 
+        ///
         /// </summary>
         public bool HasParentNodeNameRelation
         {
@@ -520,10 +487,7 @@ namespace Microsoft.VisualStudio.Project
 
         protected HierarchyNode(ProjectNode root, ProjectElement element)
         {
-            if (root == null)
-            {
-                throw new ArgumentNullException("root");
-            }
+            Utilities.ArgumentNotNull("root", root);
 
             this.projectMgr = root;
             this.itemNode = element;
@@ -532,15 +496,12 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Overloaded ctor. 
+        /// Overloaded ctor.
         /// </summary>
         /// <param name="root"></param>
         protected HierarchyNode(ProjectNode root)
         {
-            if (root == null)
-            {
-                throw new ArgumentNullException("root");
-            }
+            Utilities.ArgumentNotNull("root", root);
 
             this.projectMgr = root;
             this.itemNode = new ProjectElement(this.projectMgr, null, true);
@@ -550,6 +511,10 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region virtual methods
+        protected bool InvalidProject()
+        {
+            return this.ProjectMgr == null || this.ProjectMgr.IsClosed;
+        }
         /// <summary>
         /// Creates an object derived from NodeProperties that will be used to expose properties
         /// spacific for this object to the property browser.
@@ -630,10 +595,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="node">The node to remove.</param>
         public virtual void RemoveChild(HierarchyNode node)
         {
-            if(node == null)
-            {
-                throw new ArgumentNullException("node");
-            }
+            Utilities.ArgumentNotNull("node", node);
 
             this.projectMgr.ItemIdMap.Remove(node);
 
@@ -678,7 +640,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Returns a property object based on a property id 
+        /// Returns a property object based on a property id
         /// </summary>
         /// <param name="propId">the property id of the property requested</param>
         /// <returns>the property object requested</returns>
@@ -1073,7 +1035,7 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// Close open document frame for a specific node.
-        /// </summary> 
+        /// </summary>
         protected void CloseDocumentWindow(HierarchyNode node)
         {
             if (node == null)
@@ -1085,10 +1047,8 @@ namespace Microsoft.VisualStudio.Project
             // are cases where there may be two different editors (not views) open on the same document.
             IEnumRunningDocuments pEnumRdt;
             IVsRunningDocumentTable pRdt = this.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-            if(pRdt == null)
-            {
-                throw new InvalidOperationException();
-            }
+            Utilities.CheckNotNull(pRdt);
+
             if(ErrorHandler.Succeeded(pRdt.GetRunningDocumentsEnum(out pEnumRdt)))
             {
                 uint[] cookie = new uint[1];
@@ -1196,7 +1156,7 @@ namespace Microsoft.VisualStudio.Project
                     // This happens in the context of adding a new folder.
                     // Since we are already in solution explorer, it is extremely unlikely that we get a null return.
                     // If we do, the newly created folder will not be selected, and we will not attempt the rename
-                    // command (since we are selecting the wrong item).                        
+                    // command (since we are selecting the wrong item).
                     if (uiWindow != null)
                     {
                         // we need to get into label edit mode now...
@@ -1282,8 +1242,8 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Prepares a selected node for clipboard. 
-        /// It takes the the project reference string of this item and adds it to a stringbuilder. 
+        /// Prepares a selected node for clipboard.
+        /// It takes the the project reference string of this item and adds it to a stringbuilder.
         /// </summary>
         /// <returns>A stringbuilder.</returns>
         /// <devremark>This method has to be public since seleceted nodes will call it.</devremark>
@@ -1292,6 +1252,9 @@ namespace Microsoft.VisualStudio.Project
         {
             Debug.Assert(this.ProjectMgr != null, " No project mananager available for this node " + ToString());
             Debug.Assert(this.ProjectMgr.ItemsDraggedOrCutOrCopied != null, " The itemsdragged list should have been initialized prior calling this method");
+            if (this.ProjectMgr == null || this.ProjectMgr.ItemsDraggedOrCutOrCopied == null) {
+                return null;
+            }
             StringBuilder sb = new StringBuilder();
 
             if(this.hierarchyId == VSConstants.VSITEMID_ROOT)
@@ -1436,7 +1399,7 @@ namespace Microsoft.VisualStudio.Project
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "pva")]
         protected virtual int ExecCommandOnNode(Guid cmdGroup, uint cmd, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            if(this.projectMgr == null || this.projectMgr.IsClosed)
+            if(InvalidProject())
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
             }
@@ -1452,6 +1415,9 @@ namespace Microsoft.VisualStudio.Project
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_DoubleClick:
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_EnterKey:
                         this.DoDefaultAction();
+                        return VSConstants.S_OK;
+                    case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_CancelLabelEdit:
+                        this.OnCancelLabelEdit();
                         return VSConstants.S_OK;
                 }
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
@@ -1508,10 +1474,10 @@ namespace Microsoft.VisualStudio.Project
                 switch(cmdId)
                 {
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_RightClick:
-                        // The UIHWCMDID_RightClick is what tells an IVsUIHierarchy in a UIHierarchyWindow 
-                        // to put up the context menu.  Since the mouse may have moved between the 
-                        // mouse down and the mouse up, GetCursorPos won't tell you the right place 
-                        // to put the context menu (especially if it came through the keyboard).  
+                        // The UIHWCMDID_RightClick is what tells an IVsUIHierarchy in a UIHierarchyWindow
+                        // to put up the context menu.  Since the mouse may have moved between the
+                        // mouse down and the mouse up, GetCursorPos won't tell you the right place
+                        // to put the context menu (especially if it came through the keyboard).
                         // So we pack the proper menu position into pvaIn by
                         // memcpy'ing a POINTS struct into the VT_UI4 part of the pvaIn variant.  The
                         // code to unpack it looks like this:
@@ -1983,7 +1949,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Queries the selected nodes for the command status. 
+        /// Queries the selected nodes for the command status.
         /// A command is supported iff any nodes supports it.
         /// A command is enabled iff all nodes enable it.
         /// A command is invisible iff any node sets invisibility.
@@ -2076,6 +2042,14 @@ namespace Microsoft.VisualStudio.Project
         protected virtual int AfterSaveItemAs(IntPtr docData, string newName)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Invoked when the node receives UIHWCMDID_CancelLabelEdit hierarchy window command, which occurs
+        /// when user cancels the label editing operation.
+        /// </summary>
+        protected virtual void OnCancelLabelEdit()
+		{
         }
 
         /// <summary>
@@ -2203,16 +2177,8 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
 
-            if(files == null)
-            {
-                throw new ArgumentNullException("files");
-            }
-
-            if(flags == null)
-            {
-                throw new ArgumentNullException("flags");
-            }
-
+            Utilities.ArgumentNotNull("files", files);
+            Utilities.ArgumentNotNull("flags", flags);
             files.Add(this.GetMkDocument());
 
             tagVsSccFilesFlags flagsToAdd = (this.firstChild != null && (this.firstChild is DependentFileNode)) ? tagVsSccFilesFlags.SFF_HasSpecialFiles : tagVsSccFilesFlags.SFF_NoFlags;
@@ -2235,15 +2201,8 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
 
-            if(files == null)
-            {
-                throw new ArgumentNullException("files");
-            }
-
-            if(flags == null)
-            {
-                throw new ArgumentNullException("flags");
-            }
+            Utilities.ArgumentNotNull("files", files);
+            Utilities.ArgumentNotNull("flags", flags);
         }
 
         /// <summary>
@@ -2263,7 +2222,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called to determine whether a project item is reloadable. 
+        /// Called to determine whether a project item is reloadable.
         /// </summary>
         /// <returns>True if the project item is reloadable.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Reloadable")]
@@ -2332,22 +2291,16 @@ namespace Microsoft.VisualStudio.Project
 
         public void OnItemAdded(HierarchyNode parent, HierarchyNode child)
         {
-            if (parent == null)
-            { 
-                throw new ArgumentNullException("parent");
-            }
+            Utilities.ArgumentNotNull("parent", parent);
+            Utilities.ArgumentNotNull("child", child);
 
-            if (child == null)
-            {
-                throw new ArgumentNullException("child");
-            }
 
             if(null != parent.onChildAdded)
             {
                 HierarchyNodeEventArgs args = new HierarchyNodeEventArgs(child);
                 parent.onChildAdded(parent, args);
             }
-            
+
             HierarchyNode foo;
             foo = this.projectMgr == null ? this : this.projectMgr;
 
@@ -2665,8 +2618,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="itemId"></param>
         public virtual int ParseCanonicalName(string name, out uint itemId)
         {
-            // we always start at the current node and go it's children down, so 
-            //  if you want to scan the whole tree, better call 
+            // we always start at the current node and go it's children down, so
+            //  if you want to scan the whole tree, better call
             // the root
             uint notFoundValue = (uint)VSConstants.VSITEMID.Nil;
             itemId = notFoundValue;
@@ -2783,7 +2736,7 @@ namespace Microsoft.VisualStudio.Project
 #region IVsPersistHierarchyItem2 methods
 
         /// <summary>
-        /// Determines whether the hierarchy item changed. 
+        /// Determines whether the hierarchy item changed.
         /// </summary>
         /// <param name="itemId">Item identifier of the hierarchy item contained in VSITEMID.</param>
         /// <param name="docData">Pointer to the IUnknown interface of the hierarchy item.</param>
@@ -2796,7 +2749,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Saves the hierarchy item to disk. 
+        /// Saves the hierarchy item to disk.
         /// </summary>
         /// <param name="saveFlag">Flags whose values are taken from the VSSAVEFLAGS enumeration.</param>
         /// <param name="silentSaveAsName">New filename when doing silent save as</param>
@@ -2814,7 +2767,7 @@ namespace Microsoft.VisualStudio.Project
                 return VSConstants.E_FAIL;
             }
 
-            // Validate itemid 
+            // Validate itemid
             if(itemid == VSConstants.VSITEMID_ROOT || itemid == VSConstants.VSITEMID_SELECTION)
             {
                 return VSConstants.E_INVALIDARG;
@@ -2848,7 +2801,7 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
-                //Save docdata object. 
+                //Save docdata object.
                 //For the saveas action a dialog is show in order to enter new location of file.
                 //In case of a save action and the file is readonly a dialog is also shown
                 //with a couple of options, SaveAs, Overwrite or Cancel.
@@ -2887,7 +2840,7 @@ namespace Microsoft.VisualStudio.Project
                     //	  2. update the full path name for the item in our hierarchy
                     //	  3. a directory-based project may need to transfer the open editor to the
                     //		 MiscFiles project if the new file is saved outside of the project directory.
-                    //		 This is accomplished by calling IVsExternalFilesManager::TransferDocument                    
+                    //		 This is accomplished by calling IVsExternalFilesManager::TransferDocument
 
                     // we have three options for a saveas action to be performed
                     // 1. the flag was set (the save as command was triggered)
@@ -2941,7 +2894,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Flag indicating that changes to a file can be ignored when item is saved or reloaded. 
+        /// Flag indicating that changes to a file can be ignored when item is saved or reloaded.
         /// </summary>
         /// <param name="itemId">Specifies the item id from VSITEMID.</param>
         /// <param name="ignoreFlag">Flag indicating whether or not to ignore changes (1 to ignore, 0 to stop ignoring).</param>
@@ -2965,7 +2918,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called to determine whether a project item is reloadable before calling ReloadItem. 
+        /// Called to determine whether a project item is reloadable before calling ReloadItem.
         /// </summary>
         /// <param name="itemId">Item identifier of an item in the hierarchy. Valid values are VSITEMID_NIL, VSITEMID_ROOT and VSITEMID_SELECTION.</param>
         /// <param name="isReloadable">A flag indicating that the project item is reloadable (1 for reloadable, 0 for non-reloadable).</param>
@@ -2990,7 +2943,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called to reload a project item. 
+        /// Called to reload a project item.
         /// </summary>
         /// <param name="itemId">Specifies itemid from VSITEMID.</param>
         /// <param name="reserved">Reserved.</param>
@@ -3271,6 +3224,55 @@ namespace Microsoft.VisualStudio.Project
             return hierarchy;
         }
 #endregion
+
 #endif
+#region IOleServiceProvider
+
+        int IOleServiceProvider.QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject) {
+            object obj;
+            int hr = QueryService(ref guidService, out obj);
+            if (ErrorHandler.Succeeded(hr)) {
+                if (riid.Equals(NativeMethods.IID_IUnknown)) {
+                    ppvObject = Marshal.GetIUnknownForObject(obj);
+                    return VSConstants.S_OK;
+                }
+
+                IntPtr pUnk = IntPtr.Zero;
+                try {
+                    pUnk = Marshal.GetIUnknownForObject(obj);
+                    return Marshal.QueryInterface(pUnk, ref riid, out ppvObject);
+                } finally {
+                    if (pUnk != IntPtr.Zero) {
+                        Marshal.Release(pUnk);
+                    }
+                }
+            }
+
+            ppvObject = IntPtr.Zero;
+            return hr;
+        }
+
+
+        /// <summary>
+        /// Provides services for this hierarchy node.  These services are proffered to consumers
+        /// via IVsProject.GetItemContext.  When a service provider is requested we hand out
+        /// the hierarchy node which implements IServiceProvider directly.  Nodes can override
+        /// this function to provide the underlying object which implements the service.
+        ///
+        /// By default we support handing out the parent project when IVsHierarchy is requested.
+        /// Project nodes support handing their own automation object out, and other services
+        /// such as the Xaml designer context type can also be provided.
+        /// </summary>
+        public virtual int QueryService(ref Guid guidService, out object result) {
+            if (guidService == typeof(IVsHierarchy).GUID) {
+                result = ProjectMgr;
+                return VSConstants.S_OK;
+            }
+
+            result = null;
+            return VSConstants.E_FAIL;
+        }
+
+#endregion
     }
 }

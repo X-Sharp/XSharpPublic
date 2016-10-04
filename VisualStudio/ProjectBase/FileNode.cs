@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -253,7 +219,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="label">The new name.</param>
         /// <returns>An errorcode for failure or S_OK.</returns>
         /// <exception cref="InvalidOperationException" if the file cannot be validated>
-        /// <devremark> 
+        /// <devremark>
         /// We are going to throw instaed of showing messageboxes, since this method is called from various places where a dialog box does not make sense.
         /// For example the FileNodeProperties are also calling this method. That should not show directly a messagebox.
         /// Also the automation methods are also calling SetEditLabel
@@ -270,7 +236,7 @@ namespace Microsoft.VisualStudio.Project
                 return VSConstants.E_FAIL;
             }
 
-            // Validate the filename. 
+            // Validate the filename.
             if(String.IsNullOrEmpty(label))
             {
                 throw new InvalidOperationException(SR.GetString(SR.ErrorInvalidFileName, CultureInfo.CurrentUICulture));
@@ -563,7 +529,7 @@ namespace Microsoft.VisualStudio.Project
         {
             CCITracing.TraceCall();
             FileDocumentManager manager = this.GetDocumentManager() as FileDocumentManager;
-            Debug.Assert(manager != null, "Could not get the FileDocumentManager");
+            Utilities.CheckNotNull(manager, "Could not get the FileDocumentManager");
             manager.Open(false, false, WindowFrameShowAction.Show);
         }
 
@@ -575,10 +541,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns></returns>
         protected override int AfterSaveItemAs(IntPtr docData, string newFilePath)
         {
-            if(String.IsNullOrEmpty(newFilePath))
-            {
-                throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "newFilePath");
-            }
+            Utilities.ArgumentNotNullOrEmpty("newFilePath", newFilePath);
 
             int returnCode = VSConstants.S_OK;
             newFilePath = newFilePath.Trim();
@@ -643,7 +606,7 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
-                // Rename the node.	
+                // Rename the node.
                 DocumentManager.UpdateCaption(this.ProjectMgr.Site, Path.GetFileName(newFilePath), docData);
                 // Check if the file name was actually changed.
                 // In same cases (e.g. if the item is a file and the user has changed its encoding) this function
@@ -768,7 +731,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Remove the item created by the add item. We need to do this otherwise we will have two items.
             // Please be aware that we have not removed the ItemNode associated to the removed file node from the hierrachy.
-            // What we want to achieve here is to reuse the existing build item. 
+            // What we want to achieve here is to reuse the existing build item.
             // We want to link to the newly created node to the existing item node and addd the new include.
 
             //temporarily keep properties from new itemnode since we are going to overwrite it
@@ -903,15 +866,8 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
 
-            if(files == null)
-            {
-                throw new ArgumentNullException("files");
-            }
-
-            if(flags == null)
-            {
-                throw new ArgumentNullException("flags");
-            }
+            Utilities.ArgumentNotNull("files", files);
+            Utilities.ArgumentNotNull("flags", flags);
 
             foreach(HierarchyNode node in this.GetChildNodes())
             {
@@ -929,14 +885,20 @@ namespace Microsoft.VisualStudio.Project
         internal bool RenameDocument(string oldName, string newName)
         {
             IVsRunningDocumentTable pRDT = this.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
-            if(pRDT == null) return false;
+            if (pRDT == null)
+                return false;
             IntPtr docData = IntPtr.Zero;
             IVsHierarchy pIVsHierarchy;
             uint itemId;
             uint uiVsDocCookie;
 
-            SuspendFileChanges sfc = new SuspendFileChanges(this.ProjectMgr.Site, oldName);
-            sfc.Suspend();
+            SuspendFileChanges sfc = null;
+
+            if (File.Exists(oldName))
+			{
+                sfc = new SuspendFileChanges(this.ProjectMgr.Site, oldName);
+                sfc.Suspend();
+            }
 
             try
             {
@@ -945,7 +907,7 @@ namespace Microsoft.VisualStudio.Project
                 // We have a project system relying on MPF that triggers a Compile target build (re-evaluates itself) whenever the project changes. (example: a file is added, property changed.)
                 // 1. User renames a file in  the above project sytem relying on MPF
                 // 2. Our rename funstionality implemented in this method removes and readds the file and as a post step copies all msbuild entries from the removed file to the added file.
-                // 3. The project system mentioned will trigger an msbuild re-evaluate with the new item, because it was listening to OnItemAdded. 
+                // 3. The project system mentioned will trigger an msbuild re-evaluate with the new item, because it was listening to OnItemAdded.
                 //    The problem is that the item at the "add" time is only partly added to the project, since the msbuild part has not yet been copied over as mentioned in part 2 of the last step of the rename process.
                 //    The result is that the project re-evaluates itself wrongly.
                 VSRENAMEFILEFLAGS renameflag = VSRENAMEFILEFLAGS.VSRENAMEFILEFLAGS_NoFlags;
@@ -998,8 +960,11 @@ namespace Microsoft.VisualStudio.Project
                 this.ProjectMgr.Tracker.OnItemRenamed(oldName, newName, renameflag);
             }
             finally
-            {
-                sfc.Resume();
+            { 
+                if (sfc != null)
+				{
+                    sfc.Resume();
+                }
                 if(docData != IntPtr.Zero)
                 {
                     Marshal.Release(docData);
@@ -1083,6 +1048,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region helpers
+
         /// <summary>
         /// Runs a generator.
         /// </summary>

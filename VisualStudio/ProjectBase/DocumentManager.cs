@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -81,6 +47,7 @@ namespace Microsoft.VisualStudio.Project
         #region ctors
         protected DocumentManager(HierarchyNode node)
         {
+            Utilities.ArgumentNotNull("node", node);
             this.node = node;
         }
         #endregion
@@ -119,6 +86,23 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
+        /// Open a document using a specific editor. This method has no implementation.
+        /// </summary>
+        /// <param name="editorFlags">Specifies actions to take when opening a specific editor. Possible editor flags are defined in the enumeration Microsoft.VisualStudio.Shell.Interop.__VSOSPEFLAGS</param>
+        /// <param name="editorType">Unique identifier of the editor type</param>
+        /// <param name="physicalView">Name of the physical view. If null, the environment calls MapLogicalView on the editor factory to determine the physical view that corresponds to the logical view. In this case, null does not specify the primary view, but rather indicates that you do not know which view corresponds to the logical view</param>
+        /// <param name="logicalView">In MultiView case determines view to be activated by IVsMultiViewDocumentView. For a list of logical view GUIDS, see constants starting with LOGVIEWID_ defined in NativeMethods class</param>
+        /// <param name="docDataExisting">IntPtr to the IUnknown interface of the existing document data object</param>
+        /// <param name="frame">A reference to the window frame that is mapped to the document</param>
+        /// <param name="windowFrameAction">Determine the UI action on the document window</param>
+        /// <returns>NotImplementedException</returns>
+        /// <remarks>See FileDocumentManager for an implementation of this method</remarks>
+        public virtual int ReOpenWithSpecific(uint editorFlags, ref Guid editorType, string physicalView, ref Guid logicalView, IntPtr docDataExisting, out IVsWindowFrame frame, WindowFrameShowAction windowFrameAction)
+		{
+            return OpenWithSpecific(editorFlags, ref editorType, physicalView, ref logicalView, docDataExisting, out frame, windowFrameAction);
+        }
+
+        /// <summary>
         /// Close an open document window
         /// </summary>
         /// <param name="closeFlag">Decides how to close the document</param>
@@ -130,13 +114,7 @@ namespace Microsoft.VisualStudio.Project
                 return VSConstants.E_FAIL;
             }
 
-            // Get info about the document
-            bool isDirty, isOpen, isOpenedByUs;
-            uint docCookie;
-            IVsPersistDocData ppIVsPersistDocData;
-            this.GetDocInfo(out isOpen, out isDirty, out isOpenedByUs, out docCookie, out ppIVsPersistDocData);
-
-            if(isOpenedByUs)
+            if(IsOpenedByUs)
             {
                 IVsUIShellOpenDocument shell = this.Node.ProjectMgr.Site.GetService(typeof(IVsUIShellOpenDocument)) as IVsUIShellOpenDocument;
                 Guid logicalView = Guid.Empty;
@@ -149,7 +127,6 @@ namespace Microsoft.VisualStudio.Project
 
                 if(windowFrame != null)
                 {
-                    docCookie = 0;
                     return windowFrame.CloseFrame((uint)closeFlag);
                 }
             }
@@ -164,64 +141,82 @@ namespace Microsoft.VisualStudio.Project
         /// <remarks>The call to SaveDocData may return Microsoft.VisualStudio.Shell.Interop.PFF_RESULTS.STG_S_DATALOSS to indicate some characters could not be represented in the current codepage</remarks>
         public virtual void Save(bool saveIfDirty)
         {
-            bool isDirty, isOpen, isOpenedByUs;
-            uint docCookie;
-            IVsPersistDocData persistDocData;
-            this.GetDocInfo(out isOpen, out isDirty, out isOpenedByUs, out docCookie, out persistDocData);
-            if(isDirty && saveIfDirty && persistDocData != null)
-            {
-                string name;
-                int cancelled;
-                ErrorHandler.ThrowOnFailure(persistDocData.SaveDocData(VSSAVEFLAGS.VSSAVE_SilentSave, out name, out cancelled));
+            if (saveIfDirty && IsDirty)
+			{
+                IVsPersistDocData persistDocData = DocData;
+                if (persistDocData != null)
+				{
+                	string name;
+	                int cancelled;
+    	            ErrorHandler.ThrowOnFailure(persistDocData.SaveDocData(VSSAVEFLAGS.VSSAVE_SilentSave, out name, out cancelled));
+				}
             }
         }
 
         #endregion
 
-        #region helper methods
         /// <summary>
-        /// Get document properties from RDT
+        /// Queries the RDT to see if the document is currently edited and not saved.
         /// </summary>
-        internal void GetDocInfo(
-            out bool isOpen,     // true if the doc is opened
-            out bool isDirty,    // true if the doc is dirty
-            out bool isOpenedByUs, // true if opened by our project
-            out uint docCookie, // VSDOCCOOKIE if open
-            out IVsPersistDocData persistDocData)
-        {
-            isOpen = isDirty = isOpenedByUs = false;
-            docCookie = (uint)ShellConstants.VSDOCCOOKIE_NIL;
-            persistDocData = null;
+        public bool IsDirty {
+            get {
+                var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
+                if (!docTable.IsMonikerValid(node.GetMkDocument())) {
+                    return false;
+                }
 
-            if(this.node == null || this.node.ProjectMgr == null || this.node.ProjectMgr.IsClosed)
-            {
-                return;
-            }
-
-            IVsHierarchy hierarchy;
-            uint vsitemid = VSConstants.VSITEMID_NIL;
-
-            VsShellUtilities.GetRDTDocumentInfo(this.node.ProjectMgr.Site, this.node.Url, out hierarchy, out vsitemid, out persistDocData, out docCookie);
-
-            if(hierarchy == null || docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL)
-            {
-                return;
-            }
-
-            isOpen = true;
-            // check if the doc is opened by another project
-            if(Utilities.IsSameComObject(this.node.ProjectMgr.InteropSafeIVsHierarchy, hierarchy))
-            {
-                isOpenedByUs = true;
-            }
-
-            if(persistDocData != null)
-            {
-                int isDocDataDirty;
-                ErrorHandler.ThrowOnFailure(persistDocData.IsDocDataDirty(out isDocDataDirty));
-                isDirty = (isDocDataDirty != 0);
+                return docTable.IsDocumentDirty(docTable.GetDocumentCookie(node.GetMkDocument()));
             }
         }
+
+        /// <summary>
+        /// Queries the RDT to see if the document was opened by our project.
+        /// </summary>
+        public bool IsOpenedByUs {
+            get {
+                var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
+                if (!docTable.IsMonikerValid(node.GetMkDocument())) {
+                    return false;
+                }
+
+                IVsHierarchy hierarchy;
+                uint itemId;
+                docTable.GetDocumentHierarchyItem(
+                    docTable.GetDocumentCookie(node.GetMkDocument()),
+                    out hierarchy,
+                    out itemId
+                );
+                return Utilities.IsSameComObject(node.ProjectMgr, hierarchy);
+
+            }
+        }
+        /// <summary>
+        /// Returns the doc cookie in the RDT for the associated file.
+        /// </summary>
+        public uint DocCookie {
+            get {
+                var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
+                if (!docTable.IsMonikerValid(node.GetMkDocument())) {
+                    return (uint)ShellConstants.VSDOCCOOKIE_NIL;
+                }
+
+                return docTable.GetDocumentCookie(node.GetMkDocument());
+            }
+        }
+        /// <summary>
+        /// Returns the IVsPersistDocData associated with the document, or null if there isn't one.
+        /// </summary>
+        public IVsPersistDocData DocData {
+            get {
+                var docTable = (IVsRunningDocumentTable4)node.ProjectMgr.GetService(typeof(SVsRunningDocumentTable));
+                if (!docTable.IsMonikerValid(node.GetMkDocument())) {
+                    return null;
+                }
+
+                return docTable.GetDocumentData(docTable.GetDocumentCookie(node.GetMkDocument())) as IVsPersistDocData;
+            }
+        }
+        #region helper methods
 
         protected string GetOwnerCaption()
         {
@@ -272,10 +267,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="docData">The IUnknown interface to a document data object associated with a registered document.</param>
         public static void UpdateCaption(IServiceProvider site, string caption, IntPtr docData)
         {
-            if(site == null)
-            {
-                throw new ArgumentNullException("site");
-            }
+            Utilities.ArgumentNotNull("site", site);
 
             if(String.IsNullOrEmpty(caption))
             {
@@ -284,7 +276,7 @@ namespace Microsoft.VisualStudio.Project
 
             IVsUIShell uiShell = site.GetService(typeof(SVsUIShell)) as IVsUIShell;
 
-            // We need to tell the windows to update their captions. 
+            // We need to tell the windows to update their captions.
             IEnumWindowFrames windowFramesEnum;
             ErrorHandler.ThrowOnFailure(uiShell.GetDocumentWindowEnum(out windowFramesEnum));
             IVsWindowFrame[] windowFrames = new IVsWindowFrame[1];
@@ -316,15 +308,12 @@ namespace Microsoft.VisualStudio.Project
         /// Rename document in the running document table from oldName to newName.
         /// </summary>
         /// <param name="provider">The service provider.</param>
-        /// <param name="oldName">Full path to the old name of the document.</param>		
-        /// <param name="newName">Full path to the new name of the document.</param>		
-        /// <param name="newItemId">The new item id of the document</param>		
+        /// <param name="oldName">Full path to the old name of the document.</param>
+        /// <param name="newName">Full path to the new name of the document.</param>
+        /// <param name="newItemId">The new item id of the document</param>
         public static void RenameDocument(IServiceProvider site, string oldName, string newName, uint newItemId)
         {
-            if(site == null)
-            {
-                throw new ArgumentNullException("site");
-            }
+            Utilities.ArgumentNotNull("site", site);
 
             if(String.IsNullOrEmpty(oldName))
             {
@@ -352,7 +341,7 @@ namespace Microsoft.VisualStudio.Project
             uint uiVsDocCookie;
             ErrorHandler.ThrowOnFailure(pRDT.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, oldName, out pIVsHierarchy, out itemId, out docData, out uiVsDocCookie));
 
-            if(docData != IntPtr.Zero)
+            if(docData != IntPtr.Zero && pIVsHierarchy != null)
             {
                 try
                 {

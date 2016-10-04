@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Globalization;
@@ -69,6 +35,10 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get { return this.project; }
         }
+        internal ProjectNode ProjectNode {
+            get { return this.project; }
+        }
+
         #endregion
 
         #region ctor
@@ -80,7 +50,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         #region EnvDTE.Project
         /// <summary>
-        /// Gets or sets the name of the object. 
+        /// Gets or sets the name of the object.
         /// </summary>
         public virtual string Name
         {
@@ -90,10 +60,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
             set
             {
-                if(this.project == null || this.project.Site == null || this.project.IsClosed)
-                {
-                    throw new InvalidOperationException();
-                }
+                CheckProjectIsValid();
 
                 UIThread.DoOnUIThread(delegate()
                 {
@@ -130,10 +97,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
             set
             {
-                if(this.project == null || this.project.Site == null || this.project.IsClosed)
-                {
-                    throw new InvalidOperationException();
-                }
+                CheckProjectIsValid();
 
                 UIThread.DoOnUIThread(delegate()
                 {
@@ -145,6 +109,11 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
         }
 
+        internal void CheckProjectIsValid() {
+            if (this.project == null || this.project.Site == null || this.project.IsClosed) {
+                throw new InvalidOperationException();
+            }
+        }
         /// <summary>
         /// Gets the Projects collection containing the Project object supporting this property.
         /// </summary>
@@ -316,22 +285,13 @@ namespace Microsoft.VisualStudio.Project.Automation
                     {
                     IVsExtensibility3 extensibility = this.project.Site.GetService(typeof(IVsExtensibility)) as IVsExtensibility3;
 
-                        if (extensibility == null)
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    Utilities.CheckNotNull(extensibility);
 
                     object configurationManagerAsObject;
                     ErrorHandler.ThrowOnFailure(extensibility.GetConfigMgr(this.project.InteropSafeIVsHierarchy, VSConstants.VSITEMID_ROOT, out configurationManagerAsObject));
 
-                        if (configurationManagerAsObject == null)
-                    {
-                        throw new InvalidOperationException();
-                    }
-                    else
-                    {
-                        this.configurationManager = (ConfigurationManager)configurationManagerAsObject;
-                    }
+                    Utilities.CheckNotNull(configurationManagerAsObject);
+                    this.configurationManager = (ConfigurationManager)configurationManagerAsObject;
                 }
 
                 return this.configurationManager;
@@ -348,7 +308,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Gets a ProjectItem object for the nested project in the host project. 
+        /// Gets a ProjectItem object for the nested project in the host project.
         /// </summary>
         public virtual EnvDTE.ProjectItem ParentProjectItem
         {
@@ -364,11 +324,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         }
 
         /// <summary>
-        /// Saves the project. 
+        /// Saves the project.
         /// </summary>
         /// <param name="fileName">The file name with which to save the solution, project, or project item. If the file exists, it is overwritten</param>
         /// <exception cref="InvalidOperationException">Is thrown if the save operation failes.</exception>
-        /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>        
+        /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>
         public virtual void SaveAs(string fileName)
         {
             this.DoSave(true, fileName);
@@ -379,21 +339,18 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         /// <param name="fileName">The file name of the project</param>
         /// <exception cref="InvalidOperationException">Is thrown if the save operation failes.</exception>
-        /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>        
+        /// <exception cref="ArgumentNullException">Is thrown if fileName is null.</exception>
         public virtual void Save(string fileName)
         {
             this.DoSave(false, fileName);
         }
 
         /// <summary>
-        /// Removes the project from the current solution. 
+        /// Removes the project from the current solution.
         /// </summary>
         public virtual void Delete()
         {
-            if(this.project == null || this.project.Site == null || this.project.IsClosed)
-            {
-                throw new InvalidOperationException();
-            }
+            CheckProjectIsValid();
 
             UIThread.DoOnUIThread(delegate()
             {
@@ -407,7 +364,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         #region ISupportVSProperties methods
         /// <summary>
-        /// Microsoft Internal Use Only. 
+        /// Microsoft Internal Use Only.
         /// </summary>
         public virtual void NotifyPropertiesDelete()
         {
@@ -419,18 +376,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// Saves or Save Asthe project.
         /// </summary>
         /// <param name="isCalledFromSaveAs">Flag determining which Save method called , the SaveAs or the Save.</param>
-        /// <param name="fileName">The name of the project file.</param>        
+        /// <param name="fileName">The name of the project file.</param>
         private void DoSave(bool isCalledFromSaveAs, string fileName)
         {
-            if(fileName == null)
-            {
-                throw new ArgumentNullException("fileName");
-            }
+            Utilities.ArgumentNotNull("fileName", fileName);
 
-            if(this.project == null || this.project.Site == null || this.project.IsClosed)
-            {
-                throw new InvalidOperationException();
-            }
+            CheckProjectIsValid();
 
             UIThread.DoOnUIThread(delegate()
             {
@@ -445,10 +396,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
                     // Get the cookie of the project file from the RTD.
                     IVsRunningDocumentTable rdt = this.project.Site.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-                        if (null == rdt)
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    Utilities.CheckNotNull(rdt);
 
                     IVsHierarchy hier;
                     uint itemid;
@@ -474,10 +422,9 @@ namespace Microsoft.VisualStudio.Project.Automation
                     // Now get the solution.
                     IVsSolution solution = this.project.Site.GetService(typeof(SVsSolution)) as IVsSolution;
                     // Verify that we have both solution and hierarchy.
-                        if ((null == prjHierarchy) || (null == solution))
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    Utilities.CheckNotNull(prjHierarchy);
+                    Utilities.CheckNotNull(solution);
+
 
                     ErrorHandler.ThrowOnFailure(solution.SaveSolutionElement((uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_SaveIfDirty, prjHierarchy, cookie));
                 }
@@ -486,10 +433,10 @@ namespace Microsoft.VisualStudio.Project.Automation
 
                     // We need to make some checks before we can call the save method on the project node.
                     // This is mainly because it is now us and not the caller like in  case of SaveAs or Save that should validate the file name.
-                    // The IPersistFileFormat.Save method only does a validation that is necesseray to be performed. Example: in case of Save As the  
+                    // The IPersistFileFormat.Save method only does a validation that is necesseray to be performed. Example: in case of Save As the
                     // file name itself is not validated only the whole path. (thus a file name like file\file is accepted, since as a path is valid)
 
-                    // 1. The file name has to be valid. 
+                    // 1. The file name has to be valid.
                     string fullPath = fileName;
                     try
                     {
@@ -510,7 +457,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
                         if (!isCalledFromSaveAs)
                     {
-                        // 2. The file name has to be the same 
+                        // 2. The file name has to be the same
                             if (!NativeMethods.IsSamePath(fullPath, this.project.Url))
                         {
                             throw new InvalidOperationException();

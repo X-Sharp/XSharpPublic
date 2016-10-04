@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections;
@@ -67,19 +33,27 @@ namespace Microsoft.VisualStudio.Project.Automation
                                 References,
                                 ReferencesEvents
     {
-        private ReferenceContainerNode container;
-        public OAReferences(ReferenceContainerNode containerNode)
+        private readonly ProjectNode _project;
+        private ReferenceContainerNode _container;
+        public OAReferences(ReferenceContainerNode containerNode, ProjectNode project)
         {
-            container = containerNode;
+            _container = containerNode;
+            _project = project;
+
             AddEventSource<_dispReferencesEvents>(this as IEventSource<_dispReferencesEvents>);
-            container.OnChildAdded += new EventHandler<HierarchyNodeEventArgs>(OnReferenceAdded);
-            container.OnChildRemoved += new EventHandler<HierarchyNodeEventArgs>(OnReferenceRemoved);
+            if (_container != null) {
+                _container.OnChildAdded += new EventHandler<HierarchyNodeEventArgs>(OnReferenceAdded);
+                _container.OnChildRemoved += new EventHandler<HierarchyNodeEventArgs>(OnReferenceRemoved);
+            }
         }
 
         #region Private Members
         private Reference AddFromSelectorData(VSCOMPONENTSELECTORDATA selector, string wrapperTool = null)
         {
-            ReferenceNode refNode = container.AddReferenceFromSelectorData(selector, wrapperTool);
+            if (_container == null) {
+                return null;
+            }
+            ReferenceNode refNode = _container.AddReferenceFromSelectorData(selector, wrapperTool);
             if(null == refNode)
             {
                 return null;
@@ -105,7 +79,8 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public Reference Add(string bstrPath)
         {
-            if(string.IsNullOrEmpty(bstrPath))
+            // ignore requests from the designer which are framework assemblies and start w/ a *.
+            if (string.IsNullOrEmpty(bstrPath) || bstrPath.StartsWith("*"))
             {
                 return null;
             }
@@ -130,12 +105,12 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public Reference AddProject(EnvDTE.Project project)
         {
-            if(null == project)
+            if (null == project || _container == null)
             {
                 return null;
             }
             // Get the soulution.
-            IVsSolution solution = container.ProjectMgr.Site.GetService(typeof(SVsSolution)) as IVsSolution;
+            IVsSolution solution = _container.ProjectMgr.Site.GetService(typeof(SVsSolution)) as IVsSolution;
             if(null == solution)
             {
                 return null;
@@ -162,7 +137,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return container.ProjectMgr.GetAutomationObject() as EnvDTE.Project;
+                return _project.GetAutomationObject() as EnvDTE.Project;
             }
         }
 
@@ -170,7 +145,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return container.EnumReferences().Count;
+                if (_container == null)
+                {
+                    return 0;
+                }
+                return _container.EnumReferences().Count;
             }
         }
 
@@ -178,7 +157,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return container.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                return _project.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
             }
         }
 
@@ -203,8 +182,12 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public IEnumerator GetEnumerator()
         {
+            if (_container == null) {
+                return new List<Reference>().GetEnumerator();
+            }
+
             List<Reference> references = new List<Reference>();
-            IEnumerator baseEnum = container.EnumReferences().GetEnumerator();
+            IEnumerator baseEnum = _container.EnumReferences().GetEnumerator();
             if(null == baseEnum)
             {
                 return references.GetEnumerator();
@@ -227,6 +210,11 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public Reference Item(object index)
         {
+            if (_container == null)
+            {
+                throw new ArgumentOutOfRangeException("index");
+            }
+
             string stringIndex = index as string;
             if(null != stringIndex)
             {
@@ -234,7 +222,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             }
             // Note that this cast will throw if the index is not convertible to int.
             int intIndex = (int)index;
-            IList<ReferenceNode> refs = container.EnumReferences();
+            IList<ReferenceNode> refs = _container.EnumReferences();
             if(null == refs)
             {
                 throw new ArgumentOutOfRangeException("index");
@@ -251,7 +239,11 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return container.Parent.Object;
+                if (_container == null)
+                {
+                    return _project.Object;
+                }
+                return _container.Parent.Object;
             }
         }
 
@@ -267,7 +259,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         private void OnReferenceAdded(object sender, HierarchyNodeEventArgs args)
         {
             // Validate the parameters.
-            if((container != sender as ReferenceContainerNode) ||
+            if((_container != sender as ReferenceContainerNode) ||
                 (null == args) || (null == args.Child))
             {
                 return;
@@ -292,7 +284,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         private void OnReferenceChanged(object sender, HierarchyNodeEventArgs args)
         {
             // Validate the parameters.
-            if ((container != sender as ReferenceContainerNode) ||
+            if ((_container != sender as ReferenceContainerNode) ||
                 (null == args) || (null == args.Child))
             {
                 return;
@@ -311,11 +303,11 @@ namespace Microsoft.VisualStudio.Project.Automation
                 ReferenceChanged(reference);
             }
         }
-        
+
         private void OnReferenceRemoved(object sender, HierarchyNodeEventArgs args)
         {
             // Validate the parameters.
-            if((container != sender as ReferenceContainerNode) ||
+            if((_container != sender as ReferenceContainerNode) ||
                 (null == args) || (null == args.Child))
             {
                 return;

@@ -1,47 +1,47 @@
 ﻿/********************************************************************************************
 
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
+Copyright (c) Microsoft Corporation
+All rights reserved.
 
-Microsoft Public License: 
+Microsoft Public License:
 
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
+This license governs use of the accompanying software. If you use the software, you
+accept this license. If you do not accept the license, do not use the software.
 
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
+1. Definitions
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the
+same meaning here as under U.S. copyright law.
+A "contribution" is the original software, or any additions or changes to the software.
+A "contributor" is any person that distributes its contribution under this license.
+"Licensed patents" are a contributor's patent claims that read directly on its contribution.
 
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
+2. Grant of Rights
+(A) Copyright Grant- Subject to the terms of this license, including the license conditions
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
+royalty-free copyright license to reproduce its contribution, prepare derivative works of
+its contribution, and distribute its contribution or any derivative works that you create.
+(B) Patent Grant- Subject to the terms of this license, including the license conditions
+and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
+royalty-free license under its licensed patents to make, have made, use, sell, offer for
+sale, import, and/or otherwise dispose of its contribution in the software or derivative
+works of the contribution in the software.
 
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
+3. Conditions and Limitations
+(A) No Trademark License- This license does not grant you rights to use any contributors'
+name, logo, or trademarks.
+(B) If you bring a patent claim against any contributor over patents that you claim are
+infringed by the software, your patent license from such contributor to the software ends
+automatically.
+(C) If you distribute any portion of the software, you must retain all copyright, patent,
+trademark, and attribution notices that are present in the software.
+(D) If you distribute any portion of the software in source code form, you may do so only
+under this license by including a complete copy of this license with your distribution.
+If you distribute any portion of the software in compiled or object code form, you may only
+do so under a license that complies with this license.
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give
+no express warranties, guarantees or conditions. You may have additional consumer rights
+under your local laws which this license cannot change. To the extent permitted under your
+local laws, the contributors exclude the implied warranties of merchantability, fitness for
 a particular purpose and non-infringement.
 
 ********************************************************************************************/
@@ -199,7 +199,7 @@ namespace Microsoft.VisualStudio.Project
         /// The VS command that allows projects to open Windows Explorer to the project directory.
         /// </summary>
         private const VsCommands2K ExploreFolderInWindowsCommand = (VsCommands2K)1635;
-        
+
         #endregion
 
         #region fields
@@ -247,13 +247,13 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// This property returns the time of the last change made to this project.
         /// It is not the time of the last change on the project file, but actually of
-        /// the in memory project settings.  In other words, it is the last time that 
+        /// the in memory project settings.  In other words, it is the last time that
         /// SetProjectDirty was called.
         /// </summary>
         private DateTime lastModifiedTime;
 
         /// <summary>
-        /// MSBuild engine we are going to use 
+        /// MSBuild engine we are going to use
         /// </summary>
         private MSBuild.ProjectCollection buildEngine;
 
@@ -304,7 +304,7 @@ namespace Microsoft.VisualStudio.Project
         private bool isProjectEventsListener = true;
 
         /// <summary>
-        /// The build dependency list passed to IVsDependencyProvider::EnumDependencies 
+        /// The build dependency list passed to IVsDependencyProvider::EnumDependencies
         /// </summary>
         private List<IVsBuildDependency> buildDependencyList = new List<IVsBuildDependency>();
 
@@ -384,7 +384,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// This Guid must match the Guid you registered under
         /// HKLM\Software\Microsoft\VisualStudio\%version%\Projects.
-        /// Among other things, the Project framework uses this 
+        /// Among other things, the Project framework uses this
         /// guid to find your project and item templates.
         /// </summary>
         public abstract Guid ProjectGuid
@@ -522,8 +522,8 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// The target name that will be used for evaluating the project file (i.e., pseudo-builds).
-        /// This target is used to trigger a build with when the project system changes. 
-        /// Example: The language projrcts are triggering a build with the Compile target whenever 
+        /// This target is used to trigger a build with when the project system changes.
+        /// Example: The language projrcts are triggering a build with the Compile target whenever
         /// the project system changes.
         /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "ReEvaluate")]
@@ -669,7 +669,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// This property returns the time of the last change made to this project.
         /// It is not the time of the last change on the project file, but actually of
-        /// the in memory project settings.  In other words, it is the last time that 
+        /// the in memory project settings.  In other words, it is the last time that
         /// SetProjectDirty was called.
         /// </summary>
         public DateTime LastModifiedTime
@@ -762,7 +762,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Gets or set the relative path to the folder containing the project ouput. 
+        /// Gets or set the relative path to the folder containing the project ouput.
         /// </summary>
         public virtual string OutputBaseRelativePath
         {
@@ -819,7 +819,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Version of this node as an IVsHierarchy that can be safely passed to native code from a background thread. 
+        /// Version of this node as an IVsHierarchy that can be safely passed to native code from a background thread.
         /// </summary>
         public IVsHierarchy InteropSafeIVsHierarchy
         {
@@ -828,7 +828,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Version of this node as an IVsUIHierarchy that can be safely passed to native code from a background thread. 
+        /// Version of this node as an IVsUIHierarchy that can be safely passed to native code from a background thread.
         /// </summary>
         public IVsUIHierarchy InteropSafeIVsUIHierarchy
         {
@@ -837,7 +837,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Version of this node as an IVsProject3 that can be safely passed to native code from a background thread. 
+        /// Version of this node as an IVsProject3 that can be safely passed to native code from a background thread.
         /// </summary>
         public IVsProject3 InteropSafeIVsProject3
         {
@@ -846,7 +846,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Version of this node as an IVsSccProject2 that can be safely passed to native code from a background thread. 
+        /// Version of this node as an IVsSccProject2 that can be safely passed to native code from a background thread.
         /// </summary>
         public IVsSccProject2 InteropSafeIVsSccProject2
         {
@@ -855,7 +855,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Version of this node as an IVsUIHierWinClipboardHelperEvents that can be safely passed to native code from a background thread. 
+        /// Version of this node as an IVsUIHierWinClipboardHelperEvents that can be safely passed to native code from a background thread.
         /// </summary>
         public IVsUIHierWinClipboardHelperEvents InteropSafeIVsUIHierWinClipboardHelperEvents
         {
@@ -1131,7 +1131,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>A success or failure value.</returns>
         public override int SetEditLabel(string label)
         {
-            // Validate the filename. 
+            // Validate the filename.
             if (String.IsNullOrEmpty(label))
             {
                 throw new InvalidOperationException(SR.GetString(SR.ErrorInvalidFileName, CultureInfo.CurrentUICulture));
@@ -1199,7 +1199,7 @@ namespace Microsoft.VisualStudio.Project
             try
             {
                 // Walk the tree and close all nodes.
-                // This has to be done before the project closes, since we want still state available for the ProjectMgr on the nodes 
+                // This has to be done before the project closes, since we want still state available for the ProjectMgr on the nodes
                 // when nodes are closing.
                 try
                 {
@@ -1225,7 +1225,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Sets the service provider from which to access the services. 
+        /// Sets the service provider from which to access the services.
         /// </summary>
         /// <param name="site">An instance to an Microsoft.VisualStudio.OLE.Interop object</param>
         /// <returns>A success or failure value.</returns>
@@ -1245,7 +1245,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Gets the properties of the project node. 
+        /// Gets the properties of the project node.
         /// </summary>
         /// <param name="propId">The __VSHPROPID of the property.</param>
         /// <returns>A property dependent value. See: <see cref="__VSHPROPID"/> for details.</returns>
@@ -1300,7 +1300,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Gets the GUID value of the node. 
+        /// Gets the GUID value of the node.
         /// </summary>
         /// <param name="propid">A __VSHPROPID or __VSHPROPID2 value of the guid property</param>
         /// <param name="guid">The guid to return for the property.</param>
@@ -1352,12 +1352,12 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Removes items from the hierarchy. 
+        /// Removes items from the hierarchy.
         /// </summary>
         /// <devdoc>Project overwrites this.</devdoc>
         public override void Remove(bool removeFromStorage)
         {
-            // the project will not be deleted from disk, just removed      
+            // the project will not be deleted from disk, just removed
             if (removeFromStorage)
             {
                 return;
@@ -1771,7 +1771,7 @@ namespace Microsoft.VisualStudio.Project
                     varTabInitInfo = (int)__VSHPROPID.VSHPROPID_ShowProjInSolutionPage,
                     guidTab = VSConstants.GUID_SolutionPage,
                 },
-                // Add the Browse for file page            
+                // Add the Browse for file page
                 new VSCOMPONENTSELECTORTABINIT {
                     varTabInitInfo = 0,
                     guidTab = VSConstants.GUID_BrowseFilePage,
@@ -1823,7 +1823,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Returns the Compiler associated to the project 
+        /// Returns the Compiler associated to the project
         /// </summary>
         /// <returns>Null</returns>
         public virtual ICodeCompiler GetCompiler()
@@ -1879,7 +1879,7 @@ namespace Microsoft.VisualStudio.Project
 
                 // based on the passed in flags, this either reloads/loads a project, or tries to create a new one
                 // now we create a new project... we do that by loading the template and then saving under a new name
-                // we also need to copy all the associated files with it.					
+                // we also need to copy all the associated files with it.
                 if ((flags & (uint)__VSCREATEPROJFLAGS.CPF_CLONEFILE) == (uint)__VSCREATEPROJFLAGS.CPF_CLONEFILE)
                 {
                     Debug.Assert(!String.IsNullOrEmpty(fileName) && File.Exists(fileName), "Invalid filename passed to load the project. A valid filename is expected");
@@ -1890,7 +1890,7 @@ namespace Microsoft.VisualStudio.Project
                     SetBuildProject(Utilities.ReinitializeMsBuildProject(this.buildEngine, fileName, this.buildProject));
 
                     // Compute the file name
-                    // We try to solve two problems here. When input comes from a wizzard in case of zipped based projects 
+                    // We try to solve two problems here. When input comes from a wizzard in case of zipped based projects
                     // the parameters are different.
                     // In that case the filename has the new filename in a temporay path.
 
@@ -2034,7 +2034,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// This add methos adds the "key" item to the hierarchy, potentially adding other subitems in the process
         /// This method may recurse if the parent is an other subitem
-        /// 
+        ///
         /// </summary>
         /// <param name="subitems">List of subitems not yet added to the hierarchy</param>
         /// <param name="key">Key to retrieve the target item from the subitems list</param>
@@ -2234,18 +2234,18 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
 
-            // Even though the options are the same, when this config was originally set, it may have been before 
-            // the project system was ready to set up its configuration, so go ahead and call through to SetConfiguration 
-            // anyway -- it should do effectively nothing if the config is the same and all the initialization has 
-            // already occurred. 
+            // Even though the options are the same, when this config was originally set, it may have been before
+            // the project system was ready to set up its configuration, so go ahead and call through to SetConfiguration
+            // anyway -- it should do effectively nothing if the config is the same and all the initialization has
+            // already occurred.
             if (this.options != null && String.Equals(this.options.Config, config, StringComparison.OrdinalIgnoreCase))
             {
                 if (config != null)
                 {
-                    // Fancy dance with the options required because SetConfiguration nulls out this.options 
-                    // even if the configuration itself has not changed; whereas we're only calling SetConfiguration 
+                    // Fancy dance with the options required because SetConfiguration nulls out this.options
+                    // even if the configuration itself has not changed; whereas we're only calling SetConfiguration
                     // for purposes of initializing some other fields here; since we know the config is the same, it
-                    // should be perfectly safe to keep the same options as before.  
+                    // should be perfectly safe to keep the same options as before.
                     ProjectOptions currentOptions = this.options;
                     this.SetConfiguration(config);
                     this.options = currentOptions;
@@ -3396,7 +3396,7 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// Saves project file related information to the new file name. It also calls msbuild API to save the project file.
-        /// It is called by the SaveAs method and the SetEditLabel before the project file rename related events are triggered. 
+        /// It is called by the SaveAs method and the SetEditLabel before the project file rename related events are triggered.
         /// An implementer can override this method to provide specialized semantics on how the project file is renamed in the msbuild file.
         /// </summary>
         /// <param name="newFileName">The new full path of the project file</param>
@@ -3591,9 +3591,9 @@ namespace Microsoft.VisualStudio.Project
         /// provide.
         /// The first string is the name of the group.
         /// The second string is the target name (MSBuild) for that group.
-        /// 
+        ///
         /// To add/remove OutputGroups, simply override this method and edit the list.
-        /// 
+        ///
         /// To get nice display names and description for your groups, override:
         ///        - GetOutputGroupDisplayName
         ///        - GetOutputGroupDescription
@@ -4199,7 +4199,7 @@ namespace Microsoft.VisualStudio.Project
                     if (suppressUI)
                         qef |= tagVSQueryEditFlags.QEF_SilentMode;
 
-                    // If we are debugging, we want to prevent our project from being reloaded. To 
+                    // If we are debugging, we want to prevent our project from being reloaded. To
                     // do this, we pass the QEF_NoReload flag
                     if (!Utilities.IsVisualStudioInDesignMode(this.Site))
                         qef |= tagVSQueryEditFlags.QEF_NoReload;
@@ -4893,10 +4893,10 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="op"></param>
         /// <param name="itemName"></param>
         /// <param name="filesToOpen"></param>
-        /// <param name="files">Array of file names. 
-        /// If dwAddItemOperation is VSADDITEMOP_CLONEFILE the first item in the array is the name of the file to clone. 
-        /// If dwAddItemOperation is VSADDITEMOP_OPENDIRECTORY, the first item in the array is the directory to open. 
-        /// If dwAddItemOperation is VSADDITEMOP_RUNWIZARD, the first item is the name of the wizard to run, 
+        /// <param name="files">Array of file names.
+        /// If dwAddItemOperation is VSADDITEMOP_CLONEFILE the first item in the array is the name of the file to clone.
+        /// If dwAddItemOperation is VSADDITEMOP_OPENDIRECTORY, the first item in the array is the directory to open.
+        /// If dwAddItemOperation is VSADDITEMOP_RUNWIZARD, the first item is the name of the wizard to run,
         /// and the second item is the file name the user supplied (same as itemName).</param>
         /// <param name="dlgOwner"></param>
         /// <param name="editorFlags"></param>
@@ -5048,7 +5048,7 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     // Copy the file to the correct location.
-                    // We will suppress the file change events to be triggered to this item, since we are going to copy over the existing file and thus we will trigger a file change event. 
+                    // We will suppress the file change events to be triggered to this item, since we are going to copy over the existing file and thus we will trigger a file change event.
                     // We do not want the filechange event to ocur in this case, similar that we do not want a file change event to occur when saving a file.
                     IVsFileChangeEx fileChange = this.site.GetService(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
                     if (fileChange == null)
@@ -5158,7 +5158,7 @@ namespace Microsoft.VisualStudio.Project
 
             if (suggestedRoot == null || suggestedRoot.Length == 0)
             {
-                // foldercase, we assume... 
+                // foldercase, we assume...
                 suggestedRoot = "NewFolder";
                 fFolderCase = true;
             }
@@ -5481,7 +5481,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Used to determine the kind of build system, in VS 2005 there's only one defined kind: MSBuild 
+        /// Used to determine the kind of build system, in VS 2005 there's only one defined kind: MSBuild
         /// </summary>
         /// <param name="kind"></param>
         /// <returns></returns>
@@ -5497,7 +5497,7 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// Add Components to the Project.
-        /// Used by the environment to add components specified by the user in the Component Selector dialog 
+        /// Used by the environment to add components specified by the user in the Component Selector dialog
         /// to the specified project
         /// </summary>
         /// <param name="dwAddCompOperation">The component operation to be performed.</param>
@@ -5593,7 +5593,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// This method is called to discover special (hidden files) associated with a given VSITEMID within this hierarchy. 
+        /// This method is called to discover special (hidden files) associated with a given VSITEMID within this hierarchy.
         /// </summary>
         /// <param name="itemid">Identifier for the VSITEMID being queried.</param>
         /// <param name="sccFile">One of the files associated with the node</param>
@@ -5635,7 +5635,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// This method is called by the source control portion of the environment to inform the project of changes to the source control glyph on various nodes. 
+        /// This method is called by the source control portion of the environment to inform the project of changes to the source control glyph on various nodes.
         /// </summary>
         /// <param name="affectedNodes">Count of changed nodes.</param>
         /// <param name="itemidAffectedNodes">An array of VSITEMID identifiers of the changed nodes.</param>
@@ -5725,7 +5725,7 @@ namespace Microsoft.VisualStudio.Project
 
 #region IVsProjectSpecialFiles Members
         /// <summary>
-        /// Allows you to query the project for special files and optionally create them. 
+        /// Allows you to query the project for special files and optionally create them.
         /// </summary>
         /// <param name="fileId">__PSFFILEID of the file</param>
         /// <param name="flags">__PSFFLAGS flags for the file</param>
@@ -5865,8 +5865,8 @@ namespace Microsoft.VisualStudio.Project
             projectPointer = IntPtr.Zero;
 
             // Initialize the interop-safe versions of this node's implementations of various VS interfaces,
-            // which point to the outer object. The project node itself should never be passed to unmanaged 
-            // code -- we should always use these properties instead. 
+            // which point to the outer object. The project node itself should never be passed to unmanaged
+            // code -- we should always use these properties instead.
             this.InteropSafeIVsHierarchy = Utilities.GetOuterAs<IVsHierarchy>(this);
             this.InteropSafeIVsUIHierarchy = Utilities.GetOuterAs<IVsUIHierarchy>(this);
             this.InteropSafeIVsProject3 = Utilities.GetOuterAs<IVsProject3>(this);
@@ -6206,7 +6206,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Updates our scc project settings. 
+        /// Updates our scc project settings.
         /// </summary>
         /// <param name="sccProjectName">String, opaque to the project, that identifies the project location on the server. Persist this string in the project file. </param>
         /// <param name="sccLocalPath">String, opaque to the project, that identifies the path to the server. Persist this string in the project file.</param>
@@ -6244,7 +6244,7 @@ namespace Microsoft.VisualStudio.Project
             this.sccAuxPath = this.GetProjectProperty(ProjectFileConstants.SccAuxPath);
         }
 
-        private void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
+        internal void OnAfterProjectOpen(object sender, AfterProjectFileOpenedEventArgs e)
         {
             this.projectOpened = true;
         }
@@ -6644,7 +6644,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns>
         /// <c>true</c> if the project will be retargeted.  <c>false</c> to load project in unloaded state.

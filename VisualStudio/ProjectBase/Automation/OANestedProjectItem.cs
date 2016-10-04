@@ -29,7 +29,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctors
-        public OANestedProjectItem(OAProject project, NestedProjectNode node)
+        internal OANestedProjectItem(OAProject project, NestedProjectNode node)
             : base(project, node)
         {
             if (node == null)

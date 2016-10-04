@@ -42,7 +42,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctor
-        public OAProject(ProjectNode project)
+        internal OAProject(ProjectNode project)
         {
             this.project = project;
         }
@@ -70,6 +70,10 @@ namespace Microsoft.VisualStudio.Project.Automation
                 }
                 });
             }
+        }
+
+        public void Dispose() {
+            configurationManager = null;
         }
 
         /// <summary>

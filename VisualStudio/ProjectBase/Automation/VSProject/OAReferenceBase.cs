@@ -34,14 +34,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctors
-        protected OAReferenceBase(RT referenceNode)
+        internal OAReferenceBase(RT referenceNode)
         {
             this.referenceNode = referenceNode;
         }
         #endregion
 
         #region properties
-        protected RT BaseReferenceNode
+        internal RT BaseReferenceNode
         {
             get { return referenceNode; }
         }

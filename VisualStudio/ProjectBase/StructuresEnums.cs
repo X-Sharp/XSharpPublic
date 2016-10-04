@@ -451,7 +451,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Event args class for triggering file change event arguments.
     /// </summary>
-    internal class FileChangedOnDiskEventArgs : EventArgs
+    public class FileChangedOnDiskEventArgs : EventArgs
     {
         #region Private fields
         /// <summary>
@@ -486,7 +486,7 @@ namespace Microsoft.VisualStudio.Project
         /// Gets the file name that was changed on disk.
         /// </summary>
         /// <value>The file that was changed on disk.</value>
-        internal string FileName
+        public string FileName
         {
             get
             {
@@ -510,7 +510,7 @@ namespace Microsoft.VisualStudio.Project
         /// The reason while the file has chnaged on disk.
         /// </summary>
         /// <value>The reason while the file has chnaged on disk.</value>
-        internal _VSFILECHANGEFLAGS FileChangeFlag
+        public _VSFILECHANGEFLAGS FileChangeFlag
         {
             get
             {

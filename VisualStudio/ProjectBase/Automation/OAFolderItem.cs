@@ -27,7 +27,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     public class OAFolderItem : OAProjectItem<FolderNode>
     {
         #region ctors
-        public OAFolderItem(OAProject project, FolderNode node)
+        internal OAFolderItem(OAProject project, FolderNode node)
             : base(project, node)
         {
         }

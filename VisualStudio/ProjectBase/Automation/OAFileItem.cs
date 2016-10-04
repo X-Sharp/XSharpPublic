@@ -35,7 +35,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     public class OAFileItem : OAProjectItem<FileNode>
     {
         #region ctors
-        public OAFileItem(OAProject project, FileNode node)
+        internal OAFileItem(OAProject project, FileNode node)
             : base(project, node)
         {
         }
@@ -217,10 +217,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             return UIThread.DoOnUIThread(delegate()
             {
-                if (this.Node == null || this.Node.ProjectMgr == null || this.Node.ProjectMgr.IsClosed || this.Node.ProjectMgr.Site == null)
-                {
-                    throw new InvalidOperationException();
-                }
+            	CheckProjectIsValid();
 
                 // Validate input params
                 Guid logicalViewGuid = VSConstants.LOGVIEWID_Primary;

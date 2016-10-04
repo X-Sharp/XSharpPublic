@@ -32,7 +32,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctors
-        public OAVSProjectItem(FileNode fileNode)
+        internal OAVSProjectItem(FileNode fileNode)
         {
             this.FileNode = fileNode;
         }
@@ -66,7 +66,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <summary>
         /// File Node property
         /// </summary>
-        public FileNode FileNode
+        internal FileNode FileNode
         {
             get
             {

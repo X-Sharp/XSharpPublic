@@ -35,7 +35,14 @@ namespace Microsoft.VisualStudio.Project.Automation
     {
         private readonly ProjectNode _project;
         private ReferenceContainerNode _container;
-        public OAReferences(ReferenceContainerNode containerNode, ProjectNode project)
+
+        /// <summary>
+        /// Creates a new automation references object.  If the project type doesn't
+        /// support references containerNode is null.
+        /// </summary>
+        /// <param name="containerNode"></param>
+        /// <param name="project"></param>
+        internal OAReferences(ReferenceContainerNode containerNode, ProjectNode project)
         {
             _container = containerNode;
             _project = project;

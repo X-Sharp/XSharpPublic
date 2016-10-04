@@ -74,7 +74,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         /// <param name="project">The associated project.</param>
         /// <param name="nodeWithItems">The node that defines the items.</param>
-        public OANavigableProjectItems(OAProject project, HierarchyNode nodeWithItems)
+        internal OANavigableProjectItems(OAProject project, HierarchyNode nodeWithItems)
         {
             this.project = project;
             this.nodeWithItems = nodeWithItems;

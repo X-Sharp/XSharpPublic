@@ -29,7 +29,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     [ComVisible(true)]
     public class OAProjectReference : OAReferenceBase<ProjectReferenceNode>
     {
-        public OAProjectReference(ProjectReferenceNode projectReference) :
+        internal OAProjectReference(ProjectReferenceNode projectReference) :
             base(projectReference)
         {
         }

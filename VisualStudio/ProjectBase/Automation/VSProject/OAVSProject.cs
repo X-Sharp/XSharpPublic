@@ -34,7 +34,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctors
-        public OAVSProject(ProjectNode project)
+        internal OAVSProject(ProjectNode project)
         {
             this.project = project;
         }
@@ -129,7 +129,6 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void Refresh()
         {
-            throw new NotImplementedException();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]

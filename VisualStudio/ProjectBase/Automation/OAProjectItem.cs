@@ -31,7 +31,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region properties
-        protected T Node
+        internal T Node
         {
             get
             {
@@ -52,7 +52,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
 
         #region ctors
-        public OAProjectItem(OAProject project, T node)
+        internal OAProjectItem(OAProject project, T node)
         {
             this.node = node;
             this.project = project;

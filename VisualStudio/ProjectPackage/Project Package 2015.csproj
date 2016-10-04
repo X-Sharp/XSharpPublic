@@ -136,6 +136,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="IProjectSourceNode.cs" />
     <Compile Include="VOEditorSupport\EditorPane.cs" />
     <Compile Include="VOEditorSupport\Factories.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
@@ -209,17 +210,25 @@
     </ZipItem>
     <Compile Include="VOEditorSupport\IEditor.cs" />
     <Compile Include="VsTextViewCreationListener.cs" />
+    <Compile Include="XSharpProjectReferenceNode.cs" />
+    <Compile Include="XSharpSingleFileGenerator.cs" />
+    <Compile Include="XSharpFolderNode.cs" />
+    <Compile Include="SupportMethods.cs" />
+    <Compile Include="XSharpProjectMembers.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
     <Compile Include="WPF\XSharpRuntimeNameFactory.cs" />
     <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
     <Compile Include="WPF\XSharpWPFFlavor.cs" />
     <Compile Include="WPF\XSharpWPFProjectFactory.cs" />
+    <Compile Include="XSharpAssemblyReferenceNode.cs" />
+    <Compile Include="XSharpCOMReferenceNode.cs" />
     <Compile Include="XSharpConstants.cs" />
     <Compile Include="XSharpDependentFileNode.cs" />
     <Compile Include="XSharpEditorFactory.cs" />
     <Compile Include="XSharpConfigprovider.cs" />
     <Compile Include="XSharpFileNodeProperties.cs" />
     <Compile Include="XSharpFileType.cs" />
+    <Compile Include="XSharpNodeProperties.cs" />
     <Compile Include="XSharpProjectAutomation.cs" />
     <Compile Include="XSharpProjectFactory.cs" />
     <Compile Include="XSharpFileNode.cs" />
@@ -228,6 +237,7 @@
     <Compile Include="XSharpProjectNode.cs" />
     <Compile Include="XSharpProjectPackage.cs" />
     <Compile Include="Resources.cs" />
+    <Compile Include="XSharpReferenceContainerNode.cs" />
     <Compile Include="XSharpVSMDProvider.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>

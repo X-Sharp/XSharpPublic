@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation
-All rights reserved.
-
-Microsoft Public License:
-
-This license governs use of the accompanying software. If you use the software, you
-accept this license. If you do not accept the license, do not use the software.
-
-1. Definitions
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the
-same meaning here as under U.S. copyright law.
-A "contribution" is the original software, or any additions or changes to the software.
-A "contributor" is any person that distributes its contribution under this license.
-"Licensed patents" are a contributor's patent claims that read directly on its contribution.
-
-2. Grant of Rights
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
-royalty-free copyright license to reproduce its contribution, prepare derivative works of
-its contribution, and distribute its contribution or any derivative works that you create.
-(B) Patent Grant- Subject to the terms of this license, including the license conditions
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
-royalty-free license under its licensed patents to make, have made, use, sell, offer for
-sale, import, and/or otherwise dispose of its contribution in the software or derivative
-works of the contribution in the software.
-
-3. Conditions and Limitations
-(A) No Trademark License- This license does not grant you rights to use any contributors'
-name, logo, or trademarks.
-(B) If you bring a patent claim against any contributor over patents that you claim are
-infringed by the software, your patent license from such contributor to the software ends
-automatically.
-(C) If you distribute any portion of the software, you must retain all copyright, patent,
-trademark, and attribution notices that are present in the software.
-(D) If you distribute any portion of the software in source code form, you may do so only
-under this license by including a complete copy of this license with your distribution.
-If you distribute any portion of the software in compiled or object code form, you may only
-do so under a license that complies with this license.
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give
-no express warranties, guarantees or conditions. You may have additional consumer rights
-under your local laws which this license cannot change. To the extent permitted under your
-local laws, the contributors exclude the implied warranties of merchantability, fitness for
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -64,14 +30,47 @@ using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false), ComVisible(true)]
+    public class ReferenceContainerNodeProperties : NodeProperties
+    {
+      #region properties
+       [Microsoft.VisualStudio.Project.SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Misc)]
+       [Microsoft.VisualStudio.Project.LocDisplayName(Microsoft.VisualStudio.Project.SR.FolderName)]
+       [Microsoft.VisualStudio.Project.SRDescriptionAttribute(Microsoft.VisualStudio.Project.SR.FolderNameDescription)]
+      [AutomationBrowsable( false )]
+      public string FolderName
+      {
+         get
+         {
+            return this.Node.Caption;
+         }
+      }
+
+      #endregion
+
+      #region ctors
+      public ReferenceContainerNodeProperties( HierarchyNode node )
+         : base( node )
+      {
+      }
+      #endregion
+
+      #region overridden methods
+      public override string GetClassName()
+      {
+          return Microsoft.VisualStudio.Project.SR.GetString(Microsoft.VisualStudio.Project.SR.FolderProperties, CultureInfo.CurrentUICulture);
+      }
+      #endregion
+   }
+    [CLSCompliant(false), ComVisible(true)]
     public class ReferenceContainerNode : HierarchyNode, IReferenceContainer
     {
         #region fields
+
         internal const string ReferencesNodeVirtualName = "References";
         #endregion
 
         #region ctor
-        public ReferenceContainerNode(ProjectNode root)
+        internal ReferenceContainerNode(ProjectNode root)
             : base(root)
         {
             this.VirtualNodeName = ReferencesNodeVirtualName;
@@ -83,7 +82,8 @@ namespace Microsoft.VisualStudio.Project
         private static string[] supportedReferenceTypes = new string[] {
             ProjectFileConstants.ProjectReference,
             ProjectFileConstants.Reference,
-            ProjectFileConstants.COMReference
+            ProjectFileConstants.COMReference,
+            ProjectFileConstants.WebPiReference
         };
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         protected virtual string[] SupportedReferenceTypes
@@ -143,6 +143,19 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region overridden methods
+        // Added this so ReferenceFolder nodes return a properties object.
+        // Otherwise OAProjectItem.Properties returns null instead of an EnvDTE.Properies
+        // object.  This causes the WPF designer to blow chunks, for example when the cursor is
+        // placed over the 'Cursor' property in the properties window while a WPF form has focus.
+        // The WPF desginer checks the properties collection on each hierarchy node looking for
+        // something, and when it hits the ReferenceContainerNode it blows chunks because
+        // it calls MoveNext() on what it expected to be a EnvDTE.Properties collection, but
+        // it is null.
+        protected override NodeProperties CreatePropertiesObject()
+        {
+           return new ReferenceContainerNodeProperties( this );
+        }
+
         /// <summary>
         /// Returns an instance of the automation object for ReferenceContainerNode
         /// </summary>
@@ -273,6 +286,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
+            List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
             foreach(string referenceType in SupportedReferenceTypes)
             {
                 IEnumerable<MSBuild.ProjectItem> refererncesGroup = this.ProjectMgr.BuildProject.GetItems(referenceType);
@@ -303,6 +317,7 @@ namespace Microsoft.VisualStudio.Project
                             if(String.Compare(n.Caption, node.Caption, StringComparison.OrdinalIgnoreCase) == 0)
                             {
                                 found = true;
+                                break;
                             }
                         }
 
@@ -310,9 +325,28 @@ namespace Microsoft.VisualStudio.Project
                         {
                             this.AddChild(node);
                         }
+                        else
+                        {
+                            duplicatedNode.Add(node);
+                        }
                     }
                 }
             }
+            // Now manage duplicates
+            if (duplicatedNode.Count > 0)
+            {
+                // Make a backup first
+                string original = buildProject.FullPath;
+                StreamWriter backup = new StreamWriter( original + ".backup" );
+                buildProject.Save(backup);
+                backup.Close();
+                // User replied Yes to the Auto Correction
+                foreach (ReferenceNode node in duplicatedNode)
+                {
+                    //this.RemoveChild( node );
+                    node.Remove(false);
+                }
+                }
         }
 
         /// <summary>
@@ -320,7 +354,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="selectorData">data describing selected component</param>
         /// <returns>Reference in case of a valid reference node has been created. Otherwise null</returns>
-        public ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null)
+        public virtual ReferenceNode AddReferenceFromSelectorData(VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null)
         {
             //Make sure we can edit the project file
             if(!this.ProjectMgr.QueryEditProjectFile(false))
@@ -430,6 +464,11 @@ namespace Microsoft.VisualStudio.Project
             if(null == selectorData.bstrFile)
             {
                 throw new ArgumentNullException("selectorData");
+            }
+            // refer to http://social.msdn.microsoft.com/Forums/en-US/vsx/thread/50af4ee8-1431-4d27-86c4-7db799c3f085
+            if ( selectorData.bstrFile[0] == '*' )
+            {
+               selectorData.bstrFile = selectorData.bstrFile.Substring( 1 );
             }
 
             // We have a path to a file, it could be anything
@@ -553,6 +592,8 @@ namespace Microsoft.VisualStudio.Project
             return node;
         }
 
+
+
         /// <summary>
         /// Creates a com reference node from the project element.
         /// </summary>
@@ -565,7 +606,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected virtual ComReferenceNode CreateComReferenceNode(Microsoft.VisualStudio.Shell.Interop.VSCOMPONENTSELECTORDATA selectorData, string wrapperTool = null)
         {
-            ComReferenceNode node = new ComReferenceNode(this.ProjectMgr, selectorData);
+            ComReferenceNode node = new ComReferenceNode(this.ProjectMgr, selectorData, wrapperTool);
             return node;
         }
         #endregion

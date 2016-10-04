@@ -108,6 +108,7 @@ namespace Microsoft.VisualStudio.Project
         private bool hasParentNodeNameRelation;
         private List<HierarchyNode> itemsDraggedOrCutOrCopied;
         private bool sourceDraggedOrCutOrCopied;
+      	private bool sourceDragged;
 
         /// <summary>
         /// Has the object been disposed.
@@ -429,7 +430,7 @@ namespace Microsoft.VisualStudio.Project
         /// Specifies if a Node is under source control.
         /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Scc")]
-        public bool ExcludeNodeFromScc
+        public virtual bool ExcludeNodeFromScc
         {
             get
             {
@@ -468,7 +469,17 @@ namespace Microsoft.VisualStudio.Project
                 this.sourceDraggedOrCutOrCopied = value;
             }
         }
-
+      protected bool SourceDragged
+      {
+         get
+         {
+            return this.sourceDragged;
+         }
+         set
+         {
+            this.sourceDragged = value;
+         }
+      }
         protected IList<HierarchyNode> ItemsDraggedOrCutOrCopied
         {
             get
@@ -507,6 +518,31 @@ namespace Microsoft.VisualStudio.Project
             this.itemNode = new ProjectElement(this.projectMgr, null, true);
             this.hierarchyId = this.projectMgr.ItemIdMap.Add(this);
             this.oleServiceProvider.AddService(typeof(IVsHierarchy), root, false);
+      }
+      #endregion
+
+      #region static methods
+      /// <summary>
+      /// Get the outer IVsHierarchy implementation.
+      /// This is used for scenario where a flavor may be modifying the behavior
+      /// </summary>
+      internal static IVsHierarchy GetOuterHierarchy(HierarchyNode node)
+      {
+         IVsHierarchy hierarchy = null;
+         // The hierarchy of a node is its project node hierarchy
+         IntPtr projectUnknown = Marshal.GetIUnknownForObject(node.projectMgr);
+         try
+         {
+            hierarchy = (IVsHierarchy)Marshal.GetTypedObjectForIUnknown(projectUnknown, typeof(IVsHierarchy));
+         }
+         finally
+         {
+            if (projectUnknown != IntPtr.Zero)
+            {
+               Marshal.Release(projectUnknown);
+            }
+         }
+         return hierarchy;
         }
         #endregion
 
@@ -999,15 +1035,18 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(removeFlags != null, "At least an empty array should be returned for the GetRemoveFileFlags");
             this.ProjectMgr.Tracker.OnItemRemoved(documentToRemove, removeFlags[0]);
 
-            // Notify hierarchy event listeners that we have removed the item
-            if(null != this.parentNode.onChildRemoved)
-            {
-                HierarchyNodeEventArgs args = new HierarchyNodeEventArgs(this);
-                parentNode.onChildRemoved(parentNode, args);
-            }
+	         if (this.parentNode != null)
+	         {
+	            // Notify hierarchy event listeners that we have removed the item
+	            if(null != this.parentNode.onChildRemoved)
+	            {
+	                HierarchyNodeEventArgs args = new HierarchyNodeEventArgs(this);
+	                parentNode.onChildRemoved(parentNode, args);
+	            }
 
-            // Notify hierarchy event listeners that items have been invalidated
-            OnInvalidateItems(this.parentNode);
+	            // Notify hierarchy event listeners that items have been invalidated
+	            OnInvalidateItems(this.parentNode);
+	         }
 
             // Dispose the node now that is deleted.
             this.Dispose(true);
@@ -1207,6 +1246,7 @@ namespace Microsoft.VisualStudio.Project
                 uiFlags = (uint)(__VSADDITEMFLAGS.VSADDITEM_AddNewItems | __VSADDITEMFLAGS.VSADDITEM_SuggestTemplateName | __VSADDITEMFLAGS.VSADDITEM_AllowHiddenTreeView);
             else
                 uiFlags = (uint)(__VSADDITEMFLAGS.VSADDITEM_AddExistingItems | __VSADDITEMFLAGS.VSADDITEM_AllowMultiSelect | __VSADDITEMFLAGS.VSADDITEM_AllowStickyFilter);
+         	uiFlags |= (uint)__VSADDITEMFLAGS.VSADDITEM_ProjectHandlesLinks;
 
             ErrorHandler.ThrowOnFailure(addItemDialog.AddProjectItemDlg(this.hierarchyId, ref projectGuid, project, uiFlags, null, null, ref strBrowseLocations, ref strFilter, out iDontShowAgain)); /*&fDontShowAgain*/
 
@@ -1232,7 +1272,13 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        /// <summary>
+		/// <summary>
+		/// Sends the EXCLUDEFROMPROJECT command to the node.
+		/// </summary>
+		public void SendExcludeFromProjectCommand()
+		{
+		 	this.ExecCommandOnNode(VsMenus.guidStandardCommandSet2K, (uint)VSConstants.VSStd2KCmdID.EXCLUDEFROMPROJECT, 0, new IntPtr(), new IntPtr());
+		}
         /// Handles the Show in Designer command.
         /// </summary>
         /// <returns></returns>
@@ -1415,7 +1461,9 @@ namespace Microsoft.VisualStudio.Project
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_DoubleClick:
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_EnterKey:
                         this.DoDefaultAction();
-                        return VSConstants.S_OK;
+		                  // RvdH return FALSE in stead of OK to prevent a double click to expand the tree
+		                  return VSConstants.S_FALSE;
+
                     case (uint)VSConstants.VsUIHierarchyWindowCmdIds.UIHWCMDID_CancelLabelEdit:
                         this.OnCancelLabelEdit();
                         return VSConstants.S_OK;
@@ -2181,7 +2229,12 @@ namespace Microsoft.VisualStudio.Project
             Utilities.ArgumentNotNull("flags", flags);
             files.Add(this.GetMkDocument());
 
-            tagVsSccFilesFlags flagsToAdd = (this.firstChild != null && (this.firstChild is DependentFileNode)) ? tagVsSccFilesFlags.SFF_HasSpecialFiles : tagVsSccFilesFlags.SFF_NoFlags;
+	         tagVsSccFilesFlags flagsToAdd;
+	         FileNode firstChild = this.firstChild as FileNode;
+	         if (firstChild != null && firstChild.IsDependent)
+	            flagsToAdd = tagVsSccFilesFlags.SFF_HasSpecialFiles;
+	         else
+	            flagsToAdd = tagVsSccFilesFlags.SFF_NoFlags;
 
             flags.Add(flagsToAdd);
         }
@@ -2883,8 +2936,10 @@ namespace Microsoft.VisualStudio.Project
                 Trace.WriteLine("Exception :" + e.Message);
                 returnCode = e.ErrorCode;
 
-                // Try to recover
-                if(ff != null)
+            	// Try to recover
+                // changed from MPFProj:
+                // http://mpfproj10.codeplex.com/WorkItem/View.aspx?WorkItemId=6982
+            	if (ff != null && cancelled == 0)
                 {
                     ErrorHandler.ThrowOnFailure(shell.SaveDocDataToFile(VSSAVEFLAGS.VSSAVE_SilentSave, ff, existingFileMoniker, out docNew, out cancelled));
                 }
@@ -3090,7 +3145,7 @@ namespace Microsoft.VisualStudio.Project
 #endregion
 
 #region helper methods
-        internal HierarchyNode FindChild(string name)
+	    internal virtual HierarchyNode FindChild(string name)
         {
             if(String.IsNullOrEmpty(name))
             {
@@ -3106,10 +3161,22 @@ namespace Microsoft.VisualStudio.Project
                 }
                 // If it is a foldernode then it has a virtual name but we want to find folder nodes by the document moniker or url
                 else if((String.IsNullOrEmpty(child.VirtualNodeName) || (child is FolderNode)) &&
-                        (NativeMethods.IsSamePath(child.GetMkDocument(), name) || NativeMethods.IsSamePath(child.Url, name)))
-                {
-                    return child;
-                }
+                  (NativeMethods.IsSamePath(child.GetMkDocument(), name) || NativeMethods.IsSamePath(child.Url, name)))
+	            {
+	               return child;
+	            }
+	            else
+	            {
+	               FileNode fileNode = child as FileNode;
+	               if (fileNode != null && fileNode.IsLink)
+	               {
+	                  string linkUrl = Path.Combine(this.ProjectMgr.ProjectFolder, fileNode.ItemNode.GetMetadata(ProjectFileConstants.Link));
+	                  if (NativeMethods.IsSamePath(linkUrl, name))
+	                  {
+	                     return child;
+	                  }
+	               }
+	            }
 
                 result = child.FindChild(name);
                 if(result != null)
@@ -3129,9 +3196,9 @@ namespace Microsoft.VisualStudio.Project
         internal void FindNodesOfType<T>(List<T> nodes)
             where T : HierarchyNode
         {
-            for(HierarchyNode n = this.FirstChild; n != null; n = n.NextSibling)
+            for (HierarchyNode n = this.FirstChild; n != null; n = n.NextSibling)
             {
-                if(n is T)
+                if (n is T)
                 {
                     T nodeAsT = (T)n;
                     nodes.Add(nodeAsT);
@@ -3141,6 +3208,23 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+      internal void ListAllChildren(IVsHierarchy hierarchy, IVsProject project, uint itemParent, List<string> Files)
+      {
+         object oChild;
+         uint idChild;
+         string filename;
+         ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(itemParent, (int)__VSHPROPID.VSHPROPID_FirstChild, out oChild));
+
+         while (oChild != null && Convert.ToInt32(oChild) != -1)
+         {
+            idChild = Convert.ToUInt32(oChild);
+            ErrorHandler.ThrowOnFailure(project.GetMkDocument(idChild, out filename));
+            Files.Add(filename);
+            ListAllChildren(hierarchy, project, idChild, Files);
+            ErrorHandler.ThrowOnFailure(hierarchy.GetProperty(idChild, (int)__VSHPROPID.VSHPROPID_NextSibling, out oChild));
+         }
+
+      }
         /// <summary>
         /// Adds an item from a project refererence to target node.
         /// </summary>
@@ -3148,16 +3232,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="targetNode"></param>
         internal bool AddFileToNodeFromProjectReference(string projectRef, HierarchyNode targetNode)
         {
-            if(String.IsNullOrEmpty(projectRef))
-            {
-                throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "projectRef");
-            }
-
-            if(targetNode == null)
-            {
-                throw new ArgumentNullException("targetNode");
-            }
-
+			Utilities.ArgumentNotNull("projectRef", projectRef);
+			Utilities.ArgumentNotNull("targetNode", targetNode);
             IVsSolution solution = this.GetService(typeof(IVsSolution)) as IVsSolution;
             if(solution == null)
             {
@@ -3173,22 +3249,45 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new InvalidOperationException();
             }
+         VSADDITEMOPERATION addItemOp = VSADDITEMOPERATION.VSADDITEMOP_OPENFILE;
+         object variant;
+         ErrorHandler.ThrowOnFailure(solution.GetItemInfoOfProjref(projectRef, (int)__VSHPROPID.VSHPROPID_BrowseObject, out variant));
+         VSLangProj.FileProperties fileProperties = variant as VSLangProj.FileProperties;
+         if (fileProperties != null && fileProperties.IsLink)
+         {
+            addItemOp = VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE;
+         }
 
+         bool oldPasteAsNonMemberItem = targetNode.ProjectMgr.PasteAsNonMemberItem;
+         try
+         {
+            ErrorHandler.ThrowOnFailure(solution.GetItemInfoOfProjref(projectRef, (int)__VSHPROPID.VSHPROPID_IsNonMemberItem, out variant), VSConstants.E_NOTIMPL);
+            targetNode.ProjectMgr.PasteAsNonMemberItem = variant != null && (bool)variant;
             // This will throw invalid cast exception if the hierrachy is not a project.
             IVsProject project = (IVsProject)hierarchy;
 
             string moniker;
             ErrorHandler.ThrowOnFailure(project.GetMkDocument(itemidLoc, out moniker));
-            string[] files = new String[1] { moniker };
+            // RvdH Build List of files
+            List<string> Files = new List<string>();
+            Files.Add(moniker);
+            ListAllChildren(hierarchy, project, itemidLoc, Files);
+            string[] files = Files.ToArray();
             VSADDRESULT[] vsaddresult = new VSADDRESULT[1];
             vsaddresult[0] = VSADDRESULT.ADDRESULT_Failure;
-            int addResult = targetNode.ProjectMgr.AddItem(targetNode.ID, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE, null, 0, files, IntPtr.Zero, vsaddresult);
+            int addResult = targetNode.ProjectMgr.AddItem(targetNode.ID, addItemOp, null, 0, files, IntPtr.Zero, vsaddresult);
             if(addResult != VSConstants.S_OK && addResult != VSConstants.S_FALSE && addResult != (int)OleConstants.OLECMDERR_E_CANCELED)
             {
                 ErrorHandler.ThrowOnFailure(addResult);
                 return false;
             }
             return (vsaddresult[0] == VSADDRESULT.ADDRESULT_Success);
+         }
+         finally
+         {
+            targetNode.ProjectMgr.PasteAsNonMemberItem = oldPasteAsNonMemberItem;
+         }
+
         }
 
         internal void InstantiateItemsDraggedOrCutOrCopiedList()
@@ -3199,31 +3298,6 @@ namespace Microsoft.VisualStudio.Project
 
 
 #if XSHARP
-#region static methods
-        /// <summary>
-        /// Get the outer IVsHierarchy implementation.
-        /// This is used for scenario where a flavor may be modifying the behavior
-        /// Based on Nemerle implementation
-        /// </summary>
-        internal static IVsHierarchy GetOuterHierarchy(HierarchyNode node)
-        {
-            IVsHierarchy hierarchy = null;
-            // The hierarchy of a node is its project node hierarchy
-            IntPtr projectUnknown = Marshal.GetIUnknownForObject(node.projectMgr);
-            try
-            {
-                hierarchy = (IVsHierarchy)Marshal.GetTypedObjectForIUnknown(projectUnknown, typeof(IVsHierarchy));
-            }
-            finally
-            {
-                if (projectUnknown != IntPtr.Zero)
-                {
-                    Marshal.Release(projectUnknown);
-                }
-            }
-            return hierarchy;
-        }
-#endregion
 
 #endif
 #region IOleServiceProvider

@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections.Generic;
@@ -77,7 +43,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Defines the listener that would listen on file changes on the nested project node.
         /// </summary>
-        ///<devremark>			
+        ///<devremark>
         ///This might need a refactoring when nested projects can be added and removed by demand.
         /// </devremark>
         private FileChangeManager nestedProjectNodeReloader;
@@ -210,7 +176,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called to reload a project item. 
+        /// Called to reload a project item.
         /// Reloads a project and its nested project nodes.
         /// </summary>
         /// <param name="itemId">Specifies itemid from VSITEMID.</param>
@@ -410,7 +376,7 @@ namespace Microsoft.VisualStudio.Project
         internal protected void CreateNestedProjectNodes()
         {
             // 1. Create a ProjectElement with the found item and then Instantiate a new Nested project with this ProjectElement.
-            // 2. Link into the hierarchy.			
+            // 2. Link into the hierarchy.
             // Read subprojects from from msbuildmodel
             __VSCREATEPROJFLAGS creationFlags = __VSCREATEPROJFLAGS.CPF_NOTINSLNEXPLR | __VSCREATEPROJFLAGS.CPF_SILENT;
 
@@ -569,7 +535,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected internal virtual NestedProjectNode AddNestedProjectFromTemplate(string fileName, string destination, string projectName, ProjectElement element, __VSCREATEPROJFLAGS creationFlags)
         {
-            // If this is project creation and the template specified a subproject in its project file, this.nestedProjectElement will be used 
+            // If this is project creation and the template specified a subproject in its project file, this.nestedProjectElement will be used
             ProjectElement elementToUse = (element == null) ? this.nestedProjectElement : element;
 
             if(elementToUse == null)
@@ -581,7 +547,7 @@ namespace Microsoft.VisualStudio.Project
             NestedProjectNode node = CreateNestedProjectNode(elementToUse);
             node.Init(fileName, destination, projectName, creationFlags);
 
-            // In case that with did not have an existing element, or the nestedProjectelement was null 
+            // In case that with did not have an existing element, or the nestedProjectelement was null
             //  and since Init computes the final path, set the MSBuild item to that path
             if(this.nestedProjectElement == null)
             {
@@ -631,7 +597,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Based on the Template and TypeGuid properties of the
         /// element, generate the full template path.
-        /// 
+        ///
         /// TypeGuid should be the Guid of a registered project factory.
         /// Template can be a full path, a project template (for projects
         /// that support VsTemplates) or a relative path (for other projects).
@@ -669,7 +635,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Get information from the registry based for the project 
+        /// Get information from the registry based for the project
         /// factory corresponding to the TypeGuid of the element
         /// </summary>
         private RegisteredProjectType GetRegisteredProject(ProjectElement element)
@@ -681,7 +647,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentNullException("element");
             }
 
-            // Get the project type guid from project elementToUse				
+            // Get the project type guid from project elementToUse
             string typeGuidString = elementToUse.GetMetadataAndThrow(ProjectFileConstants.TypeGuid, new Exception());
             Guid projectFactoryGuid = new Guid(typeGuidString);
 
@@ -722,7 +688,7 @@ namespace Microsoft.VisualStudio.Project
             try
             {
                 // (VS 2005 UPDATE) When deleting and re-adding the nested project,
-                // we do not want SCC to see this as a delete and add operation. 
+                // we do not want SCC to see this as a delete and add operation.
                 this.EventTriggeringFlag = ProjectNode.EventTriggering.DoNotTriggerTrackerEvents;
 
                 // notify SolutionEvents listeners that we are about to add children
@@ -746,7 +712,7 @@ namespace Microsoft.VisualStudio.Project
                 // Remove from the solution
                 this.RemoveChild(node);
 
-                // Now readd it                
+                // Now readd it
                 try
                 {
                     __VSCREATEPROJFLAGS flags = __VSCREATEPROJFLAGS.CPF_NOTINSLNEXPLR | __VSCREATEPROJFLAGS.CPF_SILENT | __VSCREATEPROJFLAGS.CPF_OPENFILE;
@@ -755,7 +721,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 catch(Exception e)
                 {
-                    // We get a System.Exception if anything failed, thus we have no choice but catch it. 
+                    // We get a System.Exception if anything failed, thus we have no choice but catch it.
                     // Exceptions are digested by VS. Show the error if not in automation.
                     if(!Utilities.IsInAutomationFunction(this.Site))
                     {

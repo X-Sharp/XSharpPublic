@@ -186,6 +186,13 @@
   <data name="TargetFrameworkMonikerDescription" xml:space="preserve">
     <value>The version of the Common Language Runtime to use for output assembly.</value>
   </data>
+  <data name="CannotGetService" xml:space="preserve">
+    <value>Cannot get the service of type '{0}' from the environment.</value>
+    <comment>Error message, should never happen.</comment>
+  </data>
+  <data name="CatastrophicError" xml:space="preserve">
+    <value>A catastrophic error has occurred and the process was terminated.</value>
+  </data>
   <data name="WarningCaptionExpanded" xml:space="preserve">
     <value>Warnings As Errors</value>
   </data>
@@ -195,5 +202,4 @@
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
-
 </root>

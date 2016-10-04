@@ -53,6 +53,13 @@ namespace Microsoft.VisualStudio.Project
 
         #endregion
 
+      public bool Resolved
+      {
+         get
+         {
+            return CanShowDefaultIcon();
+         }
+      }
         #region overridden properties
         public override int MenuCommandId
         {
@@ -84,7 +91,7 @@ namespace Microsoft.VisualStudio.Project
         #region overridden methods
         protected override NodeProperties CreatePropertiesObject()
         {
-            return new ReferenceNodeProperties(this);
+         	return null; //  new ReferenceNodeProperties( this );
         }
 
         /// <summary>
@@ -181,32 +188,33 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Links a reference node to the project and hierarchy.
         /// </summary>
-        public virtual void AddReference()
-        {
-            ReferenceContainerNode referencesFolder = this.ProjectMgr.FindChild(ReferenceContainerNode.ReferencesNodeVirtualName) as ReferenceContainerNode;
-            Debug.Assert(referencesFolder != null, "Could not find the References node");
+		public virtual /*void*/ ReferenceNode AddReference()  // dcaton - changed return type to ReferenceNode, see comments in ReferenceContainerNode.AddReferenceFromSelectorData()
+		{
+            ReferenceNode existingNode = null;  /// returns existing node or null if this node has been newly added
 
-            CannotAddReferenceErrorMessage referenceErrorMessageHandler = null;
+			ReferenceContainerNode referencesFolder = this.ProjectMgr.FindChild(ReferenceContainerNode.ReferencesNodeVirtualName) as ReferenceContainerNode;
+			Debug.Assert(referencesFolder != null, "Could not find the References node");
 
-            if(!this.CanAddReference(out referenceErrorMessageHandler))
-            {
-                if(referenceErrorMessageHandler != null)
-                {
-                    referenceErrorMessageHandler.DynamicInvoke(new object[] { });
-                }
-                return;
-            }
+			CannotAddReferenceErrorMessage referenceErrorMessageHandler = null;
 
-            // Link the node to the project file.
-            this.BindReferenceData();
+			if (!this.CanAddReference(out referenceErrorMessageHandler, out existingNode ))
+			{
+				if(referenceErrorMessageHandler != null)
+				{
+					referenceErrorMessageHandler.DynamicInvoke(new object[] { });
+				}
+				return existingNode;
+			}
+			// Link the node to the project file.
+			this.BindReferenceData();
 
-            // At this point force the item to be refreshed
-            this.ItemNode.RefreshProperties();
+			// At this point force the item to be refreshed
+			this.ItemNode.RefreshProperties();
 
-            referencesFolder.AddChild(this);
+			referencesFolder.AddChild(this);
 
-            return;
-        }
+            return existingNode;
+		}
 
         /// <summary>
         /// Refreshes a reference by re-resolving it and redrawing the icon.
@@ -230,18 +238,24 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="errorHandler">A CannotAddReferenceErrorMessage delegate to show the error message.</param>
         /// <returns>true if the reference can be added.</returns>
+		protected virtual bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode )  // dcaton, added existingNode param
+		{
+			// When this method is called this reference has not yet been added to the hierarchy, only instantiated.
+			errorHandler = null;
+			if (this.IsAlreadyAdded( out existingNode ))
+			{
+                   errorHandler = null;
+    
+                    return false;
+		    }
+
+			return true;
+		}
         protected virtual bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler)
         {
-            // When this method is called this refererence has not yet been added to the hierarchy, only instantiated.
-            errorHandler = null;
-            if(this.IsAlreadyAdded())
-            {
-                return false;
-            }
-
-            return true;
-        }
-
+			ReferenceNode existingNode;
+			return CanAddReference(out errorHandler, out existingNode);
+		}
         /// <summary>
         /// Checks if a reference is already added. The method parses all references and compares the Url.
         /// </summary>

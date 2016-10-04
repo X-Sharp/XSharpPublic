@@ -28,6 +28,8 @@ namespace XSharp.Project
     {
         #region Fields
         private OAXSharpFileItem automationObject;
+        private bool isNonMemberItem;
+
         #endregion
 
         #region Constructors
@@ -79,11 +81,44 @@ namespace XSharp.Project
             }
         }
 
+
+
+        /// <summary>
+        /// factory method for creating single file generators.
+        /// </summary>
+        /// <returns></returns>
+        protected override ISingleFileGenerator CreateSingleFileGenerator()
+        {
+            return new XSharpSingleFileGenerator(this.ProjectMgr);
+        }
+
+
+
         protected override NodeProperties CreatePropertiesObject()
         {
-            XSharpFileNodeProperties properties = new XSharpFileNodeProperties(this);
-            properties.OnCustomToolChanged += new EventHandler<HierarchyNodeEventArgs>(OnCustomToolChanged);
-            properties.OnCustomToolNameSpaceChanged += new EventHandler<HierarchyNodeEventArgs>(OnCustomToolNameSpaceChanged);
+
+            NodeProperties properties;
+            if (IsLink)
+            {
+                properties = new XSharpLinkedFileNodeProperties(this);
+            }
+            else if (IsNonMemberItem)
+            {
+                properties = new XSharpNonMemberProperties(this);
+            }
+            //else if (this.IsVOBinary)
+            //{
+                
+            //    properties = new XSharpVOBinaryFileNodeProperties(this);
+            //}
+            else
+            {
+                XSharpFileNodeProperties xprops = new XSharpFileNodeProperties(this);
+                xprops.IsDependent = IsDependent;
+                xprops.OnCustomToolChanged += new EventHandler<HierarchyNodeEventArgs>(OnCustomToolChanged);
+                xprops.OnCustomToolNameSpaceChanged += new EventHandler<HierarchyNodeEventArgs>(OnCustomToolNameSpaceChanged);
+                properties = xprops;
+            }
             return properties;
         }
         #endregion
@@ -108,6 +143,45 @@ namespace XSharp.Project
             return service;
         }
 
+        /// <summary>
+        /// This method is used to move dependant items from the main level (1st level below project node) to
+        /// and make them children of the modules they belong to.
+        /// </summary>
+        /// <param name="child"></param>
+        /// <returns></returns>
+        internal bool AddDependant(HierarchyNode child)
+        {
+            // If the file is not a VulcanFileNode then drop it and create a new VulcanFileNode
+            XSharpFileNode dependant;
+            String fileName = child.Url;
+            try
+            {
+                child.Remove(false);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e.Message);
+            }
+            dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
+
+            // Like the C# project system we do not put a path in front of the parent name, even when we are in a subfolder
+            string parent = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
+            parent = Path.GetFileName(parent);
+            if (!this.IsNonMemberItem)
+                dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
+            // Make the item a dependent item
+            dependant.HasParentNodeNameRelation = true;
+            // Insert in the list of children
+            dependant.NextSibling = this.FirstChild;
+            this.FirstChild = dependant;
+            ProjectMgr.OnItemsAppended(this);
+            this.OnItemAdded(this, dependant);
+            // Set parent and inherit the NonMember Status
+            dependant.Parent = this;
+            dependant.IsDependent = true;
+            dependant.IsNonMemberItem = this.IsNonMemberItem;
+            return true;
+        }
 
         private VSXSharpCodeDomProvider _codeDomProvider;
         protected internal VSXSharpCodeDomProvider CodeDomProvider
@@ -166,6 +240,84 @@ namespace XSharp.Project
             }
         }
 
+        /// <summary>
+        /// Flag that indicates if this node is not a member of the project.
+        /// </summary>
+        /// <value>true if the item is not a member of the project build, false otherwise.</value>
+        public bool IsNonMemberItem
+        {
+            get
+            {
+                return this.isNonMemberItem;
+            }
+            set
+            {
+                this.isNonMemberItem = value;
+            }
+        }
+
+        internal String GetParentName()
+        {
+            // There needs to be a better way to handle this
+            // CS uses a table with
+            // Parent extension, Allowed child extensions
+            // look at HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\9.0\Projects\{FAE04EC0-301F-11d3-BF4B-00C04F79EFBC}\RelatedFiles
+            // .xaml .xaml.cs
+            // .cs   .designer.cs, .resx
+            // .xsd  .cs, .xsc, .xss, .xsx
+            // .resx files (like Resources.resx) seem to be handled differently..
+            // we can hard code a similar table or read it from the registry like C# does. 
+            // CS also defines a 'relationtype'. See the CS Project System source code.
+            String path = Path.GetFileName(this.Url);
+            int relationIndex = path.IndexOf(".");
+            if (IsDependent)
+            {
+                switch (GetFileType(this.Url))
+                {
+                    case XSharpFileType.Header:
+                    case XSharpFileType.ManagedResource:
+                        path = Path.ChangeExtension(path, ".prg");
+                        break;
+                    case XSharpFileType.VODBServer:
+                    case XSharpFileType.VOFieldSpec:
+                    case XSharpFileType.VOForm:
+                    case XSharpFileType.VOIndex:
+                    case XSharpFileType.VOMenu:
+                    case XSharpFileType.VOOrder:
+                    case XSharpFileType.NativeResource:
+
+                        if (relationIndex < 0)
+                            return string.Empty;
+                        path = path.Substring(0, relationIndex) + ".prg";
+                        break;
+                    default:
+                        if (path.EndsWith(".designer.prg"))
+                        {
+                            path = path.Substring(0, relationIndex) + ".prg";
+                        }
+                        else if (path.EndsWith(".xaml.prg"))
+                        {
+                            path = path.Substring(0, relationIndex) + ".prg";
+                        }
+                        else
+                        {
+                            path = string.Empty;
+                        }
+                        break;
+                }
+                if (!String.IsNullOrEmpty(path))
+                {
+                    String dir = Path.GetDirectoryName(this.Url);
+                    if (dir.EndsWith("\\resources"))
+                    {
+                        dir = dir.Substring(0, dir.Length - "\\resources".Length);
+                    }
+                    path = dir + "\\" + path;
+                }
+                return path;
+            }
+            return null;
+        }
 
         #endregion
 

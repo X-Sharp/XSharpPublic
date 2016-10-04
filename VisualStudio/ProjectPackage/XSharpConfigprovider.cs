@@ -105,7 +105,16 @@ namespace XSharp.Project
                     info.bstrRemoteMachine = property;
                 }
 
-                info.fSendStdoutToOutputWindow = 0;
+                property = GetConfigurationProperty("RedirectToOutputWindow", false);
+                if (property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    info.fSendStdoutToOutputWindow = 1;
+                }
+                else
+                {
+                    info.fSendStdoutToOutputWindow = 0;
+                }
+
 
                 property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
                 if (property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)

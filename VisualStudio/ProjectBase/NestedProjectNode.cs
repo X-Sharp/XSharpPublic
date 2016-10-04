@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -182,8 +148,8 @@ namespace Microsoft.VisualStudio.Project
 
         #region IPropertyNotifySink Members
         /// <summary>
-        /// Notifies a sink that the [bindable] property specified by dispID has changed. 
-        /// If dispID is DISPID_UNKNOWN, then multiple properties have changed together. 
+        /// Notifies a sink that the [bindable] property specified by dispID has changed.
+        /// If dispID is DISPID_UNKNOWN, then multiple properties have changed together.
         /// The client (owner of the sink) should then retrieve the current value of each property of interest from the object that generated the notification.
         /// In our case we will care about the  VSLangProj80.VsProjPropId.VBPROJPROPID_FileName and update the changes in the parent project file.
         /// </summary>
@@ -302,7 +268,7 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(this.nestedHierarchy != null, "The nested hierarchy object must be created before calling this method");
             Debug.Assert(punkDocData != IntPtr.Zero, "docData intptr was zero");
 
-            // Get an IPersistFileFormat object from docData object 
+            // Get an IPersistFileFormat object from docData object
             IPersistFileFormat persistFileFormat = Marshal.GetTypedObjectForIUnknown(punkDocData, typeof(IPersistFileFormat)) as IPersistFileFormat;
             Debug.Assert(persistFileFormat != null, "The docData object does not implement the IPersistFileFormat interface");
 
@@ -323,7 +289,7 @@ namespace Microsoft.VisualStudio.Project
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public override int SaveItem(VSSAVEFLAGS dwSave, string silentSaveAsName, uint itemid, IntPtr punkDocData, out int pfCancelled)
         {
-            // Don't ignore/unignore file changes 
+            // Don't ignore/unignore file changes
             // Use Advise/Unadvise to work around rename situations
             try
             {
@@ -339,12 +305,12 @@ namespace Microsoft.VisualStudio.Project
                 string newName;
                 ErrorHandler.ThrowOnFailure(uiShell.SaveDocDataToFile(dwSave, persistFileFormat, silentSaveAsName, out newName, out pfCancelled));
 
-                // When supported do a rename of the nested project here 
+                // When supported do a rename of the nested project here
             }
             finally
             {
                 // Succeeded or not we must hook to the file change events
-                // Don't ignore/unignore file changes 
+                // Don't ignore/unignore file changes
                 // Use Advise/Unadvise to work around rename situations
                 this.ObserveNestedProjectFile();
             }
@@ -480,7 +446,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Flag indicating that changes to a file can be ignored when item is saved or reloaded. 
+        /// Flag indicating that changes to a file can be ignored when item is saved or reloaded.
         /// </summary>
         /// <param name="ignoreFlag">Flag indicating whether or not to ignore changes (1 to ignore, 0 to stop ignoring).</param>
         protected internal override void IgnoreItemFileChanges(bool ignoreFlag)
@@ -628,7 +594,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new InvalidOperationException();
             }
 
-            // Get the project type guid from project element				
+            // Get the project type guid from project element
             string typeGuidString = this.ItemNode.GetMetadataAndThrow(ProjectFileConstants.TypeGuid, new InvalidOperationException());
             Guid projectFactoryGuid = Guid.Empty;
             if (!String.IsNullOrEmpty(typeGuidString))
@@ -688,7 +654,7 @@ namespace Microsoft.VisualStudio.Project
         protected internal virtual void AddVirtualProject()
         {
             // This is the second step in creating and adding a nested project. The inner hierarchy must have been
-            // already initialized at this point. 
+            // already initialized at this point.
             #region precondition
             if (this.nestedHierarchy == null)
             {
@@ -1128,7 +1094,7 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// We need to advise property notify sink on project properties so that
-        /// we know when the project file is renamed through a property. 
+        /// we know when the project file is renamed through a property.
         /// </summary>
         private void ConnectPropertyNotifySink()
         {

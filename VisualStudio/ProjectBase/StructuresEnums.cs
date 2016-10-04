@@ -362,7 +362,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctor
-        internal AfterProjectFileOpenedEventArgs(bool added)
+        public  AfterProjectFileOpenedEventArgs(bool added)
         {
             this.added = added;
         }
@@ -406,7 +406,8 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Argument of the event raised when a project property is changed.
     /// </summary>
-    public class ProjectPropertyChangedArgs : EventArgs {
+	[SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+    internal class ProjectPropertyChangedArgs : EventArgs {
         private string propertyName;
         private string oldValue;
         private string newValue;
@@ -451,7 +452,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Event args class for triggering file change event arguments.
     /// </summary>
-    public class FileChangedOnDiskEventArgs : EventArgs
+    internal class FileChangedOnDiskEventArgs : EventArgs
     {
         #region Private fields
         /// <summary>

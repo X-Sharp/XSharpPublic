@@ -20,7 +20,7 @@ using IServiceProvider = System.IServiceProvider;
 namespace Microsoft.VisualStudio.Project
 {
     /// <summary>
-    /// This class triggers the project events for "our" hierrachies.
+    /// This class triggers the project events for "our" hierarchies.
     /// </summary>
     internal class SolutionListenerForProjectEvents : SolutionListener, IProjectEvents
     {
@@ -88,7 +88,7 @@ namespace Microsoft.VisualStudio.Project
         /// Raises the before  project file closed event.
         /// </summary>
         /// <param name="added">true if the project was removed from the solution before the solution was closed. false if the project was removed from the solution while the solution was being closed.</param>
-        private void RaiseBeforeProjectFileClosed(IVsHierarchy hierarchy, bool removed)
+        public void RaiseBeforeProjectFileClosed(IVsHierarchy hierarchy, bool removed)
         {
             // Save event in temporary variable to avoid race condition.
             EventHandler<BeforeProjectFileClosedEventArgs> tempEvent = this.BeforeProjectFileClosed;

@@ -33,6 +33,7 @@ namespace XSharp.Project
             : base(root, e)
         {
             HasParentNodeNameRelation = false;
+            IsDependent = true;
         }
 
         #endregion

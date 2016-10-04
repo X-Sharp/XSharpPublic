@@ -34,6 +34,7 @@ namespace Microsoft.VisualStudio.Project
         public Output(ProjectNode projectManager, ProjectItemInstance outputAssembly)
         {
             Utilities.ArgumentNotNull("projectManager", projectManager);
+			// outputAssembly may be empty!
             //Utilities.ArgumentNotNull("outputAssembly", outputAssembly);
             project = projectManager;
             output = outputAssembly;

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -21,7 +21,7 @@ namespace XSharp.Project
         internal const string Application = "Application";
         internal const string ApplicationCaption = "ApplicationCaption";
         internal const string GeneralCaption = "GeneralCaption";
-        
+
         internal const string AssemblyName = "AssemblyName";
         internal const string AssemblyNameDescription = "AssemblyNameDescription";
         internal const string OutputType = "OutputType";
@@ -37,6 +37,9 @@ namespace XSharp.Project
         internal const string ProjectFileDescription = "ProjectFileDescription";
         internal const string ProjectFolder = "ProjectFolder";
         internal const string ProjectFolderDescription = "ProjectFolderDescription";
+     internal const string CannotGetService = "CannotGetService";
+      internal const string CatastrophicError = "CatastrophicError";
+
         internal const string OutputFile = "OutputFile";
         internal const string OutputFileDescription = "OutputFileDescription";
         internal const string TargetFrameworkMoniker = "TargetFrameworkMoniker";
@@ -44,7 +47,7 @@ namespace XSharp.Project
         internal const string NestedProjectFileAssemblyFilter = "NestedProjectFileAssemblyFilter";
         //internal const string MsgFailedToLoadTemplateFile = "Failed to add template file to project";
 
-                
+
         internal const string WarningCaptionExpanded = "WarningCaptionExpanded";
         internal const string WarningDescription = "WarningDescription";
         internal const string Warning = "Warning";

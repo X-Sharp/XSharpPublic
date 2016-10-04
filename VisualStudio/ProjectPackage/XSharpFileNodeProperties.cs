@@ -104,6 +104,20 @@ namespace XSharp.Project
             }
         }
 
+
+        [Browsable(false)]
+        public bool IsDependent { get; set; }
+
+
+        [Browsable(false)]
+        public virtual bool IsLink
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         [Browsable(false)]
         public string ItemType
         {

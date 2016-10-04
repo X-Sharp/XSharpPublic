@@ -1,50 +1,16 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -66,7 +32,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region fields
         private bool gettingCheckoutStatus;
-        private bool runningGenerator;
+        protected bool runningGenerator;
         private ProjectNode projectMgr;
         #endregion
 
@@ -183,11 +149,17 @@ namespace Microsoft.VisualStudio.Project
                     //Run the generator
                     IntPtr[] output = new IntPtr[1];
                     output[0] = IntPtr.Zero;
-                    uint outPutSize;
-                    string extension;
-                    ErrorHandler.ThrowOnFailure(generator.DefaultExtension(out extension));
-
-                    //Find if any dependent node exists
+	               uint outPutSize = 0;
+	               string extension = String.Empty;
+					try
+					{
+					  ErrorHandler.ThrowOnFailure(generator.DefaultExtension(out extension));
+					}
+					catch (Exception e)
+					{
+					  Debug.WriteLine("generator.DefaultExtension failed: " + e.Message);
+					}
+	                    //Find if any dependent node exists
                     string dependentNodeName = Path.GetFileNameWithoutExtension(fileNode.FileName) + extension;
                     HierarchyNode dependentNode = fileNode.FirstChild;
                     while(dependentNode != null)
@@ -201,7 +173,7 @@ namespace Microsoft.VisualStudio.Project
                         dependentNode = dependentNode.NextSibling;
                     }
 
-                    //If you found a dependent node. 
+                    //If you found a dependent node.
                     if(dependentNode != null)
                     {
                         //Then check out the node and dependent node from SCC
@@ -220,20 +192,29 @@ namespace Microsoft.VisualStudio.Project
                     }
                     IVsTextStream stream;
                     string inputFileContents = this.GetBufferContents(moniker, out stream);
+               try
+               {
 
-                    ErrorHandler.ThrowOnFailure(generator.Generate(moniker, inputFileContents, customToolNamespace, output, out outPutSize, this));
-                    byte[] data = new byte[outPutSize];
+                  ErrorHandler.ThrowOnFailure(generator.Generate(moniker, inputFileContents, customToolNamespace, output, out outPutSize, this));
+               }
+               catch (Exception e)
+               {
+                  Debug.WriteLine("generator.Generate failed: " + e.Message);
+               }
+               if (outPutSize > 0)
+               {
+                  byte[] data = new byte[outPutSize];
 
-                    if(output[0] != IntPtr.Zero)
-                    {
-                        Marshal.Copy(output[0], data, 0, (int)outPutSize);
-                        Marshal.FreeCoTaskMem(output[0]);
-                    }
-
-                    //Todo - Create a file and add it to the Project
-                    this.UpdateGeneratedCodeFile(fileNode, data, (int)outPutSize, dependentNodeName);
-                }
+                  if(output[0] != IntPtr.Zero)
+                  {
+                     Marshal.Copy(output[0], data, 0, (int)outPutSize);
+                     Marshal.FreeCoTaskMem(output[0]);
+                  }
+                  //Todo - Create a file and add it to the Project
+                  this.UpdateGeneratedCodeFile(fileNode, data, (int)outPutSize, dependentNodeName);
+               }
             }
+         }
             finally
             {
                 this.runningGenerator = false;
@@ -295,7 +276,8 @@ namespace Microsoft.VisualStudio.Project
             if(docData != IntPtr.Zero)
             {
                 Marshal.Release(docData);
-                IVsTextStream srpStream = null;
+	            IVsTextStream srpStream;
+	            string inputFileContents = this.GetBufferContents(filePath, out srpStream);
                 if(srpStream != null)
                 {
                     int oldLen = 0;
@@ -451,7 +433,7 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="ppDocData">doc data associated with document</param>
         /// <param name="cookie">item cookie</param>
         /// <returns>True if FIle is dirty</returns>
-        private bool VerifyFileDirtyInRdt(string document, out IVsHierarchy pHier, out IVsPersistDocData ppDocData, out uint cookie)
+        protected bool VerifyFileDirtyInRdt(string document, out IVsHierarchy pHier, out IVsPersistDocData ppDocData, out uint cookie)
         {
             int ret = 0;
             pHier = null;
@@ -500,7 +482,7 @@ namespace Microsoft.VisualStudio.Project
         /// This function asks to the QueryEditQuerySave service if it is possible to
         /// edit the file.
         /// </summary>
-        private bool CanEditFile(string documentMoniker)
+        protected bool CanEditFile(string documentMoniker)
         {
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
 

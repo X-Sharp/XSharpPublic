@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    The ProjectBasePath property should be defined to point to the directory where this file is located before importing this file.
+    Failure to define this will result in build error.
+  -->
   <PropertyGroup>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AllowedAssemblyPrefix>$(AllowedAssemblyPrefix);Microsoft.Internal</AllowedAssemblyPrefix>
@@ -29,6 +33,9 @@
       <Aliases>global</Aliases>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="microsoft.VisualStudio.CommonIDE, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
+    </Reference>
     <Reference Include="System.Core">
     </Reference>
   </ItemGroup>
@@ -453,9 +460,25 @@
       <Link>ProjectBase\ProjectDocumentsListener.cs</Link>
       <Visible>true</Visible>
     </Compile>
+    <Compile Include="$(ProjectBasePath)FileOverwriteDialog.cs">
+      <SubType>Form</SubType>
+      <Link>ProjectBase\FileOverwriteDialog.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
+    <Compile Include="$(ProjectBasePath)FileOverwriteDialog.Designer.cs">
+      <DependentUpon>FileOverwriteDialog.cs</DependentUpon>
+      <Link>ProjectBase\FileOverwriteDialog.Designer.cs</Link>
+      <Visible>true</Visible>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+      <EmbeddedResource Include="$(ProjectBasePath)FileOverwriteDialog.resx">
+      <Link>ProjectBase\FileOverwriteDialog.resx</Link>
+      <Visible>true</Visible>
+      <SubType>Designer</SubType>
+      <DependentUpon>FileOverwriteDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectBasePath)VisualStudio.Project.resx">
       <Link>VisualStudio.Package.Project.resx</Link>
       <Visible>true</Visible>

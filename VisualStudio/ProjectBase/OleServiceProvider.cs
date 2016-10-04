@@ -1,56 +1,23 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
+ * by the terms of the Apache License, Version 2.0.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -70,12 +37,12 @@ namespace Microsoft.VisualStudio.Project
             private bool shouldDispose;
             public ServiceData(Type serviceType, object instance, ServiceCreatorCallback callback, bool shouldDispose)
             {
-                if(null == serviceType)
+                if (null == serviceType)
                 {
                     throw new ArgumentNullException("serviceType");
                 }
 
-                if((null == instance) && (null == callback))
+                if ((null == instance) && (null == callback))
                 {
                     throw new ArgumentNullException("instance");
                 }
@@ -90,7 +57,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 get
                 {
-                    if(null == instance)
+                    if (null == instance)
                     {
                         instance = creator(serviceType);
                     }
@@ -105,10 +72,10 @@ namespace Microsoft.VisualStudio.Project
 
             public void Dispose()
             {
-                if((shouldDispose) && (null != instance))
+                if ((shouldDispose) && (null != instance))
                 {
                     IDisposable disp = instance as IDisposable;
-                    if(null != disp)
+                    if (null != disp)
                     {
                         disp.Dispose();
                     }
@@ -145,12 +112,12 @@ namespace Microsoft.VisualStudio.Project
 
             ServiceData serviceInstance = null;
 
-            if(services != null && services.ContainsKey(guidService))
+            if (services != null && services.ContainsKey(guidService))
             {
                 serviceInstance = services[guidService];
             }
 
-            if(serviceInstance == null)
+            if (serviceInstance == null)
             {
                 return VSConstants.E_NOINTERFACE;
             }
@@ -158,7 +125,7 @@ namespace Microsoft.VisualStudio.Project
             // Now check to see if the user asked for an IID other than
             // IUnknown.  If so, we must do another QI.
             //
-            if(riid.Equals(NativeMethods.IID_IUnknown))
+            if (riid.Equals(NativeMethods.IID_IUnknown))
             {
                 ppvObject = Marshal.GetIUnknownForObject(serviceInstance.ServiceInstance);
             }
@@ -172,7 +139,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 finally
                 {
-                    if(pUnk != IntPtr.Zero)
+                    if (pUnk != IntPtr.Zero)
                     {
                         Marshal.Release(pUnk);
                     }
@@ -216,7 +183,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-            Justification="The services created here will be disposed in the Dispose method of this type.")]
+            Justification = "The services created here will be disposed in the Dispose method of this type.")]
         public void AddService(Type serviceType, ServiceCreatorCallback callback, bool shouldDisposeServiceInstance)
         {
             // Create the description of this service. Note that we don't do any validation
@@ -230,13 +197,13 @@ namespace Microsoft.VisualStudio.Project
         private void AddService(ServiceData data)
         {
             // Make sure that the collection of services is created.
-            if(null == services)
+            if (null == services)
             {
                 services = new Dictionary<Guid, ServiceData>();
             }
 
             // Disallow the addition of duplicate services.
-            if(services.ContainsKey(data.Guid))
+            if (services.ContainsKey(data.Guid))
             {
                 throw new InvalidOperationException();
             }
@@ -249,12 +216,12 @@ namespace Microsoft.VisualStudio.Project
         /// </devdoc>
         public void RemoveService(Type serviceType)
         {
-            if(serviceType == null)
+            if (serviceType == null)
             {
                 throw new ArgumentNullException("serviceType");
             }
 
-            if(services.ContainsKey(serviceType.GUID))
+            if (services.ContainsKey(serviceType.GUID))
             {
                 services.Remove(serviceType.GUID);
             }
@@ -268,17 +235,17 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void Dispose(bool disposing)
         {
             // Everybody can go here.
-            if(!this.isDisposed)
+            if (!this.isDisposed)
             {
                 // Synchronize calls to the Dispose simulteniously.
-                lock(Mutex)
+                lock (Mutex)
                 {
-                    if(disposing)
+                    if (disposing)
                     {
                         // Remove all our services
-                        if(services != null)
+                        if (services != null)
                         {
-                            foreach(ServiceData data in services.Values)
+                            foreach (ServiceData data in services.Values)
                             {
                                 data.Dispose();
                             }
@@ -292,6 +259,47 @@ namespace Microsoft.VisualStudio.Project
             }
         }
         #endregion
+        #region IVsBrowseObject methods
 
+        // The ResxCodeSingleFileGenerator expects to find the IVsBrowseObject interface on this
+        // object.  The NodePropeties object implements IVsBrowseObject, but we have no way to get
+        // the NodeProperties object since we don't have a back reference to the hierarchy node that
+        // owns this OleServiceProvider instance.  So when a VulcanFileNode object is created, IVsBrowseObject is added
+        // to the list of available services (in VulcanProject.CreateFileNode) and in the service
+        // creator callback in VulcanProject, querying for the IVsBrowseObject service (which isn't really
+        // a service) returns a reference to the NodeProperties object for the node.
+        //
+        // When this object is QI'd for IVsBrowseObject by the ResXCodeFileGenerator it is successful
+        // and then it calls GetProjectItem().  We then get the real IVsBrowseObject implementation
+        // and call GetProjectItem() on it.  It's a bit of a hack, but it gets the ResXSingleFileGenerator
+        // to work, and the only other alternative seems to be adding a property to this class that we
+        // could store a reference to the owning node's NodeProperties object in.
+        //
+        // If this is ever fixed by the 2008 MPF code, this hack can be removed and replaced with
+        // whatever they come up with.
+
+        /// <summary>
+        /// Maps back to the hierarchy or project item object corresponding to the browse object.
+        /// </summary>
+        /// <param name="hier">Reference to the hierarchy object.</param>
+        /// <param name="itemid">Reference to the project item.</param>
+        /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
+        public virtual int GetProjectItem(out IVsHierarchy hier, out uint itemid)
+        {
+            ServiceData serviceInstance = services[typeof(IVsBrowseObject).GUID];
+
+            if (serviceInstance != null)
+            {
+                IVsBrowseObject bo = (IVsBrowseObject)serviceInstance.ServiceInstance;
+                return bo.GetProjectItem(out hier, out itemid);
+            }
+            else
+            {
+                hier = null;
+                itemid = 0;
+                return VSConstants.E_NOINTERFACE;
+            }
+        }
+        #endregion
     }
 }

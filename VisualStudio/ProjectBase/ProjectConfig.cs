@@ -1,11 +1,11 @@
 /* ****************************************************************************
  *
- * Copyright (c) Microsoft Corporation. 
+ * Copyright (c) Microsoft Corporation.
  *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
- * copy of the license can be found in the License.html file at the root of this distribution. If 
- * you cannot locate the Apache License, Version 2.0, please send an email to 
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.html file at the root of this distribution. If
+ * you cannot locate the Apache License, Version 2.0, please send an email to
+ * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
  * by the terms of the Apache License, Version 2.0.
  *
  * You must not remove this notice, or any other, from this software.
@@ -134,12 +134,12 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctors
-        public ProjectConfig(ProjectNode project, string configuration)
+        internal ProjectConfig(ProjectNode project, string configuration)
         {
             this.project = project;
 
             if (configuration.Contains("|"))
-            { 
+            {
                 // If configuration is in the form "<Configuration>|<Platform>"
                 string[] configStrArray = configuration.Split('|');
                 if (2 == configStrArray.Length)
@@ -153,8 +153,8 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
             else
-            { 
-                // If configuration is in the form "<Configuration>"          
+            {
+                // If configuration is in the form "<Configuration>"
                 this.configName = configuration;
             }
 
@@ -164,9 +164,9 @@ namespace Microsoft.VisualStudio.Project
             try
             {
                 IVsProjectFlavorCfgProvider flavorCfgProvider = (IVsProjectFlavorCfgProvider)Marshal.GetTypedObjectForIUnknown(projectUnknown, typeof(IVsProjectFlavorCfgProvider));
+            	Utilities.ArgumentNotNull("flavorCfgProvider", flavorCfgProvider);
                 ErrorHandler.ThrowOnFailure(flavorCfgProvider.CreateProjectFlavorCfg(this, out flavoredCfg));
-                if(flavoredCfg == null)
-                    throw new COMException();
+            	Utilities.ArgumentNotNull("flavoredCfg", flavoredCfg);
             }
             finally
             {
@@ -183,7 +183,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region methods
-        protected virtual OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
+        internal virtual OutputGroup CreateOutputGroup(ProjectNode project, KeyValuePair<string, string> group)
         {
             OutputGroup outputGroup = new OutputGroup(group.Key, group.Value, project, this);
             return outputGroup;
@@ -203,7 +203,8 @@ namespace Microsoft.VisualStudio.Project
             return property.EvaluatedValue;
         }
 
-        public virtual string GetUnevaluatedConfigurationProperty(string propertyName) {
+        public virtual string GetUnevaluatedConfigurationProperty(string propertyName)
+		{
             String result;
             // Get properties for current configuration from project file and cache it
             this.project.SetConfiguration(this.ConfigName);
@@ -229,10 +230,10 @@ namespace Microsoft.VisualStudio.Project
             string condition = String.Format(CultureInfo.InvariantCulture, ConfigProvider.configString, this.ConfigName);
 
             SetPropertyUnderCondition(propertyName, propertyValue, condition);
-            
+
             // property cache will need to be updated
             this.currentConfig = null;
-           
+
             // Signal the output groups that something is changed
             foreach(OutputGroup group in this.OutputGroups)
             {
@@ -257,7 +258,7 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
 
-            // New OM doesn't have a convenient equivalent for setting a property with a particular property group condition. 
+            // New OM doesn't have a convenient equivalent for setting a property with a particular property group condition.
             // So do it ourselves.
             MSBuildConstruction.ProjectPropertyGroupElement newGroup = null;
 
@@ -337,7 +338,7 @@ namespace Microsoft.VisualStudio.Project
         /// Implementation of the IVsSpecifyProjectDesignerPages. It will retun the pages that are configuration dependent.
         /// </summary>
         /// <param name="pages">The pages to return.</param>
-        /// <returns>VSConstants.S_OK</returns>		
+        /// <returns>VSConstants.S_OK</returns>
         public virtual int GetProjectDesignerPages(CAUUID[] pages)
         {
             this.GetCfgPropertyPages(pages);
@@ -540,7 +541,15 @@ namespace Microsoft.VisualStudio.Project
                     info.bstrRemoteMachine = property;
                 }
 
-                info.fSendStdoutToOutputWindow = 0;
+                property = GetConfigurationProperty("RedirectToOutputWindow", false);
+                if (property != null && string.Compare(property, "true", true, CultureInfo.InvariantCulture) == 0)
+                {
+                   info.fSendStdoutToOutputWindow = 1;
+                }
+                else
+                {
+                   info.fSendStdoutToOutputWindow = 0;
+                }
 
                 property = GetConfigurationProperty("EnableUnmanagedDebugging", false);
                 if(property != null && string.Compare(property, "true", StringComparison.OrdinalIgnoreCase) == 0)
@@ -570,7 +579,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Determines whether the debugger can be launched, given the state of the launch flags.
         /// </summary>
-        /// <param name="flags">Flags that determine the conditions under which to launch the debugger. 
+        /// <param name="flags">Flags that determine the conditions under which to launch the debugger.
         /// For valid grfLaunch values, see __VSDBGLAUNCHFLAGS or __VSDBGLAUNCHFLAGS2.</param>
         /// <param name="fCanLaunch">true if the debugger can be launched, otherwise false</param>
         /// <returns>S_OK if the method succeeds, otherwise an error code</returns>
@@ -675,7 +684,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region IVsCfgBrowseObject
         /// <summary>
-        /// Maps back to the configuration corresponding to the browse object. 
+        /// Maps back to the configuration corresponding to the browse object.
         /// </summary>
         /// <param name="cfg">The IVsCfg object represented by the browse object</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code. </returns>
@@ -1021,9 +1030,9 @@ namespace Microsoft.VisualStudio.Project
                     // We want to refresh the references if we are building with the Build or Rebuild target or if the project was opened for browsing only.
                     bool shouldRepaintReferences = (buildTarget == null || buildTarget == MsBuildTarget.Build || buildTarget == MsBuildTarget.Rebuild);
 
-                    // Now repaint references if that is needed. 
+                    // Now repaint references if that is needed.
                     // We hardly rely here on the fact the ResolveAssemblyReferences target has been run as part of the build.
-                    // One scenario to think at is when an assembly reference is renamed on disk thus becomming unresolvable, 
+                    // One scenario to think at is when an assembly reference is renamed on disk thus becomming unresolvable,
                     // but msbuild can actually resolve it.
                     // Another one if the project was opened only for browsing and now the user chooses to build or rebuild.
                     if (shouldRepaintReferences && (result == MSBuildResult.Successful))
@@ -1053,8 +1062,8 @@ namespace Microsoft.VisualStudio.Project
                 throw;
             }
             finally
-            {              
-                ErrorHandler.ThrowOnFailure(output.FlushToTaskList());               
+            {
+                ErrorHandler.ThrowOnFailure(output.FlushToTaskList());
             }
         }
 
@@ -1065,10 +1074,13 @@ namespace Microsoft.VisualStudio.Project
         {
             // Refresh the reference container node for assemblies that could be resolved.
             IReferenceContainer referenceContainer = this.config.ProjectMgr.GetReferenceContainer();
-            foreach(ReferenceNode referenceNode in referenceContainer.EnumReferences())
-            {
-                referenceNode.RefreshReference();
-            }
+			if (referenceContainer != null)
+			{
+	            foreach(ReferenceNode referenceNode in referenceContainer.EnumReferences())
+	            {
+	                referenceNode.RefreshReference();
+	            }
+         }
         }
         #endregion
     }

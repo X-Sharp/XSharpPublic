@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 using Microsoft.VisualStudio.Project;
 
@@ -27,12 +28,18 @@ namespace XSharp.Project
         Resource
     };
 
-
     [ComVisible(true)]
     [CLSCompliant(false)]
     [Guid(XSharpConstants.FileNodePropertiesGuidString)]
     public class XSharpFileNodeProperties : SingleFileGeneratorNodeProperties
     {
+        [PropertyPageTypeConverter(typeof(CopyToOutputConverter))]
+        public enum CopyToOutput
+        {
+            CopyNever,
+            CopyAlways,
+            CopyPreserveNewest
+        };
         public XSharpFileNodeProperties(HierarchyNode node)
             : base(node)
         {
@@ -142,6 +149,131 @@ namespace XSharp.Project
             }
         }
 
+        [SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Advanced)]
+        [LocDisplayName("Copy to Output Directory")]
+        [SRDescriptionAttribute("Specifies if the source file will be copied to the output directory.")]
+        public virtual CopyToOutput CopyToOutputDirectory
+        {
+            get
+            {
+                string value = this.Node.ItemNode.GetMetadata(nameof(CopyToOutputDirectory));
+
+                if (String.Compare(value, "Always", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    return CopyToOutput.CopyAlways;
+                }
+                else if (String.Compare(value, "PreserveNewest", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    return CopyToOutput.CopyPreserveNewest;
+                }
+                else
+                {
+                    return CopyToOutput.CopyNever;
+                }
+            }
+
+            set
+            {
+                if (value == CopyToOutput.CopyNever)
+                {
+                    this.Node.ItemNode.SetMetadata(nameof(CopyToOutputDirectory), null);
+                }
+                else if (value == CopyToOutput.CopyAlways)
+                {
+                    this.Node.ItemNode.SetMetadata(nameof(CopyToOutputDirectory), "Always");
+                }
+                else
+                {
+                    this.Node.ItemNode.SetMetadata(nameof(CopyToOutputDirectory), "PreserveNewest");
+                }
+            }
+        }
+        public class CopyToOutputConverter : EnumConverter
+        {
+
+            public CopyToOutputConverter()
+               : base(typeof(CopyToOutput))
+            {
+            }
+            const string CopyNever = "Do not copy";
+            const string PreserveNewest = "Copy if newer";
+            const string CopyAlways = "Copy always";
+            public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+            {
+                if (sourceType == typeof(string)) return true;
+
+                return base.CanConvertFrom(context, sourceType);
+            }
+
+            public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+            {
+                string str = value as string;
+
+                if (str != null)
+                {
+                    if (String.Equals(str,CopyNever,StringComparison.OrdinalIgnoreCase))
+                        return CopyToOutput.CopyNever;
+                    if (String.Equals(str, CopyAlways, StringComparison.OrdinalIgnoreCase))
+                        return CopyToOutput.CopyAlways;
+                    if (String.Equals(str, PreserveNewest, StringComparison.OrdinalIgnoreCase))
+                        return CopyToOutput.CopyPreserveNewest;
+                }
+
+                return base.ConvertFrom(context, culture, value);
+            }
+
+            public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+            {
+                if (destinationType == typeof(string))
+                {
+                    string result = null;
+
+                    // In some cases if multiple nodes are selected the windows form engine
+                    // calls us with a null value if the selected node's property values are not equal
+                    // Example of windows form engine passing us null: File set to Compile, Another file set to None, bot nodes are selected, and the build action combo is clicked.
+                    if (value != null)
+                    {
+                        CopyToOutput iValue = (CopyToOutput)value;
+                        switch (iValue)
+                        {
+                            case CopyToOutput.CopyNever:
+                                result = CopyNever;
+                                break;
+                            case CopyToOutput.CopyAlways:
+                                result = CopyAlways;
+                                break;
+                            case CopyToOutput.CopyPreserveNewest:
+                                result = PreserveNewest;
+                                break;
+                            default:
+                                result = CopyNever;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        result = CopyNever;
+                    }
+
+                    if (result != null) return result;
+                }
+
+                return base.ConvertTo(context, culture, value, destinationType);
+            }
+
+            public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context)
+            {
+                return true;
+            }
+
+            public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+            {
+                return new StandardValuesCollection(new CopyToOutput[]
+                   { CopyToOutput.CopyNever,
+              CopyToOutput.CopyAlways,
+              CopyToOutput.CopyPreserveNewest });
+            }
+        }
 
 
     }

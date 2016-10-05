@@ -486,7 +486,7 @@ statement           : Decl=localdecl                                            
                     //
                     | YIELD RETURN (VOID | Expr=expression)? end=EOS			#yieldStmt
                     | YIELD Break=(BREAK|EXIT) end=EOS							#yieldStmt
-                    | SWITCH Expr=expression end=EOS
+                    | (BEGIN|DO)? SWITCH Expr=expression end=EOS
                       (SwitchBlock+=switchBlock)+
                       END SWITCH?  EOS											#switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=EOS

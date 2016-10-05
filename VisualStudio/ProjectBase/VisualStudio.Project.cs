@@ -1,50 +1,13 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation
-All rights reserved.
-
-Microsoft Public License:
-
-This license governs use of the accompanying software. If you use the software, you
-accept this license. If you do not accept the license, do not use the software.
-
-1. Definitions
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the
-same meaning here as under U.S. copyright law.
-A "contribution" is the original software, or any additions or changes to the software.
-A "contributor" is any person that distributes its contribution under this license.
-"Licensed patents" are a contributor's patent claims that read directly on its contribution.
-
-2. Grant of Rights
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
-royalty-free copyright license to reproduce its contribution, prepare derivative works of
-its contribution, and distribute its contribution or any derivative works that you create.
-(B) Patent Grant- Subject to the terms of this license, including the license conditions
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide,
-royalty-free license under its licensed patents to make, have made, use, sell, offer for
-sale, import, and/or otherwise dispose of its contribution in the software or derivative
-works of the contribution in the software.
-
-3. Conditions and Limitations
-(A) No Trademark License- This license does not grant you rights to use any contributors'
-name, logo, or trademarks.
-(B) If you bring a patent claim against any contributor over patents that you claim are
-infringed by the software, your patent license from such contributor to the software ends
-automatically.
-(C) If you distribute any portion of the software, you must retain all copyright, patent,
-trademark, and attribution notices that are present in the software.
-(D) If you distribute any portion of the software in source code form, you may do so only
-under this license by including a complete copy of this license with your distribution.
-If you distribute any portion of the software in compiled or object code form, you may only
-do so under a license that complies with this license.
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give
-no express warranties, guarantees or conditions. You may have additional consumer rights
-under your local laws which this license cannot change. To the extent permitted under your
-local laws, the contributors exclude the implied warranties of merchantability, fitness for
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Reflection;
@@ -60,7 +23,7 @@ namespace Microsoft.VisualStudio.Project
     [AttributeUsage(AttributeTargets.All)]
     internal sealed class SRDescriptionAttribute : DescriptionAttribute
     {
-        private bool replaced;
+		private bool replaced = false;
 
         public SRDescriptionAttribute(string description)
             : base(description)
@@ -110,19 +73,32 @@ namespace Microsoft.VisualStudio.Project
         internal const string BuildEventError = "BuildEventError";
         internal const string CancelQueryEdit = "CancelQueryEdit";
         internal const string CannotAddFileThatIsOpenInEditor = "CannotAddFileThatIsOpenInEditor";
+		internal const string CannotAddItemToProjectWithWildcards = "CannotAddItemToProjectWithWildcards";
+		internal const string CannotBuildWhenBuildInProgress = "CannotBuildWhenBuildInProgress";
         internal const string CanNotSaveFileNotOpeneInEditor = "CanNotSaveFileNotOpeneInEditor";
+		internal const string CannotStartLibraries = "CannotStartLibraries";
         internal const string cli1 = "cli1";
         internal const string Compile = "Compile";
         internal const string ConfirmExtensionChange = "ConfirmExtensionChange";
         internal const string Content = "Content";
+		internal const string CopyNOfFile = "CopyNOfFile";
+		internal const string CopyOfFile = "CopyOfFile";
+		internal const string CopyAlways = "CopyAlways";
+		internal const string CopyIfNewer = "CopyIfNewer";
         internal const string CopyToLocal = "CopyToLocal";
         internal const string CopyToLocalDescription = "CopyToLocalDescription";
-        internal const string EmbedInteropTypes = "EmbedInteropTypes";
-        internal const string EmbedInteropTypesDescription = "EmbedInteropTypesDescription";
+		internal const string CopyToOutputDirectory = "CopyToOutputDirectory";
+		internal const string CopyToOutputDirectoryDescription = "CopyToOutputDirectoryDescription";
+        internal const string Culture_ = "Culture";
+        internal const string CultureDescription = "CultureDescription";
         internal const string CustomTool = "CustomTool";
+
         internal const string CustomToolDescription = "CustomToolDescription";
         internal const string CustomToolNamespace = "CustomToolNamespace";
         internal const string CustomToolNamespaceDescription = "CustomToolNamespaceDescription";
+		internal const string DestinationFolderAlreadyExists = "DestinationFolderAlreadyExists";
+		internal const string DestinationPathEqualsSourcePath = "DestinationPathEqualsSourcePath";
+		internal const string DestinationPathSubfolderOfSourcePath = "DestinationPathSubfolderOfSourcePath";
         internal const string DetailsImport = "DetailsImport";
         internal const string DetailsUserImport = "DetailsUserImport";
         internal const string DetailsItem = "DetailsItem";
@@ -133,7 +109,11 @@ namespace Microsoft.VisualStudio.Project
         internal const string Detailed = "Detailed";
         internal const string Diagnostic = "Diagnostic";
         internal const string DirectoryExistError = "DirectoryExistError";
+		internal const string DoNotCopy = "DoNotCopy";
         internal const string EditorViewError = "EditorViewError";
+        internal const string EmbedInteropTypes = "EmbedInteropTypes";
+        internal const string EmbedInteropTypesDescription = "EmbedInteropTypesDescription";
+
         internal const string EmbeddedResource = "EmbeddedResource";
         internal const string Error = "Error";
         internal const string ErrorInvalidFileName = "ErrorInvalidFileName";
@@ -158,6 +138,8 @@ namespace Microsoft.VisualStudio.Project
         internal const string FileOrFolderAlreadyExists = "FileOrFolderAlreadyExists";
         internal const string FileOrFolderCannotBeFound = "FileOrFolderCannotBeFound";
         internal const string FileProperties = "FileProperties";
+        internal const string FileType = "FileType";
+        internal const string FileTypeDescription = "FileTypeDescription";
         internal const string FolderName = "FolderName";
         internal const string FolderNameDescription = "FolderNameDescription";
         internal const string FolderProperties = "FolderProperties";
@@ -169,10 +151,14 @@ namespace Microsoft.VisualStudio.Project
         internal const string InvalidParameter = "InvalidParameter";
         internal const string Library = "Library";
         internal const string LinkedItemsAreNotSupported = "LinkedItemsAreNotSupported";
+		internal const string LinkAlreadyExistsInProject = "LinkAlreadyExistsInProject";
+		internal const string LinkedFileAlreadyExists = "LinkedFileAlreadyExists";
         internal const string Minimal = "Minimal";
         internal const string Misc = "Misc";
         internal const string None = "None";
-        internal const string Normal = "Normal";
+		internal const string NoWildcardsInProject = "NoWildcardsInProject";
+		internal const string NoZeroImpactProjects = "NoZeroImpactProjects";
+		internal const string Normal = "Normal";
         internal const string NestedProjectFailedToReload = "NestedProjectFailedToReload";
         internal const string OutputPath = "OutputPath";
         internal const string OutputPathDescription = "OutputPathDescription";
@@ -188,6 +174,7 @@ namespace Microsoft.VisualStudio.Project
         internal const string ProjectFileDescription = "ProjectFileDescription";
         internal const string ProjectFolder = "ProjectFolder";
         internal const string ProjectFolderDescription = "ProjectFolderDescription";
+		internal const string ProjectLocationNotTrusted = "ProjectLocationNotTrusted";
         internal const string ProjectProperties = "ProjectProperties";
         internal const string Quiet = "Quiet";
         internal const string QueryReloadNestedProject = "QueryReloadNestedProject";
@@ -198,41 +185,36 @@ namespace Microsoft.VisualStudio.Project
         internal const string RefNameDescription = "RefNameDescription";
         internal const string RenameFolder = "RenameFolder";
         internal const string RTL = "RTL";
+        internal const string RuntimeVersion = "RuntimeVersion";
+        internal const string RuntimeVersionDescription = "RuntimeVersionDescription";
         internal const string SaveCaption = "SaveCaption";
         internal const string SaveModifiedDocuments = "SaveModifiedDocuments";
         internal const string SaveOfProjectFileOutsideCurrentDirectory = "SaveOfProjectFileOutsideCurrentDirectory";
+		internal const string SpecificVersion = "SpecificVersion";
+		internal const string SpecificVersionDescription = "SpecificVersionDescription";
         internal const string StandardEditorViewError = "StandardEditorViewError";
         internal const string Settings = "Settings";
+        internal const string StrongName = "StrongName";
+        internal const string StrongNameDescription = "StrongNameDescription";
         internal const string URL = "URL";
         internal const string UseOfDeletedItemError = "UseOfDeletedItemError";
+		internal const string UpgradeCannotOpenProjectFileForEdit = "UpgradeCannotOpenProjectFileForEdit";
+		internal const string UpgradeNoNeedToUpgradeAfterCheckout = "UpgradeNoNeedToUpgradeAfterCheckout";
+		internal const string UpgradeSuccessful = "UpgradeSuccessful";
+		internal const string v1 = "v1";
+		internal const string v11 = "v11";
+		internal const string v2 = "v2";
+        internal const string Version = "Version";
+        internal const string VersionDescription = "VersionDescription";
         internal const string Warning = "Warning";
         internal const string WinExe = "WinExe";
         internal const string CannotLoadUnknownTargetFrameworkProject = "CannotLoadUnknownTargetFrameworkProject";
         internal const string ReloadPromptOnTargetFxChanged = "ReloadPromptOnTargetFxChanged";
         internal const string ReloadPromptOnTargetFxChangedCaption = "ReloadPromptOnTargetFxChangedCaption";
-		internal const string LinkAlreadyExistsInProject = "LinkAlreadyExistsInProject";
-		internal const string LinkedFileAlreadyExists = "LinkedFileAlreadyExists";
 
-		internal const string CopyNOfFile = "CopyNOfFile";
-		internal const string CopyOfFile = "CopyOfFile";
 
-		internal const string DestinationFolderAlreadyExists = "DestinationFolderAlreadyExists";
-		internal const string DestinationPathEqualsSourcePath = "DestinationPathEqualsSourcePath";
-		internal const string DestinationPathSubfolderOfSourcePath = "DestinationPathSubfolderOfSourcePath";
 
-      	internal const string SpecificVersion = "SpecificVersion";
-      	internal const string SpecificVersionDescription = "SpecificVersionDescription";
 
-      internal const string Culture_ = "Culture";
-      internal const string CultureDescription = "CultureDescription";
-      internal const string StrongName = "StrongName";
-      internal const string StrongNameDescription = "StrongNameDescription";
-      internal const string Version = "Version";
-      internal const string VersionDescription = "VersionDescription";
-      internal const string FileType = "FileType";
-      internal const string FileTypeDescription = "FileTypeDescription";
-      internal const string RuntimeVersion = "RuntimeVersion";
-      internal const string RuntimeVersionDescription = "RuntimeVersionDescription";
       internal const string Description = "Description";
       internal const string DescriptionDescription = "DescriptionDescription";
       internal const string Identity = "Identity";

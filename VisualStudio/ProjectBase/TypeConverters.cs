@@ -3,16 +3,14 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -33,7 +31,7 @@ namespace Microsoft.VisualStudio.Project
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if(sourceType == typeof(string)) return true;
+            if (sourceType.IsEquivalentTo(typeof(string))) return true;
 
             return base.CanConvertFrom(context, sourceType);
         }
@@ -41,7 +39,7 @@ namespace Microsoft.VisualStudio.Project
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             string str = value as string;
-            
+
             if(str != null)
             {
                 if(String.Compare(str,SR.GetString(SR.Exe, culture), true) == 0) return OutputType.Exe;
@@ -56,7 +54,7 @@ namespace Microsoft.VisualStudio.Project
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if(destinationType == typeof(string))
+            if (destinationType.IsEquivalentTo(typeof(string)))
             {
                 string result = null;
                 // In some cases if multiple nodes are selected the windows form engine
@@ -97,7 +95,7 @@ namespace Microsoft.VisualStudio.Project
         }
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if(sourceType == typeof(string)) return true;
+            if (sourceType.IsEquivalentTo(typeof(string))) return true;
 
             return base.CanConvertFrom(context, sourceType);
         }
@@ -120,7 +118,7 @@ namespace Microsoft.VisualStudio.Project
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if(destinationType == typeof(string))
+            if (destinationType.IsEquivalentTo(typeof(string)))
             {
                 string result = null;
                 // In some cases if multiple nodes are selected the windows form engine
@@ -139,30 +137,94 @@ namespace Microsoft.VisualStudio.Project
 
             return base.ConvertTo(context, culture, value, destinationType);
         }
-
-        public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context)
-        {
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context) {
             return true;
         }
 
-        public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
-        {
+        public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context) {
             return new StandardValuesCollection(new DebugMode[] { DebugMode.Program, DebugMode.Project, DebugMode.URL });
         }
     }
 
-    public class BuildActionConverter : EnumConverter
+    public class BuildActionConverter : TypeConverter
     {
+        List<BuildAction> buildActions = new List<BuildAction>();
 
         public BuildActionConverter()
-            : base(typeof(BuildAction))
+        {
+            ResetBuildActionsToDefaults();
+        }
+
+        public void ResetBuildActionsToDefaults()
+        {
+            this.buildActions.Clear();
+            this.buildActions.Add(BuildAction.None);
+            this.buildActions.Add(BuildAction.Compile);
+            this.buildActions.Add(BuildAction.Content);
+            this.buildActions.Add(BuildAction.EmbeddedResource);
+        }
+
+        public void RegisterBuildAction(BuildAction buildAction)
+        {
+            if (!this.buildActions.Contains(buildAction))
+            {
+                this.buildActions.Add(buildAction);
+            }
+        }
+
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            if (sourceType.IsEquivalentTo(typeof(string))) return true;
+            return false;
+        }
+
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type sourceType)
+        {
+            return sourceType.IsEquivalentTo(typeof(string));
+        }
+
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            string s = value as string;
+            if (s != null) return new BuildAction(s);
+            return null;
+        }
+
+
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType.IsEquivalentTo(typeof(string)))
+            {
+                return ((BuildAction)value).Name;
+            }
+
+            return null;
+        }
+
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(buildActions);
+        }
+    }
+
+    public class CopyToOutputDirectoryConverter : EnumConverter
+    {
+
+        public CopyToOutputDirectoryConverter()
+            : base(typeof(CopyToOutputDirectory))
         {
 
         }
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if(sourceType == typeof(string)) return true;
+            if (sourceType.IsEquivalentTo(typeof(string))) return true;
 
             return base.CanConvertFrom(context, sourceType);
         }
@@ -171,36 +233,37 @@ namespace Microsoft.VisualStudio.Project
         {
             string str = value as string;
 
-            if(str != null)
+            if (str != null)
             {
-                if(String.Compare(str, SR.GetString(SR.Compile, culture), true) == 0) return BuildAction.Compile;
+                if (str == SR.GetString(SR.CopyAlways, culture)) return CopyToOutputDirectory.Always;
 
-                if(String.Compare(str, SR.GetString(SR.Content, culture), true) == 0) return BuildAction.Content;
+                if (str == SR.GetString(SR.CopyIfNewer, culture)) return CopyToOutputDirectory.PreserveNewest;
 
-                if(String.Compare(str, SR.GetString(SR.EmbeddedResource, culture), true) == 0) return BuildAction.EmbeddedResource;
-
-                if(String.Compare(str, SR.GetString(SR.None, culture),true) == 0) return BuildAction.None;
+                if (str == SR.GetString(SR.DoNotCopy, culture)) return CopyToOutputDirectory.DoNotCopy;
             }
-
             return base.ConvertFrom(context, culture, value);
         }
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if(destinationType == typeof(string))
+            if (destinationType.IsEquivalentTo(typeof(string)))
             {
                 string result = null;
 
                 // In some cases if multiple nodes are selected the windows form engine
                 // calls us with a null value if the selected node's property values are not equal
-                // Example of windows form engine passing us null: File set to Compile, Another file set to None, bot nodes are selected, and the build action combo is clicked.
-                if(value != null)
+                if (value != null)
                 {
-                    result = SR.GetString(((BuildAction)value).ToString(), culture);
+                    if (((CopyToOutputDirectory)value) == CopyToOutputDirectory.DoNotCopy)
+                        result = SR.GetString(SR.DoNotCopy, culture);
+                    if (((CopyToOutputDirectory)value) == CopyToOutputDirectory.Always)
+                        result = SR.GetString(SR.CopyAlways, culture);
+                    if (((CopyToOutputDirectory)value) == CopyToOutputDirectory.PreserveNewest)
+                        result = SR.GetString(SR.CopyIfNewer, culture);
                 }
                 else
                 {
-                    result = SR.GetString(BuildAction.None.ToString(), culture);
+                    result = "";
                 }
 
                 if(result != null) return result;
@@ -209,14 +272,14 @@ namespace Microsoft.VisualStudio.Project
             return base.ConvertTo(context, culture, value, destinationType);
         }
 
-        public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context)
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
         {
             return true;
         }
 
-        public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        public override TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new BuildAction[] { BuildAction.Compile, BuildAction.Content, BuildAction.EmbeddedResource, BuildAction.None });
+            return new StandardValuesCollection(new CopyToOutputDirectory[] { CopyToOutputDirectory.Always, CopyToOutputDirectory.DoNotCopy, CopyToOutputDirectory.PreserveNewest });
         }
     }
 
@@ -259,12 +322,12 @@ namespace Microsoft.VisualStudio.Project
             return base.ConvertTo(context, culture, value, destinationType);
         }
 
-        public override bool GetStandardValuesSupported(System.ComponentModel.ITypeDescriptorContext context)
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
         {
             return true;
         }
 
-        public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
+        public override TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
             IServiceProvider sp = ProjectNode.ServiceProvider;
             var multiTargetService = sp.GetService(typeof(SVsFrameworkMultiTargeting)) as IVsFrameworkMultiTargeting;

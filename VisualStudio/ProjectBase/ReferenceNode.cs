@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -148,7 +145,12 @@ namespace Microsoft.VisualStudio.Project
         protected internal override StringBuilder PrepareSelectedNodesForClipBoard()
         {
             return null;
-        }
+		}
+
+		protected override void DoDefaultAction()
+		{
+			this.ShowObjectBrowser();
+		}
 
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
@@ -188,7 +190,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Links a reference node to the project and hierarchy.
         /// </summary>
-		public virtual /*void*/ ReferenceNode AddReference()  // dcaton - changed return type to ReferenceNode, see comments in ReferenceContainerNode.AddReferenceFromSelectorData()
+		public virtual /*void*/ ReferenceNode AddReference()  // 
 		{
             ReferenceNode existingNode = null;  /// returns existing node or null if this node has been newly added
 
@@ -238,14 +240,14 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="errorHandler">A CannotAddReferenceErrorMessage delegate to show the error message.</param>
         /// <returns>true if the reference can be added.</returns>
-		protected virtual bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode )  // dcaton, added existingNode param
+		protected virtual bool CanAddReference(out CannotAddReferenceErrorMessage errorHandler, out ReferenceNode existingNode )  
 		{
 			// When this method is called this reference has not yet been added to the hierarchy, only instantiated.
 			errorHandler = null;
 			if (this.IsAlreadyAdded( out existingNode ))
 			{
                    errorHandler = null;
-    
+
                     return false;
 		    }
 
@@ -294,8 +296,27 @@ namespace Microsoft.VisualStudio.Project
             return false;
         }
 
+		/// <summary>
+		/// Shows Add Reference error dialog
+		/// </summary>
+		/// <param name="message">Message to be displayed.</param>
+		protected void ShowReferenceErrorMessage(string message)
+		{
+			string title = string.Empty;
+			OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+			OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+			OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+			VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
+		}
 
-        /// <summary>
+		/// <summary>
+		/// Gets the Guid to use to set VSOJBECTINFO.pguidLib for the call to IVsObjBrowser.NavigateTo
+		/// </summary>
+		protected virtual Guid GetBrowseLibraryGuid()
+		{
+			// Previous default: VSConstants.guidCOMPLUSLibrary;
+			return Guid.Empty;
+		}
         /// Shows the Object Browser
         /// </summary>
         /// <returns></returns>
@@ -309,7 +330,7 @@ namespace Microsoft.VisualStudio.Project
             // Request unmanaged code permission in order to be able to creaet the unmanaged memory representing the guid.
             new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 
-            Guid guid = VSConstants.guidCOMPLUSLibrary;
+			Guid guid = GetBrowseLibraryGuid();
             IntPtr ptr = System.Runtime.InteropServices.Marshal.AllocCoTaskMem(guid.ToByteArray().Length);
 
             System.Runtime.InteropServices.Marshal.StructureToPtr(guid, ptr, false);
@@ -353,5 +374,13 @@ namespace Microsoft.VisualStudio.Project
         protected abstract void BindReferenceData();
 
         #endregion
-    }
+		#region private methods
+		private void ShowReferenceAlreadyExistMessage()
+		{
+			string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.ReferenceAlreadyExists, CultureInfo.CurrentUICulture), this.Caption);
+			ShowReferenceErrorMessage(message);
+		}
+
+		#endregion
+	}
 }

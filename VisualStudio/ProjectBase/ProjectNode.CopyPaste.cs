@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -155,8 +152,8 @@ namespace Microsoft.VisualStudio.Project
             int returnValue;
             try
             {
+                this.isInPasteOrDrop = true;
                 DropDataType dropDataType = DropDataType.None;
-            	this.isInPasteOrDrop = true;
             	dropDataType = ProcessSelectionDataObject(pDataObject, targetNode, grfKeyState);
                 pdwEffect = (uint)this.QueryDropEffect(dropDataType, grfKeyState);
 
@@ -502,7 +499,18 @@ namespace Microsoft.VisualStudio.Project
             return dataObject;
         }
 
-
+        /// <summary>
+        /// This is used to recursively add a folder from an other project.
+        /// Note that while we copy the folder content completely, we only
+        /// add to the project items which are part of the source project.
+        /// </summary>
+        /// <param name="folderToAdd">Project reference (from data object) using the format: {Guid}|project|folderPath</param>
+        /// <param name="targetNode">Node to add the new folder to</param>
+        /// <param name="dropEffect">The drop effect</param>
+        protected internal virtual void AddFolderFromOtherProject(string folderToAdd, HierarchyNode targetNode, uint dropEffect)
+        {
+            AddFolderFromOtherProject(folderToAdd, targetNode, dropEffect, false);
+        }
 
         /// <summary>
         /// This is used to recursively add a folder from an other project.
@@ -511,16 +519,18 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="folderToAdd">Project reference (from data object) using the format: {Guid}|project|folderPath</param>
         /// <param name="targetNode">Node to add the new folder to</param>
-      protected internal virtual void AddFolderFromOtherProject(string folderToAdd, HierarchyNode targetNode, uint dropEffect, bool validateOnly = false)
+        /// <param name="validateOnly">If true, no action is actually taken. Only checks for error cases.</param>
+        protected internal virtual void AddFolderFromOtherProject(string folderToAdd, HierarchyNode targetNode, uint dropEffect, bool validateOnly)
         {
             if(String.IsNullOrEmpty(folderToAdd))
                 throw new ArgumentNullException("folderToAdd");
             if(targetNode == null)
                 throw new ArgumentNullException("targetNode");
-         // Get the project path
-         Guid projectInstanceGuid;
-         string folder = GetSourceFromFolderReference(folderToAdd, out projectInstanceGuid);
-         string folderNoTrailingSlash = folder.Substring(0, folder.Length - 1);
+
+            // get the source path
+            Guid projectInstanceGuid;
+            string folder = GetSourceFromFolderReference(folderToAdd, out projectInstanceGuid);
+            string folderNoTrailingSlash = folder.Substring(0, folder.Length - 1);
 
          // Get the target path
          string folderName = Path.GetFileName(Path.GetDirectoryName(folder));
@@ -586,7 +596,7 @@ namespace Microsoft.VisualStudio.Project
             ErrorHandler.ThrowOnFailure(sourceHierarchy.ParseCanonicalName(folder, out itemID));
 
             // Ensure we don't end up in an endless recursion
-            if(Utilities.IsSameComObject(this.InteropSafeIVsHierarchy, sourceHierarchy))
+            if(Utilities.IsSameComObject(this , sourceHierarchy))
             {
                 HierarchyNode cursorNode = targetNode;
                 while(cursorNode != null)
@@ -667,7 +677,19 @@ namespace Microsoft.VisualStudio.Project
             try
             {
                this.pasteAsNonMemberItem = variant != null && (bool)variant;
-               newNode = AddNodeIfTargetExistInStorage(targetNode, name, targetPath, addItemOp);
+                if (this.pasteAsNonMemberItem)
+                {
+                    // suspend events so listeners don't get confused by
+                    // adding and then immediately removing a node
+                    using (this.ProjectMgr.ExtensibilityEventsHelper.SuspendEvents())
+                    {
+                        newNode = AddNodeIfTargetExistInStorage(targetNode, name, targetPath, addItemOp);
+                    }
+                }
+                else
+                {
+                    newNode = AddNodeIfTargetExistInStorage(targetNode, name, targetPath, addItemOp);
+                }
             }
             finally
             {
@@ -972,7 +994,7 @@ namespace Microsoft.VisualStudio.Project
             if(register && this.copyPasteCookie == 0)
             {
                 // Register
-                ErrorHandler.ThrowOnFailure(clipboardHelper.AdviseClipboardHelperEvents(this.InteropSafeIVsUIHierWinClipboardHelperEvents, out this.copyPasteCookie));
+                ErrorHandler.ThrowOnFailure(clipboardHelper.AdviseClipboardHelperEvents(this , out this.copyPasteCookie));
                 Debug.Assert(this.copyPasteCookie != 0, "AdviseClipboardHelperEvents returned an invalid cookie");
             }
             else if(!register && this.copyPasteCookie != 0)
@@ -1003,6 +1025,8 @@ namespace Microsoft.VisualStudio.Project
                 filesDropped = DragDropHelper.GetDroppedFiles(NativeMethods.CF_HDROP, dataObject, out dropDataType);
                 isWindowsFormat = (filesDropped.Count > 0);
             }
+
+            dropItems.Clear();
 
             if (dropDataType != DropDataType.None && filesDropped.Count > 0)
             {
@@ -1038,7 +1062,6 @@ namespace Microsoft.VisualStudio.Project
                     }
                     else
                     {
-
                         if (AddFilesFromProjectReferences(node, filesDroppedAsArray, (uint)dropEffect))
                         {
                             return dropDataType;
@@ -1129,8 +1152,6 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
             if((grfKeyState & NativeMethods.MK_SHIFT) != 0)
                 return DropEffect.Move;
 
-         // no modifier
-         //if (this.SourceDraggedOrCutOrCopied )
          // This line was changed to support drag and drop between projects
          // See bug report at http://mpfproj10.codeplex.com/workitem/9705
          if (this.SourceDraggedOrCutOrCopied || this.ItemsDraggedOrCutOrCopied == null || this.ItemsDraggedOrCutOrCopied.Count == 0)
@@ -1558,18 +1579,18 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
 
             if(!String.IsNullOrEmpty(sourceProjectPath) && NativeMethods.IsSamePath(sourceProjectPath, this.GetMkDocument()))
             {
-                ErrorHandler.ThrowOnFailure(UnsafeNativeMethods.OleFlushClipboard());
+                UnsafeNativeMethods.OleFlushClipboard();
                 int clipboardOpened = 0;
                 try
                 {
-                    ErrorHandler.ThrowOnFailure(clipboardOpened = UnsafeNativeMethods.OpenClipboard(IntPtr.Zero));
-                    ErrorHandler.ThrowOnFailure(UnsafeNativeMethods.EmptyClipboard());
+                    clipboardOpened = UnsafeNativeMethods.OpenClipboard(IntPtr.Zero);
+                    UnsafeNativeMethods.EmptyClipboard();
                 }
                 finally
                 {
                     if(clipboardOpened == 1)
                     {
-                        ErrorHandler.ThrowOnFailure(UnsafeNativeMethods.CloseClipboard());
+                        UnsafeNativeMethods.CloseClipboard();
                     }
                 }
             }
@@ -1653,6 +1674,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
       {
       }
    }
+
    // cannot be a struct since we do not want a value type
    internal class DragDropItem
    {

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -27,11 +27,11 @@ using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 namespace XSharp.Project
 {
     /// <summary>
-    /// This class extends the ProjectNode in order to represent our project 
+    /// This class extends the ProjectNode in order to represent our project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : ProjectNode//, IVsProjectSpecificEditorMap2
+    public class XSharpProjectNode : ProjectNodeX
     {
         #region Enum for image list
         internal enum XSharpProjectImageName
@@ -49,8 +49,6 @@ namespace XSharp.Project
         internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
-        private bool showAllFilesEnabled;
-        private MSBuild.Project userBuildProject;
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
         #endregion
@@ -86,7 +84,7 @@ namespace XSharp.Project
 
             this.CanProjectDeleteItems = true;
 
-            // Gets or sets whether the project uses the Project Designer Editor or the property page frame to edit project properties. 
+            // Gets or sets whether the project uses the Project Designer Editor or the property page frame to edit project properties.
             // True : New WPF way
             // False: C++-Like Property pages
             this.SupportsProjectDesigner = true;
@@ -142,26 +140,15 @@ namespace XSharp.Project
             }
         }
         /// <summary>
-        /// Gets the path to the .user file
+        /// Gets the XSharpPackage instance for this project.
         /// </summary>
-        private string UserFileName
-        {
-            get { return this.FileName + ProjectNode.PerUserFileExtension; }
-        }
-        /// <summary>
-        /// Returns the MSBuild project associated with the .user file
-        /// </summary>
-        /// <value>The MSBuild project associated with the .user file.</value>
-        public MSBuild.Project UserBuildProject
+        /// <remarks>The SDK2008 base ProjectNode class has a Package property defined,
+        /// but we can't use it (with the  single codebase) because it isn't in SDK2005.</remarks>
+        internal XSharpProjectPackage XSharpPackage
         {
             get
             {
-                if (this.userBuildProject == null && File.Exists(this.UserFileName))
-                {
-                    this.CreateUserBuildProject();
-                }
-
-                return this.userBuildProject;
+                return this.package;
             }
         }
 
@@ -292,6 +279,13 @@ namespace XSharp.Project
             return node;
         }
 
+        protected internal override FolderNode CreateFolderNode(string path, ProjectElement element)
+        {
+            FolderNode folderNode = new XSharpFolderNode(this, path, element);
+            return folderNode;
+        }
+
+
         protected override ConfigProvider CreateConfigProvider()
         {
             return new XSharpConfigProvider(this);
@@ -323,7 +317,7 @@ namespace XSharp.Project
         private Guid guidPublishPage = Guid.Parse("CC4014F5-B18D-439C-9352-F99D984CCA85");
 
         /// <summary>
-        /// Return list of guids of all property pages 
+        /// Return list of guids of all property pages
         /// </summary>
         /// <returns>List of pages GUIDs.</returns>
         protected override Guid[] GetPriorityProjectDesignerPages()
@@ -366,7 +360,7 @@ namespace XSharp.Project
             return result;
         }
         /// <summary>
-        /// Allows you to query the project for special files and optionally create them. 
+        /// Allows you to query the project for special files and optionally create them.
         /// </summary>
         /// <param name="fileId">__PSFFILEID of the file</param>
         /// <param name="flags">__PSFFLAGS flags for the file</param>
@@ -514,7 +508,7 @@ namespace XSharp.Project
                 string path = Path.Combine(this.ProjectFolder, item.EvaluatedInclude);
                 path = System.IO.Path.GetDirectoryName(path);
                 path = Path.Combine(path, dependentOf);
-                
+
                 this.ParseCanonicalName(path, out parentItemID);
                 if (parentItemID != (uint)VSConstants.VSITEMID.Nil)
                     parent = this.NodeFromItemId(parentItemID);
@@ -540,7 +534,7 @@ namespace XSharp.Project
             return newNode;
         }
 
-        protected override void AddNewFileNodeToHierarchy(HierarchyNode parentNode, string fileName)
+        protected override HierarchyNode AddNewFileNodeToHierarchy(HierarchyNode parentNode, string fileName, string linkPath)
         {
             // We have to take care of Dependant Files here
             // So any .Designer.prg, or .Xaml.Prg is depending from a parent which has the same prefix name
@@ -557,7 +551,7 @@ namespace XSharp.Project
             //
             if ( Dependencies.ContainsKey(extension) )
             {
-                // 
+                //
                 HierarchyNode newParent = parentNode.FindChild(parentFile + Dependencies[extension]);
                 if (newParent != null)
                 {
@@ -590,7 +584,7 @@ namespace XSharp.Project
                     }
                     break;
             }
-            base.AddNewFileNodeToHierarchy(parentNode, fileName);
+            return base.AddNewFileNodeToHierarchy(parentNode, fileName,linkPath);
         }
 
         protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
@@ -671,10 +665,13 @@ namespace XSharp.Project
         /// <returns>True = items of this type should be included in the project</returns>
         protected override bool IsItemTypeFileType(string type)
         {
-            if (String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
+            if (String.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg 
+                || String.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none 
+                || String.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx 
+                || String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
-                || String.Compare(type, XSharpConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
-                || String.Compare(type, XSharpConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
+                || String.Compare(type, XSharpProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
+                || String.Compare(type, XSharpProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
                 ) {
                 return true;
             }
@@ -820,7 +817,7 @@ namespace XSharp.Project
                             pguidEditorType = Guid.Empty;
                             break;
                     }
-                    return VSConstants.S_OK; 
+                    return VSConstants.S_OK;
                 }
 
                 public int GetSpecificLanguageService(string pszMkDocument, out Guid pguidLanguageService)
@@ -843,7 +840,7 @@ namespace XSharp.Project
                         case XSharpFileType.PreprocessorOutput:
                         default:
                             if (propid == (int)__VSPSEPROPID.VSPSEPROPID_ProjectDefaultEditorName)
-                            { 
+                            {
                                 pvar = "XSharp Editor";
                             }
                             else if (propid == (int)__VSPSEPROPID.VSPSEPROPID_UseGlobalEditorByDefault)
@@ -879,151 +876,18 @@ namespace XSharp.Project
         */
         #endregion
 
-        public override int IsDirty(out int isDirty)
-        {
-            int res = base.IsDirty(out isDirty);
-            if (isDirty == 0 && this.UserBuildProject != null)
-            {
-                isDirty = this.UserBuildProject.IsDirty ? 1 : 0;
-            }
-            return res;
-        }
-
-    public void CreateUserBuildProject()
-        {
-            this.userBuildProject = new MSBuild.Project(this.UserFileName);
-        }
-
-        /// <summary>
-        /// Gets if the ShowAllFiles is enabled or not.
-        /// </summary>
-        /// <value>true if the ShowAllFiles option is enabled, false otherwise.</value>
-        public bool ShowAllFilesEnabled
-        {
-            get
-            {
-                return this.showAllFilesEnabled;
-            }
-        }
-
-        public object VulcanProjectFileConstants { get; private set; }
-
-        protected internal int ToggleShowAllFiles()
-        {
-            if (this.ProjectMgr == null || this.ProjectMgr.IsClosed)
-            {
-                return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
-            }
-
-            using (SupportMethods.NewWaitCursor())
-            {
-                this.showAllFilesEnabled = !this.showAllFilesEnabled; // toggle the flag
-
-                if (this.showAllFilesEnabled)
-                {
-                    XSharpProjectMembers.AddNonMemberItems(this);
-                }
-                else
-                {
-                    XSharpProjectMembers.RemoveNonMemberItems(this);
-                }
-            }
-
-            return VSConstants.S_OK;
-        }
-            #region Cache URLs and other canonicalnames
-            Dictionary<string, HierarchyNode> URLNodes = new Dictionary<string, HierarchyNode>(1000);
-
-        public string CleanURL(string url)
-        {
-            url = url.ToLowerInvariant();
-            return url.TrimEnd('\\'); ;
-        }
-        public void RemoveURL(HierarchyNode node)
-        {
-            try
-            {
-                if (node.ItemNode != null)
-                {
-                    String url = node.Url;
-                    RemoveURL(url);
-                }
-            }
-            catch { }
-
-        }
-
-        public void RemoveURL(String url)
-        {
-            url = CleanURL(url);
-            if (URLNodes.ContainsKey(url))
-                URLNodes.Remove(url);
-
-        }
-
-        public void AddURL(String url, HierarchyNode node)
-        {
-            url = this.CleanURL(url);
-            if (URLNodes.ContainsKey(url))
-                URLNodes.Remove(url);
-            URLNodes.Add(url, node);
-
-        }
 
 
-        public HierarchyNode FindURL(String url)
-        {
-            if (String.IsNullOrEmpty(url))
-                return null;
-            HierarchyNode node = null;
-            url = CleanURL(url);
-            URLNodes.TryGetValue(url, out node);
-            return node;
-        }
-        public override int ParseCanonicalName(string name, out uint itemId)
-        {
-
-            if (String.Equals(name, this.Url, StringComparison.OrdinalIgnoreCase))
-                itemId = this.ID;
-            else
-            {
-                name = CleanURL(name);
-                HierarchyNode node = null;
-                if (URLNodes.TryGetValue(name, out node))
-                {
-                    itemId = node.ID;
-                }
-                else
-                {
-                    itemId = VSConstants.VSITEMID_NIL;
-                }
-            }
-            return VSConstants.S_OK;
-
-        }
-
-        #endregion
 
         protected override void Reload()
         {
             base.Reload();
 
-            // read .user file
-            if (this.UserBuildProject != null)
-            {
-                // Read show all files flag
-                string propertyValue = this.UserBuildProject.GetPropertyValue("ProjectView");
-                if (String.Equals(propertyValue, "ShowAllFiles", StringComparison.OrdinalIgnoreCase))
-                {
-                    this.ToggleShowAllFiles();
-                }
-            }
             if (MoveDependants())
             {
-                //Vulcan.CodeModel.Projects.Delete(this.Url);
-                //URLNodes.Clear();
-                //base.UnloadProject();
-                //base.Reload();
+                URLNodes.Clear();
+                base.UnloadProject();
+                base.Reload();
             }
 
         }

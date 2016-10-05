@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -49,7 +46,7 @@ namespace Microsoft.VisualStudio.Project
         public int Clone(out IVsEnumDependencies enumDependencies)
         {
             enumDependencies = new EnumDependencies(this.dependencyList);
-            ErrorHandler.ThrowOnFailure(enumDependencies.Skip(this.nextIndex));
+            enumDependencies.Skip(this.nextIndex);
             return VSConstants.S_OK;
         }
 

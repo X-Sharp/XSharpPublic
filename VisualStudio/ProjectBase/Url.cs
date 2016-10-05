@@ -1,51 +1,14 @@
 #if BETA2
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Windows.Forms;
@@ -63,7 +26,7 @@ using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 namespace Microsoft.VisualStudio.Package
-{	
+{
     /// <summary>
     /// This class wraps the Uri class and provides an unescaped "LocalPath" for file URL's
     /// and an unescaped AbsoluteUri for other schemes, plus it also returned an un-hex-escaped
@@ -74,12 +37,12 @@ namespace Microsoft.VisualStudio.Package
         private Uri uri = null;
         private bool isFile;
 
-        
+
         public Url(string path)
         {
             Init(path);
         }
-        
+
         void Init(string path)
         {
             // Must try absolute first, then fall back on relative, otherwise it
@@ -90,8 +53,8 @@ namespace Microsoft.VisualStudio.Package
                 if (!Uri.TryCreate(path, UriKind.Absolute, out this.uri))
                 {
                     Uri.TryCreate(path, UriKind.Relative, out this.uri);
-                } 
-                
+                }
+
                 this.CheckIsFile();
             }
         }
@@ -118,14 +81,14 @@ namespace Microsoft.VisualStudio.Package
         }
 
         // allows relpath to be null, in which case it just returns the baseUrl.
-        
+
         public Url(Url baseUrl, string relpath)
         {
             if (baseUrl.uri == null)
             {
                 Init(relpath);
             }
-            else if (string.IsNullOrEmpty(relpath))
+			else if (String.IsNullOrEmpty(relpath))
             {
                 this.uri = baseUrl.uri;
             }
@@ -135,8 +98,8 @@ namespace Microsoft.VisualStudio.Package
             }
             CheckIsFile();
         }
-        
-        
+
+
         public string AbsoluteUrl
         {
             get
@@ -162,8 +125,8 @@ namespace Microsoft.VisualStudio.Package
             }
         }
 
-        
-        /// <summary>Returns the AbsoluteUrl for the parent directory containing the file 
+
+        /// <summary>Returns the AbsoluteUrl for the parent directory containing the file
         /// referenced by this URL object, where the Directory string is also unescaped.</summary>
         public string Directory
         {
@@ -177,13 +140,13 @@ namespace Microsoft.VisualStudio.Package
             }
         }
 
-        
+
         public bool IsFile
         {
             get { return this.isFile; }
         }
 
-        
+
         public Url Move(Url oldBase, Url newBase)
         {
             if (this.uri == null || oldBase.uri == null) return null;
@@ -192,7 +155,7 @@ namespace Microsoft.VisualStudio.Package
         }
 
         // return an un-escaped relative path
-        
+
         public string MakeRelative(Url url)
         {
             if (this.uri == null || url.uri == null) return null;
@@ -247,7 +210,7 @@ namespace Microsoft.VisualStudio.Package
             return (char)(res);
         }
 
-        
+
         public static string Unescape(string escaped, bool isFile)
         {
             if (String.IsNullOrEmpty(escaped))
@@ -335,7 +298,7 @@ namespace Microsoft.VisualStudio.Package
             return new string(dest, 0, j);
         }
 
-        
+
         public Uri Uri
         {
             get { return this.uri; }
@@ -344,9 +307,9 @@ namespace Microsoft.VisualStudio.Package
         // <include file='doc\Utilities.uex' path='docs/doc[@for="Url.Segments"]/*' />
         // Unlike the Uri class, this ALWAYS succeeds, even on relative paths, and it
         // strips out the path separator characters
-        
+
         public string[] GetSegments()
-        {		
+        {
             if (this.uri == null) return null;
             string path = this.AbsoluteUrl;
             if (this.isFile || !this.uri.IsAbsoluteUri)
@@ -362,10 +325,10 @@ namespace Microsoft.VisualStudio.Package
                 if (path.EndsWith("/"))
                     path = path.Substring(0, path.Length - 1);
                 return path.Split('/');
-            }	
+            }
         }
 
-        
+
         /// Return unescaped path up to (but not including) segment i.
         public string GetPartial(int i)
         {
@@ -378,14 +341,14 @@ namespace Microsoft.VisualStudio.Package
             return path;
         }
 
-        
+
         /// Return unescaped relative path starting segment i.
         public string GetRemainder(int i)
         {
             return JoinSegments(i, -1);
         }
 
-        
+
         public string JoinSegments(int i, int j)
         {
             if (i < 0)

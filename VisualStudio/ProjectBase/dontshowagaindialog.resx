@@ -112,16 +112,16 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="mscorlib" name="mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="messageText.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="messageText.Location" type="System.Drawing.Point, System.Drawing">
     <value>49, 9</value>
   </data>
@@ -138,73 +138,73 @@
     <value>messageText</value>
   </data>
   <data name="&gt;&gt;messageText.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;messageText.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;messageText.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="applyToAll.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="applyToAll.Location" type="System.Drawing.Point, System.Drawing">
-    <value>52, 47</value>
-  </data>
-  <data name="applyToAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>104, 17</value>
-  </data>
-  <data name="applyToAll.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="applyToAll.Text" xml:space="preserve">
-    <value>&amp;Apply to all items</value>
-  </data>
-  <data name="&gt;&gt;applyToAll.Name" xml:space="preserve">
-    <value>applyToAll</value>
-  </data>
-  <data name="&gt;&gt;applyToAll.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;applyToAll.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;applyToAll.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="yesButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>239, 69</value>
+  <data name="dontShowAgain.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="yesButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+  <data name="dontShowAgain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>52, 47</value>
   </data>
-  <data name="yesButton.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="dontShowAgain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>172, 17</value>
   </data>
-  <data name="yesButton.Text" xml:space="preserve">
-    <value>&amp;Yes</value>
+  <data name="dontShowAgain.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;yesButton.Name" xml:space="preserve">
-    <value>yesButton</value>
+  <data name="dontShowAgain.Text" xml:space="preserve">
+    <value>Don't show this message again</value>
   </data>
-  <data name="&gt;&gt;yesButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;dontShowAgain.Name" xml:space="preserve">
+    <value>dontShowAgain</value>
   </data>
-  <data name="&gt;&gt;yesButton.Parent" xml:space="preserve">
+  <data name="&gt;&gt;dontShowAgain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dontShowAgain.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;yesButton.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;dontShowAgain.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="okButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>235, 69</value>
+  </data>
+  <data name="okButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="okButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="okButton.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="&gt;&gt;okButton.Name" xml:space="preserve">
+    <value>okButton</value>
+  </data>
+  <data name="&gt;&gt;okButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;okButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;okButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="cancelButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>401, 69</value>
+    <value>316, 69</value>
   </data>
   <data name="cancelButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
   </data>
   <data name="cancelButton.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="cancelButton.Text" xml:space="preserve">
     <value>Cancel</value>
@@ -213,52 +213,27 @@
     <value>cancelButton</value>
   </data>
   <data name="&gt;&gt;cancelButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;cancelButton.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="&gt;&gt;cancelButton.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="noButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="noButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>320, 69</value>
-  </data>
-  <data name="noButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <data name="noButton.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="noButton.Text" xml:space="preserve">
-    <value>&amp;No</value>
-  </data>
-  <data name="&gt;&gt;noButton.Name" xml:space="preserve">
-    <value>noButton</value>
-  </data>
-  <data name="&gt;&gt;noButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;noButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;noButton.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>487, 105</value>
+    <value>402, 105</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Microsoft Visual Studio</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>FileOverwriteDialog</value>
+    <value>DontShowAgainDialog</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

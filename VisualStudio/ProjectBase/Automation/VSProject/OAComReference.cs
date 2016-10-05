@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -20,7 +17,7 @@ using System.Runtime.InteropServices;
 namespace Microsoft.VisualStudio.Project.Automation
 {
     [SuppressMessage("Microsoft.Interoperability", "CA1405:ComVisibleTypeBaseTypesShouldBeComVisible")]
-    [ComVisible(true)]
+    [CLSCompliant(false), ComVisible(true)]
     public class OAComReference : OAReferenceBase<ComReferenceNode>
     {
         internal OAComReference(ComReferenceNode comReference) :
@@ -54,7 +51,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0}\\{1}", BaseReferenceNode.TypeGuid.ToString("B"), this.Version);
+                return String.Format(CultureInfo.InvariantCulture, "{0}\\{1}", BaseReferenceNode.TypeGuid.ToString("B"), this.Version);
             }
         }
         public override int MajorVersion

@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -31,8 +28,8 @@ namespace Microsoft.VisualStudio.Project.Automation
     public class OAProperties : EnvDTE.Properties
     {
         #region fields
-        private NodeProperties target;
-        private Dictionary<string, EnvDTE.Property> properties = new Dictionary<string, EnvDTE.Property>();
+        private NodeProperties _target;
+        private Dictionary<string, EnvDTE.Property> _properties = new Dictionary<string, EnvDTE.Property>();
         #endregion
 
         #region properties
@@ -43,7 +40,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return this.target;
+                return _target;
             }
         }
 
@@ -65,7 +62,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-                return this.properties;
+                return _properties;
             }
         }
         #endregion
@@ -74,14 +71,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public OAProperties(NodeProperties target)
         {
-            System.Diagnostics.Debug.Assert(target != null);
+            Utilities.ArgumentNotNull("target", target);
 
-            if (target == null)
-            {
-                throw new ArgumentNullException("target");
-            }
-
-            this.target = target;
+            this._target = target;
             this.AddPropertiesFromType(target.GetType());
         }
         #endregion
@@ -100,7 +92,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         public int Count
         {
-            get { return properties.Count; }
+            get { return _properties.Count; }
         }
 
         /// <summary>
@@ -112,12 +104,12 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 return UIThread.DoOnUIThread(delegate()
                 {
-                    if (this.target == null || this.target.Node == null || this.target.Node.ProjectMgr == null || this.target.Node.ProjectMgr.IsClosed ||
-                        this.target.Node.ProjectMgr.Site == null)
+                    if (_target == null || _target.Node == null || _target.Node.ProjectMgr == null || _target.Node.ProjectMgr.IsClosed ||
+                        _target.Node.ProjectMgr.Site == null)
                     {
                         throw new InvalidOperationException();
                     }
-                    return this.target.Node.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                    return _target.Node.ProjectMgr.Site.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
                 });
             }
         }
@@ -128,17 +120,17 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <returns>An enumerator. </returns>
         public IEnumerator GetEnumerator()
         {
-            if(this.properties == null)
+            if(_properties == null)
             {
                 yield return null;
             }
 
-            if(this.properties.Count == 0)
+            if(_properties.Count == 0)
             {
                 yield return new OANullProperty(this);
             }
 
-            IEnumerator enumerator = this.properties.Values.GetEnumerator();
+            IEnumerator enumerator = _properties.Values.GetEnumerator();
 
             while(enumerator.MoveNext())
             {
@@ -157,17 +149,17 @@ namespace Microsoft.VisualStudio.Project.Automation
             if(index is string)
             {
                 string indexAsString = (string)index;
-                if(this.properties.ContainsKey(indexAsString))
+                if(_properties.ContainsKey(indexAsString))
                 {
-                    return (EnvDTE.Property)this.properties[indexAsString];
+                    return (EnvDTE.Property)_properties[indexAsString];
                 }
             }
             else if(index is int)
             {
                 int realIndex = (int)index - 1;
-                if(realIndex >= 0 && realIndex < this.properties.Count)
+                if(realIndex >= 0 && realIndex < _properties.Count)
                 {
-                    IEnumerator enumerator = this.properties.Values.GetEnumerator();
+                    IEnumerator enumerator = _properties.Values.GetEnumerator();
 
                     int i = 0;
                     while(enumerator.MoveNext())
@@ -223,12 +215,9 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// <param name="propertyInfo">The property to be associated with an OAProperty object</param>
         protected virtual void AddProperty(PropertyInfo propertyInfo)
         {
-            if (propertyInfo == null)
-            {
-                throw new ArgumentNullException("propertyInfo");
-            }
+            Utilities.ArgumentNotNull("propertyInfo", propertyInfo);
 
-            this.properties.Add(propertyInfo.Name, new OAProperty(this, propertyInfo));
+            _properties.Add(propertyInfo.Name, new OAProperty(this, propertyInfo));
         }
         #endregion
 
@@ -236,7 +225,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         private bool IsInMap(PropertyInfo propertyInfo)
         {
-            return this.properties.ContainsKey(propertyInfo.Name);
+            return _properties.ContainsKey(propertyInfo.Name);
         }
 
         private static bool IsAutomationVisible(PropertyInfo propertyInfo)

@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -21,9 +18,38 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.Build.Evaluation;
+using MSBuildExecution = Microsoft.Build.Execution;
 
 namespace Microsoft.VisualStudio.Project
 {
+    // Abstracts over the most common differences between the Dev9 and Dev10 MSBuild item OM
+    public static class MSBuildItem
+    {
+        public static string GetItemType(MSBuild.ProjectItem item)
+        {
+            return item.ItemType;
+        }
+        public static string GetMetadataValue(MSBuild.ProjectItem item, string name)
+        {
+            return item.GetMetadataValue(name);
+        }
+        public static string GetMetadataValue(MSBuildExecution.ProjectItemInstance item, string name)
+        {
+            return item.GetMetadataValue(name);
+        }
+        public static void SetMetadataValue(MSBuild.ProjectItem item, string name, string value)
+        {
+            item.SetMetadataValue(name, value);
+        }
+        public static string GetEvaluatedInclude(MSBuild.ProjectItem item)
+        {
+            return item.EvaluatedInclude;
+        }
+        public static string GetEvaluatedInclude(MSBuildExecution.ProjectItemInstance item)
+        {
+            return item.EvaluatedInclude;
+        }
+    }
 
     /// <summary>
     /// This class represent a project item (usualy a file) and allow getting and
@@ -38,8 +64,8 @@ namespace Microsoft.VisualStudio.Project
         #region fields
         private MSBuild.ProjectItem item;
         private ProjectNode itemProject;
-        private bool deleted;
-        private bool isVirtual;
+        private bool deleted = false;
+        private bool isVirtual = false;
         private Dictionary<string, string> virtualProperties;
         #endregion
 
@@ -68,6 +94,7 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     this.item.ItemType = value;
+                    this.itemProject.SetProjectFileDirty(true);
                 }
             }
         }
@@ -146,6 +173,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 deleted = true;
                 itemProject.BuildProject.RemoveItem(item);
+                this.itemProject.SetProjectFileDirty(true);
             }
             itemProject = null;
             item = null;
@@ -170,7 +198,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             // Build Action is the type, not a property, so intercept
-            if(String.Equals(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase))
             {
                 item.ItemType = attributeValue;
                 return;
@@ -211,13 +239,13 @@ namespace Microsoft.VisualStudio.Project
             }
 
             // cannot ask MSBuild for Include, so intercept it and return the corresponding property
-            if(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 return item.EvaluatedInclude;
             }
 
             // Build Action is the type, not a property, so intercept this one as well
-            if(String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
+            if (String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 return item.ItemType;
             }
@@ -242,11 +270,11 @@ namespace Microsoft.VisualStudio.Project
             if (this.item != null)
             {
 	            // cannot ask MSBuild for Include, so intercept it and return the corresponding property
-	            if(String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
+	            if (String.Compare(attributeName, ProjectFileConstants.Include, StringComparison.OrdinalIgnoreCase) == 0)
 	                return item.EvaluatedInclude;
 
 	            // Build Action is the type, not a property, so intercept this one as well
-	            if(String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
+	            if (String.Compare(attributeName, ProjectFileConstants.BuildAction, StringComparison.OrdinalIgnoreCase) == 0)
 	                return item.ItemType;
 
 	            return item.GetMetadataValue(attributeName);

@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -27,7 +24,7 @@ namespace Microsoft.VisualStudio.Project.Automation
     /// Represents the automation object for the equivalent ReferenceContainerNode object
     /// </summary>
     [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    [ComVisible(true)]
+    [CLSCompliant(false), ComVisible(true)]
     public class OAReferences : ConnectionPointContainer,
                                 IEventSource<_dispReferencesEvents>,
                                 References,
@@ -73,7 +70,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             foreach(Reference refNode in this)
             {
-                if(0 == string.Compare(refNode.Name, stringIndex, StringComparison.Ordinal))
+                if (0 == String.Compare(refNode.Name, stringIndex, StringComparison.Ordinal))
                 {
                     return refNode;
                 }
@@ -86,8 +83,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public Reference Add(string bstrPath)
         {
-            // ignore requests from the designer which are framework assemblies and start w/ a *.
-            if (string.IsNullOrEmpty(bstrPath) || bstrPath.StartsWith("*"))
+            if (String.IsNullOrEmpty(bstrPath))
             {
                 return null;
             }
@@ -170,7 +166,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public Reference Find(string bstrIdentity)
         {
-            if(string.IsNullOrEmpty(bstrIdentity))
+            if (String.IsNullOrEmpty(bstrIdentity))
             {
                 return null;
             }
@@ -178,7 +174,7 @@ namespace Microsoft.VisualStudio.Project.Automation
             {
                 if(null != refNode)
                 {
-                    if(0 == string.Compare(bstrIdentity, refNode.Identity, StringComparison.Ordinal))
+                    if (0 == String.Compare(bstrIdentity, refNode.Identity, StringComparison.Ordinal))
                     {
                         return refNode;
                     }
@@ -217,10 +213,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public Reference Item(object index)
         {
-            if (_container == null)
-            {
-                throw new ArgumentOutOfRangeException("index");
-            }
+            Utilities.ArgumentNotNull("index", index);
 
             string stringIndex = index as string;
             if(null != stringIndex)
@@ -232,11 +225,11 @@ namespace Microsoft.VisualStudio.Project.Automation
             IList<ReferenceNode> refs = _container.EnumReferences();
             if(null == refs)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException();
             }
             if((intIndex <= 0) || (intIndex > refs.Count))
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException();
             }
             // Let the implementation of IList<> throw in case of index not correct.
             return refs[intIndex - 1].Object as Reference;

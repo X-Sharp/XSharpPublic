@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -230,5 +227,94 @@ namespace Microsoft.VisualStudio.Project
                  Debug.Assert(this.uithread == Thread.CurrentThread);
             }
         }
+        static SynchronizationContext ctxt;
+        static bool isUnitTestingMode = false;
+#if DEBUG
+        static StackTrace scaptureStackTrace; // stack trace when ctxt was captured
+        static Thread suithread;
+#endif
+        public static SynchronizationContext TheSynchronizationContext
+        {
+            get
+            {
+                Debug.Assert(ctxt != null, "Tried to get TheSynchronizationContext before it was captured");
+                return ctxt;
+            }
+        }
+
+
+        [Conditional("DEBUG")]
+        public static void SMustBeCalledFromUIThread()
+        {
+#if DEBUG
+            Debug.Assert(suithread == System.Threading.Thread.CurrentThread || isUnitTestingMode, "This must be called from the GUI thread");
+#endif
+        }
+        public static void CaptureSynchronizationContext()
+        {
+            if (isUnitTestingMode) return;
+#if DEBUG
+            suithread = System.Threading.Thread.CurrentThread;
+#endif
+
+            if (ctxt == null)
+            {
+#if DEBUG
+                // This is a handy place to do this, since the product and all interesting unit tests
+                // must go through this code path.
+                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(delegate (object sender, UnhandledExceptionEventArgs args)
+                {
+                    if (args.IsTerminating)
+                    {
+                        string s = String.Format("An unhandled exception is about to terminate the process.  Exception info:\n{0}", args.ExceptionObject.ToString());
+                        Debug.Assert(false, s);
+                    }
+                });
+                scaptureStackTrace = new StackTrace(true);
+#endif
+                ctxt = new WindowsFormsSynchronizationContext();
+            }
+            else
+            {
+#if DEBUG
+                // Make sure we are always capturing the same thread.
+                Debug.Assert(suithread == Thread.CurrentThread);
+#endif
+            }
+        }
+        public static void SRun(Action a)
+        {
+            if (isUnitTestingMode)
+            {
+                a();
+                return;
+            }
+            Debug.Assert(ctxt != null, "The SynchronizationContext must be captured before calling this method");
+#if DEBUG
+            StackTrace stackTrace = new StackTrace(true);
+#endif
+            ctxt.Post(delegate (object ignore)
+            {
+                try
+                {
+                    Debug.Assert(SynchronizationContext.Current != null, "SynchronizationContext.Post called us back on a thread without a SynchronizationContext");
+                    a();
+                }
+#if DEBUG
+                catch (Exception e)
+                {
+                    // swallow, random exceptions should not kill process
+                    Debug.Assert(false, String.Format("UIThread.Run caught and swallowed exception: {0}\n\noriginally invoked from stack:\n{1}", e.ToString(), stackTrace.ToString()));
+                }
+#else
+				catch (Exception)
+				{
+					// swallow, random exceptions should not kill process
+				}
+#endif
+            }, null);
+
+        }
     }
 }
+

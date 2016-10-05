@@ -1,4 +1,4 @@
-﻿/* ****************************************************************************
+/* ****************************************************************************
  *
  * Copyright (c) Microsoft Corporation.
  *
@@ -30,8 +30,15 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Defines a genric don't show again dilaog.
     /// </summary>
-    internal partial class FileOverwriteDialog : Form
+    internal partial class DontShowAgainDialog : Form
     {
+        #region constants
+        /// <summary>
+        /// Defines the General subkey under VS hive for the CurrentUser.
+        /// </summary>
+        private static string GeneralSubKey = "General";
+        #endregion
+
         #region fields
         /// <summary>
         /// Defines the bitmap to be drawn
@@ -51,19 +58,18 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The value of the don't show again check box
         /// </summary>
-        private bool applyToAllValue;
+        private bool dontShowAgainValue;
         #endregion
 
-        #region constructors
+        #region constructors  
         /// <summary>
         /// Overloaded constructor
         /// </summary>
         /// <param name="serviceProvider">The associated service provider.</param>
         /// <param name="messageText">Thetext to be shown on the dialog</param>
-        /// <param name="title">The title of the dialog</param>
         /// <param name="helpTopic">The associated help topic</param>
         /// <param name="button">The default button</param>
-        internal FileOverwriteDialog(IServiceProvider serviceProvider, string messageText, string title, string helpTopic, DefaultButton button)
+        internal DontShowAgainDialog(IServiceProvider serviceProvider, string messageText, string helpTopic, DefaultButton button)
         {
             if (serviceProvider == null)
             {
@@ -73,16 +79,16 @@ namespace Microsoft.VisualStudio.Project
             this.serviceProvider = serviceProvider;
             this.InitializeComponent();
 
-            if (button == DefaultButton.Yes)
+            if (button == DefaultButton.OK)
             {
-                this.AcceptButton = this.yesButton;
+                this.AcceptButton = this.okButton;
             }
             else
             {
                 this.AcceptButton = this.cancelButton;
             }
 
-            this.Text = title;
+
             this.SetupComponents(messageText, helpTopic);
         }
         #endregion
@@ -91,11 +97,11 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The value of the dont' show again checkbox before the dialog is closed.
         /// </summary>
-        internal bool ApplyToAllValue
+        internal bool DontShowAgainValue
         {
             get
             {
-                return this.applyToAllValue;
+                return this.dontShowAgainValue;
             }
         }
         #endregion
@@ -115,26 +121,82 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Launches a FileOverwriteDialog.
+        /// Launches a DontShowAgainDialog if it is needed.
         /// </summary>
         /// <param name="serviceProvider">An associated serviceprovider.</param>
-        /// <param name="messageText">The text the dialog box will contain.</param>
-        /// <param name="title">The title of the dialog.</param>
+        /// <param name="messageText">The text the dilaog box will contain.</param>
         /// <param name="helpTopic">The associated help topic.</param>
         /// <param name="button">The default button.</param>
-        /// <param name="applyAllValue">The value of the apply all checkbox.</param>
+        /// <param name="registryKey">The registry key that serves for persisting the not show again value.</param>
         /// <returns>A Dialog result.</returns>
-        internal static DialogResult LaunchFileOverwriteDialog(IServiceProvider serviceProvider, string messageText, string title, string helpTopic, DefaultButton button, out bool applyAllValue)
+        internal static DialogResult LaunchDontShowAgainDialog(IServiceProvider serviceProvider, string messageText, string helpTopic, DefaultButton button, string registryKey)
         {
-            DialogResult result = DialogResult.Yes;
+            if (String.IsNullOrEmpty(registryKey))
+            {
+                throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "registryKey");
+            }
 
-            FileOverwriteDialog dialog = new FileOverwriteDialog(serviceProvider, messageText, title, helpTopic, button);
-            result = dialog.ShowDialog();
-            applyAllValue = dialog.ApplyToAllValue;
+            DialogResult result = DialogResult.OK;
 
+            bool dontShowAgain = ReadDontShowAgainValue(registryKey);
+            
+            if (!dontShowAgain)
+            {
+                DontShowAgainDialog dialog = new DontShowAgainDialog(serviceProvider, messageText, helpTopic, button);
+                result = dialog.ShowDialog();
+
+                // Now write to the registry the value.
+                if (dialog.DontShowAgainValue)
+                {
+                    WriteDontShowAgainValue(registryKey, 1);
+                }
+            }
+            
             return result;
+        }       
+
+        /// <summary>
+        /// Reads a boolean value specifying whether to show or not show the dialog
+        /// </summary>
+        /// <param name="registryKey">The key containing the value.</param>
+        /// <returns>The value read. If the value cannot be read false is returned.</returns>
+        internal static bool ReadDontShowAgainValue(string registryKey)
+        {
+            bool dontShowAgain = false;
+            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_UserSettings))
+            {
+                if (root != null)
+                {
+                    using (RegistryKey key = root.OpenSubKey(GeneralSubKey))
+                    {
+                        int value = (int)key.GetValue(registryKey, 0);
+                        dontShowAgain = (value != 0);
+                    }
+                }
+            }
+
+            return dontShowAgain;
         }
 
+        /// <summary>
+        /// Writes a value 1 in the registrykey and as aresult the dont show again dialog will not be launched.
+        /// </summary>
+        /// <param name="registryKey">The key to write to.</param>
+        /// <param name="value">The value to write.</param>
+        internal static void WriteDontShowAgainValue(string registryKey, int value)
+        {
+            using (RegistryKey root = VSRegistry.RegistryRoot(__VsLocalRegistryType.RegType_UserSettings))
+            {
+                if (root != null)
+                {
+                    using (RegistryKey key = root.OpenSubKey(GeneralSubKey, true))
+                    {
+                        key.SetValue(registryKey, value, RegistryValueKind.DWord);
+                    }
+                }
+            }
+        }
+        
         /// <summary>
         /// Shows the dialog if possible hosted by the IUIService.
         /// </summary>
@@ -204,15 +266,15 @@ namespace Microsoft.VisualStudio.Project
             // Compute the Distance to the bottom of the dialog 
             int distanceToBottom = this.Size.Height - this.cancelButton.Location.Y;
 
-            // The height of the messageText before it assigned its value.
-            int oldHeight = this.messageText.Size.Height;
+            // The Y end coordinate of the messageText before it assigned its value.
+            int deltaY = this.messageText.Location.Y + this.messageText.Size.Height;
 
             // Set the maximum size as the CancelButtonEndX - MessageTextStartX. This way it wil never pass by the button.
             this.messageText.MaximumSize = new Size(this.cancelButton.Location.X + this.cancelButton.Size.Width - this.messageText.Location.X, 0);
             this.messageText.Text = messageTextParam;
 
             // How much it has changed?
-            int deltaY = this.messageText.Size.Height - oldHeight;
+            deltaY = this.messageText.Size.Height - deltaY;
             this.AdjustSizesVertically(deltaY, distanceToBottom);
 
             if (String.IsNullOrEmpty(helpTopicParam))
@@ -236,35 +298,23 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Handles the cancel button clicked event.
         /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event args associated to the event.</param>
+        /// <param name="sender">The sender of teh event.</param>
+        /// <param name="e">The event args associated to teh event.</param>
         private void OnCancelButtonClicked(object sender, EventArgs e)
         {
-            this.applyToAllValue = this.applyToAll.Checked;
+            this.dontShowAgainValue = this.dontShowAgain.Checked;
             this.DialogResult = DialogResult.Cancel;
         }
 
         /// <summary>
-        /// Handles the no button clicked event.
+        /// Handles the cancel button clicked event.
         /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event args associated to the event.</param>
-        private void OnNoButtonClicked(object sender, EventArgs e)
+        /// <param name="sender">The sender of teh event.</param>
+        /// <param name="e">The event args associated to teh event.</param>
+        private void OnOKButtonClicked(object sender, EventArgs e)
         {
-            this.applyToAllValue = this.applyToAll.Checked;
-            this.DialogResult = DialogResult.No;
-            this.Close();
-        }
-
-        /// <summary>
-        /// Handles the yes button clicked event.
-        /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event args associated to the event.</param>
-        private void OnYesButtonClicked(object sender, EventArgs e)
-        {
-            this.applyToAllValue = this.applyToAll.Checked;
-            this.DialogResult = DialogResult.Yes;
+            this.dontShowAgainValue = this.dontShowAgain.Checked;
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
@@ -274,17 +324,14 @@ namespace Microsoft.VisualStudio.Project
         private void AdjustSizesVertically(int deltaY, int distanceToBottom)
         {
             // Move the checkbox to its new location determined by the height the label.
-            this.applyToAll.Location = new Point(this.applyToAll.Location.X, this.applyToAll.Location.Y + deltaY);
+            this.dontShowAgain.Location = new Point(this.dontShowAgain.Location.X, this.dontShowAgain.Location.Y + deltaY);
 
             // Move the buttons to their new location; The X coordinate is fixed.
             int newSizeY = this.cancelButton.Location.Y + deltaY;
             this.cancelButton.Location = new Point(this.cancelButton.Location.X, newSizeY);
 
-            newSizeY = this.yesButton.Location.Y + deltaY;
-            this.yesButton.Location = new Point(this.yesButton.Location.X, newSizeY);
-
-            newSizeY = this.noButton.Location.Y + deltaY;
-            this.noButton.Location = new Point(this.noButton.Location.X, newSizeY);
+            newSizeY = this.okButton.Location.Y + deltaY;
+            this.okButton.Location = new Point(this.okButton.Location.X, newSizeY);
 
             // Now resize the dialog itself.
             this.Size = new Size(this.Size.Width, this.cancelButton.Location.Y + distanceToBottom);
@@ -297,10 +344,9 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         internal enum DefaultButton
         {
-            Yes,
-            No,
-            Cancel
+            OK,
+            Cancel,
         }
-        #endregion
+        #endregion                                      
     }
 }

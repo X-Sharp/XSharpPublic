@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -164,7 +161,7 @@ namespace Microsoft.VisualStudio.Project
                 if (nestedProject != null)
                 {
                     string document;
-                    ErrorHandler.ThrowOnFailure(nestedProject.GetMkDocument(VSConstants.VSITEMID_ROOT, out document));
+                    nestedProject.GetMkDocument(VSConstants.VSITEMID_ROOT, out document);
                     this.RenameNestedProjectInParentProject(Path.GetFileNameWithoutExtension(document));
 
                     // We need to redraw the caption since for some reason, by intervining to the OnChanged event the Caption is not updated.
@@ -303,7 +300,7 @@ namespace Microsoft.VisualStudio.Project
 
                 IVsUIShell uiShell = this.GetService(typeof(SVsUIShell)) as IVsUIShell;
                 string newName;
-                ErrorHandler.ThrowOnFailure(uiShell.SaveDocDataToFile(dwSave, persistFileFormat, silentSaveAsName, out newName, out pfCancelled));
+                uiShell.SaveDocDataToFile(dwSave, persistFileFormat, silentSaveAsName, out newName, out pfCancelled);
 
                 // When supported do a rename of the nested project here
             }
@@ -571,20 +568,20 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="projectName">The name of the project.</param>
         /// <param name="createFlags">The nested project creation flags </param>
         /// <remarks>This methos should be called just after a NestedProjectNode object is created.</remarks>
-        public virtual void Init(string fileName, string destination, string projectName, __VSCREATEPROJFLAGS createFlags)
+        public virtual void Init(string fileNameParam, string destinationParam, string projectNameParam, __VSCREATEPROJFLAGS createFlags)
         {
-            if (String.IsNullOrEmpty(fileName))
+            if (String.IsNullOrEmpty(fileNameParam))
             {
-                throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "fileName");
+                throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "fileNameParam");
             }
 
-            if (String.IsNullOrEmpty(destination))
+            if (String.IsNullOrEmpty(destinationParam))
             {
-                throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "destination");
+                throw new ArgumentException(SR.GetString(SR.ParameterCannotBeNullOrEmpty, CultureInfo.CurrentUICulture), "destinationParam");
             }
 
-            this.projectName = Path.GetFileName(fileName);
-            this.projectPath = Path.Combine(destination, this.projectName);
+            this.projectName = Path.GetFileName(fileNameParam);
+            this.projectPath = Path.Combine(destinationParam, this.projectName);
 
             // get the IVsSolution interface from the global service provider
             IVsSolution solution = this.GetService(typeof(IVsSolution)) as IVsSolution;
@@ -604,7 +601,7 @@ namespace Microsoft.VisualStudio.Project
 
             // Get the project factory.
             IVsProjectFactory projectFactory;
-            ErrorHandler.ThrowOnFailure(solution.GetProjectFactory((uint)0, new Guid[] { projectFactoryGuid }, fileName, out projectFactory));
+            ErrorHandler.ThrowOnFailure(solution.GetProjectFactory((uint)0, new Guid[] { projectFactoryGuid }, fileNameParam, out projectFactory));
 
             this.CreateProjectDirectory();
 
@@ -615,7 +612,7 @@ namespace Microsoft.VisualStudio.Project
 
             try
             {
-                ErrorHandler.ThrowOnFailure(projectFactory.CreateProject(fileName, destination, projectName, (uint)createFlags, ref refiid, out projectPtr, out cancelled));
+                ErrorHandler.ThrowOnFailure(projectFactory.CreateProject(fileNameParam, destinationParam, projectNameParam, (uint)createFlags, ref refiid, out projectPtr, out cancelled));
 
                 if (projectPtr != IntPtr.Zero)
                 {
@@ -772,7 +769,7 @@ namespace Microsoft.VisualStudio.Project
                     // get inptr for hierarchy
                     projectPtr = Marshal.GetIUnknownForObject(this.nestedHierarchy);
                     Debug.Assert(projectPtr != IntPtr.Zero, " Project pointer for the nested hierarchy has not been initialized");
-                    ErrorHandler.ThrowOnFailure(rdt.RegisterAndLockDocument((uint)flags, this.projectPath, this.ProjectMgr.InteropSafeIVsHierarchy, this.ID, projectPtr, out docCookie));
+                    ErrorHandler.ThrowOnFailure(rdt.RegisterAndLockDocument((uint)flags, this.projectPath, this.ProjectMgr, this.ID, projectPtr, out docCookie));
 
                     this.DocCookie = docCookie;
                     Debug.Assert(this.DocCookie != (uint)ShellConstants.VSDOCCOOKIE_NIL, "Invalid cookie when registering document in the running document table.");
@@ -947,13 +944,14 @@ namespace Microsoft.VisualStudio.Project
             {
                 instanceGuid = Guid.NewGuid();
                 this.ItemNode.SetMetadata(ProjectFileConstants.InstanceGuid, instanceGuid.ToString("B"));
-                ErrorHandler.ThrowOnFailure(this.nestedHierarchy.SetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, ref instanceGuid));
+                this.nestedHierarchy.SetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, ref instanceGuid);
+
             }
             else
             {
                 // Get a guid from the nested hiererachy.
                 Guid nestedHiererachyInstanceGuid;
-                ErrorHandler.ThrowOnFailure(this.nestedHierarchy.GetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out nestedHiererachyInstanceGuid));
+                this.nestedHierarchy.GetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, out nestedHiererachyInstanceGuid);
 
                 // Get instance guid from the project file. If it does not exist then we create one.
                 string instanceGuidAsString = this.ItemNode.GetMetadata(ProjectFileConstants.InstanceGuid);
@@ -971,7 +969,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     instanceGuid = new Guid(instanceGuidAsString);
 
-                    ErrorHandler.ThrowOnFailure(this.nestedHierarchy.SetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, ref instanceGuid));
+                    this.nestedHierarchy.SetGuidProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectIDGuid, ref instanceGuid);
                 }
                 else if (nestedHiererachyInstanceGuid != Guid.Empty)
                 {
@@ -1011,7 +1009,7 @@ namespace Microsoft.VisualStudio.Project
                 imageHandler = new ImageHandler();
             }
             object imageListAsPointer = null;
-            ErrorHandler.ThrowOnFailure(this.nestedHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_IconImgList, out imageListAsPointer));
+            this.nestedHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_IconImgList, out imageListAsPointer);
             if (imageListAsPointer != null)
             {
                 this.imageHandler.ImageList = Utilities.GetImageList(imageListAsPointer);

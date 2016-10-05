@@ -86,7 +86,7 @@ namespace XSharp.Project
             //}
             //else 
             //   return base.Url;
-            string result = this.ProjectMgr.CurrentConfig.GetPropertyValue("IntermediateOutputPath") + this.wrapperFileName;
+            string result = this.ProjectMgr.ProjectInstance.GetPropertyValue("IntermediateOutputPath") + this.wrapperFileName;
 
             result = Path.Combine(this.ProjectMgr.ProjectFolder, result);
             return result;

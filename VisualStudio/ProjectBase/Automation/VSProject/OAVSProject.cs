@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -44,6 +41,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual ProjectItem AddWebReference(string bstrUrl)
         {
+			Debug.Fail("VSProject.AddWebReference not implemented");
             throw new NotImplementedException();
         }
 
@@ -57,11 +55,13 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void CopyProject(string bstrDestFolder, string bstrDestUNCPath, prjCopyProjectOption copyProjectOption, string bstrUsername, string bstrPassword)
         {
+			Debug.Fail("VSProject.References not implemented");
             throw new NotImplementedException();
         }
 
         public virtual ProjectItem CreateWebReferencesFolder()
         {
+			Debug.Fail("VSProject.CreateWebReferencesFolder not implemented");
             throw new NotImplementedException();
         }
 
@@ -85,24 +85,28 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void Exec(prjExecCommand command, int bSuppressUI, object varIn, out object pVarOut)
         {
+			Debug.Fail("VSProject.Exec not implemented");
             throw new NotImplementedException(); ;
         }
 
         public virtual void GenerateKeyPairFiles(string strPublicPrivateFile, string strPublicOnlyFile)
         {
+			Debug.Fail("VSProject.GenerateKeyPairFiles not implemented");
             throw new NotImplementedException(); ;
         }
 
         public virtual string GetUniqueFilename(object pDispatch, string bstrRoot, string bstrDesiredExt)
         {
-            throw new NotImplementedException(); ;
+			Debug.Fail("VSProject.GetUniqueFilename not implemented");
+            throw new NotImplementedException(); 
         }
 
         public virtual Imports Imports
         {
             get
             {
-                throw new NotImplementedException();
+				Debug.Fail("VSProject.Imports not implemented");
+                throw new NotImplementedException(); 
             }
         }
 
@@ -129,6 +133,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
         public virtual void Refresh()
         {
+			Debug.Fail("VSProject.Refresh not implemented");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
@@ -136,6 +141,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+				Debug.Fail("VSProject.TemplatePath not implemented");
                 throw new NotImplementedException();
             }
         }
@@ -145,6 +151,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+				Debug.Fail("VSProject.WebReferencesFolder not implemented");
                 throw new NotImplementedException();
             }
         }
@@ -154,10 +161,12 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+				Debug.Fail("VSProject.WorkOffLine not implemented");
                 throw new NotImplementedException();
             }
             set
             {
+				Debug.Fail("VSProject.Set_WorkOffLine not implemented");
                 throw new NotImplementedException();
             }
         }
@@ -198,6 +207,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
+				Debug.Fail("VSProjectEvents.ImportsEvents not implemented");
                 throw new NotImplementedException();
             }
         }

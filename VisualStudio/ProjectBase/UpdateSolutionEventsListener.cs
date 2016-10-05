@@ -1,50 +1,13 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Diagnostics;
@@ -65,12 +28,12 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The cookie associated to the the events based IVsUpdateSolutionEvents2.
         /// </summary>
-        private uint solutionEvents2Cookie;
+        private uint solutionEvents2Cookie = (uint)ShellConstants.VSCOOKIE_NIL;
 
         /// <summary>
         /// The cookie associated to the theIVsUpdateSolutionEvents3 events.
         /// </summary>
-        private uint solutionEvents3Cookie;
+        private uint solutionEvents3Cookie = (uint)ShellConstants.VSCOOKIE_NIL;
 
         /// <summary>
         /// The IVsSolutionBuildManager2 object controlling the update solution events.
@@ -188,7 +151,7 @@ namespace Microsoft.VisualStudio.Project
         #region IVsUpdateSolutionEvents2 Members
 
         /// <summary>
-        /// Called when the active project configuration for a project in the solution has changed. 
+        /// Called when the active project configuration for a project in the solution has changed.
         /// </summary>
         /// <param name="hierarchy">The project whose configuration has changed.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
@@ -198,7 +161,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called right before a project configuration begins to build. 
+        /// Called right before a project configuration begins to build.
         /// </summary>
         /// <param name="hierarchy">The project that is to be build.</param>
         /// <param name="configProject">A configuration project object.</param>
@@ -213,7 +176,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called right after a project configuration is finished building. 
+        /// Called right after a project configuration is finished building.
         /// </summary>
         /// <param name="hierarchy">The project that has finished building.</param>
         /// <param name="configProject">A configuration project object.</param>
@@ -229,7 +192,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called before any build actions have begun. This is the last chance to cancel the build before any building begins. 
+        /// Called before any build actions have begun. This is the last chance to cancel the build before any building begins.
         /// </summary>
         /// <param name="cancelUpdate">Flag indicating cancel update.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
@@ -239,7 +202,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called when a build is being cancelled. 
+        /// Called when a build is being cancelled.
         /// </summary>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
         public virtual int UpdateSolution_Cancel()
@@ -248,7 +211,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called when a build is completed. 
+        /// Called when a build is completed.
         /// </summary>
         /// <param name="succeeded">true if no update actions failed.</param>
         /// <param name="modified">true if any update action succeeded.</param>
@@ -260,7 +223,7 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <summary>
-        /// Called before the first project configuration is about to be built. 
+        /// Called before the first project configuration is about to be built.
         /// </summary>
         /// <param name="cancelUpdate">A flag indicating cancel update.</param>
         /// <returns>If the method succeeds, it returns S_OK. If it fails, it returns an error code.</returns>
@@ -300,13 +263,13 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if(this.solutionEvents2Cookie != (uint)ShellConstants.VSCOOKIE_NIL)
                     {
-                        ErrorHandler.ThrowOnFailure(this.solutionBuildManager.UnadviseUpdateSolutionEvents(this.solutionEvents2Cookie));
+                        this.solutionBuildManager.UnadviseUpdateSolutionEvents(this.solutionEvents2Cookie);
                         this.solutionEvents2Cookie = (uint)ShellConstants.VSCOOKIE_NIL;
                     }
 
                     if(this.solutionEvents3Cookie != (uint)ShellConstants.VSCOOKIE_NIL)
                     {
-                        ErrorHandler.ThrowOnFailure(this.SolutionBuildManager3.UnadviseUpdateSolutionEvents3(this.solutionEvents3Cookie));
+                        this.SolutionBuildManager3.UnadviseUpdateSolutionEvents3(this.solutionEvents3Cookie);
                         this.solutionEvents3Cookie = (uint)ShellConstants.VSCOOKIE_NIL;
                     }
 

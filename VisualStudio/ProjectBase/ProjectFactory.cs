@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -30,7 +27,7 @@ namespace Microsoft.VisualStudio.Project
     /// Creates projects within the solution
     /// </summary>
     [CLSCompliant(false)]
-    public abstract class ProjectFactory : Microsoft.VisualStudio.Shell.Flavor.FlavoredProjectFactoryBase //, IVsAsynchronousProjectCreate
+    public abstract class ProjectFactory : Microsoft.VisualStudio.Shell.Flavor.FlavoredProjectFactoryBase
     {
         #region fields
         private Microsoft.VisualStudio.Shell.Package package;
@@ -101,36 +98,6 @@ namespace Microsoft.VisualStudio.Project
             // Please be aware that this methods needs that ServiceProvider is valid, thus the ordering of calls in the ctor matters.
             this.buildEngine = Utilities.InitializeMsBuildEngine(this.buildEngine, this.site);
         }
-        #endregion
-
-        #region methods
-
-        public virtual bool CanCreateProjectAsynchronously(ref Guid rguidProjectID, string filename, uint flags)
-        {
-            return true;
-        }
-
-        public void OnBeforeCreateProjectAsync(ref Guid rguidProjectID, string filename, string location, string pszName, uint flags)
-        {
-        }
-
-        public virtual IVsTask CreateProjectAsync(ref Guid rguidProjectID, string filename, string location, string pszName, uint flags)
-        {
-            Guid iid = typeof(IVsHierarchy).GUID;
-            return VsTaskLibraryHelper.CreateAndStartTask(taskSchedulerService.Value, VsTaskRunContext.UIThreadBackgroundPriority, VsTaskLibraryHelper.CreateTaskBody(() =>
-                {
-                    IntPtr project;
-                    int cancelled;
-                    CreateProject(filename, location, pszName, flags, ref iid, out project, out cancelled);
-                    if (cancelled != 0)
-                    {
-                        throw new OperationCanceledException();
-                    }
-
-                    return Marshal.GetObjectForIUnknown(project);
-                }));
-        }
-
         #endregion
 
         #region abstract methods
@@ -239,5 +206,34 @@ namespace Microsoft.VisualStudio.Project
         }
 
         #endregion
+        #region IVsProjectUpgradeViaFactory
+        private string m_lastUpgradedProjectFile;
+        private const string SCC_PROJECT_NAME = "SccProjectName";
+        private string m_sccProjectName;
+        private const string SCC_AUX_PATH = "SccAuxPath";
+        private string m_sccAuxPath;
+        private const string SCC_LOCAL_PATH = "SccLocalPath";
+        private string m_sccLocalPath;
+        private const string SCC_PROVIDER = "SccProvider";
+        private string m_sccProvider;
+        public virtual int GetSccInfo(string projectFileName, out string sccProjectName, out string sccAuxPath, out string sccLocalPath, out string provider)
+        {
+            // we should only be asked for SCC info on a project that we have just upgraded.
+            if (!String.Equals(this.m_lastUpgradedProjectFile, projectFileName, StringComparison.OrdinalIgnoreCase))
+            {
+                sccProjectName = "";
+                sccAuxPath = "";
+                sccLocalPath = "";
+                provider = "";
+                return VSConstants.E_FAIL;
+            }
+            sccProjectName = this.m_sccProjectName;
+            sccAuxPath = this.m_sccAuxPath;
+            sccLocalPath = this.m_sccLocalPath;
+            provider = this.m_sccProvider;
+            return VSConstants.S_OK;
+        }
+
+            #endregion
     }
 }

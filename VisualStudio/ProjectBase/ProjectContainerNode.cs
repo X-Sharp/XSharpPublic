@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -485,7 +482,7 @@ namespace Microsoft.VisualStudio.Project
                 Guid guidProjectAdding = Guid.Empty;
 
                 // In case of a project template an empty guid should be added as the guid parameter. See env\msenv\core\newtree.h IsTrustedTemplate method definition.
-                ErrorHandler.ThrowOnFailure(wizardTrust.OnWizardInitiated(template, ref guidProjectAdding));
+                wizardTrust.OnWizardInitiated(template, ref guidProjectAdding);
             }
 
             try
@@ -501,7 +498,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 if(wizardTrust != null)
                 {
-                    ErrorHandler.ThrowOnFailure(wizardTrust.OnWizardCompleted());
+                    wizardTrust.OnWizardCompleted();
                 }
             }
         }
@@ -739,12 +736,12 @@ namespace Microsoft.VisualStudio.Project
 
 #if DEBUG
                 IVsHierarchy nestedHierarchy;
-                ErrorHandler.ThrowOnFailure(solution.GetProjectOfUniqueName(newNode.GetMkDocument(), out nestedHierarchy));
+                solution.GetProjectOfUniqueName(newNode.GetMkDocument(), out nestedHierarchy);
                 Debug.Assert(nestedHierarchy != null && Utilities.IsSameComObject(nestedHierarchy, newNode.NestedHierarchy), "The nested hierrachy was not reloaded correctly.");
 #endif
                 this.SetProjectFileDirty(isDirty);
 
-                ErrorHandler.ThrowOnFailure(fireSolutionEvents.FireOnAfterLoadProject(newNode.NestedHierarchy));
+                fireSolutionEvents.FireOnAfterLoadProject(newNode.NestedHierarchy);
             }
             finally
             {
@@ -753,7 +750,7 @@ namespace Microsoft.VisualStudio.Project
                 // We should note that we rely here that if the unload fails then exceptions are not digested and are shown to the user.
                 if(newNode == null || newNode.NestedHierarchy == null)
                 {
-                    ErrorHandler.ThrowOnFailure(solution.CloseSolutionElement((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_UnloadProject | (uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_ForceSave, this.InteropSafeIVsHierarchy, 0));
+                    solution.CloseSolutionElement((uint)__VSSLNCLOSEOPTIONS.SLNCLOSEOPT_UnloadProject | (uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_ForceSave, this, 0);
                 }
                 else
                 {

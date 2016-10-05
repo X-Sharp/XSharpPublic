@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -45,6 +42,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         internal OAProject(ProjectNode project)
         {
             this.project = project;
+
         }
         #endregion
 
@@ -192,7 +190,7 @@ namespace Microsoft.VisualStudio.Project.Automation
 
                     // Ask solution for unique name of project
                     string uniqueName = string.Empty;
-                    ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project.InteropSafeIVsHierarchy, out uniqueName));
+                    ErrorHandler.ThrowOnFailure(solution.GetUniqueNameOfProject(this.project , out uniqueName));
                     return uniqueName;
                     });
                 }
@@ -212,7 +210,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         /// </summary>
         /// <param name="name">The name of the extender object.</param>
         /// <returns>An Extender object. </returns>
-        public virtual object get_Extender(string name)
+        public virtual object get_Extender(string ExtenderName)
         {
             return null;
         }
@@ -292,7 +290,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     Utilities.CheckNotNull(extensibility);
 
                     object configurationManagerAsObject;
-                    ErrorHandler.ThrowOnFailure(extensibility.GetConfigMgr(this.project.InteropSafeIVsHierarchy, VSConstants.VSITEMID_ROOT, out configurationManagerAsObject));
+                    ErrorHandler.ThrowOnFailure(extensibility.GetConfigMgr(this.project , VSConstants.VSITEMID_ROOT, out configurationManagerAsObject));
 
                     Utilities.CheckNotNull(configurationManagerAsObject);
                     this.configurationManager = (ConfigurationManager)configurationManagerAsObject;
@@ -392,7 +390,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                 using (AutomationScope scope = new AutomationScope(this.project.Site))
             {
                 // If an empty file name is passed in for Save then make the file name the project name.
-                    if (!isCalledFromSaveAs && string.IsNullOrEmpty(fileName))
+                if (!isCalledFromSaveAs && String.IsNullOrEmpty(fileName))
                 {
                     // Use the solution service to save the project file. Note that we have to use the service
                     // so that all the shell's elements are aware that we are inside a save operation and
@@ -421,7 +419,7 @@ namespace Microsoft.VisualStudio.Project.Automation
                     }
 
                     // Get the IVsHierarchy for the project.
-                    IVsHierarchy prjHierarchy = project.InteropSafeIVsHierarchy;
+                    IVsHierarchy prjHierarchy = project;
 
                     // Now get the solution.
                     IVsSolution solution = this.project.Site.GetService(typeof(SVsSolution)) as IVsSolution;

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 namespace XSharp.Project
@@ -25,19 +25,18 @@ namespace XSharp.Project
 
         private static readonly string[] globalMacroNames =
               {
-                "SolutionDir",
-                "SolutionExt",
-                "SolutionName",
-                "SolutionFileName",
-                "SolutionPath",
+                XSharpProjectFileConstants.DevEnvDir,
+                XSharpProjectFileConstants.SolutionDir,
+                XSharpProjectFileConstants.SolutionExt,
+                XSharpProjectFileConstants.SolutionName,
+                XSharpProjectFileConstants.SolutionFileName,
+                XSharpProjectFileConstants.SolutionPath,
             };
 
         private static readonly string[] macroNames =
               {
-                "Configuration",
                 "ConfigurationName",
                 "OutDir",
-                "Platform",
                 "PlatformName",
                 "ProjectDir",
                 "ProjectExt",
@@ -48,7 +47,9 @@ namespace XSharp.Project
                 "TargetExt",
                 "TargetFileName",
                 "TargetName",
-                "TargetPath"
+                "TargetPath",
+                "TargetPdbName",
+                "TargetPdbPath",
             };
 
         private SortedList<string, string> list = new SortedList<string, string>(macroNames.Length, StringComparer.OrdinalIgnoreCase);
@@ -72,25 +73,38 @@ namespace XSharp.Project
             XSharpBuildMacros.DefineSolutionProperties(project);
             foreach (string globalMacroName in globalMacroNames)
             {
-                string value;
-                if (project.BuildProject.GlobalProperties.TryGetValue(globalMacroName, out value))
-                {
-                    this.list.Add(globalMacroName, value);
-                }
-                else
+                string property = null;
+                project.BuildProject.GlobalProperties.TryGetValue(globalMacroName, out property);
+                if (null == property)
                 {
                     this.list.Add(globalMacroName, "*Undefined*");
                 }
+                else
+                {
+                    this.list.Add(globalMacroName, property);
+                }
             }
             // we need to call GetTargetPath first so that TargetDir and TargetPath are resolved correctly
-            EnvDTE.Project automationObject = project.GetAutomationObject() as EnvDTE.Project;
-            string configName = Microsoft.VisualStudio.Project.Utilities.GetActiveConfigurationName(automationObject);
-            project.Build(configName, "GetTargetPath");
+            ConfigCanonicalName configCanonicalName;
+            if (!Utilities.TryGetActiveConfigurationAndPlatform(project.Site, project, out configCanonicalName))
+            {
+                throw new InvalidOperationException();
+            }
+            BuildResult res = project.Build(configCanonicalName, XSharpProjectFileConstants.MsBuildTarget.GetTargetPath);
 
             // get the ProjectX and TargetX variables
-            foreach (var macroName in macroNames)
+            foreach (string macroName in macroNames)
             {
-                string value = project.GetProjectProperty(macroName);
+                string value;
+                if (res.ProjectInstance != null)
+                {
+                    value = res.ProjectInstance.GetPropertyValue(macroName);
+                }
+                else
+                {
+                    value = project.GetProjectProperty(macroName);
+                }
+
                 this.list.Add(macroName, value);
             }
         }
@@ -147,7 +161,7 @@ namespace XSharp.Project
         /// <returns>An <see cref="IEnumerator&lt;T&gt;"/> object that can be used to iterate through the collection.</returns>
         IEnumerator<MacroNameValuePair> IEnumerable<MacroNameValuePair>.GetEnumerator()
         {
-            foreach (var pair in this.list)
+            foreach (KeyValuePair<string, string> pair in this.list)
             {
                 yield return (MacroNameValuePair)pair;
             }
@@ -169,25 +183,29 @@ namespace XSharp.Project
         /// <param name="project">The project where the properties are defined.</param>
         internal static void DefineSolutionProperties(ProjectNode project)
         {
-            IVsSolution solution = (IVsSolution)project.GetService(typeof(IVsSolution));
+            IVsSolution solution = SupportMethods.GetService<IVsSolution, SVsSolution>(project.Site);
             object solutionPathObj;
             ErrorHandler.ThrowOnFailure(solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionFileName, out solutionPathObj));
             string solutionPath = (string)solutionPathObj;
+            XSharpPackageSettings settings = ((XSharpProjectNode) project).XSharpPackage.Settings;
+            string devEnvDir = SupportMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(settings.DevEnvPath));
 
             string[][] properties = new string[][]
                    {
-                    new string[] { "SolutionPath", solutionPath },
-                    new string[] { "SolutionDir", XSharp.Project.XSharpSettingsPage.AddSlash(Path.GetDirectoryName(solutionPath)) },
-                    new string[] { "SolutionExt", Path.GetExtension(solutionPath) },
-                    new string[] { "SolutionFileName", Path.GetFileName(solutionPath) },
-                    new string[] { "SolutionName", Path.GetFileNameWithoutExtension(solutionPath) },
+                    new string[] { XSharpProjectFileConstants.DevEnvDir, devEnvDir },
+                    new string[] { XSharpProjectFileConstants.SolutionPath, solutionPath },
+                    new string[] { XSharpProjectFileConstants.SolutionDir, SupportMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(solutionPath)) },
+                    new string[] { XSharpProjectFileConstants.SolutionExt, Path.GetExtension(solutionPath) },
+                    new string[] { XSharpProjectFileConstants.SolutionFileName, Path.GetFileName(solutionPath) },
+                    new string[] { XSharpProjectFileConstants.SolutionName, Path.GetFileNameWithoutExtension(solutionPath) },
                    };
 
             foreach (string[] property in properties)
             {
                 string propertyName = property[0];
                 string propertyValue = property[1];
-                project.BuildEngine.SetGlobalProperty(propertyName, propertyValue);
+
+                project.BuildProject.SetGlobalProperty(propertyName, propertyValue);
             }
         }
 

@@ -3,15 +3,11 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -72,19 +68,19 @@ namespace Microsoft.VisualStudio.Project
                     msBuildPath = (string)vsKey.GetValue("MSBuildBinPath", null);
                 }
             }
-            if(!string.IsNullOrEmpty(msBuildPath))
+			if (!String.IsNullOrEmpty(msBuildPath))
             {
                 return msBuildPath;
             }
 
             // The path to MSBuild was not found in the VisualStudio's registry hive, so try to
             // find it in the new MSBuild hive.
-            string registryPath = string.Format(CultureInfo.InvariantCulture, "Software\\Microsoft\\MSBuild\\ToolsVersions\\{0}", version);
+			string registryPath = String.Format(CultureInfo.InvariantCulture, "Software\\Microsoft\\MSBuild\\ToolsVersions\\{0}", version);
             using(Microsoft.Win32.RegistryKey msbuildKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(registryPath, false))
             {
                 msBuildPath = (string)msbuildKey.GetValue("MSBuildToolsPath", null);
             }
-            if(string.IsNullOrEmpty(msBuildPath))
+			if (String.IsNullOrEmpty(msBuildPath))
             {
                 string error = SR.GetString(SR.ErrorMsBuildRegistration, CultureInfo.CurrentUICulture);
                 throw new FileLoadException(error);
@@ -440,6 +436,39 @@ namespace Microsoft.VisualStudio.Project
 
         }
 
+		/// <summary>
+		/// Gets the active platform name.
+		/// </summary>
+		/// <param name="automationObject">The automation object.</param>
+		/// <returns>The name of the active platform.</returns>
+		internal static string GetActivePlatformName(EnvDTE.Project automationObject)
+		{
+			if (automationObject == null)
+			{
+				throw new ArgumentNullException("automationObject");
+			}
+
+			string currentPlatformName = string.Empty;
+			if (automationObject.ConfigurationManager != null)
+			{
+                try
+                {
+
+					EnvDTE.Configuration activeConfig = automationObject.ConfigurationManager.ActiveConfiguration;
+					if (activeConfig != null)
+					{
+						currentPlatformName = activeConfig.PlatformName;
+					}
+                }
+                catch (COMException ex)
+                {
+                    Debug.WriteLine("Failed to get active platform because of {0}", ex);
+                }
+			}
+
+			return currentPlatformName;
+		}
+
 
         /// <summary>
         /// Verifies that two objects represent the same instance of a COM object.
@@ -687,6 +716,79 @@ namespace Microsoft.VisualStudio.Project
             return convertToType;
         }
 
+		/// <summary>
+		/// Get the default global properties for a new project instance.
+		/// </summary>
+		/// <param name="provider">The service provider.</param>
+		/// <returns></returns>
+		private static IDictionary<string, string> GetProjectDefaultGlobalProperties(IServiceProvider provider)
+		{
+			Dictionary<string, string> properties = new Dictionary<string, string>();
+			string solutionDirectory = null;
+			string solutionFile = null;
+			string userOptionsFile = null;
+			string installDir = null;
+
+			if (provider != null)
+			{
+				IVsSolution solution = provider.GetService(typeof(SVsSolution)) as IVsSolution;
+				if (solution != null)
+				{
+					// We do not want to throw. If we cannot set the solution related constants we set them to empty string.
+					solution.GetSolutionInfo(out solutionDirectory, out solutionFile, out userOptionsFile);
+				}
+
+				// DevEnvDir property
+				IVsShell shell = provider.GetService(typeof(SVsShell)) as IVsShell;
+				if (shell != null)
+				{
+					object installDirAsObject = null;
+					// We do not want to throw. If we cannot set the solution related constants we set them to empty string.
+					shell.GetProperty((int)__VSSPROPID.VSSPROPID_InstallDirectory, out installDirAsObject);
+					installDir = ((string)installDirAsObject);
+				}
+			}
+
+			if (solutionDirectory == null)
+			{
+				solutionDirectory = String.Empty;
+			}
+
+			if (solutionFile == null)
+			{
+				solutionFile = String.Empty;
+			}
+
+			string solutionFileName = (solutionFile.Length == 0) ? String.Empty : Path.GetFileName(solutionFile);
+			string solutionName = (solutionFile.Length == 0) ? String.Empty : Path.GetFileNameWithoutExtension(solutionFile);
+			string solutionExtension = (solutionFile.Length == 0 || !Path.HasExtension(solutionFile)) ? String.Empty : Path.GetExtension(solutionFile);
+
+			properties.Add(GlobalProperty.SolutionDir.ToString(), solutionDirectory);
+			properties.Add(GlobalProperty.SolutionPath.ToString(), solutionFile);
+			properties.Add(GlobalProperty.SolutionFileName.ToString(), solutionFileName);
+			properties.Add(GlobalProperty.SolutionName.ToString(), solutionName);
+			properties.Add(GlobalProperty.SolutionExt.ToString(), solutionExtension);
+
+			// Other misc properties
+			properties.Add(GlobalProperty.BuildingInsideVisualStudio.ToString(), "true");
+
+			if (String.IsNullOrEmpty(installDir))
+			{
+				installDir = String.Empty;
+			}
+			else
+			{
+				// Ensure that we have traimnling backslash as this is done for the langproj macros too.
+				if (installDir[installDir.Length - 1] != Path.DirectorySeparatorChar)
+				{
+					installDir += Path.DirectorySeparatorChar;
+				}
+			}
+
+			properties.Add(GlobalProperty.DevEnvDir.ToString(), installDir);
+
+			return properties;
+		}
 
         /// <summary>
         /// Initializes the in memory project. Sets BuildEnabled on the project to true.
@@ -986,34 +1088,47 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="configuration">The name of the active configuration.</param>
         /// <param name="platform">The name of the platform.</param>
         /// <returns>true if successfull.</returns>
-        internal static bool TryGetActiveConfigurationAndPlatform(System.IServiceProvider serviceProvider, IVsHierarchy hierarchy, out string configuration, out string platform)
-        {
-            Utilities.ArgumentNotNull("serviceProvider", serviceProvider);
-            Utilities.ArgumentNotNull("hierarchy", hierarchy);
+		/// <summary>
+		/// Retrives the configuration and the platform using the IVsSolutionBuildManager2 interface.
+		/// </summary>
+		/// <param name="serviceProvider">A service provider.</param>
+		/// <param name="hierarchy">The hierrachy whose configuration is requested.</param>
+		/// <param name="configuration">The name of the active configuration.</param>
+		/// <param name="platform">The name of the platform.</param>
+		/// <returns>true if successfull.</returns>
+		internal static bool TryGetActiveConfigurationAndPlatform(System.IServiceProvider serviceProvider, IVsHierarchy hierarchy, out ConfigCanonicalName configCanonicalName)
+		{
+			if (serviceProvider == null)
+			{
+				throw new ArgumentNullException("serviceProvider");
+			}
 
-            configuration = String.Empty;
-            platform = String.Empty;
+			if (hierarchy == null)
+			{
+				throw new ArgumentNullException("hierarchy");
+			}
 
-            IVsSolutionBuildManager2 solutionBuildManager = serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+			IVsSolutionBuildManager2 solutionBuildManager = serviceProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
 
-            if(solutionBuildManager == null)
-            {
-                return false;
-            }
+			if (solutionBuildManager == null)
+			{
+				configCanonicalName = new ConfigCanonicalName();
+				return false;
+			}
 
-            IVsProjectCfg[] activeConfigs = new IVsProjectCfg[1];
-            ErrorHandler.ThrowOnFailure(solutionBuildManager.FindActiveProjectCfg(IntPtr.Zero, IntPtr.Zero, hierarchy, activeConfigs));
+			IVsProjectCfg[] activeConfigs = new IVsProjectCfg[1];
+			ErrorHandler.ThrowOnFailure(solutionBuildManager.FindActiveProjectCfg(IntPtr.Zero, IntPtr.Zero, hierarchy, activeConfigs));
 
-            IVsProjectCfg activeCfg = activeConfigs[0];
+			IVsProjectCfg activeCfg = activeConfigs[0];
 
-            // Can it be that the activeCfg is null?
-            System.Diagnostics.Debug.Assert(activeCfg != null, "Cannot find the active configuration");
+			// Can it be that the activeCfg is null?
+			System.Diagnostics.Debug.Assert(activeCfg != null, "Cannot find the active configuration");
 
-            string canonicalName;
-            ErrorHandler.ThrowOnFailure(activeCfg.get_CanonicalName(out canonicalName));
-
-            return ProjectConfig.TrySplitConfigurationCanonicalName(canonicalName, out configuration, out platform);
-        }
+			string canonicalName;
+			ErrorHandler.ThrowOnFailure(activeCfg.get_CanonicalName(out canonicalName));
+			configCanonicalName = new ConfigCanonicalName(canonicalName);
+			return true;
+		}
 
         /// <summary>
         /// Determines whether the shell is in command line mode.
@@ -1036,5 +1151,27 @@ namespace Microsoft.VisualStudio.Project
 
             return ((bool)isInCommandLineModeAsObject);
         }
-    }
+
+		/// <summary>
+		/// Saves the dialog state in the solution
+		/// </summary>
+		/// <param name="serviceProvider">A reference to a Service Provider.</param>
+		/// <param name="projectLoadSecurityDialogState">The dialog state</param>
+		internal static void SaveDialogStateInSolution(IServiceProvider serviceProvider, _ProjectLoadSecurityDialogState projectLoadSecurityDialogState)
+		{
+			if (serviceProvider == null)
+			{
+				throw new ArgumentNullException("serviceProvider");
+			}
+
+			IVsSolution solution = serviceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+
+			if (solution == null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			ErrorHandler.ThrowOnFailure(solution.SetProperty((int)__VSPROPID2.VSPROPID_ProjectLoadSecurityDialogState, projectLoadSecurityDialogState));
+		}
+	}
 }

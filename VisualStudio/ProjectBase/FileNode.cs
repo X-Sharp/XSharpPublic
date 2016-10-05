@@ -3,24 +3,20 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
 
 using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.IO;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Text;
-using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
@@ -29,12 +25,61 @@ using VsCommands2K = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
 
 namespace Microsoft.VisualStudio.Project
 {
+    internal class Transactional
+    {
+        /// Run 'stepWithEffect' followed by continuation 'k', but if the continuation later fails with
+        /// an exception, undo the original effect by running 'compensatingEffect'.
+        /// Note: if 'compensatingEffect' throws, it masks the original exception.
+        /// Note: This is a monadic bind where the first two arguments comprise M<A>.
+        public static B Try<A, B>(Func<A> stepWithEffect, Action<A> compensatingEffect, Func<A, B> k)
+        {
+            var stepCompleted = false;
+            var allOk = false;
+            A a = default(A);
+            try
+            {
+                a = stepWithEffect();
+                stepCompleted = true;
+                var r = k(a);
+                allOk = true;
+                return r;
+            }
+            finally
+            {
+                if (!allOk && stepCompleted)
+                {
+                    compensatingEffect(a);
+                }
+            }
+        }
+        // if A == void, this is the overload
+        public static B Try<B>(Action stepWithEffect, Action compensatingEffect, Func<B> k)
+        {
+            return Try(
+                () => { stepWithEffect(); return 0; },
+                (int dummy) => { compensatingEffect(); },
+                (int dummy) => { return k(); });
+        }
+        // if A & B are both void, this is the overload
+        public static void Try(Action stepWithEffect, Action compensatingEffect, Action k)
+        {
+            Try(
+                () => { stepWithEffect(); return 0; },
+                (int dummy) => { compensatingEffect(); },
+                (int dummy) => { k(); return 0; });
+        }
+    }
+
     [CLSCompliant(false)]
     [ComVisible(true)]
     public class FileNode : HierarchyNode
     {
-        #region static fiels
+        #region static fields
         private static Dictionary<string, int> extensionIcons;
+        #endregion
+
+        #region fields
+        private bool filePreviouslyUnavailable = false;
         #endregion
 
         #region overriden Properties
@@ -70,7 +115,7 @@ namespace Microsoft.VisualStudio.Project
                 //Check for known extensions
                 int imageIndex;
                 string extension = System.IO.Path.GetExtension(this.FileName);
-                if((string.IsNullOrEmpty(extension)) || (!extensionIcons.TryGetValue(extension, out imageIndex)))
+                if ((String.IsNullOrEmpty(extension)) || (!extensionIcons.TryGetValue(extension, out imageIndex)))
                 {
                     // Missing or unknown extension; let the base class handle this case.
                     if (IsDependent)
@@ -142,6 +187,17 @@ namespace Microsoft.VisualStudio.Project
             set
             {
                 isDependent = value;
+            }
+        }
+        public bool FilePreviouslyUnavailable
+        {
+            get
+            {
+                return filePreviouslyUnavailable;
+            }
+            set
+            {
+                filePreviouslyUnavailable = value;
             }
         }
 
@@ -223,8 +279,7 @@ namespace Microsoft.VisualStudio.Project
             }
             else if (this.IsLink)
             {
-                //Todo
-                return new FileNodeProperties(this);
+                return new LinkedFileNodeProperties(this);
             }
             else
             {
@@ -281,7 +336,7 @@ namespace Microsoft.VisualStudio.Project
 
             return new Automation.OAFileItem(this.ProjectMgr.GetAutomationObject() as Automation.OAProject, this);
         }
-		//RvdH Prevent dragging Dependent File Nodes
+		// Prevent dragging Dependent File Nodes
         /// <summary>
         /// Dependent FileNodes node cannot be dragged.
         /// </summary>
@@ -400,7 +455,7 @@ namespace Microsoft.VisualStudio.Project
 
         public override string GetMkDocument()
         {
-            Debug.Assert(this.Url != null, "No url sepcified for this node");
+            Debug.Assert(this.Url != null, "No url specified for this node");
 
             return this.Url;
         }
@@ -481,7 +536,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 // Just re-throw the exception so we don't get duplicate message boxes.
                 Trace.WriteLine("Exception : " + e.Message);
-               this.RecoverFromRenameFailure(newName, oldrelPath, oldLinkPath);
+               	this.RecoverFromRenameFailure(newName, oldrelPath, oldLinkPath);
                 returnValue = Marshal.GetHRForException(e);
                 throw;
             }
@@ -622,7 +677,6 @@ namespace Microsoft.VisualStudio.Project
                     {
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
 					}
-                    result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                     return VSConstants.S_OK;
                 }
                 if((VsCommands2K)cmd == VsCommands2K.RUNCUSTOMTOOL)
@@ -850,9 +904,9 @@ namespace Microsoft.VisualStudio.Project
 		{
             bool bDependantItem = false;
 			string oldLinkPath = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
-			if (String.Compare(oldFileName, newFileName, StringComparison.Ordinal) == 0 &&
+            if (String.Equals(oldFileName, newFileName, StringComparison.Ordinal) &&
 				((String.IsNullOrEmpty(oldLinkPath) && String.IsNullOrEmpty(linkPath)) ||
-				String.Compare(oldLinkPath, linkPath, StringComparison.Ordinal) == 0))
+                String.Equals(oldLinkPath, linkPath, StringComparison.Ordinal)))
             {
                 // We do not want to rename the same file
                 return null;
@@ -910,7 +964,7 @@ namespace Microsoft.VisualStudio.Project
 			{
 	            if (uiWindow != null)
 	            {
-	                ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr.InteropSafeIVsUIHierarchy, this.ID, EXPANDFLAGS.EXPF_SelectItem));
+	                ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem));
 	            }
 			}
             //Update FirstChild
@@ -972,6 +1026,7 @@ namespace Microsoft.VisualStudio.Project
             if(this.ItemNode != null && !String.IsNullOrEmpty(originalFileName))
             {
                 this.ItemNode.Rename(originalFileName);
+                this.ItemNode.RefreshProperties();
                 this.ItemNode.SetMetadata(ProjectFileConstants.Link, String.IsNullOrEmpty( originalLinkPath ) ? null : originalLinkPath);
             }
         }
@@ -1040,6 +1095,18 @@ namespace Microsoft.VisualStudio.Project
         /// returns FALSE if the doc can not be renamed
         internal bool RenameDocument(string oldName, string newName)
         {
+            HierarchyNode newNode;
+            return RenameDocument(oldName, newName, out newNode);
+        }
+        /// <summary>
+        /// Get's called to rename the eventually running document this hierarchyitem points to
+        /// </summary>
+        /// returns FALSE if the doc can not be renamed
+        internal bool RenameDocument(string oldName, string newName, out HierarchyNode newNodeOut)
+        {
+            HierarchyNode newNode = null;
+            newNodeOut = null;
+
             IVsRunningDocumentTable pRDT = this.GetService(typeof(IVsRunningDocumentTable)) as IVsRunningDocumentTable;
             if (pRDT == null)
                 return false;
@@ -1048,13 +1115,8 @@ namespace Microsoft.VisualStudio.Project
             uint itemId;
             uint uiVsDocCookie;
 
-            SuspendFileChanges sfc = null;
-
-            if (File.Exists(oldName))
-			{
-                sfc = new SuspendFileChanges(this.ProjectMgr.Site, oldName);
-                sfc.Suspend();
-            }
+            SuspendFileChanges sfc = new SuspendFileChanges(this.ProjectMgr.Site, newName);
+            sfc.Suspend();
 
             try
             {
@@ -1067,12 +1129,10 @@ namespace Microsoft.VisualStudio.Project
                 //    The problem is that the item at the "add" time is only partly added to the project, since the msbuild part has not yet been copied over as mentioned in part 2 of the last step of the rename process.
                 //    The result is that the project re-evaluates itself wrongly.
                 VSRENAMEFILEFLAGS renameflag = VSRENAMEFILEFLAGS.VSRENAMEFILEFLAGS_NoFlags;
-                try
-                {
                     this.ProjectMgr.SuspendMSBuild();
                     ErrorHandler.ThrowOnFailure(pRDT.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, oldName, out pIVsHierarchy, out itemId, out docData, out uiVsDocCookie));
 
-                    if(pIVsHierarchy != null && !Utilities.IsSameComObject(pIVsHierarchy, this.ProjectMgr.InteropSafeIVsHierarchy))
+                    if(pIVsHierarchy != null && !Utilities.IsSameComObject(pIVsHierarchy, this.ProjectMgr))
                     {
                         // Don't rename it if it wasn't opened by us.
                         return false;
@@ -1085,47 +1145,64 @@ namespace Microsoft.VisualStudio.Project
                     }
                     // Allow the user to "fix" the project by renaming the item in the hierarchy
                     // to the real name of the file on disk.
-                    if(IsFileOnDisk(oldName) || !IsFileOnDisk(newName))
+                bool shouldRenameInStorage = IsFileOnDisk(oldName) || !IsFileOnDisk(newName);
+                Transactional.Try(
+                    // Action
+                    () => { if (shouldRenameInStorage) RenameInStorage(oldName, newName); },
+                    // Compensation
+                    () => { if (shouldRenameInStorage) RenameInStorage(newName, oldName); },
+                    // Continuation
+                    () =>
                     {
-                        RenameInStorage(oldName, newName);
-                    }
+                        string oldFileName = Path.GetFileName(oldName);
+                        string newFileName = Path.GetFileName(newName);
+                        string oldCaption = this.Caption;
+                        Transactional.Try(
+                            // Action
+                            () => DocumentManager.UpdateCaption(this.ProjectMgr.Site, newFileName, docData),
+                            // Compensation
+                            () => DocumentManager.UpdateCaption(this.ProjectMgr.Site, newFileName, docData),
+                            // Continuation
+                            () =>
+                            {
+                                // Only do a case only change if the casing of the filename
+                                // is all that changed.
+                                // If the casing of anything in the middle of the path
+                                // changed (for example, the folder this file is in has
+                                // been renamed), we need to go through the full rename
+                                // process and recreate the node so that the new directory
+                                // name saves in the project file correctly.
+                                bool caseOnlyChange = NativeMethods.IsSamePath(oldName, newName) && !String.Equals(oldFileName, newFileName);
+                                if (!caseOnlyChange)
+                                {
+                                    // Check out the project file if necessary.
+                                    if (!this.ProjectMgr.QueryEditProjectFile(false))
+                                    {
+                                        throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
+                                    }
 
-                    string newFileName = Path.GetFileName(newName);
-                    DocumentManager.UpdateCaption(this.ProjectMgr.Site, newFileName, docData);
-                    bool caseOnlyChange = NativeMethods.IsSamePath(oldName, newName);
-                    if(!caseOnlyChange)
-                    {
-                        // Check out the project file if necessary.
-                        if(!this.ProjectMgr.QueryEditProjectFile(false))
-                        {
-                            throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
-                        }
-
-                        string linkPath = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
-                        this.RenameFileNode(oldName, newName, linkPath, this.Parent.ID);
-                    }
-                    else
-                    {
-                        this.RenameCaseOnlyChange(newFileName);
-                    }
-                }
-                finally
-                {
-                    this.ProjectMgr.ResumeMSBuild(this.ProjectMgr.ReEvaluateProjectFileTargetName);
-                }
-
-                this.ProjectMgr.Tracker.OnItemRenamed(oldName, newName, renameflag);
+                                    string linkPath = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
+                                    newNode = this.RenameFileNode(oldName, newName, linkPath, this.Parent.ID);
+                                }
+                                else
+                                {
+                                    this.RenameCaseOnlyChange(newFileName);
+                                    newNode = this;
+                                }
+                                this.ProjectMgr.ResumeMSBuild(this.ProjectMgr.ReEvaluateProjectFileTargetName);
+                                this.ProjectMgr.Tracker.OnItemRenamed(oldName, newName, renameflag);
+                            });
+                    });
             }
             finally
             {
-                if (sfc != null)
-				{
-                    sfc.Resume();
-                }
                 if(docData != IntPtr.Zero)
                 {
                     Marshal.Release(docData);
                 }
+                sfc.Resume(); // can throw, e.g. when RenameFileNode failed, but file was renamed on disk and now editor cannot find file
+
+                newNodeOut = newNode;
             }
 
             return true;
@@ -1138,7 +1215,7 @@ namespace Microsoft.VisualStudio.Project
         private void RenameCaseOnlyChange(string newFileName)
         {
             //Update the include for this item.
-            string include = this.ItemNode.Item.EvaluatedInclude;
+            string include = this.ItemNode.Item.UnevaluatedInclude;
             if(String.Compare(include, newFileName, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 this.ItemNode.Item.Xml.Include = newFileName;
@@ -1162,7 +1239,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new InvalidOperationException();
             }
 
-            ErrorHandler.ThrowOnFailure(shell.RefreshPropertyBrowser(0));
+            shell.RefreshPropertyBrowser(0);
 
             //Select the new node in the hierarchy
             IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
@@ -1170,7 +1247,7 @@ namespace Microsoft.VisualStudio.Project
             // Since we are already in solution explorer, it is extremely unlikely that we get a null return.
             if (uiWindow != null)
             {
-                ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr.InteropSafeIVsUIHierarchy, this.ID, EXPANDFLAGS.EXPF_SelectItem));
+            	uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem);
             }
         }
 

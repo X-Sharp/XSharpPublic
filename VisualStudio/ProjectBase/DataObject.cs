@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -148,6 +145,8 @@ namespace Microsoft.VisualStudio.Project
     {
         #region fields
         internal const int DATA_S_SAMEFORMATETC = 0x00040130;
+		internal static readonly int DATA_E_FORMATETC = ForceCast(0x80040064);
+
         EventSinkCollection map;
         ArrayList entries;
         #endregion
@@ -263,22 +262,22 @@ namespace Microsoft.VisualStudio.Project
     internal static class DragDropHelper
     {
 #pragma warning disable 414
-        internal static readonly ushort CF_VSREFPROJECTITEMS;
-        internal static readonly ushort CF_VSSTGPROJECTITEMS;
-        internal static readonly ushort CF_VSPROJECTCLIPDESCRIPTOR;
-		internal static readonly ushort CF_VSREFPROJECTS;
-		internal static readonly ushort CF_VSSTGPROJECTS;
+		internal static readonly ushort CF_VSREFPROJECTS = 0;
+		internal static readonly ushort CF_VSSTGPROJECTS = 0;
+		internal static readonly ushort CF_VSREFPROJECTITEMS = 0;
+		internal static readonly ushort CF_VSSTGPROJECTITEMS = 0;
+		internal static readonly ushort CF_PROJECTCLIPDESCRIPTOR = 0;
+		internal static readonly ushort CF_VSPROJECTCLIPDESCRIPTOR = 0;
 #pragma warning restore 414
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static DragDropHelper()
         {
-            CF_VSREFPROJECTITEMS = (ushort)UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTITEMS");
-            CF_VSSTGPROJECTITEMS = (ushort)UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTITEMS");
-            CF_VSPROJECTCLIPDESCRIPTOR = (ushort)UnsafeNativeMethods.RegisterClipboardFormat("CF_PROJECTCLIPBOARDDESCRIPTOR");
-
-			CF_VSREFPROJECTS = (ushort) UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTS");
-			CF_VSSTGPROJECTS = (ushort) UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTS");
+			CF_VSREFPROJECTS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTS");
+			CF_VSSTGPROJECTS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTS");
+			CF_VSREFPROJECTITEMS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSREFPROJECTITEMS");
+			CF_VSSTGPROJECTITEMS = UnsafeNativeMethods.RegisterClipboardFormat("CF_VSSTGPROJECTITEMS");
+			CF_VSPROJECTCLIPDESCRIPTOR = UnsafeNativeMethods.RegisterClipboardFormat("CF_PROJECTCLIPBOARDDESCRIPTOR");
 
         }
 

@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -50,6 +47,7 @@ namespace Microsoft.VisualStudio.Project
         public const string FinalOutputPath = "FinalOutputPath";
         public const string Project = "Project";
         public const string LinkedIntoProjectAt = "LinkedIntoProjectAt";
+		public const string Link = "Link";
         public const string TypeGuid = "TypeGuid";
         public const string InstanceGuid = "InstanceGuid";
         public const string Private = "Private";
@@ -61,6 +59,7 @@ namespace Microsoft.VisualStudio.Project
         public const string WebReferenceFolder = "WebReferenceFolder";
         public const string Folder = "Folder";
         public const string Content = "Content";
+		public const string None = "None";
         public const string EmbeddedResource = "EmbeddedResource";
         public const string RootNamespace = "RootNamespace";
         public const string OutputType = "OutputType";
@@ -73,11 +72,14 @@ namespace Microsoft.VisualStudio.Project
         public const string Configuration = "Configuration";
         public const string Platform = "Platform";
         public const string AvailablePlatforms = "AvailablePlatforms";
+		public const string AvailableItemName = "AvailableItemName";
         public const string BuildVerbosity = "BuildVerbosity";
         public const string Template = "Template";
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "SubProject")]
         public const string SubProject = "SubProject";
         public const string BuildAction = "BuildAction";
+		public const string CopyToOutputDirectory = "CopyToOutputDirectory";
+		public const string SpecificVersion = "SpecificVersion";
         [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "COM")]
         public const string COMReference = "COMReference";
         public const string Guid = "Guid";
@@ -103,11 +105,18 @@ namespace Microsoft.VisualStudio.Project
         public const string FlavorProperties = "FlavorProperties";
         public const string VisualStudio = "VisualStudio";
         public const string User = "User";
+		public const string StartURL = "StartURL";
+		public const string StartArguments = "StartArguments";
+		public const string StartWorkingDirectory = "StartWorkingDirectory";
+		public const string StartProgram = "StartProgram";
+		public const string StartAction = "StartAction";
+		public const string OutputPath = "OutputPath";
+		public const string OtherFlags = "OtherFlags";
+		public const string PlatformTarget = "PlatformTarget";
+
         public const string ApplicationDefinition = "ApplicationDefinition";
-        public const string Link = "Link";
         public const string Page = "Page";
         public const string Resource = "Resource";
-        public const string None = "None";
         public const string ApplicationIcon = "ApplicationIcon";
         public const string StartupObject = "StartupObject";
         public const string TargetPlatform = "TargetPlatform";
@@ -115,7 +124,10 @@ namespace Microsoft.VisualStudio.Project
         public const string PlatformAware = "PlatformAware";
         public const string AppxPackage = "AppxPackage";
         public const string WindowsAppContainer = "WindowsAppContainer";
-        public const string SpecificVersion = "SpecificVersion";
+		public const string AllProjectOutputGroups = "AllProjectOutputGroups";
+		public const string TargetPath = "TargetPath";
+		public const string TargetDir = "TargetDir";
+		public const string CurrentSolutionConfigurationContents = "CurrentSolutionConfigurationContents";
     }
 
     public static class ProjectFileAttributeValue

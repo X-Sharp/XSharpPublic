@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -21,7 +21,7 @@ using System.IO;
 namespace XSharp.Project
 {
     /// <summary>
-    /// This class extends the FileNode in order to represent a file 
+    /// This class extends the FileNode in order to represent a file
     /// within the hierarchy.
     /// </summary>
     public class XSharpFileNode : FileNode
@@ -38,14 +38,37 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="root">The project node.</param>
         /// <param name="e">The project element node.</param>
-        internal XSharpFileNode(ProjectNode root, ProjectElement e)
-            : base(root, e)
+        internal XSharpFileNode(XSharpProjectNode root, ProjectElement e)
+            : this(root, e, false)
         {
-            //
+        }
+        /// Initializes a new instance of the <see cref="WixFileNode"/> class.
+        /// </summary>
+        /// <param name="root">The root <see cref="WixProjectNode"/> that contains this node.</param>
+        /// <param name="element">The element that contains MSBuild properties.</param>
+        /// <param name="isNonMemberItem">Flag that indicates if the file is not part of the project.</param>
+        public XSharpFileNode(XSharpProjectNode root, ProjectElement element, bool isNonMemberItem)
+            : base(root, element)
+        {
+            this.isNonMemberItem = isNonMemberItem;
             this.UpdateHasDesigner();
             this.UpdateItemType();
+            root.AddURL(this.Url, this);
+
         }
 
+        #endregion
+        #region Dispose Methods
+        protected override void Dispose(bool disposing)
+        {
+            if (this.ProjectMgr is XSharpProjectNode)
+            {
+                XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
+                if (projectNode != null)
+                    projectNode.RemoveURL(this);
+            }
+            base.Dispose(disposing);
+        }
         #endregion
 
         #region Overriden implementation
@@ -108,7 +131,7 @@ namespace XSharp.Project
             }
             //else if (this.IsVOBinary)
             //{
-                
+
             //    properties = new XSharpVOBinaryFileNodeProperties(this);
             //}
             else
@@ -266,7 +289,7 @@ namespace XSharp.Project
             // .cs   .designer.cs, .resx
             // .xsd  .cs, .xsc, .xss, .xsx
             // .resx files (like Resources.resx) seem to be handled differently..
-            // we can hard code a similar table or read it from the registry like C# does. 
+            // we can hard code a similar table or read it from the registry like C# does.
             // CS also defines a 'relationtype'. See the CS Project System source code.
             String path = Path.GetFileName(this.Url);
             int relationIndex = path.IndexOf(".");
@@ -325,8 +348,8 @@ namespace XSharp.Project
         {
             string itemType = GetItemType(this.FileName);
             switch (itemType) {
-                case XSharpConstants.VOBinary:
-                case XSharpConstants.Settings:
+                case XSharpProjectFileConstants.VOBinary:
+                case XSharpProjectFileConstants.Settings:
                 case ProjectFileConstants.Resource:
                 case ProjectFileConstants.Page:
                 case ProjectFileConstants.ApplicationDefinition:
@@ -385,7 +408,7 @@ namespace XSharp.Project
             }
         }
         /// <summary>
-        /// Returns the SubType of an XSharp FileNode. It is 
+        /// Returns the SubType of an XSharp FileNode. It is
         /// </summary>
         public string SubType
         {
@@ -446,7 +469,7 @@ namespace XSharp.Project
             switch (GetFileType(this.Url))
             {
                 case XSharpFileType.SourceCode:
-                    ret = XSharpConstants.ImageListIndex.Source;
+                    ret = XSharpImageListIndex.Source;
                     //
                     if (IsFormSubType)
                     {
@@ -457,19 +480,19 @@ namespace XSharp.Project
                 case XSharpFileType.Header:
                 case XSharpFileType.PreprocessorOutput:
 
-                    ret = XSharpConstants.ImageListIndex.Source;
+                    ret = XSharpImageListIndex.Source;
                     break;
                 case XSharpFileType.VOForm:
-                    ret = XSharpConstants.ImageListIndex.Form;
+                    ret = XSharpImageListIndex.Form;
                     break;
                 case XSharpFileType.VOMenu:
-                    ret = XSharpConstants.ImageListIndex.Menu;
+                    ret = XSharpImageListIndex.Menu;
                     break;
                 case XSharpFileType.VODBServer:
-                    ret = XSharpConstants.ImageListIndex.Server;
+                    ret = XSharpImageListIndex.Server;
                     break;
                 case XSharpFileType.VOFieldSpec:
-                    ret = XSharpConstants.ImageListIndex.FieldSpec;
+                    ret = XSharpImageListIndex.FieldSpec;
                     break;
 
             }
@@ -566,14 +589,14 @@ namespace XSharp.Project
                 case XSharpFileType.SourceCode:
                     return ProjectFileConstants.Compile;
                 case XSharpFileType.NativeResource:
-                    return XSharpConstants.NativeResource;
+                    return XSharpProjectFileConstants.NativeResource;
                 case XSharpFileType.VOForm:
                 case XSharpFileType.VODBServer:
                 case XSharpFileType.VOFieldSpec:
                 case XSharpFileType.VOMenu:
                 case XSharpFileType.VOIndex:
                 case XSharpFileType.VOOrder:
-                    return XSharpConstants.VOBinary;
+                    return XSharpProjectFileConstants.VOBinary;
                 case XSharpFileType.ManagedResource:
                     return ProjectFileConstants.Resource;
                 case XSharpFileType.XAML:

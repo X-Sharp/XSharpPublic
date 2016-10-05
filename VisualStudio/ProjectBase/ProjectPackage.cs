@@ -3,15 +3,11 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -49,6 +45,12 @@ namespace Microsoft.VisualStudio.Project
         }
 
         public abstract string ProductUserContext { get; }
+        #endregion
+
+        #region ctor
+        protected ProjectPackage()
+        {
+        }
 
         #endregion
 
@@ -90,6 +92,41 @@ namespace Microsoft.VisualStudio.Project
 
                 base.Dispose(disposing);
             }
+        }
+
+        /// <summary>
+        /// Called by the base package to load solution options.
+        /// </summary>
+        /// <param name="key">Name of the stream.</param>
+        /// <param name="stream">The stream from ehere the pachage should read user specific options.</param>
+        protected override void OnLoadOptions(string key, Stream stream)
+        {
+            // Check if the .suo file is safe, i.e. created on this computer
+            // This should really go on the Package.cs
+            IVsSolution solution = this.GetService(typeof(SVsSolution)) as IVsSolution;
+
+            if (solution != null)
+            {
+                object valueAsBool;
+                int result = solution.GetProperty((int)__VSPROPID2.VSPROPID_SolutionUserFileCreatedOnThisComputer, out valueAsBool);
+
+                if (ErrorHandler.Failed(result) || !(bool)valueAsBool)
+                {
+                    return;
+                }
+            }
+
+            base.OnLoadOptions(key, stream);
+        }
+
+        /// <summary>
+        /// Called by the base package when the solution save the options
+        /// </summary>
+        /// <param name="key">Name of the stream.</param>
+        /// <param name="stream">The stream from ehere the pachage should read user specific options.</param>
+        protected override void OnSaveOptions(string key, Stream stream)
+        {
+            base.OnSaveOptions(key, stream);
         }
         #endregion
     }

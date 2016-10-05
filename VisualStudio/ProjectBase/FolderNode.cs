@@ -3,15 +3,11 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -115,20 +111,23 @@ namespace Microsoft.VisualStudio.Project
 
             string newPath = Path.Combine(new DirectoryInfo(this.Url).Parent.FullName, label);
 
-            // Verify that No Directory/file already exists with the new name among current children
-            for(HierarchyNode n = Parent.FirstChild; n != null; n = n.NextSibling)
-            {
-                if(n != this && String.Compare(n.Caption, label, StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    return ShowFileOrFolderAlreadExistsErrorMessage(newPath);
-                }
-            }
+			if (!NativeMethods.IsSamePath(this.Url.TrimEnd('\\'), newPath))
+			{
+	            // Verify that No Directory/file already exists with the new name among current children
+	            for(HierarchyNode n = Parent.FirstChild; n != null; n = n.NextSibling)
+	            {
+	                if(n != this && String.Compare(n.Caption, label, StringComparison.OrdinalIgnoreCase) == 0)
+	                {
+	                    return ShowFileOrFolderAlreadExistsErrorMessage(newPath);
+	                }
+	            }
 
-            // Verify that No Directory/file already exists with the new name on disk
-            if(Directory.Exists(newPath) || File.Exists(newPath))
-            {
-                return ShowFileOrFolderAlreadExistsErrorMessage(newPath);
-            }
+	            // Verify that No Directory/file already exists with the new name on disk
+	            if(Directory.Exists(newPath) || File.Exists(newPath))
+	            {
+	                return ShowFileOrFolderAlreadExistsErrorMessage(newPath);
+	            }
+			}
 
             try
             {
@@ -199,7 +198,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="files">The list of files to be placed under source control.</param>
         /// <param name="flags">The flags that are associated to the files.</param>
-        protected internal override void GetSccFiles(System.Collections.Generic.IList<string> files, System.Collections.Generic.IList<tagVsSccFilesFlags> flags)
+        protected internal override void GetSccFiles(IList<string> files, IList<tagVsSccFilesFlags> flags)
         {
             return;
         }
@@ -229,7 +228,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentNullException("flags");
             }
 
-            if(string.IsNullOrEmpty(sccFile))
+            if(String.IsNullOrEmpty(sccFile))
             {
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, CultureInfo.CurrentUICulture), "sccFile");
             }
@@ -435,7 +434,7 @@ namespace Microsoft.VisualStudio.Project
             // renamed node.
             if (uiWindow != null)
             {
-                ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr.InteropSafeIVsUIHierarchy, this.ID, EXPANDFLAGS.EXPF_SelectItem));
+                ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr, this.ID, EXPANDFLAGS.EXPF_SelectItem));
             }
         }
 

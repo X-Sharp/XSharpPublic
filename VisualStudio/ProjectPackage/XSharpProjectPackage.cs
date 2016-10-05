@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -24,7 +24,7 @@ using XSharp.VOEditors;
 #endif
 namespace XSharp.Project
 {
-    
+
     /// <summary>
     /// This class implements the package exposed by this assembly.
     /// </summary>
@@ -34,13 +34,13 @@ namespace XSharp.Project
     /// attribute specifies the registry root to use if no one is provided to regpkg.exe with
     /// the /root switch.</para>
     /// <para>A description of the different attributes used here is given below:</para>
-    /// <para>DefaultRegistryRoot: This defines the default registry root for registering the package. 
+    /// <para>DefaultRegistryRoot: This defines the default registry root for registering the package.
     /// We are currently using the experimental hive.</para>
-    /// <para>ProvideObject: Declares that a package provides creatable objects of specified type.</para> 
+    /// <para>ProvideObject: Declares that a package provides creatable objects of specified type.</para>
     /// <para>ProvideProjectFactory: Declares that a package provides a project factory.</para>
-    /// <para>ProvideProjectItem: Declares that a package provides a project item.</para> 
-    /// </remarks>  
-    /// 
+    /// <para>ProvideProjectItem: Declares that a package provides a project item.</para>
+    /// </remarks>
+    ///
     [InstalledProductRegistration("#110", "#112", XSharp.Constants.Version, IconResourceID = 400)]
     [Description("XSharp Project System")]
     [PackageRegistration(UseManagedResourcesOnly = true)]
@@ -49,8 +49,8 @@ namespace XSharp.Project
     [ProvideObject(typeof(XSharpLanguagePropertyPage))]     // 2652FCA6-1C45-4D25-942D-4C5D5EDE9539
     [ProvideObject(typeof(XSharpBuildPropertyPage))]        // E994C210-9D6D-4CF4-A061-EBBEA2BC626B
     [ProvideObject(typeof(XSharpDebugPropertyPage))]        // 2955A638-C389-4675-BB1C-6B2BC173C1E7
-    [ProvideProjectFactory(typeof(XSharpProjectFactory), 
-        XSharpConstants.LanguageName, 
+    [ProvideProjectFactory(typeof(XSharpProjectFactory),
+        XSharpConstants.LanguageName,
         XSharpConstants.LanguageName + " Project Files (*." + XSharpConstants.ProjectExtension + ");*." + XSharpConstants.ProjectExtension,
         XSharpConstants.ProjectExtension,
         XSharpConstants.ProjectExtensions,
@@ -80,7 +80,7 @@ namespace XSharp.Project
                        @"%TestDocs%\Code Snippets\XSharp Language\XSharp Code Snippets"
 
          )]
-    
+
     /*
         [ProvideLanguageEditorOptionPageAttribute()
                  "{A2FE74E1-FFFF-3311-4342-123052450768}",  // GUID of property page
@@ -94,7 +94,7 @@ namespace XSharp.Project
                  "#243"         // Localized name of node
                  )]
         [ProvideLanguageEditorOptionPageAttribute(
-            "{A2FE74E2-FFFF-3311-4342-123052450768}",  // GUID of property page     
+            "{A2FE74E2-FFFF-3311-4342-123052450768}",  // GUID of property page
             "XSharp",  // Registry key name for language
                  @"Advanced\Indenting",     // Registry key name for property page
                  "#244"         // Localized name of property page
@@ -129,7 +129,7 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = "XSharp Source Code Editor", NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
-    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]  
+    [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string)]
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string)]
 
 #if VODESIGNER
@@ -143,10 +143,10 @@ namespace XSharp.Project
     [ProvideEditorExtension(typeof(VOMenuEditorFactory), ".vnmnu", 0x42, DefaultName = "XSharp VO Menu Editor", NameResourceID = 80111)]
     [ProvideEditorExtension(typeof(VODBServerEditorFactory), ".vndbs", 0x42, DefaultName = "XSharp VO DbServer Editor", NameResourceID = 80112)]
     [ProvideEditorExtension(typeof(VOFieldSpecEditorFactory), ".vnfs", 0x42, DefaultName = "XSharp VO FieldSpec Editor", NameResourceID = 80113)]
-    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
-    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
-    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
-    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VsConstants.LOGVIEWID.Designer_string)]  
+    [ProvideEditorLogicalView(typeof(VOFormEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VOMenuEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VODBServerEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
+    [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
 #endif
 
 
@@ -155,6 +155,7 @@ namespace XSharp.Project
     {
         private uint m_componentID;
 
+        private XSharpPackageSettings settings;
 
 #region Overridden Implementation
         /// <summary>
@@ -165,6 +166,7 @@ namespace XSharp.Project
         {
             base.Initialize();
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
+            this.settings = new XSharpPackageSettings(this);
 
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
@@ -215,6 +217,14 @@ namespace XSharp.Project
 
          }
 
+        /// <summary>
+        /// Gets the settings stored in the registry for this package.
+        /// </summary>
+        /// <value>The settings stored in the registry for this package.</value>
+        public XSharpPackageSettings Settings
+        {
+            get { return this.settings; }
+        }
         public override string ProductUserContext
         {
             get { return "XSharp"; }

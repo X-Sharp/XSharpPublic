@@ -29,7 +29,7 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="root">Root of the hierarchy</param>
         /// <param name="e">Associated project element</param>
-        public XSharpDependentFileNode(ProjectNode root, ProjectElement e)
+        public XSharpDependentFileNode(XSharpProjectNode root, ProjectElement e)
             : base(root, e)
         {
             HasParentNodeNameRelation = false;
@@ -55,7 +55,7 @@ namespace XSharp.Project
         {
             if (FileName.EndsWith( XSharpConstants.FileExtension1, StringComparison.InvariantCultureIgnoreCase))
                 return PackageUtilities.GetIntPointerFromImage(
-                    XSharpProjectNode.ImageList.Images[(int)XSharpConstants.ImageListIndex.Source]);
+                    XSharpProjectNode.ImageList.Images[(int)XSharpImageListIndex.Source]);
 
             return this.ProjectMgr.ImageHandler.GetIconHandle(this.ImageIndex);
         }

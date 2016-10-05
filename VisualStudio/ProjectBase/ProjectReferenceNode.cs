@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -21,6 +18,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using VsCommands = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
+using System.Reflection;
 namespace Microsoft.VisualStudio.Project
 {
     [CLSCompliant(false), ComVisible(true)]
@@ -32,31 +30,40 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         private Guid referencedProjectGuid;
 
-        private string referencedProjectName = String.Empty;
+		protected string referencedProjectName = String.Empty;
 
         private string referencedProjectRelativePath = String.Empty;
 
         private string referencedProjectFullPath = String.Empty;
 
-        private BuildDependency buildDependency;
+		private BuildDependency buildDependency = null;
 
         /// <summary>
         /// This is a reference to the automation object for the referenced project.
         /// </summary>
         private EnvDTE.Project referencedProject;
 
-        /// <summary>
-        /// This state is controlled by the solution events.
-        /// The state is set to false by OnBeforeUnloadProject.
-        /// The state is set to true by OnBeforeCloseProject event.
-        /// </summary>
-        private bool canRemoveReference = true;
+		/// <summary>
+		/// Whether or not the referenced project is ready to be returned.
+		/// </summary>
+		private bool referencedProjectIsCached = false;
+
+		/// <summary>
+		/// This state is controlled by the solution events.
+		/// The state is set to false by OnBeforeUnloadProject.
+		/// The state is set to true by OnBeforeCloseProject event.
+		/// </summary>
+		private bool canRemoveReference = true;
 
         /// <summary>
         /// Possibility for solution listener to update the state on the dangling reference.
         /// It will be set in OnBeforeUnloadProject then the nopde is invalidated then it is reset to false.
         /// </summary>
-        private bool isNodeValid;
+		private bool isNodeValid = false;
+
+		private static Assembly vcProjectEngine;
+
+		private static bool vcProjectEngineLoaded = false;
 
         #endregion
 
@@ -74,7 +81,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                return this.referencedProjectName;
+				return this.ReferencedProjectName;
             }
         }
 
@@ -117,11 +124,14 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
-        internal string ReferencedProjectName
-        {
-            get { return this.referencedProjectName; }
-            set
-            {
+		internal virtual string ReferencedProjectName
+		{
+			get
+			{
+				return this.referencedProjectName;
+			}
+			set
+			{
                 this.referencedProjectName = value;
 
                 string currentName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
@@ -139,78 +149,118 @@ namespace Microsoft.VisualStudio.Project
 		/// <param name="project">Project node to start the search from, or null to search the solution.</param>
 		/// <param name="projectFilePath">Path of the project to be located.</param>
 		/// <returns>Found project object, or null if the project was not found.</returns>
-		private EnvDTE.Project FindProject(EnvDTE.Project project, string projectFilePath)
+		private bool InitReferencedProjectFromProjectItems(System.Collections.IEnumerable /* of project or project items */ inners)
 		{
-			if (project == null)
+			foreach (object obj in inners)
 			{
-				// Search for the project in the collection of the projects in the
-				// current solution.
-				EnvDTE.DTE dte = (EnvDTE.DTE)this.ProjectMgr.GetService(typeof(EnvDTE.DTE));
-				if ((null == dte) || (null == dte.Solution))
+				EnvDTE.Project prj = obj as EnvDTE.Project;
+				if (prj == null)
 				{
-					return null;
+					EnvDTE.ProjectItem pi = obj as EnvDTE.ProjectItem;
+					if (pi == null) continue;
+					prj = pi.SubProject;
+				}
+				if (prj == null) continue;
+
+				if (string.Compare(EnvDTE.Constants.vsProjectKindSolutionItems, prj.Kind, StringComparison.OrdinalIgnoreCase) == 0)
+				{
+					if (InitReferencedProjectFromProjectItems(prj.ProjectItems))
+						return true;
+					else
+						continue;
 				}
 
-				foreach (EnvDTE.Project prj in dte.Solution.Projects)
+				//Skip this project if it is an umodeled project (unloaded)
+				if (string.Compare(EnvDTE.Constants.vsProjectKindUnmodeled, prj.Kind, StringComparison.OrdinalIgnoreCase) == 0)
 				{
-					//Skip this project if it is an umodeled project (unloaded)
-					if (!String.Equals(EnvDTE.Constants.vsProjectKindUnmodeled, prj.Kind, StringComparison.OrdinalIgnoreCase))
+					continue;
+				}
+
+				// Skip if has no properties (e.g. "miscellaneous files")
+				if (prj.Properties == null)
+				{
+					continue;
+				}
+
+				// do things differently for C++
+				try
+				{
+					if (!vcProjectEngineLoaded)
 					{
-						EnvDTE.Project foundProject = FindProject(prj, projectFilePath);
-						if (foundProject != null)
-						{
-							return foundProject;
-						}
+						vcProjectEngine = Assembly.Load("Microsoft.VisualStudio.VCProjectEngine, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+						vcProjectEngineLoaded = true;
 					}
 				}
-			}
-			else
-			{
-				if (String.Equals(EnvDTE.Constants.vsProjectKindSolutionItems, project.Kind, StringComparison.OrdinalIgnoreCase))
+				catch (FileNotFoundException)
 				{
-					// This is a solution folder -- look for child projects.
-					foreach (EnvDTE.ProjectItem projectItem in project.ProjectItems)
+					// Couldn't load C++ assembly because it doesn't exist.
+					// Continue trying as normal project.
+					vcProjectEngine = null;
+					vcProjectEngineLoaded = true;
+				}
+				if (vcProjectEngine != null)
+				{
+					Type vcProjectType = vcProjectEngine.GetType("Microsoft.VisualStudio.VCProjectEngine.VCProject", false);
+					if (vcProjectType != null)
 					{
-						EnvDTE.Project subProject = projectItem.SubProject;
-						if (subProject != null)
+						if (vcProjectType.IsInstanceOfType(prj.Object))
 						{
-							EnvDTE.Project foundProject = FindProject(subProject, projectFilePath);
-							if (foundProject != null)
+							PropertyInfo vcProjectFileProperty = vcProjectType.GetProperty("ProjectFile", typeof(string));
+							string projectFilePath = (string)vcProjectFileProperty.GetValue(prj.Object, null);
+							if (NativeMethods.IsSamePath(projectFilePath, this.referencedProjectFullPath))
 							{
-								return foundProject;
+								this.referencedProject = prj;
+								return true;
 							}
+							continue;
 						}
 					}
 				}
-				else
-				{
-					// Get the full path of the current project.
-					EnvDTE.Property pathProperty = null;
-					try
-					{
-						pathProperty = project.Properties.Item("FullPath");
-					}
-					catch (ArgumentException)
-					{
-					}
 
+
+				// Get the full path of the current project.
+				EnvDTE.Property pathProperty = null;
+				try
+				{
+					pathProperty = prj.Properties.Item("FullPath");
 					if (null == pathProperty)
 					{
 						// The full path should alway be availabe, but if this is not the
 						// case then we have to skip it.
-						return null;
-					}
-
-					// Compare the project path to the path we're searching for.
-					string projectPath = Path.Combine(pathProperty.Value.ToString(), project.FileName);
-					if (NativeMethods.IsSamePath(projectPath, projectFilePath))
-					{
-						return project;
+						continue;
 					}
 				}
-			}
+				catch (ArgumentException)
+				{
+					continue;
+				}
+				string prjPath = pathProperty.Value.ToString();
+				EnvDTE.Property fileNameProperty = null;
+				// Get the name of the project file.
+				try
+				{
+					fileNameProperty = prj.Properties.Item("FileName");
+					if (null == fileNameProperty)
+					{
+						// Again, this should never be the case, but we handle it anyway.
+						continue;
+					}
+				}
+				catch (ArgumentException)
+				{
+					continue;
+				}
+				prjPath = System.IO.Path.Combine(prjPath, fileNameProperty.Value.ToString());
 
-			return null;
+				// If the full path of this project is the same as the one of this
+				// reference, then we have found the right project.
+				if (NativeMethods.IsSamePath(prjPath, referencedProjectFullPath))
+				{
+					this.referencedProject = prj;
+					return true;
+				}
+			}
+			return false;
 		}
         /// Gets the automation object for the referenced project.
         /// </summary>
@@ -218,20 +268,31 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                // If the referenced project is null then re-read.
-                if (this.referencedProject == null)
-                {
-                  this.referencedProject = this.FindProject(null, this.referencedProjectFullPath);
-               }
+				if (!this.referencedProjectIsCached)
+				{
 
+					// Search for the project in the collection of the projects in the
+					// current solution.
+					EnvDTE.DTE dte = (EnvDTE.DTE)this.ProjectMgr.GetService(typeof(EnvDTE.DTE));
+					if ((null == dte) || (null == dte.Solution))
+					{
+						return null;
+					}
+					InitReferencedProjectFromProjectItems(dte.Solution.Projects);
+					this.referencedProjectIsCached = true;
+				}
 
-                return this.referencedProject;
-            }
-            set
-            {
-                this.referencedProject = value;
-            }
-        }
+				return this.referencedProject;
+			}
+		}
+
+		/// <summary>
+		/// Invalidates the referenced project cache.
+		/// </summary>
+		public void DropReferencedProjectCache()
+		{
+			referencedProjectIsCached = false;
+		}
 
         /// <summary>
         /// Gets the full path to the assembly generated by this project.
@@ -326,7 +387,6 @@ namespace Microsoft.VisualStudio.Project
                     return null;
                 }
                 // build the full path adding the name of the assembly to the output path.
-               string assemblyName = assemblyNameProperty.Value.ToString();
                 outputPath = System.IO.Path.Combine(outputPath, assemblyNameProperty.Value.ToString());
 
                 return outputPath;
@@ -372,7 +432,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 Debug.Assert(this.referencedProjectGuid != Guid.Empty, "Could not retrive referenced project guidproject file");
 
-                this.referencedProjectName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
+				this.ReferencedProjectName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
 
                 Debug.Assert(!String.IsNullOrEmpty(this.referencedProjectName), "Could not retrive referenced project name form project file");
             }
@@ -399,7 +459,7 @@ namespace Microsoft.VisualStudio.Project
                 throw new ArgumentNullException("projectReference");
             }
 
-            this.referencedProjectName = referencedProjectName;
+			this.ReferencedProjectName = referencedProjectName;
 
             int indexOfSeparator = projectReference.IndexOf('|');
 
@@ -455,7 +515,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The node is added to the hierarchy and then updates the build dependency list.
         /// </summary>
-        public override ReferenceNode AddReference() // dcaton - changed return type to ReferenceNode, see comments in ReferenceContainerNode.AddReferenceFromSelectorData()
+        public override ReferenceNode AddReference()
 		{
 			if(this.ProjectMgr == null)
 			{
@@ -573,11 +633,7 @@ namespace Microsoft.VisualStudio.Project
         private void ShowCircularReferenceErrorMessage()
         {
             string message = String.Format(CultureInfo.CurrentCulture, SR.GetString(SR.ProjectContainsCircularReferences, CultureInfo.CurrentUICulture), this.referencedProjectName);
-            string title = string.Empty;
-            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-            VsShellUtilities.ShowMessageBox(this.ProjectMgr.Site, title, message, icon, buttons, defaultButton);
+			ShowReferenceErrorMessage(message);
         }
 
         /// <summary>
@@ -595,7 +651,7 @@ namespace Microsoft.VisualStudio.Project
 
             int circular;
             Marshal.ThrowExceptionForHR(solutionBuildManager.CalculateProjectDependencies());
-            Marshal.ThrowExceptionForHR(solutionBuildManager.QueryProjectDependency(referencedHierarchy, this.ProjectMgr.InteropSafeIVsHierarchy, out circular));
+            Marshal.ThrowExceptionForHR(solutionBuildManager.QueryProjectDependency(referencedHierarchy, this.ProjectMgr , out circular));
 
             return circular != 0;
         }

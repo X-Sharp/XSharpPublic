@@ -159,6 +159,9 @@
   <data name="CannotAddFileThatIsOpenInEditor" xml:space="preserve">
     <value>A file with name '{0}' already exists and is open in an editor. Please give a unique name to the item you are adding, or delete the existing item first.</value>
   </data>
+  <data name="CannotBuildWhenBuildInProgress" xml:space="preserve">
+    <value>Cannot start a new build because a build is already in progress.</value>
+  </data>
   <data name="CanNotSaveFileNotOpeneInEditor" xml:space="preserve">
     <value>Cannot save '{0}' as it is not open in the editor.</value>
   </data>
@@ -268,9 +271,6 @@
   </data>
   <data name="ItemDoesNotExistInProjectDirectory" xml:space="preserve">
     <value>The item '{0}' does not exist in the project directory. It may have been moved, renamed or deleted.</value>
-  </data>
-  <data name="LinkedItemsAreNotSupported" xml:space="preserve">
-    <value>Cannot save '{0}' outside the project directory. Linked items are not supported.</value>
   </data>
   <data name="Library" xml:space="preserve">
     <value>Class Library</value>
@@ -527,6 +527,13 @@
   <data name="BuildEventError" xml:space="preserve">
     <value>Exception was thrown during BuildBegin event\n{0}</value>
   </data>
+  <data name="CopyToOutputDirectory" xml:space="preserve">
+    <value>Copy to Output Directory</value>
+  </data>
+  <data name="CopyToOutputDirectoryDescription" xml:space="preserve">
+    <value>Specifies the source file will be copied to the output directory</value>
+  </data>
+  
   <data name="Culture" xml:space="preserve">
     <value>Culture</value>
   </data>
@@ -633,4 +640,20 @@ Are you sure you want to change the Target Framework for this project?</value>
     <value>VO Binary Resource</value>
     <comment>Build Action - drop down option</comment>
   </data>
+  <data name="NoWildcardsInProject" xml:space="preserve">
+    <value>"Cannot open project '{0}'. \nThis project uses wildcards in item specification: \n'{2}' for item type '{1}'\n\nWildcards in this project type are not currently supported.</value>
+  </data>
+  <data name="CannotAddItemToProjectWithWildcards" xml:space="preserve">
+    <value>"Cannot add file {3} to project '{0}'. \nThis project uses wildcards in item specification: \n'{2}' for item type '{1}'\n\nWildcards in this project type are not currently supported.</value>
+  </data>
+  <data name="UpgradeCannotOpenProjectFileForEdit" xml:space="preserve">
+    <value>Cannot open project file for edit.</value>
+  </data>
+  <data name="UpgradeNoNeedToUpgradeAfterCheckout" xml:space="preserve">
+    <value>Project file was checked out and is already upgraded.</value>
+  </data>
+  <data name="UpgradeSuccessful" xml:space="preserve">
+    <value>Upgrade successful.</value>
+  </data>
+  
 </root>

@@ -75,7 +75,7 @@ namespace XSharp.Project
         /// will treat this item at build time.</value>
         [Browsable(false)]
         [AutomationBrowsable(false)]
-        public override BuildAction BuildAction
+        public override BuildActionEnum BuildAction
         {
             get
             {
@@ -93,21 +93,7 @@ namespace XSharp.Project
     public class XSharpLinkedFileNodeProperties : XSharpFileNodeProperties
     {
         #region properties
-        [SRCategoryAttribute(SR.Misc)]
-        [LocDisplayName(SR.FileName)]
-        [SRDescriptionAttribute(SR.FileNameDescription)]
-        public override string FileName
-        {
-            get
-            {
-                return this.Node.Caption;
-            }
-            set
-            {
-                // Do nothing;
-            }
-        }
-
+ 
         [Browsable(false)]
         public override bool IsLink
         {
@@ -130,16 +116,16 @@ namespace XSharp.Project
         [SRCategoryAttribute(SR.Advanced)]
         [LocDisplayName(SR.BuildAction)]
         [SRDescriptionAttribute(SR.BuildActionDescription)]
-        public override BuildAction BuildAction
+        public override BuildActionEnum BuildAction
         {
             get
             {
                 string value = this.Node.ItemNode.ItemName;
                 if (value == null || value.Length == 0)
                 {
-                    return BuildAction.None;
+                    return BuildActionEnum.None;
                 }
-                return (BuildAction)Enum.Parse(typeof(BuildAction), value);
+                return (BuildActionEnum)Enum.Parse(typeof(BuildAction), value);
             }
             set
             {
@@ -148,21 +134,7 @@ namespace XSharp.Project
         }
 
 
-        [SRCategoryAttribute(SR.Misc)]
-        [LocDisplayName(SR.FileName)]
-        [SRDescriptionAttribute(SR.FileNameDescription)]
-        public override string FileName
-        {
-            get
-            {
-                return this.Node.Caption;
-            }
-            set
-            {
-                //do nothing
-            }
-        }
-        #endregion
+         #endregion
 
         #region ctors
         public XSharpDependentFileNodeProperties(HierarchyNode node)

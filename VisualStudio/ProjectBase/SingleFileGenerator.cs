@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -109,7 +106,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             string customToolProgID = nodeproperties.CustomTool;
-            if(string.IsNullOrEmpty(customToolProgID))
+			if (String.IsNullOrEmpty(customToolProgID))
             {
                 return;
             }
@@ -141,7 +138,7 @@ namespace Microsoft.VisualStudio.Project
                     }
 
                     //Determine the namespace
-                    if(string.IsNullOrEmpty(customToolNamespace))
+					if (String.IsNullOrEmpty(customToolNamespace))
                     {
                         customToolNamespace = this.ComputeNamespace(moniker);
                     }
@@ -149,8 +146,8 @@ namespace Microsoft.VisualStudio.Project
                     //Run the generator
                     IntPtr[] output = new IntPtr[1];
                     output[0] = IntPtr.Zero;
-	               uint outPutSize = 0;
-	               string extension = String.Empty;
+	                uint outPutSize = 0;
+	                string extension = String.Empty;
 					try
 					{
 					  ErrorHandler.ThrowOnFailure(generator.DefaultExtension(out extension));
@@ -164,7 +161,7 @@ namespace Microsoft.VisualStudio.Project
                     HierarchyNode dependentNode = fileNode.FirstChild;
                     while(dependentNode != null)
                     {
-                        if(string.Compare(dependentNode.ItemNode.GetMetadata(ProjectFileConstants.DependentUpon), fileNode.FileName, StringComparison.OrdinalIgnoreCase) == 0)
+						if (String.Compare(dependentNode.ItemNode.GetMetadata(ProjectFileConstants.DependentUpon), fileNode.FileName, StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             dependentNodeName = ((FileNode)dependentNode).FileName;
                             break;
@@ -211,7 +208,7 @@ namespace Microsoft.VisualStudio.Project
                      Marshal.FreeCoTaskMem(output[0]);
                   }
                   //Todo - Create a file and add it to the Project
-                  this.UpdateGeneratedCodeFile(fileNode, data, (int)outPutSize, dependentNodeName);
+				  string fileToAdd = this.UpdateGeneratedCodeFile(fileNode, data, (int)outPutSize, dependentNodeName);
                }
             }
          }
@@ -239,7 +236,7 @@ namespace Microsoft.VisualStudio.Project
             string[] toks = filePath.Split(new char[] { ':', '\\' });
             foreach(string tok in toks)
             {
-                if(!String.IsNullOrEmpty(tok))
+                if (!String.IsNullOrEmpty(tok))
                 {
                     string temp = tok.Replace(" ", "");
                     nspace += (temp + ".");
@@ -381,7 +378,7 @@ namespace Microsoft.VisualStudio.Project
                         // QI for IVsBatchUpdate and call FlushPendingUpdates if they support it
                         IVsBatchUpdate srpBatchUpdate = srpStream as IVsBatchUpdate;
                         if(srpBatchUpdate != null)
-                            ErrorHandler.ThrowOnFailure(srpBatchUpdate.FlushPendingUpdates(0));
+                            srpBatchUpdate.FlushPendingUpdates(0);
 
                         int lBufferSize = 0;
                         hr = srpStream.GetSize(out lBufferSize);
@@ -484,7 +481,7 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         protected bool CanEditFile(string documentMoniker)
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
+            Trace.WriteLine(String.Format(CultureInfo.CurrentCulture, "\t**** CanEditFile called ****"));
 
             // Check the status of the recursion guard
             if(this.gettingCheckoutStatus)

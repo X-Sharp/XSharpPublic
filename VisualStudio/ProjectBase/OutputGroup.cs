@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -102,36 +99,30 @@ namespace Microsoft.VisualStudio.Project
         protected virtual void Refresh()
         {
             // Let MSBuild know which configuration we are working with
-            _project.SetConfiguration(_projectCfg.ConfigName);
+			_project.SetConfiguration(_projectCfg.ConfigCanonicalName);
 
             // Generate dependencies if such a task exist
-            const string generateDependencyList = "AllProjectOutputGroups";
-            if(_project.BuildProject.Targets.ContainsKey(generateDependencyList))
-            {
-                bool succeeded = false;
-                _project.BuildTarget(generateDependencyList, out succeeded);
+			if (_project.ProjectInstance.Targets.ContainsKey(ProjectFileConstants.AllProjectOutputGroups))
+			{
+				bool succeeded = false;
+				_project.BuildTarget(ProjectFileConstants.AllProjectOutputGroups, out succeeded);
                 // The next line triggers an exception for a customer that works with JetBrains.
-                //Debug.Assert(succeeded, "Failed to build target: " + generateDependencyList);
+                //Debug.Assert(succeeded, "Failed to build target: " + ProjectFileConstants.AllProjectOutputGroups);
             }
 
             // Rebuild the content of our list of output
             string outputType = _targetName + "Output";
             this._outputs.Clear();
-            if (_project.CurrentConfig != null)
+			foreach (MSBuildExecution.ProjectItemInstance assembly in MSBuildProjectInstance.GetItems(_project.ProjectInstance, outputType))
 			{
-	            foreach (MSBuildExecution.ProjectItemInstance assembly in _project.CurrentConfig.GetItems(outputType))
-	            {
-	                Output output = new Output(_project, assembly);
-	                _outputs.Add(output);
+				Output output = new Output(_project, assembly);
+				this._outputs.Add(output);
 
-	                    // See if it is our key output
-	                    if (_keyOutput == null ||
-	                        String.Compare(assembly.GetMetadataValue("IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
-						{
-	                        _keyOutput = output;
-	                    }
-	            }
+				// See if it is our key output
+				if (String.Compare(MSBuildItem.GetMetadataValue(assembly, "IsKeyOutput"), true.ToString(), StringComparison.OrdinalIgnoreCase) == 0)
+					_keyOutput = output;
 			}
+
             _project.SetCurrentConfiguration();
 
             // Now that the group is built we have to check if it is invalidated by a property
@@ -139,17 +130,16 @@ namespace Microsoft.VisualStudio.Project
             _project.OnProjectPropertyChanged += new EventHandler<ProjectPropertyChangedArgs>(OnProjectPropertyChanged);
         }
 
-
         public virtual void InvalidateGroup()
         {
             // Set keyOutput to null so that a refresh will be performed the next time
             // a property getter is called.
-            if(null != _keyOutput)
-            {
-                // Once the group is invalidated there is no more reason to listen for events.
-                _project.OnProjectPropertyChanged -= new EventHandler<ProjectPropertyChangedArgs>(OnProjectPropertyChanged);
-            }
-            _keyOutput = null;
+			if (null != _keyOutput)
+			{
+				// Once the group is invalidated there is no more reason to listen for events.
+				_project.OnProjectPropertyChanged -= new EventHandler<ProjectPropertyChangedArgs>(OnProjectPropertyChanged);
+			}
+			_keyOutput = null;
         }
         #endregion
 

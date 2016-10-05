@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -117,37 +114,37 @@ namespace Microsoft.VisualStudio.Project.Automation
 
             return UIThread.DoOnUIThread(delegate()
             {
-            //Verify name is not null or empty
-            Utilities.ValidateFileName(this.Project.Project.Site, name);
+	            //Verify name is not null or empty
+	            Utilities.ValidateFileName(this.Project.Project.Site, name);
 
-            //Verify that kind is null, empty, or a physical folder
-                if (!(string.IsNullOrEmpty(kind) || kind.Equals(EnvDTE.Constants.vsProjectItemKindPhysicalFolder)))
-            {
-                throw new ArgumentException("Parameter specification for AddFolder was not meet", "kind");
-            }
+	            //Verify that kind is null, empty, or a physical folder
+				if (!(String.IsNullOrEmpty(kind) || kind.Equals(EnvDTE.Constants.vsProjectItemKindPhysicalFolder)))
+	            {
+	                throw new ArgumentException("Parameter specification for AddFolder was not meet", "kind");
+	            }
 
                 for (HierarchyNode child = this.NodeWithItems.FirstChild; child != null; child = child.NextSibling)
-            {
-                    if (child.Caption.Equals(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "Folder already exists with the name '{0}'", name));
-                }
-            }
+	            {
+	                    if (child.Caption.Equals(name, StringComparison.OrdinalIgnoreCase))
+	                {
+	                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "Folder already exists with the name '{0}'", name));
+	                }
+	            }
 
-            ProjectNode proj = this.Project.Project;
+	            ProjectNode proj = this.Project.Project;
 
-            HierarchyNode newFolder = null;
-                using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
-            {
+	            HierarchyNode newFolder = null;
+	            using (AutomationScope scope = new AutomationScope(this.Project.Project.Site))
+	            {
 
-                //In the case that we are adding a folder to a folder, we need to build up
-                //the path to the project node.
-                name = Path.Combine(this.NodeWithItems.VirtualNodeName, name);
+	                //In the case that we are adding a folder to a folder, we need to build up
+	                //the path to the project node.
+	                name = Path.Combine(this.NodeWithItems.VirtualNodeName, name);
 
-                newFolder = proj.CreateFolderNodes(name);
-            }
+	                newFolder = proj.CreateFolderNodes(name);
+	            }
 
-            return newFolder.GetAutomationObject() as ProjectItem;
+	            return newFolder.GetAutomationObject() as ProjectItem;
             });
         }
 
@@ -172,9 +169,18 @@ namespace Microsoft.VisualStudio.Project.Automation
             return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_OPENFILE);
         }
 
-        #endregion
+		/// <summary>
+		/// Adds a project item which is a link to a file outside the project directory structure.
+		/// </summary>
+		/// <param name="fileName">The file to be linked to the project.</param>
+		/// <returns>A ProjectItem object.</returns>
+		public override EnvDTE.ProjectItem AddFileLink(string fileName)
+		{
+			return this.AddItem(fileName, VSADDITEMOPERATION.VSADDITEMOP_LINKTOFILE);
+		}
+		#endregion
 
-        #region helper methods
+		#region helper methods
         /// <summary>
         /// Adds an item to the project.
         /// </summary>

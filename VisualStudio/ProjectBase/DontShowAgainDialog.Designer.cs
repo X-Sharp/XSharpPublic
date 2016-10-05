@@ -1,4 +1,4 @@
-﻿/* ****************************************************************************
+/* ****************************************************************************
  *
  * Copyright (c) Microsoft Corporation.
  *
@@ -11,19 +11,19 @@
 
 namespace Microsoft.VisualStudio.Project
 {
-    partial class FileOverwriteDialog
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class DontShowAgainDialog
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
             try
             {
                 if (disposing)
@@ -36,29 +36,28 @@ namespace Microsoft.VisualStudio.Project
                     if (this.bitmap != null)
                     {
                         this.bitmap.Dispose();
-                    }
+                    }                 
                 }
             }
             finally
             {
                 base.Dispose(disposing);
             }
-		}
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileOverwriteDialog));
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DontShowAgainDialog));
             this.messageText = new System.Windows.Forms.Label();
-            this.applyToAll = new System.Windows.Forms.CheckBox();
-            this.yesButton = new System.Windows.Forms.Button();
+            this.dontShowAgain = new System.Windows.Forms.CheckBox();
+            this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.noButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // messageText
@@ -67,18 +66,18 @@ namespace Microsoft.VisualStudio.Project
             resources.ApplyResources(this.messageText, "messageText");
             this.messageText.Name = "messageText";
             // 
-            // applyToAll
+            // dontShowAgain
             // 
-            resources.ApplyResources(this.applyToAll, "applyToAll");
-            this.applyToAll.Name = "applyToAll";
-            this.applyToAll.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.dontShowAgain, "dontShowAgain");
+            this.dontShowAgain.Name = "dontShowAgain";
+            this.dontShowAgain.UseVisualStyleBackColor = true;
             // 
-            // yesButton
+            // okButton
             // 
-            resources.ApplyResources(this.yesButton, "yesButton");
-            this.yesButton.Name = "yesButton";
-            this.yesButton.UseVisualStyleBackColor = true;
-            this.yesButton.Click += new System.EventHandler(this.OnYesButtonClicked);
+            resources.ApplyResources(this.okButton, "okButton");
+            this.okButton.Name = "okButton";
+            this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.OnOKButtonClicked);
             // 
             // cancelButton
             // 
@@ -88,41 +87,33 @@ namespace Microsoft.VisualStudio.Project
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.OnCancelButtonClicked);
             // 
-            // noButton
+            // DontShowAgainDialog
             // 
-            resources.ApplyResources(this.noButton, "noButton");
-            this.noButton.Name = "noButton";
-            this.noButton.UseVisualStyleBackColor = true;
-            this.noButton.Click += new System.EventHandler(this.OnNoButtonClicked);
-            // 
-            // FileOverwriteDialog
-            // 
-            this.AcceptButton = this.yesButton;
+            this.AcceptButton = this.okButton;
             this.CancelButton = this.cancelButton;
             resources.ApplyResources(this, "$this");
-            this.Controls.Add(this.noButton);
             this.Controls.Add(this.cancelButton);
-            this.Controls.Add(this.yesButton);
-            this.Controls.Add(this.applyToAll);
+            this.Controls.Add(this.okButton);
+            this.Controls.Add(this.dontShowAgain);
             this.Controls.Add(this.messageText);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.HelpButton = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FileOverwriteDialog";
+            this.Name = "DontShowAgainDialog";
             this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.OnHelpButtonClicked);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
             this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.OnHelpRequested);
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
         private System.Windows.Forms.Label messageText;
-        private System.Windows.Forms.CheckBox applyToAll;
-        private System.Windows.Forms.Button yesButton;
+        private System.Windows.Forms.CheckBox dontShowAgain;
+        private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button noButton;
-	}
+    }
 }

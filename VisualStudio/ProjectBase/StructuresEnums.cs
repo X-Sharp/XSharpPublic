@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -85,17 +82,25 @@ namespace Microsoft.VisualStudio.Project
         URL
     }
 
+    [PropertyPageTypeConverterAttribute(typeof(CopyToOutputDirectoryConverter))]
+    public enum CopyToOutputDirectory
+    {
+        DoNotCopy,
+        Always,
+        PreserveNewest,
+    }
+
     /// <summary>
     /// An enumeration that describes the type of action to be taken by the build.
     /// </summary>
-    [PropertyPageTypeConverterAttribute(typeof(BuildActionConverter))]
-    public enum BuildAction
-    {
-        None,
-        Compile,
-        Content,
-        EmbeddedResource
-    }
+    //[PropertyPageTypeConverterAttribute(typeof(BuildActionConverter))]
+    //public enum BuildAction
+    //{
+    //    None,
+    //    Compile,
+    //    Content,
+    //    EmbeddedResource
+    //}
 
     /// <summary>
     /// Defines the currect state of a property page.
@@ -362,7 +367,7 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region ctor
-        public  AfterProjectFileOpenedEventArgs(bool added)
+        internal AfterProjectFileOpenedEventArgs(bool added)
         {
             this.added = added;
         }
@@ -487,7 +492,7 @@ namespace Microsoft.VisualStudio.Project
         /// Gets the file name that was changed on disk.
         /// </summary>
         /// <value>The file that was changed on disk.</value>
-        public string FileName
+        internal string FileName
         {
             get
             {
@@ -511,7 +516,7 @@ namespace Microsoft.VisualStudio.Project
         /// The reason while the file has chnaged on disk.
         /// </summary>
         /// <value>The reason while the file has chnaged on disk.</value>
-        public _VSFILECHANGEFLAGS FileChangeFlag
+        internal _VSFILECHANGEFLAGS FileChangeFlag
         {
             get
             {

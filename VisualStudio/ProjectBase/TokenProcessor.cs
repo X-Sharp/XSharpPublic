@@ -1,50 +1,13 @@
-/********************************************************************************************
-
-Copyright (c) Microsoft Corporation 
-All rights reserved. 
-
-Microsoft Public License: 
-
-This license governs use of the accompanying software. If you use the software, you 
-accept this license. If you do not accept the license, do not use the software. 
-
-1. Definitions 
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the 
-same meaning here as under U.S. copyright law. 
-A "contribution" is the original software, or any additions or changes to the software. 
-A "contributor" is any person that distributes its contribution under this license. 
-"Licensed patents" are a contributor's patent claims that read directly on its contribution. 
-
-2. Grant of Rights 
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free copyright license to reproduce its contribution, prepare derivative works of 
-its contribution, and distribute its contribution or any derivative works that you create. 
-(B) Patent Grant- Subject to the terms of this license, including the license conditions 
-and limitations in section 3, each contributor grants you a non-exclusive, worldwide, 
-royalty-free license under its licensed patents to make, have made, use, sell, offer for 
-sale, import, and/or otherwise dispose of its contribution in the software or derivative 
-works of the contribution in the software. 
-
-3. Conditions and Limitations 
-(A) No Trademark License- This license does not grant you rights to use any contributors' 
-name, logo, or trademarks. 
-(B) If you bring a patent claim against any contributor over patents that you claim are 
-infringed by the software, your patent license from such contributor to the software ends 
-automatically. 
-(C) If you distribute any portion of the software, you must retain all copyright, patent, 
-trademark, and attribution notices that are present in the software. 
-(D) If you distribute any portion of the software in source code form, you may do so only 
-under this license by including a complete copy of this license with your distribution. 
-If you distribute any portion of the software in compiled or object code form, you may only 
-do so under a license that complies with this license. 
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give 
-no express warranties, guarantees or conditions. You may have additional consumer rights 
-under your local laws which this license cannot change. To the extent permitted under your 
-local laws, the contributors exclude the implied warranties of merchantability, fitness for 
-a particular purpose and non-infringement.
-
-********************************************************************************************/
+/* ****************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation.
+ *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
+ * You must not remove this notice, or any other, from this software.
+ *
+ * ***************************************************************************/
 
 using System;
 using System.Collections;
@@ -137,11 +100,8 @@ namespace Microsoft.VisualStudio.Project
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily"), SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Untoken")]
         public virtual void UntokenFile(string source, string destination)
         {
-            if(string.IsNullOrEmpty(source))
-                throw new ArgumentNullException("source");
-
-            if(string.IsNullOrEmpty(destination))
-                throw new ArgumentNullException("destination");
+            Utilities.ArgumentNotNullOrEmpty("source", source);
+            Utilities.ArgumentNotNullOrEmpty("destination", destination);
 
             // Make sure that the destination folder exists.
             string destinationFolder = Path.GetDirectoryName(destination);
@@ -150,7 +110,7 @@ namespace Microsoft.VisualStudio.Project
                 Directory.CreateDirectory(destinationFolder);
             }
 
-            //Open the file. Check to see if the File is binary or text.
+            // Open the file. Check to see if the File is binary or text.
             // NOTE: This is not correct because GetBinaryType will return true
             // only if the file is executable, not if it is a dll, a library or
             // any other type of binary file.
@@ -194,16 +154,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="tokenToReplace">replacement data</param>
         public virtual void ReplaceTokens(ref string buffer, ReplacePairToken tokenToReplace)
         {
-            if (tokenToReplace == null)
-            {
-                throw new ArgumentNullException("tokenToReplace");
-            }
-
-            if (buffer == null)
-            {
-                throw new ArgumentNullException("buffer");
-            }
-
+            Utilities.ArgumentNotNull("tokenToReplace", tokenToReplace);
+            Utilities.ArgumentNotNull("buffer", buffer);
             buffer = buffer.Replace(tokenToReplace.Token, tokenToReplace.Replacement);
         }
 
@@ -214,15 +166,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="tokenToDelete">token to delete</param>
         public virtual void DeleteTokens(ref string buffer, DeleteToken tokenToDelete)
         {
-            if (tokenToDelete == null)
-            {
-                throw new ArgumentNullException("tokenToDelete");
-            }
-
-            if (buffer == null)
-            {
-                throw new ArgumentNullException("buffer");
-            }
+            Utilities.ArgumentNotNull("tokenToDelete", tokenToDelete);
+            Utilities.ArgumentNotNull("buffer", buffer);
 
             buffer = buffer.Replace(tokenToDelete.StringToDelete, string.Empty);
         }
@@ -234,15 +179,8 @@ namespace Microsoft.VisualStudio.Project
         /// <param name="rpBetweenToken">replacement token</param>
         public virtual void ReplaceBetweenTokens(ref string buffer, ReplaceBetweenPairToken rpBetweenToken)
         {
-            if (rpBetweenToken == null)
-            {
-                throw new ArgumentNullException("rpBetweenToken");
-            }
-
-            if (buffer == null)
-            {
-                throw new ArgumentNullException("buffer");
-            }
+            Utilities.ArgumentNotNull("rpBetweenToken", rpBetweenToken);
+            Utilities.ArgumentNotNull("buffer", buffer);
 
             string regularExp = rpBetweenToken.TokenStart + "[^" + rpBetweenToken.TokenIdentifier + "]*" + rpBetweenToken.TokenEnd;
             buffer = System.Text.RegularExpressions.Regex.Replace(buffer, regularExp, rpBetweenToken.TokenReplacement);
@@ -295,6 +233,51 @@ namespace Microsoft.VisualStudio.Project
 
             return ResultingStr.ToString();
         }
+		/// <summary>
+		/// Generates a string representation of a guid with the following format:
+		/// 0x01020304, 0x0506, 0x0708, { 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10 }
+		/// </summary>
+		/// <param name="value">Guid to be generated.</param>
+		/// <returns>The guid as string.</returns>
+		private string GuidToForm2(Guid value)
+		{
+			byte[] GuidBytes = value.ToByteArray();
+			StringBuilder ResultingStr = new StringBuilder(80);
+
+			// First 4 bytes
+			int i = 0;
+			int Number = 0;
+			for (i = 0; i < 4; ++i)
+			{
+				int CurrentByte = GuidBytes[i];
+				Number += CurrentByte << (8 * i);
+			}
+			UInt32 FourBytes = (UInt32)Number;
+			ResultingStr.AppendFormat(CultureInfo.InvariantCulture, "0x{0}", FourBytes.ToString("X", CultureInfo.InvariantCulture));
+
+			// 2 chunks of 2 bytes
+			for (int j = 0; j < 2; ++j)
+			{
+				Number = 0;
+				for (int k = 0; k < 2; ++k)
+				{
+					int CurrentByte = GuidBytes[i++];
+					Number += CurrentByte << (8 * k);
+				}
+				UInt16 TwoBytes = (UInt16)Number;
+				ResultingStr.AppendFormat(CultureInfo.InvariantCulture, ", 0x{0}", TwoBytes.ToString("X", CultureInfo.InvariantCulture));
+			}
+
+			// 8 chunks of 1 bytes
+			ResultingStr.AppendFormat(CultureInfo.InvariantCulture, ", {{ 0x{0}", GuidBytes[i++].ToString("X", CultureInfo.InvariantCulture));
+			for (int j = 1; j < 8; ++j)
+			{
+				ResultingStr.AppendFormat(CultureInfo.InvariantCulture, ", 0x{0}", GuidBytes[i++].ToString("X", CultureInfo.InvariantCulture));
+			}
+			ResultingStr.Append(" }");
+
+			return ResultingStr.ToString();
+		}
         #endregion
 
         #region Helper Methods
@@ -353,7 +336,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The goal here is to reduce the risk of name conflict between 2 classes
         /// added in different directories. This code does NOT garanty uniqueness.
-        /// To garanty uniqueness, you should change this function to work with
+        /// To guaranty uniqueness, you should change this function to work with
         /// the language service to verify that the namespace+class generated does
         /// not conflict.
         /// </summary>
@@ -362,17 +345,14 @@ namespace Microsoft.VisualStudio.Project
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public string GetFileNamespace(string fileFullPath, ProjectNode node)
         {
-            if (node == null)
-            {
-                throw new ArgumentNullException("node");
-            }
-            
+            Utilities.ArgumentNotNull("node", node);
+
             // Get base namespace from the project
             string namespce = node.GetProjectProperty("RootNamespace");
             if(String.IsNullOrEmpty(namespce))
                 namespce = Path.GetFileNameWithoutExtension(fileFullPath); ;
 
-            // If the item is added to a subfolder, the name space should reflect this.
+            // If the item is added to a sub folder, the name space should reflect this.
             // This is done so that class names from 2 files with the same name but different
             // directories don't conflict.
             string relativePath = Path.GetDirectoryName(fileFullPath);
@@ -496,7 +476,7 @@ namespace Microsoft.VisualStudio.Project
     }
 
     /// <summary>
-    /// Storage classes for string to be deleted between tokens to be deleted 
+    /// Storage classes for string to be deleted between tokens to be deleted
     /// </summary>
     public class ReplaceBetweenPairToken
     {

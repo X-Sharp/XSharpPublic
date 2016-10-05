@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -54,6 +51,10 @@ namespace Microsoft.VisualStudio.Project
 
             // Get the output assembly path (including the name)
             pbstrCanonicalName = output.GetMetadataValue(ProjectFileConstants.FinalOutputPath);
+			if (String.IsNullOrEmpty(pbstrCanonicalName))
+			{
+				pbstrCanonicalName = output.EvaluatedInclude;
+			}
             Debug.Assert(!String.IsNullOrEmpty(pbstrCanonicalName), "Output Assembly not defined");
 
             // Make sure we have a full path
@@ -81,7 +82,7 @@ namespace Microsoft.VisualStudio.Project
             }
 
             string path = output.GetMetadataValue(ProjectFileConstants.FinalOutputPath);
-            if(string.IsNullOrEmpty(path))
+			if (String.IsNullOrEmpty(path))
             {
                 pbstrDeploySourceURL = new Url(output.GetMetadataValue("FullPath")).Uri.AbsoluteUri;
                 return VSConstants.S_OK;

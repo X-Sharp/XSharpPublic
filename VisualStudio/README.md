@@ -1,8 +1,17 @@
 # XSharpPublic/VisualStudio
 The Visual Studio integration in this version of XSharp is based on the MPF source. That source can be found on CodePlex.
 All the code in the ProjectBase folder comes from this source.
+Some of this source has been altered to handle:
+- The 'Show All Files' option in the menu
+- Linked files
+- Better support for dependent items
 
-We also looked at and were inspired by the Visual Studio integration from the Nemerle Project, IronPython, VFPX and others.
+We also looked at and were inspired by the Visual Studio integration from:
+- the Nemerle Project
+- Python Toolk for VS
+- NodeJs
+- The VS Integration for WIX (Votive)
+- VFPX and others.
 
 For our Build System we have also looked at the Microsoft Build System source (https://github.com/Microsoft/msbuild).
 Some elements from that code have been reused in our code.

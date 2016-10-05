@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -83,7 +80,6 @@ namespace Microsoft.VisualStudio.Project
             ProjectFileConstants.ProjectReference,
             ProjectFileConstants.Reference,
             ProjectFileConstants.COMReference,
-            ProjectFileConstants.WebPiReference
         };
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         protected virtual string[] SupportedReferenceTypes
@@ -287,19 +283,18 @@ namespace Microsoft.VisualStudio.Project
         public void LoadReferencesFromBuildProject(MSBuild.Project buildProject)
         {
             List<ReferenceNode> duplicatedNode = new List<ReferenceNode>();
-            foreach(string referenceType in SupportedReferenceTypes)
-            {
-                IEnumerable<MSBuild.ProjectItem> refererncesGroup = this.ProjectMgr.BuildProject.GetItems(referenceType);
+			BuildResult buildResult = this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences);
 
-                bool isAssemblyReference = referenceType == ProjectFileConstants.Reference;
-                // If the project was loaded for browsing we should still create the nodes but as not resolved.
-                if(isAssemblyReference && this.ProjectMgr.Build(MsBuildTarget.ResolveAssemblyReferences) != MSBuildResult.Successful)
-                {
-                    continue;
-                }
+			foreach (string referenceType in SupportedReferenceTypes)
+			{
+				bool isAssemblyReference = referenceType == ProjectFileConstants.Reference;
+				if (isAssemblyReference && !buildResult.IsSuccessful)
+				{
+					continue;
+				}
 
-                foreach (MSBuild.ProjectItem item in refererncesGroup)
-                {
+				foreach (var item in MSBuildProject.GetItems(buildProject, referenceType))
+				{
                     ProjectElement element = new ProjectElement(this.ProjectMgr, item, false);
 
                     ReferenceNode node = CreateReferenceNode(referenceType, element);

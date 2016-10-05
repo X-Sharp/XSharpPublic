@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -123,7 +120,7 @@ namespace Microsoft.VisualStudio.Project
                 uint[] itemIdOpen = new uint[1];
                 IVsWindowFrame windowFrame;
                 int fOpen;
-                ErrorHandler.ThrowOnFailure(shell.IsDocumentOpen(this.Node.ProjectMgr.InteropSafeIVsUIHierarchy, this.Node.ID, this.Node.Url, ref logicalView, grfIDO, out pHierOpen, itemIdOpen, out windowFrame, out fOpen));
+                ErrorHandler.ThrowOnFailure(shell.IsDocumentOpen(this.Node.ProjectMgr, this.Node.ID, this.Node.Url, ref logicalView, grfIDO, out pHierOpen, itemIdOpen, out windowFrame, out fOpen));
 
                 if(windowFrame != null)
                 {

@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -205,7 +202,17 @@ namespace Microsoft.VisualStudio.Project.Automation
             throw new NotImplementedException();
         }
 
-        /// <summary>
+		/// <summary>
+		/// Adds a project item which is a link to a file outside the project directory structure.
+		/// </summary>
+		/// <param name="fileName">The file to be linked to the project.</param>
+		/// <returns>A ProjectItem object.</returns>
+		public virtual EnvDTE.ProjectItem AddFileLink(string fileName)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
         /// Get Project Item from index
         /// </summary>
         /// <param name="index">Either index by number (1-based) or by name can be used to get the item</param>

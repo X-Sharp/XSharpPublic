@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="IProjectSourceNode.cs" />
+    <Compile Include="ProjectNodeX.cs" />
     <Compile Include="VOEditorSupport\EditorPane.cs" />
     <Compile Include="VOEditorSupport\Factories.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
@@ -210,6 +211,7 @@
     </ZipItem>
     <Compile Include="VOEditorSupport\IEditor.cs" />
     <Compile Include="VsTextViewCreationListener.cs" />
+    <Compile Include="XSharpPackageSettings.cs" />
     <Compile Include="XSharpProjectReferenceNode.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="XSharpFolderNode.cs" />

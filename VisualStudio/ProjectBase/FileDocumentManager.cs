@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -217,7 +214,7 @@ namespace Microsoft.VisualStudio.Project
 
                 if(openWith)
                 {
-                    result = uiShellOpenDocument.OpenStandardEditor((uint)__VSOSEFLAGS.OSE_UseOpenWithDialog, fullPath, ref logicalView, caption, this.Node.ProjectMgr.InteropSafeIVsUIHierarchy, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
+                    result = uiShellOpenDocument.OpenStandardEditor((uint)__VSOSEFLAGS.OSE_UseOpenWithDialog, fullPath, ref logicalView, caption, this.Node.ProjectMgr, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
                 }
                 else
                 {
@@ -231,12 +228,12 @@ namespace Microsoft.VisualStudio.Project
                     // of the node being opened, otherwise the debugger doesn't work.
                     if(editorType != Guid.Empty)
                     {
-                        result = uiShellOpenDocument.OpenSpecificEditor(editorFlags, fullPath, ref editorType, physicalView, ref logicalView, caption, this.Node.ProjectMgr.InteropSafeIVsUIHierarchy, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
+                        result = uiShellOpenDocument.OpenSpecificEditor(editorFlags, fullPath, ref editorType, physicalView, ref logicalView, caption, this.Node.ProjectMgr, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
                     }
                     else
                     {
                         openFlags |= __VSOSEFLAGS.OSE_ChooseBestStdEditor;
-                        result = uiShellOpenDocument.OpenStandardEditor((uint)openFlags, fullPath, ref logicalView, caption, this.Node.ProjectMgr.InteropSafeIVsUIHierarchy, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
+                        result = uiShellOpenDocument.OpenStandardEditor((uint)openFlags, fullPath, ref logicalView, caption, this.Node.ProjectMgr, this.Node.ID, docDataExisting, serviceProvider, out windowFrame);
                     }
                 }
 
@@ -278,7 +275,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 Trace.WriteLine("Exception e:" + e.Message);
                 returnValue = e.ErrorCode;
-                CloseWindowFrame(ref windowFrame);
+				CloseWindowFrame(ref windowFrame);
             }
 
             return returnValue;

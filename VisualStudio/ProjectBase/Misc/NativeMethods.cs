@@ -3,15 +3,11 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
-
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -26,8 +22,27 @@ namespace Microsoft.VisualStudio.Project
 {
     internal static class NativeMethods
     {
+        public static IntPtr InvalidIntPtr = ((IntPtr)((int)(-1)));
         // IIDS
+
+        public static readonly Guid IID_IServiceProvider = typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider).GUID;
+        public static readonly Guid IID_IObjectWithSite = typeof(IObjectWithSite).GUID;
         public static readonly Guid IID_IUnknown = new Guid("{00000000-0000-0000-C000-000000000046}");
+
+        public static readonly Guid GUID_PropertyBrowserToolWindow = new Guid(unchecked((int)0xeefa5220), unchecked((short)0xe298), (short)0x11d0, new byte[]{ 0x8f, 0x78, 0x0, 0xa0, 0xc9, 0x11, 0x0, 0x57 });
+
+        [ComImport,System.Runtime.InteropServices.Guid("5EFC7974-14BC-11CF-9B2B-00AA00573819")]
+        public class OleComponentUIManager {
+        }
+
+        // packing
+        public static int SignedHIWORD(int n) {
+            return (int)(short)((n >> 16) & 0xffff);
+        }
+
+        public static int SignedLOWORD(int n) {
+            return (int)(short)(n & 0xFFFF);
+        }
 
         public const int
         CLSCTX_INPROC_SERVER = 0x1;
@@ -116,6 +131,8 @@ namespace Microsoft.VisualStudio.Project
 
         public const int
         IEI_DoNotLoadDocData = 0x10000000;
+
+        public static readonly Guid LOGVIEWID_Any = new Guid(0xffffffff, 0xffff, 0xffff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff);
 
         public const int
         CB_SETDROPPEDWIDTH = 0x0160,
@@ -472,6 +489,25 @@ namespace Microsoft.VisualStudio.Project
             OPAQUE = 2,
             FW_BOLD = 700;
 
+        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
+        public class LOGFONT {
+            public int lfHeight = 0;
+            public int lfWidth = 0;
+            public int lfEscapement = 0;
+            public int lfOrientation = 0;
+            public int lfWeight = 0;
+            public byte lfItalic = 0;
+            public byte lfUnderline = 0;
+            public byte lfStrikeOut = 0;
+            public byte lfCharSet = 0;
+            public byte lfOutPrecision = 0;
+            public byte lfClipPrecision = 0;
+            public byte lfQuality = 0;
+            public byte lfPitchAndFamily = 0;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst=32)]
+            public string   lfFaceName = null;
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         public struct NMHDR
         {
@@ -553,14 +589,306 @@ namespace Microsoft.VisualStudio.Project
         }
 
         /// <devdoc>
+        /// Constants for stream usage.
+        /// </devdoc>
+        public sealed class StreamConsts {
+            public const   int LOCK_WRITE = 0x1;
+            public const   int LOCK_EXCLUSIVE = 0x2;
+            public const   int LOCK_ONLYONCE = 0x4;
+            public const   int STATFLAG_DEFAULT = 0x0;
+            public const   int STATFLAG_NONAME = 0x1;
+            public const   int STATFLAG_NOOPEN = 0x2;
+            public const   int STGC_DEFAULT = 0x0;
+            public const   int STGC_OVERWRITE = 0x1;
+            public const   int STGC_ONLYIFCURRENT = 0x2;
+            public const   int STGC_DANGEROUSLYCOMMITMERELYTODISKCACHE = 0x4;
+            public const   int STREAM_SEEK_SET = 0x0;
+            public const   int STREAM_SEEK_CUR = 0x1;
+            public const   int STREAM_SEEK_END = 0x2;
+        }
+
+        /// <devdoc>
+        /// This class implements a managed Stream object on top
+        /// of a COM IStream
+        /// </devdoc>
+        internal sealed class DataStreamFromComStream : Stream, IDisposable {
+
+            private Microsoft.VisualStudio.OLE.Interop.IStream comStream;
+
+            #if DEBUG
+            private string creatingStack;
+            #endif
+
+            public DataStreamFromComStream(Microsoft.VisualStudio.OLE.Interop.IStream comStream) : base() {
+                this.comStream = comStream;
+
+                #if DEBUG
+                creatingStack = Environment.StackTrace;
+                #endif
+            }
+
+            public override long Position {
+                get {
+                    return Seek(0, SeekOrigin.Current);
+                }
+
+                set {
+                    Seek(value, SeekOrigin.Begin);
+                }
+            }
+
+            public override bool CanWrite {
+                get {
+                    return true;
+                }
+            }
+
+            public override bool CanSeek {
+                get {
+                    return true;
+                }
+            }
+
+            public override bool CanRead {
+                get {
+                    return true;
+                }
+            }
+
+            public override long Length {
+                get {
+                    long curPos = this.Position;
+                    long endPos = Seek(0, SeekOrigin.End);
+                    this.Position = curPos;
+                    return endPos - curPos;
+                }
+            }
+
+            private void _NotImpl(string message) {
+                NotSupportedException ex = new NotSupportedException(message, new ExternalException(String.Empty, VSConstants.E_NOTIMPL));
+                throw ex;
+            }
+
+            protected override void Dispose(bool disposing) {
+                try {
+                    if (disposing) {
+                        if (comStream != null) {
+                            Flush();
+                        }
+                    }
+                    // Cannot close COM stream from finalizer thread.
+                    comStream = null;
+                }
+                finally {
+                    base.Dispose(disposing);
+                }
+            }
+
+            public override void Flush() {
+                if (comStream != null) {
+                    try {
+                        comStream.Commit(StreamConsts.STGC_DEFAULT);
+                    }
+                    catch {
+                    }
+                }
+            }
+
+            public override int Read(byte[] buffer, int index, int count) {
+                uint bytesRead;
+                byte[] b = buffer;
+
+                if (index != 0) {
+                    b = new byte[buffer.Length - index];
+                    buffer.CopyTo(b, 0);
+                }
+
+                comStream.Read(b, (uint)count, out bytesRead);
+
+                if (index != 0) {
+                    b.CopyTo(buffer, index);
+                }
+
+                return (int)bytesRead;
+            }
+
+            public override void SetLength(long value) {
+                ULARGE_INTEGER ul = new ULARGE_INTEGER();
+                ul.QuadPart = (ulong)value;
+                comStream.SetSize(ul);
+            }
+
+            public override long Seek(long offset, SeekOrigin origin) {
+                LARGE_INTEGER l = new LARGE_INTEGER();
+                ULARGE_INTEGER[] ul = new ULARGE_INTEGER[1];
+                ul[0] = new ULARGE_INTEGER();
+                l.QuadPart = offset;
+                comStream.Seek(l, (uint)origin, ul);
+                return (long)ul[0].QuadPart;
+            }
+
+            public override void Write(byte[] buffer, int index, int count) {
+                uint bytesWritten;
+
+                if (count > 0) {
+
+                    byte[] b = buffer;
+
+                    if (index != 0) {
+                        b = new byte[buffer.Length - index];
+                        buffer.CopyTo(b, 0);
+                    }
+
+                    comStream.Write(b, (uint)count, out bytesWritten);
+                    if (bytesWritten != count)
+                        // Didn't write enough bytes to IStream!
+                        throw new IOException();
+
+                    if (index != 0) {
+                        b.CopyTo(buffer, index);
+                    }
+                }
+            }
+
+            ~DataStreamFromComStream() {
+                #if DEBUG
+                if (comStream != null) {
+                    Debug.Fail("DataStreamFromComStream not closed.  Creating stack: " + creatingStack);
+                }
+                #endif
+                // CANNOT CLOSE NATIVE STREAMS IN FINALIZER THREAD
+                // Close();
+            }
+        }
+
+        /// <devdoc>
+        /// Class that encapsulates a connection point cookie for COM event handling.
+        /// </devdoc>
+        public sealed class ConnectionPointCookie : IDisposable {
+            private Microsoft.VisualStudio.OLE.Interop.IConnectionPointContainer cpc;
+            private Microsoft.VisualStudio.OLE.Interop.IConnectionPoint connectionPoint;
+            private uint cookie;
+            #if DEBUG
+            private string callStack ="(none)";
+            private Type   eventInterface;
+            #endif
+
+            /// <include file='doc\NativeMethods.uex' path='docs/doc[@for="ConnectionPointCookie.ConnectionPointCookie"]/*' />
+            /// <devdoc>
+            /// Creates a connection point to of the given interface type.
+            /// which will call on a managed code sink that implements that interface.
+            /// </devdoc>
+            public ConnectionPointCookie(object source, object sink, Type eventInterface) : this(source, sink, eventInterface, true){
+            }
+
+            /// <include file='doc\NativeMethods.uex' path='docs/doc[@for="NativeMethods.Finalize1"]/*' />
+            ~ConnectionPointCookie(){
+                #if DEBUG
+                System.Diagnostics.Debug.Assert(connectionPoint == null || cookie == 0, "We should never finalize an active connection point. (Interface = " + eventInterface.FullName + "), allocating code (see stack) is responsible for unhooking the ConnectionPoint by calling Disconnect.  Hookup Stack =\r\n" +  callStack);
+                #endif
+
+                // We must pass false here because chances are that if someone
+                // forgot to Dispose this object, the IConnectionPoint is likely to be
+                // a disconnected RCW at this point (for example, we are far along in a
+                // VS shutdown scenario).  The result will be a memory leak, which is the
+                // expected result for an undisposed IDisposable object. [clovett] bug 369592.
+                Dispose(false);
+            }
+
+            public void Dispose() {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            private void Dispose(bool disposing) {
+                if (disposing) {
+                    try {
+                        if (connectionPoint != null && cookie != 0) {
+                            connectionPoint.Unadvise(cookie);
+                        }
+                    }
+                    finally {
+                        this.cookie = 0;
+                        this.connectionPoint = null;
+                        this.cpc = null;
+                    }
+                }
+            }
+
+            /// <devdoc>
+            /// Creates a connection point to of the given interface type.
+            /// which will call on a managed code sink that implements that interface.
+            /// </devdoc>
+            public ConnectionPointCookie(object source, object sink, Type eventInterface, bool throwException){
+                Exception ex = null;
+                if (source is Microsoft.VisualStudio.OLE.Interop.IConnectionPointContainer) {
+                    this.cpc = (Microsoft.VisualStudio.OLE.Interop.IConnectionPointContainer)source;
+
+                    try {
+                        Guid tmp = eventInterface.GUID;
+                        cpc.FindConnectionPoint(ref tmp, out connectionPoint);
+                    }
+                    catch {
+                        connectionPoint = null;
+                    }
+
+                    if (connectionPoint == null) {
+                        ex = new ArgumentException(/* SR.GetString(SR.ConnectionPoint_SourceIF, eventInterface.Name)*/);
+                    }
+                    else if (sink == null || !eventInterface.IsInstanceOfType(sink)) {
+                        ex = new InvalidCastException(/* SR.GetString(SR.ConnectionPoint_SinkIF)*/);
+                    }
+                    else {
+                        try {
+                            connectionPoint.Advise(sink, out cookie);
+                        }
+                        catch {
+                            cookie = 0;
+                            connectionPoint = null;
+                            ex = new Exception(/*SR.GetString(SR.ConnectionPoint_AdviseFailed, eventInterface.Name)*/);
+                        }
+                    }
+                }
+                else {
+                    ex = new InvalidCastException(/*SR.ConnectionPoint_SourceNotICP)*/);
+                }
+
+
+                if (throwException && (connectionPoint == null || cookie == 0)) {
+                    if (ex == null) {
+                        throw new ArgumentException(/*SR.GetString(SR.ConnectionPoint_CouldNotCreate, eventInterface.Name)*/);
+                    }
+                    else {
+                        throw ex;
+                    }
+                }
+
+                #if DEBUG
+                callStack = Environment.StackTrace;
+                this.eventInterface = eventInterface;
+                #endif
+            }
+        }
+        /// <devdoc>
         /// This method takes a file URL and converts it to an absolute path.  The trick here is that
         /// if there is a '#' in the path, everything after this is treated as a fragment.  So
         /// we need to append the fragment to the end of the path.
         /// </devdoc>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static string GetAbsolutePath(string fileName)
-        {
+        public static string GetAbsolutePath(string fileName) {
             System.Diagnostics.Debug.Assert(fileName != null && fileName.Length > 0, "Cannot get absolute path, fileName is not valid");
+
+            Uri uri = new Uri(fileName);
+            return uri.LocalPath + uri.Fragment;
+        }
+
+        /// <devdoc>
+        /// This method takes a file URL and converts it to a local path.  The trick here is that
+        /// if there is a '#' in the path, everything after this is treated as a fragment.  So
+        /// we need to append the fragment to the end of the path.
+        /// </devdoc>
+        public static string GetLocalPath(string fileName) {
+            System.Diagnostics.Debug.Assert(fileName != null && fileName.Length > 0, "Cannot get local path, fileName is not valid");
 
             Uri uri = new Uri(fileName);
             return uri.LocalPath + uri.Fragment;

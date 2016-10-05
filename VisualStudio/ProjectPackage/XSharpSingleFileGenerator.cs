@@ -74,7 +74,6 @@ namespace XSharp.Project
         /// <returns></returns>
         public override void RunGenerator(string document)
         {
-            // dcaton - the original implementation is crappy.  This method is called zillions of times by the environment,
             // so the first thing we should do is to see if there's any generator defined for this node.
             // in our project system we try to call the ISingleFileGenerator2.RunGeneratorEx
             base.RunGenerator(document);

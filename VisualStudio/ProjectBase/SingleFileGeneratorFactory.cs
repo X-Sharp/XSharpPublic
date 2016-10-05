@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -26,6 +23,7 @@ namespace Microsoft.VisualStudio.Project
     /// <summary>
     /// Provides implementation IVsSingleFileGeneratorFactory for
     /// </summary>
+    [CLSCompliant(false)]
     public class SingleFileGeneratorFactory : IVsSingleFileGeneratorFactory
     {
         #region nested types
@@ -36,7 +34,7 @@ namespace Microsoft.VisualStudio.Project
             private int generatesDesignTimeSource = -1;
             private int generatesSharedDesignTimeSource = -1;
             private int useDesignTimeCompilationFlag = -1;
-            object generator;
+            object generator = null;
             #endregion
 
             #region ctor
@@ -131,7 +129,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// Base generator registry key for MPF based project
         /// </summary>
-        private RegistryKey baseGeneratorRegistryKey;
+        private RegistryKey baseGeneratorRegistryKey = null;
 
         /// <summary>
         /// CLSID reg value name under HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\[VsVer]\Generators\[ProjFacGuid]\[GeneratorProgId]
@@ -320,7 +318,7 @@ namespace Microsoft.VisualStudio.Project
             generatesSharedDesignTimeSource = -1;
             useTempPEFlag = -1;
             guidGenerator = Guid.Empty;
-            if(string.IsNullOrEmpty(progId))
+            if (String.IsNullOrEmpty(progId))
                 return VSConstants.S_FALSE;
 
             //Create the single file generator and pass it out.
@@ -335,7 +333,7 @@ namespace Microsoft.VisualStudio.Project
 
                 //Get the CLSID
                 string guid = (string)genKey.GetValue(GeneratorClsid, "");
-                if(string.IsNullOrEmpty(guid))
+                if (String.IsNullOrEmpty(guid))
                     return VSConstants.S_FALSE;
 
                 GeneratorMetaData genData = new GeneratorMetaData();

@@ -3,11 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.html file at the root of this distribution. If
- * you cannot locate the Apache License, Version 2.0, please send an email to
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound
- * by the terms of the Apache License, Version 2.0.
- *
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -27,10 +24,10 @@ namespace Microsoft.VisualStudio.Project
     {
 
         #region fields
-        private uint eventsCookie;
-        private IVsSolution solution;
-        private IServiceProvider serviceProvider;
-        private bool isDisposed;
+		private uint eventsCookie = (uint)ShellConstants.VSCOOKIE_NIL;
+		private IVsSolution solution = null;
+		private IServiceProvider serviceProvider = null;
+		private bool isDisposed;
         /// <summary>
         /// Defines an object that will be a mutex for this object for synchronizing thread calls.
         /// </summary>
@@ -210,7 +207,7 @@ namespace Microsoft.VisualStudio.Project
         {
             if(this.solution != null)
             {
-                ErrorHandler.ThrowOnFailure(this.solution.AdviseSolutionEvents(this.InteropSafeIVsSolutionEvents, out this.eventsCookie));
+                this.solution.AdviseSolutionEvents(this.InteropSafeIVsSolutionEvents, out this.eventsCookie);
             }
         }
 

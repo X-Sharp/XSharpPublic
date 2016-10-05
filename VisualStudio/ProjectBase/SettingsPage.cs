@@ -1,19 +1,17 @@
 /* ****************************************************************************
  *
- * Copyright (c) Microsoft Corporation. 
+ * Copyright (c) Microsoft Corporation.
  *
- * This source code is subject to terms and conditions of the Apache License, Version 2.0. A 
- * copy of the license can be found in the License.html file at the root of this distribution. If 
- * you cannot locate the Apache License, Version 2.0, please send an email to 
- * vspython@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
- * by the terms of the Apache License, Version 2.0.
- *
+ * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
+ * copy of the license can be found in the License.txt file at the root of this distribution. 
+ * 
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -39,7 +37,7 @@ namespace Microsoft.VisualStudio.Project
         #region fields
         private Panel panel;
         private bool active;
-        private bool dirty;
+        private bool dirty = false;
         private IPropertyPageSite site;
         private ProjectNode project;
         private ProjectConfig[] projectConfigs;
@@ -50,6 +48,8 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region properties
+        // Remember - all properties that you don't want to appear in the properties grid
+        // need to be marked with [Browsable(false)] and [AutomationBrowsable(false)]
 
         [Browsable(false)]
         [AutomationBrowsable(false)]
@@ -75,11 +75,15 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        [Browsable(false)]
+        [AutomationBrowsable(false)]
         protected IVSMDPropertyGrid Grid
         {
             get { return this.grid; }
         }
 
+        [Browsable(false)]
+        [AutomationBrowsable(false)]
         protected bool IsDirty
         {
             get
@@ -96,6 +100,9 @@ namespace Microsoft.VisualStudio.Project
                 }
             }
         }
+
+        [Browsable(false)]
+        [AutomationBrowsable(false)]
         protected Panel ThePanel
         {
             get
@@ -103,7 +110,7 @@ namespace Microsoft.VisualStudio.Project
                 return this.panel;
             }
         }
-        #endregion		
+        #endregion
 
         #region abstract methods
         protected abstract void BindProperties();
@@ -114,7 +121,7 @@ namespace Microsoft.VisualStudio.Project
         public object GetTypedConfigProperty(string name, Type type)
         {
             string value = GetConfigProperty(name);
-            if(string.IsNullOrEmpty(value)) return null;
+            if (String.IsNullOrEmpty(value)) return null;
 
             TypeConverter tc = TypeDescriptor.GetConverter(type);
             return tc.ConvertFromInvariantString(value);
@@ -123,7 +130,7 @@ namespace Microsoft.VisualStudio.Project
         public object GetTypedProperty(string name, Type type)
         {
             string value = GetProperty(name);
-            if(string.IsNullOrEmpty(value)) return null;
+            if (String.IsNullOrEmpty(value)) return null;
 
             TypeConverter tc = TypeDescriptor.GetConverter(type);
             return tc.ConvertFromInvariantString(value);
@@ -206,7 +213,7 @@ namespace Microsoft.VisualStudio.Project
 
         /// <summary>
         /// Sets the value of a configuration dependent property.
-        /// If the attribute does not exist it is created.  
+        /// If the attribute does not exist it is created.
         /// If value is null it will be set to an empty string.
         /// </summary>
         /// <param name="name">property name.</param>
@@ -331,7 +338,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 throw new ArgumentNullException("arrRect");
             }
-            
+
             RECT r = arrRect[0];
 
             this.panel.Location = new Point(r.left, r.top);
@@ -372,7 +379,7 @@ namespace Microsoft.VisualStudio.Project
                         this.project = (punk[0] as NodeProperties).Node.ProjectMgr;
                     }
 
-                    System.Collections.Generic.Dictionary<string, ProjectConfig> configsMap = new System.Collections.Generic.Dictionary<string, ProjectConfig>();
+                    Dictionary<string, ProjectConfig> configsMap = new Dictionary<string, ProjectConfig>();
 
                     for(int i = 0; i < count; i++)
                     {
@@ -385,7 +392,7 @@ namespace Microsoft.VisualStudio.Project
                         {
                             ProjectConfig[] configs = new ProjectConfig[expected[0]];
                             uint[] actual = new uint[1];
-                            ErrorHandler.ThrowOnFailure(provider.GetCfgs(expected[0], configs, actual, null));
+                            provider.GetCfgs(expected[0], configs, actual, null);
 
                             foreach(ProjectConfig config in configs)
                             {
@@ -426,7 +433,7 @@ namespace Microsoft.VisualStudio.Project
 
         public virtual void Show(uint cmd)
         {
-            this.panel.Visible = true; // TODO: pass SW_SHOW* flags through      
+            this.panel.Visible = true; // TODO: pass SW_SHOW* flags through
             this.panel.Show();
         }
 

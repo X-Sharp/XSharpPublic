@@ -27,16 +27,16 @@ namespace XSharp.Project
         {
         }
 
-        protected override ProjectConfig CreateProjectConfiguration(string configName)
+        protected override ProjectConfig CreateProjectConfiguration(ConfigCanonicalName canonicalName)
         {
-            return new XSharpProjectConfig(base.ProjectMgr, configName);
+            return new XSharpProjectConfig(base.ProjectMgr, canonicalName);
         }
     }
 
-    internal class XSharpProjectConfig : ProjectConfig
+    internal class XSharpProjectConfig : DebuggableProjectConfig
     {
         private ProjectNode _project;
-        internal XSharpProjectConfig(ProjectNode project, string configuration) : base(project, configuration)
+        internal XSharpProjectConfig(ProjectNode project, ConfigCanonicalName configuration) : base(project, configuration)
         {
             _project = project;
         }
@@ -82,7 +82,7 @@ namespace XSharp.Project
                 string property = GetConfigurationProperty("DebuggerCommand", true);
                 if (string.IsNullOrEmpty(property))
                 {
-                    property = this._project.GetOutputAssembly(this.ConfigName);
+                    property = this._project.GetOutputAssembly(this.ConfigCanonicalName);
                 }
                 info.bstrExe = property;
 

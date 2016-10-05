@@ -61,14 +61,7 @@ namespace XSharp.Project
         }
 
         // 
-        [Browsable(false)]
-        public string URL
-        {
-            get { return this.Url; }
-        }
-
-
-        [Browsable(false)]
+       [Browsable(false)]
         [SRCategoryAttribute(SR.Advanced)]
         [LocDisplayName("SubType")]
         [SRDescriptionAttribute("SubTypeDescription")]
@@ -109,14 +102,6 @@ namespace XSharp.Project
         public bool IsDependent { get; set; }
 
 
-        [Browsable(false)]
-        public virtual bool IsLink
-        {
-            get
-            {
-                return false;
-            }
-        }
 
         [Browsable(false)]
         public string ItemType
@@ -134,7 +119,7 @@ namespace XSharp.Project
         }
 
         [Browsable(false)]
-        public override BuildAction BuildAction
+        public override BuildActionEnum BuildAction
         {
             get
             {
@@ -143,10 +128,10 @@ namespace XSharp.Project
                     case XSharpBuildAction.ApplicationDefinition:
                     case XSharpBuildAction.Page:
                     case XSharpBuildAction.Resource:
-                        return BuildAction.Compile;
+                        return BuildActionEnum.Compile;
 
                     default:
-                        return (BuildAction)Enum.Parse(typeof(BuildAction), XSharpBuildAction.ToString());
+                        return (BuildActionEnum)Enum.Parse(typeof(BuildAction), XSharpBuildAction.ToString());
                 }
             }
 
@@ -163,46 +148,7 @@ namespace XSharp.Project
             }
         }
 
-        [SRCategoryAttribute(Microsoft.VisualStudio.Project.SR.Advanced)]
-        [LocDisplayName("Copy to Output Directory")]
-        [SRDescriptionAttribute("Specifies if the source file will be copied to the output directory.")]
-        public virtual CopyToOutput CopyToOutputDirectory
-        {
-            get
-            {
-                string value = this.Node.ItemNode.GetMetadata(nameof(CopyToOutputDirectory));
-
-                if (String.Compare(value, "Always", StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    return CopyToOutput.CopyAlways;
-                }
-                else if (String.Compare(value, "PreserveNewest", StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    return CopyToOutput.CopyPreserveNewest;
-                }
-                else
-                {
-                    return CopyToOutput.CopyNever;
-                }
-            }
-
-            set
-            {
-                if (value == CopyToOutput.CopyNever)
-                {
-                    this.Node.ItemNode.SetMetadata(nameof(CopyToOutputDirectory), null);
-                }
-                else if (value == CopyToOutput.CopyAlways)
-                {
-                    this.Node.ItemNode.SetMetadata(nameof(CopyToOutputDirectory), "Always");
-                }
-                else
-                {
-                    this.Node.ItemNode.SetMetadata(nameof(CopyToOutputDirectory), "PreserveNewest");
-                }
-            }
-        }
-        public class CopyToOutputConverter : EnumConverter
+         public class CopyToOutputConverter : EnumConverter
         {
 
             public CopyToOutputConverter()

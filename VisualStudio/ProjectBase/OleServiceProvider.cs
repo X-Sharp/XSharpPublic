@@ -261,9 +261,9 @@ namespace Microsoft.VisualStudio.Project
         // The ResxCodeSingleFileGenerator expects to find the IVsBrowseObject interface on this
         // object.  The NodePropeties object implements IVsBrowseObject, but we have no way to get
         // the NodeProperties object since we don't have a back reference to the hierarchy node that
-        // owns this OleServiceProvider instance.  So when a VulcanFileNode object is created, IVsBrowseObject is added
-        // to the list of available services (in VulcanProject.CreateFileNode) and in the service
-        // creator callback in VulcanProject, querying for the IVsBrowseObject service (which isn't really
+        // owns this OleServiceProvider instance.  So when a FileNode object is created, IVsBrowseObject is added
+        // to the list of available services (in Project.CreateFileNode) and in the service
+        // creator callback in Project, querying for the IVsBrowseObject service (which isn't really
         // a service) returns a reference to the NodeProperties object for the node.
         //
         // When this object is QI'd for IVsBrowseObject by the ResXCodeFileGenerator it is successful

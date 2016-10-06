@@ -1,3 +1,4 @@
+#if NOTUSED
 /* ****************************************************************************
  *
  * Copyright (c) Microsoft Corporation.
@@ -144,3 +145,4 @@ namespace Microsoft.VisualStudio.Project
 
     }
 }
+#endif

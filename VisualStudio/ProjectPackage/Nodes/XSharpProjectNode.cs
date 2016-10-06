@@ -22,7 +22,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System.Diagnostics;
 using MSBuild = Microsoft.Build.Evaluation;
-using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 namespace XSharp.Project
 {
@@ -31,14 +30,29 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : ProjectNodeX
+    public class XSharpProjectNode : XProjectNode
     {
-        #region Enum for image list
+
+        static Dictionary<string, string> dependencies;
+        static XSharpProjectNode()
+        {
+            dependencies = new Dictionary<string, string>();
+            dependencies.Add(".designer.prg", ".prg");
+            dependencies.Add(".xaml.prg", ".xaml");
+            dependencies.Add(".vh", ".prg");
+
+            try
+            {
+                imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
+            }
+            catch (Exception)
+            { }
+        }
+
         internal enum XSharpProjectImageName
         {
             Project = 0,
         }
-        #endregion
 
         #region Constants
         internal const string ProjectTypeName = "XSharp";
@@ -54,18 +68,6 @@ namespace XSharp.Project
         #endregion
 
         #region Constructors
-        /// <summary>
-        /// Initializes the <see cref="XSharpProjectNode"/> class.
-        /// </summary>
-        static XSharpProjectNode()
-        {
-            try
-            {
-                imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
-            }
-            catch (Exception)
-            { }
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XSharpProjectNode"/> class.
@@ -246,7 +248,7 @@ namespace XSharp.Project
         {
             Utilities.ArgumentNotNull("item", item);
 
-            XSharpFileNode node = new XSharpFileNode(this, item);
+            XSharpFileNode node = new XSharpFileNode(this, item, item.IsVirtual);
 
             var provider = node.OleServiceProvider;
 
@@ -266,7 +268,7 @@ namespace XSharp.Project
                 provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
             }
 
-            if (node.IsFormSubType)
+            if (node.IsForm)
             {
                 // Use the CreateServices of the Node
                 provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
@@ -281,7 +283,7 @@ namespace XSharp.Project
 
         protected internal override FolderNode CreateFolderNode(string path, ProjectElement element)
         {
-            FolderNode folderNode = new XSharpFolderNode(this, path, element);
+            FolderNode folderNode = new XSharpFolderNode(this, path, element, element.IsVirtual);
             return folderNode;
         }
 
@@ -298,7 +300,7 @@ namespace XSharp.Project
         /// <returns>dependent file node</returns>
         public override FileNode CreateDependentFileNode(ProjectElement item)
         {
-            XSharpDependentFileNode newNode = new XSharpDependentFileNode(this, item);
+            XSharpDependentFileNode newNode = new XSharpDependentFileNode(this, item, item.IsVirtual);
             string include = item.GetMetadata(ProjectFileConstants.Include);
 
             var provider = newNode.OleServiceProvider;
@@ -534,25 +536,21 @@ namespace XSharp.Project
             return newNode;
         }
 
-        protected override HierarchyNode AddNewFileNodeToHierarchy(HierarchyNode parentNode, string fileName, string linkPath)
+        protected override HierarchyNode AddNewFileNodeToHierarchyCore(HierarchyNode parentNode, string fileName, string linkPath)
         {
             // We have to take care of Dependant Files here
             // So any .Designer.prg, or .Xaml.Prg is depending from a parent which has the same prefix name
             // then we must set that parent as parentNode;
             Utilities.ArgumentNotNull("parentNode", parentNode);
-            Dictionary<string, string> Dependencies = new Dictionary<string, string>();
-            Dependencies.Add(".designer.prg", ".prg");
-            Dependencies.Add(".xaml.prg", ".xaml");
-            Dependencies.Add(".vh", ".prg");
             // Check if we can find the Parent
             int dotPos = fileName.IndexOf(".");
             string parentFile = fileName.Substring(0, dotPos);
             string extension = fileName.Substring(dotPos).ToLower();
             //
-            if ( Dependencies.ContainsKey(extension) )
+            if ( dependencies.ContainsKey(extension) )
             {
                 //
-                HierarchyNode newParent = parentNode.FindChild(parentFile + Dependencies[extension]);
+                HierarchyNode newParent = parentNode.FindChild(parentFile + dependencies[extension]);
                 if (newParent != null)
                 {
                     parentNode = newParent;
@@ -584,7 +582,13 @@ namespace XSharp.Project
                     }
                     break;
             }
-            return base.AddNewFileNodeToHierarchy(parentNode, fileName,linkPath);
+            var newNode = base.AddNewFileNodeToHierarchyCore(parentNode, fileName,linkPath);
+            if (newNode is XSharpFileNode)
+            {
+                var xNode = newNode as XSharpFileNode;
+                xNode.DetermineSubType();
+            }
+            return newNode;
         }
 
         protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
@@ -593,21 +597,11 @@ namespace XSharp.Project
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
             Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
-
-            string type = XSharpFileNode.GetItemType(file);
-            if(String.IsNullOrEmpty(type))
-                type = "None";
-            newItem = this.CreateMsBuildFileItem(itemPath, type);
-            switch (XSharpFileNode.GetFileType(itemPath))
-            {
-                case XSharpFileType.ManagedResource:
-                    newItem.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
-                    newItem.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
-                    break;
-                case XSharpFileType.Settings:
-                    newItem.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
-                    break;
-            }
+            var type = XSharpFileNode.GetFileType(itemPath);
+            string itemType = XSharpFileNode.GetItemType(type);
+            if(String.IsNullOrEmpty(itemType))
+                itemType = "None";
+            newItem = this.CreateMsBuildFileItem(itemPath, itemType);
             return newItem;
         }
 
@@ -885,47 +879,57 @@ namespace XSharp.Project
 
             if (MoveDependants())
             {
-                URLNodes.Clear();
-                base.UnloadProject();
-                base.Reload();
+                this.BuildProject.Save();
             }
 
         }
         protected virtual internal bool MoveDependants()
         {
             bool bMoved = false;
-            List<XSharpFileNode> FilesToMove = new List<XSharpFileNode>();
+            List< Tuple<XSharpFileNode,String,String>> FilesToMove = new List<Tuple<XSharpFileNode, String, String>>();
             foreach (KeyValuePair<string, HierarchyNode> pair in URLNodes)
             {
                 XSharpFileNode vnode = pair.Value as XSharpFileNode;
                 if (vnode != null)
                 {
-                    if (!vnode.IsDependent && vnode.IsDependent)
+                    string parent = vnode.GetParentName();
+                    if (! String.IsNullOrEmpty(parent))
                     {
                         if (!(vnode.Parent is XSharpFileNode))
-                            FilesToMove.Add(vnode);
+                        {
+                            FilesToMove.Add(new Tuple<XSharpFileNode, string, string>(vnode, parent, vnode.SubType));
+                        }
                     }
                 }
 
             }
-            foreach (XSharpFileNode NodeToMove in FilesToMove)
+            foreach (var element in FilesToMove)
             {
 
-                HierarchyNode parentNode = null;
-                String fileName = NodeToMove.Url;
-                string parentName = NodeToMove.GetParentName();
-                parentNode = FindURL(parentName);
+                var NodeToMove = element.Item1;
+                var parentName = element.Item2;
+                var subType = element.Item3;
+                var parentNode = FindURL(parentName);
                 if (parentNode != null && parentNode is XSharpFileNode)
                 {
                     XSharpFileNode parent = (XSharpFileNode)parentNode;
                     parent.AddDependant(NodeToMove);
+                    NodeToMove.SubType = subType;
                     bMoved = true;
                 }
             }
             return bMoved;
         }
 
-
+        internal override bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
+        {
+            bool bOk = base.AddFilesFromProjectReferences(targetNode, projectReferences, dropEffect);
+            if (bOk)
+            {
+                MoveDependants();
+            }
+            return bOk;
+        }
 
     }
 }

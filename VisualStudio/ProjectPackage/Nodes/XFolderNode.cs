@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -18,9 +18,11 @@ namespace XSharp.Project
 {
 
     /// <summary>
-    /// Represents a Folder node in a Vulcan project.
+    /// Represents a Folder node in a XSharp project.
+	/// This code is mostly copied from the WixFoldernode in Votive
     /// </summary>
-    public class XSharpFolderNode : FolderNode, IProjectSourceNode
+    [CLSCompliant(false)]
+    public class XFolderNode : FolderNode, IProjectSourceNode
     {
         // =========================================================================================
         // Member Variables
@@ -33,30 +35,28 @@ namespace XSharp.Project
         // =========================================================================================
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VulcanFolderNode"/> class.
+        /// Initializes a new instance of the <see cref="XFolderNode"/> class.
         /// </summary>
-        /// <param name="root">The root <see cref="VulcanProjectNode"/> that contains this node.</param>
+        /// <param name="root">The root <see cref="XProjectNode"/> that contains this node.</param>
         /// <param name="directoryPath">Root of the hierarchy.</param>
         /// <param name="element">The element that contains MSBuild properties.</param>
-        public XSharpFolderNode(XSharpProjectNode root, string directoryPath, ProjectElement element)
+        public XFolderNode(XProjectNode root, string directoryPath, ProjectElement element)
            : this(root, directoryPath, element, false)
         {
-            root.AddURL(this.Url, this);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VulcanFileNode"/> class.
+        /// Initializes a new instance of the <see cref="XFolderNode"/> class.
         /// </summary>
-        /// <param name="root">The root <see cref="VulcanProjectNode"/> that contains this node.</param>
+        /// <param name="root">The root <see cref="XProjectNode"/> that contains this node.</param>
         /// <param name="directoryPath">Root of the hierarchy</param>
         /// <param name="element">The element that contains MSBuild properties.</param>
         /// <param name="isNonMemberItem">Indicates if this node is not a member of the project.</param>
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NonMember")]
-        public XSharpFolderNode(XSharpProjectNode root, string directoryPath, ProjectElement element, bool isNonMemberItem)
+        public XFolderNode(XProjectNode root, string directoryPath, ProjectElement element, bool isNonMemberItem)
            : base(root, directoryPath, element)
         {
             this.isNonMemberItem = isNonMemberItem;
-            root.AddURL(this.Url, this);
             // Folders do not participate in SCC.
             base.ExcludeNodeFromScc = true;
         }
@@ -77,6 +77,29 @@ namespace XSharp.Project
                 return base.MenuCommandId;
             }
         }
+        /*
+        public override int ImageIndex
+        {
+            get
+            {
+                if (this.IsNonMemberItem)
+                {
+                    if (this.IsExpanded)
+                        return (int)ProjectNode.ImageName.OpenExcludedFolder;
+                    else
+                        return (int)ProjectNode.ImageName.ExcludedFolder;
+                }
+                else
+                {
+                    if (this.IsExpanded)
+                        return (int)ProjectNode.ImageName.OpenFolder;
+                    else
+                        return (int)ProjectNode.ImageName.Folder;
+                }
+
+            }
+        }
+        */
 
         /// <summary>
         /// Specifies if a Node is under source control.
@@ -87,7 +110,7 @@ namespace XSharp.Project
         {
             get
             {
-                // Non member items donot participate in SCC.
+                // Non member items do not participate in SCC.
                 if (this.IsNonMemberItem)
                 {
                     return true;
@@ -148,7 +171,7 @@ namespace XSharp.Project
                     }
                     else
                     {
-                        SupportMethods.TraceFail("Could not parse the IsNonMemberItem property value.");
+                        XSharpHelperMethods.TraceFail("Could not parse the IsNonMemberItem property value.");
                     }
 
                     result = VSConstants.S_OK;
@@ -193,23 +216,6 @@ namespace XSharp.Project
             return base.GetEditLabel();
         }
 
-
-        public override int SetEditLabel(string label)
-        {
-            int iResult;
-            String sOldUrl = this.Url;
-            iResult = base.SetEditLabel(label);
-            if (iResult == VSConstants.S_OK && String.Compare(this.Url, sOldUrl, true) != 0)
-            {
-                XSharpProjectNode project = this.ProjectMgr as XSharpProjectNode;
-                if (project != null)
-                {
-                    project.RemoveURL(sOldUrl);
-                    project.AddURL(this.Url, this);
-                }
-            }
-            return iResult;
-        }
 
         // Because the IsExpanded is not working properly (as of this date, 10/18/2007), that's why we are using the
         // GetIconHandle method. When we fix the IsExpanded property, we should switch to ImageIndex property instead
@@ -257,7 +263,7 @@ namespace XSharp.Project
         [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes")]
         int IProjectSourceNode.ExcludeFromProject()
         {
-            XSharpProjectNode projectNode = this.ProjectMgr as XSharpProjectNode;
+            XProjectNode projectNode = this.ProjectMgr as XProjectNode;
             if (projectNode == null || projectNode.IsClosed)
             {
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
@@ -267,7 +273,7 @@ namespace XSharp.Project
                 return VSConstants.S_OK; // do nothing, just ignore it.
             }
 
-            using (SupportMethods.NewWaitCursor())
+            using (XSharpHelperMethods.NewWaitCursor())
             {
                 // Check out the project file.
                 if (!projectNode.QueryEditProjectFile(false))
@@ -312,7 +318,7 @@ namespace XSharp.Project
                 }
 
                 // refresh property browser...
-                SupportMethods.RefreshPropertyBrowser();
+                XSharpHelperMethods.RefreshPropertyBrowser();
             }
 
             return VSConstants.S_OK;
@@ -345,7 +351,7 @@ namespace XSharp.Project
                 return VSConstants.S_OK; // do nothing, just ignore it.
             }
 
-            using (SupportMethods.NewWaitCursor())
+            using (XSharpHelperMethods.NewWaitCursor())
             {
                 // Check out the project file.
                 if (!this.ProjectMgr.QueryEditProjectFile(false))
@@ -354,14 +360,14 @@ namespace XSharp.Project
                 }
 
                 // make sure that all parent folders are included in the project
-                SupportMethods.EnsureParentFolderIncluded(this);
+                XSharpHelperMethods.EnsureParentFolderIncluded(this);
 
                 // now add this node to the project.
                 this.AddToMSBuild(recursive);
                 this.ReDraw(UIHierarchyElement.Icon);
 
                 // refresh property browser...
-                SupportMethods.RefreshPropertyBrowser();
+                XSharpHelperMethods.RefreshPropertyBrowser();
             }
 
             return VSConstants.S_OK;
@@ -371,10 +377,17 @@ namespace XSharp.Project
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
         /// properties specific for this object to the property browser.
         /// </summary>
-        /// <returns>A new <see cref="VulcanFileNodeProperties"/> object.</returns>
+        /// <returns>A new <see cref="NodeProperties"/> object.</returns>
         protected override NodeProperties CreatePropertiesObject()
         {
-            return new FolderNodeProperties(this);
+            if (this.IsNonMemberItem)
+            {
+                return new XSharpFolderNodeNonMemberProperties(this);
+            }
+            else
+            {
+                return new XSharpFolderNodeProperties(this);
+            }
         }
 
         /// <summary>
@@ -389,7 +402,7 @@ namespace XSharp.Project
         protected override int QueryStatusOnNode(Guid cmdGroup, uint cmd, IntPtr pCmdText, ref QueryStatusResult result)
         {
             int returnCode;
-            if (SupportMethods.QueryStatusOnProjectSourceNode(this, cmdGroup, cmd, ref result, out returnCode))
+            if (XSharpHelperMethods.QueryStatusOnProjectSourceNode(this, cmdGroup, cmd, ref result, out returnCode))
             {
                 return returnCode;
             }
@@ -422,11 +435,11 @@ namespace XSharp.Project
                         return ((IProjectSourceNode)this).ExcludeFromProject();
 
                     case ExploreFolderInWindowsCommand:
-                        SupportMethods.ExploreFolderInWindows(this.GetMkDocument());
+                        XSharpHelperMethods.ExploreFolderInWindows(this.GetMkDocument());
                         return VSConstants.S_OK;
 
                     case VsCommands2K.SLNREFRESH:
-                        SupportMethods.RefreshProject(this);
+                        XSharpHelperMethods.RefreshProject(this);
                         return VSConstants.S_OK;
                 }
             }
@@ -436,7 +449,7 @@ namespace XSharp.Project
                 switch ((VsCommands)cmd)
                 {
                     case VsCommands.Refresh:
-                        SupportMethods.RefreshProject(this);
+                        XSharpHelperMethods.RefreshProject(this);
                         return VSConstants.S_OK;
                 }
             }
@@ -450,13 +463,13 @@ namespace XSharp.Project
         /// <param name="recursive">Flag to indicate if the addition should be recursive.</param>
         protected virtual void AddToMSBuild(bool recursive)
         {
-            XSharpProjectNode projectNode = this.ProjectMgr as XSharpProjectNode;
+            XProjectNode projectNode = this.ProjectMgr as XProjectNode;
             if (projectNode == null || projectNode.IsClosed)
             {
                 return; // do nothing
             }
 
-            this.ItemNode = projectNode.AddFolderToMsBuild(this.Url);
+            this.ItemNode = projectNode.CreateMsBuildFolderProjectElement(this.Url);
             this.SetProperty((int)__VSHPROPID.VSHPROPID_IsNonMemberItem, false);
             if (recursive)
             {
@@ -468,28 +481,6 @@ namespace XSharp.Project
                         sourceNode.IncludeInProject(recursive);
                     }
                 }
-            }
-        }
-        protected internal override void DeleteFromStorage(string path)
-        {
-            if (File.Exists(path))
-            {
-                File.SetAttributes(path, FileAttributes.Normal); // make sure it's not readonly.
-                OurNativeMethods.ShellDelete(path, OurNativeMethods.RecycleOption.SendToRecycleBin,
-                   OurNativeMethods.UICancelOption.DoNothing, OurNativeMethods.FileOrDirectory.Directory);
-
-            }
-        }
-
-        public override void OnItemDeleted()
-        {
-            if (this.ProjectMgr is XSharpProjectNode)
-            {
-                XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
-                if (projectNode != null)
-                    projectNode.RemoveURL(this);
-
-                base.OnItemDeleted();
             }
         }
 
@@ -507,31 +498,20 @@ namespace XSharp.Project
             if (!Utilities.IsInAutomationFunction(this.ProjectMgr.Site))
             {
                 IVsUIHierarchyWindow uiWindow = UIHierarchyUtilities.GetUIHierarchyWindow(this.ProjectMgr.Site, SolutionExplorer);
-                int result = uiWindow.ExpandItem(this.ProjectMgr, this.ID, expanded ? EXPANDFLAGS.EXPF_ExpandFolder : EXPANDFLAGS.EXPF_CollapseFolder);
-                ErrorHandler.ThrowOnFailure(result);
+                if (null != uiWindow)
+                {
+                    ErrorHandler.ThrowOnFailure(uiWindow.ExpandItem(this.ProjectMgr, this.ID, expanded ? EXPANDFLAGS.EXPF_ExpandFolder : EXPANDFLAGS.EXPF_CollapseFolder));
+                }
 
                 // then post the expand command to the shell. Folder verification and creation will
                 // happen in the setlabel code...
-                IVsUIShell shell = SupportMethods.GetService<IVsUIShell, SVsUIShell>(this.ProjectMgr.Site);
+                IVsUIShell shell = XSharpHelperMethods.GetService<IVsUIShell, SVsUIShell>(this.ProjectMgr.Site);
 
                 object dummy = null;
                 Guid cmdGroup = VsMenus.guidStandardCommandSet97;
-                result = shell.PostExecCommand(ref cmdGroup, (uint)(expanded ? VsCommands.Expand : VsCommands.Collapse), 0, ref dummy);
-                ErrorHandler.ThrowOnFailure(result);
+                ErrorHandler.ThrowOnFailure(shell.PostExecCommand(ref cmdGroup, (uint)(expanded ? VsCommands.Expand : VsCommands.Collapse), 0, ref dummy));
             }
         }
-        #region Dispose Methods
-        protected override void Dispose(bool disposing)
-        {
-            if (this.ProjectMgr is XSharpProjectNode)
-            {
-                XSharpProjectNode projectNode = (XSharpProjectNode)this.ProjectMgr;
-                if (projectNode != null)
-                    projectNode.RemoveURL(this);
-            }
-            base.Dispose(disposing);
-        }
-        #endregion
 
     }
 }

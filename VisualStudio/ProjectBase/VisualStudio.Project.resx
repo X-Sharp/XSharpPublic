@@ -533,7 +533,6 @@
   <data name="CopyToOutputDirectoryDescription" xml:space="preserve">
     <value>Specifies the source file will be copied to the output directory</value>
   </data>
-  
   <data name="Culture" xml:space="preserve">
     <value>Culture</value>
   </data>
@@ -546,7 +545,7 @@
   <data name="DescriptionDescription" xml:space="preserve">
     <value>The value of the AssemblyDescription attribute from the assembly metadata.</value>
   </data>
-    <data name="CopyNOfFile" xml:space="preserve">
+  <data name="CopyNOfFile" xml:space="preserve">
     <value>Copy ({0}) of {1}</value>
   </data>
   <data name="Settings" xml:space="preserve">
@@ -593,7 +592,7 @@ Are you sure you want to change the Target Framework for this project?</value>
   <data name="SpecificVersionDescription" xml:space="preserve">
     <value>Indicates whether this reference is to a specific version of an assembly.</value>
   </data>
-    <data name="StrongName" xml:space="preserve">
+  <data name="StrongName" xml:space="preserve">
     <value>Strong Name</value>
   </data>
   <data name="StrongNameDescription" xml:space="preserve">
@@ -655,5 +654,8 @@ Are you sure you want to change the Target Framework for this project?</value>
   <data name="UpgradeSuccessful" xml:space="preserve">
     <value>Upgrade successful.</value>
   </data>
-  
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="imagelis" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\imagelis.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

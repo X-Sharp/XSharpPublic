@@ -66,12 +66,12 @@ namespace XSharp.Project
         /// <summary>
         /// Evaluates all file node children of the project and returns true if anyone has subtype set to Form
         /// </summary>
-        /// <returns>true if a Vulcan filenode with subtype Form is found</returns>
+        /// <returns>true if a Filenode with subtype Form is found</returns>
         private bool HasFormItems()
         {
-            List<XSharpFileNode> vulcanFileNodes = new List<XSharpFileNode>();
-            this.ProjectMgr.FindNodesOfType<XSharpFileNode>(vulcanFileNodes);
-            foreach (XSharpFileNode node in vulcanFileNodes)
+            List<XSharpFileNode> nodes = new List<XSharpFileNode>();
+            this.ProjectMgr.FindNodesOfType<XSharpFileNode>(nodes);
+            foreach (XSharpFileNode node in nodes)
             {
                 //Todo
                 // if (node.FileType.IsWinFormSubType || node.FileType.IsWinUserControl)

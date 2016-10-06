@@ -30,7 +30,17 @@ namespace XSharp.Project
         /// <param name="root">Root of the hierarchy</param>
         /// <param name="e">Associated project element</param>
         public XSharpDependentFileNode(XSharpProjectNode root, ProjectElement e)
-            : base(root, e)
+            : base(root, e, false)
+        {
+        }
+
+        /// <summary>
+        /// Constructor for the XSharpDependentFileNode
+        /// </summary>
+        /// <param name="root">Root of the hierarchy</param>
+        /// <param name="e">Associated project element</param>
+        public XSharpDependentFileNode(XSharpProjectNode root, ProjectElement e, bool isNonMemberItem)
+            : base(root, e,isNonMemberItem)
         {
             HasParentNodeNameRelation = false;
             IsDependent = true;
@@ -117,11 +127,6 @@ namespace XSharp.Project
             {
                 this.Parent.ReDraw(UIHierarchyElement.SccState);
             }
-        }
-
-        protected override NodeProperties CreatePropertiesObject()
-        {
-            return new XSharpFileNodeProperties(this);
         }
 
         #endregion

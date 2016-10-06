@@ -405,7 +405,7 @@ namespace Microsoft.VisualStudio.Project
         /// <summary>
         /// The VS command that allows projects to open Windows Explorer to the project directory.
         /// </summary>
-        private const VsCommands2K ExploreFolderInWindowsCommand = (VsCommands2K)1635;
+        public const VsCommands2K ExploreFolderInWindowsCommand = (VsCommands2K)1635;
 
         #endregion
 
@@ -2863,10 +2863,10 @@ namespace Microsoft.VisualStudio.Project
         /// </summary>
         /// <param name="item">msbuild item</param>
         /// <returns>dependent file node</returns>
-        public virtual FileNode CreateDependentFileNode(ProjectElement item)
-        {
-            return new DependentFileNode(this, item);
-        }
+        public abstract FileNode CreateDependentFileNode(ProjectElement item);
+        //{
+        //    return new DependentFileNode(this, item);
+        //}
 
         /// <summary>
         /// Create a dependent file node based on a string.
@@ -3492,7 +3492,7 @@ namespace Microsoft.VisualStudio.Project
                     ProjectInstance projectInstanceCopy = projectInstance;
                     submission.ExecuteAsync(sub =>
                     {
-                        UIThread.SRun(() =>
+                        UIThread.DoOnUIThread(delegate ()
                         {
                             this.FlushBuildLoggerContent();
                             EndBuild(sub, designTime);
@@ -3871,13 +3871,13 @@ namespace Microsoft.VisualStudio.Project
             return ret;
         }
 
-        private HierarchyNode AddNewFileNodeToHierarchyCore(HierarchyNode parentNode, string fileName, string linkPath)
+        protected virtual HierarchyNode AddNewFileNodeToHierarchyCore(HierarchyNode parentNode, string fileName, string linkPath)
         {
             HierarchyNode child;
 
             // In the case of subitem, we want to create dependent file node
             // and set the DependentUpon property
-            if (this.canFileNodesHaveChilds && (parentNode is FileNode || parentNode is DependentFileNode))
+            if (this.canFileNodesHaveChilds && (parentNode is FileNode && ((FileNode)parentNode).IsDependent))
             {
                 child = this.CreateDependentFileNode(fileName);
                 string parent = parentNode.ItemNode.GetMetadata(ProjectFileConstants.Include);
@@ -3885,12 +3885,12 @@ namespace Microsoft.VisualStudio.Project
                 parent = Path.GetFileName(parent);
                 child.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
 
-	            // Make sure to set the HasNameRelation flag on the dependent node if it is related to the parent by name
-	            if (!child.HasParentNodeNameRelation && string.Compare(child.GetRelationalName(), parentNode.GetRelationalName(), StringComparison.OrdinalIgnoreCase) == 0)
-	            {
-	               child.HasParentNodeNameRelation = true;
-	            }
-	         }
+                // Make sure to set the HasNameRelation flag on the dependent node if it is related to the parent by name
+                if (!child.HasParentNodeNameRelation && string.Compare(child.GetRelationalName(), parentNode.GetRelationalName(), StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    child.HasParentNodeNameRelation = true;
+                }
+            }
             else
             {
                 //Create and add new filenode to the project
@@ -3900,9 +3900,9 @@ namespace Microsoft.VisualStudio.Project
                 {
                     child.ExcludeNodeFromScc = true;
                 }
-         }
+            }
 
-                parentNode.AddChild(child);
+            parentNode.AddChild(child);
 
             return child;
         }

@@ -26,6 +26,7 @@ using IOleDataObject = Microsoft.VisualStudio.OLE.Interop.IDataObject;
 using OleConstants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
 using System.Windows.Forms;
+using XSharp.Project;
 namespace Microsoft.VisualStudio.Project
 {
     /// <summary>
@@ -54,7 +55,7 @@ namespace Microsoft.VisualStudio.Project
         public override int DragEnter(IOleDataObject pDataObject, uint grfKeyState, uint itemid, ref uint pdwEffect)
         {
             pdwEffect = (uint)DropEffect.None;
-
+            // Comment this out so drag/drop works inside a project
             //if(this.SourceDraggedOrCutOrCopied)
             //{
             //   return VSConstants.S_OK;
@@ -1254,7 +1255,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
         /// <param name="targetNode">the targetHandler node</param>
         /// <param name="projectReferences">List of projectref string</param>
         /// <returns>true if succeeded</returns>
-      internal bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
+      internal virtual bool AddFilesFromProjectReferences(HierarchyNode targetNode, string[] projectReferences, uint dropEffect)
       {
          //Validate input
 		 Utilities.ArgumentNotNull("projectReferences", projectReferences);
@@ -1458,7 +1459,7 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
             if (dropItem.userCancelled)
                continue;
 
-            // If the source dir matches the dest dir and we are doing copy
+            // If the source dir matches the destination dir and we are doing copy
             // then no overwriting will occur. Instead, "Copy of " will be
             // prepended.
             if (dropItem.destinationExists && !(dropItem.sourceDirMatchesDestDir && dropEffect == (uint)DropEffect.Copy))
@@ -1514,21 +1515,21 @@ internal static DropDataType QueryDropDataType(IOleDataObject pDataObject)
                   {
                      return false;
                   }
+
                }
-               finally
+                    finally
                {
                   this.alreadyHandledOverwritePrompts = oldHandledOverwrite;
                }
             }
          }
 
-         // If any items were cancelled and the source and target projects
+         // If any items were canceled and the source and target projects
          // differ, return false here so that none of the source items are
          // removed. It would be incorrect to remove all of the source
          // items at this point.
          if (bSourceProjectIsNotThisProject && bAnyWereCancelled)
             return false;
-
          return true;
       }
 

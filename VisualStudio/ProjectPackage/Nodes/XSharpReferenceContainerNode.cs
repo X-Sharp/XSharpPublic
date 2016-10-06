@@ -180,9 +180,6 @@ namespace XSharp.Project
               // The CreateFileComponent create and Add the project element
               // but as it is duplicated..Remove it !
               node.Remove(false);
-              //VulcanHelperMethods.WriteOutputWindow(this.ProjectMgr.Caption + ": adding Reference " + node.Caption + Environment.NewLine,
-              //                   "Vulcan Project References Check");
-              //
               return existing;
           }
           return node;

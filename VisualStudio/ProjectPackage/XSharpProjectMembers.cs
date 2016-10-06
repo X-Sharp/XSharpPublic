@@ -10,6 +10,7 @@ using System.IO;
 using MSBuild = Microsoft.Build.Evaluation;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Runtime.InteropServices;
 
 namespace XSharp.Project
 {
@@ -17,6 +18,7 @@ namespace XSharp.Project
     /// <summary>
     /// Contains helper methods for including/excluding items in a VulcanProjectNode.
     /// </summary>
+    [Guid("285F8F28-375F-4A73-B81F-0A5525471B86")]
     internal static class XSharpProjectMembers
     {
         /// <summary>
@@ -24,7 +26,7 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="project">The project to modify.</param>
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NonMember")]
-        internal static void AddNonMemberItems(ProjectNodeX project)
+        internal static void AddNonMemberItems(XProjectNode project)
         {
             IList<string> files = new List<string>();
             IList<string> folders = new List<string>();
@@ -44,10 +46,10 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="project">The project to modify.</param>
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NonMember")]
-        internal static void RemoveNonMemberItems(ProjectNodeX project)
+        internal static void RemoveNonMemberItems(XProjectNode project)
         {
             IList<HierarchyNode> nodeList = new List<HierarchyNode>();
-            SupportMethods.FindNodes(nodeList, project, XSharpProjectMembers.IsNodeNonMemberItem, null);
+            XSharpHelperMethods.FindNodes(nodeList, project, XSharpProjectMembers.IsNodeNonMemberItem, null);
             for (int index = nodeList.Count - 1; index >= 0; index--)
             {
                 HierarchyNode node = nodeList[index];
@@ -109,7 +111,7 @@ namespace XSharp.Project
                         continue;
                     }
 
-                    string fileRelativePath = SupportMethods.GetRelativePath(baseFolder, file);
+                    string fileRelativePath = XSharpHelperMethods.GetRelativePath(baseFolder, file);
                     if (!String.IsNullOrEmpty(fileRelativePath))
                     {
                         fileList.Add(fileRelativePath);
@@ -128,7 +130,7 @@ namespace XSharp.Project
                         continue;
                     }
 
-                    string folderRelativePath = SupportMethods.GetRelativePath(baseFolder, folder);
+                    string folderRelativePath = XSharpHelperMethods.GetRelativePath(baseFolder, folder);
                     if (!String.IsNullOrEmpty(folderRelativePath))
                     {
                         folderList.Add(folderRelativePath);
@@ -143,7 +145,7 @@ namespace XSharp.Project
         /// <param name="project">The project to modify.</param>
         /// <param name="fileList">List containing relative files paths.</param>
         /// <param name="folderList">List containing relative folder paths.</param>
-        private static void ExcludeProjectBuildItems(ProjectNodeX project, IList<string> fileList, IList<string> folderList)
+        private static void ExcludeProjectBuildItems(XProjectNode project, IList<string> fileList, IList<string> folderList)
         {
 
             IEnumerable<MSBuild.ProjectItem> projectItems = project.BuildProject.Items;
@@ -181,7 +183,7 @@ namespace XSharp.Project
                     fileMap.Add(file, file);
                 }
             }
-            foreach (MSBuild.ProjectItem buildItem in projectItems)
+            foreach (var buildItem in projectItems)
             {
                 if (folderMap != null &&
                     folderMap.Count > 0 &&
@@ -190,7 +192,7 @@ namespace XSharp.Project
                     string relativePath = buildItem.EvaluatedInclude;
                     if (Path.IsPathRooted(relativePath)) // if not the relative path, make it relative
                     {
-                        relativePath = SupportMethods.GetRelativePath(project.ProjectFolder, relativePath);
+                        relativePath = XSharpHelperMethods.GetRelativePath(project.ProjectFolder, relativePath);
                     }
 
 
@@ -202,12 +204,12 @@ namespace XSharp.Project
                 }
                 else if (fileMap != null &&
                     fileMap.Count > 0 &&
-                    XSharpProjectMembers.IsFileItem(buildItem))
+                    XSharpProjectMembers.IsXFileItem(buildItem))
                 {
                     string relativePath = buildItem.EvaluatedInclude;
                     if (Path.IsPathRooted(relativePath)) // if not the relative path, make it relative
                     {
-                        relativePath = SupportMethods.GetRelativePath(project.ProjectFolder, relativePath);
+                        relativePath = XSharpHelperMethods.GetRelativePath(project.ProjectFolder, relativePath);
                     }
 
                     if (fileMap.ContainsKey(relativePath))
@@ -225,7 +227,7 @@ namespace XSharp.Project
         /// <param name="project">The project to modify.</param>
         /// <param name="folderList">Folders list containing the folder names.</param>
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NonMember")]
-        private static void AddNonMemberFolderItems(ProjectNodeX project, IList<string> folderList)
+        private static void AddNonMemberFolderItems(XProjectNode project, IList<string> folderList)
         {
             if (folderList == null)
             {
@@ -236,7 +238,7 @@ namespace XSharp.Project
             {
                 HierarchyNode parentNode = project;
                 string[] folders = folderKey.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                XSharpFolderNode topFolderNode = null;
+                XFolderNode topFolderNode = null;
                 foreach (string folder in folders)
                 {
                     string childNodeId = Path.Combine(parentNode.VirtualNodeName, folder);
@@ -246,8 +248,8 @@ namespace XSharp.Project
                         break;
                     }
 
-                    //HierarchyNode childNode = parentNode.FindChild( childNodeId );
-                    HierarchyNode childNode = project.FindURL(folderInfo.FullName);
+                    HierarchyNode childNode = parentNode.FindChild( childNodeId );
+                    //HierarchyNode childNode = project.FindURL(folderInfo.FullName);
                     if (childNode == null)
                     {
                         if (topFolderNode == null)
@@ -280,7 +282,7 @@ namespace XSharp.Project
         /// <param name="project">The project to modify.</param>
         /// <param name="fileList">Files containing the information about the non member file items.</param>
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NonMember")]
-        private static void AddNonMemberFileItems(ProjectNodeX project, IList<string> fileList)
+        private static void AddNonMemberFileItems(XProjectNode project, IList<string> fileList)
         {
             Utilities.ArgumentNotNull("fileList", fileList);
 
@@ -294,7 +296,7 @@ namespace XSharp.Project
                     continue;
                 }
 
-                XSharpFolderNode topFolderNode = null;
+                XFolderNode topFolderNode = null;
                 foreach (string fileOrDir in pathItems)
                 {
                     string childNodeId = Path.Combine(parentNode.VirtualNodeName, fileOrDir);
@@ -304,8 +306,8 @@ namespace XSharp.Project
                         break;
                     }
 
-                    HierarchyNode childNode = project.FindURL(fileOrDirInfo.FullName);
-                    //HierarchyNode childNode = parentNode.FindChild( childNodeId );
+                    //HierarchyNode childNode = project.FindURL(fileOrDirInfo.FullName);
+                    HierarchyNode childNode = parentNode.FindChild( childNodeId );
                     if (childNode == null)
                     {
                         if (topFolderNode == null)
@@ -340,22 +342,28 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="buildItem">BuildItem to be checked.</param>
         /// <returns>Returns true if the buildItem is a file item, false otherwise.</returns>
-        private static bool IsFileItem(MSBuild.ProjectItem buildItem)
+        static string[] types = {
+                                ProjectFileConstants.Compile,
+                                ProjectFileConstants.EmbeddedResource,
+                                ProjectFileConstants.Content,
+                                XSharpProjectFileConstants.NativeResource,
+                                XSharpProjectFileConstants.VOBinary,
+                                ProjectFileConstants.ApplicationDefinition,
+                                ProjectFileConstants.Page,
+                                ProjectFileConstants.Resource,
+                                ProjectFileConstants.None
+                                };
+
+        private static bool IsXFileItem(MSBuild.ProjectItem buildItem)
         {
             Utilities.ArgumentNotNull("buildItem", buildItem);
             string name = buildItem.ItemType;
-            return String.Equals(name, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) ||
-                   String.Equals(name, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) ||
-                   String.Equals(name, ProjectFileConstants.Content, StringComparison.OrdinalIgnoreCase) ||
-                   String.Equals(name, XSharpProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) ||
-                   String.Equals(name, XSharpProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase)
-
-                   || String.Equals(name, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) ||
-                   String.Equals(name, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) ||
-                   String.Equals(name, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase) ||
-                   String.Equals(name, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase)
-
-                   ;
+            foreach (var type in types)
+            {
+                if (String.Equals(name, type, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
         }
     }
 }

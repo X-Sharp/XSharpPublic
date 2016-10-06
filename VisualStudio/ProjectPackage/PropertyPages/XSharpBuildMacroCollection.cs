@@ -59,7 +59,7 @@ namespace XSharp.Project
         // =========================================================================================
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VulcanBuildMacroCollection"/> class.
+        /// Initializes a new instance of the <see cref="XSharpBuildMacros"/> class.
         /// </summary>
         /// <param name="project">The project from which to read the properties.</param>
         public XSharpBuildMacros(ProjectNode project)
@@ -183,18 +183,18 @@ namespace XSharp.Project
         /// <param name="project">The project where the properties are defined.</param>
         internal static void DefineSolutionProperties(ProjectNode project)
         {
-            IVsSolution solution = SupportMethods.GetService<IVsSolution, SVsSolution>(project.Site);
+            IVsSolution solution = XSharpHelperMethods.GetService<IVsSolution, SVsSolution>(project.Site);
             object solutionPathObj;
             ErrorHandler.ThrowOnFailure(solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionFileName, out solutionPathObj));
             string solutionPath = (string)solutionPathObj;
             XSharpPackageSettings settings = ((XSharpProjectNode) project).XSharpPackage.Settings;
-            string devEnvDir = SupportMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(settings.DevEnvPath));
+            string devEnvDir = XSharpHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(settings.DevEnvPath));
 
             string[][] properties = new string[][]
                    {
                     new string[] { XSharpProjectFileConstants.DevEnvDir, devEnvDir },
                     new string[] { XSharpProjectFileConstants.SolutionPath, solutionPath },
-                    new string[] { XSharpProjectFileConstants.SolutionDir, SupportMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(solutionPath)) },
+                    new string[] { XSharpProjectFileConstants.SolutionDir, XSharpHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(solutionPath)) },
                     new string[] { XSharpProjectFileConstants.SolutionExt, Path.GetExtension(solutionPath) },
                     new string[] { XSharpProjectFileConstants.SolutionFileName, Path.GetFileName(solutionPath) },
                     new string[] { XSharpProjectFileConstants.SolutionName, Path.GetFileNameWithoutExtension(solutionPath) },
@@ -235,7 +235,7 @@ namespace XSharp.Project
                     IVsProjectCfg[] projectCfgArray = new IVsProjectCfg[1];
 
                     // this can fail for some reason... this code was copied from Wix and probably isn't stable yet.
-                    // this routine is called from VulcanProject.InvokeMSBuild and we don't want that to fix because of
+                    // this routine is called from InvokeMSBuild and we don't want that to fix because of
                     // some bug here, so this code is surrounded by try/catch until we figure this out
                     int hr = solutionBuildManager.FindActiveProjectCfg(IntPtr.Zero, IntPtr.Zero, hierarchy, projectCfgArray);
                     ErrorHandler.ThrowOnFailure(hr);

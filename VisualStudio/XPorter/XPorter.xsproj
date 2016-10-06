@@ -134,9 +134,9 @@
     <EmbeddedResource Include="frmXporter.resx">
       <DependentUpon>frmXporter.prg</DependentUpon>
     </EmbeddedResource>
-    <None Include="frmProgress.resx">
+    <EmbeddedResource Include="frmProgress.resx">
       <DependentUpon>frmProgress.prg</DependentUpon>
-    </None>
+    </EmbeddedResource>
     <None Include="version.vh" />
   </ItemGroup>
   <ItemGroup>

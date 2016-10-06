@@ -37,7 +37,7 @@ namespace XSharp.Project
     /// <summary>
     /// Contains useful helper methods.
     /// </summary>
-    internal static class SupportMethods
+internal static class XSharpHelperMethods
    {
       /// <summary>
       /// This is the node filter delegate.
@@ -47,12 +47,12 @@ namespace XSharp.Project
       /// <returns>Returns if the node should be filtered or not.</returns>
       public delegate bool XSharpNodeFilter( HierarchyNode node, object criteria );
 
-      /// <summary>
-      /// Adds the <see cref="Path.DirectorySeparatorChar"/> character to the end of the path if it doesn't already exist at the end.
-      /// </summary>
-      /// <param name="path">The string to add the trailing directory separator character to.</param>
-      /// <returns>The original string with the specified character at the end.</returns>
-      public static string EnsureTrailingDirectoryChar( string path )
+        /// <summary>
+        /// Adds the <see cref="Path.DirectorySeparatorChar"/> character to the end of the path if it doesn't already exist at the end.
+        /// </summary>
+        /// <param name="path">The string to add the trailing directory separator character to.</param>
+        /// <returns>The original string with the specified character at the end.</returns>
+        public static string EnsureTrailingDirectoryChar( string path )
       {
          return EnsureTrailingChar( path, Path.DirectorySeparatorChar );
       }
@@ -151,13 +151,15 @@ namespace XSharp.Project
          return formattedString;
       }
 
-      /// <summary>
-      /// Performs a ship assertion, which raises an assertion dialog. TODO: Generate a call stack and email it to some alias.
-      /// </summary>
-      /// <param name="condition">The condition to assert.</param>
-      /// <param name="message">The message to show in the assertion.</param>
-      /// <param name="args">An array of arguments for the formatted message.</param>
-      [SuppressMessage( "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes" )]
+ 
+
+        /// <summary>
+        /// Performs a ship assertion, which raises an assertion dialog. TODO: Generate a call stack and email it to some alias.
+        /// </summary>
+        /// <param name="condition">The condition to assert.</param>
+        /// <param name="message">The message to show in the assertion.</param>
+        /// <param name="args">An array of arguments for the formatted message.</param>
+        [SuppressMessage( "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes" )]
       public static void ShipAssert( bool condition, string message, params object[] args )
       {
          if ( !condition )
@@ -212,7 +214,7 @@ namespace XSharp.Project
       /// <param name="args">The arguments to use for formatting the message.</param>
       public static void ShowErrorMessageBox( Control owner, string message, params object[] args )
       {
-         SupportMethods.ShowMessageBox( owner, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, message, args );
+         XSharpHelperMethods.ShowMessageBox( owner, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, message, args );
       }
 
       /// <summary>
@@ -313,7 +315,7 @@ namespace XSharp.Project
                currentList.Add( child );
             }
 
-            SupportMethods.FindNodes( currentList, child, filter, criteria );
+            XSharpHelperMethods.FindNodes( currentList, child, filter, criteria );
          }
       }
 
@@ -375,7 +377,7 @@ namespace XSharp.Project
 
          // Url.MakeRelative method requires the base path to be ended with a '\' if it is a folder,
          // otherwise it considers it as a file so we need to make sure that the folder path is right
-         basePath = SupportMethods.EnsureTrailingDirectoryChar( basePath.Trim() );
+         basePath = XSharpHelperMethods.EnsureTrailingDirectoryChar( basePath.Trim() );
 
          Url url = new Url( basePath );
          return url.MakeRelative( new Url( subPath ) );
@@ -599,7 +601,7 @@ namespace XSharp.Project
 
             if (vsuiShell == null)
             {
-                string message = SupportMethods.SafeStringFormat(CultureInfo.CurrentUICulture, Resources.GetString(Resources.CannotGetService), typeof(IVsUIShell).Name);
+                string message = XSharpHelperMethods.SafeStringFormat(CultureInfo.CurrentUICulture, Resources.GetString(Resources.CannotGetService), typeof(IVsUIShell).Name);
                 throw new InvalidOperationException(message);
             }
             else
@@ -637,7 +639,7 @@ namespace XSharp.Project
       /// <param name="node">The selected hierarchy node</param>
       internal static void RefreshProject( HierarchyNode node )
       {
-            XSharpProjectNode projectNode = node.ProjectMgr as XSharpProjectNode;
+         XSharpProjectNode projectNode = node.ProjectMgr as XSharpProjectNode;
 
          if ( projectNode.ShowAllFilesEnabled )
          {

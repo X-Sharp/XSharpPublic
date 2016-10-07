@@ -25,12 +25,12 @@ namespace XSharp.Project
 
         private static readonly string[] globalMacroNames =
               {
-                XSharpProjectFileConstants.DevEnvDir,
-                XSharpProjectFileConstants.SolutionDir,
-                XSharpProjectFileConstants.SolutionExt,
-                XSharpProjectFileConstants.SolutionName,
-                XSharpProjectFileConstants.SolutionFileName,
-                XSharpProjectFileConstants.SolutionPath,
+                XProjectFileConstants.DevEnvDir,
+                XProjectFileConstants.SolutionDir,
+                XProjectFileConstants.SolutionExt,
+                XProjectFileConstants.SolutionName,
+                XProjectFileConstants.SolutionFileName,
+                XProjectFileConstants.SolutionPath,
             };
 
         private static readonly string[] macroNames =
@@ -90,7 +90,7 @@ namespace XSharp.Project
             {
                 throw new InvalidOperationException();
             }
-            BuildResult res = project.Build(configCanonicalName, XSharpProjectFileConstants.MsBuildTarget.GetTargetPath);
+            BuildResult res = project.Build(configCanonicalName, XProjectFileConstants.MsBuildTarget.GetTargetPath);
 
             // get the ProjectX and TargetX variables
             foreach (string macroName in macroNames)
@@ -192,12 +192,12 @@ namespace XSharp.Project
 
             string[][] properties = new string[][]
                    {
-                    new string[] { XSharpProjectFileConstants.DevEnvDir, devEnvDir },
-                    new string[] { XSharpProjectFileConstants.SolutionPath, solutionPath },
-                    new string[] { XSharpProjectFileConstants.SolutionDir, XHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(solutionPath)) },
-                    new string[] { XSharpProjectFileConstants.SolutionExt, Path.GetExtension(solutionPath) },
-                    new string[] { XSharpProjectFileConstants.SolutionFileName, Path.GetFileName(solutionPath) },
-                    new string[] { XSharpProjectFileConstants.SolutionName, Path.GetFileNameWithoutExtension(solutionPath) },
+                    new string[] { XProjectFileConstants.DevEnvDir, devEnvDir },
+                    new string[] { XProjectFileConstants.SolutionPath, solutionPath },
+                    new string[] { XProjectFileConstants.SolutionDir, XHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(solutionPath)) },
+                    new string[] { XProjectFileConstants.SolutionExt, Path.GetExtension(solutionPath) },
+                    new string[] { XProjectFileConstants.SolutionFileName, Path.GetFileName(solutionPath) },
+                    new string[] { XProjectFileConstants.SolutionName, Path.GetFileNameWithoutExtension(solutionPath) },
                    };
 
             foreach (string[] property in properties)

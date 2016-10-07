@@ -75,8 +75,8 @@ namespace XSharp.Project
             }
             // Save Project view in .user file.
             this.UserBuildProject.SetProperty(
-                XSharpProjectFileConstants.ProjectView,
-                (this.showAllFilesEnabled ? XSharpProjectFileConstants.ShowAllFiles : XSharpProjectFileConstants.ProjectFiles));
+                XProjectFileConstants.ProjectView,
+                (this.showAllFilesEnabled ? XProjectFileConstants.ShowAllFiles : XProjectFileConstants.ProjectFiles));
 
             return result;
         }
@@ -124,8 +124,8 @@ namespace XSharp.Project
             if (this.UserBuildProject != null)
             {
                 // Read show all files flag
-                string propertyValue = this.UserBuildProject.GetPropertyValue(XSharpProjectFileConstants.ProjectView);
-                if (String.Equals(propertyValue, XSharpProjectFileConstants.ShowAllFiles, StringComparison.OrdinalIgnoreCase))
+                string propertyValue = this.UserBuildProject.GetPropertyValue(XProjectFileConstants.ProjectView);
+                if (String.Equals(propertyValue, XProjectFileConstants.ShowAllFiles, StringComparison.OrdinalIgnoreCase))
                 {
                     this.ToggleShowAllFiles();
                 }

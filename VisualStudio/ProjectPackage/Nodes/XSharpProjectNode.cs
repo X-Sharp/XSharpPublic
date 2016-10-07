@@ -949,6 +949,12 @@ namespace XSharp.Project
         }
         #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
+
+        // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on 
+        // the info we know about common SFGs.
+        // See for more info ReadMeCodeGen.TXT in the root of the project
+        // We could create our own subclass of SingleFileGeneratorFactory and implement GetGeneratorInformation with a fixed table of
+        // known generators.
         private bool createIVsSingleFileGeneratorFactory()
         {
             if (factory == null)

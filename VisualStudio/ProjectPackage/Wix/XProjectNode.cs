@@ -304,7 +304,7 @@ namespace XSharp.Project
                 switch ((VsCommands2K)cmd)
                 {
                     case VsCommands2K.SLNREFRESH:
-                    case ExploreFolderInWindowsCommand:
+                    case (VsCommands2K)XVsConstants.CommandExploreFolderInWindows:
                         handled = true;
                         return QueryStatusResult.ENABLED | QueryStatusResult.SUPPORTED;
 

@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -402,10 +402,6 @@ namespace Microsoft.VisualStudio.Project
 
         private Guid GUID_MruPage = new Guid("{19B97F03-9594-4c1c-BE28-25FF030113B3}");
 
-        /// <summary>
-        /// The VS command that allows projects to open Windows Explorer to the project directory.
-        /// </summary>
-        public const VsCommands2K ExploreFolderInWindowsCommand = (VsCommands2K)1635;
 
         #endregion
 
@@ -1878,7 +1874,7 @@ namespace Microsoft.VisualStudio.Project
                     case VsCommands2K.ADDWEBREFERENCECTX:
                         return this.AddWebReference();
 
-                    case ExploreFolderInWindowsCommand:
+                    case (VsCommands2K) XVsConstants.CommandExploreFolderInWindows:
                         string explorerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe");
                         System.Diagnostics.Process.Start(explorerPath, this.ProjectFolder);
                         return VSConstants.S_OK;

@@ -21,7 +21,7 @@ namespace XSharp.Project
     [Guid("5C2D8CE3-9627-4C99-985B-85DE2B962B21")]
     [SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
     [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "NonMember")]
-    public class XSharpFileNodeNonMemberProperties : FileNodeProperties
+    public class XFileNodeNonMemberProperties : FileNodeProperties
     {
         // =========================================================================================
         // Constructors
@@ -31,7 +31,7 @@ namespace XSharp.Project
         /// Initializes a new instance of the <see cref="XSharpFileNodeNonMemberProperties"/> class.
         /// </summary>
         /// <param name="node">The node that contains the properties to expose via the Property Browser.</param>
-        public XSharpFileNodeNonMemberProperties(XFileNode node)
+        public XFileNodeNonMemberProperties(XFileNode node)
             : base(node)
         {
         }
@@ -73,7 +73,7 @@ namespace XSharp.Project
         [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "0#", Justification = "In the 2005 SDK, it's called p and in the 2008 SDK it's propertyDescriptor")]
         public override DesignPropertyDescriptor CreateDesignPropertyDescriptor(PropertyDescriptor propertyDescriptor)
         {
-            return new XSharpNonMemberDesignPropertyDescriptor(propertyDescriptor);
+            return new XNonMemberDesignPropertyDescriptor(propertyDescriptor);
         }
     }
 }

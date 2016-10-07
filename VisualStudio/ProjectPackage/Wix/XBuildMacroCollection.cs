@@ -17,7 +17,7 @@ namespace XSharp.Project
     using Microsoft.VisualStudio.Shell.Interop;
 
 
-    internal class XSharpBuildMacros : ICollection, IEnumerable<XSharpBuildMacros.MacroNameValuePair>
+    internal class XBuildMacroCollection : ICollection, IEnumerable<XBuildMacroCollection.MacroNameValuePair>
     {
         // =========================================================================================
         // Member Variables
@@ -62,7 +62,7 @@ namespace XSharp.Project
         /// Initializes a new instance of the <see cref="XSharpBuildMacros"/> class.
         /// </summary>
         /// <param name="project">The project from which to read the properties.</param>
-        public XSharpBuildMacros(ProjectNode project)
+        public XBuildMacroCollection(ProjectNode project)
         {
             if (project == null)
             {
@@ -70,7 +70,7 @@ namespace XSharp.Project
             }
 
             // get the global SolutionX properties
-            XSharpBuildMacros.DefineSolutionProperties(project);
+            XBuildMacroCollection.DefineSolutionProperties(project);
             foreach (string globalMacroName in globalMacroNames)
             {
                 string property = null;
@@ -183,18 +183,18 @@ namespace XSharp.Project
         /// <param name="project">The project where the properties are defined.</param>
         internal static void DefineSolutionProperties(ProjectNode project)
         {
-            IVsSolution solution = XSharpHelperMethods.GetService<IVsSolution, SVsSolution>(project.Site);
+            IVsSolution solution = XHelperMethods.GetService<IVsSolution, SVsSolution>(project.Site);
             object solutionPathObj;
             ErrorHandler.ThrowOnFailure(solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionFileName, out solutionPathObj));
             string solutionPath = (string)solutionPathObj;
-            XSharpPackageSettings settings = ((XSharpProjectNode) project).XSharpPackage.Settings;
-            string devEnvDir = XSharpHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(settings.DevEnvPath));
+            XPackageSettings settings = ((XSharpProjectNode) project).XSharpPackage.Settings;
+            string devEnvDir = XHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(settings.DevEnvPath));
 
             string[][] properties = new string[][]
                    {
                     new string[] { XSharpProjectFileConstants.DevEnvDir, devEnvDir },
                     new string[] { XSharpProjectFileConstants.SolutionPath, solutionPath },
-                    new string[] { XSharpProjectFileConstants.SolutionDir, XSharpHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(solutionPath)) },
+                    new string[] { XSharpProjectFileConstants.SolutionDir, XHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(solutionPath)) },
                     new string[] { XSharpProjectFileConstants.SolutionExt, Path.GetExtension(solutionPath) },
                     new string[] { XSharpProjectFileConstants.SolutionFileName, Path.GetFileName(solutionPath) },
                     new string[] { XSharpProjectFileConstants.SolutionName, Path.GetFileNameWithoutExtension(solutionPath) },
@@ -215,11 +215,12 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="project">The project where the properties are being defined; also the project
         /// whose references are being examined.</param>
-        internal static void DefineProjectReferenceConfigurations(XSharpProjectNode project)
+        internal static void DefineProjectReferenceConfigurations(XProjectNode project)
         {
             StringBuilder configList = new StringBuilder();
 
-            IVsSolutionBuildManager solutionBuildManager = (IVsSolutionBuildManager)project.GetService(typeof(IVsSolutionBuildManager));
+            IVsSolutionBuildManager solutionBuildManager =
+                XHelperMethods.GetService<IVsSolutionBuildManager, SVsSolutionBuildManager>(project.Site);
 
             List<ProjectReferenceNode> referenceNodes = new List<ProjectReferenceNode>();
             project.FindNodesOfType(referenceNodes);

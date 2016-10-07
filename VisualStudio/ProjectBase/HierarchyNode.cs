@@ -754,12 +754,10 @@ namespace Microsoft.VisualStudio.Project
                     if(parentHierarchy != null)
                     {
 #if XSHARP
-                        // XSHARP - Correction
-                        // ARGH !
-                        // If we don't cast here, we will not been able to open the Project Designer Editor in WPF mode, it will just crash silently
-                        // and we will have no Project Property page...
-                        // ... Please, don't ask me why the original code is buggy ...
-                        result = (uint)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
+                        unchecked
+                        { 
+                            result = (IntPtr) (int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
+                        }
 #else
                         result = (int)parentHierarchyItemId; // VS requires VT_I4 | VT_INT_PTR
 #endif

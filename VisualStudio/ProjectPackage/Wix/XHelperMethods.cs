@@ -1,11 +1,11 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -37,7 +37,7 @@ namespace XSharp.Project
     /// <summary>
     /// Contains useful helper methods.
     /// </summary>
-internal static class XSharpHelperMethods
+internal static class XHelperMethods
    {
       /// <summary>
       /// This is the node filter delegate.
@@ -46,6 +46,28 @@ internal static class XSharpHelperMethods
       /// <param name="criteria">Filter criteria.</param>
       /// <returns>Returns if the node should be filtered or not.</returns>
       public delegate bool XSharpNodeFilter( HierarchyNode node, object criteria );
+
+        /// <summary>
+        /// VS colors for Visual Studio 2010
+        /// We have to redefine them here until we start using the VS 2010 PIAs
+        /// </summary>
+        public enum Vs2010Color
+        {
+            /// <summary>
+            /// VSCOLOR_BUTTONFACE
+            /// </summary>
+            VSCOLOR_BUTTONFACE = -196,
+
+            /// <summary>
+            /// VSCOLOR_BUTTONTEXT
+            /// </summary>
+            VSCOLOR_BUTTONTEXT = -199,
+
+            /// <summary>
+            /// VSCOLOR_WINDOW
+            /// </summary>
+            VSCOLOR_WINDOW = -217,
+        }
 
         /// <summary>
         /// Adds the <see cref="Path.DirectorySeparatorChar"/> character to the end of the path if it doesn't already exist at the end.
@@ -99,8 +121,48 @@ internal static class XSharpHelperMethods
          return service;
       }
 
+        /// <summary>
+        /// Gets a strongly-typed service from the environment, throwing an exception if the service cannot be retrieved.
+        /// This function returns null instead of throwing an exception when the service cannot be found and should be used
+        /// only in methods invoked by property pages and forms to allow them to be editable in the VS desgners.
+        /// </summary>
+        /// <typeparam name="TInterface">The interface type to get (i.e. IVsShell).</typeparam>
+        /// <typeparam name="TService">The service type to get (i.e. SvsShell).</typeparam>
+        /// <param name="serviceProvider">A <see cref="IServiceProvider"/> to use for retrieving the service.</param>
+        /// <returns>An object that implements the interface from the environment.</returns>
+        public static TInterface GetServiceNoThrow<TInterface, TService>(IServiceProvider serviceProvider)
+            where TInterface: class
+            where TService: class
+        {
+            if (serviceProvider == null)
+            {
+                return null;
+            }
+
+            TInterface service = serviceProvider.GetService(typeof(TService)) as TInterface;
+
+            return service;
+        }
 
         /// <summary>
+        /// Gets the font provided by the VS environment for dialog UI.
+        /// </summary>
+        /// <returns>Dialog font, or null if it is not available.</returns>
+        public static Font GetDialogFont()
+        {
+            IUIHostLocale uiHostLocale = XHelperMethods.GetServiceNoThrow<IUIHostLocale, IUIHostLocale>(XSharpProjectPackage.Instance);
+            if (uiHostLocale != null)
+            {
+                UIDLGLOGFONT[] pLOGFONT = new UIDLGLOGFONT[1];
+                if (uiHostLocale.GetDialogFont(pLOGFONT) == 0)
+                {
+                    return Font.FromLogFont(pLOGFONT[0]);
+                }
+            }
+
+            return null;
+        }
+
       /// Returns a value indicating whether we can recover from the specified exception. If we can't recover,
       /// then it's expected that the caller will immediately call <see cref="Shutdown"/>.
       /// </summary>
@@ -151,7 +213,7 @@ internal static class XSharpHelperMethods
          return formattedString;
       }
 
- 
+
 
         /// <summary>
         /// Performs a ship assertion, which raises an assertion dialog. TODO: Generate a call stack and email it to some alias.
@@ -212,10 +274,14 @@ internal static class XSharpHelperMethods
       /// <param name="owner">The control that owns the message box.</param>
       /// <param name="message">An unformatted message to show.</param>
       /// <param name="args">The arguments to use for formatting the message.</param>
-      public static void ShowErrorMessageBox( Control owner, string message, params object[] args )
+        public static void ShowErrorMessageBox(IServiceProvider serviceProvider, string message, params object[] args)
       {
-         XSharpHelperMethods.ShowMessageBox( owner, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, message, args );
-      }
+            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+
+            XHelperMethods.ShowMessageBox(serviceProvider, buttons, icon, defaultButton, message, args);
+        }
 
       /// <summary>
       /// Shows a message box using the correct flags and title and optionally formats the message.
@@ -226,7 +292,7 @@ internal static class XSharpHelperMethods
       /// <param name="defaultButton">Determines which button has the default focus.</param>
       /// <param name="message">An unformatted message to show.</param>
       /// <param name="args">The arguments to use for formatting the message.</param>
-      public static void ShowMessageBox( Control owner, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, string message, params object[] args )
+        public static void ShowMessageBox(IServiceProvider serviceProvider, OLEMSGBUTTON buttons, OLEMSGICON icon, OLEMSGDEFBUTTON defaultButton, string message, params object[] args)
       {
          // format the message if required
          if ( args != null && args.Length > 0 )
@@ -234,19 +300,9 @@ internal static class XSharpHelperMethods
             message = String.Format( CultureInfo.CurrentUICulture, message, args );
          }
 
-         // find out if the owner is RTL to pass in the correct options to the message box
-         Control current = owner;
-         while ( current != null && current.RightToLeft == RightToLeft.Inherit )
-         {
-            current = current.Parent;
-         }
-
-         bool rightToLeft = ( current != null && current.RightToLeft == RightToLeft.Yes );
-         MessageBoxOptions options = ( rightToLeft ? MessageBoxOptions.RightAlign | MessageBoxOptions.RtlReading : 0 );
-
-         // show the message box
-         MessageBox.Show( owner, message, Application.ProductName, buttons, icon, defaultButton, options );
-      }
+            // show the message box
+            VsShellUtilities.ShowMessageBox(serviceProvider, message, String.Empty, icon, buttons, defaultButton);
+        }
 
       /// <summary>
       /// Calls <see cref="Trace.Fail(string)"/> with a formatted message.
@@ -315,7 +371,7 @@ internal static class XSharpHelperMethods
                currentList.Add( child );
             }
 
-            XSharpHelperMethods.FindNodes( currentList, child, filter, criteria );
+            XHelperMethods.FindNodes( currentList, child, filter, criteria );
          }
       }
 
@@ -377,7 +433,7 @@ internal static class XSharpHelperMethods
 
          // Url.MakeRelative method requires the base path to be ended with a '\' if it is a folder,
          // otherwise it considers it as a file so we need to make sure that the folder path is right
-         basePath = XSharpHelperMethods.EnsureTrailingDirectoryChar( basePath.Trim() );
+         basePath = XHelperMethods.EnsureTrailingDirectoryChar( basePath.Trim() );
 
          Url url = new Url( basePath );
          return url.MakeRelative( new Url( subPath ) );
@@ -442,11 +498,9 @@ internal static class XSharpHelperMethods
                FileInfo sourceFile = new FileInfo( sourcePath );
                FileInfo tokenValueFile = new FileInfo( propertyValue );
 
-               string path = sourcePath;
-
                if ( sourceFile.FullName.StartsWith( tokenValueFile.FullName, StringComparison.OrdinalIgnoreCase ) )
                {
-                  path = sourceFile.FullName.Substring( tokenValueFile.FullName.Length ).TrimStart( Path.DirectorySeparatorChar );
+                  string path = sourceFile.FullName.Substring( tokenValueFile.FullName.Length ).TrimStart( Path.DirectorySeparatorChar );
                   return Path.Combine( propertyName, path );
                }
             }
@@ -478,7 +532,19 @@ internal static class XSharpHelperMethods
          return path;
       }
 
-      /// <summary>
+        /// <summary>
+        /// Opens WiX.chm and displays the specified topic.
+        /// </summary>
+        /// <param name="parent">The parent control.</param>
+        /// <param name="topic">The topic to show.</param>
+        /// <returns></returns>
+        public static void ShowXHelp(Control parent, string topic)
+        {
+            //string XHelpFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"..\doc\WiX.chm"));
+
+            //Help.ShowHelp(parent, wixHelpFile, HelpNavigator.Topic, topic);
+        }
+
       /// Handles command status on source a node. Should be overridden by descendant nodes.
       /// </summary>
       /// <param name="node">A HierarchyNode that implements the IProjectSourceNode interface.</param>
@@ -573,10 +639,10 @@ internal static class XSharpHelperMethods
          }
 
          // use stack to make sure all parent folders are included in the project.
-         Stack<XSharpFolderNode> stack = new Stack<XSharpFolderNode>();
+         Stack<XFolderNode> stack = new Stack<XFolderNode>();
 
             // Find out the parent folder nodes if any.
-            XSharpFolderNode parentFolderNode = node.Parent as XSharpFolderNode;
+         XFolderNode parentFolderNode = node.Parent as XFolderNode;
          while ( parentFolderNode != null && parentFolderNode.IsNonMemberItem )
          {
             stack.Push( parentFolderNode );
@@ -587,21 +653,85 @@ internal static class XSharpHelperMethods
          // include all parent folders in the project.
          while ( stack.Count > 0 )
          {
-            XSharpFolderNode folderNode = stack.Pop();
+            XFolderNode folderNode = stack.Pop();
             ( (IProjectSourceNode) folderNode ).IncludeInProject( false );
          }
       }
+
+        /// <summary>
+        /// Sets the colors of the passed control and all of its child controls by using the VS Colors services
+        /// </summary>
+        /// <param name="parent">Parent form/control</param>
+        internal static void SetControlTreeColors(Control parent)
+        {
+            SetSingleControlColors(parent);
+
+            if (parent.Controls != null)
+            {
+                foreach (Control child in parent.Controls)
+                {
+                    SetControlTreeColors(child);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the colors of the control passed as a parameter
+        /// </summary>
+        /// <param name="control">Control on which the colors are being set</param>
+        internal static void SetSingleControlColors(Control control)
+        {
+            control.ForeColor = GetVsColor(Vs2010Color.VSCOLOR_BUTTONTEXT);
+            if (control is TextBox || control is ListBox || control is ListView || control is ComboBox /*||
+                control is WixBuildEventTextBox*/)
+            {
+                control.BackColor = GetVsColor(Vs2010Color.VSCOLOR_WINDOW);
+            }
+        }
+
+        /// <summary>
+        /// Returns a standard VS color or a system color, if the VS colors service is not available
+        /// </summary>
+        /// <param name="visualStudioColor">Color enum</param>
+        /// <returns>The color itself</returns>
+        internal static Color GetVsColor(Vs2010Color visualStudioColor)
+        {
+            uint win32Color = 0;
+            IVsUIShell2 vsuiShell2 = XSharpProjectPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
+            if (vsuiShell2 != null && vsuiShell2.GetVSSysColorEx((Int32)visualStudioColor, out win32Color) == VSConstants.S_OK)
+            {
+                Color color = ColorTranslator.FromWin32((int)win32Color);
+                return color;
+            }
+
+            // We need to fall back to some reasonable colors when we're not running in VS
+            // to keep the forms/property pages editable in the designers
+            switch (visualStudioColor)
+            {
+                case Vs2010Color.VSCOLOR_BUTTONFACE:
+                    return SystemColors.ButtonFace;
+
+                case Vs2010Color.VSCOLOR_BUTTONTEXT:
+                    return SystemColors.ControlText;
+
+                case Vs2010Color.VSCOLOR_WINDOW:
+                    return SystemColors.Window;
+
+                default:
+                    return Color.Red;
+            }
+        }
 
         /// <summary>
         /// Refreshes the data in the property browser
         /// </summary>
         internal static void RefreshPropertyBrowser()
         {
-            IVsUIShell vsuiShell = XSharp.Project.XSharpProjectPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            IVsUIShell vsuiShell = XSharpProjectPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
 
             if (vsuiShell == null)
             {
-                string message = XSharpHelperMethods.SafeStringFormat(CultureInfo.CurrentUICulture, Resources.GetString(Resources.CannotGetService), typeof(IVsUIShell).Name);
+                string message = XHelperMethods.SafeStringFormat(CultureInfo.CurrentUICulture, Resources.GetString(Resources.CannotGetService), typeof(IVsUIShell).Name);
                 throw new InvalidOperationException(message);
             }
             else
@@ -639,7 +769,7 @@ internal static class XSharpHelperMethods
       /// <param name="node">The selected hierarchy node</param>
       internal static void RefreshProject( HierarchyNode node )
       {
-         XSharpProjectNode projectNode = node.ProjectMgr as XSharpProjectNode;
+         XProjectNode projectNode = node.ProjectMgr as XProjectNode;
 
          if ( projectNode.ShowAllFilesEnabled )
          {
@@ -670,13 +800,13 @@ internal static class XSharpHelperMethods
         {
             IVsOutputWindow outputWindow = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
-            // If we fail to get it we can exit now. 
+            // If we fail to get it we can exit now.
             if (null == outputWindow)
             {
                 Trace.WriteLine("Failed to get a reference to IVsOutputWindow");
                 return;
             }
-            // Now get the window pane for the general output. 
+            // Now get the window pane for the general output.
             Guid guidGeneral = Microsoft.VisualStudio.VSConstants.GUID_OutWindowGeneralPane;
             IVsOutputWindowPane windowPane = null;
             if (Microsoft.VisualStudio.ErrorHandler.Failed(outputWindow.GetPane(ref guidGeneral, out windowPane)))
@@ -693,7 +823,7 @@ internal static class XSharpHelperMethods
                 Trace.WriteLine("Failed to write on the Output window");
             }
             //
-        } 
+        }
 
 
 

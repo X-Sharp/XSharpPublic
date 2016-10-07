@@ -132,23 +132,27 @@
     <Compile Include="..\..\Common\Constants.cs">
       <Link>Constants.cs</Link>
     </Compile>
+    <Compile Include="Automation\OAXSharpProjectItem.cs" />
     <Compile Include="CodeDomProvider\VSXsharpCodeDomProvider.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
-    <Compile Include="IProjectSourceNode.cs" />
-    <Compile Include="Nodes\XFileNode.cs" />
-    <Compile Include="Nodes\XFolderNode.cs" />
-    <Compile Include="Nodes\XProjectNode.cs" />
-    <Compile Include="Nodes\XSharpDesignPropertyDescriptor.cs" />
-    <Compile Include="Nodes\XSharpFileNodeNonMemberProperties.cs" />
+    <Compile Include="Wix\IProjectSourceNode.cs" />
+    <Compile Include="Wix\XBuildMacroCollection.cs" />
+    <Compile Include="Wix\XConfigProvider.cs" />
+    <Compile Include="Wix\XDesignPropertyDescriptor.cs" />
+    <Compile Include="Wix\XFileNode.cs" />
+    <Compile Include="Wix\XFileNodeNonMemberProperties.cs" />
+    <Compile Include="Wix\XFolderNode.cs" />
+    <Compile Include="Wix\XFolderNodeNonMemberProperties.cs" />
+    <Compile Include="Wix\XFolderNodeProperties.cs" />
+    <Compile Include="Wix\XNonMemberDesignPropertyDescriptor.cs" />
+    <Compile Include="Wix\XProjectConfig.cs" />
+    <Compile Include="Wix\XProjectNode.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
-    <Compile Include="Nodes\XSharpFolderNodeNonMemberProperties.cs" />
-    <Compile Include="Nodes\XSharpFolderNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />
-    <Compile Include="Nodes\XSharpNonMemberDesignPropertyDescriptor.cs" />
-    <Compile Include="VOEditorSupport\EditorPane.cs" />
-    <Compile Include="VOEditorSupport\Factories.cs" />
+    <Compile Include="Editors\EditorPane.cs" />
+    <Compile Include="Editors\Factories.cs" />
     <Compile Include="LanguageService\PkgCmdID.cs" />
     <Compile Include="LanguageService\XSharpAuthoringScope.cs" />
     <Compile Include="LanguageService\XSharpLanguageService.cs" />
@@ -159,7 +163,6 @@
     <Compile Include="Attributes\ResourcesCategoryAttribute.cs" />
     <Compile Include="Attributes\ResourcesDescriptionAttribute.cs" />
     <Compile Include="PropertyPages\Enums.cs" />
-    <Compile Include="PropertyPages\XSharpBuildMacroCollection.cs" />
     <Compile Include="PropertyPages\XSharpMLEPropertyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -184,6 +187,9 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
+    <Content Include="Resources\Delete.png" />
+    <Content Include="Resources\DownArrow.png" />
+    <Content Include="Resources\UpArrow.png" />
     <Content Include="Template.ico" />
     <ZipProject Include="Templates\Projects\WinFormApp\Form1.designer.prg" />
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.designer.prg" />
@@ -218,14 +224,14 @@
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WcfService\Service.prg">
     </ZipItem>
-    <Compile Include="VOEditorSupport\IEditor.cs" />
-    <Compile Include="VsTextViewCreationListener.cs" />
-    <Compile Include="XSharpPackageSettings.cs" />
+    <Compile Include="Editors\IEditor.cs" />
+    <Compile Include="Editors\VsTextViewCreationListener.cs" />
+    <Compile Include="Wix\XHelperMethods.cs" />
+    <Compile Include="Wix\XProjectMembers.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
+    <Compile Include="Wix\XPackageSettings.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
-    <Compile Include="XSharpHelperMethods.cs" />
-    <Compile Include="XSharpProjectMembers.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
     <Compile Include="WPF\XSharpRuntimeNameFactory.cs" />
     <Compile Include="WPF\XSharpRuntimeNameProvider.cs" />
@@ -235,11 +241,11 @@
     <Compile Include="Nodes\XSharpCOMReferenceNode.cs" />
     <Compile Include="XSharpConstants.cs" />
     <Compile Include="Nodes\XSharpDependentFileNode.cs" />
-    <Compile Include="XSharpEditorFactory.cs" />
+    <Compile Include="Editors\XSharpEditorFactory.cs" />
     <Compile Include="XSharpConfigprovider.cs" />
-    <Compile Include="XSharpFileType.cs" />
-    <Compile Include="XSharpProjectAutomation.cs" />
-    <Compile Include="XSharpProjectFactory.cs" />
+    <Compile Include="XFileType.cs" />
+    <Compile Include="Automation\OAXSharpFileItem.cs" />
+    <Compile Include="Editors\XSharpProjectFactory.cs" />
     <Compile Include="Nodes\XSharpFileNode.cs" />
     <Compile Include="GuidStrings.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -247,7 +253,7 @@
     <Compile Include="XSharpProjectPackage.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="Nodes\XSharpReferenceContainerNode.cs" />
-    <Compile Include="XSharpVSMDProvider.cs" />
+    <Compile Include="CodeDomProvider\XSharpVSMDProvider.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>

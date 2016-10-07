@@ -100,17 +100,17 @@ namespace XSharp.Project
                 return (int)OleConstants.OLECMDERR_E_NOTSUPPORTED;
             }
 
-            using (XSharpHelperMethods.NewWaitCursor())
+            using (XHelperMethods.NewWaitCursor())
             {
                 this.showAllFilesEnabled = !this.showAllFilesEnabled; // toggle the flag
 
                 if (this.showAllFilesEnabled)
                 {
-                    XSharpProjectMembers.AddNonMemberItems(this);
+                    XProjectMembers.AddNonMemberItems(this);
                 }
                 else
                 {
-                    XSharpProjectMembers.RemoveNonMemberItems(this);
+                    XProjectMembers.RemoveNonMemberItems(this);
                 }
             }
 
@@ -342,11 +342,11 @@ namespace XSharp.Project
                 switch ((VsCommands2K)cmd)
                 {
                     case ExploreFolderInWindowsCommand:
-                        XSharpHelperMethods.ExploreFolderInWindows(this.ProjectFolder);
+                        XHelperMethods.ExploreFolderInWindows(this.ProjectFolder);
                         return VSConstants.S_OK;
 
                     case VsCommands2K.SLNREFRESH:
-                        XSharpHelperMethods.RefreshProject(this);
+                        XHelperMethods.RefreshProject(this);
                         return VSConstants.S_OK;
                 }
             }
@@ -356,7 +356,7 @@ namespace XSharp.Project
                 switch ((VsCommands)cmd)
                 {
                     case VsCommands.Refresh:
-                        XSharpHelperMethods.RefreshProject(this);
+                        XHelperMethods.RefreshProject(this);
                         return VSConstants.S_OK;
                     case VsCommands.F1Help:
                         // Prevent VS from showing keyword help

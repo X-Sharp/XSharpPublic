@@ -19,7 +19,7 @@ namespace XSharp.Project
     /// Contains helper methods for including/excluding items in a VulcanProjectNode.
     /// </summary>
     [Guid("285F8F28-375F-4A73-B81F-0A5525471B86")]
-    internal static class XSharpProjectMembers
+    internal static class XProjectMembers
     {
         /// <summary>
         /// Adds non member items to the hierarchy.
@@ -32,13 +32,13 @@ namespace XSharp.Project
             IList<string> folders = new List<string>();
 
             // obtain the list of files and folders under the project folder.
-            XSharpProjectMembers.GetRelativeFileSystemEntries(project.ProjectFolder, null, files, folders);
+            XProjectMembers.GetRelativeFileSystemEntries(project.ProjectFolder, null, files, folders);
 
             // exclude the items which are the part of the build.
-            XSharpProjectMembers.ExcludeProjectBuildItems(project, files, folders);
+            XProjectMembers.ExcludeProjectBuildItems(project, files, folders);
 
-            XSharpProjectMembers.AddNonMemberFolderItems(project, folders);
-            XSharpProjectMembers.AddNonMemberFileItems(project, files);
+            XProjectMembers.AddNonMemberFolderItems(project, folders);
+            XProjectMembers.AddNonMemberFileItems(project, files);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace XSharp.Project
         internal static void RemoveNonMemberItems(XProjectNode project)
         {
             IList<HierarchyNode> nodeList = new List<HierarchyNode>();
-            XSharpHelperMethods.FindNodes(nodeList, project, XSharpProjectMembers.IsNodeNonMemberItem, null);
+            XHelperMethods.FindNodes(nodeList, project, XProjectMembers.IsNodeNonMemberItem, null);
             for (int index = nodeList.Count - 1; index >= 0; index--)
             {
                 HierarchyNode node = nodeList[index];
@@ -111,7 +111,7 @@ namespace XSharp.Project
                         continue;
                     }
 
-                    string fileRelativePath = XSharpHelperMethods.GetRelativePath(baseFolder, file);
+                    string fileRelativePath = XHelperMethods.GetRelativePath(baseFolder, file);
                     if (!String.IsNullOrEmpty(fileRelativePath))
                     {
                         fileList.Add(fileRelativePath);
@@ -130,7 +130,7 @@ namespace XSharp.Project
                         continue;
                     }
 
-                    string folderRelativePath = XSharpHelperMethods.GetRelativePath(baseFolder, folder);
+                    string folderRelativePath = XHelperMethods.GetRelativePath(baseFolder, folder);
                     if (!String.IsNullOrEmpty(folderRelativePath))
                     {
                         folderList.Add(folderRelativePath);
@@ -192,7 +192,7 @@ namespace XSharp.Project
                     string relativePath = buildItem.EvaluatedInclude;
                     if (Path.IsPathRooted(relativePath)) // if not the relative path, make it relative
                     {
-                        relativePath = XSharpHelperMethods.GetRelativePath(project.ProjectFolder, relativePath);
+                        relativePath = XHelperMethods.GetRelativePath(project.ProjectFolder, relativePath);
                     }
 
 
@@ -204,12 +204,12 @@ namespace XSharp.Project
                 }
                 else if (fileMap != null &&
                     fileMap.Count > 0 &&
-                    XSharpProjectMembers.IsXFileItem(buildItem))
+                    XFileType.IsXFileItem(buildItem))
                 {
                     string relativePath = buildItem.EvaluatedInclude;
                     if (Path.IsPathRooted(relativePath)) // if not the relative path, make it relative
                     {
-                        relativePath = XSharpHelperMethods.GetRelativePath(project.ProjectFolder, relativePath);
+                        relativePath = XHelperMethods.GetRelativePath(project.ProjectFolder, relativePath);
                     }
 
                     if (fileMap.ContainsKey(relativePath))
@@ -249,12 +249,11 @@ namespace XSharp.Project
                     }
 
                     HierarchyNode childNode = parentNode.FindChild( childNodeId );
-                    //HierarchyNode childNode = project.FindURL(folderInfo.FullName);
                     if (childNode == null)
                     {
                         if (topFolderNode == null)
                         {
-                            topFolderNode = parentNode as XSharpFolderNode;
+                            topFolderNode = parentNode as XFolderNode;
                             if (topFolderNode != null && (!topFolderNode.IsNonMemberItem) && topFolderNode.IsExpanded)
                             {
                                 topFolderNode = null;
@@ -312,14 +311,14 @@ namespace XSharp.Project
                     {
                         if (topFolderNode == null)
                         {
-                            topFolderNode = parentNode as XSharpFolderNode;
+                            topFolderNode = parentNode as XFolderNode;
                             if (topFolderNode != null && (!topFolderNode.IsNonMemberItem) && topFolderNode.IsExpanded)
                             {
                                 topFolderNode = null;
                             }
                         }
 
-                        Microsoft.VisualStudio.Project.ProjectElement element = new Microsoft.VisualStudio.Project.ProjectElement(project, null, true);
+                        ProjectElement element = new ProjectElement(project, null, true);
                         element.Rename(childNodeId);
                         element.SetMetadata(ProjectFileConstants.Name, childNodeId);
                         childNode = project.CreateFileNode(element);
@@ -342,28 +341,9 @@ namespace XSharp.Project
         /// </summary>
         /// <param name="buildItem">BuildItem to be checked.</param>
         /// <returns>Returns true if the buildItem is a file item, false otherwise.</returns>
-        static string[] types = {
-                                ProjectFileConstants.Compile,
-                                ProjectFileConstants.EmbeddedResource,
-                                ProjectFileConstants.Content,
-                                XSharpProjectFileConstants.NativeResource,
-                                XSharpProjectFileConstants.VOBinary,
-                                ProjectFileConstants.ApplicationDefinition,
-                                ProjectFileConstants.Page,
-                                ProjectFileConstants.Resource,
-                                ProjectFileConstants.None
-                                };
-
-        private static bool IsXFileItem(MSBuild.ProjectItem buildItem)
+        private static bool IsWixFileItem(MSBuild.ProjectItem buildItem)
         {
-            Utilities.ArgumentNotNull("buildItem", buildItem);
-            string name = buildItem.ItemType;
-            foreach (var type in types)
-            {
-                if (String.Equals(name, type, StringComparison.OrdinalIgnoreCase))
-                    return true;
-            }
-            return false;
+            return XFileType.IsXFileItem(buildItem);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace XSharp.Project
             : base(root, element, isNonMemberItem)
         {
             this.UpdateHasDesigner();
-            this.UpdateItemType();
+            this.CheckItemType();
             root.AddURL(this.Url, this);
 
         }
@@ -74,44 +74,21 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    switch (GetFileType(this.Url))
+                    if (IsForm)
                     {
-                        case XSharpFileType.SourceCode:
-                            //
-                            if (IsForm)
-                            {
-                                ret =  (int)ProjectNode.ImageName.WindowsForm;
-                            }
-                            else if (IsUserControl)
-                            {
-                                ret =  (int)ProjectNode.ImageName.WindowsForm;
-                            }
-                            else
-                            {
-                                ret = XSharpImageListIndex.Source + XSharpProjectNode.imageOffset;
-                            }
-                            break;
-                        case XSharpFileType.Header:
-                        case XSharpFileType.PreprocessorOutput:
-
-                            ret = XSharpImageListIndex.Source + XSharpProjectNode.imageOffset;
-                            break;
-                        case XSharpFileType.VOForm:
-                            ret = XSharpImageListIndex.Form + XSharpProjectNode.imageOffset;
-                            break;
-                        case XSharpFileType.VOMenu:
-                            ret = XSharpImageListIndex.Menu + XSharpProjectNode.imageOffset;
-                            break;
-                        case XSharpFileType.VODBServer:
-                            ret = XSharpImageListIndex.Server + XSharpProjectNode.imageOffset;
-                            break;
-                        case XSharpFileType.VOFieldSpec:
-                            ret = XSharpImageListIndex.FieldSpec + XSharpProjectNode.imageOffset;
-                            break;
-                        default:
-                            ret = base.ImageIndex;
-                            break;
-
+                        ret = (int)ProjectNode.ImageName.WindowsForm;
+                    }
+                    else if (IsUserControl)
+                    {
+                        ret = (int)ProjectNode.ImageName.WindowsForm;
+                    }
+                    else
+                    {
+                        ret = XFileType.ImageIndex(this.Url);
+                    }
+                    if (ret == -1)
+                    {
+                        ret = base.ImageIndex;
                     }
                 }
                 return ret;
@@ -134,7 +111,7 @@ namespace XSharp.Project
             // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
             // We should do this with proper parsing. For now we simply test the first word after the INHERIT keyword
             // and then parse and bind to see if we can find the first type in the file.
-            if (GetFileType(this.Url) == XSharpFileType.SourceCode)
+            if (this.FileType == XSharpFileType.SourceCode)
             {
                 string SubType = "";
                 string token = "INHERIT";
@@ -173,33 +150,8 @@ namespace XSharp.Project
 
         public void UpdateHasDesigner()
         {
-            string itemType = GetItemType(this.FileName);
-            switch (itemType) {
-                case XSharpProjectFileConstants.VOBinary:
-                case XSharpProjectFileConstants.Settings:
-                case ProjectFileConstants.Resource:
-                case ProjectFileConstants.Page:
-                case ProjectFileConstants.ApplicationDefinition:
-                    HasDesigner = true;
-                    break;
-                default:
-                    switch(SubType) {
-                        case ProjectFileAttributeValue.Component:
-                        case ProjectFileAttributeValue.Form:
-                        case ProjectFileAttributeValue.UserControl:
-                            HasDesigner = true;
-                            break;
-                        default:
-                            HasDesigner = false;
-                            break;
-                    }
-                    break;
-            }
+            HasDesigner = XFileType.HasDesigner(this.Url, SubType);
 		}
- 
-
-
-
 
 #region Dependent Items
         internal String GetParentName()
@@ -216,7 +168,7 @@ namespace XSharp.Project
             // CS also defines a 'relationtype'. See the CS Project System source code.
             String path = Path.GetFileName(this.Url).ToLowerInvariant();
             int relationIndex = path.IndexOf(".");
-            switch (GetFileType(this.Url))
+            switch (this.FileType)
             {
                 case XSharpFileType.Header:
                 case XSharpFileType.ManagedResource:
@@ -304,45 +256,18 @@ namespace XSharp.Project
         #region ItemTypes
 
 
-        internal static string GetItemType(string file)
-        {
-            return GetItemType(GetFileType(file));
-        }
-        internal static string GetItemType(XSharpFileType type)
-        {
-            switch (type)
-            {
-                case XSharpFileType.SourceCode:
-                    return ProjectFileConstants.Compile;
-                case XSharpFileType.NativeResource:
-                    return XSharpProjectFileConstants.NativeResource;
-                case XSharpFileType.VOForm:
-                case XSharpFileType.VODBServer:
-                case XSharpFileType.VOFieldSpec:
-                case XSharpFileType.VOMenu:
-                case XSharpFileType.VOIndex:
-                case XSharpFileType.VOOrder:
-                    return XSharpProjectFileConstants.VOBinary;
-                case XSharpFileType.ManagedResource:
-                    return ProjectFileConstants.Resource;
-                case XSharpFileType.XAML:
-                    return ProjectFileConstants.Page;
-                default:
-                    return ProjectFileConstants.None;
-            }
-        }
 
         internal override void SetSpecialProperties()
         {
-            var type = GetFileType(this.Url);
+            var type = this.FileType;
             switch (type)
             {
                 case XSharpFileType.ManagedResource:
-                    this.ItemNode.SetMetadata(ProjectFileConstants.SubType, ProjectFileAttributeValue.Designer);
-                    this.ItemNode.SetMetadata(ProjectFileConstants.Generator, "ResXFileCodeGenerator");
+                    this.SubType = ProjectFileAttributeValue.Designer;
+                    this.Generator =  "ResXFileCodeGenerator";
                     break;
                 case XSharpFileType.Settings:
-                    this.ItemNode.SetMetadata(ProjectFileConstants.Generator, "SettingsSingleFileGenerator");
+                    this.Generator = "SettingsSingleFileGenerator";
                     break;
             }
 
@@ -354,6 +279,21 @@ namespace XSharp.Project
             return !String.IsNullOrEmpty(result) && String.Equals(result, value, StringComparison.OrdinalIgnoreCase) ;
 
         }
+        public bool IsXAML
+        {
+            get
+            {
+                return this.FileType == XSharpFileType.XAML;
+            }
+        }
+        public bool IsVOBinary
+        {
+            get
+            {
+                return XFileType.IsVoBinary(this.Url);
+            }
+        }
+
         public bool IsForm
         {
             get
@@ -369,47 +309,18 @@ namespace XSharp.Project
             }
         }
 
-        static internal XSharpFileType GetFileType(string filename)
+        internal XSharpFileType FileType
         {
-            string ext = Path.GetExtension(filename);
-            switch (ext)
+            get
             {
-                case ".prg":
-                case ".xs":
-                    return XSharpFileType.SourceCode;
-                case ".vh":
-                case ".xh":
-                    return XSharpFileType.Header;
-                case ".xsfrm":
-                case ".vnfrm":
-                    return XSharpFileType.VOForm;
-                case ".xsmnu":
-                case ".vnmnu":
-                    return XSharpFileType.VOMenu;
-                case ".xsdbs":
-                case ".vndbs":
-                    return XSharpFileType.VODBServer;
-                case ".xsfs":
-                case ".vnfs":
-                    return XSharpFileType.VOFieldSpec;
-                case ".xaml":
-                    return XSharpFileType.XAML;
-                case ".settings":
-                    return XSharpFileType.Settings;
-                case ".resx":
-                    return XSharpFileType.ManagedResource;
-                case ".rc":
-                    return XSharpFileType.NativeResource;
-                default:
-                    return XSharpFileType.Unknown;
-
+               return XFileType.GetFileType(this.Url);
             }
         }
-        private void UpdateItemType()
+
+        private void CheckItemType()
         {
             string itemType = this.ItemNode.ItemName;
-            var ftype = GetFileType(this.FileName);
-            switch (ftype)
+            switch (this.FileType)
             {
             case XSharpFileType.XAML:
                 // do not change the type when not needed
@@ -462,10 +373,22 @@ namespace XSharp.Project
                 UpdateHasDesigner();
             }
         }
+        public string Generator
+        {
+            get
+            {
+                return ItemNode.GetMetadata(ProjectFileConstants.Generator);
+            }
+            set
+            {
+                ItemNode.SetMetadata(ProjectFileConstants.Generator, value);
+            }
+        }
 
-		#endregion
 
-		#region Code Generation and Code Parsing
+        #endregion
+
+        #region Code Generation and Code Parsing
         /// <summary>
         /// factory method for creating single file generators.
         /// </summary>
@@ -545,13 +468,13 @@ namespace XSharp.Project
         {
             if (IsNonMemberItem)
             {
-                return new XSharpFileNodeNonMemberProperties(this);
+                return new XFileNodeNonMemberProperties(this);
             }
             else if (!String.IsNullOrEmpty(this.ItemNode.GetMetadata("Link")))
             {
                 return new XSharpLinkedFileNodeProperties(this);
             }
-            //else if (this.IsVOBinary)
+            //else if (this.IsVoBinary)
             //{
 
             //    return new XSharpVOBinaryFileNodeProperties(this);
@@ -567,7 +490,7 @@ namespace XSharp.Project
         }
 
 
-        /// <summary>
+         /// <summary>
         /// Gets the automation object for the file node.
         /// </summary>
         /// <returns></returns>
@@ -605,7 +528,7 @@ namespace XSharp.Project
             {
                 viewGuid = VSConstants.LOGVIEWID.Designer_guid;
             }
-            else if (GetItemType(this.FileName) == ProjectFileConstants.Compile)
+            else if (XFileType.GetItemType(this.FileName) == ProjectFileConstants.Compile)
             {
                 viewGuid = VSConstants.LOGVIEWID.Code_guid;
             }

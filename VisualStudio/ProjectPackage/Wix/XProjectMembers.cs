@@ -3,17 +3,18 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using MSBuild = Microsoft.Build.Evaluation;
-using Microsoft.VisualStudio.Project;
-using Microsoft.VisualStudio.Shell.Interop;
-using System.Runtime.InteropServices;
-
 namespace XSharp.Project
 {
+
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
+	using System.IO;
+	using MSBuild = Microsoft.Build.Evaluation;
+	using Microsoft.VisualStudio.Project;
+	using Microsoft.VisualStudio.Shell.Interop;
+	using System.Runtime.InteropServices;
+
 
     /// <summary>
     /// Contains helper methods for including/excluding items in a VulcanProjectNode.
@@ -148,7 +149,7 @@ namespace XSharp.Project
         private static void ExcludeProjectBuildItems(XProjectNode project, IList<string> fileList, IList<string> folderList)
         {
 
-            IEnumerable<MSBuild.ProjectItem> projectItems = project.BuildProject.Items;
+            var projectItems = project.BuildProject.Items;
 
             if (projectItems == null)
             {
@@ -336,14 +337,5 @@ namespace XSharp.Project
             }
         }
 
-        /// <summary>
-        /// Returns if the buildItem is a file item or not.
-        /// </summary>
-        /// <param name="buildItem">BuildItem to be checked.</param>
-        /// <returns>Returns true if the buildItem is a file item, false otherwise.</returns>
-        private static bool IsWixFileItem(MSBuild.ProjectItem buildItem)
-        {
-            return XFileType.IsXFileItem(buildItem);
-        }
     }
 }

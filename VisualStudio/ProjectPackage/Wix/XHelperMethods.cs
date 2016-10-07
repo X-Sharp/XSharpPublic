@@ -45,7 +45,7 @@ internal static class XHelperMethods
       /// <param name="node">Node to be tested.</param>
       /// <param name="criteria">Filter criteria.</param>
       /// <returns>Returns if the node should be filtered or not.</returns>
-      public delegate bool XSharpNodeFilter( HierarchyNode node, object criteria );
+      public delegate bool XNodeFilter( HierarchyNode node, object criteria );
 
         /// <summary>
         /// VS colors for Visual Studio 2010
@@ -163,6 +163,7 @@ internal static class XHelperMethods
             return null;
         }
 
+      /// <summary>
       /// Returns a value indicating whether we can recover from the specified exception. If we can't recover,
       /// then it's expected that the caller will immediately call <see cref="Shutdown"/>.
       /// </summary>
@@ -213,9 +214,7 @@ internal static class XHelperMethods
          return formattedString;
       }
 
-
-
-        /// <summary>
+  	    /// <summary>
         /// Performs a ship assertion, which raises an assertion dialog. TODO: Generate a call stack and email it to some alias.
         /// </summary>
         /// <param name="condition">The condition to assert.</param>
@@ -357,7 +356,7 @@ internal static class XHelperMethods
       /// <param name="parent">Parent node under which the nodes should be searched.</param>
       /// <param name="filter">Filter to be used while selecting the node.</param>
       /// <param name="criteria">Criteria to be used by the filter.</param>
-      public static void FindNodes( IList<HierarchyNode> currentList, HierarchyNode parent, XSharpNodeFilter filter, object criteria )
+      public static void FindNodes( IList<HierarchyNode> currentList, HierarchyNode parent, XNodeFilter filter, object criteria )
       {
             Utilities.ArgumentNotNull("currentList", currentList);
             Utilities.ArgumentNotNull("parent", parent);

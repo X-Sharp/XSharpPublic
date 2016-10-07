@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using System.Diagnostics;
 using MSBuild = Microsoft.Build.Evaluation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XSharp.Project
 {
@@ -292,8 +293,16 @@ namespace XSharp.Project
             return node;
         }
 
+        /// <summary>
+        /// Creates and returns the folder node object for Wix projects.
+        /// </summary>
+        /// <param name="path">Folder path.</param>
+        /// <param name="element">MSBuild element.</param>
+        /// <returns>Returns newly created Folder Node object.</returns>
+        [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", MessageId = "1#")]
         protected internal override FolderNode CreateFolderNode(string path, ProjectElement element)
         {
+            Utilities.ArgumentNotNull("element", element);
             FolderNode folderNode = new XSharpFolderNode(this, path, element, element.IsVirtual);
             return folderNode;
         }
@@ -608,17 +617,11 @@ namespace XSharp.Project
         }
 
         protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
-        {
-            ProjectElement newItem;
+            {
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
-            Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
-            var type = XFileType.GetFileType(itemPath);
-            string itemType = XFileType.GetItemType(type);
-            if(String.IsNullOrEmpty(itemType))
-                itemType = "None";
-            newItem = this.CreateMsBuildFileItem(itemPath, itemType);
-            return newItem;
+            string itemType = XFileType.GetItemType(itemPath);
+            return this.CreateMsBuildFileItem(itemPath, itemType);
         }
 
         /// <summary>
@@ -882,13 +885,13 @@ namespace XSharp.Project
         {
             base.Reload();
 
-            if (MoveDependants())
+            if (ResetDependencies())
             {
                 this.BuildProject.Save();
             }
 
         }
-        protected virtual internal bool MoveDependants()
+        protected virtual internal bool ResetDependencies()
         {
             bool bMoved = false;
             List< Tuple<XSharpFileNode,String,String>> FilesToMove = new List<Tuple<XSharpFileNode, String, String>>();
@@ -931,7 +934,7 @@ namespace XSharp.Project
             bool bOk = base.AddFilesFromProjectReferences(targetNode, projectReferences, dropEffect);
             if (bOk)
             {
-                MoveDependants();
+                ResetDependencies();
             }
             return bOk;
         }

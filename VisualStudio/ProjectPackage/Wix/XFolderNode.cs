@@ -77,29 +77,6 @@ namespace XSharp.Project
                 return base.MenuCommandId;
             }
         }
-        /*
-        public override int ImageIndex
-        {
-            get
-            {
-                if (this.IsNonMemberItem)
-                {
-                    if (this.IsExpanded)
-                        return (int)ProjectNode.ImageName.OpenExcludedFolder;
-                    else
-                        return (int)ProjectNode.ImageName.ExcludedFolder;
-                }
-                else
-                {
-                    if (this.IsExpanded)
-                        return (int)ProjectNode.ImageName.OpenFolder;
-                    else
-                        return (int)ProjectNode.ImageName.Folder;
-                }
-
-            }
-        }
-        */
 
         /// <summary>
         /// Specifies if a Node is under source control.
@@ -410,7 +387,6 @@ namespace XSharp.Project
             return base.QueryStatusOnNode(cmdGroup, cmd, pCmdText, ref result);
         }
 
-        private const VsCommands2K ExploreFolderInWindowsCommand = (VsCommands2K)1635;
         /// <summary>
         /// Handles command execution.
         /// </summary>
@@ -434,7 +410,7 @@ namespace XSharp.Project
                     case VsCommands2K.EXCLUDEFROMPROJECT:
                         return ((IProjectSourceNode)this).ExcludeFromProject();
 
-                    case ExploreFolderInWindowsCommand:
+                    case (VsCommands2K)XVsConstants.CommandExploreFolderInWindows:
                         XHelperMethods.ExploreFolderInWindows(this.GetMkDocument());
                         return VSConstants.S_OK;
 

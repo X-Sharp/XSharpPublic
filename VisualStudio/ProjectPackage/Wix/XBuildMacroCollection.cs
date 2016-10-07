@@ -15,6 +15,7 @@ namespace XSharp.Project
     using Microsoft.VisualStudio.Project;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
+    using XSharp.Project;
 
 
     internal class XBuildMacroCollection : ICollection, IEnumerable<XBuildMacroCollection.MacroNameValuePair>
@@ -64,10 +65,7 @@ namespace XSharp.Project
         /// <param name="project">The project from which to read the properties.</param>
         public XBuildMacroCollection(ProjectNode project)
         {
-            if (project == null)
-            {
-                throw new ArgumentNullException("project");
-            }
+            XHelperMethods.VerifyNonNullArgument(project, "project");
 
             // get the global SolutionX properties
             XBuildMacroCollection.DefineSolutionProperties(project);
@@ -177,7 +175,7 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// When building with only a vnproj in the solution, the SolutionX variables are not
+        /// When building with only a xsproj in the solution, the SolutionX variables are not
         /// defined, so we have to define them here.
         /// </summary>
         /// <param name="project">The project where the properties are defined.</param>
@@ -187,7 +185,7 @@ namespace XSharp.Project
             object solutionPathObj;
             ErrorHandler.ThrowOnFailure(solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionFileName, out solutionPathObj));
             string solutionPath = (string)solutionPathObj;
-            XPackageSettings settings = ((XSharpProjectNode) project).XSharpPackage.Settings;
+            XPackageSettings settings = XSharpProjectPackage.Instance.Settings;
             string devEnvDir = XHelperMethods.EnsureTrailingDirectoryChar(Path.GetDirectoryName(settings.DevEnvPath));
 
             string[][] properties = new string[][]

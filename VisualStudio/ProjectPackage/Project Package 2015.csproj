@@ -227,6 +227,7 @@
     <Compile Include="Wix\XProjectMembers.cs" />
     <Compile Include="Nodes\XSharpProjectReferenceNode.cs" />
     <Compile Include="Wix\XPackageSettings.cs" />
+    <Compile Include="Wix\XVsConstants.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />

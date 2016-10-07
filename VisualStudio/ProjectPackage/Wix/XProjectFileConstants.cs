@@ -9,7 +9,7 @@ namespace XSharp.Project
     using System;
 
     /// <summary>
-    /// Contains constants for MSBuild .wixproj and .user files.
+    /// Contains constants for MSBuild .xsproj and .user files.
     /// </summary>
     //// Keep these in alphabetical order for easy referencing.
     internal static class XProjectFileConstants
@@ -106,12 +106,12 @@ namespace XSharp.Project
         public const string WixVariables = "WixVariables";
 
         /// <summary>
-        /// Target names for the Wix.targets MSBuild file.
+        /// Target names for the XSharp.targets MSBuild file.
         /// </summary>
         public static class MsBuildTarget
         {
             public const string GetTargetPath = "GetTargetPath";
-            public const string ResolveWixLibraryReferences = "ResolveWixLibraryReferences";
+            //public const string ResolveWixLibraryReferences = "ResolveWixLibraryReferences";
         }
     }
 }

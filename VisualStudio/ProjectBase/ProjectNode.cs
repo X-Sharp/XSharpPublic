@@ -1831,7 +1831,7 @@ namespace Microsoft.VisualStudio.Project
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.INVISIBLE;
                         return VSConstants.S_OK;
 
-                    case ExploreFolderInWindowsCommand:
+                    case (VsCommands2K) XVsConstants.CommandExploreFolderInWindows:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
                 }

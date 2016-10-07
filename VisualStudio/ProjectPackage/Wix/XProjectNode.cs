@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -22,13 +22,29 @@ using System.Diagnostics.CodeAnalysis;
 namespace XSharp.Project
 {
     /// <summary>
-    /// This class extends the ProjectNode in order to represent our project 
+    /// This class extends the ProjectNode in order to represent our project
     /// within the hierarchy.
     /// Most of this code has been "borrowed" from the WixProjectNode class in Votive
     /// </summary>
     [Guid("0E55C091-DDDC-40CC-95FF-CCBCE51D35A9")]
     public abstract class XProjectNode : ProjectNode
     {
+
+        /// <summary>
+        /// Initialize common project properties with default value if they are empty.
+        /// </summary>
+        /// <remarks>
+        /// The following common project properties are set to default values: OutputName.
+        /// </remarks>
+        protected override void InitializeProjectProperties()
+        {
+            if (String.IsNullOrWhiteSpace(this.GetProjectProperty(XProjectFileConstants.OutputName)))
+            {
+                string projectName = Path.GetFileNameWithoutExtension(this.FileName);
+                this.SetProjectProperty(XProjectFileConstants.OutputName, projectName);
+            }
+        }
+
 
         #region ShowAllFiles
         private bool showAllFilesEnabled;
@@ -341,7 +357,7 @@ namespace XSharp.Project
             {
                 switch ((VsCommands2K)cmd)
                 {
-                    case ExploreFolderInWindowsCommand:
+                    case (VsCommands2K)XVsConstants.CommandExploreFolderInWindows:
                         XHelperMethods.ExploreFolderInWindows(this.ProjectFolder);
                         return VSConstants.S_OK;
 
@@ -414,7 +430,7 @@ namespace XSharp.Project
                 // If loaded directly from the file, Visual Studio will display
                 // a save changes dialog if any changes are made to the user
                 // project since it will have been added to the global project
-                // collection. Loading from an XmlReader will prevent the 
+                // collection. Loading from an XmlReader will prevent the
                 // project from being added to the global project collection
                 // and thus prevent the save changes dialog on close.
                 System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.UserFileName);
@@ -510,6 +526,78 @@ namespace XSharp.Project
         {
             return this.AddFolderToMsBuild(folder);
         }
+
+        /// <summary>
+        /// Executes an MSBuild target.
+        /// </summary>
+        /// <param name="target">Name of the MSBuild target to execute.</param>
+        /// <returns>Result from executing the target (success/failure).</returns>
+        protected override Microsoft.VisualStudio.Project.BuildResult InvokeMsBuild(string target)
+        {
+            XBuildMacroCollection.DefineSolutionProperties(this);
+            XBuildMacroCollection.DefineProjectReferenceConfigurations(this);
+            return base.InvokeMsBuild(target);
+        }
+
+        #endregion
+
+        #region Project Properties
+        /// <summary>
+        /// Sets the value of an MSBuild project property.
+        /// </summary>
+        /// <param name="propertyName">The name of the property to change.</param>
+        /// <param name="propertyValue">The value to assign the property.</param>
+        public override void SetProjectProperty(string propertyName, string propertyValue)
+        {
+            this.SetProjectProperty(propertyName, propertyValue, null);
+        }
+
+        /// <summary>
+        /// Sets the value of an MSBuild project property.
+        /// </summary>
+        /// <param name="propertyName">The name of the property to change.</param>
+        /// <param name="propertyValue">The value to assign the property.</param>
+        /// <param name="condition">The condition to use on the property. Corresponds to the Condition attribute of the Property element.</param>
+        public void SetProjectProperty(string propertyName, string propertyValue, string condition)
+        {
+            XHelperMethods.VerifyStringArgument(propertyName, "propertyName");
+
+            if (propertyValue == null)
+            {
+                propertyValue = String.Empty;
+            }
+
+            // see if the value is the same as what's already in the project so we
+            // know whether to actually mark the project file dirty or not
+            string oldValue = this.GetProjectProperty(propertyName, true);
+
+            if (!String.Equals(oldValue, propertyValue, StringComparison.Ordinal))
+            {
+                // check out the project file
+                if (this.ProjectMgr != null && !this.ProjectMgr.QueryEditProjectFile(false))
+                {
+                    throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
+                }
+
+                // Use condition!
+                this.BuildProject.SetProperty(propertyName, propertyValue); //, condition);
+
+                // refresh the cached values
+                this.SetCurrentConfiguration();
+                this.SetProjectFileDirty(true);
+            }
+        }
+
+        /// <summary>
+        /// Converts the path to relative (if it is absolute) to the project folder.
+        /// </summary>
+        /// <param name="path">Path to be made relative.</param>
+        /// <returns>Path relative to the project folder.</returns>
+        public virtual string GetRelativePath(string path)
+        {
+            return XHelperMethods.GetRelativePath(this.ProjectFolder, path);
+        }
+
         #endregion
     }
 }

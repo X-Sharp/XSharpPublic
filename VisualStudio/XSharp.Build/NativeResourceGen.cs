@@ -154,9 +154,13 @@ namespace XSharp.Build {
             return Result;
         }
 
-        protected override string GetResponseFileSwitch(string responseFilePath) {
+        protected override string GetResponseFileSwitch(string responseFilePath)
+        {
+            string newfile = Path.Combine(Path.GetDirectoryName(responseFilePath), "LastXSharpNativeResourceResponseFile.Rsp");
+            System.IO.File.Copy(responseFilePath, newfile, true);
             return ("\"" + responseFilePath + "\"");
         }
+
 
         protected override string GetWorkingDirectory() {
             return null;

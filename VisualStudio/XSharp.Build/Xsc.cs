@@ -4,10 +4,7 @@
 // See License.txt in the project root for license information.
 //
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Build.Tasks;
 
 using Microsoft.Build.Framework;
@@ -15,7 +12,6 @@ using Microsoft.Build.Utilities;
 using Microsoft.Win32;
 using System.IO;
 using System.Diagnostics;
-using System.Globalization;
 namespace XSharp.Build
 {
 
@@ -443,6 +439,13 @@ namespace XSharp.Build
                 Trace.Assert(false, ex.ToString());
                 throw;
             }
+        }
+
+        protected override string GetResponseFileSwitch(string responseFilePath)
+        {
+            string newfile = Path.Combine(Path.GetDirectoryName(responseFilePath) , "LastXSharpResponseFile.Rsp");
+            System.IO.File.Copy(responseFilePath, newfile, true);
+            return base.GetResponseFileSwitch(responseFilePath);
         }
 
         protected override int ExecuteTool(string pathToTool, string responseFileCommands, string commandLineCommands)

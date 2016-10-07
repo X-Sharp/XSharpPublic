@@ -31,7 +31,7 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : XProjectNode
+    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory
     {
 
         static Dictionary<string, string> dependencies;
@@ -233,6 +233,11 @@ namespace XSharp.Project
 
         public override object GetProperty(int propId)
         {
+            if (propId == (int) __VSHPROPID.VSHPROPID_DefaultNamespace)
+            {
+                return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+            }
+
             if (propId == (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration)
             {
                 return __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_Declarations | __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_InitMethods;
@@ -745,6 +750,10 @@ namespace XSharp.Project
             {
                 service = this.DesignerContext;
             }
+            else if (typeof(IVsSingleFileGeneratorFactory) == serviceType)
+            {
+                service = new SingleFileGeneratorFactory(this.ProjectGuid, this.Site);
+            }
 
 
             return service;
@@ -938,6 +947,46 @@ namespace XSharp.Project
             }
             return bOk;
         }
+        #region IVsSingleFileGeneratorFactory
+        IVsSingleFileGeneratorFactory factory = null;
+        private bool createIVsSingleFileGeneratorFactory()
+        {
+            if (factory == null)
+            {
+                factory = new SingleFileGeneratorFactory(this.ProjectGuid, this.Site);
+            }
+            return factory != null;
+        }
+        public int GetDefaultGenerator(string wszFilename, out string pbstrGenProgID)
+        {
+            pbstrGenProgID = String.Empty;
+            if (createIVsSingleFileGeneratorFactory())
+                return factory.GetDefaultGenerator(wszFilename, out pbstrGenProgID);
+            return VSConstants.S_FALSE;
+        }
 
+        public int CreateGeneratorInstance(string wszProgId, out int pbGeneratesDesignTimeSource, out int pbGeneratesSharedDesignTimeSource, out int pbUseTempPEFlag, out IVsSingleFileGenerator ppGenerate)
+        {
+            pbGeneratesDesignTimeSource = 0;
+            pbGeneratesSharedDesignTimeSource = 0;
+            pbUseTempPEFlag = 0;
+            ppGenerate = null;
+            if (createIVsSingleFileGeneratorFactory())
+                return factory.CreateGeneratorInstance(wszProgId, out pbGeneratesDesignTimeSource, out pbGeneratesSharedDesignTimeSource, out pbUseTempPEFlag, out ppGenerate);
+            return VSConstants.S_FALSE;
+        }
+
+        public int GetGeneratorInformation(string wszProgId, out int pbGeneratesDesignTimeSource, out int pbGeneratesSharedDesignTimeSource, out int pbUseTempPEFlag, out Guid pguidGenerator)
+        {
+            pbGeneratesDesignTimeSource = 0;
+            pbGeneratesSharedDesignTimeSource = 0;
+            pbUseTempPEFlag = 0;
+            pguidGenerator = Guid.Empty;
+            if (createIVsSingleFileGeneratorFactory())
+                return factory.GetGeneratorInformation(wszProgId, out pbGeneratesDesignTimeSource, out pbGeneratesSharedDesignTimeSource, out pbUseTempPEFlag, out pguidGenerator);
+            return VSConstants.S_FALSE;
+
+        }
+        #endregion
     }
 }

@@ -459,6 +459,7 @@ namespace XSharp.Project
         #endregion
 
         #region Overriden implementation
+        
         /// <summary>
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
         /// properties specific for this object to the property browser.
@@ -565,6 +566,7 @@ namespace XSharp.Project
             }
             return service;
         }
+
         #endregion
     }
 }

@@ -15,7 +15,7 @@ namespace XSharp.Project
             InitializeComponent();
         }
 
-        internal void SetMacros(XSharpBuildMacros mc)
+        internal void SetMacros(XBuildMacroCollection mc)
         {
             MacrosList.BeginUpdate();
             MacrosList.Items.Clear();

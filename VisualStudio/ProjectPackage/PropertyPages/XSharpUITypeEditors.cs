@@ -40,7 +40,7 @@ namespace XSharp.Project
                _editorUI.PropertyText.DeselectAll();
                _editorUI.PropertyText.ClearUndo();
 
-               XSharpBuildMacros mc = new XSharpBuildMacros( (ProjectNode) ( (SettingsPage) context.Instance ).ProjectMgr );
+               XBuildMacroCollection mc = new XBuildMacroCollection( (ProjectNode) ( (SettingsPage) context.Instance ).ProjectMgr );
                _editorUI.SetMacros( mc );
 
                DialogResult result = edSvc.ShowDialog( _editorUI );
@@ -95,7 +95,7 @@ namespace XSharp.Project
                _editorUI.PropertyText.DeselectAll();
                _editorUI.PropertyText.ClearUndo();
 
-               XSharpBuildMacros mc = new XSharpBuildMacros( (ProjectNode) ( (SettingsPage) context.Instance ).ProjectMgr );
+                    XBuildMacroCollection mc = new XBuildMacroCollection( (ProjectNode) ( (SettingsPage) context.Instance ).ProjectMgr );
                _editorUI.SetMacros( mc );
 
                DialogResult result = edSvc.ShowDialog( _editorUI );

@@ -149,15 +149,27 @@ namespace XSharp.Project
     [ProvideEditorLogicalView(typeof(VOFieldSpecEditorFactory), VsConstants.LOGVIEWID.Designer_string)]
 #endif
 
+    [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
 
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {
         private uint m_componentID;
+        private static XSharpProjectPackage instance;
+        private XPackageSettings settings;
 
-        private XSharpPackageSettings settings;
+        // =========================================================================================
+        // Properties
+        // =========================================================================================
 
-#region Overridden Implementation
+        /// <summary>
+        /// Gets the singleton WixPackage instance.
+        /// </summary>
+        public static XSharpProjectPackage Instance
+        {
+            get { return XSharpProjectPackage.instance; }
+        }
+        #region Overridden Implementation
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -165,8 +177,9 @@ namespace XSharp.Project
         protected override void Initialize()
         {
             base.Initialize();
+            XSharpProjectPackage.instance = this;
             this.RegisterProjectFactory(new XSharpProjectFactory(this));
-            this.settings = new XSharpPackageSettings(this);
+            this.settings = new XPackageSettings(this);
 
             // Indicate how to open the different source files : SourceCode or Designer ??
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
@@ -221,7 +234,7 @@ namespace XSharp.Project
         /// Gets the settings stored in the registry for this package.
         /// </summary>
         /// <value>The settings stored in the registry for this package.</value>
-        public XSharpPackageSettings Settings
+        public XPackageSettings Settings
         {
             get { return this.settings; }
         }

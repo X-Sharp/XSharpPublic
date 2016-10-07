@@ -434,7 +434,7 @@ namespace Microsoft.VisualStudio.Project
 
                 if(!VsShellUtilities.PromptYesNo(message, null, OLEMSGICON.OLEMSGICON_INFO, shell))
                 {
-                    // The user cancelled the confirmation for changing the extension.
+                    // The user canceled the confirmation for changing the extension.
                     // Return S_OK in order not to show any extra dialog box
                     return VSConstants.S_OK;
                 }

@@ -23,7 +23,7 @@ namespace XSharp.Project
     /// 
     internal class XSharpConfigProvider : ConfigProvider
     {
-        public XSharpConfigProvider(ProjectNode manager) : base(manager)
+        public XSharpConfigProvider(XSharpProjectNode manager) : base(manager)
         {
         }
 

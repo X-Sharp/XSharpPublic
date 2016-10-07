@@ -14,7 +14,7 @@ namespace XSharp.Project
     /// Helper class for setting and retrieving registry settings for the package. All machine
     /// settings are cached on first use, so only one registry read is performed.
     /// </summary>
-    public class XSharpPackageSettings
+    public class XPackageSettings
     {
         // =========================================================================================
         // Member Variables
@@ -35,14 +35,14 @@ namespace XSharp.Project
         /// Initializes a new instance of the <see cref="WixPackageSettings"/> class.
         /// </summary>
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/> to use.</param>
-        public XSharpPackageSettings(IServiceProvider serviceProvider)
+        public XPackageSettings(IServiceProvider serviceProvider)
         {
-            XSharpHelperMethods.VerifyNonNullArgument(serviceProvider, "serviceProvider");
+            XHelperMethods.VerifyNonNullArgument(serviceProvider, "serviceProvider");
 
             if (serviceProvider != null)
             {
                 // get the Visual Studio registry root
-                ILocalRegistry3 localRegistry = XSharpHelperMethods.GetService<ILocalRegistry3, SLocalRegistry>(serviceProvider);
+                ILocalRegistry3 localRegistry = XHelperMethods.GetService<ILocalRegistry3, SLocalRegistry>(serviceProvider);
                 ErrorHandler.ThrowOnFailure(localRegistry.GetLocalRegistryRoot(out this.visualStudioRegistryRoot));
             }
         }
@@ -61,7 +61,7 @@ namespace XSharp.Project
             {
                 if (this.toolsDirectory == null && this.visualStudioRegistryRoot != null)
                 {
-                    string machineRootPath = XSharpHelperMethods.RegistryPathCombine(this.visualStudioRegistryRoot, @"InstalledProducts\WiX");
+                    string machineRootPath = XHelperMethods.RegistryPathCombine(this.visualStudioRegistryRoot, @"InstalledProducts\WiX");
 
                     // initialize all of the machine settings
                     this.toolsDirectory = new MachineSettingString(machineRootPath, KeyNames.ToolsDirectory, String.Empty);
@@ -82,7 +82,7 @@ namespace XSharp.Project
             {
                 if (this.devEnvPath == null && this.visualStudioRegistryRoot != null)
                 {
-                    string regPath = XSharpHelperMethods.RegistryPathCombine(this.visualStudioRegistryRoot, @"Setup\VS");
+                    string regPath = XHelperMethods.RegistryPathCombine(this.visualStudioRegistryRoot, @"Setup\VS");
                     using (RegistryKey regKey = Registry.LocalMachine.OpenSubKey(regPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey))
                     {
                         this.devEnvPath = regKey.GetValue("EnvironmentPath", String.Empty) as string;
@@ -103,14 +103,14 @@ namespace XSharp.Project
             {
                 if (this.visualStudioVersion == null && this.visualStudioRegistryRoot != null)
                 {
-                    string regPath = XSharpHelperMethods.RegistryPathCombine(this.visualStudioRegistryRoot, @"Setup\VS\BuildNumber");
+                    string regPath = XHelperMethods.RegistryPathCombine(this.visualStudioRegistryRoot, @"Setup\VS\BuildNumber");
                     using (RegistryKey regKey = Registry.LocalMachine.OpenSubKey(regPath, RegistryKeyPermissionCheck.ReadSubTree, RegistryRights.ReadKey))
                     {
                         string lcid = CultureInfo.CurrentUICulture.LCID.ToString(CultureInfo.InvariantCulture);
                         string versionString = regKey.GetValue(lcid) as string;
                         if (versionString == null)
                         {
-                            XSharpHelperMethods.TraceFail("Cannot find the Visual Studio environment version in the registry path '{0}'.", XSharpHelperMethods.RegistryPathCombine(regPath, lcid));
+                            XHelperMethods.TraceFail("Cannot find the Visual Studio environment version in the registry path '{0}'.", XHelperMethods.RegistryPathCombine(regPath, lcid));
                             this.visualStudioVersion = DefaultVersion;
                         }
                         else
@@ -121,17 +121,17 @@ namespace XSharp.Project
                             }
                             catch (ArgumentException e)
                             {
-                                XSharpHelperMethods.TraceFail("Invalid Visual Studio environment version string {0}: {1}", versionString, e);
+                                XHelperMethods.TraceFail("Invalid Visual Studio environment version string {0}: {1}", versionString, e);
                                 this.visualStudioVersion = DefaultVersion;
                             }
                             catch (OverflowException e)
                             {
-                                XSharpHelperMethods.TraceFail("Invalid Visual Studio environment version string {0}: {1}", versionString, e);
+                                XHelperMethods.TraceFail("Invalid Visual Studio environment version string {0}: {1}", versionString, e);
                                 this.visualStudioVersion = DefaultVersion;
                             }
                             catch (FormatException e)
                             {
-                                XSharpHelperMethods.TraceFail("Cannot parse the Visual Studio environment version string {0}: {1}", versionString, e);
+                                XHelperMethods.TraceFail("Cannot parse the Visual Studio environment version string {0}: {1}", versionString, e);
                                 this.visualStudioVersion = DefaultVersion;
                             }
                         }
@@ -266,7 +266,7 @@ namespace XSharp.Project
                 catch (InvalidCastException)
                 {
                     this.Value = this.DefaultValue;
-                    XSharpHelperMethods.TraceFail("Cannot convert '{0}' to an Int32.", value);
+                    XHelperMethods.TraceFail("Cannot convert '{0}' to an Int32.", value);
                 }
             }
         }
@@ -300,7 +300,7 @@ namespace XSharp.Project
                 catch (InvalidCastException)
                 {
                     this.Value = this.DefaultValue;
-                    XSharpHelperMethods.TraceFail("Cannot convert '{0}' to a string.", value);
+                    XHelperMethods.TraceFail("Cannot convert '{0}' to a string.", value);
                 }
             }
         }
@@ -337,7 +337,7 @@ namespace XSharp.Project
                     if (e is FormatException || e is InvalidCastException)
                     {
                         this.Value = this.DefaultValue;
-                        XSharpHelperMethods.TraceFail("Cannot convert '{0}' to an enum of type '{1}'.", value, typeof(T).Name);
+                        XHelperMethods.TraceFail("Cannot convert '{0}' to an enum of type '{1}'.", value, typeof(T).Name);
                     }
                     else
                     {

@@ -3,9 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using System;
 using System.ComponentModel;
 using Microsoft.VisualStudio.Project;
+using System;
 
 namespace XSharp.Project
 {
@@ -13,32 +13,21 @@ namespace XSharp.Project
     /// <summary>
     /// Subclasses <see cref="DesignPropertyDescriptor"/> to allow for non-bolded text in the property grid.
     /// </summary>
-    public class XSharpNonMemberDesignPropertyDescriptor : DesignPropertyDescriptor
+    public class XDesignPropertyDescriptor : DesignPropertyDescriptor
     {
         // =========================================================================================
         // Constructors
         // =========================================================================================
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="XSharpNonMemberDesignPropertyDescriptor"/> class.
+        /// Initializes a new instance of the <see cref="XSharpDesignPropertyDescriptor"/> class.
         /// </summary>
         /// <param name="propertyDescriptor">The <see cref="PropertyDescriptor"/> to wrap.</param>
-        public XSharpNonMemberDesignPropertyDescriptor(PropertyDescriptor propertyDescriptor)
+        public XDesignPropertyDescriptor(PropertyDescriptor propertyDescriptor)
             : base(propertyDescriptor)
         {
         }
 
-        /// <summary>
-        /// Properties of non-member nodes should be read-only.
-        /// </summary>
-        public override bool IsReadOnly
-        {
-            get
-            {
-                return true;
-            }
-        }
-        
         // =========================================================================================
         // Methods
         // =========================================================================================

@@ -33,6 +33,7 @@ namespace XSharp.Project
         public const string NativeResource = "NativeResource";
 		// Some properties that are in the projectfiles
         public const string DevEnvDir = "DevEnvDir";
+        public const string IntermediateOutputPath = "IntermediateOutputPath";
         public const string OutputName = "OutputName";
         public const string OutputPath = "OutputPath";
         public const string OutputType = "OutputType";

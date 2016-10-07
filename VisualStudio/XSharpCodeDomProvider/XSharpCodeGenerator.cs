@@ -561,20 +561,29 @@ namespace XSharp.CodeDom
 
         protected override void GenerateMethodInvokeExpression(CodeMethodInvokeExpression e)
         {
-            if (e.Method.TargetObject != null)
+            if (e.Method.TargetObject is CodeTypeReferenceExpression)
             {
                 GenerateExpression(e.Method.TargetObject);
-                if (!String.IsNullOrEmpty(e.Method.MethodName))
-                    base.Output.Write(this.selector);
+                base.Output.Write(staticSelector);
             }
-
+            else if (e.Method.TargetObject is CodeBinaryOperatorExpression)
+            {
+                base.Output.Write("(");
+                this.GenerateExpression(e.Method.TargetObject);
+                base.Output.Write(")");
+                base.Output.Write(selector);
+            }
+            else
+            {
+                this.GenerateExpression(e.Method.TargetObject);
+                base.Output.Write(selector);
+            }
             if (e.Method.MethodName != null)
             {
 
                 base.Output.Write(e.Method.MethodName);
             }
             EmitGenericTypeArgs(e.Method.TypeArguments);
-
             base.Output.Write("(");
             OutputExpressionList(e.Parameters);
             base.Output.Write(")");

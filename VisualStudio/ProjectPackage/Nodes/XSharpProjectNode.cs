@@ -36,17 +36,18 @@ namespace XSharp.Project
         static Dictionary<string, string> dependencies;
         static XSharpProjectNode()
         {
-            dependencies = new Dictionary<string, string>();
+            // first the extension to look for, second the extension that can be the parent
+            dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             dependencies.Add(".designer.prg", ".prg");
             dependencies.Add(".xaml.prg", ".xaml");
             dependencies.Add(".vh", ".prg");
-
             try
             {
                 imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
             }
             catch (Exception)
-            { }
+            {
+            }
         }
 
         internal enum XSharpProjectImageName
@@ -229,6 +230,25 @@ namespace XSharp.Project
             }
         }
 
+        public override object GetProperty(int propId)
+        {
+            if (propId == (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration)
+            {
+                return __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_Declarations | __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_InitMethods;
+            }
+            switch ((__VSHPROPID3)propId)
+            {
+                case __VSHPROPID3.VSHPROPID_WebReferenceSupported:
+                case __VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
+                case __VSHPROPID3.VSHPROPID_SupportsHierarchicalUpdate:
+                case __VSHPROPID3.VSHPROPID_SupportsLinqOverDataSet:
+                case __VSHPROPID3.VSHPROPID_SupportsNTierDesigner:
+                    return true;
+
+            }
+            return base.GetProperty(propId);
+        }
+
 
         /// <summary>
         /// Returns an automation object representing this node
@@ -249,35 +269,26 @@ namespace XSharp.Project
             Utilities.ArgumentNotNull("item", item);
 
             XSharpFileNode node = new XSharpFileNode(this, item, item.IsVirtual);
-
-            var provider = node.OleServiceProvider;
-
-            // Use the CreateServices of the Project
-            provider.AddService(typeof(EnvDTE.Project), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
-            // Use the CreateServices of the Node
-            provider.AddService(typeof(ProjectItem), node.ServiceCreator, false);
-            // Use the CreateServices of the Project
-            provider.AddService(typeof(VSProject), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
-            //provider.AddService(typeof(VSProject), this.VSProject, false);
-
-            string include = item.GetMetadata(ProjectFileConstants.Include);
-            if (!string.IsNullOrEmpty(include) && XSharpFileNode.GetFileType(include) == XSharpFileType.XAML)
+            if (!item.IsVirtual)
             {
-                //Create a DesignerContext for the XAML designer for this file
-                // Use the CreateServices of the Node
-                provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
-            }
+                // No extra services for excluded items
+                var provider = node.OleServiceProvider;
 
-            if (node.IsForm)
-            {
+                // Use the CreateServices of the Project
+                provider.AddService(typeof(EnvDTE.Project), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
                 // Use the CreateServices of the Node
-                provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
-            }
+                provider.AddService(typeof(ProjectItem), node.ServiceCreator, false);
+                // Use the CreateServices of the Project
+                provider.AddService(typeof(VSProject), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
+                //provider.AddService(typeof(VSProject), this.VSProject, false);
 
-            if (this.IsCodeFile(include) && item.ItemName == "Compile")
+                if (node.IsXAML || node.IsForm)
+                {
+                    provider.AddService(typeof(DesignerContext), node.ServiceCreator, false);
+                }
+                // Not just for source items. Also for ResX and Settings
                 provider.AddService(typeof(SVSMDCodeDomProvider), new XSharpVSMDProvider(node), false);
-
-
+            }
             return node;
         }
 
@@ -312,6 +323,10 @@ namespace XSharp.Project
             if (IsCodeFile(include) && item.ItemName == "Compile")
                 newNode.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider),
                     new XSharpVSMDProvider(newNode), false);
+            if (newNode.FileType == XSharpFileType.ManagedResource)
+            {
+                newNode.Generator = null;
+            }
 
             return newNode;
         }
@@ -543,6 +558,7 @@ namespace XSharp.Project
             // then we must set that parent as parentNode;
             Utilities.ArgumentNotNull("parentNode", parentNode);
             // Check if we can find the Parent
+            // to do we take the name until the first DOT (form.designer.prg belongs to form.prg, and form.voform.vnfrm belongs to form.prg)
             int dotPos = fileName.IndexOf(".");
             string parentFile = fileName.Substring(0, dotPos);
             string extension = fileName.Substring(dotPos).ToLower();
@@ -564,7 +580,7 @@ namespace XSharp.Project
             }
             // there are other possible parents. For Example Window1.prg is the parent of Window1.Windows.vnfrm
             // In this case the children are a VOBinary, Header or NativeResource
-            switch (XSharpFileNode.GetFileType(fileName))
+            switch (XFileType.GetFileType(fileName))
             {
                 case XSharpFileType.Header:
                 case XSharpFileType.NativeResource:
@@ -597,8 +613,8 @@ namespace XSharp.Project
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
             Debug.Assert(!Path.IsPathRooted(itemPath), "Cannot add item with full path.");
-            var type = XSharpFileNode.GetFileType(itemPath);
-            string itemType = XSharpFileNode.GetItemType(type);
+            var type = XFileType.GetFileType(itemPath);
+            string itemType = XFileType.GetItemType(type);
             if(String.IsNullOrEmpty(itemType))
                 itemType = "None";
             newItem = this.CreateMsBuildFileItem(itemPath, itemType);
@@ -612,24 +628,13 @@ namespace XSharp.Project
         /// <returns>true if the file is a resx file, otherwise false.</returns>
         public override bool IsEmbeddedResource(string fileName)
         {
-            if (XSharpFileNode.GetFileType(fileName) == XSharpFileType.ManagedResource)
+            if (XFileType.GetFileType(fileName) == XSharpFileType.ManagedResource)
                 return true;
             return false;
         }
 
         public bool IsVoBinary(string fileName) {
-            switch (XSharpFileNode.GetFileType(fileName))
-            {
-                case XSharpFileType.VOMenu:
-                case XSharpFileType.VODBServer:
-                case XSharpFileType.VOFieldSpec:
-                case XSharpFileType.VOForm:
-                case XSharpFileType.VOIndex:
-                case XSharpFileType.VOOrder:
-                    return true;
-
-            }
-            return false;
+            return XFileType.IsVoBinary(fileName);
         }
 
 

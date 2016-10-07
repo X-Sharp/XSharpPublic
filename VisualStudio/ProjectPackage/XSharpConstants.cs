@@ -31,61 +31,8 @@ namespace XSharp.Project
     {
 
         public const string NativeResource = "NativeResource";
-		// Some properties that are in the projectfiles
-        public const string DevEnvDir = "DevEnvDir";
-        public const string IntermediateOutputPath = "IntermediateOutputPath";
-        public const string OutputName = "OutputName";
-        public const string OutputPath = "OutputPath";
-        public const string OutputType = "OutputType";
-        public const string PdbOutputFile = "PdbOutputFile";
-        public const string PostBuildEvent = "PostBuildEvent";
-        public const string Project = "Project";
-        public const string ProjectFiles = "ProjectFiles";
-        public const string ProjectView = "ProjectView";
-        public const string PropertyGroup = "PropertyGroup";
-        public const string PreBuildEvent = "PreBuildEvent";
-        public const string ReferencePaths = "ReferencePaths";
-        public const string RunPostBuildEvent = "RunPostBuildEvent";
-        public const string SccProjectName = "SccProjectName";
-        public const string SccLocalPath = "SccLocalPath";
-        public const string SccAuxPath = "SccAuxPath";
-        public const string SccProvider = "SccProvider";
-        public const string ShowAllFiles = "ShowAllFiles";
-        public const string ShowSourceTrace = "ShowSourceTrace";
-        public const string SolutionDir = "SolutionDir";
-        public const string SolutionExt = "SolutionExt";
-        public const string SolutionName = "SolutionName";
-        public const string SolutionFileName = "SolutionFileName";
-        public const string SolutionPath = "SolutionPath";
-        public const string SuppressAclReset = "SuppressAclReset";
-        public const string SuppressAllWarnings = "SuppressAllWarnings";
-        public const string SuppressAssemblies = "SuppressAssemblies";
-        public const string SuppressDefaultAdminSequenceActions = "SuppressDefaultAdminSequenceActions";
-        public const string SuppressDefaultAdvSequenceActions = "SuppressDefaultAdvSequenceActions";
-        public const string SuppressDefaultUISequenceActions = "SuppressDefaultUISequenceActions";
-        public const string SuppressFileHashAndInfo = "SuppressFileHashAndInfo";
-        public const string SuppressFiles = "SuppressFiles";
-        public const string SuppressIces = "SuppressIces";
-        public const string SuppressLayout = "SuppressLayout";
-        public const string SuppressMsiAssemblyTableProcessing = "SuppressMsiAssemblyTableProcessing";
-        public const string SuppressPdbOutput = "SuppressPdbOutput";
-        public const string SuppressSchemaValidation = "SuppressSchemaValidation";
-        public const string SuppressSpecificWarnings = "SuppressSpecificWarnings";
-        public const string SuppressTagSectionIdAttributeOnTuples = "SuppressTagSectionIdAttributeOnTuples";
-        public const string SuppressValidation = "SuppressValidation";
-        public const string ToolsVersion = "ToolsVersion";
-        public const string TreatWarningsAsErrors = "TreatWarningsAsErrors";
-        public const string VerboseOutput = "VerboseOutput";
-        public const string WarningLevel = "WarningLevel";
         public const string VOBinary = "VOBinary";
         public const string Settings = "Settings";
-
-        public static class MsBuildTarget
-        {
-            public const string GetTargetPath = "GetTargetPath";
-            public const string ResolveWixLibraryReferences = "ResolveWixLibraryReferences";
-        }
-
 
     }
 	  /// <summary>

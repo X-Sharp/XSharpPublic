@@ -147,6 +147,7 @@
     <Compile Include="Wix\XFolderNodeProperties.cs" />
     <Compile Include="Wix\XNonMemberDesignPropertyDescriptor.cs" />
     <Compile Include="Wix\XProjectConfig.cs" />
+    <Compile Include="Wix\XProjectFileConstants.cs" />
     <Compile Include="Wix\XProjectNode.cs" />
     <Compile Include="Nodes\XSharpFileNodeProperties.cs" />
     <Compile Include="Nodes\XSharpNodeProperties.cs" />

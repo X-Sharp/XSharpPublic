@@ -139,7 +139,6 @@
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
     <Compile Include="Wix\IProjectSourceNode.cs" />
     <Compile Include="Wix\XBuildMacroCollection.cs" />
-    <Compile Include="Wix\XConfigProvider.cs" />
     <Compile Include="Wix\XDesignPropertyDescriptor.cs" />
     <Compile Include="Wix\XFileNode.cs" />
     <Compile Include="Wix\XFileNodeNonMemberProperties.cs" />
@@ -187,9 +186,6 @@
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\PageFunction1.xaml.prg" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPageFunction\WPFPageFunction.vstemplate" />
     <ZipItem Include="Templates\ProjectItems\WPF\WPFResourceDictionary\WPFResourceDictionary.vstemplate" />
-    <Content Include="Resources\Delete.png" />
-    <Content Include="Resources\DownArrow.png" />
-    <Content Include="Resources\UpArrow.png" />
     <Content Include="Template.ico" />
     <ZipProject Include="Templates\Projects\WinFormApp\Form1.designer.prg" />
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.designer.prg" />

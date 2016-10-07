@@ -206,6 +206,8 @@ namespace XSharp.Project
             {
                 case __VSHPROPID.VSHPROPID_IsNonMemberItem:
                     return this.IsNonMemberItem;
+                case __VSHPROPID.VSHPROPID_DefaultNamespace:
+                    return this.ProjectMgr.GetProperty(propId);
             }
 
             return base.GetProperty(propId);

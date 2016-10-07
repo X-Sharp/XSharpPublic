@@ -273,33 +273,39 @@ namespace XSharp.Project
 #endif
             {
                 // suppress generating the "generated code" header
-                compileUnit.UserData[XSharpCodeConstants.USERDATA_NOHEADER] = true;
+                if (writer is  DocDataTextWriter)       // Form Editor
+                {
+                    compileUnit.UserData[XSharpCodeConstants.USERDATA_NOHEADER] = true;
+                }
                 base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
                 writer.Flush();
                 // Designer gave us these informations
-                CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(compileUnit);
                 // Now, we must re-read it and parse again
-                IServiceProvider provider = (DocDataTextWriter)writer;
-                DocData docData = (DocData)provider.GetService(typeof(DocData));
-                DocDataTextReader ddtr = new DocDataTextReader(docData);
-                // Retrieve 
-                string generatedSource = ddtr.ReadToEnd();
-                XSharpCodeParser parser = new XSharpCodeParser();
-                parser.TabSize = XSharpCodeDomProvider.TabSize;
-                if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_FILENAME))
+                if (writer is DocDataTextWriter)
                 {
-                    parser.FileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
-                }
-                CodeCompileUnit resultCcu = parser.Parse(generatedSource);
-                CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindFirstClass(resultCcu);
-                // just to be sure...
-                if (resultClass != null)
-                {
-                    // Now push all elements from resultClass to formClass
-                    formClass.Members.Clear();
-                    foreach (CodeTypeMember ctm in resultClass.Members)
+                    CodeTypeDeclaration formClass = XSharpCodeDomHelper.FindFirstClass(compileUnit);
+                    IServiceProvider provider = (DocDataTextWriter)writer;
+                    DocData docData = (DocData)provider.GetService(typeof(DocData));
+                    DocDataTextReader ddtr = new DocDataTextReader(docData);
+                    // Retrieve 
+                    string generatedSource = ddtr.ReadToEnd();
+                    XSharpCodeParser parser = new XSharpCodeParser();
+                    parser.TabSize = XSharpCodeDomProvider.TabSize;
+                    if (compileUnit.UserData.Contains(XSharpCodeConstants.USERDATA_FILENAME))
                     {
-                        formClass.Members.Add(ctm);
+                        parser.FileName = (string)compileUnit.UserData[XSharpCodeConstants.USERDATA_FILENAME];
+                    }
+                    CodeCompileUnit resultCcu = parser.Parse(generatedSource);
+                    CodeTypeDeclaration resultClass = XSharpCodeDomHelper.FindFirstClass(resultCcu);
+                    // just to be sure...
+                    if (resultClass != null)
+                    {
+                        // Now push all elements from resultClass to formClass
+                        formClass.Members.Clear();
+                        foreach (CodeTypeMember ctm in resultClass.Members)
+                        {
+                            formClass.Members.Add(ctm);
+                        }
                     }
                 }
 

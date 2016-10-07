@@ -150,7 +150,10 @@ namespace XSharp.Project
 #endif
 
     [SingleFileGeneratorSupportRegistrationAttribute(typeof(XSharpProjectFactory))]  // 5891B814-A2E0-4e64-9A2F-2C2ECAB940FE"
-
+    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "ResXFileCodeGenerator", contextGuid: "ResXFileCodeGenerator", GeneratesDesignTimeSource =true, GeneratorRegKeyName = "Microsoft ResX File Code Generator")]
+    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "PublicResXFileCodeGenerator", contextGuid: "{69b6a86d-ef43-4d9e-a758-8a18b38a7384}", GeneratesDesignTimeSource=true,GeneratorRegKeyName = "Microsoft ResX File Code Generator (public class)")]
+    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "SettingsSingleFileGenerator", contextGuid: "{3B4C204A-88A2-3AF8-BCFD-CFCB16399541}", GeneratesDesignTimeSource = false, GeneratesSharedDesignTimeSource =true,GeneratorRegKeyName = "Generator for strongly typed settings class")]
+    //[CodeGeneratorRegistration(typeof(XSharpProjectFactory), generatorName: "PublicSettingsSingleFileGenerator", contextGuid: "{940f36b5-a42e-435e-8ef4-20b9d4801d22}", GeneratesDesignTimeSource = false, GeneratesSharedDesignTimeSource = true, GeneratorRegKeyName = "Generator for strongly typed settings class (public class)")]
     [Guid(GuidStrings.guidXSharpProjectPkgString)]
     public sealed class XSharpProjectPackage : ProjectPackage, IOleComponent
     {

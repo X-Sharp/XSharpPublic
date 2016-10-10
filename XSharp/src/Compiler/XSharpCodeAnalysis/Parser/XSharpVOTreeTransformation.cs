@@ -1062,12 +1062,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         dataType = ent is XP.MethodContext ? ((XP.MethodContext)ent).Type.Get<TypeSyntax>() :
                             dataType = ((XP.FunctionContext)ent).Type.Get<TypeSyntax>();
                     }
-
-                    expr = GetReturnExpression(dataType);
-                    if (expr != null)   // happens for a void method
+                    if (ent is XP.MethodContext && ((XP.MethodContext) ent).T.Token.Type != XP.ASSIGN)
                     {
-                        expr = expr.WithAdditionalDiagnostics(
-                                         new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                        expr = GetReturnExpression(dataType);
+                        if (expr != null)   // happens for a void method
+                        {
+                            expr = expr.WithAdditionalDiagnostics(
+                                             new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                        }
                     }
                 }
             }

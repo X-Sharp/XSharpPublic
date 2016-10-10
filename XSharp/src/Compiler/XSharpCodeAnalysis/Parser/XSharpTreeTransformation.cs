@@ -2408,7 +2408,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                if (context.T.Token.Type != XP.ASSIGN)
+                if (context.T.Token.Type == XP.ASSIGN)
+                {
+                    returntype = VoidType();
+                }
+                else
                 {
                     // Assign does not need a return. It is compiled to a VOID method
                     body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
@@ -3782,10 +3786,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // check because there may already be statements in here, such as the IF statement generated for AltD()
                 var node = exprCtx.CsNode;
                 if (node is StatementSyntax)
-                    statements.Add( (StatementSyntax) node);
+                {
+                    statements.Add((StatementSyntax)node);
+                }
                 else
+                {
                     exprCtx.SetSequencePoint();
                     statements.Add(GenerateExpressionStatement(exprCtx.Get<ExpressionSyntax>()));
+                }
             }
             context.Put(MakeBlock(statements));
             _pool.Free(statements);

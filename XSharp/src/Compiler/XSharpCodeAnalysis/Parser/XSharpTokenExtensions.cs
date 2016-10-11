@@ -543,13 +543,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.GreaterThanEqualsToken);
                     break;
                 case XSharpParser.EQ:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken);
-                    break;
                 case XSharpParser.EEQ:
                     r = SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken);
                     break;
                 case XSharpParser.NEQ:
                 case XSharpParser.NEQ2:
+                case XSharpParser.NEEQ:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken);
                     break;
                 //case XSharpParser.SUBSTR:
@@ -1181,13 +1180,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxKind.GreaterThanOrEqualExpression;
                     break;
                 case XSharpParser.EQ:
-                    r = SyntaxKind.EqualsExpression;
-                    break;
                 case XSharpParser.EEQ:
                     r = SyntaxKind.EqualsExpression;
                     break;
                 case XSharpParser.NEQ:
                 case XSharpParser.NEQ2:
+                case XSharpParser.NEEQ:
                     r = SyntaxKind.NotEqualsExpression;
                     break;
                 //case XSharpParser.SUBSTR:

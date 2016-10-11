@@ -387,6 +387,12 @@ lexer grammar XSharpLexer;
 						_type = NEQ;
 						_textSb.Append((char)c);
 						InputStream.Consume();
+						c = InputStream.La(1);
+						if (c == '=') {							//!==
+							_type = NEEQ;
+							_textSb.Append((char)c);
+							InputStream.Consume();
+						}
 					}
 					break;
 				case '.':
@@ -1037,7 +1043,7 @@ LAST_NULL,
 
 // Relational operators
 FIRST_OPERATOR,
-LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,
+LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,NEEQ,
 
 // Prefix and postfix Operators
 INC,DEC,

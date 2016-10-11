@@ -388,7 +388,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
 
 */
 overloadedOps		: Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | FALSE_CONST |
-                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 |
+                              MULT | DIV | MOD | AMP | PIPE | LSHIFT | RSHIFT | EEQ | NEQ | NEQ2 | NEEQ |
                               GT | LT | GTE | LTE |
                               AND | OR )  // these two do not exist in C# and are mapped to & and |
                     ;
@@ -609,7 +609,7 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
                     | Left=expression Op=LSHIFT Right=expression				#binaryExpression		// expr << expr (shift)
                     | Left=expression Op=GT	Gt=GT Right=expression				#binaryExpression		// expr >> expr (shift)
                     | Left=expression
-                      Op=( LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ | NEQ2)
+                      Op=( LT | LTE | GT | GTE | EQ | EEQ | SUBSTR | NEQ | NEQ2 | NEEQ)
                       Right=expression											#binaryExpression		// expr >= expr (relational)
                     | Left=expression Op=AMP Right=expression					#binaryExpression		// expr & expr (bitwise and)
                     | Left=expression Op=TILDE Right=expression					#binaryExpression		// expr ~ expr (bitwise xor)

@@ -171,11 +171,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.Boxing:
 
 #if XSHARP
-                    if (_compilation.Options.IsDialectVO
-                        && ((NamedTypeSymbol)rewrittenOperand.Type).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    if (_compilation.Options.IsDialectVO)
                     {
-                        rewrittenOperand = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", rewrittenOperand);
-                        conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
+                        var nts = rewrittenOperand.Type as NamedTypeSymbol;
+                        if (nts != null )
+                        {
+                            nts = nts.ConstructedFrom;
+                        }
+                        if (nts != null && nts == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                        {
+                            rewrittenOperand = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", rewrittenOperand);
+                            conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
+                        }
                     }
 #endif
                     if (!_inExpressionLambda)

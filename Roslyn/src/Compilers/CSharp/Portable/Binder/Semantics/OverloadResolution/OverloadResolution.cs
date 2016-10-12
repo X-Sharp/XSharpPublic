@@ -2775,6 +2775,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         conversion = Conversion.NoConversion;
                     }
                 }
+#if XSHARP
+                else if (argument.Syntax.XIsMissingArgument)
+                {
+                    conversion = Conversion.Identity;
+                }
+#endif
                 else
                 {
                     RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];

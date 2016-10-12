@@ -434,6 +434,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 (object)_asm != null &&
                 (_asm.Name == "VulcanRTFuncs" || _asm.Name == "VulcanRT");
         }
+
+        public static bool HasVODefaultParameter(this ParameterSymbol param)
+        {
+            if ((object)param != null)
+            {
+                var attrs = param.GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.Name == "DefaultParameterValueAttribute" && CheckFullName(atype.ContainingSymbol, s_VulcanInternalNamespace))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public static ConstantValue GetVODefaultParameter(this ParameterSymbol param)
+        {
+            if ((object)param != null)
+            {
+                var attrs = param.GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.Name == "DefaultParameterValueAttribute" && CheckFullName(atype.ContainingSymbol, s_VulcanInternalNamespace))
+                    {
+                        int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
+                        if (desc == 0)
+                            return ConstantValue.Create(attr.CommonConstructorArguments[0].Value, attr.CommonConstructorArguments[0].Type.SpecialType);
+                        else
+                            return null;
+                    }
+                }
+            }
+            return ConstantValue.Bad;
+        }
 #endif
 
 

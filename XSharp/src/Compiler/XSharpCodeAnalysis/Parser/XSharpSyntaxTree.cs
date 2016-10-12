@@ -288,6 +288,20 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal IParseTree XNode { get { return (((InternalSyntax.CSharpSyntaxNode)(Green)).XNode) ?? Parent?.XNode; } }
         internal bool XVoDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoDecl; } }
         internal bool XVoIsDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDecl; } }
+        internal bool XIsMissingArgument {
+            get
+            {
+                var n = XNode;
+                if (n != null)
+                {
+                    if (n is XSharpParser.ArgumentContext)
+                        return ((XSharpParser.ArgumentContext)n).Expr == null;
+                    if (n is XSharpParser.BracketedargumentContext)
+                        return ((XSharpParser.ArgumentContext)n).Expr == null;
+                }
+                return false;
+            }
+        }
     }
 }
 

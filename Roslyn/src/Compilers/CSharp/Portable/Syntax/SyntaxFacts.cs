@@ -343,6 +343,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case PreIncrementExpression:
                 case PreDecrementExpression:
                 case AwaitExpression:
+#if XSHARP
+                    case ConditionalExpression:
+#endif
                     return true;
 
                 case ConditionalAccessExpression:

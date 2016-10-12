@@ -1645,7 +1645,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
             }
             foreach (var iCtx in context._Implements) {
-                baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                if (baseTypes.Count > 0)
+                    baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }
             MemberDeclarationSyntax m = _syntaxFactory.ClassDeclaration(

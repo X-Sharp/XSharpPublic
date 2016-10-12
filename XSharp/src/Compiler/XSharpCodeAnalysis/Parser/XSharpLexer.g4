@@ -1043,7 +1043,7 @@ LAST_NULL,
 
 // Relational operators
 FIRST_OPERATOR,
-LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,NEEQ,
+LT,LTE,GT,GTE,EQ,EEQ,SUBSTR,NEQ,NEQ2,NEEQ,
 
 // Prefix and postfix Operators
 INC,DEC,
@@ -1139,23 +1139,60 @@ ESCAPED_STRING_CONST
 			: E '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
 			;
 
+// When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character                            
+LINE_CONT   :   SEMI (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')             ->channel(HIDDEN)
+            ;
+
+LINE_CONT_OLD: {_OldComment}? SEMI (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
+            ;
+
+SEMI		: ';' 
+			;
+
+// Old Dbase Style Comments &&  and * at begin of line can be enabled with
+// the Lexer Property AllowOldStyleComments
+
+DOC_COMMENT :  '/' '/' '/' ( ~(  '\n' | '\r' ) )*	-> channel(XMLDOC)
+			;
+
+SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
+			| {_OldComment}? '&' '&' ( ~(  '\n' | '\r' ) )*
+			| {LastToken == NL }? '*' ( ~(  '\n' | '\r' ) )*)	-> channel(HIDDEN)
+			;
+
+
+ML_COMMENT  : ('/' '*' .*? '*' '/'	
+			| '/' '*' .*? EOF		// TODO: Generate an error 'missing End of Comment'
+			)	-> channel(HIDDEN)
+			;
+
+// The ID rule must be last to make sure that it does not 'eat' the keywords
+
+ID						: ID_PART 
+						;
+
+KWID					: '@' '@' ID_PART // {Text = Text.Substring(2, Text.Length-2);}
+						;
+
+
+UNRECOGNIZED			: . ;
+
+// Lexer fragments
+
 fragment
-ESCAPED_CHARACTER       : ~( '\'' | '\\' | '\r' | '\n' )
+ESCAPED_CHARACTER       : ~( '\'' | '\\' | '\r' | '\n' )		// this differs from the ESCAPED_STRING_CHARACTER rule because this has a single quote and not a double quote
 						| SIMPLE_ESCAPE_SEQUENCE
 						| HEX_ESCAPE_SEQUENCE
 						| UNICODE_ESCAPE_SEQUENCE
 						;
 
 fragment
-ESCAPED_STRING_CHARACTER: SIMPLE_ESCAPE_CHARACTER
-						| SIMPLE_ESCAPE_SEQUENCE
+ESCAPED_STRING_CHARACTER: ~( '\"' | '\\' | '\r' | '\n' )		// this differs from the ESCAPED_CHARACTER rule because this has a double quote and not a single quote
+						| SIMPLE_ESCAPE_SEQUENCE 
 						| HEX_ESCAPE_SEQUENCE
 						| UNICODE_ESCAPE_SEQUENCE
 						;
 
-fragment 
-SIMPLE_ESCAPE_CHARACTER	: ~( '\"' | '\\' | '\r' | '\n' )
-						;
 fragment
 SIMPLE_ESCAPE_SEQUENCE	: '\\\''	// Single quote
 						| '\\"'		// Double quote
@@ -1178,45 +1215,7 @@ fragment
 UNICODE_ESCAPE_SEQUENCE : '\\' U HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT (HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT)?	// \u 4 hex or \u 8 hex
 						;
 
-// When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character                            
-LINE_CONT   :   SEMI (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')             ->channel(HIDDEN)
-            ;
 
-LINE_CONT_OLD: {_OldComment}? SEMI (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
-            ;
-
-SEMI		: ';' 
-			;
-
-// Old Dbase Style Comments &&  and * at begin of line can be enabled with
-// the Lexer Property AllowOldStyleComments
-
-DOC_COMMENT :  '/' '/' '/' ( ~(  '\n' | '\r' ) )*	-> channel(XMLDOC)
-			;
-
-SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
-			| {_OldComment}? '&' '&' ( ~(  '\n' | '\r' ) )*
-			| {/*_OldComment && */LastToken == NL }? '*' ( ~(  '\n' | '\r' ) )*)	-> channel(HIDDEN)
-			;
-
-
-ML_COMMENT  : ('/' '*' .*? '*' '/'	
-			| '/' '*' .*? EOF		// TODO: Generate an error 'missing End of Comment'
-			)	-> channel(HIDDEN)
-			;
-
-// The ID rule must be last to make sure that it does not 'eat' the keywords
-
-ID						: ID_PART 
-						;
-
-KWID					: '@' '@' ID_PART // {Text = Text.Substring(2, Text.Length-2);}
-						;
-
-
-UNRECOGNIZED			: . ;
-
-// Lexer fragments
 
 fragment DIGIT			: [0-9];
 fragment HEX_DIGIT		: [0-9a-fA-F];
@@ -1239,7 +1238,7 @@ fragment IDStartChar	: 'A'..'Z' | 'a'..'z'
 						| '\u037F'..'\u1FFF'
 						| '\u200C'..'\u200D'
 						;
-// these are no longer used for keywords but are still used in the escape sequence rules 
+// these are no longer used for keywords but some are still used in the escape sequence rules and numeric constant rules
 fragment A	: 'a' | 'A';
 fragment B	: 'b' | 'B';
 fragment C	: 'c' | 'C';

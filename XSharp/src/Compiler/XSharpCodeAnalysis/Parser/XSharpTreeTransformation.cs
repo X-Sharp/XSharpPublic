@@ -1639,9 +1639,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
-            baseTypes.Add(_syntaxFactory.SimpleBaseType(context.BaseType?.Get<TypeSyntax>()
-                ?? _objectType));
-            foreach(var iCtx in context._Implements) {
+            var baseType = context.BaseType?.Get<TypeSyntax>();
+            if (baseType != null)
+            {
+                baseTypes.Add(_syntaxFactory.SimpleBaseType(baseType));
+            }
+            foreach (var iCtx in context._Implements) {
                 baseTypes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 baseTypes.Add(_syntaxFactory.SimpleBaseType(iCtx.Get<TypeSyntax>()));
             }

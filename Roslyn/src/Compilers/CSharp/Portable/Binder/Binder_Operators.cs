@@ -475,21 +475,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             // Check for Single equals comparison for Strings.
             bool isStringSingleEquals = false;
-            bool isStringNotSingleEquals = false;
             if (isEquality)
             {
                 if (left.Type?.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String)
                 {
                     var xnode = node.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.BinaryExpressionContext;
-                    switch (xnode.Op.Type)
+                    if (xnode.Op.Type == LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.EQ)
                     {
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.EQ:
-                            isStringSingleEquals = true;
-                            break;
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.NEQ:
-                        case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.NEQ2:
-                            isStringNotSingleEquals = true;
-                            break;
+                        isStringSingleEquals = true;
                     }
                 }
             }
@@ -529,42 +522,47 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool hasErrors;
 
 #if XSHARP
-            if (!best.HasValue || isStringSingleEquals || isStringNotSingleEquals)
+            if (!best.HasValue || isStringSingleEquals)
 #else
             if (!best.HasValue)
 #endif
             {
 
 #if XSHARP
-                var nkind = node.Kind();
                 // TODO: (nvk) This should be done in the local rewriter
                 if (left.Type.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String &&
-                    (  nkind == SyntaxKind.LessThanExpression || nkind == SyntaxKind.LessThanOrEqualExpression 
-                    || nkind == SyntaxKind.GreaterThanExpression || nkind == SyntaxKind.GreaterThanOrEqualExpression
-                    || nkind == SyntaxKind.SubtractExpression || nkind == SyntaxKind.EqualsExpression
-                    || nkind == SyntaxKind.NotEqualsExpression ))
+                    (node.Kind() == SyntaxKind.LessThanExpression || node.Kind() == SyntaxKind.LessThanOrEqualExpression ||
+                    node.Kind() == SyntaxKind.GreaterThanExpression || node.Kind() == SyntaxKind.GreaterThanOrEqualExpression
+                    || node.Kind() == SyntaxKind.SubtractExpression || node.Kind() == SyntaxKind.EqualsExpression))
                 {
-                    TypeSymbol type = null;
-                    BoundCall opCall= null;
                     MethodSymbol opMeth = null;
+                    TypeSymbol type;
+                    BoundCall opCall= null;
                     bool lCompare = true;
-                    bool lProcess = false;
-                    string methodName="";
-                    string desc = "";
+                    string methodName;
                     // prepare the "standard call". This call is also used when the lookup of the special method fails
                     type = this.GetSpecialType(SpecialType.System_String,diagnostics, node);
                     TryGetSpecialTypeMember(Compilation, SpecialMember.System_String__Compare, node, diagnostics, out opMeth);
                     opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
                     // STRING - STRING  -> Vulcan.Internal.CompilerServices.StringSubtract 
-                    if (nkind == SyntaxKind.SubtractExpression)
+                    if (node.Kind() == SyntaxKind.SubtractExpression)
                     {
                         if (Compilation.Options.IsDialectVO)
                         {
                             type = this.GetWellKnownType(WellKnownType.Vulcan_Internal_CompilerServices, diagnostics, node);
                             methodName = "StringSubtract";
-                            desc = "String Subtract method Vulcan.Internal.CompilerServices."+ methodName;
-                            lProcess = true;
-                            lCompare = false;
+                            var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
+                            if (symbols.Length ==1 )
+                            {
+                                opMeth = (MethodSymbol) symbols[0];                        
+                                opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                                lCompare = false;
+                            }
+                            else
+                            {
+                                var typeName = "Vulcan.Internal.CompilerServices";
+                                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Subtract method "+typeName+"."+ methodName, Compilation.Options.Dialect.ToString());
+                            }
                         }
                         else
                         {
@@ -573,66 +571,52 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     }
                     // STRING = STRING -> VulcanRTFuncs.Functions.__StringEquals
-                    else if (nkind  == SyntaxKind.EqualsExpression)
+                    else if (node.Kind() == SyntaxKind.EqualsExpression)
                     {
                         // Single Equals Comparison
                         if (Compilation.Options.IsDialectVO)
                         {
                             type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
                             methodName = "__StringEquals";
-                            desc = "String Equals (=) method Vulcan.RTFuncs.Functions."+ methodName;
-                            lProcess = true;
-                            lCompare = false;
+                            var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
+                            if (symbols.Length ==1 )
+                            {
+                                opMeth = (MethodSymbol) symbols[0];                        
+                                opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+                                lCompare = false;
+                            }
+                            else
+                            {
+                                var typeName = "Vulcan.Internal.CompilerServices";
+                                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Equals (=) method "+typeName+"."+ methodName, Compilation.Options.Dialect.ToString());
+                            }
                         }
                         else
                         {
                             Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Equals (=)", Compilation.Options.Dialect.ToString());
                         }
                     }
-                    else if (nkind == SyntaxKind.NotEqualsExpression && isStringNotSingleEquals)
-                    {
-                        // Single Equals Comparison
-                        if (Compilation.Options.IsDialectVO)
-                        {
-                            type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
-                            methodName = "__StringNotEquals";
-                            desc = "String NotEquals (!=) method Vulcan.RTFuncs.Functions."+ methodName;
-                            lProcess = true;
-                            lCompare = false;
-                        }
-                        else
-                        {
-                            Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Equals (!=)", Compilation.Options.Dialect.ToString());
-                        }
-                    }
-                 
                     // STRING <op> STRING -> VulcanRTFuncs.Functions.__StringCompare
-                    else if (this.Compilation.Options.VOStringComparisons )    
+                    else if (this.Compilation.Options.VOStringComparisons)    
                     {
                         type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
                         methodName = "__StringCompare";
-                        desc = "String Compare method method Vulcan.RTFuncs.Functions."+ methodName;
-                        lCompare = true;
-                        lProcess = true;
-                    }
-                    else
-                    {
-                        ;  // Nothing special needed. the opCall is already prepared above
-                    }
-                    if (lProcess)
-                    {
                         var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
-                        if (symbols.Length ==1 )
+                        if (symbols.Length == 1)
                         {
                             opMeth = (MethodSymbol) symbols[0];                        
                             opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
                         }
                         else
                         {
-                            Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, desc, Compilation.Options.Dialect.ToString());
+                            var typeName = "VulcanRTFuncs.Functions";
+                            Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Compare method "+typeName+"."+ methodName, Compilation.Options.Dialect.ToString());
                         }
                     }
-                    
+                    else
+                    {
+                        ;  // Nothing special needed. the opCall is already prepared above
+                    }
                     if (lCompare)    
                     {
                         // the code STRING <OPERATOR> STRING
@@ -671,6 +655,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     (signature.Kind.Operator() == BinaryOperatorKind.Equal || signature.Kind.Operator() == BinaryOperatorKind.NotEqual) &&
                     (leftNull && (object)rightType != null && rightType.IsNullableType() ||
                     rightNull && (object)leftType != null && leftType.IsNullableType());
+
                 if (isNullableEquality)
                 {
                     resultOperatorKind = kind | BinaryOperatorKind.NullableNull;

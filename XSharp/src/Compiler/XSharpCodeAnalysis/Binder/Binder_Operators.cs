@@ -66,6 +66,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (symbols.Length == 1)
             {
                 opMeth = (MethodSymbol)symbols[0];
+                var stringType = Compilation.GetSpecialType(SpecialType.System_String);
+                if (right.Type != stringType)
+                {
+                    right = CreateConversion(right, stringType, diagnostics);
+                }
+                if (left.Type != stringType)
+                {
+                    left = CreateConversion(left, stringType, diagnostics);
+                }
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
             }
             else
@@ -80,9 +89,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
-            var type = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+            var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
             var methodName = "__InexactEquals";
-            var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
+            var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
                 // There should be 2 overloads in VulcanRTFuncs:
@@ -98,14 +107,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // When RHS != USUAL then switch
-                    if (opMeth.Parameters[0].Type != type)
+                    if (opMeth.Parameters[0].Type != usualType)
                         opMeth = (MethodSymbol)symbols[1];
+                    if (right.Type != usualType)
+                    {
+                        right = CreateConversion(right, usualType, diagnostics);
+                    }
                 }
+                if (left.Type != usualType)
+                {
+                    left = CreateConversion(left, usualType, diagnostics);
+                }
+
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
             }
             else
             {
-                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "Usual Equals (=) method " + type.Name + "." + methodName, Compilation.Options.Dialect.ToString());
+                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "Usual Equals (=) method " + usualType.Name + "." + methodName, Compilation.Options.Dialect.ToString());
             }
             return opCall;
         }
@@ -115,9 +133,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
-            var type = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+            var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
             var methodName = "__InexactNotEquals";
-            var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
+            var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
                 // There should be 2 overloads in VulcanRTFuncs:
@@ -133,14 +151,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     // When RHS != USUAL then switch
-                    if (opMeth.Parameters[0].Type != type)
+                    if (opMeth.Parameters[0].Type != usualType)
                         opMeth = (MethodSymbol)symbols[1];
+                    if (right.Type != usualType)
+                    {
+                        right = CreateConversion(right, usualType, diagnostics);
+                    }
+                }
+                if (left.Type != usualType)
+                {
+                    left = CreateConversion(left, usualType, diagnostics);
                 }
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
             }
             else
             {
-                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "Usual NotEquals (!=) method " + type.Name + "." + methodName, Compilation.Options.Dialect.ToString());
+                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "Usual NotEquals (!=) method " + usualType.Name + "." + methodName, Compilation.Options.Dialect.ToString());
             }
             return opCall;
         }
@@ -156,6 +182,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (symbols.Length == 1)
             {
                 opMeth = (MethodSymbol)symbols[0];
+                var stringType = Compilation.GetSpecialType(SpecialType.System_String);
+                if (left.Type != stringType)
+                {
+                    left = CreateConversion(left, stringType, diagnostics);
+                }
+                if (right.Type != stringType)
+                {
+                    right = CreateConversion(right, stringType, diagnostics);
+                }
                 opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
             }
             else
@@ -207,7 +242,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 switch (xnode.Op.Type)
                 {
                     case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.EQ:
-                        if (left.Type?.SpecialType == SpecialType.System_String && right.Type?.SpecialType == SpecialType.System_String)
+                        if (left.Type?.SpecialType == SpecialType.System_String && 
+                            (right.Type?.SpecialType == SpecialType.System_String || right.Type == typeUsual))
                         {
                             opType = VOOperatorType.SingleEqualsString;
                         }
@@ -218,7 +254,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                     case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.NEQ:
                     case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.NEQ2:
-                        if (leftType == typeUsual && (rightType == typeUsual || right.Type?.SpecialType == SpecialType.System_String))
+                        if (leftType == typeUsual || rightType == typeUsual ) // || right.Type?.SpecialType == SpecialType.System_String))
                         {
                             opType = VOOperatorType.NotEqualsUsual;
                         }

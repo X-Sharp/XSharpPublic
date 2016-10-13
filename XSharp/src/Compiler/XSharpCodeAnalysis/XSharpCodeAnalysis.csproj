@@ -277,6 +277,7 @@
     <Compile Include="Antlr4.Runtime\UnbufferedCharStream.cs" />
     <Compile Include="Antlr4.Runtime\UnbufferedTokenStream.cs" />
     <Compile Include="Antlr4.Runtime\Vocabulary.cs" />
+    <Compile Include="Binder\Binder_Operators.cs" />
     <Compile Include="Binder\Binder_Codeblock.cs" />
     <Compile Include="CodeAnalysisResources.Designer.cs">
       <AutoGen>True</AutoGen>

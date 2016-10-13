@@ -12,22 +12,21 @@
 
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.7.1"
-#define ProdBuild       "XSharp Beta 7a"
+#define ProdVer         "XSharp 0.2.7.2"
+#define ProdBuild       "XSharp Beta 7b"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.7.2701"
-#define VITextVersion   "0.2.7.2701 (Beta 7a)"
+#define VIVersion       "0.2.7.2702"
+#define VITextVersion   "0.2.7.2702 (Beta 7b)"
 #define TouchDate       "2016-10-03"
-#define TouchTime       "02:07:01"
+#define TouchTime       "02:07:02"
 #define InstallPath     "XSharpPath"
 
 
 ; Code Signing
 #define KeyFile         "c:\XSharp\Dev\XSharp\build\Signatures\XSharpCert.pfx"
-;#define TimeStampURL    "http://timestamp.comodoca.com/authenticode"
 #define TimeStampURL    "http://timestamp.globalsign.com/scripts/timstamp.dll"
 #define KeyPassword     "J1O39dGG6FPLXWj"
 #define Description     "XSharp, xBase compiler for .Net"
@@ -172,6 +171,7 @@ Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin";
 Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 
 
 Source: "Baggage\DebugRelease.txt";                        DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
@@ -182,6 +182,7 @@ Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\R
 Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
 ; Debug Folder
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; Components: main
 Source: "{#BinDFolder}XSCompiler.exe";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; Components: main
@@ -189,6 +190,7 @@ Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\D
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
 #else
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; Components: main
 Source: "{#BinDFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
@@ -197,6 +199,7 @@ Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin";
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 
 #endif
 Source: "{#BinPFolder}baggage\rc.exe";                    DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main

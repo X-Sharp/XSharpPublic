@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // public static bool __InexactEquals(__Usual uL, __Usual uR)
                 // Switch to overload with string when RHS = STRING 
                 opMeth = (MethodSymbol)symbols[0];
-                if (right.Type.SpecialType == SpecialType.System_String)
+                if (right.Type?.SpecialType == SpecialType.System_String)
                 {
                     if (right.Type != opMeth.Parameters[0].Type)
                         opMeth = (MethodSymbol)symbols[1];
@@ -143,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // public static bool __InexactNotEquals(__Usual uL, __Usual uR)
                 // Switch to overload with string when RHS = STRING 
                 opMeth = (MethodSymbol)symbols[0];
-                if (right.Type.SpecialType == SpecialType.System_String)
+                if (right.Type?.SpecialType == SpecialType.System_String)
                 {
                     if (right.Type != opMeth.Parameters[0].Type)
                         opMeth = (MethodSymbol)symbols[1];

@@ -179,6 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return MakeArrayInitializer(MakeSeparatedList<ExpressionSyntax>(expr));
          }
 
+
         internal ExpressionSyntax GenerateMemVarPut(string memvar, ExpressionSyntax right)
         {
             string method = "global::VulcanRTFuncs.Functions.__MemVarPut";
@@ -679,7 +680,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // Add missing return type when needed. OBJECT or USUAL depending on the dialect.
             if(context.Data.HasMissingReturnType && context.Data.MustHaveReturnType) {
-                dataType = _getMissingVOType();
+                dataType = _getMissingType();
             }
         }
 
@@ -753,17 +754,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if(CurrentEntity.Data.HasTypedParameter && _options.VOUntypedAllowed)
                     type = _usualType;
                  else
-                    type = _getMissingVOType();
+                    type = _getMissingType();
             }
             return type;
         }
 
 
-        protected override TypeSyntax _getMissingLocalType() {
-            return _getMissingVOType();
-        }
-
-        private TypeSyntax _getMissingVOType()
+        protected override TypeSyntax _getMissingType()
         {
             TypeSyntax varType;
             if (_options.VOUntypedAllowed)
@@ -1055,7 +1052,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     TypeSyntax dataType;
                     if (ent.Data.HasMissingReturnType)
                     {
-                        dataType = _getMissingVOType();
+                        dataType = _getMissingType();
                     }
                     else
                     {

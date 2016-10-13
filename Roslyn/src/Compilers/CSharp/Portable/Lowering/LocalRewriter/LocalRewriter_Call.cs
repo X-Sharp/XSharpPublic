@@ -394,6 +394,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // because the __arglist() argument has to be positional and in the last position. 
 
 
+#if XSHARP
+            if (!_compilation.Options.IsDialectVO)
+#endif
             if (methodOrIndexer.GetIsVararg())
             {
                 Debug.Assert(rewrittenArguments.Length == methodOrIndexer.GetParameterCount() + 1);
@@ -409,6 +412,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool isComReceiver = (object)receiverNamedType != null && receiverNamedType.IsComImport;
 
+#if XSHARP
+            if (!_compilation.Options.IsDialectVO)
+#endif
             if (rewrittenArguments.Length == methodOrIndexer.GetParameterCount() &&
                 argsToParamsOpt.IsDefault &&
                 !expanded &&
@@ -812,11 +818,19 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             for (int p = 0; p < arguments.Length; ++p)
             {
+#if XSHARP
+                if (arguments[p] == null || arguments[p].Syntax.XIsMissingArgument)
+#else
                 if (arguments[p] == null)
+#endif
                 {
                     ParameterSymbol parameter = parameters[p];
+#if !XSHARP
                     Debug.Assert(parameter.IsOptional);
                     arguments[p] = GetDefaultParameterValue(syntax, parameter, enableCallerInfo);
+#else
+                    arguments[p] = GetDefaultParameterValue(syntax, parameter, enableCallerInfo) ?? arguments[p] ?? new BoundDefaultOperator(syntax, parameter.Type);
+#endif
                     Debug.Assert(arguments[p].Type == parameter.Type);
                 }
             }
@@ -889,11 +903,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             // to pass this information, and this might be a big task. We should consider doing this when the time permits.
 
             TypeSymbol parameterType = parameter.Type;
+#if !XSHARP
             Debug.Assert(parameter.IsOptional);
+#endif
             ConstantValue defaultConstantValue = parameter.ExplicitDefaultConstantValue;
             BoundExpression defaultValue;
             SourceLocation callerSourceLocation;
 
+#if XSHARP
+            if (!parameter.IsOptional && (defaultConstantValue == null || defaultConstantValue.IsBad))
+            {
+                defaultConstantValue = parameter.GetVODefaultParameter();
+                if (defaultConstantValue == null)
+                    return null;
+            }
+#endif
             // For compatibility with the native compiler we treat all bad imported constant
             // values as default(T).  
             if (defaultConstantValue != null && defaultConstantValue.IsBad)

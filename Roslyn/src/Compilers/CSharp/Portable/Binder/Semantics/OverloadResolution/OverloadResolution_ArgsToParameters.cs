@@ -62,8 +62,25 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             ImmutableArray<ParameterSymbol> parameters = symbol.GetParameters();
 
+#if XSHARP
+            for (int p = 0; p < arguments.Arguments.Count; ++p)
+            {
+                if (arguments.Argument(p).Syntax?.XIsMissingArgument == true)
+                {
+                    if (p < (expanded ? parameters.Length-1 : parameters.Length) && !CanBeOptional(parameters[p], isMethodGroupConversion))
+                    {
+                        return ArgumentAnalysisResult.RequiredParameterMissing(p);
+                    }
+                }
+            }
+#endif
+
             // The easy out is that we have no named arguments and are in normal form.
+#if XSHARP && false
+            if (!expanded && arguments.Names.Count == 0 && !hasMissingArgs)
+#else
             if (!expanded && arguments.Names.Count == 0)
+#endif
             {
                 return AnalyzeArgumentsForNormalFormNoNamedArguments(parameters, arguments, isMethodGroupConversion, symbol.GetIsVararg());
             }
@@ -302,6 +319,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             // we could eliminate methods based on the number of arguments, but then we wouldn't be able to
             // fall back on them if no other candidates were available.
 
+#if XSHARP
+            if (!parameter.IsOptional && parameter.HasVODefaultParameter())
+            {
+                return true;
+            }
+#endif
             var refKind = parameter.RefKind;
             return !isMethodGroupConversion && parameter.IsOptional &&
                 (refKind == RefKind.None ||

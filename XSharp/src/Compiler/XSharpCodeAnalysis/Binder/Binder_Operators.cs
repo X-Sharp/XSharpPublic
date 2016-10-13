@@ -196,9 +196,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Minus Operator and LHS or  RHS is STRING and other side is USUAL     // STRING - USUAL or USUAL - STRING
             // 
             VOOperatorType opType = VOOperatorType.None; ;
-            if (Compilation.Options.IsDialectVO)
+            var xnode = node.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.BinaryExpressionContext;
+            if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
+                return opType;
+            if (Compilation.Options.IsDialectVO )
             {
-                var xnode = node.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.BinaryExpressionContext;
                 var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                 TypeSymbol leftType = left.Type;
                 TypeSymbol rightType = right.Type;
@@ -255,7 +257,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                 }
             }
-            else
+            else 
             {
                 switch (node.Kind())
                 {

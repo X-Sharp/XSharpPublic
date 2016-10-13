@@ -1427,7 +1427,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static void FixDefaultVirtual(this SyntaxListBuilder list)
         {
-            if (list.Any(SyntaxKind.StaticKeyword) || list.Any(SyntaxKind.VirtualKeyword) || list.Any(SyntaxKind.ExternKeyword) || list.Any(SyntaxKind.PrivateKeyword))
+            if (list.Any(SyntaxKind.StaticKeyword) || 
+                list.Any(SyntaxKind.VirtualKeyword) || 
+                list.Any(SyntaxKind.ExternKeyword) ||
+                list.Any(SyntaxKind.AbstractKeyword) ||
+                list.Any(SyntaxKind.PrivateKeyword))
                 return;
             list.Add(SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword));
             if (list.Any(SyntaxKind.OverrideKeyword) || list.Any(SyntaxKind.NewKeyword) || list.Any(SyntaxKind.AbstractKeyword))

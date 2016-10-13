@@ -1187,15 +1187,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var AssMet = vop.AssignMethodCtx;
             if (AssMet != null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
             {
-                voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? _getMissingLocalType();
+                voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? _getMissingType();
             }
             else if (AccMet != null)
             {
-                voPropType = AccMet.Type?.Get<TypeSyntax>() ?? _getMissingLocalType();
+                voPropType = AccMet.Type?.Get<TypeSyntax>() ?? _getMissingType();
             }
             else
             {
-                voPropType = _getMissingLocalType();
+                voPropType = _getMissingType();
             }
 
             object voPropParams;
@@ -1549,7 +1549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
                 modifiers,
-                _syntaxFactory.VariableDeclaration(context.DataType?.Get<TypeSyntax>() ?? MissingType(), variables),
+                _syntaxFactory.VariableDeclaration(context.DataType?.Get<TypeSyntax>() ?? _getMissingType(), variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             _pool.Free(variables);
         }
@@ -1992,7 +1992,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClassvars([NotNull] XP.ClassvarsContext context)
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = context.Vars?.DataType?.Get<TypeSyntax>() ?? MissingType();
+            var varType = context.Vars?.DataType?.Get<TypeSyntax>() ?? _getMissingType();
             bool isFixed = context.Modifiers?._FIXED != null;
             varType.XVoDecl = true;
             if (context.Vars?.As?.Type == XP.IS)
@@ -2109,7 +2109,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? MissingType();
+                    var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
                     if (initExpr == null)
                     {
                         initExpr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
@@ -2176,7 +2176,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(_syntaxFactory.PropertyDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: mods,
-                    type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                    type: context.Type?.Get<TypeSyntax>() ?? _getMissingType(),
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
@@ -2201,7 +2201,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(_syntaxFactory.IndexerDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: mods,
-                    type: context.Type?.Get<TypeSyntax>() ?? MissingType(),
+                    type: context.Type?.Get<TypeSyntax>() ?? _getMissingType(),
                     explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
                         name: context.ExplicitIface.Get<NameSyntax>(),
                         dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
@@ -2407,7 +2407,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else  // method and access
                     {
-                        returntype = _getMissingLocalType();
+                        returntype = _getMissingType();
                     }
                 }
 
@@ -2991,7 +2991,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoglobal([NotNull] XP.VoglobalContext context)
         {
             var varList = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
-            var varType = context.Vars.DataType?.Get<TypeSyntax>() ?? MissingType();
+            var varType = context.Vars.DataType?.Get<TypeSyntax>() ?? _getMissingType();
             context.SetSequencePoint(context.end);
 
             varType.XVoDecl = true;
@@ -3096,7 +3096,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
                     ),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword,SyntaxKind.ExternKeyword),
-                returnType: context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? MissingType() : VoidType()),
+                returnType: context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType()),
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
@@ -3185,7 +3185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
-            var returntype = context.Type?.Get<TypeSyntax>() ?? MissingType();
+            var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
             if (!isInInterface)
             {
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
@@ -3269,7 +3269,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected virtual TypeSyntax _getParameterType([NotNull] XP.ParameterContext context) {
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
             if(type == null) {
-                type = MissingType();
+                type = _getMissingType();
             }
             return type;
         }
@@ -3408,7 +3408,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // nvk: Do nothing here. It will be handled by the visitor after Datatype(s) are processed.
         }
 
-        protected virtual TypeSyntax _getMissingLocalType() {
+        protected virtual TypeSyntax _getMissingType() {
             return MissingType();
         }
 
@@ -3423,7 +3423,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varType = context.DataType?.Get<TypeSyntax>();
             else
             {
-                varType = _getMissingLocalType();
+                varType = _getMissingType();
             }
             var initExpr = context.Expression?.Get<ExpressionSyntax>();
             if (isDim)
@@ -4677,7 +4677,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (context.XType != null)
             {
-                context.Put(MakeCastTo(context.XType.Get<TypeSyntax>(),context.Expr.Get<ExpressionSyntax>()));
+                if (context.XType.Token.Type == XSharpParser.PSZ)
+                {
+                    var args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+                    context.Put(CreateObject(context.XType.Get<TypeSyntax>(), args,null));
+                }
+                else
+                {
+                    context.Put(MakeCastTo(context.XType.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()));
+                }
             }
         }
 

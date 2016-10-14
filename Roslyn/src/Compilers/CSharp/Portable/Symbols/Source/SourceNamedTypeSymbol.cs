@@ -31,11 +31,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
         private ThreeState _lazyIsExplicitDefinitionOfNoPiaLocalType = ThreeState.Unknown;
 
-#if XSHARP
-        private bool _isVoStructOrUnion = false;
-
-        internal bool IsSourceVoStructOrUnion { get { return _isVoStructOrUnion; } }
-#endif
 
         protected override Location GetCorrespondingBaseListLocation(NamedTypeSymbol @base)
         {
@@ -98,79 +93,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
         }
 
-#if XSHARP
-        private int _voStructSize = -1;
-        private int _voStructElementSize = -1;
-
-        internal int VoStructSize { get { if (_voStructSize == -1) EvalVoStructMemberSizes(); return _voStructSize; } }
-        internal int VoStructElementSize { get { if (_voStructElementSize == -1) EvalVoStructMemberSizes(); return _voStructElementSize; } }
-
-        private void EvalVoStructMemberSizes()
-        {
-            if (_isVoStructOrUnion && DeclaringCompilation.Options.IsDialectVO)
-            {
-                int voStructSize = 0;
-                int voStructElementSize = 0;
-                int align = this.Layout.Alignment;
-                foreach (var m in GetMembers())
-                {
-                    if (m.Kind == SymbolKind.Field)
-                    {
-                        var f = (FieldSymbol)m;
-                        int sz, elsz;
-                        if (f.IsFixed == true)
-                        {
-                            elsz = (f.Type as PointerTypeSymbol).PointedAtType.VoFixedBufferElementSizeInBytes();
-                            sz = f.FixedSize * elsz;
-                        }
-                        else
-                        {
-                            sz = f.Type.VoFixedBufferElementSizeInBytes();
-                            if ((f.Type as SourceNamedTypeSymbol)?.IsSourceVoStructOrUnion == true)
-                            {
-                                elsz = (f.Type as SourceNamedTypeSymbol).VoStructElementSize;
-                            }
-                            else if (f.Type.IsVoStructOrUnion())
-                            {
-                                elsz = f.Type.VoStructOrUnionLargestElementSizeInBytes();
-                            }
-                            else
-                                elsz = sz;
-                        }
-                        if (sz != 0)
-                        {
-                            int al = align;
-                            if (elsz < al)
-                                al = elsz;
-                            if (voStructSize % al != 0)
-                            {
-                                voStructSize += al - (voStructSize % al);
-                            }
-                            if (!f.TypeLayoutOffset.HasValue)
-                            {
-                                // no explicit layout
-                                voStructSize += sz;
-                            }
-                            else
-                            {
-                                // field offset is set: this is a union
-                                int fieldLen = sz + f.TypeLayoutOffset.Value;
-                                if ( fieldLen> voStructSize)
-                                {
-                                    voStructSize = fieldLen;
-                                }
-                            }
-
-                            if (voStructElementSize < sz)
-                                voStructElementSize = sz;
-                        }
-                    }
-                }
-                _voStructSize = voStructSize;
-                _voStructElementSize = voStructElementSize;
-            }
-        }
-#endif
 
         #region Syntax
 
@@ -1139,20 +1061,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             base.PostDecodeWellKnownAttributes(boundAttributes, allAttributeSyntaxNodes, diagnostics, symbolPart, decodedData);
         }
-
-#if XSHARP
-        internal SynthesizedAttributeData GetVoStructAttributeData()
-        {
-            var syntax = ((CSharpSyntaxNode)declaration.SyntaxReferences.FirstOrDefault()?.GetSyntax());
-            var attributeType = DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VOStructAttribute);
-            var int32type = DeclaringCompilation.GetSpecialType(SpecialType.System_Int32);
-            var attributeConstructor = attributeType.GetMembers(".ctor").FirstOrDefault() as MethodSymbol;
-            var constructorArguments = ArrayBuilder<TypedConstant>.GetInstance();
-            constructorArguments.Add(new TypedConstant(int32type, TypedConstantKind.Primitive, VoStructSize));
-            constructorArguments.Add(new TypedConstant(int32type, TypedConstantKind.Primitive, VoStructElementSize));
-            return new SynthesizedAttributeData(attributeConstructor, constructorArguments.ToImmutableAndFree(), ImmutableArray<KeyValuePair<string, TypedConstant>>.Empty);
-        }
-#endif
 
         /// <remarks>
         /// These won't be returned by GetAttributes on source methods, but they

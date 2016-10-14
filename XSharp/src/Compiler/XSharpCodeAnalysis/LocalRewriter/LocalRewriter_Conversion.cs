@@ -15,14 +15,15 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (_compilation.Options.IsDialectVO)
             {
+                var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                 var nts = rewrittenOperand.Type as NamedTypeSymbol;
                 if (nts != null)
                 {
                     nts = nts.ConstructedFrom;
                 }
-                if (nts != null && nts == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                if (nts != null && nts == usualType)
                 {
-                    rewrittenOperand = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", rewrittenOperand);
+                    rewrittenOperand = _factory.StaticCall(usualType, "ToObject", rewrittenOperand);
                     conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
                 }
             }

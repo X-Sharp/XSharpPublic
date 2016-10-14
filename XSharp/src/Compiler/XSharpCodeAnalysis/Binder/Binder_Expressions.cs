@@ -35,11 +35,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (Compilation.Options.IsDialectVO)
             {
-                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                var arrayType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
+                var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == usualType)
                 {
-                    expr = BindCastCore(node, expr, Compilation.GetWellKnownType(WellKnownType.Vulcan___Array), wasCompilerGenerated: true, diagnostics: diagnostics);
+                    expr = BindCastCore(node, expr, arrayType, wasCompilerGenerated: true, diagnostics: diagnostics);
                 }
-                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Array))
+                if (((NamedTypeSymbol)expr.Type).ConstructedFrom == arrayType)
                 {
                     ImmutableArray<BoundExpression> args;
                     if (!this.Compilation.Options.ArrayZero)
@@ -95,14 +97,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return new BoundIndexerAccess(
                         syntax: node,
                         receiverOpt: expr,
-                        indexer: analyzedArguments.Arguments.Count == 1 ? (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne
+                        indexer: analyzedArguments.Arguments.Count == 1 ? (arrayType as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerOne
                             : (Compilation.GetWellKnownType(WellKnownType.Vulcan___Array) as Symbols.Metadata.PE.PENamedTypeSymbol).VulcanArrayIndexerMany,
                         arguments: args,
                         argumentNamesOpt: default(ImmutableArray<string>),
                         argumentRefKindsOpt: default(ImmutableArray<RefKind>),
                         expanded: false,
                         argsToParamsOpt: default(ImmutableArray<int>),
-                        type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                        type: usualType,
                         hasErrors: false)
                     { WasCompilerGenerated = true };
                 }

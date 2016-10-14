@@ -10,6 +10,21 @@ namespace Microsoft.CodeAnalysis
     {
         public virtual IntPtr IntPtrValue { get { throw new InvalidOperationException(); } }
 
+
+        public static ConstantValue Create(IntPtr value)
+        {
+            if (value == default(IntPtr))
+            {
+                return ConstantValueDefault.IntPtr;
+            }
+
+            return new ConstantValueIntPtr(value);
+        }
+
+        public static ConstantValue CreateVoid()
+        {
+            return new ConstantValueVoid();
+        }
         private partial class ConstantValueDefault : ConstantValueDiscriminated
         {
 

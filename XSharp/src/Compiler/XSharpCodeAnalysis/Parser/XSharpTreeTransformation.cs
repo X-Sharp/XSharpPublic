@@ -5074,11 +5074,48 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)));
         }
 
+        private bool isAnonymousTypeExpression(ExpressionSyntax expr)
+        {
+            // COpyied from the Roslyn Language Parser
+            while (true)
+            {
+                switch (expr.Kind)
+                {
+                    case SyntaxKind.QualifiedName:
+                        expr = ((QualifiedNameSyntax)expr).Right;
+                        continue;
+                    case SyntaxKind.ConditionalAccessExpression:
+                        expr = ((ConditionalAccessExpressionSyntax)expr).WhenNotNull;
+                        if (expr.Kind == SyntaxKind.MemberBindingExpression)
+                        {
+                            return true;
+                        }
+
+                        continue;
+                    case SyntaxKind.IdentifierName:
+                    case SyntaxKind.SimpleMemberAccessExpression:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
         public override void ExitAnonMember([NotNull] XP.AnonMemberContext context)
         {
-            context.Put(_syntaxFactory.AnonymousObjectMemberDeclarator(
-                _syntaxFactory.NameEquals(context.Name.Get<IdentifierNameSyntax>(),SyntaxFactory.MakeToken(SyntaxKind.EqualsToken)),
-                context.Expr.Get<ExpressionSyntax>()));
+            NameEqualsSyntax nameEquals = null;
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            if (context.Name != null)
+            {
+                nameEquals = _syntaxFactory.NameEquals(context.Name.Get<IdentifierNameSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.EqualsToken));
+            }
+            var amd = _syntaxFactory.AnonymousObjectMemberDeclarator(nameEquals, expr);
+            {
+                if (nameEquals == null && ! isAnonymousTypeExpression(expr))
+                {
+                    amd = amd.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidAnonymousTypeMemberDeclarator));
+                }
+            }
+            context.Put(amd);
         }
 
         public override void ExitCodeblockExpression([NotNull] XP.CodeblockExpressionContext context)

@@ -747,6 +747,7 @@ anonType			: CLASS LCURLY (Members+=anonMember (COMMA Members+=anonMember)*)? RC
                     ;
 
 anonMember			: Name=identifierName ASSIGN_OP Expr=expression
+					| Expr=expression
                     ;
 
 

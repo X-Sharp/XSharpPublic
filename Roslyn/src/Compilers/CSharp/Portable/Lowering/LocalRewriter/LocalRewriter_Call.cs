@@ -1207,7 +1207,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), "IVarPut",
                 MakeConversion(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
-                MakeConversion(loweredValue, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
+                loweredValue.Type == null ? new BoundDefaultOperator(loweredValue.Syntax, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                : MakeConversion(loweredValue, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
         }
 
         public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name, ImmutableArray<BoundExpression> args)
@@ -1215,7 +1216,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             var convArgs = new ArrayBuilder<BoundExpression>();
             foreach (var a in args)
             {
-                convArgs.Add(MakeConversion(a, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
+                if (a.Type == null)
+                    convArgs.Add(new BoundDefaultOperator(a.Syntax, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)));
+                else
+                    convArgs.Add(MakeConversion(a, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
             }
             var aArgs = _factory.Array(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), convArgs.ToArrayAndFree());
             return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), "__InternalSend",

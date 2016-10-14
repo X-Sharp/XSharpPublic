@@ -191,7 +191,7 @@ vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=
 
 namespace_			: BEGIN NAMESPACE Name=name EOS
                       (Entities+=entity)*
-                      END NAMESPACE EOS
+                      (e=END NAMESPACE EOS)?
                     ;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
@@ -199,7 +199,7 @@ interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      END INTERFACE EOS
+                      (e=END INTERFACE EOS)?
                     ;
 
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -211,7 +211,7 @@ class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS						// Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      END CLASS  EOS
+                      (e=END CLASS EOS)?
                     ;
 
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -240,7 +240,7 @@ structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
                       (Members+=classmember)+
-                      END STRUCTURE EOS
+                      (e=END STRUCTURE EOS)?
                     ;
 
 structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -260,7 +260,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
                       ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? EOS
                       (Members+=enummember)+
-                      END (ENUM)? EOS
+                      (e=END ENUM? EOS)?
                     ;
 
 enumModifiers		: ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+
@@ -315,7 +315,7 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)? 
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=EOS	// Auto
                       | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-                      | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS									// Multi Line
+                      | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS								// Multi Line
                       )
                     ;
 
@@ -434,7 +434,7 @@ statement           : Decl=localdecl                                            
                     | {_xBaseVars}? xbasedecl									#xbasedeclStmt
                     | Decl=fielddecl											#fieldStmt
                     | DO? WHILE Expr=expression end=EOS
-                      StmtBlk=statementBlock (END DO? | ENDDO) EOS				#whileStmt
+                      StmtBlk=statementBlock ((e=END DO? | e=ENDDO) EOS)?		#whileStmt
                     | NOP end=EOS												#nopStmt
                     | FOR 
                         ( AssignExpr=expression
@@ -443,12 +443,12 @@ statement           : Decl=localdecl                                            
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=EOS
-                      StmtBlk=statementBlock NEXT EOS							#forStmt
+                      StmtBlk=statementBlock (e=NEXT EOS)?							#forStmt
                     | IF IfStmt=ifElseBlock
-                      (END IF? | ENDIF)  EOS									#ifStmt	
+                      ((e=END IF? | e=ENDIF)  EOS)?									#ifStmt	
                     | DO CASE end=EOS
                       CaseStmt=caseBlock?
-                      (END CASE? | ENDCASE) EOS									#caseStmt
+                      ((e=END CASE? | e=ENDCASE) EOS)?							#caseStmt
                     | Key=EXIT end=EOS											#jumpStmt
                     | Key=LOOP end=EOS											#jumpStmt
                     | Key=BREAK Expr=expression? end=EOS						#jumpStmt
@@ -459,7 +459,7 @@ statement           : Decl=localdecl                                            
                       StmtBlk=statementBlock
                       (RECOVER RecoverBlock=recoverBlock)?
                       (FINALLY EOS FinBlock=statementBlock)?
-                      END (SEQUENCE)? EOS										#seqStmt
+                      (e=END (SEQUENCE)? EOS)?									#seqStmt
                     //
                     // New in Vulcan
                     //
@@ -469,18 +469,18 @@ statement           : Decl=localdecl                                            
                     | FOREACH
                       (IMPLIED Id=identifier | Id=identifier AS Type=datatype| VAR Id=identifier)
                       IN Container=expression end=EOS
-                      StmtBlk=statementBlock NEXT EOS							#foreachStmt
+                      StmtBlk=statementBlock (e=NEXT EOS)?						#foreachStmt
                     | Key=THROW Expr=expression? end=EOS						#jumpStmt
                     | TRY end=EOS StmtBlk=statementBlock
                       (CATCH CatchBlock+=catchBlock?)*
                       (FINALLY EOS FinBlock=statementBlock)?
-                      END TRY? EOS												#tryStmt
+                      (e=END TRY? EOS)?											#tryStmt
                     | BEGIN Key=LOCK Expr=expression end=EOS
                       StmtBlk=statementBlock
-                      END LOCK? EOS												#blockStmt
+                      (e=END LOCK? EOS)?										#blockStmt
                     | BEGIN Key=SCOPE end=EOS
                       StmtBlk=statementBlock
-                      END SCOPE? EOS											#blockStmt
+                      (e=END SCOPE? EOS)?										#blockStmt
                     //
                     // New XSharp Statements
                     //
@@ -488,22 +488,22 @@ statement           : Decl=localdecl                                            
                     | YIELD Break=(BREAK|EXIT) end=EOS							#yieldStmt
                     | (BEGIN|DO)? SWITCH Expr=expression end=EOS
                       (SwitchBlock+=switchBlock)+
-                      END SWITCH?  EOS											#switchStmt
+                      (e=END SWITCH?  EOS)?										#switchStmt
                     | BEGIN Key=USING ( Expr=expression | VarDecl=variableDeclaration ) end=EOS
                         StmtBlk=statementBlock
-                      END USING? EOS											#blockStmt
+                      (e=END USING? EOS)?										#blockStmt
                     | BEGIN Key=UNSAFE end=EOS
                       StmtBlk=statementBlock
-                      END UNSAFE? EOS											#blockStmt
+                      (e=END UNSAFE? EOS)?										#blockStmt
                     | BEGIN Key=CHECKED end=EOS
                       StmtBlk=statementBlock
-                      END CHECKED? EOS											#blockStmt
+                      (e=END CHECKED? EOS)?										#blockStmt
                     | BEGIN Key=UNCHECKED end=EOS
                       StmtBlk=statementBlock
-                      END UNCHECKED? EOS										#blockStmt
+                      (e=END UNCHECKED? EOS)?									#blockStmt
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=EOS
                       StmtBlk=statementBlock
-                      END FIXED? EOS											#blockStmt
+                      (e=END FIXED? EOS)?										#blockStmt
                     
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule

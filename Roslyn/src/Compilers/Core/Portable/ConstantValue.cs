@@ -306,22 +306,6 @@ namespace Microsoft.CodeAnalysis
             return new ConstantValueDateTime(value);
         }
 
-#if XSHARP
-        public static ConstantValue Create(IntPtr value)
-        {
-            if (value == default(IntPtr))
-            {
-                return ConstantValueDefault.IntPtr;
-            }
-
-            return new ConstantValueIntPtr(value);
-        }
-
-        public static ConstantValue CreateVoid()
-        {
-            return new ConstantValueVoid();
-        }
-#endif
         public static ConstantValue Create(object value, SpecialType st)
         {
             var discriminator = GetDiscriminator(st);

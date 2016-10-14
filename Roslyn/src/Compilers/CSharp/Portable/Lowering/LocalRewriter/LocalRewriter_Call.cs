@@ -1189,44 +1189,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 #endif
             return _dynamicFactory.MakeDynamicGetMember(loweredReceiver, node.Name, node.Indexed).ToExpression();
         }
-#if XSHARP
 
-        public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, string name)
-        {
-            if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
-                loweredReceiver = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", loweredReceiver);
-            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions),"IVarGet",
-                MakeConversion(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
-                new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)));
-        }
-
-        public BoundExpression MakeVODynamicSetMember(BoundExpression loweredReceiver, string name, BoundExpression loweredValue)
-        {
-            if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
-                loweredReceiver = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), "ToObject", loweredReceiver);
-            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), "IVarPut",
-                MakeConversion(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
-                new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
-                loweredValue.Type == null ? new BoundDefaultOperator(loweredValue.Syntax, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
-                : MakeConversion(loweredValue, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
-        }
-
-        public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name, ImmutableArray<BoundExpression> args)
-        {
-            var convArgs = new ArrayBuilder<BoundExpression>();
-            foreach (var a in args)
-            {
-                if (a.Type == null)
-                    convArgs.Add(new BoundDefaultOperator(a.Syntax, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)));
-                else
-                    convArgs.Add(MakeConversion(a, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false));
-            }
-            var aArgs = _factory.Array(_compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), convArgs.ToArrayAndFree());
-            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), "__InternalSend",
-                    MakeConversion(loweredReceiver, _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual), false),
-                    new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
-                    aArgs);
-        }
-#endif
     }
 }

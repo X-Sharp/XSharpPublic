@@ -4,11 +4,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 {
     public partial class LocalDeclarationStatementSyntax : StatementSyntax
     {
-        public bool IsConst
+        public bool IsRef
         {
             get
             {
-                return this.Modifiers.Any(SyntaxKind.ConstKeyword);
+                return this.Modifiers.Any(SyntaxKind.RefKeyword);
+            }
+        }
+        public bool IsStatic
+        {
+            get
+            {
+                return this.Modifiers.Any(SyntaxKind.StaticKeyword);
             }
         }
     }

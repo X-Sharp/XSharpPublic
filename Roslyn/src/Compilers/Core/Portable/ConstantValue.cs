@@ -69,9 +69,6 @@ namespace Microsoft.CodeAnalysis
         public virtual double DoubleValue { get { throw new InvalidOperationException(); } }
         public virtual float SingleValue { get { throw new InvalidOperationException(); } }
 
-#if XSHARP
-        public virtual IntPtr IntPtrValue { get { throw new InvalidOperationException(); } }
-#endif
         // returns true if value is in its default (zero-inited) form.
         public virtual bool IsDefaultValue { get { return false; } }
 

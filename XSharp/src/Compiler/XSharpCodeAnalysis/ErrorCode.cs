@@ -1395,5 +1395,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_IllegalVoStructMemberType = 9027,
         ERR_UnknownLiteralTypeName=9028,
         WRN_CompilerOptionNotImplementedYet = 9029,
+        ERR_KeywordExpected = 9030,
     }
 }

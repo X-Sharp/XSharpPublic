@@ -230,7 +230,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Minus Operator and LHS and RHS is STRING                             // STRING - STRING
             // Minus Operator and LHS or  RHS is STRING and other side is USUAL     // STRING - USUAL or USUAL - STRING
             // 
-            VOOperatorType opType = VOOperatorType.None; ;
+            VOOperatorType opType = VOOperatorType.None; 
             var xnode = node.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.BinaryExpressionContext;
             if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
                 return opType;
@@ -301,7 +301,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.GreaterThanOrEqualExpression:
                     case SyntaxKind.LessThanExpression:
                     case SyntaxKind.LessThanOrEqualExpression:
-                        opType = VOOperatorType.CompareString;
+                        if (left.Type?.SpecialType == SpecialType.System_String || right.Type?.SpecialType == SpecialType.System_String)
+                        {
+                            // Make to String.Compare or __StringCompare. Decide later
+                            opType = VOOperatorType.CompareString;
+                        }
                         break;
                     default:
                         opType = VOOperatorType.None;

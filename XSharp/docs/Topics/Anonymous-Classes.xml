@@ -12,13 +12,19 @@
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true">VAR o := CLASS { Name := &quot;test&quot;, Value := &quot;something&quot; }</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">In LINQ this may lead to:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true">VAR </text><tab /><text styleclass="Code Example" translate="true">result := from c in db.Customers where c.Orders.Count &gt; 0 ;</text><br/><tab /><text styleclass="Code Example" translate="true">select CLASS{ ID := C.CustomerID, Name := C.CustomerName, OrderCount := C.Orders.Count}</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Anonymous types contain one or more public read-only properties. No other kinds of class members, such as methods or events, are valid. </text><br/><text styleclass="Normal" translate="true">The expression that is used to initialize a property cannot be null, an anonymous function, or a pointer type.</text></para>
+    <para styleclass="Code Example"><text styleclass="Normal" translate="true">In this case the object will have the properties </text><text styleclass="Normal" style="font-weight:bold;" translate="true">ID</text><text styleclass="Normal" translate="true">, </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Name</text><text styleclass="Normal" translate="true"> and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">OrderCount</text><text styleclass="Normal" translate="true"> (all explicitely given)</text></para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you select named properties from another object you can omit the &lt;Name&gt; := part. In that case the compiler will simply use the same name:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">VAR </text><tab /><text styleclass="Code Example" translate="true">result := from c in db.Customers where c.Orders.Count &gt; 0 ;</text><br/><tab /><text styleclass="Code Example" translate="true">select CLASS{ C.CustomerID, C.CustomerName, OrderCount := C.Orders.Count}</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Normal" translate="true">In this case the anonymous class will have the properties </text><text styleclass="Normal" style="font-weight:bold;" translate="true">CustomerID</text><text styleclass="Normal" translate="true">, </text><text styleclass="Normal" style="font-weight:bold;" translate="true">CustomerName</text><text styleclass="Normal" translate="true"> (inherited from C) and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">OrderCount</text><text styleclass="Normal" translate="true"> (explicitely given)</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Anonymous types contain one or more public read-only properties. No other kinds of class members, such as methods or events, are valid. </text><br/><text styleclass="Normal" translate="true">The expression that is used to initialize a property cannot be null, an anonymous function, or a pointer type.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The most common scenario is to initialize an anonymous type with properties from another type. In the following example, assume that a class exists that is named Product. Class Product includes Color and Price properties, together with other properties that you are not interested in. Variable products is a collection of Product objects. The anonymous type declaration starts with the new keyword. The declaration initializes a new type that uses only two properties from Product. This causes a smaller amount of data to be returned in the query.</text></para>
     <para styleclass="Normal"></para>
@@ -26,10 +32,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true">var productQuery := ;</text></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;from prod in products ;</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;select CLASS { prod.Color, prod.Price }</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;select CLASS { prod:Color, prod:Price }</text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true">foreach var v in productQuery</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;Console.WriteLine(&quot;Color={0}, Price={1}&quot;, v.Color, v.Price)</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160;Console.WriteLine(&quot;Color={0}, Price={1}&quot;, v:Color, v:Price)</text></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true">next</text></para>
     <para styleclass="Code Example"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Typically, when you use an anonymous type to initialize a variable, you declare the variable as an implicitly typed local variable by using var. The type name cannot be specified in the variable declaration because only the compiler has access to the underlying name of the anonymous type.</text></para>

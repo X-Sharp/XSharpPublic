@@ -4786,5 +4786,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_CompilerOptionNotImplementedYet" xml:space="preserve">
     <value>Compiler Option {0} ({1}) is recognized by the compiler but not yet implemented</value>
   </data>
+  <data name="ERR_KeywordExpected" xml:space="preserve">
+    <value>Keyword {0} missing</value>
+  </data>
   
 </root>

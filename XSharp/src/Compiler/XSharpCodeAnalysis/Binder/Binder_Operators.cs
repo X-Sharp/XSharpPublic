@@ -301,7 +301,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.GreaterThanOrEqualExpression:
                     case SyntaxKind.LessThanExpression:
                     case SyntaxKind.LessThanOrEqualExpression:
-                        opType = VOOperatorType.CompareString;
+                        if (left.Type?.SpecialType == SpecialType.System_String || right.Type?.SpecialType == SpecialType.System_String)
+                        {
+                            // Make to String.Compare or __StringCompare. Decide later
+                            opType = VOOperatorType.CompareString;
+                        }
                         break;
                     default:
                         opType = VOOperatorType.None;

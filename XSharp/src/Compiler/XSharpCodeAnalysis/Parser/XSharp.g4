@@ -191,7 +191,7 @@ vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=
 
 namespace_			: BEGIN NAMESPACE Name=name EOS
                       (Entities+=entity)*
-                      (e=END NAMESPACE EOS)?
+                      END NAMESPACE EOS
                     ;
 
 interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
@@ -199,8 +199,8 @@ interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      (e=END INTERFACE EOS)?
-                    ;
+                      END INTERFACE EOS                    
+					  ;
 
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
                     ;
@@ -211,8 +211,8 @@ class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS						// Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      (e=END CLASS EOS)?
-                    ;
+                      e=END CLASS EOS
+					  ;
 
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
                     ;
@@ -240,8 +240,8 @@ structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
                       (Members+=classmember)+
-                      (e=END STRUCTURE EOS)?
-                    ;
+                      END STRUCTURE EOS
+					  ;
 
 structureModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
                     ;
@@ -260,7 +260,7 @@ delegateModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PR
 enum_				: (Attributes=attributes)? (Modifiers=enumModifiers)?
                       ENUM (Namespace=nameDot)? Id=identifier (AS Type=datatype)? EOS
                       (Members+=enummember)+
-                      (e=END ENUM? EOS)?
+                      END ENUM? EOS
                     ;
 
 enumModifiers		: ( Tokens+=(NEW | PUBLIC| EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN) )+

@@ -1449,7 +1449,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(externs);
             _pool.Free(usings);
             _pool.Free(members);
-            ns = (NamespaceDeclarationSyntax) CheckForMissingKeyword(context.e, context, ns, "END NAMESPACE");
             context.Put(ns);
         }
 
@@ -1613,7 +1612,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Namespace != null) {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
-            m = (MemberDeclarationSyntax) CheckForMissingKeyword(context.e, context, m, "END INTERFACE");
             context.Put(m);
             
         }
@@ -1681,7 +1679,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = AddNameSpaceToMember(context.Namespace, m);
 
             }
-            m = (MemberDeclarationSyntax)CheckForMissingKeyword(context.e, context, m, "END CLASS");
             context.Put(m);
         }
 
@@ -1742,7 +1739,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Namespace != null) {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
-            m = (MemberDeclarationSyntax)CheckForMissingKeyword(context.e, context, m, "END STRUCTURE");
             context.Put(m);
         }
 
@@ -1804,7 +1800,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Namespace != null) {
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
-            m = (MemberDeclarationSyntax)CheckForMissingKeyword(context.e, context, m, "END [ENUM]");
             context.Put(m);
         }
 

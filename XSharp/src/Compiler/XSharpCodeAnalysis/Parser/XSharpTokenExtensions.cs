@@ -1428,15 +1428,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public static void FixDefaultVirtual(this SyntaxListBuilder list)
         {
             if (list.Any(SyntaxKind.StaticKeyword) || 
-                list.Any(SyntaxKind.VirtualKeyword) || 
                 list.Any(SyntaxKind.ExternKeyword) ||
                 list.Any(SyntaxKind.AbstractKeyword) ||
                 list.Any(SyntaxKind.PrivateKeyword))
                 return;
-            list.Add(SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword));
-            if (list.Any(SyntaxKind.OverrideKeyword) || list.Any(SyntaxKind.NewKeyword) || list.Any(SyntaxKind.AbstractKeyword))
+            if (!list.Any(SyntaxKind.VirtualKeyword))
+                list.Add(SyntaxFactory.MakeToken(SyntaxKind.VirtualKeyword));
+            if (list.Any(SyntaxKind.NewKeyword) || list.Any(SyntaxKind.AbstractKeyword))
                 return;
-            list.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
+            if (!list.Any(SyntaxKind.OverrideKeyword))
+                list.Add(SyntaxFactory.MakeToken(SyntaxKind.OverrideKeyword));
         }
 
         public static void FixDefaultMethod(this SyntaxListBuilder list)

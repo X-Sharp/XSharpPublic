@@ -5426,6 +5426,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Keyword {0} missing.
+        /// </summary>
+        internal static string ERR_KeywordExpected {
+            get {
+                return ResourceManager.GetString("ERR_KeywordExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No such label &apos;{0}&apos; within the scope of the goto statement.
         /// </summary>
         internal static string ERR_LabelNotFound {

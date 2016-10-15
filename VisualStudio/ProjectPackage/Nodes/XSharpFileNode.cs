@@ -464,7 +464,7 @@ namespace XSharp.Project
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
         /// properties specific for this object to the property browser.
         /// </summary>
-        /// <returns>A new <see cref="WixFileNodeProperties"/> object.</returns>
+        /// <returns>A new <see cref="NodeProperties"/> object.</returns>
         protected override NodeProperties CreatePropertiesObject()
         {
             if (IsNonMemberItem)

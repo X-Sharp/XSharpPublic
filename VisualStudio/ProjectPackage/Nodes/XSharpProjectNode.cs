@@ -299,7 +299,7 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// Creates and returns the folder node object for Wix projects.
+        /// Creates and returns the folder node object for projects.
         /// </summary>
         /// <param name="path">Folder path.</param>
         /// <param name="element">MSBuild element.</param>

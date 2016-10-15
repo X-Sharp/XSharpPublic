@@ -398,10 +398,12 @@ namespace XSharp.Build
 
 
         private int errorCount;
+        private bool hasShownMaxErrorMsg;
         public Xsc() : base()
         {
             //System.Diagnostics.Debugger.Launch();
             errorCount = 0;
+            hasShownMaxErrorMsg = false;
         }
 
         protected override string ToolName
@@ -929,6 +931,14 @@ namespace XSharp.Build
                 if (errorCount < 500)
                 {
                     base.LogEventsFromTextOutput(singleLine, messageImportance);
+                }
+                else if (! hasShownMaxErrorMsg)
+                {
+                    hasShownMaxErrorMsg = true;
+                    // the line is in the format c:\....\file.prg (n,n,n,n): error/warning XSnnnn: 
+                    string line = singleLine.Substring(0, singleLine.IndexOf(')')+2);
+                    line += " error XB9001:" + $"Truncating error list after at {errorCount} errors ";
+                    base.LogEventsFromTextOutput(line, MessageImportance.High);
                 }
                 errorCount++;
             }

@@ -25,14 +25,13 @@ namespace XSharp.Project
         private string devEnvPath;
         private string visualStudioRegistryRoot;
         private Version visualStudioVersion;
-        private MachineSettingString toolsDirectory;
 
         // =========================================================================================
         // Constructors
         // =========================================================================================
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WixPackageSettings"/> class.
+        /// Initializes a new instance of the <see cref="XPackageSettings"/> class.
         /// </summary>
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/> to use.</param>
         public XPackageSettings(IServiceProvider serviceProvider)
@@ -50,26 +49,6 @@ namespace XSharp.Project
         // =========================================================================================
         // Properties
         // =========================================================================================
-
-        /// <summary>
-        /// Gets the path to the directory where the WiX tools reside.
-        /// </summary>
-        /// <value>The path to the directory where the WiX tools reside.</value>
-        public virtual string ToolsDirectory
-        {
-            get
-            {
-                if (this.toolsDirectory == null && this.visualStudioRegistryRoot != null)
-                {
-                    string machineRootPath = XHelperMethods.RegistryPathCombine(this.visualStudioRegistryRoot, @"InstalledProducts\WiX");
-
-                    // initialize all of the machine settings
-                    this.toolsDirectory = new MachineSettingString(machineRootPath, KeyNames.ToolsDirectory, String.Empty);
-                }
-
-                return (this.toolsDirectory != null ? this.toolsDirectory.Value : null);
-            }
-        }
 
         /// <summary>
         /// Gets the absolute path to the devenv.exe that we're currently running in.

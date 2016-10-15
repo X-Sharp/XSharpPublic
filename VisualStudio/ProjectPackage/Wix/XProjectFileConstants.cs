@@ -30,6 +30,7 @@ namespace XSharp.Project
         public const string DevEnvDir = "DevEnvDir";
         public const string DoNotHarvest = "DoNotHarvest";
         public const string DropUnrealTables = "DropUnrealTables";
+        public const string GetTargetPath = "GetTargetPath";
         public const string IncludeSearchPaths = "IncludeSearchPaths";
         public const string InstallerPlatform = "InstallerPlatform";
         public const string IntermediateOutputPath = "IntermediateOutputPath";
@@ -98,20 +99,6 @@ namespace XSharp.Project
         public const string TreatWarningsAsErrors = "TreatWarningsAsErrors";
         public const string VerboseOutput = "VerboseOutput";
         public const string WarningLevel = "WarningLevel";
-        public const string WixExtDir = "WixExtDir";
-        public const string WixExtension = "WixExtension";
-        public const string WixLibrary = "WixLibrary";
-        public const string WixTargetsPath = "WixTargetsPath";
-        public const string WixToolPath = "WixToolPath";
-        public const string WixVariables = "WixVariables";
 
-        /// <summary>
-        /// Target names for the XSharp.targets MSBuild file.
-        /// </summary>
-        public static class MsBuildTarget
-        {
-            public const string GetTargetPath = "GetTargetPath";
-            //public const string ResolveWixLibraryReferences = "ResolveWixLibraryReferences";
-        }
     }
 }

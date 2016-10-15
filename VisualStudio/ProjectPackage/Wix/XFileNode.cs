@@ -48,7 +48,7 @@ namespace XSharp.Project
         {
         }
         /// <summary>
-        /// Initializes a new instance of the <see cref="WixFileNode"/> class.
+        /// Initializes a new instance of the <see cref="XFileNode"/> class.
         /// </summary>
         /// <param name="root">The root <see cref="XSharpProjectNode"/> that contains this node.</param>
         /// <param name="element">The element that contains MSBuild properties.</param>
@@ -86,9 +86,9 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// Menu Command Id for Wix File item.
+        /// Menu Command Id for File item.
         /// </summary>
-        /// <value>Menu Command Id for Wix File item.</value>
+        /// <value>Menu Command Id for File item.</value>
         public override int MenuCommandId
         {
             get
@@ -412,7 +412,7 @@ namespace XSharp.Project
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
         /// properties specific for this object to the property browser.
         /// </summary>
-        /// <returns>A new <see cref="WixFileNodeProperties"/> object.</returns>
+        /// <returns>A new <see cref="NodeProperties"/> object.</returns>
         protected override NodeProperties CreatePropertiesObject()
         {
             if (this.IsNonMemberItem)

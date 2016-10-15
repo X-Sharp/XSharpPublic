@@ -166,7 +166,7 @@ namespace XSharp.Project
         // =========================================================================================
 
         /// <summary>
-        /// Gets the singleton WixPackage instance.
+        /// Gets the singleton XSharpProjectPackage instance.
         /// </summary>
         public static XSharpProjectPackage Instance
         {

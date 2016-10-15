@@ -11,7 +11,7 @@ using System;
 namespace XSharp.Project
 {
     /// <summary>
-    /// Represents automation object corresponding to a WiX project.
+    /// Represents automation object corresponding to a project.
     /// </summary>
     [CLSCompliant(false), ComVisible(true)]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
@@ -22,7 +22,7 @@ namespace XSharp.Project
         // =========================================================================================
 
         /// <summary>
-        /// Properties associated with the WiX project.
+        /// Properties associated with the project.
         /// </summary>
         private OAProperties properties;
         #region Constructors

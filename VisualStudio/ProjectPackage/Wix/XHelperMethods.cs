@@ -532,7 +532,7 @@ internal static class XHelperMethods
       }
 
         /// <summary>
-        /// Opens WiX.chm and displays the specified topic.
+        /// Opens Help and displays the specified topic.
         /// </summary>
         /// <param name="parent">The parent control.</param>
         /// <param name="topic">The topic to show.</param>
@@ -681,8 +681,7 @@ internal static class XHelperMethods
         internal static void SetSingleControlColors(Control control)
         {
             control.ForeColor = GetVsColor(Vs2010Color.VSCOLOR_BUTTONTEXT);
-            if (control is TextBox || control is ListBox || control is ListView || control is ComboBox /*||
-                control is WixBuildEventTextBox*/)
+            if (control is TextBox || control is ListBox || control is ListView || control is ComboBox )
             {
                 control.BackColor = GetVsColor(Vs2010Color.VSCOLOR_WINDOW);
             }

@@ -88,7 +88,7 @@ namespace XSharp.Project
             {
                 throw new InvalidOperationException();
             }
-            BuildResult res = project.Build(configCanonicalName, XProjectFileConstants.MsBuildTarget.GetTargetPath);
+            BuildResult res = project.Build(configCanonicalName, XProjectFileConstants.GetTargetPath);
 
             // get the ProjectX and TargetX variables
             foreach (string macroName in macroNames)

@@ -190,7 +190,7 @@ Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\D
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
-Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 #else
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; Components: main
 Source: "{#BinDFolder}xsc.rsp";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main

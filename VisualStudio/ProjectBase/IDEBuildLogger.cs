@@ -3,8 +3,8 @@
  * Copyright (c) Microsoft Corporation.
  *
  * This source code is subject to terms and conditions of the Apache License, Version 2.0. A
- * copy of the license can be found in the License.txt file at the root of this distribution. 
- * 
+ * copy of the license can be found in the License.txt file at the root of this distribution.
+ *
  * You must not remove this notice, or any other, from this software.
  *
  * ***************************************************************************/
@@ -54,7 +54,7 @@ namespace Microsoft.VisualStudio.Project
         private bool haveCachedVerbosity = false;
 
         // Queues to manage Tasks and Error output plus message logging
-        private ConcurrentQueue<Func<ErrorTask>> taskQueue;   // changed to protected so subclass cann access it
+        private ConcurrentQueue<Func<ErrorTask>> taskQueue;
         private ConcurrentQueue<OutputQueueEntry> outputQueue;
 
         #endregion
@@ -176,7 +176,8 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region event delegates
-
+        protected int errors;
+        protected int warnings;
         /// <summary>
         /// This is the delegate for BuildStartedHandler events.
         /// </summary>
@@ -188,6 +189,7 @@ namespace Microsoft.VisualStudio.Project
             ClearQueuedTasks();
 
             QueueOutputEvent(MessageImportance.Low, buildEvent);
+            errors = warnings = 0;
         }
 
         /// <summary>
@@ -199,6 +201,7 @@ namespace Microsoft.VisualStudio.Project
         {
             // NOTE: This may run on a background thread!
             MessageImportance importance = buildEvent.Succeeded ? MessageImportance.Low : MessageImportance.High;
+            QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
             QueueOutputText(importance, Environment.NewLine);
             QueueOutputEvent(importance, buildEvent);
 
@@ -284,6 +287,7 @@ namespace Microsoft.VisualStudio.Project
             // NOTE: This may run on a background thread!
             QueueOutputText(GetFormattedErrorMessage(errorEvent.File, errorEvent.LineNumber, errorEvent.ColumnNumber, false, errorEvent.Code, errorEvent.Message));
             QueueTaskEvent(errorEvent);
+            errors += 1;
         }
 
         /// <summary>
@@ -294,6 +298,7 @@ namespace Microsoft.VisualStudio.Project
             // NOTE: This may run on a background thread!
             QueueOutputText(MessageImportance.High, GetFormattedErrorMessage(warningEvent.File, warningEvent.LineNumber, warningEvent.ColumnNumber, true, warningEvent.Code, warningEvent.Message));
             QueueTaskEvent(warningEvent);
+            warnings += 1;
         }
 
         /// <summary>
@@ -350,8 +355,10 @@ namespace Microsoft.VisualStudio.Project
             if (this.OutputWindowPane != null)
             {
                 // Enqueue the output text
-                this.outputQueue.Enqueue(new OutputQueueEntry(text, OutputWindowPane));
-
+                lock (outputQueue)
+                {
+                    this.outputQueue.Enqueue(new OutputQueueEntry(text, OutputWindowPane));
+                }
                 // We want to interactively report the output. But we dont want to dispatch
                 // more than one at a time, otherwise we might overflow the main thread's
                 // message queue. So, we only report the output if the queue was empty.
@@ -384,10 +391,12 @@ namespace Microsoft.VisualStudio.Project
         internal void FlushBuildOutput()
         {
             OutputQueueEntry output;
-
-            while (this.outputQueue.TryDequeue(out output))
+            lock (outputQueue)
             {
-                ErrorHandler.ThrowOnFailure(output.Pane.OutputString(output.Message));
+                while (this.outputQueue.TryDequeue(out output))
+                {
+                    ErrorHandler.ThrowOnFailure(output.Pane.OutputString(output.Message));
+                }
             }
         }
 

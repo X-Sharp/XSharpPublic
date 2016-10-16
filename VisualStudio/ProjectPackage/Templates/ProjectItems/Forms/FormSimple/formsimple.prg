@@ -13,22 +13,22 @@ using System.Windows.Forms
 begin namespace $rootnamespace$
 
     public partial class $safeitemrootname$ inherit System.Windows.Forms.Form
-    
+
         public CONSTRUCTOR()  //$safeitemrootname$
             InitializeComponent()
 			return
-        
+
 		/// <summary>
         /// Required designer variable.
         /// </summary>
-        private components as System.ComponentModel.IContainer
+        private components := NULL as System.ComponentModel.IContainer
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected method Dispose(disposing as logic) as void
-        
+
             if (disposing .AND. (components != null))
                 components:Dispose()
             endif

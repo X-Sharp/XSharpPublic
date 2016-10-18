@@ -1613,7 +1613,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 m = AddNameSpaceToMember(context.Namespace, m);
             }
             context.Put(m);
-            
+
         }
 
         public override void ExitInterfaceModifiers([NotNull] XP.InterfaceModifiersContext context)
@@ -2958,7 +2958,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
                                     var newarg = _syntaxFactory.AttributeArgument(null, null, GenerateLiteral(vers.ToString()));
                                     arguments.Add(newarg);
-                                    
+
                                     attrCtx.Put(_syntaxFactory.Attribute(attrCtx.Get<AttributeSyntax>().Name,
                                         _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                             arguments, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
@@ -3844,7 +3844,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 catches.Add(catchCtx.Get<CatchClauseSyntax>());
             }
-            var tryStmt = 
+            var tryStmt =
             _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                 context.StmtBlk.Get<BlockSyntax>(),
                 catches,
@@ -4529,16 +4529,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             } else {
                 argList = EmptyArgumentList();
             }
-            string name = null;
-            if(expr is IdentifierNameSyntax) {
-                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
-                name = ins.Identifier.Text.ToUpper();
-                if(name == "ALTD" && GenerateAltD(context))
-                    return;
-                if(name == "_GETINST" && GenerateGetInst(context))
-                    return;
+            string name = String.Empty;
+            if (expr is IdentifierNameSyntax)
+            {
+                name = ((IdentifierNameSyntax) expr).Identifier.Text.ToUpper();
+            }
+            else if (expr is GenericNameSyntax)
+            {
+                name = ((GenericNameSyntax)expr).Identifier.Text.ToUpper();
+            }
+            switch (name)
+            {
+                case "ALTD":
+                    if (GenerateAltD(context))
+                        return;
+                    break;
+                case "_GETINST":
+                    if (GenerateGetInst(context))
+                        return;
+                    break;
+                case "PCALL":
+                case "CCALL":
+                case "PCALLNATIVE":
+                case "CCALLNATIVE":
+                    expr = (ExpressionSyntax)NotInDialect(expr, name + " pseudo function");
+                    break;
             }
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
+
         }
 
         public override void ExitCtorCall([NotNull] XP.CtorCallContext context)

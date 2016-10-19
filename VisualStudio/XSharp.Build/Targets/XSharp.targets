@@ -43,7 +43,7 @@
   </PropertyGroup>
   <ItemGroup Condition=" '$(NoCompilerStandardLib)' == 'true' and '$(NoStdLib)' != 'true' ">
     <!-- Note that unlike VB, C# does not automatically locate System.dll as a "standard library"
-           instead the reference is always passed from the project. Also, for mscorlib.dll 
+           instead the reference is always passed from the project. Also, for mscorlib.dll
            we need to provide the explicit location in order to maintain the correct behaviour
       -->
     <_ExplicitReference Include="$(FrameworkPathOverride)\mscorlib.dll" />
@@ -55,13 +55,13 @@
   <!--
     The CreateManifestResourceNames target create the manifest resource names from the .RESX
     files.
-    
+
         [IN]
         @(EmbeddedResource) - The list of EmbeddedResource items that have been pre-processed to add metadata about resource type
                               Expected Metadata "Type" can either be "Resx" or "Non-Resx"
 
         [OUT]
-        @(EmbeddedResource) - EmbeddedResource items with metadata         
+        @(EmbeddedResource) - EmbeddedResource items with metadata
 
 
     For .NET applications the transformation is:
@@ -165,7 +165,7 @@
                 $(AssemblyOriginatorKeyFile);
                 @(ReferencePath);
                 @(CompiledLicenseFile);
-                @(EmbeddedDocumentation); 
+                @(EmbeddedDocumentation);
                 $(Win32Resource);
                 $(Win32Manifest);
                 @(CustomAdditionalCompileInputs)"
@@ -274,6 +274,7 @@
 	  VO13="$(VO13)"
     VO14="$(VO14)"
     VO15="$(VO15)"
+    VO16="$(VO16)"
     />
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />

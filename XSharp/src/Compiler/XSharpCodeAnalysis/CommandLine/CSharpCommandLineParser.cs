@@ -43,6 +43,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool handled = true;
             bool positive = !name.EndsWith("-");
+            string oldname = name;
             if (name.EndsWith("+"))
             {
                 name = name.Substring(0, name.Length - 1);
@@ -213,11 +214,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     handled = false;
                     break;
                 default:
+                    name = oldname;
                     handled = false;
                     break;
 
             }
-            return handled;
+             return handled;
         }
         private static bool TryParseDialect(string str, XSharpDialect defaultDialect, out XSharpDialect dialect)
         {

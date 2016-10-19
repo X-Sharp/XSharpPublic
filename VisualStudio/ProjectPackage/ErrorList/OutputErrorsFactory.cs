@@ -39,7 +39,7 @@ namespace XSharp.Project
         /// </summary>
         internal void ClearErrors(XSharpProjectNode project)
         {
-            List<IErrorListItem> taskErrors = null; //  _currentErrors.Where(e => IsSameCommand(e.Command, task.Command)).ToList();
+            List<IErrorListItem> taskErrors=  _currentErrors.Where(e => e.ProjectName == project.Caption).ToList();
 
             if (taskErrors.Any())
             {

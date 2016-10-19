@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -17,13 +17,18 @@ namespace XSharp.Build
 
     internal class XSharpCommandLineBuilder : CommandLineBuilderExtension
     {
-        internal XSharpCommandLineBuilder() : base()
+        bool fNewLine = false;
+        internal XSharpCommandLineBuilder(bool fWithNewLine) : base()
         {
+            fNewLine = fWithNewLine;
         }
 
-        private void AppendNewLine()
+        internal void AppendNewLine()
         {
-            //this.AppendTextUnquoted("\n");
+            if (fNewLine)
+            {
+                base.AppendTextUnquoted("\n");
+            }
         }
         public new void AppendSwitch(string switchName)
         {
@@ -42,6 +47,15 @@ namespace XSharp.Build
                 this.AppendNewLine();
             }
         }
+        public new void AppendSwitchIfNotNull(string switchName, ITaskItem parameter)
+        {
+            if (parameter != null && switchName != null)
+            {
+                base.AppendSwitchIfNotNull(switchName, parameter);
+                this.AppendNewLine();
+            }
+        }
+
         /// <summary>
         /// Set a boolean switch only if its value exists.
         /// </summary>
@@ -54,7 +68,6 @@ namespace XSharp.Build
                 bool value = (bool)obj;
                 // Do not quote - or + as they are part of the switch
                 this.AppendSwitchUnquotedIfNotNull(switchName, (value ? "+" : "-"));
-                this.AppendNewLine();
             }
         }
 
@@ -69,6 +82,14 @@ namespace XSharp.Build
             {
                 bool value = (bool)obj;
                 AppendSwitchUnquotedIfNotNull(switchName, (value ? choice1 : choice2));
+                this.AppendNewLine();
+            }
+        }
+        public new void AppendTextUnquoted(string text)
+        {
+            if (!String.IsNullOrEmpty(text))
+            {
+                base.AppendTextUnquoted(text);
                 this.AppendNewLine();
             }
         }
@@ -132,7 +153,7 @@ namespace XSharp.Build
             this.AppendSwitchUnquotedIfNotNull(switchName, alias + "=");
             this.AppendTextWithQuoting(parameter);
             this.AppendNewLine();
-        } 
+        }
 
         /// <summary>
         /// Adds a nested switch, used by SGen.exe.  For example:
@@ -158,6 +179,16 @@ namespace XSharp.Build
             return quotedText.ToString();
         }
 
+        public new void AppendSwitchUnquotedIfNotNull(string switchName, string parameter)
+        {
+            base.AppendSwitchUnquotedIfNotNull(switchName, parameter);
+            this.AppendNewLine();
+        }
+        public new void AppendSwitchIfNotNull(string switchName, string[] parameters, string delimiter)
+        {
+            base.AppendSwitchIfNotNull(switchName, parameters, delimiter);
+            this.AppendNewLine();
+        }
 
         /// <summary>
         /// Appends a command-line switch that takes a compound string parameter. The parameter is built up from the item-spec and
@@ -174,11 +205,11 @@ namespace XSharp.Build
         ///
         ///      /embed[resource]:&lt;filename>[,&lt;name>[,Private]]
         ///      /link[resource]:&lt;filename>[,&lt;name>[,Private]]
-        /// 
+        ///
         /// Where the last flag--Private--is either present or not present
         /// depending on whether the ITaskItem has a Private="True" attribute.
         /// </summary>
-        public void AppendSwitchIfNotNull(string switchName, 
+        public void AppendSwitchIfNotNull(string switchName,
             ITaskItem[] parameters, string[] metadataNames, bool[] treatAsFlags)      // May be null. In this case no metadata are treated as flags.
 
         {

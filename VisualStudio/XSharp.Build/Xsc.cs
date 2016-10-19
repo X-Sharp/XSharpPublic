@@ -427,7 +427,7 @@ namespace XSharp.Build
 
         protected override string GenerateCommandLineCommands()
         {
-            var commandLine = new XSharpCommandLineBuilder();
+            var commandLine = new XSharpCommandLineBuilder(false);
             commandLine.AppendWhenTrue("/noconfig", base.Bag, nameof(NoConfig));
             commandLine.AppendWhenTrue("/shared", base.Bag, nameof(UseSharedCompilation));
             return commandLine.ToString();
@@ -540,7 +540,7 @@ namespace XSharp.Build
                 string aliasString = reference.GetMetadata("Aliases");
 
 
-                string switchName = "\n/reference:";
+                string switchName = "/reference:";
                 if (!isInteractive)
                 {
                     bool embed = Utilities.TryConvertItemMetadataToBool(reference,
@@ -548,7 +548,7 @@ namespace XSharp.Build
 
                     if (embed)
                     {
-                        switchName = "\n/link:";
+                        switchName = "/link:";
                     }
                 }
                 if (string.IsNullOrEmpty(aliasString))
@@ -611,35 +611,35 @@ namespace XSharp.Build
 
             if (NS)     // Add Default Namespace
             {
-                commandline.AppendSwitch("\n/ns:" + this.RootNameSpace);
+                commandline.AppendSwitch("/ns:" + this.RootNameSpace);
             }
-            commandline.AppendPlusOrMinusSwitch("\n/az", base.Bag, nameof(AZ));
+            commandline.AppendPlusOrMinusSwitch("/az", base.Bag, nameof(AZ));
             //commandline.AppendPlusOrMinusSwitch("/cs", base.Bag, nameof(CS));
-            commandline.AppendPlusOrMinusSwitch("\n/ins", base.Bag, nameof(INS));
-            commandline.AppendPlusOrMinusSwitch("\n/lb", base.Bag, nameof(LB));
-            commandline.AppendPlusOrMinusSwitch("\n/ovf", base.Bag, nameof(OVF));
-            //commandline.AppendPlusOrMinusSwitch("\n/ppo", base.Bag, nameof(PPO));
-            //commandline.AppendPlusOrMinusSwitch("\n/vo1", base.Bag, nameof(VO1));
-            commandline.AppendPlusOrMinusSwitch("\n/vo2", base.Bag, nameof(VO2));
-            commandline.AppendPlusOrMinusSwitch("\n/vo3", base.Bag, nameof(VO3));
-            commandline.AppendPlusOrMinusSwitch("\n/vo4", base.Bag, nameof(VO4));
-            commandline.AppendPlusOrMinusSwitch("\n/vo5", base.Bag, nameof(VO5));
-            //commandline.AppendPlusOrMinusSwitch("\n/vo6", base.Bag, nameof(VO6));
-            //commandline.AppendPlusOrMinusSwitch("\n/vo7", base.Bag, nameof(VO7));
-            commandline.AppendPlusOrMinusSwitch("\n/vo8", base.Bag, nameof(VO8));
-            commandline.AppendPlusOrMinusSwitch("\n/vo9", base.Bag, nameof(VO9));
-            commandline.AppendPlusOrMinusSwitch("\n/vo10", base.Bag, nameof(VO10));
+            commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
+            commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
+            commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
+            //commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
+            //commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
+            commandline.AppendPlusOrMinusSwitch("/vo2", base.Bag, nameof(VO2));
+            commandline.AppendPlusOrMinusSwitch("/vo3", base.Bag, nameof(VO3));
+            commandline.AppendPlusOrMinusSwitch("/vo4", base.Bag, nameof(VO4));
+            commandline.AppendPlusOrMinusSwitch("/vo5", base.Bag, nameof(VO5));
+            //commandline.AppendPlusOrMinusSwitch("/vo6", base.Bag, nameof(VO6));
+            //commandline.AppendPlusOrMinusSwitch("/vo7", base.Bag, nameof(VO7));
+            commandline.AppendPlusOrMinusSwitch("/vo8", base.Bag, nameof(VO8));
+            commandline.AppendPlusOrMinusSwitch("/vo9", base.Bag, nameof(VO9));
+            commandline.AppendPlusOrMinusSwitch("/vo10", base.Bag, nameof(VO10));
             //commandline.AppendPlusOrMinusSwitch("/vo11", base.Bag, nameof(VO11));
-            commandline.AppendPlusOrMinusSwitch("\n/vo12", base.Bag, nameof(VO12));
-            commandline.AppendPlusOrMinusSwitch("\n/vo13", base.Bag, nameof(VO13));
-            commandline.AppendPlusOrMinusSwitch("\n/vo14", base.Bag, nameof(VO14));
-            commandline.AppendPlusOrMinusSwitch("\n/vo15", base.Bag, nameof(VO15));
-            commandline.AppendPlusOrMinusSwitch("\n/vo16", base.Bag, nameof(VO16));
+            commandline.AppendPlusOrMinusSwitch("/vo12", base.Bag, nameof(VO12));
+            commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
+            commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
+            commandline.AppendPlusOrMinusSwitch("/vo15", base.Bag, nameof(VO15));
+            commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
             if (!String.IsNullOrEmpty(this.CommandLineOption))
             {
-                commandline.AppendTextUnquoted("\n" + this.CommandLineOption);
+                commandline.AppendTextUnquoted( this.CommandLineOption);
             }
             if (this.IncludePaths?.Length > 0)
             {
@@ -650,7 +650,7 @@ namespace XSharp.Build
                         sb.Append(';');
                     sb.Append(s);
                 }
-                commandline.AppendTextUnquoted("\n/i:\"" + sb.ToString() + "\"");
+                commandline.AppendTextUnquoted("/i:\"" + sb.ToString() + "\"");
             }
         }
 
@@ -660,28 +660,28 @@ namespace XSharp.Build
         /// <param name="commandLine"></param>
         internal void AddCscCompilerCommands(XSharpCommandLineBuilder commandLine)
         {
-            commandLine.AppendSwitchIfNotNull("\n/lib:", AdditionalLibPaths, ",");
-            commandLine.AppendPlusOrMinusSwitch("\n/unsafe", base.Bag, nameof(AllowUnsafeBlocks));
-            commandLine.AppendPlusOrMinusSwitch("\n/checked", base.Bag, nameof(CheckForOverflowUnderflow));
-            commandLine.AppendSwitchWithSplitting("\n/nowarn:", DisabledWarnings, ",", ';', ',');
+            commandLine.AppendSwitchIfNotNull("/lib:", AdditionalLibPaths, ",");
+            commandLine.AppendPlusOrMinusSwitch("/unsafe", base.Bag, nameof(AllowUnsafeBlocks));
+            commandLine.AppendPlusOrMinusSwitch("/checked", base.Bag, nameof(CheckForOverflowUnderflow));
+            commandLine.AppendSwitchWithSplitting("/nowarn:", DisabledWarnings, ",", ';', ',');
             //commandLine.AppendWhenTrue("/fullpaths", base.Bag, nameof(GenerateFullPaths));
-            commandLine.AppendSwitch("\n/fullpaths");
-            commandLine.AppendSwitchIfNotNull("\n/langversion:", LangVersion);
-            commandLine.AppendSwitchIfNotNull("\n/moduleassemblyname:", ModuleAssemblyName);
-            commandLine.AppendSwitchIfNotNull("\n/pdb:", PdbFile);
-            commandLine.AppendPlusOrMinusSwitch("\n/nostdlib", base.Bag, nameof(NoStandardLib));
-            commandLine.AppendSwitchIfNotNull("\n/platform:", Platform);
-            commandLine.AppendSwitchIfNotNull("\n/errorreport:", ErrorReport);
-            commandLine.AppendSwitchWithInteger("\n/warn:", base.Bag, nameof(WarningLevel));
+            commandLine.AppendSwitch("/fullpaths");
+            commandLine.AppendSwitchIfNotNull("/langversion:", LangVersion);
+            commandLine.AppendSwitchIfNotNull("/moduleassemblyname:", ModuleAssemblyName);
+            commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);
+            commandLine.AppendPlusOrMinusSwitch("/nostdlib", base.Bag, nameof(NoStandardLib));
+            commandLine.AppendSwitchIfNotNull("/platform:", Platform);
+            commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
+            commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));
             //commandLine.AppendSwitchIfNotNull("/doc:", DocumentationFile);
-            commandLine.AppendSwitchIfNotNull("\n/baseaddress:", BaseAddress);
-            commandLine.AppendSwitchUnquotedIfNotNull("\n/define:", Utilities.GetDefineConstantsSwitch(DefineConstants, Log));
-            commandLine.AppendSwitchIfNotNull("\n/win32res:", Win32Resource);
-            commandLine.AppendSwitchIfNotNull("\n/main:", MainEntryPoint);
-            commandLine.AppendSwitchIfNotNull("\n/appconfig:", ApplicationConfiguration);
-            commandLine.AppendWhenTrue("\n/errorendlocation", base.Bag, nameof(ErrorEndLocation));
-            commandLine.AppendSwitchIfNotNull("\n/preferreduilang:", PreferredUILang);
-            commandLine.AppendPlusOrMinusSwitch("\n/highentropyva", base.Bag, nameof(HighEntropyVA));
+            commandLine.AppendSwitchIfNotNull("/baseaddress:", BaseAddress);
+            commandLine.AppendSwitchUnquotedIfNotNull("/define:", Utilities.GetDefineConstantsSwitch(DefineConstants, Log));
+            commandLine.AppendSwitchIfNotNull("/win32res:", Win32Resource);
+            commandLine.AppendSwitchIfNotNull("/main:", MainEntryPoint);
+            commandLine.AppendSwitchIfNotNull("/appconfig:", ApplicationConfiguration);
+            commandLine.AppendWhenTrue("/errorendlocation", base.Bag, nameof(ErrorEndLocation));
+            commandLine.AppendSwitchIfNotNull("/preferreduilang:", PreferredUILang);
+            commandLine.AppendPlusOrMinusSwitch("/highentropyva", base.Bag, nameof(HighEntropyVA));
             //// If not design time build and the globalSessionGuid property was set then add a -globalsessionguid:<guid>
             //bool designTime = false;
             //if (HostObject != null)
@@ -762,7 +762,7 @@ namespace XSharp.Build
 
             foreach (ITaskItem analyzer in analyzers)
             {
-                commandLine.AppendSwitchIfNotNull("\n/analyzer:", analyzer.ItemSpec);
+                commandLine.AppendSwitchIfNotNull("/analyzer:", analyzer.ItemSpec);
             }
         }
 
@@ -781,7 +781,7 @@ namespace XSharp.Build
 
             foreach (ITaskItem additionalFile in AdditionalFiles)
             {
-                commandLine.AppendSwitchIfNotNull("\n/additionalfile:", additionalFile.ItemSpec);
+                commandLine.AppendSwitchIfNotNull("/additionalfile:", additionalFile.ItemSpec);
             }
         }
 
@@ -864,8 +864,8 @@ namespace XSharp.Build
                     OutputAssembly.ItemSpec += ".exe";
                 }
             }
-            commandLine.AppendSwitchIfNotNull("\n/addmodule:", AddModules, ",");
-            commandLine.AppendSwitchWithInteger("\n/codepage:", base.Bag, nameof(CodePage));
+            commandLine.AppendSwitchIfNotNull("/addmodule:", AddModules, ",");
+            commandLine.AppendSwitchWithInteger("/codepage:", base.Bag, nameof(CodePage));
 
             ConfigureDebugProperties();
 
@@ -873,40 +873,41 @@ namespace XSharp.Build
             // because it's more specific.  Order matters on the command-line, and the last one wins.
             // /debug+ is just a shorthand for /debug:full.  And /debug- is just a shorthand for /debug:none.
 
-            commandLine.AppendPlusOrMinusSwitch("\n/debug", base.Bag, nameof(EmitDebugInformation));
-            commandLine.AppendSwitchIfNotNull("\n/debug:", DebugType);
+            commandLine.AppendPlusOrMinusSwitch("/debug", base.Bag, nameof(EmitDebugInformation));
+            commandLine.AppendSwitchIfNotNull("/debug:", DebugType);
 
-            commandLine.AppendPlusOrMinusSwitch("\n/delaysign", base.Bag, nameof(DelaySign));
+            commandLine.AppendPlusOrMinusSwitch("/delaysign", base.Bag, nameof(DelaySign));
 
-            commandLine.AppendSwitchWithInteger("\n/filealign:", base.Bag, nameof(FileAlignment));
-            commandLine.AppendSwitchIfNotNull("\n/keycontainer:", KeyContainer);
-            commandLine.AppendSwitchIfNotNull("\n/keyfile:", KeyFile);
+            commandLine.AppendSwitchWithInteger("/filealign:", base.Bag, nameof(FileAlignment));
+            commandLine.AppendSwitchIfNotNull("/keycontainer:", KeyContainer);
+            commandLine.AppendSwitchIfNotNull("/keyfile:", KeyFile);
             // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
-            commandLine.AppendSwitchIfNotNull("\n/linkresource:", LinkResources, new string[] { "LogicalName", "Access" });
-            commandLine.AppendWhenTrue("\n/nologo", base.Bag, nameof(NoLogo));
-            commandLine.AppendWhenTrue("\n/nowin32manifest", base.Bag, nameof(NoWin32Manifest));
-            commandLine.AppendPlusOrMinusSwitch("\n/optimize", base.Bag, nameof(Optimize));
-            commandLine.AppendPlusOrMinusSwitch("\n/deterministic", base.Bag, nameof(Deterministic));
-            commandLine.AppendSwitchIfNotNull("\n/pathmap:", PathMap);
-            commandLine.AppendSwitchIfNotNull("\n/out:", OutputAssembly);
-            commandLine.AppendSwitchIfNotNull("\n/ruleset:", CodeAnalysisRuleSet);
-            commandLine.AppendSwitchIfNotNull("\n/errorlog:", ErrorLog);
-            commandLine.AppendSwitchIfNotNull("\n/subsystemversion:", SubsystemVersion);
+            commandLine.AppendSwitchIfNotNull("/linkresource:", LinkResources, new string[] { "LogicalName", "Access" });
+            commandLine.AppendWhenTrue("/nologo", base.Bag, nameof(NoLogo));
+            commandLine.AppendWhenTrue("/nowin32manifest", base.Bag, nameof(NoWin32Manifest));
+            commandLine.AppendPlusOrMinusSwitch("/optimize", base.Bag, nameof(Optimize));
+            commandLine.AppendPlusOrMinusSwitch("/deterministic", base.Bag, nameof(Deterministic));
+            commandLine.AppendSwitchIfNotNull("/pathmap:", PathMap);
+            commandLine.AppendSwitchIfNotNull("/out:", OutputAssembly);
+            commandLine.AppendSwitchIfNotNull("/ruleset:", CodeAnalysisRuleSet);
+            commandLine.AppendSwitchIfNotNull("/errorlog:", ErrorLog);
+            commandLine.AppendSwitchIfNotNull("/subsystemversion:", SubsystemVersion);
             commandLine.AppendWhenTrue("/reportanalyzer", base.Bag, nameof(ReportAnalyzer));
             // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
-            commandLine.AppendSwitchIfNotNull("\n/resource:", Resources, new string[] { "LogicalName", "Access" });
-            commandLine.AppendSwitchIfNotNull("\n/target:", TargetType);
-            commandLine.AppendWhenTrue("\n/warnaserror", base.Bag, nameof(TreatWarningsAsErrors));
-            commandLine.AppendWhenTrue("\n/utf8output", base.Bag, nameof(Utf8Output));
-            commandLine.AppendSwitchIfNotNull("\n/win32icon:", Win32Icon);
-            commandLine.AppendSwitchIfNotNull("\n/win32manifest:", Win32Manifest);
+            commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
+            commandLine.AppendSwitchIfNotNull("/target:", TargetType);
+            commandLine.AppendPlusOrMinusSwitch("/warnaserror", base.Bag, nameof(TreatWarningsAsErrors));
+            commandLine.AppendWhenTrue("/utf8output", base.Bag, nameof(Utf8Output));
+            commandLine.AppendSwitchIfNotNull("/win32icon:", Win32Icon);
+            commandLine.AppendSwitchIfNotNull("/win32manifest:", Win32Manifest);
 
             AddFeatures(commandLine, Features);
             AddAnalyzersToCommandLine(commandLine, Analyzers);
             AddAdditionalFilesToCommandLine(commandLine);
 
             // Append the sources.
-            commandLine.AppendFileNamesIfNotNull(Sources, "\n");
+            commandLine.AppendFileNamesIfNotNull(Sources, "\n ");
+            commandLine.AppendNewLine();
 
         }
         protected void AddResponseFileCommandsImpl(CommandLineBuilderExtension cmdline)
@@ -915,7 +916,7 @@ namespace XSharp.Build
             // The managed compiler command line options are called from the cscCompiler options
             if (this.Dialect?.Length > 0)
             {
-                cmdline.AppendTextUnquoted("\n/dialect:" + this.Dialect);
+                cmdline.AppendTextUnquoted("/dialect:" + this.Dialect);
             }
             AddCscCompilerCommands(commandLine);
             AddVOCompatibilityCommands(commandLine);
@@ -924,7 +925,7 @@ namespace XSharp.Build
 
         protected override string GenerateResponseFileCommands()
         {
-            CommandLineBuilderExtension commandLine = new XSharpCommandLineBuilder();
+            CommandLineBuilderExtension commandLine = new XSharpCommandLineBuilder(true);
             this.AddResponseFileCommands(commandLine);
             return commandLine.ToString();
         }

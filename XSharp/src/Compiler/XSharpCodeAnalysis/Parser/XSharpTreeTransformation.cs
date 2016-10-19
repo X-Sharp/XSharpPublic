@@ -900,6 +900,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
         }
 
+        protected ExpressionSyntax MakeDefault(TypeSyntax type)
+        {
+            if (type is PredefinedTypeSyntax && ((PredefinedTypeSyntax) type).Keyword.Kind == SyntaxKind.StringKeyword)
+            {
+                return GenerateLiteral("");
+            }
+            else
+            {
+                return _syntaxFactory.DefaultExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    type,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
+        }
+
+
 
         protected MemberDeclarationSyntax AddNameSpaceToMember(XP.NameDotContext ns, MemberDeclarationSyntax m)
         {
@@ -2133,6 +2150,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Initializer != null)
             {
                 context.Initializer.SetSequencePoint();
+            }
+            if (initExpr == null && _options.VOInitializeVariables)
+            {
+                var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
+                initExpr = MakeDefault(varType);
             }
             context.Put(GenerateVariable(context.Id.Get<SyntaxToken>(),initExpr));
         }
@@ -3447,6 +3469,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         null);
                 }
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
+            }
+            else
+            {
+                if (initExpr == null && _options.VOInitializeVariables)
+                {
+                    initExpr = MakeDefault(varType);
+                }
             }
             varType.XVoDecl = true;
             if (context.As?.Type == XP.IS)

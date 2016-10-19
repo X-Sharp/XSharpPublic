@@ -8985,13 +8985,13 @@ namespace LanguageService.CodeAnalysis {
         ///                              X# Compiler Options
         ///
         ///                        - OUTPUT FILES -
-        /// /out:&lt;file&gt;                   Specify output file name (default: base name of 
+        /// /out:&lt;file&gt;                   Specify output file name (default: base name of
         ///                               file with main class or first file)
-        /// /target:exe                   Build a console executable (default) (Short 
+        /// /target:exe                   Build a console executable (default) (Short
         ///                               form: /t:exe)
-        /// /target:winexe                Build a Windows executable (Short form: 
+        /// /target:winexe                Build a Windows executable (Short form:
         ///                               /t:winexe)
-        /// /target:library            [rest of string was truncated]&quot;;.
+        /// /target:library               [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string IDS_CSCHelp {
             get {
@@ -11232,7 +11232,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Narrowing conversion from &apos;{0}&apos; to &apos;{1}&apos; may lead to loss of data or overlow errors.
+        ///   Looks up a localized string similar to Narrowing conversion from &apos;{0}&apos; to &apos;{1}&apos; may lead to loss of data or overflow errors.
         /// </summary>
         internal static string WRN_ConversionMayLeadToLossOfData {
             get {
@@ -12797,7 +12797,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Signed/unsigned conversions from &apos;{0}&apos; to &apos;{1}&apos; may leed to loss of data or overlow errors.
+        ///   Looks up a localized string similar to Signed/unsigned conversions from &apos;{0}&apos; to &apos;{1}&apos; may lead to loss of data or overflow errors.
         /// </summary>
         internal static string WRN_SignedUnSignedConversion {
             get {

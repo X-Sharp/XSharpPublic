@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 //#define DUMP_UDC
@@ -169,7 +169,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 options.VOClipperIntegerDivisions, // vo12
                                 options.VOStringComparisons, // vo13
                                 options.VOFloatConstants, // vo14
-                                options.VOUntypedAllowed // vo15
+                                options.VOUntypedAllowed, // vo15
+                                options.VOInitializeVariables // vo16
             };
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
             {
@@ -548,7 +549,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private bool IsDefined(string define)
         {
             // Handle /VO8 compiler option:
-            // When /VO8 is active and the variable is defined and has a value of FALSE or a numeric value = 0 
+            // When /VO8 is active and the variable is defined and has a value of FALSE or a numeric value = 0
             // Then #ifdef is FALSE
             // otherwise #ifdef is TRUE
             // and when there is more than one token, then #ifdef is also TRUE
@@ -853,7 +854,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                         break;
-                    case XSharpLexer.PP_COMMAND: 
+                    case XSharpLexer.PP_COMMAND:
                     case XSharpLexer.PP_TRANSLATE:
                         addRule(nextType);
                         break;

@@ -10,14 +10,14 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 lexer grammar XSharpLexer;
 
 /*
  * Lexer Rules
-*/ 
+*/
 
 @lexer::members
 {
@@ -298,12 +298,12 @@ lexer grammar XSharpLexer;
 					{
 						_textSb.Append((char)c);	// >
 						InputStream.Consume();
-						c = InputStream.La(1);		
-						_textSb.Append((char)c);	// = 
+						c = InputStream.La(1);
+						_textSb.Append((char)c);	// =
 						InputStream.Consume();
 						_type = ASSIGN_RSHIFT;
 						InputStream.Consume();
-					} 
+					}
 					else if (c == '=') {
 						_type = GTE;
 						_textSb.Append((char)c);
@@ -508,25 +508,25 @@ lexer grammar XSharpLexer;
 						c = InputStream.La(1);
 					}
 					break;
-				case 'e':           
-                case 'E': 
+				case 'e':
+                case 'E':
 					if (InputStream.La(2) == '"') // escaped string
-					{ 
+					{
 						break;
 					}
 					if ((InputStream.La(2) == 'i' ||  InputStream.La(2) == 'I') && InputStream.La(3) == '"') // interpolated escaped string
-					{ 
+					{
 						break;
 					}
                     goto case 'a';
-				case 'i':           
-                case 'I':           
+				case 'i':
+                case 'I':
 					if (InputStream.La(2) == '"') // interpolated string
-					{ 
+					{
 						break;
 					}
 					if ((InputStream.La(2) == 'e' ||  InputStream.La(2) == 'E') && InputStream.La(3) == '"') // interpolated escaped string
-					{ 
+					{
 						break;
 					}
                     goto case 'a';
@@ -640,7 +640,7 @@ lexer grammar XSharpLexer;
 
 	System.Collections.Generic.Dictionary<string,int> _kwIds;
 
-	System.Collections.Generic.Dictionary<string,int> kwIds { 
+	System.Collections.Generic.Dictionary<string,int> kwIds {
 		get {
 			if (_kwIds == null) {
 				_kwIds = new System.Collections.Generic.Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
@@ -914,6 +914,7 @@ lexer grammar XSharpLexer;
 					{"__VO13__", MACRO},
 					{"__VO14__", MACRO},
 					{"__VO15__", MACRO},
+                    {"__VO16__", MACRO},
 					{"__WINDIR__", MACRO},
 					{"__WINDRIVE__", MACRO},
 					{"__XSHARP__", MACRO},
@@ -930,7 +931,7 @@ lexer grammar XSharpLexer;
 
 	System.Collections.Generic.Dictionary<string,int> _symIds;
 
-	System.Collections.Generic.Dictionary<string,int> symIds { 
+	System.Collections.Generic.Dictionary<string,int> symIds {
 		get {
 			if (_symIds == null) {
 				_symIds = new System.Collections.Generic.Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
@@ -939,7 +940,7 @@ lexer grammar XSharpLexer;
 				{
 					{"#PRAGMA", PRAGMA},
 					{"#USING", HASHUSING},
-					{"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>  
+					{"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>
 					{"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
 					{"#ELSE", PP_ELSE},				// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
 					{"#ENDIF", PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
@@ -950,7 +951,7 @@ lexer grammar XSharpLexer;
 					{"#INCLUDE", PP_INCLUDE},		// #include "<headerfilename>"
 					{"#LINE", PP_LINE},				// #line <number> [FileName] or #line default
 					{"#REGION", PP_REGION},			// #region [description]sourceCode#endregion
-					{"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern> 
+					{"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
 					{"#UNDEF", PP_UNDEF},			// #undef <identifier>
 					{"#WARNING", PP_WARNING},		// #warning [warningMessage]
 					{"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
@@ -967,14 +968,14 @@ lexer grammar XSharpLexer;
 	}
 }
 
-options	{ 
-			language=CSharp; 
+options	{
+			language=CSharp;
 		}
 
 
 
 channels {
-XMLDOC, 
+XMLDOC,
 DEFOUT,
 PREPROCESSOR
 }
@@ -987,7 +988,7 @@ tokens {
 // New (Vulcan) Keywords only full names
 //
 FIRST_KEYWORD,
-ACCESS,ALIGN,AS,ASSIGN,BEGIN,BREAK,CASE,CAST,CLASS,CLIPPER,DEFINE,DIM,DLL,DO,DOWNTO,ELSE,ELSEIF,END,ENDCASE,ENDDO,ENDIF,EXIT,EXPORT,FASTCALL,FIELD,FIELD_, 
+ACCESS,ALIGN,AS,ASSIGN,BEGIN,BREAK,CASE,CAST,CLASS,CLIPPER,DEFINE,DIM,DLL,DO,DOWNTO,ELSE,ELSEIF,END,ENDCASE,ENDDO,ENDIF,EXIT,EXPORT,FASTCALL,FIELD,FIELD_,
 FIELD,FOR,FUNCTION,FUNCTION,GLOBAL,HIDDEN,IF,IIF,INHERIT,INIT1,INIT2,INIT3,INSTANCE,IS,LOCAL,LOOP,MEMBER,MEMVAR,METHOD,NAMEOF,NEXT,OTHERWISE,PARAMETERS,PASCAL,
 PRIVATE,PROCEDURE,PROTECTED,PUBLIC,RECOVER,RETURN,SELF,SEQUENCE,SIZEOF,SIZEOF,STATIC,STEP,STRICT,SUPER,THISCALL,TO,TYPEOF,UNION,
 UPTO,USING,WHILE,
@@ -1008,7 +1009,7 @@ PUSH, POP,	// Pragma push & pop
 // New XSharp Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
 //
-ADD, ASCENDING,ASSEMBLY,ASYNC,AWAIT,BY,CHECKED,DESCENDING,EQUALS,EXTERN,FIXED,FROM,GROUP,INTO,JOIN,LET,NOP,MODULE,ORDERBY,OVERRIDE,PARAMS, 
+ADD, ASCENDING,ASSEMBLY,ASYNC,AWAIT,BY,CHECKED,DESCENDING,EQUALS,EXTERN,FIXED,FROM,GROUP,INTO,JOIN,LET,NOP,MODULE,ORDERBY,OVERRIDE,PARAMS,
 REMOVE,SELECT,SWITCH, UNCHECKED,UNSAFE,VAR,VOLATILE,WHERE,YIELD,
 
 
@@ -1063,7 +1064,7 @@ FALSE_CONST,TRUE_CONST,
 LOGIC_AND,LOGIC_OR,LOGIC_NOT,LOGIC_XOR,
 
 // Symbols
-LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,COLONCOLON,BACKSLASH, 
+LPAREN,RPAREN,LCURLY,RCURLY,LBRKT,RBRKT,COLON,COMMA,PIPE,AMP,ADDROF,ALIAS,DOT,COLONCOLON,BACKSLASH,
 
 LAST_OPERATOR,
 
@@ -1107,7 +1108,7 @@ BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
 INT_CONST	:  ( DIGIT )+ ( U | L )? ;
 DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? '.' DIGIT ( DIGIT )? '.' DIGIT ( DIGIT )?;			// 2015.07.15
 REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-' )? ( DIGIT )+ )? ( S | D )? // normal, exponential with optional Single or Double specifier
-            | ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) M // decimals cannot have exponential notation                            
+            | ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) M // decimals cannot have exponential notation
             ;
 
 // Preprocessor symbols are in the handwritten part above as well as #pragma and #using
@@ -1133,14 +1134,14 @@ ESCAPED_STRING_CONST
 			: E '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
 			;
 
-// When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character                            
+// When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character
 LINE_CONT   :   SEMI (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')             ->channel(HIDDEN)
             ;
 
 LINE_CONT_OLD: {_OldComment}? SEMI (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
             ;
 
-SEMI		: ';' 
+SEMI		: ';'
 			;
 
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
@@ -1155,14 +1156,14 @@ SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 			;
 
 
-ML_COMMENT  : ('/' '*' .*? '*' '/'	
+ML_COMMENT  : ('/' '*' .*? '*' '/'
 			| '/' '*' .*? EOF		// TODO: Generate an error 'missing End of Comment'
 			)	-> channel(HIDDEN)
 			;
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 
-ID						: ID_PART 
+ID						: ID_PART
 						;
 
 KWID					: '@' '@' ID_PART // {Text = Text.Substring(2, Text.Length-2);}
@@ -1182,7 +1183,7 @@ ESCAPED_CHARACTER       : ~( '\'' | '\\' | '\r' | '\n' )		// this differs from t
 
 fragment
 ESCAPED_STRING_CHARACTER: ~( '\"' | '\\' | '\r' | '\n' )		// this differs from the ESCAPED_CHARACTER rule because this has a double quote and not a single quote
-						| SIMPLE_ESCAPE_SEQUENCE 
+						| SIMPLE_ESCAPE_SEQUENCE
 						| HEX_ESCAPE_SEQUENCE
 						| UNICODE_ESCAPE_SEQUENCE
 						;

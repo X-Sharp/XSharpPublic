@@ -1074,6 +1074,116 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(result);
         }
 
+        private int[] DecodeDateConst(string dateliteral)
+        {
+            var args = dateliteral.Split('.');
+            if (args.Length == 3)
+            {
+                int year, month, day;
+                if (Int32.TryParse(args[0], out year) &&
+                    Int32.TryParse(args[1], out month) &&
+                    Int32.TryParse(args[2], out day))
+                {
+                    return new int[] { year, month, day};
+                }
+            }
+            return null;
+        }
+
+        private AttributeSyntax MakeDefaultParameter(ExpressionSyntax arg1, ExpressionSyntax arg2 )
+        {
+            var args = MakeSeparatedList(
+                        _syntaxFactory.AttributeArgument(null, null, arg1),
+                        _syntaxFactory.AttributeArgument(null, null, arg2)
+                        );
+            var arglist = _syntaxFactory.AttributeArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    args,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+
+            var attr = _syntaxFactory.Attribute(GenerateQualifiedName("global::Vulcan.Internal.DefaultParameterValueAttribute"), arglist);
+            return attr;
+        }
+        private AttributeSyntax EncodeVulcanDefaultParameter(XP.ExpressionContext initexpr )
+        {
+            if (initexpr is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext) initexpr).Expr is XP.LiteralExpressionContext)
+            {
+                var litexpr = ((XP.PrimaryExpressionContext)initexpr).Expr as XP.LiteralExpressionContext;
+                var token = litexpr.Literal.Token;
+                switch (token.Type)
+                {
+                    case XP.NULL_DATE:
+                        return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(2));               // 2 = Date
+                    case XP.DATE_CONST:
+                        int[] elements = DecodeDateConst(token.Text);
+                        if (elements != null)
+                        {
+                            var dt = new DateTime(elements[0], elements[1], elements[2]);
+                            return MakeDefaultParameter(GenerateLiteral(dt.Ticks), GenerateLiteral(2));    // 2 = Date, value in ticks
+                        }
+                        break;
+                    case XP.SYMBOL_CONST:
+                        var symvalue = litexpr.Literal.Token.Text.Substring(1);
+                        return MakeDefaultParameter(GenerateLiteral(symvalue), GenerateLiteral(3));      // 3 = Symbol, value is a string
+                    case XP.NULL_PSZ:
+                        var nullExpr = SyntaxFactory.LiteralExpression(token.ExpressionKindLiteral(), token.SyntaxLiteralValue(_options));
+                        return MakeDefaultParameter(nullExpr, GenerateLiteral(4));                       // 4 = PSZ, null = empty
+                    case XP.NULL_PTR:
+                        return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(5));            // 5 = IntPtr
+                    default:
+                        return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
+                }
+            }
+            else
+            {
+                var text = initexpr.GetText().ToLower();
+                switch (text)
+                {
+                    case "missing.value":
+                    case "reflection.missing.value":
+                    case "system.reflection.missing.value":
+                    case "global::system.reflection.missing.value":
+                        return MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));                // 1 = Missing.Value
+                }
+            }
+            return null;
+        }
+
+        public override void ExitParameter([NotNull] XP.ParameterContext context)
+        {
+            base.ExitParameter(context);
+            if (context.Default != null)
+            {
+                AttributeSyntax attr = EncodeVulcanDefaultParameter(context.Default);
+                if (attr != null)
+                {
+                    ParameterSyntax par = context.Get<ParameterSyntax>();
+                    var alist = par.AttributeLists;
+                    var id = par.Identifier;
+                    var type = par.Type;
+                    var mod = par.Modifiers;
+                    var attributeLists = _pool.Allocate<AttributeListSyntax>();
+                    foreach (var attrib in alist)
+                    {
+                        attributeLists.Add(attrib);
+                    }
+                    var attrs = _pool.AllocateSeparated<AttributeSyntax>();
+                    attrs.Add(attr);
+
+                    var atlist = _syntaxFactory.AttributeList(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        null,
+                        attrs,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
+                        );
+                    attributeLists.Add(atlist);
+                    _pool.Free(attrs);
+                    context.Put(_syntaxFactory.Parameter(attributeLists, mod, type, id, null));
+                    _pool.Free(attributeLists);
+                }
+            }
+        }
+
         public override void ExitQoutStmt([NotNull] XP.QoutStmtContext context) {
             // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
             // and pass list of expressions as argument
@@ -1533,20 +1643,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             case XP.NULL_DATE:
                 expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
                 break;
-            case XP.DATE_CONST:
-                args = context.Token.Text.Split('.');
-                if (args.Length == 3)
+             case XP.DATE_CONST:
+                int[] elements = DecodeDateConst(context.Token.Text);
+                if (elements != null)
                 {
-                    int year, month, day;
-                    if (Int32.TryParse(args[0], out year) &&
-                        Int32.TryParse(args[1], out month) &&
-                        Int32.TryParse(args[2], out day))
-                    {
-                        arg0 = MakeArgument(GenerateLiteral(args[0], year));
-                        arg1 = MakeArgument(GenerateLiteral(args[1], month));
-                        arg2 = MakeArgument(GenerateLiteral(args[2], day));
-                        expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2), null);
-                    }
+                    arg0 = MakeArgument(GenerateLiteral(elements[0]));
+                    arg1 = MakeArgument(GenerateLiteral(elements[1]));
+                    arg2 = MakeArgument(GenerateLiteral(elements[2]));
+                    expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2), null);
                 }
                 break;
             case XP.SYMBOL_CONST:

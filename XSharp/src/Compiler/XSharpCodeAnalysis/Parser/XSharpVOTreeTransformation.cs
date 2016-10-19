@@ -247,11 +247,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax GenerateNIL()
         {
-            return _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            _usualType,
-                            SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                            GenerateSimpleName("_NIL"));
-
+            return MakeDefault(_usualType);
         }
 
         private void Check4ClipperCC(XP.IEntityContext context,

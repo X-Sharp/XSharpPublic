@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public XSharpSpecificCompilationOptions XSharpSpecificCompilationOptions
         {
-            get 
+            get
             {
                 return options;
             }
@@ -53,10 +53,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             switch (name)
             {
-                case "az":  
+                case "az":
                     options.ArrayZero = positive;
                     break;
-                case "cf":  
+                case "cf":
                     options.CompactFramework = positive;
                     OptionNotImplemented(diagnostics, "cf", "Compiling for Compact Framework");
                     break;
@@ -78,11 +78,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "clr": // CLR
                     OptionNotImplemented(diagnostics, "clr", "Specify CLR version");
                     break;
-                case "cs": 
+                case "cs":
                     options.CaseSensitive = positive;
                     OptionNotImplemented(diagnostics, "cs", "Case Sensitivity");
                     break;
-                case "i":   
+                case "i":
                     if (value == null)
                     {
                         AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), "/i:");
@@ -94,15 +94,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                         options.IncludePaths = string.IsNullOrEmpty(options.IncludePaths) ? value : options.IncludePaths +';' + value;
                     }
                     break;
-                    
-                case "ins": 
+
+                case "ins":
                     options.ImplicitNameSpace = positive;
                     break;
 
-                case "lb":  
+                case "lb":
                     options.LateBinding = positive;
                     break;
-                case "norun":   
+                case "norun":
                     options.NoRun = positive;
                     break;
 
@@ -116,7 +116,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         AddDiagnostic(diagnostics, ErrorCode.ERR_SwitchNeedsString, MessageID.IDS_Text.Localize(), "/ns:");
                     }
                     else
-                    { 
+                    {
                         options.NameSpace = value;
                     }
                     break;
@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "r":
                 case "reference":
                     if (!string.IsNullOrEmpty(value))
-                    { 
+                    {
                         if (value.ToLowerInvariant().Contains("vulcanrtfuncs.dll"))
                             options.VulcanRTFuncsIncluded = true;
                         if (value.ToLowerInvariant().Contains("vulcanrt.dll"))
@@ -184,12 +184,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "vo9":     // Allow missing RETURN
                     options.Vo9 = positive;
                     break;
-                case "vo10":    // Compatible IIF 
+                case "vo10":    // Compatible IIF
                     options.Vo10 = positive;
                     break;
                 case "vo11":    // VO arithmetic conversions
                     options.Vo11 = positive;
-                    OptionNotImplemented(diagnostics, "vo11", "VO compatible artihmetic conversions");
+                    OptionNotImplemented(diagnostics, "vo11", "VO compatible arithmetic conversions");
                     break;
                 case "vo12":    // Clipper integer divisions
                     options.Vo12 = positive;
@@ -202,6 +202,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo15":    // VO Untyped allowed
                     options.Vo15 = positive;
+                    options.ExplicitVO15 = true;
+                    break;
+                case "vo16":    // VO Initialize variables
+                    options.Vo16 = positive;
+                    options.ExplicitVO16 = true;
                     break;
                 case "wx":       // disable warning
                     name = "warnaserror+";
@@ -301,6 +306,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Vo14 = false;
                 }
             }
+            if (newDialect == XSharpDialect.VO)
+            {
+                if (!options.ExplicitVO15)
+                {
+                    options.Vo15 = true;            // Untyped allowed
+                }
+                if (!options.ExplicitVO16)
+                {
+                    options.Vo16 = true;            // Initialize variables to defaults
+                }
+            }
             options.Dialect = newDialect;
         }
 
@@ -308,6 +324,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             AddDiagnostic(diagnostics, ErrorCode.WRN_CompilerOptionNotImplementedYet, option, description);
         }
-        
+
     }
 }

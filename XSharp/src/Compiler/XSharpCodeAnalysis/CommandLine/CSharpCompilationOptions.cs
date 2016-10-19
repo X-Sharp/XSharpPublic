@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
@@ -40,6 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool VOFloatConstants { get; private set; }
         public bool VOImplicitCastsAndConversions { get; private set; }
         public bool VOImplicitSignedUnsignedConversions { get; private set; }
+        //public bool VOInitializeVariables { get; private set; }
         //public bool VoInitAxitMethods { get; private set; }
         //public bool VOPreprocessorBehaviour { get; private set; }
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
@@ -68,11 +69,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //VOPreprocessorBehaviour = opt.Vo8;
                 //VOAllowMissingReturns = opt.Vo9;
                 //VOCompatibleIIF = opt.Vo10;
-                VOArithmeticConversions = opt.Vo11;  
+                VOArithmeticConversions = opt.Vo11;
                 //VOClipperIntegerDivisions = opt.Vo12;
                 VOStringComparisons = opt.Vo13;
                 //VOFloatConstants = opt.Vo14;
                 //VOUntypedAllowed = opt.Vo15;
+                //VOInitializeVariables = opt.Vo16;
                 Dialect = opt.Dialect;
                 LateBinding = opt.LateBinding;
                 CreatingRuntime = opt.CreatingRuntime;
@@ -108,6 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOStringComparisons = opt.VOStringComparisons; // vo13
             //VOFloatConstants = opt.VOFloatConstants; // vo14
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
+            //VOInitializeVariables = opt.VOInitializeVariables; // vo16
         }
     }
 }

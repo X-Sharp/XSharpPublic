@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
@@ -24,11 +24,11 @@ using System.Diagnostics;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
-    /// Represents various options that affect compilation, such as 
+    /// Represents various options that affect compilation, such as
     /// whether to emit an executable or a library, whether to optimize
     /// generated code, and so on.
     /// </summary>
-    public sealed class XSharpSpecificCompilationOptions 
+    public sealed class XSharpSpecificCompilationOptions
     {
         static string _defaultIncludeDir;
         static string _windir;
@@ -79,9 +79,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Vo12 { get; internal set; } = false;
         public bool Vo13{ get; internal set; } = false;
         public bool Vo14 { get; internal set; } = false;
-        public bool Vo15 { get; internal set; } = true;
+        public bool Vo15 { get; internal set; } = false;
+        public bool Vo16 { get; internal set; } = false;
         public bool VulcanRTFuncsIncluded { get; internal set; } = false;
         public bool VulcanRTIncluded { get; internal set; } = false;
         public bool CreatingRuntime { get; internal set; } = false;
+        public bool ExplicitVO15 { get; internal set; } = false;
+        public bool ExplicitVO16 { get; internal set; } = false;
     }
 }

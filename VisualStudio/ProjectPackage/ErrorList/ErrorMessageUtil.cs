@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell.Interop;
 
 
-namespace TaskOutputListener
+namespace XSharp.Project
 {
     public enum MessageSeverity
     {

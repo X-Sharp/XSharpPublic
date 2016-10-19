@@ -3344,9 +3344,7 @@ namespace Microsoft.VisualStudio.Project
                         Marshal.Release(unknown);
                 }
                 // Create the logger
-                var logger = new IDEBuildLogger(output, this.TaskProvider, hierarchy);
-                logger.ErrorString = ErrorString;
-                logger.WarningString = WarningString;
+                var logger = CreateBuildLogger(output, this.TaskProvider, hierarchy);
                 var oldLogger = this.BuildLogger as IDisposable;
                 this.BuildLogger = logger;
                 if (oldLogger != null) {
@@ -3359,6 +3357,13 @@ namespace Microsoft.VisualStudio.Project
             }
         }
 
+        internal virtual IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
+        {
+            var logger = new IDEBuildLogger(output, this.TaskProvider, hierarchy);
+            logger.ErrorString = ErrorString;
+            logger.WarningString = WarningString;
+            return logger;
+        }
         public virtual void SetBuildProject(Microsoft.Build.Evaluation.Project newBuildProject)
         {
             this.buildProject = newBuildProject;

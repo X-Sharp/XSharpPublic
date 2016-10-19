@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.Shell.TableManager;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TaskRunnerExplorer;
 
-namespace TaskOutputListener
+
+namespace XSharp.Project
 {
     /// <summary>
     /// Manages the errors collection and updates the CurrentSnapshot by
@@ -37,9 +37,9 @@ namespace TaskOutputListener
         /// <summary>
         /// Removes all errors for a given task and updates the CurrentSnapshot
         /// </summary>
-        internal void ClearErrors(ITaskRunnerNode task)
+        internal void ClearErrors(XSharpProjectNode project)
         {
-            List<IErrorListItem> taskErrors = _currentErrors.Where(e => IsSameCommand(e.Command, task.Command)).ToList();
+            List<IErrorListItem> taskErrors = null; //  _currentErrors.Where(e => IsSameCommand(e.Command, task.Command)).ToList();
 
             if (taskErrors.Any())
             {
@@ -103,18 +103,18 @@ namespace TaskOutputListener
 
         }
 
-        private bool IsSameCommand(ITaskRunnerCommand command1, ITaskRunnerCommand command2)
-        {
-            if (command1.Args == command2.Args &&
-                command1.Executable == command2.Executable &&
-                command1.Options == command2.Options &&
-                command1.WorkingDirectory == command2.WorkingDirectory)
-            {
-                return true;
-            }
+        //private bool IsSameCommand(ITaskRunnerCommand command1, ITaskRunnerCommand command2)
+        //{
+        //    if (command1.Args == command2.Args &&
+        //        command1.Executable == command2.Executable &&
+        //        command1.Options == command2.Options &&
+        //        command1.WorkingDirectory == command2.WorkingDirectory)
+        //    {
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         #endregion
     }

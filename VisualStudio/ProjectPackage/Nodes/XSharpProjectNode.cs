@@ -23,7 +23,8 @@ using Microsoft.VisualStudio;
 using System.Diagnostics;
 using MSBuild = Microsoft.Build.Evaluation;
 using System.Diagnostics.CodeAnalysis;
-
+using Microsoft.VisualStudio.Shell.TableManager;
+using System.ComponentModel.Composition;
 namespace XSharp.Project
 {
     /// <summary>
@@ -65,6 +66,7 @@ namespace XSharp.Project
         internal static int imageOffset;
         private static ImageList imageList;
         private VSLangProj.VSProject vsProject;
+        IErrorList errorList = null;
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
         #endregion
@@ -92,6 +94,10 @@ namespace XSharp.Project
             // True : New WPF way
             // False: C++-Like Property pages
             this.SupportsProjectDesigner = true;
+
+            object errlist = ((IServiceProvider)this.package).GetService(typeof(SVsErrorList));
+            errorList = (IErrorList)errlist;
+
         }
 
 
@@ -672,9 +678,9 @@ namespace XSharp.Project
         /// <returns>True = items of this type should be included in the project</returns>
         protected override bool IsItemTypeFileType(string type)
         {
-            if (String.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg 
-                || String.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none 
-                || String.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx 
+            if (String.Compare(type, ProjectFileConstants.Compile, StringComparison.OrdinalIgnoreCase) == 0          // prg
+                || String.Compare(type, ProjectFileConstants.None, StringComparison.OrdinalIgnoreCase) == 0          // none
+                || String.Compare(type, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase) == 0  // resx
                 || String.Compare(type, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase) == 0          // xaml page/window
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
                 || String.Compare(type, XSharpProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
@@ -950,7 +956,7 @@ namespace XSharp.Project
         #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
-        // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on 
+        // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
         // the info we know about common SFGs.
         // See for more info ReadMeCodeGen.TXT in the root of the project
         // We could create our own subclass of SingleFileGeneratorFactory and implement GetGeneratorInformation with a fixed table of
@@ -994,5 +1000,34 @@ namespace XSharp.Project
 
         }
         #endregion
+
+
+        #region TableManager
+        //internal ITableManagerProvider tableManagerProvider { get; private set; }
+        ITableManager errorListTableManager;
+        ErrorListProvider errorlistProvider;
+        protected override void SetOutputLogger(IVsOutputWindowPane output)
+        {
+            base.SetOutputLogger(output);
+
+        }
+        internal override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
+        {
+            var logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
+            logger.ProjectNode = this;
+            logger.ErrorString = ErrorString;
+            logger.WarningString = WarningString;
+            if (errorListTableManager == null)
+            {
+                errorListTableManager = errorList.TableControl.Manager;
+                errorlistProvider = new ErrorListProvider(errorListTableManager);
+            }
+            logger.ErrorlistProvider = errorlistProvider;
+            return logger;
+        }
+
     }
-}
+
+        #endregion
+    }
+

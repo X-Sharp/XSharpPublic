@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Shell.TableManager;
 using System.Collections.Generic;
 
 
-namespace TaskOutputListener
+namespace XSharp.Project
 {
     internal class OutputErrorSnapshot : WpfTableEntriesSnapshotBase
     {
@@ -68,6 +68,9 @@ namespace TaskOutputListener
                     case StandardTableKeyNames.ErrorSeverity:
                         content = ErrorMessageUtil.ToVSERRORCATEGORY(error.Severity);
                         return true;
+                    case StandardTableKeyNames.ErrorCategory:
+                        content = error.ErrorCategory;
+                        return true;
                     case StandardTableKeyNames.TaskCategory:
                         content = VSTASKCATEGORY.CAT_BUILDCOMPILE;
                         return true;
@@ -78,7 +81,7 @@ namespace TaskOutputListener
                         content = error.ErrorCode;
                         return true;
                     case StandardTableKeyNames.BuildTool:
-                        content = Vsix.Name;
+                        content = Constants.Product;
                         return true;
                 }
             }

@@ -431,7 +431,7 @@ namespace Microsoft.VisualStudio.Project
                 base.OnNavigate(e);
             }
         }
-        protected void QueueTaskEvent(BuildEventArgs errorEvent)
+        protected virtual void QueueTaskEvent(BuildEventArgs errorEvent)
         {
             this.taskQueue.Enqueue(() =>
             {

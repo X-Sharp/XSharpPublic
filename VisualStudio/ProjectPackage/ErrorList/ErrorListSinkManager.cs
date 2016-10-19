@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.Shell.TableManager;
 
-namespace TaskOutputListener
+namespace XSharp.Project
 {
     internal class ErrorListSinkManager : IErrorListSinkManager, IDisposable
     {

@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -27,6 +27,10 @@ namespace XSharp.LanguageService
             return "XSharp Source Files (*.prg)\n*.prg\nAll Files (*.*)\n*.*\n";
         }
 
+        public int GetFormatFilterList(out string pbstrFilterList)
+        {
+            throw new NotImplementedException();
+        }
         public override LanguagePreferences GetLanguagePreferences()
         {
             if (m_preferences == null)
@@ -65,16 +69,46 @@ namespace XSharp.LanguageService
             }
             else if (req.Reason == ParseReason.DisplayMemberList)
             {
-                // Parse the line specified in req.Line for the two tokens just before req.Col to get the identifier and the member connector symbol. 
+                // Parse the line specified in req.Line for the two tokens just before req.Col to get the identifier and the member connector symbol.
                 // Find members of the identifer in the parse tree and store the list of members in the Declarations class.
             }
             else if (req.Reason == ParseReason.MethodTip)
             {
-                // Parse the line specified in req.Line for the token just before req.Col to obtain the name of the method. 
+                // Parse the line specified in req.Line for the token just before req.Col to obtain the name of the method.
                 // Find all method signatures with the same name in the existing parse tree and store the list of signatures in the Methods class.
             }
             // continue for the rest of the supported ParseReason values.
             return scope;
+        }
+        /*
+        public override Microsoft.VisualStudio.Package.TypeAndMemberDropdownBars CreateDropDownHelper(Microsoft.VisualStudio.TextManager.Interop.IVsTextView forView)
+        {
+            var members = new XSharpTypeAndMemberDropDownBars(this);
+            return members;
+        }
+        */
+        public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
+        {
+            // This called for the online help
+            return VSConstants.S_OK;
+        }
+
+        public int CurFileExtensionFormat(string bstrFileName, out uint pdwExtnIndex)
+        {
+            // may be called from the save as dialog
+            string ext = System.IO.Path.GetExtension(bstrFileName).ToLower();
+            if (ext == ".prg")
+                pdwExtnIndex = 0;
+            else
+                pdwExtnIndex = 1;
+            return VSConstants.S_OK;
+        }
+
+        public int QueryInvalidEncoding(uint Format, out string pbstrMessage)
+        {
+            // may be called when the source is saved under a different codepage
+            pbstrMessage = String.Empty;
+            return VSConstants.S_OK;
         }
     }
 }

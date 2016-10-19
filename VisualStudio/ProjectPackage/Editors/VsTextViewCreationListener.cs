@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System.ComponentModel.Composition;
@@ -40,7 +40,7 @@ namespace XSharp.Project
                     string fileName = FilePathUtilities.GetFilePath(textlines);
                     if (EditorHelpers.IsVulcanFileNode(fileName))       // is this a file node from Vulcan ?
                     {
-                        Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService; 
+                        Guid guidVulcanLanguageService = GuidStrings.guidVulcanLanguageService;
                         textlines.SetLanguageServiceID(guidVulcanLanguageService);
                     }
                 }
@@ -58,7 +58,7 @@ namespace XSharp.Project
                 var asm = type.Assembly.GetName().Name;
                 return asm.IndexOf("vulcan", StringComparison.OrdinalIgnoreCase) == 0;
             }
-            return false;            
+            return false;
         }
         private static object GetItemNode(string filename)
         {

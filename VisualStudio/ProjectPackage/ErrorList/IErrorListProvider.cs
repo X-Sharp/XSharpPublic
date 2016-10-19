@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell.TableManager;
 
-namespace TaskOutputListener
+namespace XSharp.Project
 {
     internal interface IErrorListProvider
     {

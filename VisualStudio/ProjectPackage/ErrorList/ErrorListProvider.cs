@@ -4,24 +4,24 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 
-namespace TaskOutputListener
+namespace XSharp.Project
 {
     [Export(typeof(IErrorListProvider))]
     internal sealed class ErrorListProvider : IErrorListProvider, ITableDataSource
     {
         internal readonly ITableManager ErrorTableManager;
-        private readonly string DataSourceIdentifierString = Vsix.Name;
-        private readonly string DataSourceDisplayName = Vsix.Name + " TEST";
+        private readonly string DataSourceIdentifierString = Constants.Product;
+        private readonly string DataSourceDisplayName = Constants.Product;
 
-        // The list sinks. Probably only one but there could be more. Needs to be threadsafe so is
+        // The list sinks. Probably only one but there could be more. Needs to be thread safe so is
         // also used as a lock
         private List<IErrorListSinkManager> _managers = new List<IErrorListSinkManager>();
         private List<ITableEntriesSnapshotFactory> _errorListFactories = new List<ITableEntriesSnapshotFactory>();
 
         [ImportingConstructor]
-        internal ErrorListProvider(ITableManagerProvider provider)
+        internal ErrorListProvider(ITableManager manager)
         {
-            ErrorTableManager = provider.GetTableManager(StandardTables.ErrorsTable);
+            ErrorTableManager = manager;
             ErrorTableManager.AddSource(this, StandardTableColumnDefinitions.DetailsExpander, StandardTableColumnDefinitions.ProjectName,
                                                 StandardTableColumnDefinitions.ErrorSeverity, StandardTableColumnDefinitions.ErrorCode,
                                                 StandardTableColumnDefinitions.ErrorSource, StandardTableColumnDefinitions.ErrorCategory,
@@ -35,7 +35,7 @@ namespace TaskOutputListener
             {
                 // This string should, in general, be localized since it is what would be displayed in any UI that lets the end user pick
                 // which ITableDataSources should be subscribed to by an instance of the table control. It really isn't needed for the error
-                // list however because it autosubscribes to all the ITableDataSources.
+                // list however because it auto subscribes to all the ITableDataSources.
                 return DataSourceDisplayName;
             }
         }
@@ -127,7 +127,7 @@ namespace TaskOutputListener
         }
 
         /// <summary>
-        /// Called to update all sinks when changes occured. Passing null for factory
+        /// Called to update all sinks when changes occurred. Passing null for factory
         /// will update all factories on all sinks
         /// </summary>
         public void UpdateAllSinks(ITableEntriesSnapshotFactory factory)

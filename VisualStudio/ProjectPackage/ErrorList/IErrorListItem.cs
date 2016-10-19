@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.VisualStudio.TaskRunnerExplorer;
+using XSharp.Project;
 
-namespace TaskOutputListener
+namespace XSharp.Project
 {
     internal interface IErrorListItem
     {
@@ -46,8 +46,8 @@ namespace TaskOutputListener
         object ErrorCode { get; set; }
 
         /// <summary>
-        /// Command that generated the error
+        /// Category of the error
         /// </summary>
-        ITaskRunnerCommand Command { get; set; }
+        string ErrorCategory { get; set; }
     }
 }

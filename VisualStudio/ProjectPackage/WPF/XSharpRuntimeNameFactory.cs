@@ -1,13 +1,13 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
 using System.ComponentModel;
 using System.Globalization;
 using Microsoft.Windows.Design.Host;
-
+using Microsoft.VisualStudio.Project;
 namespace XSharp.Project.WPF
 {
 #pragma warning disable 612, 618
@@ -18,9 +18,9 @@ namespace XSharp.Project.WPF
         public override string CreateUniqueName(
             Type itemType, string proposedName, Predicate<string> matchScope, bool rootScope, RuntimeNameProvider provider)
         {
-            if (null == itemType) throw new ArgumentNullException("itemType");
-            if (null == matchScope) throw new ArgumentNullException("matchScope");
-            if (null == provider) throw new ArgumentNullException("provider");
+            Utilities.ArgumentNotNull(nameof(itemType), itemType);
+            Utilities.ArgumentNotNull(nameof(matchScope), matchScope);
+            Utilities.ArgumentNotNull(nameof(provider), provider);
 
             string baseName = proposedName;
 

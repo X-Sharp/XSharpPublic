@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -635,7 +635,7 @@ namespace XSharp.Build
             {
                 commandline.AppendTextUnquoted("\n" + this.CommandLineOption);
             }
-            if (this.IncludePaths?.Length > 0) 
+            if (this.IncludePaths?.Length > 0)
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (var s in this.IncludePaths)
@@ -710,8 +710,8 @@ namespace XSharp.Build
             //      /warnaserror-:<all possible warnings>
             commandLine.AppendSwitchWithSplitting("/warnaserror+:", WarningsAsErrors, ",", ';', ',');
             commandLine.AppendSwitchWithSplitting("/warnaserror-:", WarningsNotAsErrors, ",", ';', ',');
-            
-            // It's a good idea for the response file to be the very last switch passed, just 
+
+            // It's a good idea for the response file to be the very last switch passed, just
             // from a predictability perspective.  It also solves the problem that a dogfooder
             // ran into, which is described in an email thread attached to bug VSWhidbey 146883.
             // See also bugs 177762 and 118307 for additional bugs related to response file position.
@@ -935,7 +935,7 @@ namespace XSharp.Build
                 else if (! hasShownMaxErrorMsg)
                 {
                     hasShownMaxErrorMsg = true;
-                    // the line is in the format c:\....\file.prg (n,n,n,n): error/warning XSnnnn: 
+                    // the line is in the format c:\....\file.prg (n,n,n,n): error/warning XSnnnn:
                     string line = singleLine.Substring(0, singleLine.IndexOf(')')+2);
                     line += " error XB9001:" + $"Truncating error list after at {errorCount} errors ";
                     base.LogEventsFromTextOutput(line, MessageImportance.High);

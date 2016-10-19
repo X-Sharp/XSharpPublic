@@ -1011,21 +1011,37 @@ namespace XSharp.Project
             base.SetOutputLogger(output);
 
         }
+        XSharpIDEBuildLogger logger = null;
         internal override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
-            var logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
+            logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
             logger.ProjectNode = this;
             logger.ErrorString = ErrorString;
             logger.WarningString = WarningString;
-            if (errorListTableManager == null)
+            if (errorlistProvider != null)
             {
-                errorListTableManager = errorList.TableControl.Manager;
-                errorlistProvider = new ErrorListProvider(errorListTableManager);
+                errorListTableManager = null;
+                errorlistProvider = null;
             }
+
+            errorListTableManager = errorList.TableControl.Manager;
+            errorlistProvider = new ErrorListProvider(errorListTableManager);
             logger.ErrorlistProvider = errorlistProvider;
             return logger;
         }
-
+        public override int Close()
+        {
+            var res = base.Close();
+            if (logger != null)
+            {
+                logger.Clear();
+            }
+            if (errorlistProvider != null)
+            {
+                errorlistProvider.Clear();
+            }
+            return res;
+        }
     }
 
         #endregion

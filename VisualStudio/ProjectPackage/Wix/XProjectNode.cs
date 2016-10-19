@@ -408,15 +408,15 @@ namespace XSharp.Project
                 return this.userBuildProject;
             }
         }
-        public override int IsDirty(out int isDirty)
-        {
-            int res = base.IsDirty(out isDirty);
-            if (isDirty == 0 && this.UserBuildProject != null)
-            {
-                isDirty = this.UserBuildProject.IsDirty ? 1 : 0;
-            }
-            return res;
-        }
+        //public override int IsDirty(out int isDirty)
+        //{
+        //    int res = base.IsDirty(out isDirty);
+        //    if (isDirty == 0 && this.UserBuildProject != null)
+        //    {
+        //        isDirty = this.UserBuildProject.IsDirty ? 1 : 0;
+        //    }
+        //    return res;
+        //}
 
         /// <summary>
         /// Creates an MSBuild project to be associated with the .user location specific build file.
@@ -445,15 +445,10 @@ namespace XSharp.Project
         /// Sets the configuration for the .user build file
         /// </summary>
         /// <param name="configCanonicalName">Configuration</param>
-        protected internal override void SetConfiguration(ConfigCanonicalName configCanonicalName)
-        {
-            base.SetConfiguration(configCanonicalName);
-            if (this.userBuildProject != null)
-            {
-                this.userBuildProject.SetGlobalProperty(ProjectFileConstants.Configuration, configCanonicalName.ConfigName);
-                this.userBuildProject.SetGlobalProperty(ProjectFileConstants.Platform, configCanonicalName.MSBuildPlatform);
-            }
-        }
+        //protected internal override void SetConfiguration(ConfigCanonicalName configCanonicalName)
+        //{
+        //    base.SetConfiguration(configCanonicalName);
+        //}
         /// <summary>
         /// Closes the project node.
         /// </summary>

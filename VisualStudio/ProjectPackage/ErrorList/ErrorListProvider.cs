@@ -7,9 +7,9 @@ using Microsoft.VisualStudio.Shell.TableManager;
 namespace XSharp.Project
 {
     [Export(typeof(IErrorListProvider))]
-    internal sealed class ErrorListProvider : IErrorListProvider, ITableDataSource
+    internal sealed class ErrorListProvider : IErrorListProvider, ITableDataSource, IDisposable
     {
-        internal readonly ITableManager ErrorTableManager;
+        internal ITableManager ErrorTableManager;
         private readonly string DataSourceIdentifierString = Constants.Product;
         private readonly string DataSourceDisplayName = Constants.Product;
 
@@ -28,7 +28,6 @@ namespace XSharp.Project
                                                 StandardTableColumnDefinitions.Text, StandardTableColumnDefinitions.DocumentName,
                                                 StandardTableColumnDefinitions.Line, StandardTableColumnDefinitions.Column);
         }
-
         public string DisplayName
         {
             get
@@ -139,6 +138,16 @@ namespace XSharp.Project
                     manager.UpdateSink(factory);
                 }
             }
+        }
+        internal void Clear()
+        {
+            ErrorTableManager.RemoveSource(this);
+            ErrorTableManager = null;
+        }
+        void IDisposable.Dispose()
+        {
+            ErrorTableManager.RemoveSource(this);
+            ErrorTableManager = null;
         }
     }
 }

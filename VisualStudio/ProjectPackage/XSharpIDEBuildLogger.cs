@@ -15,6 +15,7 @@ namespace XSharp.Project
         OutputErrorsFactory outputErrors;
         List<IErrorListItem> errorItems;
         XSharpProjectNode node;
+        bool mustLog;
         internal XSharpIDEBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy) : base(output, taskProvider, hierarchy)
         {
 
@@ -37,22 +38,46 @@ namespace XSharp.Project
         public override void Initialize(IEventSource eventSource)
         {
             base.Initialize(eventSource);
-            outputErrors.ClearErrors();
-            errorItems = new List<IErrorListItem>();
         }
 
-        protected override void BuildFinishedHandler(object sender, BuildFinishedEventArgs buildEvent)
+
+        internal void Clear()
         {
-            base.BuildFinishedHandler(sender, buildEvent);
-            outputErrors.AddErrorItems(errorItems);
+            if (outputErrors != null)
+                outputErrors.ClearErrors();
+        }
+        protected override void ProjectStartedHandler(object sender, ProjectStartedEventArgs buildEvent)
+        {
+            base.ProjectStartedHandler(sender, buildEvent);
+            if (String.IsNullOrEmpty(buildEvent.TargetNames))
+            {
+                errorItems = new List<IErrorListItem>();
+                mustLog = true;
+            }
+            else
+            {
+                mustLog = false;
+            }
+        }
+        protected override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
+        {
+            base.ProjectFinishedHandler(sender, buildEvent);
+            if (mustLog)
+            {
+                outputErrors.ClearErrors();
+                outputErrors.AddErrorItems(errorItems);
+            }
         }
 
         protected override void QueueTaskEvent(BuildEventArgs errorEvent)
         {
-            if (errorEvent is BuildErrorEventArgs)
-                ReportError((BuildErrorEventArgs) errorEvent);
-            else
-                ReportWarning((BuildWarningEventArgs) errorEvent);
+            if (mustLog)
+            {
+                if (errorEvent is BuildErrorEventArgs)
+                    ReportError((BuildErrorEventArgs)errorEvent);
+                else
+                    ReportWarning((BuildWarningEventArgs)errorEvent);
+            }
 
         }
 

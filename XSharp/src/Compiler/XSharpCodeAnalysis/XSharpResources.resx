@@ -1012,7 +1012,7 @@
     <value>stackalloc may not be used in a catch or finally block</value>
   </data>
   <data name="ERR_VarargsLast" xml:space="preserve">
-    <value>An __arglist parameter must be the last parameter in a formal parameter list</value>
+    <value>An ellipsis parameter (...) must be the last parameter in a formal parameter list</value>
   </data>
   <data name="ERR_MissingPartial" xml:space="preserve">
     <value>Missing partial modifier on declaration of type '{0}'; another partial declaration of this type exists</value>

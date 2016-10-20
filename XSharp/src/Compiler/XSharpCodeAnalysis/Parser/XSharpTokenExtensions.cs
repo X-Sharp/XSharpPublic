@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
@@ -250,6 +250,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxToken r;
             switch (token.Type)
             {
+                case XSharpParser.ELLIPSIS:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ArgListKeyword);
+                    break;
                 case XSharpParser.TRUE_CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.TrueKeyword);
                     break;
@@ -557,7 +560,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken);
                     break;
                 case XSharpParser.TILDE:
-                    // Note 
+                    // Note
                     // in VO ~is XOR for binary expressions and bitwise negation (Ones complement) for unary expressions
                     // VO uses ^ for Exponent
                     // in C# ^is XOR and ~is Bitwise negation (Ones complement)
@@ -671,7 +674,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.MinusToken);
                     break;
                 case XSharpParser.TILDE:
-                    // Note 
+                    // Note
                     // in VO ~is XOR for binary expressions and bitwise negation (Ones complement) for unary expressions
                     // VO uses ^ for Exponent
                     // in C# ^is XOR and ~is Bitwise negation (Ones complement)
@@ -810,6 +813,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case XSharpParser.SUPER:
                     r = SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword, token.Text);
+                    break;
+                case XSharpParser.ARGLIST:
+                    r = SyntaxFactory.MakeToken(SyntaxKind.ArgListKeyword, token.Text);
                     break;
                 case XSharpParser.VAR:
                     r = SyntaxFactory.Identifier("Xs$var");
@@ -1062,7 +1068,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-  
+
         public static SyntaxKind ExpressionKind(this IToken token)
         {
             SyntaxKind r;
@@ -1427,7 +1433,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public static void FixDefaultVirtual(this SyntaxListBuilder list)
         {
-            if (list.Any(SyntaxKind.StaticKeyword) || 
+            if (list.Any(SyntaxKind.StaticKeyword) ||
                 list.Any(SyntaxKind.ExternKeyword) ||
                 list.Any(SyntaxKind.AbstractKeyword) ||
                 list.Any(SyntaxKind.PrivateKeyword))

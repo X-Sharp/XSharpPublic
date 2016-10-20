@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 namespace Microsoft.CodeAnalysis.CSharp
@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //ERR_MissingOptionArg = 5,
         ERR_NoMetadataFile = 6,
         //FTL_ComPlusInit = 7,
-        //FTL_MetadataImportFailure = 8,    no longer used in Roslyn. 
+        //FTL_MetadataImportFailure = 8,    no longer used in Roslyn.
         FTL_MetadataCantOpenFile = 9,
         //ERR_FatalError = 10,
         //ERR_CantImportBase = 11,
@@ -168,7 +168,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ConstantExpected = 150,
         // ERR_SwitchGoverningTypeValueExpected shares the same error code (CS0151) with ERR_IntegralTypeValueExpected in Dev10 compiler.
         // However ERR_IntegralTypeValueExpected is currently unused and hence being removed. If we need to generate this error in future
-        // we can use error code CS0166. CS0166 was originally reserved for ERR_SwitchFallInto in Dev10, but was never used. 
+        // we can use error code CS0166. CS0166 was originally reserved for ERR_SwitchFallInto in Dev10, but was never used.
         ERR_SwitchGoverningTypeValueExpected = 151,
         ERR_DuplicateCaseLabel = 152,
         ERR_InvalidGotoCase = 153,
@@ -1372,7 +1372,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_PreProcessorWarning = 9004,
         ERR_UserError = 9005,
         WRN_UserWarning = 9006,
-        ERR_FeatureNotAvailableInDialect = 9007, 
+        ERR_FeatureNotAvailableInDialect = 9007,
         ERR_UntypedArrayNotAvailableInDialect = 9008,
         ERR_TypedParametersWithClipperCallingConvention = 9009,
         ERR_OnlySupportedForClipperCallingConvention = 9010,

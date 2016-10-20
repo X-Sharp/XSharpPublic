@@ -8711,7 +8711,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An __arglist parameter must be the last parameter in a formal parameter list.
+        ///   Looks up a localized string similar to An ellipsis parameter (...) must be the last parameter in a formal parameter list.
         /// </summary>
         internal static string ERR_VarargsLast {
             get {

@@ -3280,7 +3280,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // TODO nvk (calling convention is silently ignored for now)
         }
+        public override void EnterParameterList([NotNull] XP.ParameterListContext context)
+        {
+            foreach (var par in context._Params)
+            {
+                if (par.Ellipsis != null )
+                {
+                    if (par != context._Params.Last())
+                    {
+                        par.AddError(new ParseErrorData(ErrorCode.ERR_VarargsLast, par));
+                    }
+                    //var parent = context.Parent;
+                    //if (!(parent is XP.VodllContext))
+                    //{
+                    //    parent.AddError(new ParseErrorData(ErrorCode.ERR_VarargNotVODLL, parent));
+                    //}
+                    //else
+                    //{
+                    //    var callConv = ((XP.VodllContext)parent).CallingConvention;
+                    //    if (callConv == null || callConv.Cc.Type != XP.STRICT)
+                    //    {
+                    //        parent.AddError(new ParseErrorData(ErrorCode.ERR_VarargNotVODLL, parent));
+                    //    }
+                    //}
 
+                }
+            }
+        }
         public override void ExitParameterList([NotNull] XP.ParameterListContext context)
         {
             var @params = _pool.AllocateSeparated<ParameterSyntax>();
@@ -3315,6 +3341,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitParameter([NotNull] XP.ParameterContext context)
         {
+            if (context.Ellipsis != null)
+            {
+                context.Put(_syntaxFactory.Parameter(
+                    EmptyList<AttributeListSyntax>(), EmptyList(), null, context.Ellipsis.SyntaxLiteralValue(_options), null));
+                return;
+            }
             TypeSyntax type = _getParameterType(context);
             type.XVoDecl = true;
             if (context.Modifiers != null && context.Modifiers._Tokens != null)
@@ -3328,6 +3360,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
+
             context.Put(_syntaxFactory.Parameter(
                 attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
@@ -5019,6 +5052,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(_syntaxFactory.BaseExpression(context.Key.SyntaxKeyword()));
         }
 
+        public override void ExitArgListExpression([NotNull] XP.ArgListExpressionContext context)
+        {
+            context.Put(_syntaxFactory.LiteralExpression(SyntaxKind.ArgListExpression, SyntaxFactory.MakeToken(SyntaxKind.ArgListKeyword)));
+        }
         public override void ExitLiteralExpression([NotNull] XP.LiteralExpressionContext context)
         {
             context.Put(context.Literal.Get<ExpressionSyntax>());

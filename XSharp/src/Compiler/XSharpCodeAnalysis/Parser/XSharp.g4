@@ -10,7 +10,7 @@ http://www.xsharp.info/licenses
 Unless required by applicable law or agreed to in writing, software
 Distributed under the License is distributed on an "as is" basis,
 without warranties or conditions of any kind, either express or implied.
-See the License for the specific language governing permissions and   
+See the License for the specific language governing permissions and
 limitations under the License.
 */
 grammar XSharp;
@@ -36,11 +36,11 @@ grammar XSharp;
         get {return _xBaseVars;}
         set {_xBaseVars = value;}
     }
-} 
+}
 
 
-options	{ 
-        language=CSharp; 
+options	{
+        language=CSharp;
         tokenVocab=XSharpLexer;
         }
 
@@ -68,22 +68,24 @@ entity              : namespace_
                     | vounion					// Compatibility (unsafe) structure with members aligned at FieldOffSet 0
                     ;
 
-function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
+function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                         FUNCTION Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
-                       (AS Type=datatype)? 
+                       (AS Type=datatype)?
                        (ConstraintsClauses+=typeparameterconstraintsclause)*
-                       (CallingConvention=callingconvention)? end=EOS 
+                       (CallingConvention=callingconvention)?
+					   (DLLEXPORT STRING_CONST)? end=EOS		// The DLLEXPORT clause exists in VO but is ignored in X#
                        StmtBlk=statementBlock
                     ;
 
-procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)? 
+procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                        PROCEDURE Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                        (ConstraintsClauses+=typeparameterconstraintsclause)*
-                       (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)?   end=EOS	
+                       (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)?
+   					   (DLLEXPORT STRING_CONST)? end=EOS		// The DLLEXPORT clause exists in VO but is ignored in X#
                        StmtBlk=statementBlock
                     ;
 
-callingconvention	: Convention=(CLIPPER | STRICT | PASCAL) 
+callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CALLBACK | FASTCALL | THISCALL)
                     ;
 
 
@@ -98,10 +100,10 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL)
                     // We parse the numeric entrypoint here but we will throw an error during the tree transformation
                     // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.123
 
-vodll				: (Modifiers=funcprocModifiers)? DLL 
+vodll				: (Modifiers=funcprocModifiers)? DLL
                       ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
                       | T=PROCEDURE Id=identifier ParamList=parameterList )
-                      (CallingConvention=dllcallconv) COLON 
+                      (CallingConvention=dllcallconv) COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                         ( DOT Entrypoint=identifierString (NEQ2 INT_CONST)?
                         | Ordinal=REAL_CONST)
@@ -109,7 +111,7 @@ vodll				: (Modifiers=funcprocModifiers)? DLL
                       EOS
                     ;
 
-dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL)
+dllcallconv         : Cc=( CLIPPER | STRICT | PASCAL | THISCALL | FASTCALL | ASPEN | WINCALL | CALLBACK)
                     ;
 
 
@@ -117,6 +119,7 @@ parameterList		: LPAREN (Params+=parameter (COMMA Params+=parameter)*)? RPAREN
                     ;
 
 parameter			: (Attributes=attributes)? Self=SELF? Id=identifier (ASSIGN_OP Default=expression)? (Modifiers=parameterDeclMods Type=datatype)?
+					| Ellipsis=ELLIPSIS
                     ;
 
 parameterDeclMods   : Tokens+=(AS | REF | OUT | IS | PARAMS) Tokens+=CONST?
@@ -153,10 +156,11 @@ voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Con
 // And when Class is outside of assembly, convert to Extension Method?
 // nvk: we have no knowledge of whether a class is outside of the assembly at the parser stage!
 method				: (Attributes=attributes)? (Modifiers=memberModifiers)?
-                      T=methodtype (ExplicitIface=nameDot)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)? 
+                      T=methodtype (ExplicitIface=nameDot)? Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS Type=datatype)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)*
-                      (CallingConvention=callingconvention)? (CLASS (Namespace=nameDot)? ClassId=identifier)? end=EOS 
-                      StmtBlk=statementBlock		
+                      (CallingConvention=callingconvention)? (CLASS (Namespace=nameDot)? ClassId=identifier)?
+					  (DLLEXPORT STRING_CONST)? end=EOS		// The DLLEXPORT clause exists in VO but is ignored in X#
+                      StmtBlk=statementBlock
                     ;
 
 methodtype			: Token=(METHOD | ACCESS | ASSIGN)
@@ -166,7 +170,7 @@ methodtype			: Token=(METHOD | ACCESS | ASSIGN)
 vodefine			: (Modifiers=funcprocModifiers)? DEFINE Id=identifier ASSIGN_OP Expr=expression (AS DataType=nativeType)? EOS
                     ;
 
-vostruct			: (Modifiers=votypeModifiers)? 
+vostruct			: (Modifiers=votypeModifiers)?
                       VOSTRUCT (Namespace=nameDot)? Id=identifier (ALIGN Alignment=INT_CONST)? EOS
                       (Members+=vostructmember)+
                     ;
@@ -176,7 +180,7 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As
                     ;
 
 
-vounion				: (Modifiers=votypeModifiers)? 
+vounion				: (Modifiers=votypeModifiers)?
                       UNION (Namespace=nameDot)? Id=identifier EOS
                       (Members+=vounionmember)+
                     ;
@@ -199,7 +203,7 @@ interface_			: (Attributes=attributes)? (Modifiers=interfaceModifiers)?
                       ((INHERIT|COLON) Parents+=datatype)? (COMMA Parents+=datatype)*
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS         // Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      END INTERFACE EOS                    
+                      END INTERFACE EOS
 					  ;
 
 interfaceModifiers	: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | UNSAFE | PARTIAL) )+
@@ -218,7 +222,7 @@ classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
                     ;
 
 // Start Extensions for Generic Classes
-typeparameters      : LT TypeParams+=typeparameter (COMMA attributes? TypeParams+=typeparameter)* GT 
+typeparameters      : LT TypeParams+=typeparameter (COMMA attributes? TypeParams+=typeparameter)* GT
                     ;
 
 typeparameter       : Attributes=attributes? VarianceKeyword=(IN | OUT)? Id=identifier
@@ -229,9 +233,9 @@ typeparameterconstraintsclause
                     ;
 
 typeparameterconstraint: Key=(CLASS|STRUCTURE)				#classOrStructConstraint	//  Class Foo<t> WHERE T IS (CLASS|STRUCTURE)
-                       | Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer		
+                       | Type=typeName						#typeConstraint				//  Class Foo<t> WHERE T IS Customer
                        | NEW LPAREN RPAREN					#constructorConstraint		//  Class Foo<t> WHERE T IS NEW()
-                       ; 
+                       ;
 
 // End of Extensions for Generic Classes
 
@@ -270,7 +274,7 @@ enummember			: (Attributes=attributes)? MEMBER? Id=identifier (ASSIGN_OP Expr=ex
                     ;
 
 event_				:  (Attributes=attributes)? (Modifiers=eventModifiers)?
-                       EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)? 
+                       EVENT (ExplicitIface=nameDot)? Id=identifier (AS Type=datatype)?
                        ( end=EOS
                         | (LineAccessors += eventLineAccessor)+ EOS
                         | Multi=EOS (Accessors+=eventAccessor)+ END EVENT? EOS
@@ -281,12 +285,12 @@ eventModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIV
                     ;
 
 
-eventLineAccessor   : Attributes=attributes? Modifiers=eventModifiers? 
+eventLineAccessor   : Attributes=attributes? Modifiers=eventModifiers?
                       ( {InputStream.La(2) != REMOVE}? Key=ADD ExprList=expressionList?
                       | {InputStream.La(2) != ADD}?    Key=REMOVE ExprList=expressionList?
                       | Key=(ADD|REMOVE) )
                     ;
-eventAccessor       : Attributes=attributes? Modifiers=eventModifiers? 
+eventAccessor       : Attributes=attributes? Modifiers=eventModifiers?
                       ( Key=ADD     end=EOS StmtBlk=statementBlock END ADD?
                       | Key=REMOVE  end=EOS StmtBlk=statementBlock END REMOVE? )
                       end=EOS
@@ -295,7 +299,7 @@ eventAccessor       : Attributes=attributes? Modifiers=eventModifiers?
 
 
 classvars			: (Attributes=attributes)? (Modifiers=classvarModifiers)? Vars=classVarList EOS
-                    ; 
+                    ;
 
 classvarModifiers	: ( Tokens+=(INSTANCE| STATIC | CONST | INITONLY | PRIVATE | HIDDEN | PROTECTED | PUBLIC | EXPORT | INTERNAL | VOLATILE | UNSAFE | FIXED) )+
                     ;
@@ -311,8 +315,8 @@ arraysub			: ArrayIndex+=expression (RBRKT LBRKT ArrayIndex+=expression)+		// x]
                     | ArrayIndex+=expression
                     ;
 
-property			: (Attributes=attributes)? (Modifiers=memberModifiers)? 
-                      PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)? 
+property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
+                      PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=EOS	// Auto
                       | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
                       | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS								// Multi Line
@@ -327,7 +331,7 @@ propertyParameterList
 propertyAutoAccessor: Attributes=attributes? Modifiers=memberModifiers? Key=(GET|SET)
                     ;
 
-propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers? 
+propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers?
                       ( {InputStream.La(2) != SET}? Key=GET Expr=expression?
                       | {InputStream.La(2) != GET}? Key=SET ExprList=expressionList?
                       | Key=(GET|SET) )
@@ -336,7 +340,7 @@ propertyLineAccessor: Attributes=attributes? Modifiers=memberModifiers?
 expressionList	    : Exprs+=expression (COMMA Exprs+=expression)*
                     ;
 
-propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers? 
+propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
                       ( Key=GET end=EOS StmtBlk=statementBlock END GET?
                       | Key=SET end=EOS StmtBlk=statementBlock END SET? )
                       end=EOS
@@ -344,17 +348,17 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 
 classmember			: Member=method										#clsmethod
                     | (Attributes=attributes)?
-                      (Modifiers=constructorModifiers)? 
-                      CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS 
-                      (Chain=(SELF | SUPER) 
-					  ( 
+                      (Modifiers=constructorModifiers)?
+                      CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS
+                      (Chain=(SELF | SUPER)
+					  (
 						  (LPAREN RPAREN)
 						| (LPAREN ArgList=argumentList RPAREN)
 					  ) EOS)?
                       StmtBlk=statementBlock							#clsctor
-                    | (Attributes=attributes)? 
+                    | (Attributes=attributes)?
                       (Modifiers=destructorModifiers)?
-                      DESTRUCTOR (LPAREN RPAREN)?  end=EOS 
+                      DESTRUCTOR (LPAREN RPAREN)?  end=EOS
                       StmtBlk=statementBlock							#clsdtor
                     | Member=classvars									#clsvars
                     | Member=property									#clsproperty
@@ -381,7 +385,7 @@ destructorModifiers : ( Tokens+=EXTERN )+
     overloadable-unary-operator:  one of
     +   -   !  ~   ++   --   true   false
     overloadable-binary-operator:
-    + - * / % & | ^  << right-shift == != > < >= <=          
+    + - * / % & | ^  << right-shift == != > < >= <=
     // note in C# ^ is binary operator XOR and ~ is bitwise negation (Ones complement)
     // in VO ~is XOR AND bitwise negation. ^is EXP and should not be used for overloaded ops
     // VO uses ^ for Exponent
@@ -396,7 +400,7 @@ overloadedOps		: Token= (PLUS | MINUS | NOT | TILDE | INC | DEC | TRUE_CONST | F
 conversionOps		: Token=( IMPLICIT | EXPLICIT )
                     ;
 
-operator_			: Attributes=attributes? Modifiers=operatorModifiers? 
+operator_			: Attributes=attributes? Modifiers=operatorModifiers?
                       OPERATOR (Operation=overloadedOps | Conversion=conversionOps) Gt=GT?
                       ParamList=parameterList (AS Type=datatype)? end=EOS StmtBlk=statementBlock
                     ;
@@ -436,7 +440,7 @@ statement           : Decl=localdecl                                            
                     | DO? WHILE Expr=expression end=EOS
                       StmtBlk=statementBlock ((e=END DO? | e=ENDDO) EOS)?		#whileStmt
                     | NOP end=EOS												#nopStmt
-                    | FOR 
+                    | FOR
                         ( AssignExpr=expression
                         | (LOCAL? ForDecl=IMPLIED | ForDecl=VAR) ForIter=identifier ASSIGN_OP Expr=expression
                         | ForDecl=LOCAL ForIter=identifier ASSIGN_OP Expr=expression (AS Type=datatype)?
@@ -445,7 +449,7 @@ statement           : Decl=localdecl                                            
                       (STEP Step=expression)? end=EOS
                       StmtBlk=statementBlock (e=NEXT EOS)?							#forStmt
                     | IF IfStmt=ifElseBlock
-                      ((e=END IF? | e=ENDIF)  EOS)?									#ifStmt	
+                      ((e=END IF? | e=ENDIF)  EOS)?									#ifStmt
                     | DO CASE end=EOS
                       CaseStmt=caseBlock?
                       ((e=END CASE? | e=ENDCASE) EOS)?							#caseStmt
@@ -504,7 +508,7 @@ statement           : Decl=localdecl                                            
                     | BEGIN Key=FIXED ( VarDecl=variableDeclaration ) end=EOS
                       StmtBlk=statementBlock
                       (e=END FIXED? EOS)?										#blockStmt
-                    
+
 					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
                        (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
@@ -520,7 +524,7 @@ caseBlock			: Key=CASE Cond=expression end=EOS StmtBlk=statementBlock NextCase=c
                     ;
 
 // Note that literalValue is not enough. We also need to support members of enums
-switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=EOS StmtBlk=statementBlock			 
+switchBlock         : (Key=CASE Const=expression | Key=OTHERWISE) end=EOS StmtBlk=statementBlock
                     ;
 
 catchBlock			: (Id=identifier (AS Type=datatype)?)? end=EOS StmtBlk=statementBlock
@@ -554,18 +558,18 @@ localdecl          : (Static=STATIC LOCAL? | LOCAL)
                      LocalVars+=localvar (COMMA LocalVars+=localvar)*						end=EOS #commonLocalDecl	// STATIC LOCAL or LOCAL
                    | (Static=STATIC LOCAL? IMPLIED | LOCAL IMPLIED | Static=STATIC? VAR)								// LOCAL IMPLIED
                      ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               end=EOS #varLocalDecl		// VAR special for Robert !
-                    
+
                    ;
 
-localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)? 
+localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
                      (ASSIGN_OP Expression=expression)? (As=(AS | IS) DataType=datatype)?
                    ;
-                      
-impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression 
+
+impliedvar         : (Const=CONST)? Id=identifier ASSIGN_OP Expression=expression
                    ;
 
 
-fielddecl		   : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=EOS       
+fielddecl		   : FIELD Fields+=identifierName (COMMA Fields+=identifierName)* (IN Alias=identifierName)? end=EOS
                    ;
 
 // Old Style xBase declarations
@@ -574,9 +578,9 @@ xbasedecl        : T=(PRIVATE												// PRIVATE Foo, Bar
                       |PUBLIC												// PUBLIC  Foo, Bar
                       |MEMVAR												// MEMVAR  Foo, Bar
                       |PARAMETERS											// PARAMETERS Foo, Bar
-                     )   Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS       
+                     )   Vars+=identifierName (COMMA Vars+=identifierName)* end=EOS
                  ;
- 
+
 // The operators in VO have the following precedence level:
 //    lowest (13)  assignment           := *= /= %= ^= += -= <<= >>=
 //           (12)  logical or           .OR.
@@ -616,9 +620,9 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
                     | Left=expression Op=PIPE Right=expression					#binaryExpression		// expr | expr (bitwise or)
                     | Op=(LOGIC_NOT|NOT) Expr=expression						#prefixExpression		// .not. expr (logical not)  also  !
                     | Left=expression Op=(LOGIC_AND | AND) Right=expression		#binaryExpression		// expr .and. expr (logical and) also &&
-                    | Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor) 
-                    | Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)  also || 
-                    | Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr 
+                    | Left=expression Op=LOGIC_XOR Right=expression				#binaryExpression		// expr .xor. expr (logical xor)
+                    | Left=expression Op=(LOGIC_OR | OR) Right=expression		#binaryExpression		// expr .or. expr (logical or)  also ||
+                    | Left=expression Op=DEFAULT Right=expression				#binaryExpression		// expr DEFAULT expr
                     | <assoc=right> Left=expression
                       Op=( ASSIGN_OP | ASSIGN_ADD | ASSIGN_SUB | ASSIGN_EXP
                             | ASSIGN_MUL | ASSIGN_DIV | ASSIGN_MOD
@@ -654,22 +658,23 @@ primary				: Key=SELF													#selfExpression
                     | Type=typeName											    #typeExpression			// Standard DotNet Types
                     //| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
-                    | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression 
+                    | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
                       (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)
                     | FIELD_ ALIAS (Alias=identifier ALIAS)? Field=identifier   #aliasedField		    // _FIELD->CUSTOMER->NAME is equal to CUSTOMER->NAME
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
-                          Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME 
-                    | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr	
-                    | LPAREN Alias=primary RPAREN ALIAS Expr=expression         #aliasedExpr            // (expr) -> expr	
+                          Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME
+                    | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr
+                    | LPAREN Alias=primary RPAREN ALIAS Expr=expression         #aliasedExpr            // (expr) -> expr
                     | AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                     | AMP Id=identifierName										#macro					// &id
                     | LPAREN Expr=expression RPAREN							    #parenExpression		// ( expr )
+					| Key=ARGLIST												#argListExpression		// __ARGLIST
                     ;
 
 boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#boundAccessMember		// member access The ? is new
                     | Expr=boundExpression LPAREN						RPAREN	#boundMethodCall		// method call, no params
                     | Expr=boundExpression LPAREN ArgList=argumentList  RPAREN	#boundMethodCall		// method call, with params
-                    | Expr=boundExpression 
+                    | Expr=boundExpression
                       LBRKT ArgList=bracketedArgumentList RBRKT					#boundArrayAccess		// Array element access
                     | <assoc=right> Left=boundExpression
                       Op=QMARK Right=boundExpression							#boundCondAccessExpr	// expr ? expr
@@ -734,7 +739,7 @@ typeName			: NativeType=nativeType
                     | Name=name
                     ;
 
-                    // Separate rule for Array with zero elements, to prevent entering the first arrayElement rule 
+                    // Separate rule for Array with zero elements, to prevent entering the first arrayElement rule
                     // with a missing Expression which would not work for the core dialect
 literalArray		: (LT Type=datatype GT)? LCURLY RCURLY															// {}
 					| (LT Type=datatype GT)? LCURLY Elements+=arrayElement (COMMA Elements+=arrayElement)* RCURLY   // {e,e,e} or {e,,e} or {,e,} etc
@@ -756,7 +761,7 @@ anonMember			: Name=identifierName ASSIGN_OP Expr=expression
 
 codeblock			: LCURLY (OR | PIPE CbParamList=codeblockParamList? PIPE)
                       ( Expr=expression?
-                      | EOS StmtBlk=statementBlock 
+                      | EOS StmtBlk=statementBlock
                       | ExprList=codeblockExprList )
                       RCURLY
                     ;
@@ -803,23 +808,23 @@ queryContinuation   : INTO Id=identifier Body=queryBody
 
 // All New Vulcan and X# keywords can also be recognized as Identifier
 identifier			: Token=(ID  | KWID)
-                    | VnToken=keywordvn 
+                    | VnToken=keywordvn
                     | XsToken=keywordxs
                     ;
 
 identifierString	: Token=(ID | KWID | STRING_CONST)
-                    | VnToken=keywordvn 
+                    | VnToken=keywordvn
                     | XsToken=keywordxs
                     ;
 
 // xBaseTypes are NOT available in the Core dialect and therefore separated here.
 xbaseType			: Token=
-                    ( ARRAY 
+                    ( ARRAY
                     | CODEBLOCK
-                    | DATE 
-                    | FLOAT 
-                    | PSZ 
-                    | SYMBOL 
+                    | DATE
+                    | FLOAT
+                    | PSZ
+                    | SYMBOL
                     | USUAL)
                     ;
 
@@ -839,7 +844,7 @@ nativeType			: Token=
                     | STRING
                     | UINT64
                     | WORD
-                    | VOID 
+                    | VOID
                     | CHAR )
                     ;
 
@@ -876,7 +881,7 @@ literalValue		: Token=
                     | CHAR_CONST
                     | STRING_CONST
                     | ESCAPED_STRING_CONST
-                    | INTERPOLATED_STRING_CONST         
+                    | INTERPOLATED_STRING_CONST
                     | SYMBOL_CONST
                     | HEX_CONST
                     | BIN_CONST
@@ -892,28 +897,28 @@ literalValue		: Token=
                     | NULL_PSZ
                     | NULL_PTR
                     | NULL_STRING
-                    | NULL_SYMBOL ) 
+                    | NULL_SYMBOL )
                     ;
 
 
 keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs) ;
 
-keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | CLIPPER | DEFINE | DIM | DLL | DO | DOWNTO
+keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CALLBACK | CASE | CAST | CLASS | CLIPPER | DECLARE | DEFINE | DIM | DLL | DO | DOWNTO
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
-                    | HIDDEN | IF | IIF | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE 
+                    | HIDDEN | IF | IIF | IN | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
                     | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
                     | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   )
                     ;
-                    // Entity Keywords are added to the keywordvo list, although not strictly VO keyword. 
+                    // Entity Keywords are added to the keywordvo list, although not strictly VO keyword.
                     // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
 
-keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | IN | INITONLY | INTERNAL 
+keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
                     | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | POP | PUSH | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
                     ;
 
-keywordxs           : Token=( ADD | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM | 
-                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP |  ORDERBY | OVERRIDE |PARAMS | REMOVE | 
+keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM |
+                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP |  ORDERBY | OVERRIDE |PARAMS | REMOVE |
                               SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
                               MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
                             )

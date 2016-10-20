@@ -3465,6 +3465,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 varType = _getMissingType();
             }
             var initExpr = context.Expression?.Get<ExpressionSyntax>();
+            varType.XVoDecl = true;
+            if (context.As?.Type == XP.IS)
+            {
+                varType.XVoIsDecl = true;
+            }
             if (isDim)
             {
                 if (initExpr == null)
@@ -3481,11 +3486,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     initExpr = MakeDefault(varType);
                 }
-            }
-            varType.XVoDecl = true;
-            if (context.As?.Type == XP.IS)
-            {
-                varType.XVoIsDecl = true;
             }
             if (isStatic)
             {

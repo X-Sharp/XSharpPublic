@@ -723,7 +723,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindQualifiedName(QualifiedNameSyntax node, DiagnosticBag diagnostics)
         {
 #if XSHARP
-            return BindMemberAccessWithBoundLeft(node, this.BindNamespaceOrType(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
+            var left = this.BindExpression(node.Left, diagnostics);
+            if (!left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) && !left.Type.IsVoStructOrUnion())
+            {
+                left = this.BindNamespaceOrType(node.Left, diagnostics);
+            }
+            return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #else
             return BindMemberAccessWithBoundLeft(node, this.BindExpression(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #endif

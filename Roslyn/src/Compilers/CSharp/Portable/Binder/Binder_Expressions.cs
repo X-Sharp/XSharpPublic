@@ -724,9 +724,27 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
 #if XSHARP
             var left = this.BindExpression(node.Left, diagnostics);
-            if (!left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) && !left.Type.IsVoStructOrUnion())
+            if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) && 
+                left.Type?.IsVoStructOrUnion() != true)
             {
-                left = this.BindNamespaceOrType(node.Left, diagnostics);
+                if ((left.Type as PointerTypeSymbol)?.PointedAtType.IsVoStructOrUnion() == true)
+                {
+                    // Then try pointerMemberAccess resolution...
+                    TypeSymbol pointedAtType;
+                    bool hasErrors;
+                    BindPointerIndirectionExpressionInternal(node, left, diagnostics, out pointedAtType, out hasErrors);
+                    if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
+                    {
+                        left = new BoundPointerIndirectionOperator(node.Left, left, pointedAtType, hasErrors)
+                        {
+                            WasCompilerGenerated = true, // don't interfere with the type info for exprSyntax.
+                        };
+                    }
+                }
+                else
+                {
+                    left = this.BindNamespaceOrType(node.Left, diagnostics);
+                }
             }
             return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #else

@@ -497,6 +497,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public EntityData Data { get { return data; } }
         }
 
+        public partial class VoglobalContext : ParserRuleContext, IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data { get { return data; } }
+        }
         public partial class FuncprocModifiersContext: ParserRuleContext {
             public bool IsStaticVisible { get; set; }
         }

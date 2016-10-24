@@ -59,7 +59,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "cf":
                     options.CompactFramework = positive;
-                    OptionNotImplemented(diagnostics, "cf", "Compiling for Compact Framework");
+                    OptionNotImplemented(diagnostics, oldname, "Compiling for Compact Framework");
                     break;
                 case "creatingruntime":
                     options.CreatingRuntime = true;
@@ -77,11 +77,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Dialect = dialect;
                     break;
                 case "clr": // CLR
-                    OptionNotImplemented(diagnostics, "clr", "Specify CLR version");
+                    OptionNotImplemented(diagnostics, oldname, "Specify CLR version");
                     break;
                 case "cs":
                     options.CaseSensitive = positive;
-                    OptionNotImplemented(diagnostics, "cs", "Case Sensitivity");
+                    OptionNotImplemented(diagnostics, oldname, "Case Sensitivity");
                     break;
                 case "i":
                     if (value == null)
@@ -138,7 +138,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "ppo":
                     options.PreProcessorOutput = positive;
-                    OptionNotImplemented(diagnostics, "ppo", "Write preprocessor output to a file");
+                    OptionNotImplemented(diagnostics, oldname, "Write preprocessor output to a file");
                     break;
                 case "r":
                 case "reference":
@@ -153,11 +153,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "showincludes":
                     options.ShowIncludes = positive;
-                    OptionNotImplemented(diagnostics, "showincludes", "Show list of included include files");
+                    OptionNotImplemented(diagnostics, oldname, "Show list of included include files");
                     break;
                 case "vo1":     // Init & Axit mapped to .ctor and .dtor
                     options.Vo1 = positive;
-                    OptionNotImplemented(diagnostics, "vo1", "VO Init and Axit methods");
+                    OptionNotImplemented(diagnostics, oldname, "VO Init and Axit methods");
                     break;
                 case "vo2":     // Initialize Strings to Empty string
                     options.Vo2 = positive;
@@ -173,11 +173,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo6":     // Resolve typed function PTR to PTR
                     options.Vo6 = positive;
-                    OptionNotImplemented(diagnostics, "vo6", "resolve typed function PTR to PTR");
+                    OptionNotImplemented(diagnostics, oldname, "resolve typed function PTR to PTR");
                     break;
                 case "vo7":     // Compatible implicit cast & conversion
                     options.Vo7 = positive;
-                    OptionNotImplemented(diagnostics, "vo7", "VO compatible implicit casts and conversions");
+                    OptionNotImplemented(diagnostics, oldname, "VO compatible implicit casts and conversions");
                     break;
                 case "vo8":     // Compatible preprocessor
                     options.Vo8 = positive;
@@ -190,7 +190,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo11":    // VO arithmetic conversions
                     options.Vo11 = positive;
-                    OptionNotImplemented(diagnostics, "vo11", "VO compatible arithmetic conversions");
+                    OptionNotImplemented(diagnostics, oldname, "VO compatible arithmetic conversions");
                     break;
                 case "vo12":    // Clipper integer divisions
                     options.Vo12 = positive;
@@ -205,10 +205,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Vo15 = positive;
                     options.ExplicitVO15 = true;
                     break;
-                case "vo16":    // VO Initialize variables
-                    options.Vo16 = positive;
-                    options.ExplicitVO16 = true;
-                    break;
+                //case "vo16":    // VO Initialize variables
+                //    options.Vo16 = positive;
+                //    options.ExplicitVO16 = true;
+                //    break;
                 case "wx":       // disable warning
                     name = "warnaserror+";
                     handled = false;
@@ -308,16 +308,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.Vo14 = false;
                 }
             }
-            if (newDialect == XSharpDialect.VO)
+            else
             {
                 if (!options.ExplicitVO15)
                 {
                     options.Vo15 = true;            // Untyped allowed
                 }
-                if (!options.ExplicitVO16)
-                {
-                    options.Vo16 = true;            // Initialize variables to defaults
-                }
+                //if (!options.ExplicitVO16)
+                //{
+                //    options.Vo16 = true;            // Initialize variables to defaults
+                //}
             }
             options.Dialect = newDialect;
         }

@@ -13,13 +13,6 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Roslyn.Utilities;
-using System.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -34,19 +27,19 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool VirtualInstanceMethods { get; private set; }
         //public bool VOAllowMissingReturns { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
-        //public bool VOClipperCallingConvention { get; private set; }
-        //public bool VOClipperIntegerDivisions { get; private set; }
-        //public bool VOCompatibleIIF { get; private set; }
-        //public bool VOFloatConstants { get; private set; }
+        //public bool VOClipperCallingConvention { get; private set; }// Handled in the parser
+        //public bool VOClipperIntegerDivisions { get; private set; }// Handled in the parser
+        //public bool VOCompatibleIIF { get; private set; }// Handled in the parser
+        //public bool VOFloatConstants { get; private set; }// Handled in the parser
         public bool VOImplicitCastsAndConversions { get; private set; }
         public bool VOImplicitSignedUnsignedConversions { get; private set; }
-        //public bool VOInitializeVariables { get; private set; }
-        //public bool VoInitAxitMethods { get; private set; }
-        //public bool VOPreprocessorBehaviour { get; private set; }
+        //public bool VOInitializeVariables { get; private set; }// Handled in the parser
+        //public bool VoInitAxitMethods { get; private set; }// Handled in the parser
+        //public bool VOPreprocessorBehaviour { get; private set; }// Handled in the parser
         public bool VOResolveTypedFunctionPointersToPtr { get; private set; }
         public bool VOSignedUnsignedConversion { get; private set; }
         public bool VOStringComparisons { get; private set; }
-        //public bool VOUntypedAllowed { get; private set; }
+        //public bool VOUntypedAllowed { get; private set; }// Handled in the parser
         public XSharpDialect Dialect { get; private set; }
         public bool LateBinding { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
@@ -61,20 +54,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ArrayZero = opt.ArrayZero;
                 //VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
-                //VirtualInstanceMethods = opt.Vo3;
+                //VirtualInstanceMethods = opt.Vo3;         // Handled in the parser
                 VOSignedUnsignedConversion = opt.Vo4;
-                //VOClipperCallingConvention = opt.Vo5;
+                //VOClipperCallingConvention = opt.Vo5;     // Handled in the parser
                 VOResolveTypedFunctionPointersToPtr = opt.Vo6;
                 VOImplicitCastsAndConversions = opt.Vo7;
-                //VOPreprocessorBehaviour = opt.Vo8;
-                //VOAllowMissingReturns = opt.Vo9;
-                //VOCompatibleIIF = opt.Vo10;
+                //VOPreprocessorBehaviour = opt.Vo8;        // Handled in the parser
+                //VOAllowMissingReturns = opt.Vo9;          // Handled in the parser
+                //VOCompatibleIIF = opt.Vo10;               // Handled in the parser
                 VOArithmeticConversions = opt.Vo11;
-                //VOClipperIntegerDivisions = opt.Vo12;
+                //VOClipperIntegerDivisions = opt.Vo12;     // Handled in the parser
                 VOStringComparisons = opt.Vo13;
-                //VOFloatConstants = opt.Vo14;
-                //VOUntypedAllowed = opt.Vo15;
-                //VOInitializeVariables = opt.Vo16;
+                //VOFloatConstants = opt.Vo14;              // Handled in the parser
+                //VOUntypedAllowed = opt.Vo15;              // Handled in the parser
+                //VOInitializeVariables = opt.Vo16;         // Handled in the parser
                 Dialect = opt.Dialect;
                 LateBinding = opt.LateBinding;
                 CreatingRuntime = opt.CreatingRuntime;
@@ -95,22 +88,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             LateBinding = opt.LateBinding;
             CreatingRuntime = opt.CreatingRuntime;
 
-            //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
+            //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2
-            //VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3
+            //VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   // Handled in the parser
             VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion; // vo4
-            //VOClipperCallingConvention = opt.VOClipperCallingConvention;  // vo5
+            //VOClipperCallingConvention = opt.VOClipperCallingConvention;  // vo5  // Handled in the parser
             VOResolveTypedFunctionPointersToPtr = opt.VOResolveTypedFunctionPointersToPtr; // vo6
             VOImplicitCastsAndConversions = opt.VOImplicitCastsAndConversions; // vo7
-            //VOPreprocessorBehaviour = opt.VOPreprocessorBehaviour; // vo8
-            //VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9
-            //VOCompatibleIIF = opt.VOCompatibleIIF; // vo10
+            //VOPreprocessorBehaviour = opt.VOPreprocessorBehaviour; // vo8 // Handled in the parser
+            //VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9 // Handled in the parser
+            //VOCompatibleIIF = opt.VOCompatibleIIF; // vo10    // Handled in the parser
             VOArithmeticConversions = opt.VOArithmeticConversions; // vo11
-            //VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12
+            //VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12    // Handled in the parser
             VOStringComparisons = opt.VOStringComparisons; // vo13
-            //VOFloatConstants = opt.VOFloatConstants; // vo14
-            //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
-            //VOInitializeVariables = opt.VOInitializeVariables; // vo16
+            //VOFloatConstants = opt.VOFloatConstants; // vo14  // Handled in the parser
+            //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
+            //VOInitializeVariables = opt.VOInitializeVariables; // vo16// Handled in the parser
         }
     }
 }

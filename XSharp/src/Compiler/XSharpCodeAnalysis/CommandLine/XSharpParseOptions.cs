@@ -25,6 +25,8 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
 
         // Options that can be set from the outside
+        // Some options are also handled by the parser
+        // Other options have flags, for the preprocessor macros, such as __VO1__
 
         public bool ArrayZero { get; private set; }
 
@@ -90,7 +92,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOStringComparisons = opt.Vo13;
                 VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
-                VOInitializeVariables = opt.Vo16;
+                //VOInitializeVariables = opt.Vo16;
 
             }
         }
@@ -129,7 +131,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOStringComparisons = opt.VOStringComparisons; // vo13
             VOFloatConstants = opt.VOFloatConstants; // vo14
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
-            VOInitializeVariables = opt.VOInitializeVariables; // vo16
+            //VOInitializeVariables = opt.VOInitializeVariables; // vo16
         }
     }
 }

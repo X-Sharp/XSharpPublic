@@ -2156,7 +2156,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Initializer.SetSequencePoint();
             }
-            if (initExpr == null && _options.VOInitializeVariables)
+            if (initExpr == null && _options.VOInitializeVariables && ! (CurrentEntity is XP.Structure_Context))
             {
                 var varType = ((XP.ClassVarListContext)context.Parent).DataType?.Get<TypeSyntax>() ?? _getMissingType();
                 initExpr = MakeDefault(varType);

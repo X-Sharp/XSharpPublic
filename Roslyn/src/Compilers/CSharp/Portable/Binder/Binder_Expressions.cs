@@ -723,7 +723,30 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindQualifiedName(QualifiedNameSyntax node, DiagnosticBag diagnostics)
         {
 #if XSHARP
-            return BindMemberAccessWithBoundLeft(node, this.BindNamespaceOrType(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
+            var left = this.BindExpression(node.Left, diagnostics);
+            if (left != null && !left.HasErrors && !(left.ExpressionSymbol is NamespaceOrTypeSymbol) && 
+                left.Type?.IsVoStructOrUnion() != true)
+            {
+                if ((left.Type as PointerTypeSymbol)?.PointedAtType.IsVoStructOrUnion() == true)
+                {
+                    // Then try pointerMemberAccess resolution...
+                    TypeSymbol pointedAtType;
+                    bool hasErrors;
+                    BindPointerIndirectionExpressionInternal(node, left, diagnostics, out pointedAtType, out hasErrors);
+                    if (!ReferenceEquals(pointedAtType, null)) // do not raise an error if it was not a pointer type
+                    {
+                        left = new BoundPointerIndirectionOperator(node.Left, left, pointedAtType, hasErrors)
+                        {
+                            WasCompilerGenerated = true, // don't interfere with the type info for exprSyntax.
+                        };
+                    }
+                }
+                else
+                {
+                    left = this.BindNamespaceOrType(node.Left, diagnostics);
+                }
+            }
+            return BindMemberAccessWithBoundLeft(node, left, node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #else
             return BindMemberAccessWithBoundLeft(node, this.BindExpression(node.Left, diagnostics), node.Right, node.DotToken, invoked: false, indexed: false, diagnostics: diagnostics);
 #endif

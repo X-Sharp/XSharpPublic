@@ -5,7 +5,7 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Utilities;
-
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class Binder
@@ -13,7 +13,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private enum VOOperatorType
         {
             None = 0,
-            CompareString ,
+            CompareString,
             SingleEqualsString,
             SingleEqualsUsual,
             NotEqualsUsual,
@@ -25,8 +25,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             TypeSymbol type;
             BoundCall opCall = null;
-            
-            if (Compilation.Options.IsDialectVO && this.Compilation.Options.VOStringComparisons )
+
+            if (Compilation.Options.IsDialectVO && this.Compilation.Options.VOStringComparisons)
             {
                 // VO Style String Comparison
                 type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // There should be 2 overloads in VulcanRTFuncs:
                 // public static bool __InexactEquals(__Usual ul, string uR)
                 // public static bool __InexactEquals(__Usual uL, __Usual uR)
-                // Switch to overload with string when RHS = STRING 
+                // Switch to overload with string when RHS = STRING
                 opMeth = (MethodSymbol)symbols[0];
                 if (right.Type?.SpecialType == SpecialType.System_String)
                 {
@@ -141,7 +141,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // There should be 2 overloads in VulcanRTFuncs:
                 // public static bool __InexactNotEquals(__Usual ul, string uR)
                 // public static bool __InexactNotEquals(__Usual uL, __Usual uR)
-                // Switch to overload with string when RHS = STRING 
+                // Switch to overload with string when RHS = STRING
                 opMeth = (MethodSymbol)symbols[0];
                 if (right.Type?.SpecialType == SpecialType.System_String)
                 {
@@ -222,27 +222,27 @@ namespace Microsoft.CodeAnalysis.CSharp
         private VOOperatorType NeedsVOOperator(BinaryExpressionSyntax node, BoundExpression left, BoundExpression right)
         {
             // Check if a special XSharp binary operation is needed. This is needed when:
-            // 
+            //
             // Comparison  (>, >=, <, <=) operator and this.Compilation.Options.VOStringComparisons = true
             // Single Equals Operator and LHS and RHS are string                    // STRING = STRING
             // Single Equals Operator and LHS or RHS is USUAL                       // <any> = USUAL or USUAL = <any>
             // Not equals operator and LHS = USUAL and RHS is USUAL or STRING       // USUAL != STRING or USUAL != USUAL
             // Minus Operator and LHS and RHS is STRING                             // STRING - STRING
             // Minus Operator and LHS or  RHS is STRING and other side is USUAL     // STRING - USUAL or USUAL - STRING
-            // 
-            VOOperatorType opType = VOOperatorType.None; 
-            var xnode = node.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.BinaryExpressionContext;
+            //
+            VOOperatorType opType = VOOperatorType.None;
+            var xnode = node.XNode as XSharpParser.BinaryExpressionContext;
             if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
                 return opType;
-            if (Compilation.Options.IsDialectVO )
+            if (Compilation.Options.IsDialectVO)
             {
                 var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                 TypeSymbol leftType = left.Type;
                 TypeSymbol rightType = right.Type;
                 switch (xnode.Op.Type)
                 {
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.EQ:
-                        if (left.Type?.SpecialType == SpecialType.System_String && 
+                    case XSharpParser.EQ:
+                        if (left.Type?.SpecialType == SpecialType.System_String &&
                             (right.Type?.SpecialType == SpecialType.System_String || right.Type == typeUsual))
                         {
                             opType = VOOperatorType.SingleEqualsString;
@@ -252,17 +252,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                             opType = VOOperatorType.SingleEqualsUsual;
                         }
                         break;
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.NEQ:
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.NEQ2:
-                        if (leftType == typeUsual || rightType == typeUsual ) // || right.Type?.SpecialType == SpecialType.System_String))
+                    case XSharpParser.NEQ:
+                    case XSharpParser.NEQ2:
+                        if (leftType == typeUsual || rightType == typeUsual) // || right.Type?.SpecialType == SpecialType.System_String))
                         {
                             opType = VOOperatorType.NotEqualsUsual;
                         }
                         break;
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.GT:
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.GTE:
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.LT:
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.LTE:
+                    case XSharpParser.GT:
+                    case XSharpParser.GTE:
+                    case XSharpParser.LT:
+                    case XSharpParser.LTE:
                         if (left.Type == typeUsual || right.Type == typeUsual)
                         {
                             // when LHS or RHS == USUAL then do not compare with CompareString
@@ -275,7 +275,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             opType = VOOperatorType.CompareString;
                         }
                         break;
-                    case LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.MINUS:
+                    case XSharpParser.MINUS:
                         if (left.Type?.SpecialType == SpecialType.System_String)
                         {
                             if (right.Type?.SpecialType == SpecialType.System_String || rightType == typeUsual)
@@ -293,7 +293,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         break;
                 }
             }
-            else 
+            else
             {
                 switch (node.Kind())
                 {
@@ -314,6 +314,34 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return opType;
         }
+        private void AdjustVOUsualLogicOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, DiagnosticBag diagnostics)
+        {
+            var xnode = node.XNode as XSharpParser.BinaryExpressionContext;
+            if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
+                return;
+            // check for Logic operations with Usual. If that is the case then add a conversion to the expression
+            switch (xnode.Op.Type)
+            {
+                case XSharpParser.LOGIC_AND:
+                case XSharpParser.LOGIC_OR:
+                case XSharpParser.LOGIC_XOR:
+                case XSharpParser.AND:
+                case XSharpParser.OR:
+                    var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+                    var boolType = this.GetSpecialType(SpecialType.System_Boolean,diagnostics, node);
+                    if (left.Type == usualType)
+                    {
+                        left = CreateConversion(left, boolType, diagnostics);
+                    }
+
+                    if (right.Type == usualType)
+                    {
+                        right = CreateConversion(right, boolType, diagnostics);
+                    }
+                    break;
+            }
+            return;
+        }
+
     }
 }
-

@@ -112,5 +112,33 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return BindIndexerAccess(node, expr, analyzedArguments, diagnostics);
         }
+        private bool CheckValidRefOmittedArguments(OverloadResolutionResult<MethodSymbol> result, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        {
+            for (int i = 0; i < analyzedArguments.Arguments.Count; i++)
+            {
+                if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
+                {
+                    var arg = analyzedArguments.Arguments[i];
+                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private bool CheckValidRefOmittedArguments(OverloadResolutionResult<PropertySymbol> result, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
+        {
+            for (int i = 0; i < analyzedArguments.Arguments.Count; i++)
+            {
+                if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
+                {
+                    var arg = analyzedArguments.Arguments[i];
+                    if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
+                        return false;
+                }
+            }
+            return true;
+        }
+
     }
 }

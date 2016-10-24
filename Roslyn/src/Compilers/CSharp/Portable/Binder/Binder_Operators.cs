@@ -492,6 +492,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return BindVOBinaryOperator(node, diagnostics, left, right, ref compoundStringLength,opType);
             }
+            // Logical Operators on USUALS require a conversion
+            AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
 #endif
             LookupResultKind resultKind;
             ImmutableArray<MethodSymbol> originalUserDefinedOperators;
@@ -656,6 +658,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 binary = (BinaryExpressionSyntax)child.Parent;
                 BoundExpression right = BindValue(binary.Right, diagnostics, BindValueKind.RValue);
 
+
                 left = BindConditionalLogicalOperator(binary, left, right, diagnostics);
                 child = binary;
             }
@@ -670,6 +673,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             Debug.Assert(kind == BinaryOperatorKind.LogicalAnd || kind == BinaryOperatorKind.LogicalOr);
 
+
+#if XSHARP
+            // Logical Operators on USUALS require a conversion
+            AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
+#endif
             // If either operand is bad, don't try to do binary operator overload resolution; that will just
             // make cascading errors.
 

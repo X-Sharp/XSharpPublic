@@ -1106,44 +1106,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private AttributeSyntax EncodeVulcanDefaultParameter(XP.ExpressionContext initexpr )
         {
-            if (initexpr is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext) initexpr).Expr is XP.LiteralExpressionContext)
+            if (initexpr is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)initexpr).Expr is XP.LiteralExpressionContext)
             {
                 var litexpr = ((XP.PrimaryExpressionContext)initexpr).Expr as XP.LiteralExpressionContext;
                 var token = litexpr.Literal.Token;
+                var nullExpr = SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
                 switch (token.Type)
                 {
+                    case XP.NIL:
+                        return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(1));               // 1 = Missing.Value
                     case XP.NULL_DATE:
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(2));               // 2 = Date
                     case XP.DATE_CONST:
+                        DateTime dt ;
                         int[] elements = DecodeDateConst(token.Text);
                         if (elements != null)
-                        {
-                            var dt = new DateTime(elements[0], elements[1], elements[2]);
-                            return MakeDefaultParameter(GenerateLiteral(dt.Ticks), GenerateLiteral(2));    // 2 = Date, value in ticks
-                        }
-                        break;
+                            dt = new DateTime(elements[0], elements[1], elements[2]);
+                        else
+                            dt = new DateTime(0L);
+                        return MakeDefaultParameter(GenerateLiteral(dt.Ticks), GenerateLiteral(2));    // 2 = Date, value in ticks
+                    case XP.NULL_SYMBOL:
+                        return MakeDefaultParameter(nullExpr, GenerateLiteral(3));                      // 3 = Symbol, value is empty
                     case XP.SYMBOL_CONST:
                         var symvalue = litexpr.Literal.Token.Text.Substring(1);
                         return MakeDefaultParameter(GenerateLiteral(symvalue), GenerateLiteral(3));      // 3 = Symbol, value is a string
                     case XP.NULL_PSZ:
-                        var nullExpr = SyntaxFactory.LiteralExpression(token.ExpressionKindLiteral(), token.SyntaxLiteralValue(_options));
                         return MakeDefaultParameter(nullExpr, GenerateLiteral(4));                       // 4 = PSZ, null = empty
                     case XP.NULL_PTR:
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(5));            // 5 = IntPtr
+                    case XP.NULL_ARRAY:
+                    case XP.NULL_STRING:
+                    case XP.NULL_OBJECT:
+                    case XP.NULL_CODEBLOCK:
+                        return MakeDefaultParameter(nullExpr, GenerateLiteral(0));                          // 0 = regular .Net Value
                     default:
                         return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
-                }
-            }
-            else
-            {
-                var text = initexpr.GetText().ToLower();
-                switch (text)
-                {
-                    case "missing.value":
-                    case "reflection.missing.value":
-                    case "system.reflection.missing.value":
-                    case "global::system.reflection.missing.value":
-                        return MakeDefaultParameter(GenerateLiteral(0), GenerateLiteral(1));                // 1 = Missing.Value
                 }
             }
             return null;

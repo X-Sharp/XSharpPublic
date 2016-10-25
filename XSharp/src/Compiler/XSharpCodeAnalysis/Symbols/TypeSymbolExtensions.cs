@@ -172,7 +172,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
                         if (desc == 0)
-                            return ConstantValue.Create(attr.CommonConstructorArguments[0].Value, attr.CommonConstructorArguments[0].Type.SpecialType);
+                        {
+                            var arg = attr.CommonConstructorArguments[0];
+                            if (arg.Type != null && arg.Value != null)
+                                return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                            else
+                                return null;
+                        }
                         else
                             return null;
                     }

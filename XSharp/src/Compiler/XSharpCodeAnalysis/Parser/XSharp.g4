@@ -349,7 +349,8 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
 classmember			: Member=method										#clsmethod
                     | (Attributes=attributes)?
                       (Modifiers=constructorModifiers)?
-                      CONSTRUCTOR (ParamList=parameterList)? (CallingConvention=callingconvention)? end=EOS
+                      CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
+					  (CallingConvention=callingconvention)? end=EOS
                       (Chain=(SELF | SUPER)
 					  (
 						  (LPAREN RPAREN)

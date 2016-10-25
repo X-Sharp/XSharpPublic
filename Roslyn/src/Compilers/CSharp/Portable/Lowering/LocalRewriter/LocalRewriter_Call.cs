@@ -383,15 +383,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             // We need to do a fancy rewrite under the following circumstances:
             // (1) a params array is being used; we need to generate the array.
             // (2) there were named arguments that reordered the arguments; we might
-            //     have to generate temporaries to ensure that the arguments are 
+            //     have to generate temporaries to ensure that the arguments are
             //     evaluated in source code order, not the actual call order.
             // (3) there were optional parameters that had no corresponding arguments.
             //
             // If none of those are the case then we can just take an early out.
 
             // An applicable "vararg" method could not possibly be applicable in its expanded
-            // form, and cannot possibly have named arguments or used optional parameters, 
-            // because the __arglist() argument has to be positional and in the last position. 
+            // form, and cannot possibly have named arguments or used optional parameters,
+            // because the __arglist() argument has to be positional and in the last position.
 
 
 #if XSHARP
@@ -426,7 +426,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
             // We have:
-            // * a list of arguments, already converted to their proper types, 
+            // * a list of arguments, already converted to their proper types,
             //   in source code order. Some optional arguments might be missing.
             // * a map showing which parameter each argument corresponds to. If
             //   this is null, then the argument to parameter mapping is one-to-one.
@@ -446,10 +446,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // This will be created as a call with receiver A(), symbol M, argument list ( B()[C()], D() ),
             // name list ( y, x ) and ref list ( ref, out ).  We can rewrite this into temporaries:
             //
-            // A().M( 
+            // A().M(
             //    seq ( ref int temp_y = ref B()[C()], out D() ),
             //    temp_y );
-            // 
+            //
             // Now we have a call with receiver A(), symbol M, argument list as shown, no name list,
             // and ref list ( out, value ). We do not want to pass a *ref* to temp_y; the temporary
             // storage is not the thing being ref'd! We want to pass the *value* of temp_y, which
@@ -469,7 +469,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Foo(z: this.p, y: this.Q(), x: (object)10)
             //
             // The boxing of 10 can be reordered, but the fetch of this.p has to happen before the
-            // call to this.Q() because the call could change the value of this.p. 
+            // call to this.Q() because the call could change the value of this.p.
             //
             // We start by binding everything that is not obviously reorderable as a temporary, and
             // then run an optimizer to remove unnecessary temporaries.
@@ -485,9 +485,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             BuildStoresToTemps(expanded, argsToParamsOpt, argumentRefKindsOpt, rewrittenArguments, actualArguments, refKinds, storesToTemps);
 
 
-            // all the formal arguments, except missing optionals, are now in place. 
+            // all the formal arguments, except missing optionals, are now in place.
             // Optimize away unnecessary temporaries.
-            // Necessary temporaries have their store instructions merged into the appropriate 
+            // Necessary temporaries have their store instructions merged into the appropriate
             // argument expression.
             ArrayBuilder<LocalSymbol> temporariesBuilder = ArrayBuilder<LocalSymbol>.GetInstance();
             OptimizeTemporaries(actualArguments, refKinds, storesToTemps, temporariesBuilder);
@@ -500,7 +500,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // Step three: Now fill in the optional arguments.
             InsertMissingOptionalArguments(syntax, optionalParametersMethod.Parameters, actualArguments, enableCallerInfo);
-            
+
             if (isComReceiver)
             {
                 RewriteArgumentsForComCall(parameters, actualArguments, refKinds, temporariesBuilder);
@@ -563,12 +563,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // order here.
                     //
                     // Fortunately, we do disallow M(x : 123, x : 345, x : 456).
-                    // 
+                    //
                     // Here's what we'll do. If all the remaining arguments
-                    // correspond to elements in the parameter array then 
+                    // correspond to elements in the parameter array then
                     // we can bail out here without creating any temporaries.
                     // The next step in the call rewriter will deal with gathering
-                    // up the elements. 
+                    // up the elements.
                     //
                     // However, if there are other elements after this one
                     // that do not correspond to elements in the parameter array
@@ -621,9 +621,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (tempStoreArgument != null)
             {
                 paramArray.Add(tempStoreArgument);
-                // Special case: see comment in BuildStoresToTemps above; if there 
-                // is an argument already in the slot then it is the only element in 
-                // the params array. 
+                // Special case: see comment in BuildStoresToTemps above; if there
+                // is an argument already in the slot then it is the only element in
+                // the params array.
             }
             else
             {
@@ -641,8 +641,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             var paramArrayType = parameters[paramsParam].Type;
             var arrayArgs = paramArray.ToImmutableAndFree();
 
-            // If this is a zero-length array, rather than using "new T[0]", optimize with "Array.Empty<T>()" 
-            // if it's available.  However, we also disable the optimization if we're in an expression lambda, the 
+            // If this is a zero-length array, rather than using "new T[0]", optimize with "Array.Empty<T>()"
+            // if it's available.  However, we also disable the optimization if we're in an expression lambda, the
             // point of which is just to represent the semantics of an operation, and we don't know that all consumers
             // of expression lambdas will appropriately understand Array.Empty<T>().
             if (arrayArgs.Length == 0 && !_inExpressionLambda)
@@ -888,7 +888,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         /// </param>
         /// <remarks>
         /// DELIBERATE SPEC VIOLATION: When processing an implicit invocation of an <c>Add</c> method generated
-        /// for an element-initializer in a collection-initializer, the parameter <paramref name="enableCallerInfo"/> 
+        /// for an element-initializer in a collection-initializer, the parameter <paramref name="enableCallerInfo"/>
         /// is set to <see cref="ThreeState.True"/>. It means that if the optional parameter is annotated with <see cref="CallerLineNumberAttribute"/>,
         /// <see cref="CallerFilePathAttribute"/> or <see cref="CallerMemberNameAttribute"/>, and there is no explicit argument corresponding to it,
         /// we will provide caller information as a value of this parameter.
@@ -898,7 +898,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression GetDefaultParameterValue(CSharpSyntaxNode syntax, ParameterSymbol parameter, ThreeState enableCallerInfo)
         {
             // TODO: Ideally, the enableCallerInfo parameter would be of just bool type with only 'true' and 'false' values, and all callers
-            // explicitly provided one of those values, so that we do not rely on shape of syntax nodes in the rewriter. There are not many immediate callers, 
+            // explicitly provided one of those values, so that we do not rely on shape of syntax nodes in the rewriter. There are not many immediate callers,
             // but often the immediate caller does not have the required information, so all possible call chains should be analyzed and possibly updated
             // to pass this information, and this might be a big task. We should consider doing this when the time permits.
 
@@ -916,10 +916,40 @@ namespace Microsoft.CodeAnalysis.CSharp
                 defaultConstantValue = parameter.GetVODefaultParameter();
                 if (defaultConstantValue == null)
                     return null;
+                if ( parameterType is NamedTypeSymbol &&
+                    ((NamedTypeSymbol) parameterType).ConstructedFrom == _compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                {
+
+                    if (defaultConstantValue.StringValue != null)
+                    {
+                        // ToDo
+                        // when the parameter is of type PSZ and there was a literal default string
+                        // then Vulcan generates a special literal array in the calling code.
+                        // For example Foo(s := "abcë" AS PSZ) becomes a
+                        // Foo([DefaultParameterValue("abc\x00eb", 0)] __Psz s)
+                        //
+                        // and in the calling code the default parameter is stored as a field of the <Module> class
+                        //
+                        // .field assembly static valuetype $ArrayType$5 䌤㘲␵$PSZ$_15_1 = ((61 62 63 EB 00))
+                        //
+                        // and a type is declared for the array size of 5 bytes. This type is declared in the global namespace:
+                        //
+                        // [StructLayout(LayoutKind.Explicit, Size=5, Pack=1)]
+                        //    public struct $ArrayType$5
+                        //    {
+                        //    }
+                        //
+                        // The call to the function becomes
+                        // Foo((__Psz) &䌤㘲␵$PSZ$_15_1);
+                        // Nikos can you implement something like this ?
+                        //
+                        defaultConstantValue = ConstantValue.Null;
+                    }
+                }
             }
 #endif
             // For compatibility with the native compiler we treat all bad imported constant
-            // values as default(T).  
+            // values as default(T).
             if (defaultConstantValue != null && defaultConstantValue.IsBad)
             {
                 defaultConstantValue = ConstantValue.Null;
@@ -1136,7 +1166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 RefKind argRefKind = argsRefKindsBuilder[argIndex];
 
                 // Rewrite only if the argument was passed with no ref/out and the
-                // parameter was declared ref. 
+                // parameter was declared ref.
                 if (argRefKind != RefKind.None || paramRefKind != RefKind.Ref)
                 {
                     continue;

@@ -316,6 +316,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private void AdjustVOUsualLogicOperands(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right, DiagnosticBag diagnostics)
         {
+            if (!Compilation.Options.IsDialectVO)
+                return;
             var xnode = node.XNode as XSharpParser.BinaryExpressionContext;
             if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
                 return;

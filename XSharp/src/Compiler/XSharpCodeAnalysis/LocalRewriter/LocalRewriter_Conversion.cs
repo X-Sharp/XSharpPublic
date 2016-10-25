@@ -11,7 +11,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
     {
-        private ConversionKind UnBoxVOType(BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
+        private ConversionKind UnBoxVOType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
             if (_compilation.Options.IsDialectVO)
             {

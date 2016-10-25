@@ -789,7 +789,7 @@ CONSTRUCTOR(n AS STRING) AS VOID
 SUPER(n)
 END CLASS
 ");
-            CompileWithErrors(s);
+            CompileAndLoadWithoutErrors(s);
         }
 
 

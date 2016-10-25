@@ -203,7 +203,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                     return ConstantValue.Create ((string)arg.Value);
                             case 5:     
                                 // IntPtr, return value as IntPtr
-                                return ConstantValue.Create((IntPtr)arg.Value);
+                                if (arg.Value == null)
+                                    return ConstantValue.Null;
+                                else
+                                {
+                                    int i = arg.DecodeValue<int>(SpecialType.System_Int32);
+                                    IntPtr p = new IntPtr(i);
+                                    return ConstantValue.Create(p);
+                                }
                             default:
                                 return ConstantValue.Null;
                         }

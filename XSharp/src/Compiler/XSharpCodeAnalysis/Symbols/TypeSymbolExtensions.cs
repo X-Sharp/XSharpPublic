@@ -171,16 +171,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     if (atype.Name == "DefaultParameterValueAttribute" && CheckFullName(atype.ContainingSymbol, s_VulcanInternalNamespace))
                     {
                         int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
-                        if (desc == 0)
+
+                        var arg = attr.CommonConstructorArguments[0];
+                        switch (desc)
                         {
-                            var arg = attr.CommonConstructorArguments[0];
-                            if (arg.Type != null && arg.Value != null)
-                                return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
-                            else
-                                return null;
+                            case 0: 
+                                // normal .Net Object
+                                // return value  or null
+                                if (arg.Type != null && arg.Value != null)
+                                    return ConstantValue.Create(arg.Value, arg.Type.SpecialType);
+                                else
+                                    return ConstantValue.Null;
+                            case 1:
+                                // Todo: System.Reflection.Missing.Value
+                                return ConstantValue.Null;
+                            case 2:     
+                                // Date, value should be long of ticks. Return DateTime
+                                DateTime dt = new DateTime((long)arg.Value);
+                                return ConstantValue.Create(dt);
+                            case 3:
+                                // Symbol, value should be a string literal or null
+                                if (arg.Value == null)
+                                    return ConstantValue.Null;
+                                else
+                                    return ConstantValue.Create((string)arg.Value);
+                            case 4:     
+                                // Psz, value should be a string or null
+                                if (arg.Value == null)
+                                    return ConstantValue.Null;
+                                else
+                                    return ConstantValue.Create ((string)arg.Value);
+                            case 5:     
+                                // IntPtr, return value as IntPtr
+                                return ConstantValue.Create((IntPtr)arg.Value);
+                            default:
+                                return ConstantValue.Null;
                         }
-                        else
-                            return null;
                     }
                 }
             }

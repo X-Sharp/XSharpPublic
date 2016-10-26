@@ -213,3 +213,7 @@ ModelManifest.xml
 /XSharp/src/Runtime
 XSharp/src/Tools/Inno/Preprocessed.iss
 XSharp/docs/Help/
+
+#XIDE Files
+*.bak
+*.vicfg

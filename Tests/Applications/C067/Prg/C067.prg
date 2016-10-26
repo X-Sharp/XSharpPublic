@@ -1,0 +1,5 @@
+// 67. compiler crash
+ABSTRACT CLASS TestClass
+	ABSTRACT ACCESS MyProp AS INT
+END CLASS
+

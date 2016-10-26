@@ -1,0 +1,5 @@
+// 4. compiler crash
+STRUCTURE xFLOAT
+CONSTRUCTOR(n AS INT)
+END STRUCTURE
+

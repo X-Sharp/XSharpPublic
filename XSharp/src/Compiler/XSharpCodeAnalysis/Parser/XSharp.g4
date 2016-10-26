@@ -215,7 +215,7 @@ class_				: (Attributes=attributes)? (Modifiers=classModifiers)?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS						// Optional typeparameterconstraints for Generic Class
                       (Members+=classmember)*
-                      e=END CLASS EOS
+                      END CLASS EOS
 					  ;
 
 classModifiers		: ( Tokens+=(NEW | PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | ABSTRACT | SEALED | STATIC | UNSAFE | PARTIAL) )+
@@ -319,7 +319,7 @@ property			: (Attributes=attributes)? (Modifiers=memberModifiers)?
                       PROPERTY (SELF ParamList=propertyParameterList | (ExplicitIface=nameDot)? Id=identifier) (ParamList=propertyParameterList)?  (AS Type=datatype)?
                       ( Auto=AUTO (AutoAccessors+=propertyAutoAccessor)* (ASSIGN_OP Initializer=expression)? end=EOS	// Auto
                       | (LineAccessors+=propertyLineAccessor)+ end=EOS													// Single Line
-                      | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS								// Multi Line
+                      | Multi=EOS (Accessors+=propertyAccessor)+  END PROPERTY? EOS										// Multi Line
                       )
                     ;
 
@@ -347,6 +347,7 @@ propertyAccessor    : Attributes=attributes? Modifiers=memberModifiers?
                     ;
 
 classmember			: Member=method										#clsmethod
+				    | decl=declare										#clsdeclare
                     | (Attributes=attributes)?
                       (Modifiers=constructorModifiers)?
                       CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
@@ -378,6 +379,9 @@ classmember			: Member=method										#clsmethod
 
 constructorModifiers: ( Tokens+=( PUBLIC | EXPORT | PROTECTED | INTERNAL | PRIVATE | HIDDEN | EXTERN | STATIC ) )+
                     ;
+
+declare				: DECLARE (ACCESS | ASSIGN | METHOD )  Ids+=identifier (COMMA Ids+=identifier)* EOS
+					;
 
 destructorModifiers : ( Tokens+=EXTERN )+
                     ;

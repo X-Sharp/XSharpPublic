@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -128,6 +129,7 @@ namespace Antlr4.Runtime {
                 ErrorData = new List<ParseErrorData>();
             ErrorData.Add(e);
         }
+
     }
 
 
@@ -195,6 +197,26 @@ namespace Antlr4.Runtime {
                 iBPLength = this.Start.StopIndex - this.Start.StartIndex + 1;
             if (iBPLength < 0)
                 iBPLength = 1;
+        }
+        internal string ParentName
+        {
+            get
+            {
+                string name = "";
+                if (Parent is XSharpParser.IEntityContext)
+                {
+                    name = ((XSharpParser.IEntityContext)Parent).Name + ".";
+                }
+                else if (Parent.Parent is XSharpParser.IEntityContext)
+                {
+                    name = ((XSharpParser.IEntityContext)Parent.Parent).Name + ".";
+                }
+                else if (Parent is XSharpParser.Namespace_Context)
+                {
+                    name = ((XSharpParser.Namespace_Context)Parent).Name.GetText() + "." ;
+                }
+                return name;
+            }
         }
     }
 
@@ -332,9 +354,15 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
         {
             StatementBlockContext Statements { get; }
         }
-
+        public interface ITypeContext : IEntityContext
+        {
+            IList<ClassmemberContext> Members { get; }
+        }
         public interface IEntityContext : IRuleNode {
             EntityData Data { get; }
+            IList<ParameterContext> Params { get; }
+            DatatypeContext ReturnType { get; }
+            String Name { get; }
         }
         [FlagsAttribute]
         enum MethodFlags {
@@ -433,74 +461,156 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
 
         public partial class ProcedureContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + this.Id.GetText();
         }
 
         public partial class FunctionContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
-
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + this.Id.GetText();
         }
 
         public partial class MethodContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name
+            {
+                get
+                {
+                    string name= this.Id.GetText();
+                    if (this.T.Token.Type == XSharpParser.ACCESS)
+                        name += ":Access";
+                    else if (this.T.Token.Type == XSharpParser.ASSIGN)
+                        name += ":Assign";
+                    else
+                        name += "()";
+                    return ParentName + name;
+                }
+            }
         }
 
         public partial class EventAccessorContext : ParserRuleContext, IEntityContext
         {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + Key.Text;
         }
 
         public partial class PropertyAccessorContext : ParserRuleContext, IEntityContext
         {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + Key.Text;
         }
 
         public partial class ClsctorContext : ClassmemberContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + "ctor";
         }
         public partial class ClsdtorContext : ClassmemberContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + "Finalize";
         }
         public partial class Event_Context : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + Id.GetText();
         }
         public partial class PropertyContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
             public EntityData Data { get { return data; } }
-
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + Id.GetText();
         }
         public partial class Operator_Context : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name
+            {
+                get
+                {
+                    string name;
+                    if (Operation != null)
+                        name = Operation.GetText() + Gt?.Text;
+                    else
+                        name = Conversion.GetText();
+                    return ParentName + name ;
+                }
+            }
+
         }
         public partial class Delegate_Context : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => ParentName + Id.GetText();
         }
-        public partial class Class_Context : ParserRuleContext, IEntityContext {
+        public partial class Interface_Context : ParserRuleContext, ITypeContext
+        {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + Id.GetText();
+
+            public IList<ClassmemberContext> Members => this._Members;
         }
-        public partial class Structure_Context : ParserRuleContext, IEntityContext {
+        public partial class Class_Context : ParserRuleContext, ITypeContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + Id.GetText();
+
+            public IList<ClassmemberContext> Members => this._Members;
+        }
+        public partial class Structure_Context : ParserRuleContext, ITypeContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + Id.GetText();
+            public IList<ClassmemberContext> Members => this._Members;
         }
         public partial class VodllContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => this.ParamList?._Params;
+            public DatatypeContext ReturnType => this.Type;
+            public String Name => this.Id.GetText();
         }
 
         public partial class VoglobalContext : ParserRuleContext, IEntityContext
         {
             EntityData data = new EntityData();
-            public EntityData Data { get { return data; } }
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => this.Vars.DataType;
+            public String Name => this.Vars._Var.FirstOrDefault().Id.GetText();
         }
         public partial class FuncprocModifiersContext: ParserRuleContext {
             public bool IsStaticVisible { get; set; }

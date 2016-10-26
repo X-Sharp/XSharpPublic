@@ -644,12 +644,25 @@ lexer grammar XSharpLexer;
 		get {return _OldComment;}
 		set {_OldComment = value;}
 	}
-
+	static Object kwlock = new Object();
+	static System.Collections.Generic.Dictionary<string,int> voKwIds = null;
+	static System.Collections.Generic.Dictionary<string,int> xsKwIds = null;
 	System.Collections.Generic.Dictionary<string,int> _kwIds;
 
 	System.Collections.Generic.Dictionary<string,int> kwIds {
 		get {
-			if (_kwIds == null) {
+			if (_kwIds == null)
+			{
+				lock (kwlock)
+				{
+					if (! _Four)
+						_kwIds = xsKwIds;
+					else
+						_kwIds = voKwIds;
+				}
+			}
+			if (_kwIds == null)
+			{
 				_kwIds = new System.Collections.Generic.Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
 
 				var VoKeywords = new System.Collections.Generic.Dictionary<string,int>
@@ -778,7 +791,7 @@ lexer grammar XSharpLexer;
 
 				if (! _Four)
 				{
-                    // These are predefined abbreviations of some keywords that are also valid in Vulcan
+					// These are predefined abbreviations of some keywords that are also valid in Vulcan
 					VoKeywords.Add("PROC", PROCEDURE);
 					VoKeywords.Add("FUNC", FUNCTION);
 					VoKeywords.Add("PROTECT", PROTECTED);
@@ -855,7 +868,7 @@ lexer grammar XSharpLexer;
 
 					// XSharp keywords
 					{"__ARGLIST", ARGLIST},
-                    {"ADD", ADD},
+					{"ADD", ADD},
 					{"ASCENDING", ASCENDING},
 					{"ASSEMBLY", ASSEMBLY},
 					{"ASYNC", ASYNC},
@@ -875,7 +888,7 @@ lexer grammar XSharpLexer;
 					{"MODULE", MODULE},
 					{"ORDERBY", ORDERBY},
 					{"OVERRIDE", OVERRIDE},
-                    {"REMOVE", REMOVE},
+					{"REMOVE", REMOVE},
 					{"SELECT", SELECT},
 					{"SWITCH", SWITCH},
 					{"UNCHECKED", UNCHECKED},
@@ -929,15 +942,22 @@ lexer grammar XSharpLexer;
 					{"__VO13__", MACRO},
 					{"__VO14__", MACRO},
 					{"__VO15__", MACRO},
-                    {"__VO16__", MACRO},
+					{"__VO16__", MACRO},
 					{"__WINDIR__", MACRO},
 					{"__WINDRIVE__", MACRO},
 					{"__XSHARP__", MACRO},
 				};
-                // These keywords are inserted without abbreviations
+				// These keywords are inserted without abbreviations
 				foreach (var text in Keywords.Keys) {
 					var token = Keywords[text];
 					_kwIds.Add(text,token);
+				}
+				lock (kwlock)
+				{
+					if (! _Four)
+						xsKwIds = _kwIds;
+					else
+						voKwIds = _kwIds;
 				}
 			}
 			return _kwIds;

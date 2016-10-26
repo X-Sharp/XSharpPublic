@@ -321,6 +321,20 @@ lexer grammar XSharpLexer;
 						_textSb.Append((char)c);
 						InputStream.Consume();
 					}
+					if (c == '"')			// Old Style Pragma like ~"ONLYEARLY+", treat it as whitespace
+					{
+						_type = WS;
+						_channel = TokenConstants.HiddenChannel;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+						while (true) {
+							c = InputStream.La(1);
+							InputStream.Consume();
+							_textSb.Append((char)c);
+							if (c == '"')
+								break;
+						}
+					}
 					break;
 				case '*':
 					if (/*_OldComment && */LastToken == NL)
@@ -1196,6 +1210,8 @@ ML_COMMENT  : ('/' '*' .*? '*' '/'
 			| '/' '*' .*? EOF		// TODO: Generate an error 'missing End of Comment'
 			)	-> channel(HIDDEN)
 			;
+
+
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
+using System.ComponentModel;
 using System.Linq;
 namespace XSharp.Project
 {
@@ -32,7 +33,9 @@ namespace XSharp.Project
         private FrameworkName targetFrameworkMoniker;
         private Dialect dialect;
         private Platform platformtarget;
-
+        internal const string captPrefer32Bit = "Prefer 32 Bit";
+        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
+        private bool prefer32bit;
         #endregion Fields
 
         #region Constructors
@@ -90,8 +93,18 @@ namespace XSharp.Project
             set { this.platformtarget = value; this.IsDirty = true; }
         }
 
-
         [ResourcesCategory(Resources.Application)]
+        [DisplayName(captPrefer32Bit)]
+        [Description(descPrefer32Bit)]
+        public bool Prefer32Bit
+        {
+            get { return this.prefer32bit; }
+            set { this.prefer32bit = value;  this.IsDirty = true; }
+        }
+
+
+
+            [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.DefaultNamespace)]
         [ResourcesDescription(Resources.DefaultNamespaceDescription)]
         /// <summary>
@@ -221,7 +234,7 @@ namespace XSharp.Project
             this.rootNamespace = this.ProjectMgr.GetProjectProperty(nameof(RootNamespace), false);
             this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
             this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
-
+            this.prefer32bit = getCfgLogic(nameof(Prefer32Bit), true);
             if (outputType != null && outputType.Length > 0)
             {
                 try
@@ -292,6 +305,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(ApplicationIcon), this.applicationIcon);
             this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(PlatformTarget), this.platformtarget.ToString());
+            this.ProjectMgr.SetProjectProperty(nameof(Prefer32Bit), this.prefer32bit.ToString());
 
             if (reloadRequired)
             {

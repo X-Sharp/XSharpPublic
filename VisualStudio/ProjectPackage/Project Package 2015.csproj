@@ -512,25 +512,20 @@
   </ItemGroup>
   <ItemGroup>
     <ZipProject Include="Templates\Projects\WPFApplication\App.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipProject>
     <ZipProject Include="Templates\Projects\WPFApplication\WPFWindow1.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipProject>
   </ItemGroup>
   <ItemGroup>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFPage\Page1.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFUserControl\UserControl1.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipItem>
     <ZipItem Include="Templates\ProjectItems\WPF\WPFWindow\WPFWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ZipItem>
   </ItemGroup>

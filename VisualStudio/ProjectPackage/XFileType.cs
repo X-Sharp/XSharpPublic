@@ -204,7 +204,7 @@ namespace XSharp.Project
                     break;
 
             }
-            return -1;
+            return ret;
         }
 
     }

@@ -1,6 +1,6 @@
 //
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 
@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Project;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 namespace XSharp.Project
 {
     /// <summary>
@@ -84,18 +85,26 @@ namespace XSharp.Project
             set { this.dialect = value; this.IsDirty = true; }
         }
 
+        [RefreshProperties(System.ComponentModel.RefreshProperties.All)]
         [ResourcesCategory(Resources.Application)]
         [LocDisplayName("Platform Target")]
         [ResourcesDescription("Select the platform target when compiling this project")]
         public Platform PlatformTarget
         {
             get { return this.platformtarget; }
-            set { this.platformtarget = value; this.IsDirty = true; }
+            set
+            {
+                this.platformtarget = value;
+                this.IsDirty = true;
+                // now enable/disable the readonly flag on Prefer32bit
+                EnableDisablePrefer32Bit();
+            }
         }
 
         [ResourcesCategory(Resources.Application)]
         [DisplayName(captPrefer32Bit)]
         [Description(descPrefer32Bit)]
+        [ReadOnly(true)]
         public bool Prefer32Bit
         {
             get { return this.prefer32bit; }
@@ -280,7 +289,7 @@ namespace XSharp.Project
             {
                 this.dialect = Dialect.Core;
             }
-
+            EnableDisablePrefer32Bit();
 
         }
 
@@ -329,6 +338,17 @@ namespace XSharp.Project
 
         #endregion
 
+        private void EnableDisablePrefer32Bit()
+        {
+            PropertyDescriptor descriptor = TypeDescriptor.GetProperties(this.GetType())["Prefer32Bit"];
+            ReadOnlyAttribute attribute = (ReadOnlyAttribute)
+                                          descriptor.Attributes[typeof(ReadOnlyAttribute)];
+            FieldInfo fieldToChange = attribute.GetType().GetField("isReadOnly",
+                                             System.Reflection.BindingFlags.NonPublic |
+                                             System.Reflection.BindingFlags.Instance);
+            fieldToChange.SetValue(attribute, platformtarget != Platform.AnyCPU);
+
+        }
 
     }
 }

@@ -161,9 +161,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             parser.AllowFunctionInsideClass = true;     // always for now
             if(_options.Dialect == XSharpDialect.VO) {
                 parser.AllowXBaseVariables = true;
+                parser.AllowNamedArgs = false;
             }
             else {                                      // memvar and private statements are not recognized in Vulcan
                 parser.AllowXBaseVariables = false;
+                parser.AllowNamedArgs = true;
             }
 //#if DEBUG
             var errorListener = new XSharpErrorListener(_fileName, parseErrors);

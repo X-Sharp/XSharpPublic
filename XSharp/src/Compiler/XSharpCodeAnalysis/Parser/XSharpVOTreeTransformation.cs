@@ -792,23 +792,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public override void ExitBracketedargument([NotNull] XP.BracketedargumentContext context)
+        public override void ExitUnnamedArgument([NotNull] XP.UnnamedArgumentContext context)
         {
             if (context.Expr == null)
             {
                 context.Put(MakeArgument(GenerateNIL()));
                 return;
             }
-            base.ExitBracketedargument(context);
+            base.ExitUnnamedArgument(context);
         }
 
 
-        public override void ExitArgument([NotNull] XP.ArgumentContext context) {
+        public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context) {
             if (context.Expr == null) {
                 context.Put(MakeArgument(GenerateNIL()));
                 return;
             }
-            base.ExitArgument(context);
+            base.ExitNamedArgument(context);
         }
 
         public override void ExitBinaryExpression([NotNull] XP.BinaryExpressionContext context) {

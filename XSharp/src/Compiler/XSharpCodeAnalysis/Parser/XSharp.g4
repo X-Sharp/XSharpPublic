@@ -36,6 +36,12 @@ grammar XSharp;
         get {return _xBaseVars;}
         set {_xBaseVars = value;}
     }
+    bool _namedArgs = false;
+	public bool AllowNamedArgs
+    {
+        get {return _namedArgs;}
+        set {_namedArgs = value;}
+    }
 }
 
 
@@ -647,7 +653,7 @@ primary				: Key=SELF													#selfExpression
                     | Query=linqQuery											#queryExpression        // LINQ
                     | Type=datatype LCURLY Obj=expression COMMA
                       ADDROF Func=name LPAREN RPAREN RCURLY						#delegateCtorCall		// delegate{ obj , @func() }
-                    | Type=datatype LCURLY                       RCURLY			#ctorCall				// id{  }
+                    | Type=datatype LCURLY RCURLY Init=objectOrCollectioninitializer?	#ctorCall		// id{  } with optional { Name1 := Expr1, [Name<n> := Expr<n>]}
                     | Type=datatype LCURLY ArgList=argumentList  RCURLY			#ctorCall				// id{ expr [, expr...] }
                     | ch=CHECKED LPAREN ( Expr=expression ) RPAREN				#checkedExpression		// checked( expression )
                     | ch=UNCHECKED LPAREN ( Expr=expression ) RPAREN			#checkedExpression		// unchecked( expression )
@@ -687,20 +693,39 @@ boundExpression		: Expr=boundExpression Op=(DOT | COLON) Name=simpleName		#bound
                     | LBRKT ArgList=bracketedArgumentList RBRKT					#bindArrayAccess
                     ;
 
-bracketedArgumentList	: Args+=bracketedargument (COMMA Args+=bracketedargument)*
+
+objectOrCollectioninitializer :	ObjInit=objectinitializer
+                              | CollInit=collectioninitializer
+                              ;
+
+objectinitializer		: LCURLY (Members+=memberinitializer (COMMA Members+=memberinitializer)*)? RCURLY
+						;
+
+memberinitializer		: Name=identifierName ASSIGN_OP Expr=initializervalue
+						;
+
+initializervalue		: Init=objectOrCollectioninitializer // Put this first to make sure we are not matching a literal array for { expr [, expr] }
+						| Expr=expression
+						;
+
+collectioninitializer	: LCURLY Members+=expression (COMMA Members+=expression)* RCURLY
+						;
+
+bracketedArgumentList	: Args+=unnamedArgument (COMMA Args+=unnamedArgument)*
 						;
 
 
-bracketedargument	   // NOTE: Separate rule for bracketedarguments because they cannot use idendifierName syntax
+unnamedArgument	   // NOTE: Separate rule for bracketedarguments because they cannot use idendifierName syntax
 					:  Expr=expression?
                     ;
 
 argumentList		  // NOTE: Optional argumentlist is handled in the rules that use this rule
-					:  Args+=argument (COMMA Args+=argument)*
+					:  Args+=namedArgument (COMMA Args+=namedArgument)*
                     ;
 
-argument			   // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-					:  ( COLON? Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression?
+namedArgument		// NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
+					:  {_namedArgs}?  Name=identifierName ASSIGN_OP  ( RefOut=(REF | OUT) )? Expr=expression?
+					|  ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
 
 

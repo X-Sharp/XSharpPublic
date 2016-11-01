@@ -4631,8 +4631,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!(context.Type is XP.ArrayDatatypeContext)) {
                 var type = context.Type.Get<TypeSyntax>() ;
                 ArgumentListSyntax argList;
+                InitializerExpressionSyntax init = null;
                 if (context.ArgList != null)
+                {
                     argList = context.ArgList.Get<ArgumentListSyntax>();
+                }
                 else
                 {
                     var openParen = SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken);
@@ -4640,7 +4643,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var args = default(SeparatedSyntaxList<ArgumentSyntax>);
                     argList = _syntaxFactory.ArgumentList(openParen, args, closeParen);
                 }
-                context.Put(CreateObject(type, argList,null)); // TODO: (grammar) object creation initializer
+                if (context.Init != null)
+                {
+                    init = context.Init.Get<InitializerExpressionSyntax>();
+                }
+                context.Put(CreateObject(type, argList,init));
             }
             else {
                 var type = (context.Type as XP.ArrayDatatypeContext).TypeName.Get<TypeSyntax>();
@@ -4873,7 +4880,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(args);
         }
 
-        public override void ExitBracketedargument([NotNull] XP.BracketedargumentContext context)
+        public override void ExitUnnamedArgument([NotNull] XP.UnnamedArgumentContext context)
         {
             if (context.Expr == null)
             {
@@ -4898,7 +4905,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(args);
         }
 
-        public override void ExitArgument([NotNull] XP.ArgumentContext context)
+        public override void ExitNamedArgument([NotNull] XP.NamedArgumentContext context)
         {
             if (context.Expr == null) {
                 context.Put(NotInDialect(MakeArgument(GenerateLiteral("")), "Missing arguments"));
@@ -5661,5 +5668,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put((ExpressionSyntax)NotInDialect(GenerateLiteral("macro"), "MACRO compiler"));
             return;
         }
+
+        // object and collection initializers
+        public override void ExitObjectinitializer([NotNull] XP.ObjectinitializerContext context)
+        {
+            var objinit = _syntaxFactory.InitializerExpression(
+                SyntaxKind.ObjectInitializerExpression,
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                MakeSeparatedList<ExpressionSyntax>(context._Members),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            context.Put<InitializerExpressionSyntax>(objinit);
+        }
+        public override void ExitCollectioninitializer([NotNull] XP.CollectioninitializerContext context)
+        {
+            var collinit = _syntaxFactory.InitializerExpression(
+                SyntaxKind.CollectionInitializerExpression,
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                MakeSeparatedList<ExpressionSyntax>(context._Members),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            context.Put<InitializerExpressionSyntax>(collinit);
+        }
+        public override void ExitMemberinitializer([NotNull] XP.MemberinitializerContext context)
+        {
+            var memberinit = _syntaxFactory.AssignmentExpression(
+                SyntaxKind.SimpleAssignmentExpression,
+                context.Name.Get<ExpressionSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                context.Expr.Get<ExpressionSyntax>());
+            context.Put<ExpressionSyntax>(memberinit);
+        }
+        public override void ExitObjectOrCollectioninitializer([NotNull] XP.ObjectOrCollectioninitializerContext context)
+        {
+            if (context.ObjInit != null)
+                context.Put<ExpressionSyntax>(context.ObjInit.Get<ExpressionSyntax>());
+            else
+                context.Put<ExpressionSyntax>(context.CollInit.Get<ExpressionSyntax>());
+
+        }
+        public override void ExitInitializervalue([NotNull] XP.InitializervalueContext context)
+        {
+            if (context.Expr != null)
+                context.Put<ExpressionSyntax>(context.Expr.Get<ExpressionSyntax>());
+            else
+                context.Put<ExpressionSyntax>(context.Init.Get<ExpressionSyntax>());
+        }
+
     }
 }

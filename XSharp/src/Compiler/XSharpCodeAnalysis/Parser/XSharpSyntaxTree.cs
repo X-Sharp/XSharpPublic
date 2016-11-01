@@ -325,10 +325,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var n = XNode;
                 if (n != null)
                 {
-                    if (n is XSharpParser.ArgumentContext)
-                        return ((XSharpParser.ArgumentContext)n).Expr == null;
-                    if (n is XSharpParser.BracketedargumentContext)
-                        return ((XSharpParser.ArgumentContext)n).Expr == null;
+                    if (n is XSharpParser.NamedArgumentContext)
+                        return ((XSharpParser.NamedArgumentContext)n).Expr == null;
+                    if (n is XSharpParser.UnnamedArgumentContext)
+                        return ((XSharpParser.UnnamedArgumentContext)n).Expr == null;
                 }
                 return false;
             }

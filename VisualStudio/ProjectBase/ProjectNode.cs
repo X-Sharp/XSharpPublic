@@ -2795,7 +2795,7 @@ namespace Microsoft.VisualStudio.Project
             }
             else
             {
-                Marshal.ThrowExceptionForHR(retargetingService.OnSetTargetFramework(this, currentTargetFramework.FullName, newTargetFramework.FullName, this, true));
+                var hr = retargetingService.OnSetTargetFramework(this, currentTargetFramework.FullName, newTargetFramework.FullName, this, true);
             }
         }
 

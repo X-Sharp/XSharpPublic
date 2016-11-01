@@ -30,7 +30,7 @@ grammar XSharp;
         get {return _ClsFunc;}
         set {_ClsFunc = value;}
     }
-    bool _xBaseVars = true;
+    bool _xBaseVars = false;
     public bool AllowXBaseVariables
     {
         get {return _xBaseVars;}
@@ -700,12 +700,11 @@ argumentList		  // NOTE: Optional argumentlist is handled in the rules that use 
                     ;
 
 argument			   // NOTE: Expression is optional so we can skip arguments for VO/Vulcan compatibility
-					:  ( COLON Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression?
+					:  ( COLON? Name=identifierName ASSIGN_OP )? ( RefOut=(REF | OUT) )? Expr=expression?
                     ;
 
 
-iif					: IIF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
-                    | IF LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
+iif					: (IIF|IF) LPAREN Cond=expression COMMA TrueExpr=expression COMMA FalseExpr=expression RPAREN
                     ;
 
 nameDot				: Left=nameDot Right=simpleName DOT								#qualifiedNameDot

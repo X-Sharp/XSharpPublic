@@ -79,6 +79,7 @@ namespace XSharp.Project
         [ResourcesCategory(Resources.Application)]
         [LocDisplayName("Dialect")]
         [ResourcesDescription("Select the compiler dialect to use when compiling this project")]
+        [RefreshProperties(System.ComponentModel.RefreshProperties.All)]
         public Dialect Dialect
         {
             get { return this.dialect; }
@@ -340,14 +341,7 @@ namespace XSharp.Project
 
         private void EnableDisablePrefer32Bit()
         {
-            PropertyDescriptor descriptor = TypeDescriptor.GetProperties(this.GetType())["Prefer32Bit"];
-            ReadOnlyAttribute attribute = (ReadOnlyAttribute)
-                                          descriptor.Attributes[typeof(ReadOnlyAttribute)];
-            FieldInfo fieldToChange = attribute.GetType().GetField("isReadOnly",
-                                             System.Reflection.BindingFlags.NonPublic |
-                                             System.Reflection.BindingFlags.Instance);
-            fieldToChange.SetValue(attribute, platformtarget != Platform.AnyCPU);
-
+            SetFieldReadOnly("Prefer32Bit", platformtarget != Platform.AnyCPU);
         }
 
     }

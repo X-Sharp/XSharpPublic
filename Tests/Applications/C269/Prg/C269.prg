@@ -1,4 +1,5 @@
 // compiler crash
+// /vo4+
 FUNCTION Start() AS VOID
 LOCAL r8 := 1.1 AS REAL8
 LOCAL r4 := 1.1 AS REAL4

@@ -53,6 +53,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 msg = "unexpected input " + tokenName;
+                string missing = null;
+                // unexpected closing tokens often indicate a missing opening token
+                switch (t.Type)
+                {
+                    case XSharpParser.RPAREN:
+                        missing = "'('" ;
+                        break;
+                    case XSharpParser.RCURLY:
+                        missing = "'{'";
+                        break;
+                    case XSharpParser.RBRKT:
+                        missing = "'['";
+                        break;
+                    case XSharpParser.EOS:
+                        missing = " closing ')' or '}'";
+                        break;
+                }
+                if (!String.IsNullOrEmpty(missing))
+                {
+                    msg += Missing(missing);
+                }
             }
             recognizer.NotifyErrorListeners(t, msg, null);
         }
@@ -67,6 +88,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 msg = "mismatched input " + GetTokenErrorDisplay(e.OffendingToken) ;
+                if (e.OffendingToken.Type == XSharpParser.EOS)
+                {
+                    msg += Missing("closing ')' or '}'");
+                }
             }
             NotifyErrorListeners(recognizer, msg, e);
         }
@@ -154,11 +179,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     eos = "';'";
                 else
                     eos = "End of Statement";
-                msg = "unexpected " + eos + " are you missing a "+ missing + " ?";
+                msg = "unexpected " + eos +  Missing(missing);
             }
             else
             {
-                msg = "no viable alternative at input " + EscapeWSAndQuote(input);
+                msg = "unexpected input " + EscapeWSAndQuote(input);
             }
             NotifyErrorListeners(recognizer, msg, e);
         }
@@ -171,6 +196,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             s = s.Replace("\t", "TAB");
             return "'" + s + "'";
         }
-
+        protected string Missing (string missing)
+        {
+            return ", are you missing a "+missing+" ?";
+        }
     }
 }

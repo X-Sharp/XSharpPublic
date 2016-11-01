@@ -5,23 +5,23 @@
 
 #define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup027Fox"
+#define SetupExeName    "XSharpSetup028Fox"
 #else
-#define SetupExeName    "XSharpSetup027Public"
+#define SetupExeName    "XSharpSetup028Public"
 #endif
 
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.7.2"
-#define ProdBuild       "XSharp Beta 7b"
+#define ProdVer         "XSharp 0.2.8.0"
+#define ProdBuild       "XSharp Beta 8"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.7.2702"
-#define VITextVersion   "0.2.7.2702 (Beta 7b)"
-#define TouchDate       "2016-10-03"
-#define TouchTime       "02:07:02"
+#define VIVersion       "0.2.8.2801"
+#define VITextVersion   "0.2.8.2801 (Beta 8)"
+#define TouchDate       "2016-11-03"
+#define TouchTime       "02:08:00"
 #define InstallPath     "XSharpPath"
 
 
@@ -226,15 +226,14 @@ Source: "Baggage\License.txt";                            DestDir: "{app}";     
 Source: "{#CommonFolder}*.xh";                            DestDir: "{app}\Include"; Flags: touch {#StdFlags}; Components: main
 
 ;MsBuild Files
-Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: main
-Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
-Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: main
+Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{pf}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Components: main
+Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: main
+Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: main
 
-; MsBuild files VS15
 ; MsBuild files from VS15 Preview 4 in a private directory per installation
-Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags} uninsneveruninstall; Components: vsnext
-Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: vsnext
-Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags} uninsneveruninstall; Components: vsnext
+Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vsnext
 
 ;Documentation
 Source: "{#DocFolder}\XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
@@ -283,7 +282,7 @@ Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVs2
 
 Source: "{#BinPFolder}XSharp.ico ";                        DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
+;Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
 ;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";  Flags: {#StdFlags}; Components: vs2015
 
 
@@ -320,7 +319,7 @@ Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVsN
 
 Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
 Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext 
+;Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext 
 ;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\Images"; Flags: {#StdFlags}; Components: vsnext
 
 ; Examples

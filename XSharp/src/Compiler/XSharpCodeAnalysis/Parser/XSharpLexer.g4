@@ -1163,9 +1163,9 @@ REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-'
 
 // Preprocessor symbols are in the handwritten part above as well as #pragma and #using
 
-SYMBOL_CONST     : '#' IDStartChar (IDChar)*;
+SYMBOL_CONST     : NUMSIGN IDStartChar (IDChar)*;
 
-NEQ2			 : '#'			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
+NEQ2			 : NUMSIGN			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
 				 ;
 
 
@@ -1191,7 +1191,7 @@ LINE_CONT   :   SEMI (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('
 LINE_CONT_OLD: {_OldComment}? SEMI (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
             ;
 
-SEMI		: ';'
+SEMI		: SEMICOLON
 			;
 
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
@@ -1313,3 +1313,5 @@ fragment X	: 'x' | 'X';
 fragment Y	: 'y' | 'Y';
 fragment Z	: 'z' | 'Z';
 
+fragment NUMSIGN: '#' ;
+fragment SEMICOLON: ';' ;

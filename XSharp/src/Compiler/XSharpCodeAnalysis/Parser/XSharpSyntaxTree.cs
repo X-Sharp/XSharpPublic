@@ -535,6 +535,14 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + Id.GetText();
         }
+        public partial class VodefineContext : ParserRuleContext, IEntityContext
+        {
+            EntityData data = new EntityData();
+            public EntityData Data => data;
+            public IList<ParameterContext> Params => null;
+            public DatatypeContext ReturnType => null;
+            public String Name => ParentName + Id.GetText();
+        }
         public partial class PropertyContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
             public EntityData Data { get { return data; } }

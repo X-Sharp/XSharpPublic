@@ -536,7 +536,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C202
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C203 *************
 Application = C203
 IDEVersion = 1.06
@@ -5877,7 +5877,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C236
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C237 *************
 Application = C237
 IDEVersion = 1.06
@@ -5976,7 +5976,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C237
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C238 *************
 Application = C238
 IDEVersion = 1.06
@@ -26295,7 +26295,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C268
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C269 *************
 Application = C269
 IDEVersion = 1.06
@@ -26403,7 +26403,7 @@ Target = 0
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
-Dialect = None
+Dialect = Core
 Folder = %ProjectPath%\Applications\C270\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 

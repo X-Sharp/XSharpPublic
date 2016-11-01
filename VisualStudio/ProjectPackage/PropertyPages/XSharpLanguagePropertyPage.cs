@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.Project;
 using EnvDTE;
 using EnvDTE80;
 using System.ComponentModel;
-
+using Microsoft.VisualStudio.OLE.Interop;
 
 namespace XSharp.Project
 {
@@ -104,7 +104,7 @@ namespace XSharp.Project
         private bool vo13;
         private bool vo14;
         private bool vo15;
-        private bool vo16;
+        //private bool vo16;
         #endregion Fields
 
         #region Constructors
@@ -115,6 +115,7 @@ namespace XSharp.Project
         {
             this.Name = LanguageCaption;
         }
+
         #endregion
 
         #region Properties
@@ -268,12 +269,12 @@ namespace XSharp.Project
             get { return this.vo15; }
             set { this.vo15 = value; this.IsDirty = true; }
         }
-        [Category(CatCompatibility), DisplayName(VO16Caption), Description(VO16Description)]
-        public bool VO16
-        {
-            get { return this.vo16; }
-            set { this.vo16 = value; this.IsDirty = true; }
-        }
+        //[Category(CatCompatibility), DisplayName(VO16Caption), Description(VO16Description)]
+        //public bool VO16
+        //{
+        //    get { return this.vo16; }
+        //    set { this.vo16 = value; this.IsDirty = true; }
+        //}
 
         #endregion
         #region Overriden Implementation
@@ -323,7 +324,7 @@ namespace XSharp.Project
             vo13 = getPrjLogic(nameof(VO13), false);
             vo14 = getPrjLogic(nameof(VO14), false);
             vo15 = getPrjLogic(nameof(VO15), true);
-            vo16 = getPrjLogic(nameof(VO16), true);
+            //vo16 = getPrjLogic(nameof(VO16), true);
         }
 
         /// <summary>
@@ -364,15 +365,13 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(VO13), this.vo13.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO14), this.vo14.ToString().ToLower());
             this.ProjectMgr.SetProjectProperty(nameof(VO15), this.vo15.ToString().ToLower());
-            this.ProjectMgr.SetProjectProperty(nameof(VO16), this.vo16.ToString().ToLower());
+            //this.ProjectMgr.SetProjectProperty(nameof(VO16), this.vo16.ToString().ToLower());
 
             this.IsDirty = false;
 
             return VSConstants.S_OK;
         }
-
         #endregion
     }
+
 }
-
-

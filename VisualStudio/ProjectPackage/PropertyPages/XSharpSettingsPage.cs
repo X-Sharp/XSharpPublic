@@ -1,6 +1,6 @@
 ﻿//
-// Copyright (c) XSharp B.V.  All Rights Reserved.  
-// Licensed under the Apache License, Version 2.0.  
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
 using System;
@@ -16,6 +16,8 @@ using EnvDTE80;
 using System.ComponentModel;
 using System.Drawing;
 using Microsoft.VisualStudio.OLE.Interop;
+using System.Reflection;
+
 namespace XSharp.Project
 {
     [CLSCompliant(false), ComVisible(true)]
@@ -46,7 +48,7 @@ namespace XSharp.Project
 
         public bool CanExtend(string ExtenderCATID, string ExtenderName, object ExtendeeObject)
         {
-            // 
+            //
             IVsHierarchy outerHierarchy = HierarchyNode.GetOuterHierarchy(ProjectMgr);
 
             if (outerHierarchy is IInternalExtenderProvider)
@@ -188,6 +190,25 @@ namespace XSharp.Project
                 folderName += Path.DirectorySeparatorChar;
             }
             return folderName;
+
+        }
+
+        internal void SetFieldReadOnly(string fieldName, bool readOnly)
+        {
+            PropertyDescriptor descriptor = TypeDescriptor.GetProperties(this.GetType())[fieldName];
+            if (descriptor != null)
+            {
+                ReadOnlyAttribute attribute = (ReadOnlyAttribute)
+                                              descriptor.Attributes[typeof(ReadOnlyAttribute)];
+                if (attribute != null)
+                {
+                    FieldInfo fieldToChange = attribute.GetType().GetField("isReadOnly",
+                                                     System.Reflection.BindingFlags.NonPublic |
+                                                     System.Reflection.BindingFlags.Instance);
+                    if (fieldToChange != null)
+                        fieldToChange.SetValue(attribute, readOnly);
+                }
+            }
 
         }
 

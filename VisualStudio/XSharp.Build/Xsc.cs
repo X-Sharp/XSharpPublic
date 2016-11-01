@@ -634,7 +634,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));
             commandline.AppendPlusOrMinusSwitch("/vo15", base.Bag, nameof(VO15));
-            commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
+            //commandline.AppendPlusOrMinusSwitch("/vo16", base.Bag, nameof(VO16));
             // User-defined CommandLine Option (in order to support switches unknown at that time)
             // cannot use appendswitch because it will quote the string when there are embedded spaces
             if (!String.IsNullOrEmpty(this.CommandLineOption))
@@ -651,6 +651,18 @@ namespace XSharp.Build
                     sb.Append(s);
                 }
                 commandline.AppendTextUnquoted("/i:\"" + sb.ToString() + "\"");
+            }
+        }
+        internal string PlatformWith32BitPreference
+        {
+            get
+            {
+                string platform = this.Platform;
+                if ((string.IsNullOrEmpty(platform) || platform.Equals("anycpu", StringComparison.OrdinalIgnoreCase)) && this.Prefer32Bit)
+                {
+                    platform = "anycpu32bitpreferred";
+                }
+                return platform;
             }
         }
 
@@ -670,14 +682,7 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/moduleassemblyname:", ModuleAssemblyName);
             commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);
             commandLine.AppendPlusOrMinusSwitch("/nostdlib", base.Bag, nameof(NoStandardLib));
-            if (this.Platform.ToLower() == "anycpu" && this.Prefer32Bit)
-            { 
-                commandLine.AppendSwitchIfNotNull("/platform:", "anycpu32bitpreferred");
-            }
-            else
-            { 
-                commandLine.AppendSwitchIfNotNull("/platform:", Platform);
-            }
+            commandLine.AppendSwitchIfNotNull("/platform:", PlatformWith32BitPreference);
             commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
             commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));
             //commandLine.AppendSwitchIfNotNull("/doc:", DocumentationFile);

@@ -39,8 +39,11 @@
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">
@@ -192,6 +195,16 @@
     <Content Include="Baggage\rcdll.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Xaml\NativeResource.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Xaml\VoBinary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

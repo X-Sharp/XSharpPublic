@@ -106,7 +106,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
                     // We parse the numeric entrypoint here but we will throw an error during the tree transformation
                     // _DLL FUNCTION SetDebugErrorLevel( dwLevel AS DWORD) AS VOID PASCAL:USER32.123
 
-vodll				: (Modifiers=funcprocModifiers)? DLL
+vodll				: (Attributes=attributes)? 
+					  (Modifiers=funcprocModifiers)? DLL
                       ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
                       | T=PROCEDURE Id=identifier ParamList=parameterList )
                       (CallingConvention=dllcallconv) COLON

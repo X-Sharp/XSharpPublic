@@ -24,7 +24,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     return false;
             }
         }
-
+#if XSHARP
+        /// <summary>
+        /// Checks if a type is considered a "built-in numeric" by CLR.
+        /// </summary>
+        public static bool IsNumericType(this SpecialType specialType)
+        {
+            switch (specialType)
+            {
+                case SpecialType.System_Byte:
+                case SpecialType.System_SByte:
+                case SpecialType.System_Int16:
+                case SpecialType.System_UInt16:
+                case SpecialType.System_Int32:
+                case SpecialType.System_UInt32:
+                case SpecialType.System_Int64:
+                case SpecialType.System_UInt64:
+                case SpecialType.System_Single:
+                case SpecialType.System_Double:
+                case SpecialType.System_Decimal:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+#endif
         public static bool IsSignedIntegralType(this SpecialType specialType)
         {
             switch (specialType)

@@ -93,17 +93,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (this is Conversions)
             {
                 Conversions conv = this as Conversions;
-                if (source != null && destination != null && conv.Compilation.Options.VOSignedUnsignedConversion)
+                if (source != null && destination != null )
                 {
-                    var srctype = (int)source.SpecialType;
-                    var dsttype = (int)destination.SpecialType;
-                    if ((srctype >= (int)SpecialType.System_SByte && srctype <= (int)SpecialType.System_Double)
-                        &&
-                        (dsttype >= (int)SpecialType.System_SByte && dsttype <= (int)SpecialType.System_Double))
+                    if (conv.Compilation.Options.VOSignedUnsignedConversion)
                     {
-                        return Conversion.ImplicitNumeric;
+                        var srctype = source.SpecialType;
+                        var dsttype = destination.SpecialType;
+                        if (srctype.IsNumericType() && dsttype.IsNumericType())
+                        {
+                            return Conversion.ImplicitNumeric;
+                        }
+                    }
+                    if (conv.Compilation.Options.IsDialectVO)
+                    {
+                        if (source.SpecialType.IsIntegralType() && destination.SpecialType == SpecialType.System_Boolean)
+                            return Conversion.Identity;
                     }
                 }
+
             }
             if (source != null)
             {

@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -31,6 +32,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                 expressions);
         }
 
+        private bool BindVulcanPointerDereference(CastExpressionSyntax node, BoundExpression operand,
+            DiagnosticBag diagnostics, out BoundExpression expression)
+        {
+             // Type(pPointer) -> Dereference pointer
+            if (node.XNode is PrimaryExpressionContext)
+            {
+                PrimaryExpressionContext pe = (PrimaryExpressionContext)node.XNode;
+                if (pe.Expr is VoConversionExpressionContext)
+                {
+                    TypeSyntax type = node.Type;
+                    if (operand.Type.IsPointerType())
+                    {
+                        PointerTypeSymbol pt = (PointerTypeSymbol)operand.Type;
+                        TypeSymbol ptatType = pt.PointedAtType;
+                        //if (type. == ptatType)
+                        {
+                            // BYTE(pt) -> pt[0]
+                            // convert expression to array access for element 1
+                            // expression = ....
+                            // return true;
+                        }
+
+                    }
+                }
+            }
+            expression = null;
+            return false;
+        }
         private BoundExpression BindIndexerOrVulcanArrayAccess(ExpressionSyntax node, BoundExpression expr, AnalyzedArguments analyzedArguments, DiagnosticBag diagnostics)
         {
             if (Compilation.Options.IsDialectVO)

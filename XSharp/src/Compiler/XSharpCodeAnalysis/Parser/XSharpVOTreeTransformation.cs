@@ -1114,7 +1114,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (token.Type)
                 {
                     case XP.NIL:
-                        return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(1));               // 1 = Missing.Value
+                        return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(1));               // 1 = NIL
                     case XP.NULL_DATE:
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(2));               // 2 = Date
                     case XP.DATE_CONST:

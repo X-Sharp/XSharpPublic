@@ -1548,6 +1548,14 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             BoundExpression operand = this.BindValue(node.Expression, diagnostics, BindValueKind.RValue);
             TypeSymbol targetType = this.BindType(node.Type, diagnostics);
+#if XSHARP
+            BoundExpression expression;
+            if (BindVulcanPointerDereference(node, operand, diagnostics, out expression))
+            {
+                return expression;
+            }
+#endif
+
 
             if (targetType.IsNullableType() &&
                 !operand.HasAnyErrors &&

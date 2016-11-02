@@ -1202,20 +1202,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert(m2.Result.IsValid);
             Debug.Assert(arguments != null);
 
-#if XSHARP
-            // Prefer the member not declared in VulcanRT, if applicable
-            if (Compilation.Options.IsDialectVO && m1.Member.ContainingAssembly != m2.Member.ContainingAssembly)
-            {
-                if (m1.Member.ContainingAssembly.IsVulcanRT())
-                {
-                    return BetterResult.Right;
-                }
-                else if (m2.Member.ContainingAssembly.IsVulcanRT())
-                {
-                    return BetterResult.Left;
-                }
-            }
-#endif
 
             // SPEC:
             //   Parameter lists for each of the candidate function members are constructed in the following way:
@@ -1226,6 +1212,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // and get the correspond parameter types.
 
             BetterResult result = BetterResult.Neither;
+#if XSHARP
+            if (VOBetterFunctionMember(m1, m2, out result))
+                return result;
+#endif
             bool okToDowngradeResultToNeither = false;
             bool ignoreDowngradableToNeither = false;
 
@@ -1816,27 +1806,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            // Check for SignedNess
-            if (Compilation.Options.IsDialectVO && node.Type != null)
-            {
-                if (node.Type.SpecialType.IsIntegralType())
-                {
-                    if (node.Type.SpecialType.IsSignedIntegralType())
-                    {
-                        if (t1.SpecialType.IsSignedIntegralType())
-                            return BetterResult.Left;
-                        if (t2.SpecialType.IsSignedIntegralType())
-                            return BetterResult.Right;
-                    }
-                    else
-                    {
-                        if (!t1.SpecialType.IsSignedIntegralType())
-                            return BetterResult.Left;
-                        if (!t2.SpecialType.IsSignedIntegralType())
-                            return BetterResult.Right;
-                    }
-                }
-            }
+            BetterResult result;
+            if (VOBetterConversionFromExpression(node, t1, t2, out result))
+                return result;
 #endif
             var lambdaOpt = node as UnboundLambda;
 

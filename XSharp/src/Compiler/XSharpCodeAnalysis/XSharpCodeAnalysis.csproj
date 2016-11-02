@@ -280,6 +280,7 @@
     <Compile Include="Binder\Binder_Expressions.cs" />
     <Compile Include="Binder\Binder_Operators.cs" />
     <Compile Include="Binder\Binder_Codeblock.cs" />
+    <Compile Include="Binder\Semantics\OverloadResolution.cs" />
     <Compile Include="CodeAnalysisResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -295,6 +296,7 @@
     <Compile Include="Generated\XSharpParser.cs" />
     <Compile Include="LocalRewriter\LocalRewriter_Conversion.cs" />
     <Compile Include="LocalRewriter\LocalRewriter_Latebound.cs" />
+    <Compile Include="Lowering\DiagnosticsPass.cs" />
     <Compile Include="Parser\ParseTreeTypedProperty.cs" />
     <Compile Include="Parser\XSharpErrorStrategy.cs" />
     <Compile Include="Parser\XSharpParseErrorAnalysis.cs" />

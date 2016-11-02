@@ -183,7 +183,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 else
                                     return ConstantValue.Null;
                             case 1:
-                                // Todo: System.Reflection.Missing.Value
+                                // NIL
                                 return ConstantValue.Null;
                             case 2:     
                                 // Date, value should be long of ticks. Return DateTime

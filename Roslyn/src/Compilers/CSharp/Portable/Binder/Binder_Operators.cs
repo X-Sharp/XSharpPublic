@@ -1530,7 +1530,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 try
                 {
+#if XSHARP
+                    // Vulcan folds literals and uses int62 buffers internally to prevent overflow errors
+                    // we emulate that by using Unchecked for the VO & Vulcan dialect
+                    if (Compilation.Options.IsDialectVO)
+                        newValue = FoldUncheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
+                    else
+                        newValue = FoldCheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
+#else
                     newValue = FoldCheckedIntegralBinaryOperator(kind, valueLeft, valueRight);
+#endif
                 }
                 catch (OverflowException)
                 {

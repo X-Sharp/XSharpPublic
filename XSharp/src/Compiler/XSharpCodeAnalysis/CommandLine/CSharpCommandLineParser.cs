@@ -177,7 +177,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo7":     // Compatible implicit cast & conversion
                     options.Vo7 = positive;
-                    OptionNotImplemented(diagnostics, oldname, "VO compatible implicit casts and conversions");
                     break;
                 case "vo8":     // Compatible preprocessor
                     options.Vo8 = positive;

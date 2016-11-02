@@ -1072,6 +1072,31 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             result.Free();
+#if XSHARP
+            // When failed, then try again if RHS is < 4 bytes. Some method in Vulcan have only overloads for Int32 and UInt32 and higher
+            if (!possiblyBest.HasValue && Compilation.Options.IsDialectVO)
+            {
+                var st = right.Type.SpecialType;
+                bool tryAgain = false;
+                if (st.IsIntegralType() && st.SizeInBytes() < 4)
+                {
+                    if (st == SpecialType.System_Byte || st == SpecialType.System_Int16)
+                    {
+                        right = CreateConversion(right, GetSpecialType(SpecialType.System_Int32, diagnostics, node), diagnostics);
+                        tryAgain = true;
+                    }
+                    if (st == SpecialType.System_SByte || st == SpecialType.System_UInt16)
+                    {
+                        right = CreateConversion(right, GetSpecialType(SpecialType.System_UInt32, diagnostics, node), diagnostics);
+                        tryAgain = true;
+                    }
+                }
+                if (tryAgain)
+                {
+                    possiblyBest = this.BinaryOperatorOverloadResolution(kind, left, right, node, diagnostics, out resultKind, out originalUserDefinedOperators);
+                }
+            }
+#endif
             return possiblyBest;
         }
 

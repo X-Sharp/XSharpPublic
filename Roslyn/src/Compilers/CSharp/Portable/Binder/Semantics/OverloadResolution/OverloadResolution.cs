@@ -1817,7 +1817,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 #if XSHARP
             // Check for SignedNess
-            if (Compilation.Options.IsDialectVO)
+            if (Compilation.Options.IsDialectVO && node.Type != null)
             {
                 if (node.Type.SpecialType.IsIntegralType())
                 {

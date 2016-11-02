@@ -38,16 +38,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public static Conversion FastClassifyConversion(TypeSymbol source, TypeSymbol target)
         {
             ConversionKind convKind = ConversionEasyOut.ClassifyConversion(source, target);
-#if XSHARP
-            if (convKind == ConversionKind.ExplicitNumeric)
-            {
-                if (source.IsIntegralType() && target.IsIntegralType())
-                {
-                    if (source.SpecialType.SizeInBytes() <= target.SpecialType.SizeInBytes())
-                        convKind = ConversionKind.ImplicitNumeric;
-                }
-            }
-#endif
             return new Conversion(convKind);
         }
 

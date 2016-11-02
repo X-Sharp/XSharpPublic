@@ -38,6 +38,16 @@ namespace Microsoft.CodeAnalysis.CSharp
         public static Conversion FastClassifyConversion(TypeSymbol source, TypeSymbol target)
         {
             ConversionKind convKind = ConversionEasyOut.ClassifyConversion(source, target);
+#if XSHARP
+            if (convKind == ConversionKind.ExplicitNumeric)
+            {
+                if (source.IsIntegralType() && target.IsIntegralType())
+                {
+                    if (source.SpecialType.SizeInBytes() <= target.SpecialType.SizeInBytes())
+                        convKind = ConversionKind.ImplicitNumeric;
+                }
+            }
+#endif
             return new Conversion(convKind);
         }
 
@@ -78,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         // IsBaseClassOfClass determines whether the purported derived type is a class, and if so,
-        // if the purported base type is one of its base classes. 
+        // if the purported base type is one of its base classes.
         public static bool IsBaseClassOfClass(TypeSymbol baseType, TypeSymbol derivedType, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             Debug.Assert((object)baseType != null);
@@ -92,7 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         // * a class is not a base class of itself
         // * type parameters do not have base classes. (They have "effective base classes".)
         // * all base classes must be classes
-        // * dynamics are removed; if we have class D : B<dynamic> then B<object> is a 
+        // * dynamics are removed; if we have class D : B<dynamic> then B<object> is a
         //   base class of D. However, dynamic is never a base class of anything.
         public static bool IsBaseClass(TypeSymbol derivedType, TypeSymbol baseType, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
@@ -207,7 +217,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             // Y y = new Y();
             // Z z1 = y;
-            // 
+            //
             // succeed but
             //
             // Z z2 = (Z)y;
@@ -251,10 +261,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // Similarly, there is no standard explicit conversion from double to decimal, because
             // there is no standard implicit conversion between the two types.
 
-            // SPEC: The standard explicit conversions are all standard implicit conversions plus 
-            // SPEC: the subset of the explicit conversions for which an opposite standard implicit 
+            // SPEC: The standard explicit conversions are all standard implicit conversions plus
+            // SPEC: the subset of the explicit conversions for which an opposite standard implicit
             // SPEC: conversion exists. In other words, if a standard implicit conversion exists from
-            // SPEC: a type A to a type B, then a standard explicit conversion exists from type A to 
+            // SPEC: a type A to a type B, then a standard explicit conversion exists from type A to
             // SPEC: type B and from type B to type A.
 
             Conversion conversion = ClassifyStandardImplicitConversion(sourceExpression, source, destination, ref useSiteDiagnostics);
@@ -308,17 +318,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             // SPEC: From any pointer type to void*
             //
-            // SPEC ERROR: 
+            // SPEC ERROR:
             // The specification does not say to take into account the conversion from
             // the *expression*, only its *type*. But the expression may not have a type
             // (because it is null, a method group, or a lambda), or the expression might
             // be convertible to the destination type via a constant numeric conversion.
             // For example, the native compiler allows "C c = 1;" to work if C is a class which
             // has an implicit conversion from byte to C, despite the fact that there is
-            // obviously no standard implicit conversion from *int* to *byte*. 
+            // obviously no standard implicit conversion from *int* to *byte*.
             // Similarly, if a struct S has an implicit conversion from string to S, then
-            // "S s = null;" should be allowed. 
-            // 
+            // "S s = null;" should be allowed.
+            //
             // We extend the definition of standard implicit conversions to include
             // all of the implicit conversions that are allowed based on an expression.
 
@@ -516,12 +526,12 @@ namespace Microsoft.CodeAnalysis.CSharp
         public static bool HasIdentityConversion(TypeSymbol type1, TypeSymbol type2)
         {
             // Spec (6.1.1):
-            // An identity conversion converts from any type to the same type. This conversion exists 
-            // such that an entity that already has a required type can be said to be convertible to 
+            // An identity conversion converts from any type to the same type. This conversion exists
+            // such that an entity that already has a required type can be said to be convertible to
             // that type.
             //
-            // Because object and dynamic are considered equivalent there is an identity conversion 
-            // between object and dynamic, and between constructed types that are the same when replacing 
+            // Because object and dynamic are considered equivalent there is an identity conversion
+            // between object and dynamic, and between constructed types that are the same when replacing
             // all occurrences of dynamic with object.
 
             Debug.Assert((object)type1 != null);
@@ -689,7 +699,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static bool HasExplicitNumericConversion(TypeSymbol source, TypeSymbol destination)
         {
-            // SPEC: The explicit numeric conversions are the conversions from a numeric-type to another 
+            // SPEC: The explicit numeric conversions are the conversions from a numeric-type to another
             // SPEC: numeric-type for which an implicit numeric conversion does not already exist.
             Debug.Assert((object)source != null);
             Debug.Assert((object)destination != null);
@@ -776,22 +786,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             //
             // The specification says that you can put any *standard* implicit or explicit conversion
             // on "either side" of a user-defined explicit conversion, so the specification allows, say,
-            // UIntPtr --> byte because the conversion UIntPtr --> uint is user-defined and the 
-            // conversion uint --> byte is "standard". It is "standard" because the conversion 
+            // UIntPtr --> byte because the conversion UIntPtr --> uint is user-defined and the
+            // conversion uint --> byte is "standard". It is "standard" because the conversion
             // byte --> uint is an implicit numeric conversion.
 
             // This means that certain conversions should be illegal. For example, IntPtr --> ulong
-            // should be illegal because none of int --> ulong, long --> ulong and void* --> ulong 
-            // are "standard" conversions. 
+            // should be illegal because none of int --> ulong, long --> ulong and void* --> ulong
+            // are "standard" conversions.
 
-            // Similarly, some conversions involving IntPtr should be illegal because they are 
+            // Similarly, some conversions involving IntPtr should be illegal because they are
             // ambiguous. byte --> IntPtr?, for example, is ambiguous. (There are four possible
             // UD operators: int --> IntPtr and long --> IntPtr, and their lifted versions. The
             // best possible source type is int, the best possible target type is IntPtr?, and
-            // there is an ambiguity between the unlifted int --> IntPtr, and the lifted 
+            // there is an ambiguity between the unlifted int --> IntPtr, and the lifted
             // int? --> IntPtr? conversions.)
 
-            // In practice, the native compiler, and hence, the Roslyn compiler, allows all 
+            // In practice, the native compiler, and hence, the Roslyn compiler, allows all
             // these conversions. Any conversion from a numeric type to IntPtr, or from an IntPtr
             // to a numeric type, is allowed. Also, any conversion from a pointer type to IntPtr
             // or vice versa is allowed.
@@ -872,9 +882,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert((object)source != null);
             Debug.Assert((object)destination != null);
 
-            // SPEC: Predefined implicit conversions that operate on non-nullable value types can also be used with 
+            // SPEC: Predefined implicit conversions that operate on non-nullable value types can also be used with
             // SPEC: nullable forms of those types. For each of the predefined implicit identity and numeric conversions
-            // SPEC: that convert from a non-nullable value type S to a non-nullable value type T, the following implicit 
+            // SPEC: that convert from a non-nullable value type S to a non-nullable value type T, the following implicit
             // SPEC: nullable conversions exist:
             // SPEC: * An implicit conversion from S? to T?.
             // SPEC: * An implicit conversion from S to T?.
@@ -909,9 +919,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert((object)source != null);
             Debug.Assert((object)destination != null);
 
-            // SPEC: Explicit nullable conversions permit predefined explicit conversions that operate on 
-            // SPEC: non-nullable value types to also be used with nullable forms of those types. For 
-            // SPEC: each of the predefined explicit conversions that convert from a non-nullable value type 
+            // SPEC: Explicit nullable conversions permit predefined explicit conversions that operate on
+            // SPEC: non-nullable value types to also be used with nullable forms of those types. For
+            // SPEC: each of the predefined explicit conversions that convert from a non-nullable value type
             // SPEC: S to a non-nullable value type T, the following nullable conversions exist:
             // SPEC: An explicit conversion from S? to T?.
             // SPEC: An explicit conversion from S to T?.
@@ -995,7 +1005,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private static bool HasExplicitDynamicConversion(TypeSymbol source, TypeSymbol destination)
         {
-            // SPEC: An explicit dynamic conversion exists from an expression of type dynamic to any type T. 
+            // SPEC: An explicit dynamic conversion exists from an expression of type dynamic to any type T.
             // ISSUE: Note that this is exactly the same as an implicit dynamic conversion. Conversion of
             // ISSUE: dynamic to int is both an explicit dynamic conversion and an implicit dynamic conversion.
 
@@ -1076,7 +1086,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // SPEC: The implicit reference conversions are:
 
-            // SPEC: UNDONE: From any reference-type to a reference-type T if it has an implicit identity 
+            // SPEC: UNDONE: From any reference-type to a reference-type T if it has an implicit identity
             // SPEC: UNDONE: or reference conversion to a reference-type T0 and T0 has an identity conversion to T.
             // UNDONE: Is the right thing to do here to strip dynamic off and check for convertibility?
 
@@ -1153,7 +1163,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //   convertible to T.
             // * From any interface type S to any interface type T provided S implements an interface
             //   convertible to T.
-            // * From any interface type S to any interface type T provided S is not T and S is 
+            // * From any interface type S to any interface type T provided S is not T and S is
             //   an interface convertible to T.
 
             if (source.IsClassType() && HasAnyBaseInterfaceConversion(source, destination, ref useSiteDiagnostics))
@@ -1223,12 +1233,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // * From any delegate type to System.Delegate
-            // 
+            //
             // SPEC OMISSION:
-            // 
+            //
             // The spec should actually say
             //
-            // * From any delegate type to System.Delegate 
+            // * From any delegate type to System.Delegate
             // * From any delegate type to System.MulticastDelegate
             // * From any delegate type to any interface implemented by System.MulticastDelegate
             var specialDestination = destination.GetSpecialTypeSafe();
@@ -1383,7 +1393,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ////////////////////////////////////////////////////////////////////////////////
         // The rules for variant interface and delegate conversions are the same:
         //
-        // An interface/delegate type S is convertible to an interface/delegate type T 
+        // An interface/delegate type S is convertible to an interface/delegate type T
         // if and only if T is U<S1, ... Sn> and T is U<T1, ... Tn> such that for all
         // parameters of U:
         //
@@ -1434,9 +1444,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool HasVariantConversion(NamedTypeSymbol source, NamedTypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             // We check for overflows in HasVariantConversion, because they are only an issue
-            // in the presence of contravariant type parameters, which are not involved in 
+            // in the presence of contravariant type parameters, which are not involved in
             // most conversions.
-            // See VarianceTests for examples (e.g. TestVarianceConversionCycle, 
+            // See VarianceTests for examples (e.g. TestVarianceConversionCycle,
             // TestVarianceConversionInfiniteExpansion).
             //
             // CONSIDER: A more rigorous solution would mimic the CLI approach, which uses
@@ -1572,8 +1582,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
-            // SPEC: From T to a reference type I if it has an implicit conversion to a reference 
-            // SPEC: type S0 and S0 has an identity conversion to S. At run-time the conversion 
+            // SPEC: From T to a reference type I if it has an implicit conversion to a reference
+            // SPEC: type S0 and S0 has an identity conversion to S. At run-time the conversion
             // SPEC: is executed the same way as the conversion to S0.
 
             // REVIEW: If T is not known to be a reference type then the only way this clause can
@@ -1618,15 +1628,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // A boxing conversion exists from any non-nullable value type to object and dynamic, to
             // System.ValueType, and to any interface type variance-compatible with one implemented
-            // by the non-nullable value type.  
+            // by the non-nullable value type.
 
             // Furthermore, an enum type can be converted to the type System.Enum.
 
             // We set the base class of the structs to System.ValueType, System.Enum, etc, so we can
             // just check here.
 
-            // There are a couple of exceptions. The very special types ArgIterator, ArgumentHandle and 
-            // TypedReference are not boxable: 
+            // There are a couple of exceptions. The very special types ArgIterator, ArgumentHandle and
+            // TypedReference are not boxable:
 
             if (source.IsRestrictedType())
             {
@@ -1730,7 +1740,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             // SPEC: From any interface-type S to any interface-type T, provided S is not derived from T.
-            // ISSUE: This does not rule out identity conversions, which ought not to be classified as 
+            // ISSUE: This does not rule out identity conversions, which ought not to be classified as
             // ISSUE: explicit reference conversions.
             // ISSUE: IEnumerable<Mammal> and IEnumerable<Animal> do not derive from each other but this is
             // ISSUE: not an explicit reference conversion, this is an implicit reference conversion.
@@ -1774,7 +1784,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: If T is known to be a reference type, the conversions are all classified as explicit reference conversions.
             // SPEC: If T is not known to be a reference type, the conversions are classified as unboxing conversions.
 
-            // SPEC: From the effective base class C of T to T and from any base class of C to T. 
+            // SPEC: From the effective base class C of T to T and from any base class of C to T.
             if ((object)t != null && t.IsReferenceType)
             {
                 for (var type = t.EffectiveBaseClass(ref useSiteDiagnostics); (object)type != null; type = type.BaseTypeWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics))
@@ -1786,7 +1796,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From any interface type to T. 
+            // SPEC: From any interface type to T.
             if ((object)t != null && source.IsInterfaceType() && t.IsReferenceType)
             {
                 return true;
@@ -1821,7 +1831,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: If T is known to be a reference type, the conversions are all classified as explicit reference conversions.
             // SPEC: If T is not known to be a reference type, the conversions are classified as unboxing conversions.
 
-            // SPEC: From the effective base class C of T to T and from any base class of C to T. 
+            // SPEC: From the effective base class C of T to T and from any base class of C to T.
             if ((object)t != null && !t.IsReferenceType)
             {
                 for (var type = t.EffectiveBaseClass(ref useSiteDiagnostics); (object)type != null; type = type.BaseTypeWithDefinitionUseSiteDiagnostics(ref useSiteDiagnostics))
@@ -1833,7 +1843,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From any interface type to T. 
+            // SPEC: From any interface type to T.
             if (source.IsInterfaceType() && (object)t != null && !t.IsReferenceType)
             {
                 return true;
@@ -1874,7 +1884,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From D<S1...Sn> to a D<T1...Tn> where D<X1...Xn> is a generic delegate type, D<S1...Sn> is not compatible with or identical to D<T1...Tn>, 
+            // SPEC: From D<S1...Sn> to a D<T1...Tn> where D<X1...Xn> is a generic delegate type, D<S1...Sn> is not compatible with or identical to D<T1...Tn>,
             // SPEC: and for each type parameter Xi of D the following holds:
             // SPEC: If Xi is invariant, then Si is identical to Ti.
             // SPEC: If Xi is covariant, then there is an implicit or explicit identity or reference conversion from Si to Ti.
@@ -1987,7 +1997,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             // SPEC: From a single-dimensional array type S[] to System.Collections.Generic.IList<T> and its base interfaces
             // SPEC: provided that there is an explicit reference conversion from S to T.
 
-            // The framework now also allows arrays to be converted to IReadOnlyList<T> and IReadOnlyCollection<T>; we 
+            // The framework now also allows arrays to be converted to IReadOnlyList<T> and IReadOnlyCollection<T>; we
             // honor that as well.
 
             if ((object)sourceArray != null && sourceArray.IsSZArray && destination.IsPossibleArrayGenericInterface())
@@ -1998,7 +2008,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: From System.Collections.Generic.IList<S> and its base interfaces to a single-dimensional array type T[], 
+            // SPEC: From System.Collections.Generic.IList<S> and its base interfaces to a single-dimensional array type T[],
             // provided that there is an explicit identity or reference conversion from S to T.
 
             // Similarly, we honor IReadOnlyList<S> and IReadOnlyCollection<S> in the same way.
@@ -2045,8 +2055,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return false;
             }
 
-            // SPEC: An unboxing conversion permits a reference type to be explicitly converted to a value-type. 
-            // SPEC: An unboxing conversion exists from the types object and System.ValueType to any non-nullable-value-type, 
+            // SPEC: An unboxing conversion permits a reference type to be explicitly converted to a value-type.
+            // SPEC: An unboxing conversion exists from the types object and System.ValueType to any non-nullable-value-type,
             var specialTypeSource = source.SpecialType;
 
             if (specialTypeSource == SpecialType.System_Object || specialTypeSource == SpecialType.System_ValueType)
@@ -2057,7 +2067,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 
-            // SPEC: and from any interface-type to any non-nullable-value-type that implements the interface-type. 
+            // SPEC: and from any interface-type to any non-nullable-value-type that implements the interface-type.
 
             if (source.IsInterfaceType() &&
                 destination.IsValueType &&
@@ -2073,8 +2083,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
-            // SPEC: An unboxing conversion exists from a reference type to a nullable-type if an unboxing 
-            // SPEC: conversion exists from the reference type to the underlying non-nullable-value-type 
+            // SPEC: An unboxing conversion exists from a reference type to a nullable-type if an unboxing
+            // SPEC: conversion exists from the reference type to the underlying non-nullable-value-type
             // SPEC: of the nullable-type.
             if (source.IsReferenceType &&
                 destination.IsNullableType() &&
@@ -2083,10 +2093,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return true;
             }
 
-            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing 
+            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing
             // SPEC: UNDONE conversion from an interface type I0 and I0 has an identity conversion to I.
 
-            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing conversion 
+            // SPEC: UNDONE A value type S has an unboxing conversion from an interface type I if it has an unboxing conversion
             // SPEC: UNDONE from an interface or delegate type I0 and either I0 is variance-convertible to I or I is variance-convertible to I0.
 
             if (HasUnboxingTypeParameterConversion(source, destination, ref useSiteDiagnostics))
@@ -2115,8 +2125,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return false;
             }
 
-            // SPEC OMISSION: 
-            // 
+            // SPEC OMISSION:
+            //
             // The spec should state that any pointer type is convertible to
             // sbyte, byte, ... etc, or any corresponding nullable type.
 

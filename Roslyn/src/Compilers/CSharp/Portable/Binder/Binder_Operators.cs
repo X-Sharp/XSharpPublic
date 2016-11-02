@@ -3391,6 +3391,25 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             TypeSymbol type;
             bool hasErrors = false;
+#if XSHARP
+            if (Compilation.Options.IsDialectVO)
+            {
+                if (trueType != falseType)
+                {
+                    var usualType = GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+                    if (trueType == usualType)
+                    {
+                        falseType = trueType;
+                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
+                    }
+                    else if (falseType == usualType)
+                    {
+                        trueType = falseType;
+                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
+                    }
+                }
+            }
+#endif
 
             if (trueType == falseType)
             {

@@ -1522,7 +1522,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Error(diagnostics, ErrorCode.ERR_NoBaseClass, node);
             }
+#if XSHARP
+            else if (node.Parent.Kind() != SyntaxKind.SimpleMemberAccessExpression
+                && node.Parent.Kind() != SyntaxKind.ElementAccessExpression
+                && node.Parent.Kind() != SyntaxKind.ReturnStatement)
+#else
             else if (node.Parent.Kind() != SyntaxKind.SimpleMemberAccessExpression && node.Parent.Kind() != SyntaxKind.ElementAccessExpression)
+#endif
             {
                 Error(diagnostics, ErrorCode.ERR_BaseIllegal, node);
             }

@@ -221,7 +221,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         /// <summary>
-        /// Is the node the name of a named argument of an invocation, object creation expression, 
+        /// Is the node the name of a named argument of an invocation, object creation expression,
         /// constructor initializer, or element access, but not an attribute.
         /// </summary>
         public static bool IsNamedArgumentName(SyntaxNode node)
@@ -343,9 +343,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case PreIncrementExpression:
                 case PreDecrementExpression:
                 case AwaitExpression:
-#if XSHARP
-                    case ConditionalExpression:
-#endif
                     return true;
 
                 case ConditionalAccessExpression:
@@ -359,10 +356,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return syntax.IsMissing;
 
                 // TODO: The native implementation also disallows delegate
-                // creation expressions with the ERR_IllegalStatement error, 
+                // creation expressions with the ERR_IllegalStatement error,
                 // so that needs to go into the semantic analysis somewhere
                 // if we intend to carry it forward.
-
+#if XSHARP
+                case ConditionalExpression:
+                case CheckedExpression:
+                case UncheckedExpression:
+                    return true;
+                case ParenthesizedExpression:
+                    var par = (ParenthesizedExpressionSyntax)syntax;
+                    return IsStatementExpression(par.Expression);
+#endif
                 default:
                     return false;
             }

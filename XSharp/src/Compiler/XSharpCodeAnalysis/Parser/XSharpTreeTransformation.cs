@@ -5081,14 +5081,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitIif([NotNull] XP.IifContext context)
         {
-            // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
             ExpressionSyntax left = context.TrueExpr.Get<ExpressionSyntax>();
             ExpressionSyntax right = context.FalseExpr.Get<ExpressionSyntax>();
-            if (_options.VOCompatibleIIF)
-            {
-                left = MakeCastTo(_objectType, left);
-                right = MakeCastTo(_objectType, right);
-            }
+            // /vo10 does not do anything for the Core dialect
+            // if (_options.VOCompatibleIIF)
+            // {
+            //     left = MakeCastTo(_objectType, left);
+            //     right = MakeCastTo(_objectType, right);
+            // }
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),

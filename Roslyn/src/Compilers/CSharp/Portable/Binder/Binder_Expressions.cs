@@ -4587,7 +4587,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     leftNodeUsual = true;
                     earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
-                    earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
+                    //earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
                 }
                 if (!earlyBound && (object)leftType != null && (leftType.IsObjectType() || leftNodeUsual))
                 {

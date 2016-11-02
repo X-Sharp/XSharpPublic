@@ -6,4 +6,4 @@ MEMBER n AS INT
 FUNCTION Start() AS VOID
 LOCAL p AS _myVOSTRUCT
 p := MemAlloc(SizeOf(_myVOSTRUCT))
-
+? p

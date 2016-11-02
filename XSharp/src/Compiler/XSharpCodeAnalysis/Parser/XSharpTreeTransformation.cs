@@ -3097,6 +3097,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVodll([NotNull] XP.VodllContext context)
         {
+            // The Parser Rule has attributes but these are ignored for now.
             string dllName = context.Dll.GetText();
             if (context.Extension != null) {
                 dllName += "." + context.Extension.GetText();

@@ -2645,7 +2645,7 @@ ExportResources = 0
 ExportImages = 0
 [C251 FileGroups]
 [C251 Files]
-File = %AppPath%\Prg\C2.prg251
+File = %AppPath%\Prg\C251.prg
 FileGUID = 8D45ECEC-FA8F-4D51-9DF9-D68DC2FF257E
 FileType = Code
 [C251 References]

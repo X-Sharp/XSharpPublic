@@ -447,14 +447,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, appInit));
             _pool.Free(modifiers);
 
-            ArgumentListSyntax args = null;
-            if (context.ParamList == null)
-                args = EmptyArgumentList();
-            else
-            {
-                var name = context.ParamList._Params[0].Id.Get<IdentifierNameSyntax>();
-                args = MakeArgumentList(MakeArgument(name));
-            }
 
             // Build the try finally statement with the original body in the try, prefixed with a call to $AppInit()
             // and a finally body
@@ -468,7 +460,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Start")));
             //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
-            args = EmptyArgumentList();
+            var args = EmptyArgumentList();
             stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", args)));
             stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", args)));
             //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Finish")));

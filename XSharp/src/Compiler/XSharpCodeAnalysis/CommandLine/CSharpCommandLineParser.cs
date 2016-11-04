@@ -13,6 +13,7 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 
 namespace Microsoft.CodeAnalysis.CSharp
@@ -21,6 +22,17 @@ namespace Microsoft.CodeAnalysis.CSharp
     public partial class CSharpCommandLineParser : CommandLineParser
     {
         private XSharpSpecificCompilationOptions options;
+        // Vulcan Assembly Names
+        private const string VulcanRT = "vulcanrt";
+        private const string VulcanRTFuncs              = "vulcanrtfuncs";
+        private const string VulcanVOSystemClasses  = "vulcanvosystemclasses";
+        private const string VulcanVOGUIClasses         = "vulcanvoguiclasses";
+        private const string VulcanVORDDClasses         = "vulcanvorddclasses";
+        private const string VulcanVOSQLClasses     = "vulcanvosqlclasses";
+        private const string VulcanVOReportClasses = "vulcanvoreportclasses";
+        private const string VulcanVOConsoleClasses = "vulcanvoconsoleclasses";
+        private const string VulcanVOInternetClasses = "vulcanvointernetclasses";
+        private const string VulcanVOWin32APILibrary = "vulcanvowin32apilibrary";
 
         public XSharpSpecificCompilationOptions XSharpSpecificCompilationOptions
         {
@@ -130,6 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     previousArgument = arg;
                     previousOvfValue = positive;
                     hasSeenOvf = true;
+                    options.Overflow = positive;
                     if (positive)
                         name = "checked+";
                     else
@@ -144,10 +157,40 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "reference":
                     if (!string.IsNullOrEmpty(value))
                     {
-                        if (value.ToLowerInvariant().Contains("vulcanrtfuncs.dll"))
-                            options.VulcanRTFuncsIncluded = true;
-                        if (value.ToLowerInvariant().Contains("vulcanrt.dll"))
-                            options.VulcanRTIncluded = true;
+                        switch (System.IO.Path.GetFileNameWithoutExtension(value).ToLower())
+                        {
+                            case VulcanRTFuncs:
+                                options.VulcanAssemblies |= VulcanAssemblies.VulcanRTFuncs;
+                                break;
+                            case VulcanRT:
+                                options.VulcanAssemblies |= VulcanAssemblies.VulcanRT;
+                                break;
+                            case VulcanVOConsoleClasses:
+                                options.VulcanAssemblies |= VulcanAssemblies.Console;
+                                break;
+                            case VulcanVOGUIClasses:
+                                options.VulcanAssemblies |= VulcanAssemblies.GUI;
+                                break;
+                            case VulcanVOInternetClasses:
+                                options.VulcanAssemblies |= VulcanAssemblies.Internet;
+                                break;
+                            case VulcanVORDDClasses:
+                                options.VulcanAssemblies |= VulcanAssemblies.RDD;
+                                break;
+                            case VulcanVOReportClasses:
+                                options.VulcanAssemblies |= VulcanAssemblies.Report;
+                                break;
+                            case VulcanVOSQLClasses:
+                                options.VulcanAssemblies |= VulcanAssemblies.SQL;
+                                break;
+                            case VulcanVOSystemClasses:
+                                options.VulcanAssemblies |= VulcanAssemblies.System;
+                                break;
+                            case VulcanVOWin32APILibrary:
+                                options.VulcanAssemblies |= VulcanAssemblies.Win32API;
+                                break;
+                        }
+
                     }
                     handled = false;
                     break;

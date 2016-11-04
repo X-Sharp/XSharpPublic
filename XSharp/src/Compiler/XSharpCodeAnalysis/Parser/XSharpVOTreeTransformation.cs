@@ -44,7 +44,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string ClipperArgs = "Xs$Args";
         const string ClipperPCount = "Xs$PCount";
         const string RecoverVarName = "Xs$Obj";
-
+        const string ExVarName = "Xs$Exception";
+        // Vulcan Assembly Names
+        private const string VulcanRTFuncs = "VulcanRTFuncs";
+        private const string VulcanVOSystemClasses = "VulcanVOSystemClasses";
+        private const string VulcanVOGUIClasses = "VulcanVOGUIClasses";
+        private const string VulcanVORDDClasses = "VulcanVORDDClasses";
+        private const string VulcanVOSQLClasses = "VulcanVOSQLClasses";
+        private const string VulcanVOReportClasses = "VulcanVOReportClasses";
+        private const string VulcanVOConsoleClasses = "VulcanVOConsoleClasses";
+        private const string VulcanVOInternetClasses = "VulcanVOInternetClasses";
+        private const string VulcanVOWin32APILibrary = "VulcanVOWin32APILibrary";
+        private const string VulcanRuntimeState = "global::Vulcan.Runtime.State";
+        private const string LayoutSequential = "global::System.Runtime.InteropServices.LayoutKind.Sequential";
+        private const string StructLayout = "global::System.Runtime.InteropServices.StructLayout";
+        private const string LayoutExplicit = "global::System.Runtime.InteropServices.LayoutKind.Explicit";
         private TypeSyntax _usualType;
         private TypeSyntax _floatType;
         private TypeSyntax _arrayType;
@@ -293,6 +307,188 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected BlockSyntax CallInitProcedures()
+        {
+            // Temporary solution for now. It would be better to have the
+            // local rewriter locate all the $Init procedures and create the code
+            // but at least this works with the standard Vulcan class Libs.
+            var stmts = _pool.Allocate<StatementSyntax>();
+            var block = MakeBlock(stmts);
+            var procs1 = new List<String>();
+            var procs3 = new List<String>();
+            var args = EmptyArgumentList();
+            var assemblies = _options.VulcanAssemblies;
+            // Init1()
+            if (assemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs))
+                procs1.Add(VulcanRTFuncs);
+            if (assemblies.HasFlag(VulcanAssemblies.System))
+                procs1.Add(VulcanVOSystemClasses);
+            if (assemblies.HasFlag(VulcanAssemblies.GUI))
+            {
+                procs1.Add(VulcanVOGUIClasses);
+                procs3.Add(VulcanVOGUIClasses);
+            }
+            if (assemblies.HasFlag(VulcanAssemblies.RDD))
+                procs1.Add(VulcanVORDDClasses);
+            if (assemblies.HasFlag(VulcanAssemblies.SQL))
+                procs1.Add(VulcanVOSQLClasses);
+            if (assemblies.HasFlag(VulcanAssemblies.Internet))
+                procs1.Add(VulcanVOInternetClasses);
+            if (assemblies.HasFlag(VulcanAssemblies.Console))
+                procs1.Add(VulcanVOConsoleClasses);
+            if (assemblies.HasFlag(VulcanAssemblies.Report))
+                procs1.Add(VulcanVOReportClasses);
+            if (assemblies.HasFlag(VulcanAssemblies.Win32API))
+                procs1.Add(VulcanVOWin32APILibrary);
+
+            foreach (string proc in procs1)
+            {
+                var mcall = GenerateMethodCall("global::"+proc+ ".Functions.$Init1", args);
+                stmts.Add(GenerateExpressionStatement( mcall));
+            }
+            foreach (string proc in procs3)
+            {
+                var mcall = GenerateMethodCall("global::" + proc + ".Functions.$Init3", args);
+                stmts.Add(GenerateExpressionStatement(mcall));
+            }
+            block = MakeBlock(stmts);
+            _pool.Free(stmts);
+            return block;
+        }
+
+
+        protected override BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
+        {
+            // This method does 2 things:
+            // - Creates an $AppInit() method,
+            // - Creates Try .. Finally in the Entry Point and call GC routines in the Finally
+            var stmts = _pool.Allocate<StatementSyntax>();
+            // First create the AppInit$() method
+            var appId = SyntaxFactory.Identifier("$AppInit");
+            // try
+            // {
+            //      State.AppModule = typeof(Functions).Module          // stmt 1
+            //      State.CompilerOptionVO11 = <value of VO11>          // stmt 2
+            //      State.CompilerOptionOvf  = <value of OVF>           // stmt 3
+            //      State.CompilerOptionFOvf = <value of OVF>           // stmt 4
+            //      <Call Init procedures>                              // block
+            // }
+            //     catch (Exception exception)
+            // {
+            //    throw new Exception("Error when executing code in INIT procedure", exception);
+            // }
+
+            var lhs = GenerateQualifiedName(VulcanRuntimeState+".AppModule");
+
+            ExpressionSyntax rhs =_syntaxFactory.TypeOfExpression(
+                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                GenerateQualifiedName(GlobalClassName),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+
+            rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
+            stmts.Add(GenerateExpressionStatement( MakeSimpleAssignment(lhs, rhs)));
+            // VO11  = stmt 2
+            if (_options.VOArithmeticConversions)
+            {
+                rhs = GenerateLiteral(true);
+                lhs = GenerateQualifiedName(VulcanRuntimeState + ".CompilerOptionVO11");
+                stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
+            }
+            // OVF+  = stmt 3 and 4
+            if (_options.Overflow)
+            {
+                rhs = GenerateLiteral(true);
+                lhs = GenerateQualifiedName(VulcanRuntimeState + ".CompilerOptionOvf");
+                stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
+                lhs = GenerateQualifiedName(VulcanRuntimeState + ".CompilerOptionFOvf");
+                stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
+            }
+            // Add Block of $Init<n> calls
+            stmts.Add(CallInitProcedures());
+            var body = MakeBlock(stmts);
+            stmts.Clear();
+
+            // Create Exception
+            var arg1 = MakeArgument(GenerateLiteral("Error when executing code in Vulcan INIT procedure(s)"));
+            var arg2 = MakeArgument(GenerateSimpleName(ExVarName));
+            var excType = GenerateQualifiedName("global::System.Exception");
+            var Exception = CreateObject(excType, MakeArgumentList(arg1, arg2), null);
+            var throwstmt = _syntaxFactory.ThrowStatement(
+                SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                Exception, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            stmts.Add(throwstmt);
+            // Catch Clause
+            var catchDecl = _syntaxFactory.CatchDeclaration(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                excType, SyntaxFactory.Identifier(ExVarName),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            var catchClause = _syntaxFactory.CatchClause(
+                SyntaxFactory.MakeToken(SyntaxKind.CatchKeyword), catchDecl, null, MakeBlock(stmts));
+
+            var tryStmt = _syntaxFactory.TryStatement(
+                    SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                    body, catchClause, null);
+
+            stmts.Clear();
+            stmts.Add(tryStmt);
+            body = MakeBlock(stmts);
+            stmts.Clear();
+            // Body of $AppInit() is ready now. Now add the method as a private method
+            SyntaxListBuilder modifiers = _pool.Allocate();
+            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
+            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+
+            var appInit = _syntaxFactory.MethodDeclaration(
+                EmptyList<AttributeListSyntax>(), modifiers.ToTokenList(),
+                _voidType,null, appId, null, EmptyParameterList(),
+                null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+
+            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, appInit));
+            _pool.Free(modifiers);
+
+            ArgumentListSyntax args = null;
+            if (context.ParamList == null)
+                args = EmptyArgumentList();
+            else
+            {
+                var name = context.ParamList._Params[0].Id.Get<IdentifierNameSyntax>();
+                args = MakeArgumentList(MakeArgument(name));
+            }
+
+            // Build the try finally statement with the original body in the try, prefixed with a call to $AppInit()
+            // and a finally body
+            stmts.Clear();
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("$AppInit", EmptyArgumentList())));
+            var type = context.Type?.GetText().ToUpperInvariant();
+            stmts.Add(originalbody);
+            var trybody = MakeBlock(stmts.ToList());
+            // Create the Finally body:
+            stmts.Clear();
+
+            //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Start")));
+            //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
+            args = EmptyArgumentList();
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", args)));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", args)));
+            //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Finish")));
+            //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
+            var finallybody = MakeBlock(stmts.ToList());
+            var finallyClause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword), finallybody);
+            // Create the new body which is a try statement only
+            tryStmt = _syntaxFactory.TryStatement(
+                    SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                    trybody,
+                    null,
+                    finallyClause);
+            stmts.Clear();
+            stmts.Add(tryStmt);
+            body = MakeBlock(stmts);
+            _pool.Free(stmts);
+            return body;
+        }
+
+
         private bool NeedsReturn(IList<XP.StatementContext> stmts)
         {
             // This code checks only the last statement. When there is a return or throw
@@ -471,7 +667,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return CachedIfBlock;
             ExpressionSyntax assignExpr;
             ExpressionSyntax ifExpr;
-            StatementSyntax exprStmt;
             // This method generates the common block that is used for all Clipper calling convention methods
             // to retrieve the PCount
             // the pseudo code for that is
@@ -485,14 +680,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Xs$PCount = Xs$Args:Length
             assignExpr = MakeSimpleAssignment(
                     GenerateSimpleName(ClipperPCount),
-                                _syntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    GenerateSimpleName(ClipperArgs),
-                                     SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                    GenerateSimpleName("Length")));
+                    MakeSimpleMemberAccess(GenerateSimpleName(ClipperArgs),GenerateSimpleName("Length")));
 
-            exprStmt = _syntaxFactory.ExpressionStatement(assignExpr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            blockstmts.Add(exprStmt);
+            blockstmts.Add(GenerateExpressionStatement(assignExpr));
             // Xs$Args != NULL
 
             ifExpr = _syntaxFactory.BinaryExpression(
@@ -570,7 +760,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         indices,
                                         SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))));
                             _pool.Free(indices);
-                            exprStmt = _syntaxFactory.ExpressionStatement(assignExpr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                            exprStmt = GenerateExpressionStatement(assignExpr);
                             ifExpr = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanExpression,
                                 GenerateSimpleName(ClipperPCount),
@@ -701,12 +891,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Chain != null )
                 {
                     var chainArgs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
-                    var chainExpr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                    var chainExpr = MakeSimpleMemberAccess(
                         context.Chain.Type == XP.SELF ? (ExpressionSyntax)_syntaxFactory.ThisExpression(context.Chain.SyntaxKeyword()) : _syntaxFactory.BaseExpression(context.Chain.SyntaxKeyword()),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                         _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
                     body = MakeBlock(MakeList<StatementSyntax>(
-                        _syntaxFactory.ExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
+                        GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs)),
                         body));
                     context.Chain = null;
                 }
@@ -966,10 +1155,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 var assign1 = GenerateExpressionStatement(
                     MakeSimpleAssignment(idName,
-                       _syntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
+                       MakeSimpleMemberAccess(
                        MakeCastTo(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"),objName),
-                       SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                          GenerateSimpleName("Value"))));
 
                 var assign2 = GenerateExpressionStatement(MakeSimpleAssignment(idName, objName));
@@ -1185,7 +1372,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Simply generate call to VulcanRTFuncs.Functions.QOut or QQOut
             // and pass list of expressions as argument
             ArgumentSyntax arg;
-            ExpressionSyntax expr;
             string methodName;
             context.SetSequencePoint(context.end);
             if(context.Q.Type == XP.QQMARK)
@@ -1199,15 +1385,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     arg = MakeArgument(eCtx.Get<ExpressionSyntax>());
                     al.Add(arg);
                 }
-                args = _syntaxFactory.ArgumentList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        MakeSeparatedList<ArgumentSyntax>(al.ToArray()),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                args = MakeArgumentList(al.ToArray());
             } else {
                 args = EmptyArgumentList();
             }
-            expr = GenerateMethodCall(methodName, args);
-            context.Put(_syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            context.Put(GenerateExpressionStatement(GenerateMethodCall(methodName, args)));
             return;
         }
 
@@ -1226,17 +1408,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+                    context.Put(MakeSimpleMemberAccess(
                         context.Expr.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                         (SimpleNameSyntax) NotInDialect(context.Name.Get<SimpleNameSyntax>(),"equivalency of : and . member access operators"))
                         );
                     return;
                 }
             }
-            context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+            context.Put(MakeSimpleMemberAccess(
                 context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                 context.Name.Get<SimpleNameSyntax>()));
         }
 
@@ -1494,8 +1674,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
             // SUPER(..) and SELF(..)
-            expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expr, SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+            expr = MakeSimpleMemberAccess(expr,_syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
             ArgumentListSyntax argList;
             if(context.ArgList != null) {
                 argList = context.ArgList.Get<ArgumentListSyntax>();
@@ -1628,10 +1807,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = GenerateNIL();
                 break;
             case XP.NULL_PTR:
-                expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        _ptrType,
-                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                    GenerateSimpleName("Zero"));
+                expr = MakeSimpleMemberAccess(_ptrType,GenerateSimpleName("Zero"));
                 break;
             case XP.NULL_PSZ:
                 arg0 = MakeArgument(GenerateLiteral(""));
@@ -1756,8 +1932,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // }:Eval()
 
             return _syntaxFactory.InvocationExpression(
-            _syntaxFactory.MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
+            MakeSimpleMemberAccess(
                 MakeCastTo(_codeblockType,
                     _syntaxFactory.ParenthesizedLambdaExpression(
                         asyncKeyword: null,
@@ -1782,7 +1957,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ))
                         )
                     ),
-                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                 _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier("Eval"))
                 ),
             EmptyArgumentList());
@@ -1864,11 +2038,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.StructLayout"),
+                                name: GenerateQualifiedName(StructLayout),
                                 argumentList: _syntaxFactory.AttributeArgumentList(
                                     openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                     arguments: MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName("global::System.Runtime.InteropServices.LayoutKind.Sequential")),
+                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(LayoutSequential)),
                                         _syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null,
                                             context.Alignment == null ?
                                                 GenerateLiteral("8", 8)
@@ -1941,11 +2115,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.StructLayout"),
+                                name: GenerateQualifiedName(StructLayout),
                                 argumentList: _syntaxFactory.AttributeArgumentList(
                                     openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                     arguments: MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName("global::System.Runtime.InteropServices.LayoutKind.Explicit")),
+                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(LayoutExplicit)),
                                         _syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null, GenerateLiteral("4", 4))
 
                                     ),

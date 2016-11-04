@@ -21,6 +21,24 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+
+    [Flags]
+    public enum VulcanAssemblies
+    {
+        None = 0,
+        VulcanRT = 1,
+        VulcanRTFuncs = 2,
+        System = 4,
+        RDD = 8,
+        GUI = 16,
+        SQL = 32,
+        Console = 64,
+        Internet = 128,
+        Report = 256,
+        Win32API = 512
+    }
+
+
     public sealed partial class CSharpParseOptions
     {
 
@@ -59,7 +77,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VulcanRTFuncsIncluded { get; private set; } = false;
         public bool VulcanRTIncluded { get; private set; } = false;
         public bool VOUntypedAllowed { get; private set; } = true;
-
+        public VulcanAssemblies VulcanAssemblies { get; private set; } = VulcanAssemblies.None;
+        public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
 
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
@@ -93,6 +112,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOFloatConstants = opt.Vo14;
                 VOUntypedAllowed = opt.Vo15;
                 //VOInitializeVariables = opt.Vo16;
+                VulcanAssemblies = opt.VulcanAssemblies;
+                Overflow = opt.Overflow;
 
             }
         }
@@ -132,6 +153,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOFloatConstants = opt.VOFloatConstants; // vo14
             VOUntypedAllowed = opt.VOUntypedAllowed; // vo15
             //VOInitializeVariables = opt.VOInitializeVariables; // vo16
+            VulcanAssemblies = opt.VulcanAssemblies;
+            Overflow = opt.Overflow;
+
         }
     }
 }

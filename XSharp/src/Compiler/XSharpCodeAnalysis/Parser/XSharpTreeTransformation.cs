@@ -654,6 +654,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                      lhs, SyntaxFactory.MakeToken(SyntaxKind.EqualsToken), rhs);
         }
 
+        protected MemberAccessExpressionSyntax MakeSimpleMemberAccess( ExpressionSyntax lhs, SimpleNameSyntax rhs)
+        {
+            return _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, lhs,
+                                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken), rhs);
+        }
+
+
         protected TypeSyntax VoidType()
         {
             return _voidType;
@@ -3125,8 +3132,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         _syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"),null, GenerateLiteral(true)),
                                         _syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)),
                                         context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
-                                                _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"),
-                                                    SyntaxFactory.MakeToken(SyntaxKind.DotToken), _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))
+                                                MakeSimpleMemberAccess(GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"),
+                                                     _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))
                                             : null,
                                         context.CallingConvention?.Get<AttributeArgumentSyntax>()
                                     ),
@@ -3215,6 +3222,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 MakeSeparatedList<ExpressionSyntax>(context._ArrayIndex),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
         }
+
+        protected virtual BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
+        {
+            // Core dialect does nothing special with the entrypoint. VO/Vulcan dialect does.
+            return originalbody;
+        }
+
         public override void ExitFunction([NotNull] XP.FunctionContext context)
         {
             context.SetSequencePoint(context.end);
@@ -3226,17 +3240,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
             var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            var id = context.Id.Get<SyntaxToken>();
             if (!isInInterface)
             {
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+                // Special Handling of EntryPoint
+                if (string.Equals(id.Text,WellKnownMemberNames.EntryPointMethodName, StringComparison.OrdinalIgnoreCase))
+                {
+                    body = CreateEntryPoint(body, context);
+                }
             }
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword),
                 returnType: returntype,
                 explicitInterfaceSpecifier: null,
-                identifier: context.Id.Get<SyntaxToken>(),
+                identifier: id,
                 typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
                 parameterList: parameters,
                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
@@ -4356,9 +4376,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitBoundAccessMember([NotNull] XP.BoundAccessMemberContext context)
         {
-            context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+            context.Put(MakeSimpleMemberAccess(
                 context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                 context.Name.Get<SimpleNameSyntax>()));
         }
 
@@ -4409,9 +4428,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitAccessMember([NotNull] XP.AccessMemberContext context)
          {
-            context.Put(_syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
+            context.Put(MakeSimpleMemberAccess(
                 context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                 context.Name.Get<SimpleNameSyntax>()));
         }
 
@@ -4548,12 +4566,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             } else {
                 argList = EmptyArgumentList();
             }
-            var expr = GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList);
-            var cond = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                            GenerateQualifiedName("global::System.Diagnostics.Debugger"),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+            var stmt = GenerateExpressionStatement(GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList));
+            var cond = MakeSimpleMemberAccess(
+                        GenerateQualifiedName("global::System.Diagnostics.Debugger"),
                         GenerateSimpleName("IsAttached"));
-            var stmt = _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             context.Put(GenerateIfStatement(cond, stmt));
             return true;
         }
@@ -4577,12 +4593,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 globaltype,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
 
-            expr = _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                                        expr,
-                                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                    GenerateSimpleName("Module"));
-            var arg = MakeArgument(expr);
-            argList = MakeArgumentList(arg);
+            expr = MakeSimpleMemberAccess(expr,GenerateSimpleName("Module"));
+            argList = MakeArgumentList(MakeArgument(expr));
             expr = GenerateMethodCall("global::System.Runtime.InteropServices.Marshal.GetHINSTANCE", argList);
             context.Put(expr);
             return true;
@@ -4707,10 +4719,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.Put(MakeCastTo(
                     context.Type.Get<TypeSyntax>(),
-                    _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                        fobj,
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        fname)
+                    MakeSimpleMemberAccess(fobj,fname)
                     ));
             }
         }

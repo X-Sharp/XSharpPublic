@@ -35,44 +35,45 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return false;
         }
-        private bool VOBetterConversionFromExpression(BoundExpression node, TypeSymbol t1, TypeSymbol t2, out BetterResult result )
-        {
-            // Check for SignedNess
-            result = BetterResult.Neither;
-            if (Compilation.Options.IsDialectVO && node.Type != null)
-            {
-                if (node.Type.SpecialType.IsIntegralType())
-                {
-                    if (node.Type.SpecialType.IsSignedIntegralType())
-                    {
-                        if (t1.SpecialType.IsSignedIntegralType())
-                        {
-                            result = BetterResult.Left;
-                            return true;
-                        }
-                        if (t2.SpecialType.IsSignedIntegralType())
-                        {
-                            result = BetterResult.Right;
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        if (!t1.SpecialType.IsSignedIntegralType())
-                        {
-                             result = BetterResult.Left;
-                            return true;
-                        }
-                        if (!t2.SpecialType.IsSignedIntegralType())
-                        {
-                            result = BetterResult.Right;
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
+
+        //private bool VOBetterConversionFromExpression(BoundExpression node, TypeSymbol t1, TypeSymbol t2, out BetterResult result )
+        //{
+        //    // Check for SignedNess
+        //    result = BetterResult.Neither;
+        //    if (Compilation.Options.IsDialectVO && node.Type != null)
+        //    {
+        //        if (node.Type.SpecialType.IsIntegralType())
+        //        {
+        //            if (node.Type.SpecialType.IsSignedIntegralType())
+        //            {
+        //                if (t1.SpecialType.IsSignedIntegralType())
+        //                {
+        //                    result = BetterResult.Left;
+        //                    return true;
+        //                }
+        //                if (t2.SpecialType.IsSignedIntegralType())
+        //                {
+        //                    result = BetterResult.Right;
+        //                    return true;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (!t1.SpecialType.IsSignedIntegralType())
+        //                {
+        //                     result = BetterResult.Left;
+        //                    return true;
+        //                }
+        //                if (!t2.SpecialType.IsSignedIntegralType())
+        //                {
+        //                    result = BetterResult.Right;
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return false;
+        //}
 
     }
 }

@@ -14,9 +14,12 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Calling Conventions</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">CLIPPER</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">FASTCALL</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">PASCAL</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">STRICT</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">PASCAL</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">FASTCALL</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">THISCALL</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">ASPEN</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">WINCALL</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">CALLBACK</text></para>
   </body>
 </topic>

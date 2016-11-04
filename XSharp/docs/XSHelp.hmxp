@@ -41,7 +41,6 @@
               <task-config-value name="exportcommentsdate">36526</task-config-value>
               <task-config-value name="make4include">PDF</task-config-value>
               <task-config-value name="make4status">*</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -166,6 +165,7 @@
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
       </config-group>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>

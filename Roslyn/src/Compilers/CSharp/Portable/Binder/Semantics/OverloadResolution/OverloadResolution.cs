@@ -1806,9 +1806,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            BetterResult result;
-            if (VOBetterConversionFromExpression(node, t1, t2, out result))
-                return result;
+            //BetterResult result;
+            //if (VOBetterConversionFromExpression(node, t1, t2, out result))
+            //    return result;
 #endif
             var lambdaOpt = node as UnboundLambda;
 

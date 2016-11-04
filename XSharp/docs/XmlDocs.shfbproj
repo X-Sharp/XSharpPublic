@@ -139,7 +139,7 @@
     <MSHelpViewerSdkLinkType>Id</MSHelpViewerSdkLinkType>
     <CatalogVersion>100</CatalogVersion>
     <CatalogProductId>VS</CatalogProductId>
-    <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, ProtectedInternalAsProtected, PublicCompilerGenerated</VisibleItems>
+    <VisibleItems>Attributes, ExplicitInterfaceImplementations, ProtectedInternalAsProtected, PublicCompilerGenerated</VisibleItems>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" />
       <Argument Key="logoHeight" Value="" />
@@ -152,7 +152,9 @@
       <Argument Key="includeEnumValues" Value="true" />
     </TransformComponentArguments>
     <ApiFilter>
-      <Filter entryType="Namespace" fullName="" isExposed="False" />
+      <Filter entryType="Namespace" fullName="" isExposed="False">
+  <Filter entryType="Structure" fullName="_WINFILETIME" isExposed="True" />
+</Filter>
 <Filter entryType="Namespace" fullName="Vulcan" isExposed="True">
   <Filter entryType="Class" fullName="Vulcan.__Array" filterName="__Array" isExposed="True">
     <Filter entryType="Method" fullName="Vulcan.__Array.__ArrayNew" filterName="__ArrayNew" isExposed="False" />
@@ -1007,7 +1009,7 @@
 <Filter entryType="Namespace" fullName="VulcanVOSystemClasses" isExposed="False" /></ApiFilter>
     <HeaderText>
     </HeaderText>
-    <HelpFileVersion>0.2.5.0</HelpFileVersion>
+    <HelpFileVersion>0.2.8.0</HelpFileVersion>
     <FeedbackEMailLinkText>info%40xsharp.eu</FeedbackEMailLinkText>
     <CopyrightText>
     </CopyrightText>
@@ -1041,12 +1043,15 @@ You do not need to a reference to this namespace to your code. The compiler does
     </NamespaceSummaries>
     <FooterText>This documentation was generated for reference purposes from the metadata inside the Vulcan.NET Runtime Assemblies&amp;lt%3bbr/&amp;gt%3b</FooterText>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <PostBuildEvent>xcopy d:\Xsharp\Dev\XSharp\docs\Help\XSVulcan.* d:\Xsharp\Dev\XSharp\Binaries\Help /y</PostBuildEvent>
+    <PostBuildEvent>makecab $(OutDir)\$(HtmlHelpName).mshc $(OutDir)\$(HtmlHelpName).cab
+xcopy $(OutDir)\XSVulcan.* \Xsharp\Dev\XSharp\Binaries\Help /y</PostBuildEvent>
     <ProjectSummary>This documentation file was generated to help you find the classes, methods, properties and functions that VO and Vulcan.NET support. &amp;lt%3bbr/&amp;gt%3b
 The documentation is for reference only.&amp;lt%3bbr/&amp;gt%3b
 
 
 </ProjectSummary>
+    <PlugInConfigurations>
+    </PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
@@ -1084,7 +1089,6 @@ The documentation is for reference only.&amp;lt%3bbr/&amp;gt%3b
   <ItemGroup>
     <None Include="Input\VulcanRT.xml" />
     <None Include="Input\VulcanRTFuncs.xml" />
-    <None Include="Input\VulcanRTFuncs_documentxgenerated.xml" />
     <None Include="Input\VulcanVOConsoleClasses.xml" />
     <None Include="Input\VulcanVOGUIClasses.xml" />
     <None Include="Input\VulcanVOInternetClasses.xml" />

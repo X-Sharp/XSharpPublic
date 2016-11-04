@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">LOCAL</text></para>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">STATIC LOCAL</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
   </body>

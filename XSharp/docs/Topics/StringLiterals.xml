@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">String L:iterals</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">String L:iterals</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">There are a couple of different string typess inside X#:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="3">
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Name</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Description</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Remark</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Normal strings</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">&quot;</text><text styleclass="Normal" translate="true">Hello World</text><text styleclass="Normal" style="font-weight:bold;" translate="true">&quot;</text><text styleclass="Normal" translate="true"> &#160;</text><br/><text styleclass="Normal" style="font-weight:bold;" translate="true">&apos;</text><text styleclass="Normal" translate="true">Hello World</text><text styleclass="Normal" style="font-weight:bold;" translate="true">&apos;</text><text styleclass="Normal" translate="true"> &#160; &#160;</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Double Quoted</text><br/><text styleclass="Normal" translate="true">Single Quoted</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">E</text><text styleclass="Normal" translate="true">xtended strings</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">e&quot;</text><text styleclass="Normal" translate="true">Hello\tWorld\r\n</text><text styleclass="Normal" style="font-weight:bold;" translate="true">&quot;</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">e + double quotes</text><br/><text styleclass="Normal" style="font-weight:normal;" translate="true">Embedded control characters in the C# notation</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">I</text><text styleclass="Normal" translate="true">nterpolated strings</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">i&quot;</text><text styleclass="Normal" translate="true">Hello {World}</text><text styleclass="Normal" style="font-weight:bold;" translate="true">&quot;</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">i + Double Quotes</text><br/><text styleclass="Normal" style="font-weight:normal;" translate="true">Embedded expressions</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">I</text><text styleclass="Normal" translate="true">nterpolated </text><text styleclass="Normal" style="font-weight:bold;" translate="true">E</text><text styleclass="Normal" translate="true">xtended strings or</text><br/><text styleclass="Normal" style="font-weight:bold;" translate="true">E</text><text styleclass="Normal" translate="true">xtended </text><text styleclass="Normal" style="font-weight:bold;" translate="true">I</text><text styleclass="Normal" translate="true">nterpolated strings</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">ie&quot;</text><text styleclass="Normal" translate="true">Hello\t{World}\r\n</text><text styleclass="Normal" style="font-weight:bold;" translate="true">&quot;</text><text styleclass="Normal" translate="true"> or</text><br/><text styleclass="Normal" style="font-weight:bold;" translate="true">ei&quot;</text><text styleclass="Normal" translate="true">Hello\t{World}\r\n</text><text styleclass="Normal" style="font-weight:bold;" translate="true">&quot;</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">ie + Double Quotes or ei + Double Quotes</text><br/><text styleclass="Normal" style="font-weight:normal;" translate="true">Embedded expressions and control characters in the C# notation</text></para>
+        </td>
+      </tr>
+    </table></para>
+  </body>
+</topic>

@@ -940,7 +940,12 @@
     <member name="M:VulcanRTFuncs.Functions._VOLoadLibrary(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions._wait"></member>
     <member name="M:VulcanRTFuncs.Functions._wait(System.String)"></member>
-    <member name="M:VulcanRTFuncs.Functions.AAdd(Vulcan.__Array,Vulcan.__Usual)"></member>
+    <member name="M:VulcanRTFuncs.Functions.AAdd(Vulcan.__Array,Vulcan.__Usual)">
+    <param name="a">The array to add a new element to.</param>
+	<param name="u">The value assigned to the new element.  If uNewElement is another array, 
+		the new element in the target array will contain a reference to the array specified by uNewElement, 
+		rather than the array itself.</param>
+    </member>
     <member name="M:VulcanRTFuncs.Functions.Abs(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AbsFloat(Vulcan.__VOFloat)"></member>
     <member name="M:VulcanRTFuncs.Functions.AbsInt(System.Int32)"></member>
@@ -969,7 +974,11 @@
     <member name="M:VulcanRTFuncs.Functions.AFill(Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual,Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.AFind(Vulcan.__Array,Vulcan.__Usual,System.UInt32,System.UInt32,System.UInt32)"></member>
     <member name="M:VulcanRTFuncs.Functions.AIns(Vulcan.__Array,System.UInt32)"></member>
-    <member name="M:VulcanRTFuncs.Functions.ALen(Vulcan.__Array)"></member>
+    <member name="M:VulcanRTFuncs.Functions.ALen(Vulcan.__Array)">
+    	<summary>Return the number of elements in an array.</summary>
+		<param name="aTarget">The array to count.</param>    
+		<returns>The number of elements in the array.  If the array is empty, ALen() returns 0.</returns>
+    </member>
     <member name="M:VulcanRTFuncs.Functions.Alias(Vulcan.__Usual)"></member>
     <member name="M:VulcanRTFuncs.Functions.Alias0">
       <summary>
@@ -1949,7 +1958,6 @@
     <member name="M:VulcanRTFuncs.Functions.W2Bin(System.UInt16)"></member>
     <member name="M:VulcanRTFuncs.Functions.Wide2Multi(System.String)"></member>
     <member name="M:VulcanRTFuncs.Functions.WorkDir"></member>
-    <member name="F:VulcanRTFuncs.Functions.Xs$Dummy"></member>
     <member name="M:VulcanRTFuncs.Functions.Year(Vulcan.__VODate)"></member>
   </members>
 </doc>

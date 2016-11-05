@@ -148,6 +148,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
                 {
                     var arg = analyzedArguments.Arguments[i];
+#if XSHARP
+                    if (Compilation.Options.VOImplicitCastsAndConversions)
+                    {
+                        if (arg is BoundAddressOfOperator)
+                        {
+                            arg = (arg as BoundAddressOfOperator).Operand;
+                            if (!analyzedArguments.RefKinds.Any())
+                            {
+                                for (int j = 0; j < analyzedArguments.Arguments.Count; j++)
+                                    analyzedArguments.RefKinds.Add(i==j ? RefKind.Ref : RefKind.None);
+                            }
+                            else
+                            {
+                                analyzedArguments.RefKinds[i] = RefKind.Ref;
+                            }
+                            analyzedArguments.Arguments[i] = arg;
+                        }
+                    }
+#endif
                     if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
@@ -162,6 +181,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
                 {
                     var arg = analyzedArguments.Arguments[i];
+#if XSHARP
+                    if (Compilation.Options.VOImplicitCastsAndConversions)
+                    {
+                        if (arg is BoundAddressOfOperator)
+                        {
+                            arg = (arg as BoundAddressOfOperator).Operand;
+                        }
+                        if (!analyzedArguments.RefKinds.Any())
+                        {
+                            for (int j = 0; j < analyzedArguments.Arguments.Count; j++)
+                                analyzedArguments.RefKinds.Add(i == j ? RefKind.Ref : RefKind.None);
+                        }
+                        else
+                        {
+                            analyzedArguments.RefKinds[i] = RefKind.Ref;
+                        }
+                        analyzedArguments.Arguments[i] = arg;
+                    }
+#endif
                     if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }

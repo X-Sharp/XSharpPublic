@@ -2779,6 +2779,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else
                 {
                     RefKind parameterRefKind = parameters.ParameterRefKinds.IsDefault ? RefKind.None : parameters.ParameterRefKinds[argumentPosition];
+#if XSHARP
+                    if (Compilation.Options.VOImplicitCastsAndConversions)
+                    {
+                        var paramRefKinds = (candidate is MethodSymbol) ? (candidate as MethodSymbol).ParameterRefKinds
+                            : (candidate is PropertySymbol) ? (candidate as PropertySymbol).ParameterRefKinds
+                            : default(ImmutableArray<RefKind>);
+                        RefKind realParamRefKind = paramRefKinds.IsDefault ? RefKind.None : paramRefKinds[argsToParameters.IsDefault ? argumentPosition : argsToParameters[argumentPosition]];
+                        if (realParamRefKind != RefKind.None && argumentRefKind == RefKind.None /*&& argument.Syntax.Kind() == SyntaxKind.AddressOfExpression*/ && argument is BoundAddressOfOperator)
+                        {
+                            argument = (argument as BoundAddressOfOperator).Operand;
+                        }
+                    }
+#endif
                     conversion = CheckArgumentForApplicability(candidate, argument, argumentRefKind, parameters.ParameterTypes[argumentPosition], parameterRefKind, ignoreOpenTypes, ref useSiteDiagnostics);
 
                     if (!conversion.Exists ||

@@ -109,20 +109,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (source.SpecialType.IsIntegralType() && destination.SpecialType == SpecialType.System_Boolean)
                             return Conversion.Identity;
                     }
-                    if (conv.Compilation.Options.LateBinding)
+                    if (conv.Compilation.Options.LateBinding ||
+                        conv.Compilation.Options.VOImplicitCastsAndConversions)
                     {
                         if (source.SpecialType == SpecialType.System_Object && destination.IsReferenceType)
                         {
-                            // Convert Object -> Reference allowed with /lb
-                            return Conversion.ImplicitReference;
-                        }
-                    }
-                    // When /vo7 is enabled
-                    if (conv.Compilation.Options.VOImplicitCastsAndConversions)
-                    {
-                        if (source.SpecialType == SpecialType.System_Object && destination.IsReferenceType)
-                        {
-                            // Convert Object -> Reference allowed
+                            // Convert Object -> Reference allowed with /lb and with /vo7
                             // except when converting to array of usuals
                             bool bArrayOfUsual = false;
                             if (destination is ArrayTypeSymbol)
@@ -130,11 +122,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 var ats = destination as ArrayTypeSymbol;
                                 bArrayOfUsual = (ats.ElementType == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual));
                             }
-                            if (! bArrayOfUsual)
+                            if (!bArrayOfUsual)
                             {
                                 return Conversion.ImplicitReference;
                             }
                         }
+                    }
+                    // When /vo7 is enabled
+                    if (conv.Compilation.Options.VOImplicitCastsAndConversions)
+                    {
                         if (source.IsPointerType() && destination.IsPointerType())
                         {
                             // Convert Any Ptr -> Any Ptr allowed with /vo7

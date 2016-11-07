@@ -263,7 +263,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax GenerateNIL()
         {
-            return MakeDefault(_usualType);
+            return CreateObject(_usualType, EmptyArgumentList());
         }
 
         private void Check4ClipperCC(XP.IEntityContext context,

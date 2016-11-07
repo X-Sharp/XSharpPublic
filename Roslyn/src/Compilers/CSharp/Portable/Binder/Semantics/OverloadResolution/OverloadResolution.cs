@@ -1986,7 +1986,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // Both types are the same type.
                 return BetterResult.Neither;
             }
+#if XSHARP
+            if (Conversions.Compilation.Options.IsDialectVO)
+            {
+                if (type1 == Conversions.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)
+                    && type2.SpecialType == SpecialType.System_Object)
+                    return BetterResult.Right;
+                if (type1.SpecialType == SpecialType.System_Object && 
+                    type2 == Conversions.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    return BetterResult.Left;
+            }
 
+#endif
             // Given two different types T1 and T2, T1 is a better conversion target than T2 if no implicit conversion from T2 to T1 exists,
             // and at least one of the following holds:
             bool type1ToType2 = Conversions.ClassifyImplicitConversion(type1, type2, ref useSiteDiagnostics).IsImplicit;

@@ -1074,7 +1074,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             result.Free();
 #if XSHARP
             // When failed, then try again if RHS is < 4 bytes. Some method in Vulcan have only overloads for Int32 and UInt32 and higher
-            if (!possiblyBest.HasValue && Compilation.Options.IsDialectVO)
+            if (!possiblyBest.HasValue && Compilation.Options.IsDialectVO && right.Type != null)
             {
                 var st = right.Type.SpecialType;
                 bool tryAgain = false;
@@ -2080,7 +2080,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             Debug.Assert((object)operandType != null || hasErrors, "BindValue should have caught a null operand type");
 
             bool isManagedType = operandType.IsManagedType;
+#if XSHARP
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
+            if (Compilation.Options.VOImplicitCastsAndConversions)
+                allowManagedAddressOf = true;
+#else
+            bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
+#endif
             if (!allowManagedAddressOf)
             {
                 if (!hasErrors && isManagedType)

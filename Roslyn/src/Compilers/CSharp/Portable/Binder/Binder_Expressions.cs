@@ -377,6 +377,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             if (!expr.HasAnyErrors)
             {
+#if XSHARP
+                // Allow @ operator as alternative to REF
+                if (expr is BoundAddressOfOperator && Compilation.Options.VOImplicitCastsAndConversions)
+                    return;
+#endif
                 TypeSymbol exprType = expr.Type;
                 if ((object)exprType != null && exprType.IsUnsafe())
                 {

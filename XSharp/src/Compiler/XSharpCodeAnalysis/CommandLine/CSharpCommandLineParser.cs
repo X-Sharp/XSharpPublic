@@ -15,7 +15,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 namespace Microsoft.CodeAnalysis.CSharp
 {
 
@@ -157,40 +157,36 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "reference":
                     if (!string.IsNullOrEmpty(value))
                     {
-                        switch (System.IO.Path.GetFileNameWithoutExtension(value).ToLower())
+                        // /r:"reference"
+                        // /r:alias=reference
+                        // /r:alias="reference"
+                        // /r:reference;reference
+                        // /r:"path;containing;semicolons"
+                        // /r:"unterminated_quotes
+                        // /r:"quotes"in"the"middle
+                        // /r:alias=reference;reference      ... error 2034
+                        // /r:nonidf=reference               ... error 1679
+                        var pos = value.IndexOf('=');
+                        if (pos >= 0 && value[pos] == '=')
                         {
-                            case VulcanRTFuncs:
-                                options.VulcanAssemblies |= VulcanAssemblies.VulcanRTFuncs;
-                                break;
-                            case VulcanRT:
-                                options.VulcanAssemblies |= VulcanAssemblies.VulcanRT;
-                                break;
-                            case VulcanVOConsoleClasses:
-                                options.VulcanAssemblies |= VulcanAssemblies.Console;
-                                break;
-                            case VulcanVOGUIClasses:
-                                options.VulcanAssemblies |= VulcanAssemblies.GUI;
-                                break;
-                            case VulcanVOInternetClasses:
-                                options.VulcanAssemblies |= VulcanAssemblies.Internet;
-                                break;
-                            case VulcanVORDDClasses:
-                                options.VulcanAssemblies |= VulcanAssemblies.RDD;
-                                break;
-                            case VulcanVOReportClasses:
-                                options.VulcanAssemblies |= VulcanAssemblies.Report;
-                                break;
-                            case VulcanVOSQLClasses:
-                                options.VulcanAssemblies |= VulcanAssemblies.SQL;
-                                break;
-                            case VulcanVOSystemClasses:
-                                options.VulcanAssemblies |= VulcanAssemblies.System;
-                                break;
-                            case VulcanVOWin32APILibrary:
-                                options.VulcanAssemblies |= VulcanAssemblies.Win32API;
-                                break;
+                            value = value.Substring(pos + 1);
                         }
-
+                        if (value.StartsWith("\"") && value.EndsWith("\""))
+                        {
+                            value = value.Substring(1, value.Length - 2);
+                        }
+                        string filename = value;
+                        if (value.IndexOf(";")!=-1)
+                        {
+                            foreach (var fname in  ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
+                            {
+                                CheckReference(fname);
+                            }
+                        }
+                        else
+                        {
+                            CheckVulcanReference(filename);
+                        }
                     }
                     handled = false;
                     break;
@@ -262,6 +258,43 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             }
              return handled;
+        }
+        private void CheckVulcanReference(string filename)
+        {
+            switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
+            {
+                case VulcanRTFuncs:
+                    options.VulcanAssemblies |= VulcanAssemblies.VulcanRTFuncs;
+                    break;
+                case VulcanRT:
+                    options.VulcanAssemblies |= VulcanAssemblies.VulcanRT;
+                    break;
+                case VulcanVOConsoleClasses:
+                    options.VulcanAssemblies |= VulcanAssemblies.Console;
+                    break;
+                case VulcanVOGUIClasses:
+                    options.VulcanAssemblies |= VulcanAssemblies.GUI;
+                    break;
+                case VulcanVOInternetClasses:
+                    options.VulcanAssemblies |= VulcanAssemblies.Internet;
+                    break;
+                case VulcanVORDDClasses:
+                    options.VulcanAssemblies |= VulcanAssemblies.RDD;
+                    break;
+                case VulcanVOReportClasses:
+                    options.VulcanAssemblies |= VulcanAssemblies.Report;
+                    break;
+                case VulcanVOSQLClasses:
+                    options.VulcanAssemblies |= VulcanAssemblies.SQL;
+                    break;
+                case VulcanVOSystemClasses:
+                    options.VulcanAssemblies |= VulcanAssemblies.System;
+                    break;
+                case VulcanVOWin32APILibrary:
+                    options.VulcanAssemblies |= VulcanAssemblies.Win32API;
+                    break;
+            }
+
         }
         private static bool TryParseDialect(string str, XSharpDialect defaultDialect, out XSharpDialect dialect)
         {

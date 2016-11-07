@@ -2462,7 +2462,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     returntype = VoidType();
                 }
-                else
+                else if (context.StmtBlk != null)
                 {
                     // Assign does not need a return. It is compiled to a VOID method
                     body = AddMissingReturnStatement(body, context.StmtBlk, returntype);

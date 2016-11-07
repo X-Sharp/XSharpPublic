@@ -20,17 +20,33 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             result = BetterResult.Neither;
             // Prefer the member not declared in VulcanRT, if applicable
-            if (Compilation.Options.IsDialectVO && m1.Member.ContainingAssembly != m2.Member.ContainingAssembly)
+            if (Compilation.Options.IsDialectVO )
             {
-                if (m1.Member.ContainingAssembly.IsVulcanRT())
+                var asm1 = m1.Member.ContainingAssembly;
+                var asm2 = m2.Member.ContainingAssembly;
+                if (asm1 != asm2)
                 {
-                    result = BetterResult.Right;
-                    return true;
-                }
-                else if (m2.Member.ContainingAssembly.IsVulcanRT())
-                {
-                    result = BetterResult.Left;
-                    return true;
+                    if (asm1.IsVulcanRT())
+                    {
+                        result = BetterResult.Right;
+                        return true;
+                    }
+                    else if (asm2.IsVulcanRT())
+                    {
+                        result = BetterResult.Left;
+                        return true;
+                    }
+                    // prefer functions/method in the current assembly over external methods
+                    if (asm1.IsFromCompilation(Compilation))
+                    {
+                        result = BetterResult.Left;
+                        return true;
+                    }
+                    if (asm2.IsFromCompilation(Compilation))
+                    {
+                        result = BetterResult.Right;
+                        return true;
+                    }
                 }
             }
             return false;

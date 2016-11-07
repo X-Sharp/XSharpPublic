@@ -633,7 +633,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected override BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext stmtBlock, TypeSyntax returnType)
         {
-            if (_options.VOAllowMissingReturns && NeedsReturn(stmtBlock._Stmts))
+            if (_options.VOAllowMissingReturns && stmtBlock != null &&  NeedsReturn(stmtBlock._Stmts))
             {
                 var result = GetReturnExpression(returnType);
                 if (result != null) // this happens for the Void Type

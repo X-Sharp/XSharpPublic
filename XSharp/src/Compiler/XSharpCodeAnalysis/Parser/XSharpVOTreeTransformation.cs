@@ -415,7 +415,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var arg1 = MakeArgument(GenerateLiteral("Error when executing code in Vulcan INIT procedure(s)"));
             var arg2 = MakeArgument(GenerateSimpleName(ExVarName));
             var excType = GenerateQualifiedName("global::System.Exception");
-            var Exception = CreateObject(excType, MakeArgumentList(arg1, arg2), null);
+            var Exception = CreateObject(excType, MakeArgumentList(arg1, arg2));
             var throwstmt = _syntaxFactory.ThrowStatement(
                 SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
                 Exception, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
@@ -621,7 +621,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (returnType == _pszType || returnType == _symbolType)
                 {
-                    result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))), null);
+                    result = CreateObject(returnType, MakeArgumentList(MakeArgument(GenerateLiteral(""))));
                 }
                 else
                 {
@@ -832,7 +832,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 MakeSeparatedList<TypeSyntax>(_ptrType),
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
                                 )));
-                    var expr = CreateObject(listOfIntPtr, EmptyArgumentList(), null);
+                    var expr = CreateObject(listOfIntPtr, EmptyArgumentList());
                     stmts.Add(GenerateLocalDecl(VoPszList, _impliedType, expr));
                     finallyClause = _syntaxFactory.FinallyClause(
                         SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
@@ -1027,7 +1027,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 	                args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
 	            else
 	                args = MakeArgumentList(MakeArgument(GenerateNIL()));
-	            var expr = CreateObject(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"), args, null);
+	            var expr = CreateObject(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"), args);
 	            context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
 	                expr,
 	                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -1608,7 +1608,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
                 expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
                 var args = MakeArgumentList(MakeArgument(expr));
-                expr = CreateObject(this._pszType, args, null);
+                expr = CreateObject(this._pszType, args);
             }
             context.Put(expr);
             return true;
@@ -1772,8 +1772,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
         if(_options.VOCompatibleIIF) {
-            ExpressionSyntax left = MakeCastTo(_usualType, context.TrueExpr.Get<ExpressionSyntax>());
-            ExpressionSyntax right = MakeCastTo(_usualType, context.FalseExpr.Get<ExpressionSyntax>());
+            ExpressionSyntax left = CreateObject(_usualType, MakeArgumentList(MakeArgument(context.TrueExpr.Get<ExpressionSyntax>())));
+            ExpressionSyntax right = CreateObject(_usualType, MakeArgumentList(MakeArgument(context.FalseExpr.Get<ExpressionSyntax>())));
 
             context.Put(_syntaxFactory.ConditionalExpression(
                 context.Cond.Get<ExpressionSyntax>(),
@@ -1825,7 +1825,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _syntaxFactory.OmittedArraySizeExpression(SyntaxFactory.MakeToken(SyntaxKind.OmittedArraySizeExpressionToken))),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)))),
             initializer);
-        context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr)), null));
+        context.Put<ExpressionSyntax>(CreateObject(_arrayType, MakeArgumentList(MakeArgument(expr))));
 
     }
     public override void ExitLiteralValue([NotNull] XP.LiteralValueContext context)
@@ -1845,7 +1845,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 break;
             case XP.NULL_PSZ:
                 arg0 = MakeArgument(GenerateLiteral(""));
-                expr = CreateObject(_pszType, MakeArgumentList(arg0), null);
+                expr = CreateObject(_pszType, MakeArgumentList(arg0));
                 break;
             case XP.NULL_DATE:
                 expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
@@ -1857,12 +1857,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     arg0 = MakeArgument(GenerateLiteral(elements[0]));
                     arg1 = MakeArgument(GenerateLiteral(elements[1]));
                     arg2 = MakeArgument(GenerateLiteral(elements[2]));
-                    expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2), null);
+                    expr = CreateObject(_dateType, MakeArgumentList(arg0, arg1, arg2));
                 }
                 break;
             case XP.SYMBOL_CONST:
                 arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
-                expr = CreateObject(_symbolType, MakeArgumentList(arg0), null);
+                expr = CreateObject(_symbolType, MakeArgumentList(arg0));
                 break;
             case XP.REAL_CONST:
                 if (_options.VOFloatConstants)
@@ -1880,7 +1880,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             arg0 = MakeArgument(SyntaxFactory.LiteralExpression(context.Token.ExpressionKindLiteral(), context.Token.SyntaxLiteralValue(_options)));
                             arg1 = MakeArgument(GenerateLiteral(len.ToString(), len));
                             arg2 = MakeArgument(GenerateLiteral(dec.ToString(), dec));
-                            expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2), null);
+                            expr = CreateObject(_floatType, MakeArgumentList(arg0, arg1, arg2));
                         }
                     }
                 }

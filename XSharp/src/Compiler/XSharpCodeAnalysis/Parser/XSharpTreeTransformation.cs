@@ -878,7 +878,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(attributes);
         }
 
-        protected ExpressionSyntax CreateObject(TypeSyntax type, ArgumentListSyntax args, InitializerExpressionSyntax init)
+        protected ExpressionSyntax CreateObject(TypeSyntax type, ArgumentListSyntax args, InitializerExpressionSyntax init = null)
         {
             ExpressionSyntax expr;
             expr = _syntaxFactory.ObjectCreationExpression(
@@ -3575,7 +3575,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_objectType,
                                 MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName + StaticLocalLockFieldNameSuffix),
-                                        CreateObject(_objectType, EmptyArgumentList(), null)))),
+                                        CreateObject(_objectType, EmptyArgumentList())))),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                         );
                 }
@@ -4825,7 +4825,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.XType.Token.Type == XSharpParser.PSZ)
                 {
                     var args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
-                    context.Put(CreateObject(context.XType.Get<TypeSyntax>(), args,null));
+                    context.Put(CreateObject(context.XType.Get<TypeSyntax>(), args));
                 }
                 else
                 {

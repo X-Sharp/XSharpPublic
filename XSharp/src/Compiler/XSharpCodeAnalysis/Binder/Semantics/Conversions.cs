@@ -123,7 +123,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (source.SpecialType == SpecialType.System_Object && destination.IsReferenceType)
                         {
                             // Convert Object -> Reference allowed
-                            return Conversion.ImplicitReference;
+                            // except when converting to array of usuals
+                            bool bArrayOfUsual = false;
+                            if (destination is ArrayTypeSymbol)
+                            {
+                                var ats = destination as ArrayTypeSymbol;
+                                bArrayOfUsual = (ats.ElementType == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual));
+                            }
+                            if (! bArrayOfUsual)
+                            {
+                                return Conversion.ImplicitReference;
+                            }
                         }
                         if (source.IsPointerType() && destination.IsPointerType())
                         {

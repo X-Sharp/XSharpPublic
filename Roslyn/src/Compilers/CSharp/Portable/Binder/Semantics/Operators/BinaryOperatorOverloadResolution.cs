@@ -961,11 +961,39 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if ((op1.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Float && (op2.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Double)
                     {
+                        // Lhs = real4, rhs = real8, choose real8
+
                         return BetterResult.Right;
                     }
-                    if ((op1.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Double && (op2.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Float)
+                    if ((op1.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Double)
                     {
-                        return BetterResult.Left;
+                        // rhs = numeric, lhs = double choose double
+                        var kind = (op2.Kind & BinaryOperatorKind.TypeMask);
+                        switch (kind)
+                        {
+                            case BinaryOperatorKind.Int:
+                            case BinaryOperatorKind.UInt:
+                            case BinaryOperatorKind.Long:
+                            case BinaryOperatorKind.ULong:
+                            case BinaryOperatorKind.Float:
+                            case BinaryOperatorKind.Decimal:
+                                return BetterResult.Left;
+                        }
+                    }
+                    if ((op2.Kind & BinaryOperatorKind.TypeMask) == BinaryOperatorKind.Double)
+                    {
+                        // lhs = numeric, rhs = double choose double
+                        var kind = (op1.Kind & BinaryOperatorKind.TypeMask);
+                        switch (kind)
+                        {
+                            case BinaryOperatorKind.Int:
+                            case BinaryOperatorKind.UInt:
+                            case BinaryOperatorKind.Long:
+                            case BinaryOperatorKind.ULong:
+                            case BinaryOperatorKind.Float:
+                            case BinaryOperatorKind.Decimal:
+                                return BetterResult.Right;
+                        }
                     }
                     if (left.Type != null && right.Type != null)
                     {

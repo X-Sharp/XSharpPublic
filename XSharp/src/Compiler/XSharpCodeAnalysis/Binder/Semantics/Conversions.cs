@@ -12,6 +12,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class Conversions
     {
+
         override public bool HasBoxingConversion(TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             bool result = base.HasBoxingConversion(source, destination, ref useSiteDiagnostics);
@@ -25,7 +26,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         result = !destination.IsStringType()
                             && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array)
                             && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock)
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), true, ref useSiteDiagnostics) != true;
+                            && (destination as NamedTypeSymbol)?.ConstructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), true, ref useSiteDiagnostics) != true
+                            && !IsClipperArgsType(destination);
                     }
                     else
                     {
@@ -88,6 +90,21 @@ namespace Microsoft.CodeAnalysis.CSharp
     }
     internal abstract partial class ConversionsBase
     {
+        protected bool IsClipperArgsType(TypeSymbol args)
+        {
+            bool result = false;
+            if (args is ArrayTypeSymbol)
+            {
+                var ats = args as ArrayTypeSymbol;
+                Conversions conv = this as Conversions;
+                if (conv != null  && conv.Compilation.Options.IsDialectVO)
+                {
+                    result = (ats.ElementType == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual));
+                }
+
+            }
+            return result;
+        }
         private Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
         {
             if (this is Conversions)
@@ -112,20 +129,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (conv.Compilation.Options.LateBinding ||
                         conv.Compilation.Options.VOImplicitCastsAndConversions)
                     {
-                        if (source.SpecialType == SpecialType.System_Object && destination.IsReferenceType)
+                        if (source.SpecialType == SpecialType.System_Object && destination.IsReferenceType && !IsClipperArgsType(destination))
                         {
                             // Convert Object -> Reference allowed with /lb and with /vo7
                             // except when converting to array of usuals
-                            bool bArrayOfUsual = false;
-                            if (destination is ArrayTypeSymbol)
-                            {
-                                var ats = destination as ArrayTypeSymbol;
-                                bArrayOfUsual = (ats.ElementType == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual));
-                            }
-                            if (!bArrayOfUsual)
-                            {
-                                return Conversion.ImplicitReference;
-                            }
+                            return Conversion.ImplicitReference;
                         }
                     }
                     // When /vo7 is enabled

@@ -180,7 +180,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             foreach (var fname in  ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
                             {
-                                CheckReference(fname);
+                                CheckVulcanReference(fname);
                             }
                         }
                         else

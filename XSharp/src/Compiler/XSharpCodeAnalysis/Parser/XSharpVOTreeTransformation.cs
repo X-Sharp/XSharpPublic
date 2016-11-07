@@ -35,6 +35,8 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using System.Globalization;
+
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal class XSharpVOTreeTransformation : XSharpTreeTransformation {
@@ -1285,6 +1287,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private AttributeSyntax EncodeVulcanDefaultParameter(XP.ExpressionContext initexpr )
         {
+            bool negative = false;
+            if (initexpr is XP.PrefixExpressionContext)
+            {
+                var prefix = initexpr as XP.PrefixExpressionContext;
+                if (prefix.Op.Type == XP.PLUS || prefix.Op.Type == XP.MINUS)
+                {
+                    initexpr = prefix.Expr;
+                    negative = prefix.Op.Type == XP.MINUS;
+                }
+            }
             if (initexpr is XP.PrimaryExpressionContext && ((XP.PrimaryExpressionContext)initexpr).Expr is XP.LiteralExpressionContext)
             {
                 var litexpr = ((XP.PrimaryExpressionContext)initexpr).Expr as XP.LiteralExpressionContext;
@@ -1318,6 +1330,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.NULL_OBJECT:
                     case XP.NULL_CODEBLOCK:
                         return MakeDefaultParameter(nullExpr, GenerateLiteral(0));                          // 0 = regular .Net Value
+                    case XP.INT_CONST:
+                        if (negative)
+                        {
+                            Int64 iValue = Int64.Parse(token.Text)*-1;
+                            return MakeDefaultParameter(GenerateLiteral(iValue), GenerateLiteral(0));   // 0 = regular .Net Value
+                        }
+                        else
+                            return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
+                    case XP.REAL_CONST:
+                        if (negative)
+                        {
+                            double dValue;
+                            switch (token.Text.Last())
+                            {
+                                case 'M':
+                                case 'm':
+                                case 'S':
+                                case 's':
+                                case 'D':
+                                case 'd':
+                                    dValue = double.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                    break;
+                                default:
+                                    dValue = double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                    break;
+                            }
+                            return MakeDefaultParameter(GenerateLiteral(dValue *-1), GenerateLiteral(0));   // 0 = regular .Net Value
+                        }
+                        else
+                            return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
                     default:
                         return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
                 }

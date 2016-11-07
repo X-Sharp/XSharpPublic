@@ -711,6 +711,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression,
                                                 SyntaxFactory.Literal(null, value.ToString(), value, null));
         }
+        protected LiteralExpressionSyntax GenerateLiteral(double value)
+        {
+            return _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression,
+                                                SyntaxFactory.Literal(null, value.ToString(), value, null));
+        }
         protected LiteralExpressionSyntax GenerateLiteral(string source, int value)
         {
             return _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression,

@@ -30,6 +30,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal class XSharpPreprocessor : ITokenSource
     {
 
+        #region Static Properties
+        static Dictionary<String, CachedIncludeFile> includecache = new Dictionary<string, CachedIncludeFile>();
+
+        internal static CachedIncludeFile GetIncludeFile(string fileName)
+        {
+            CachedIncludeFile file = null;
+            lock (includecache)
+            {
+                fileName = fileName.ToLower();
+                if (includecache.ContainsKey(fileName))
+                {
+                    file = includecache[fileName];
+                    if (file.LastWritten != PortableShim.File.GetLastWriteTimeUtc(fileName))
+                    {
+                        includecache.Remove(fileName);
+                        return null;
+                    }
+                }
+            }
+            return file;
+        }
+        internal static CachedIncludeFile  AddIncludeFile(string fileName, IList<IToken> tokens, SourceText text)
+        {
+            lock(includecache)
+            {
+                fileName = fileName.ToLower();
+                CachedIncludeFile file = GetIncludeFile(fileName);
+                if (file == null)
+                {
+                    file = new CachedIncludeFile();
+                    includecache.Add(fileName, file);
+                }
+                file.Tokens = tokens;
+                file.Text = text;
+                file.FileName = fileName;
+                file.LastWritten = PortableShim.File.GetLastWriteTimeUtc(fileName);
+                return file;
+            }
+        }
+        #endregion
+
         class InputState
         {
             internal ITokenStream Tokens;
@@ -77,6 +118,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return false;
                 Index++;
                 return true;
+            }
+        }
+
+        internal class CachedIncludeFile
+        {
+            internal DateTime LastWritten { get; set; }
+            internal String FileName { get; set; }
+            internal IList<IToken> Tokens { get; set; }
+            internal SourceText Text { get; set; }
+        }
+        internal class CachedCommonTokenStream : CommonTokenStream
+        {
+            internal CachedCommonTokenStream(ITokenSource tokenSource) : base(tokenSource)
+            {
+                
+            }
+            internal void SetTokens(IList<IToken> newtokens)
+            {
+                tokens = newtokens;
+                fetchedEOF = true;
+                Reset();
             }
         }
 
@@ -546,6 +608,94 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
+        private bool ProcessIncludeFile(IToken ln, string fn)
+        {
+            string nfp = null;
+            SourceText text = null;
+            Exception fileReadException = null;
+            CachedIncludeFile file = null;
+            foreach (var p in includeDirs)
+            {
+                bool rooted = System.IO.Path.IsPathRooted(fn);
+                string fp;
+                try
+                {
+                    fp = rooted ? fn : System.IO.Path.Combine(p, fn);
+                }
+                catch (Exception e)
+                {
+                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + fn + " " + e.Message));
+                    continue;
+                }
+                try
+                {
+                    using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
+                    {
+                        nfp = (string)PortableShim.FileStream.Name.GetValue(data);
+                        file = GetIncludeFile(nfp);
+                        if (file != null)
+                        {
+                            IncludedFiles.Add(nfp, file.Text);
+                            break;
+                        }
+                        nfp = (string)PortableShim.FileStream.Name.GetValue(data);
+                        text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                        IncludedFiles.Add(nfp, text);
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (fileReadException == null)
+                        fileReadException = e;
+                    nfp = null;
+                }
+                if (rooted)
+                    break;
+            }
+            SkipEmpty();
+            SkipToEol();
+            if (file == null && nfp == null)
+            {
+                if (fileReadException != null)
+                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + fn + "': " + fileReadException.Message));
+                else
+                    _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
+                return false;
+            }
+            else if (file == null)
+            {
+                // we have nfp and text with the file contents
+                // now parse the stuff and insert in the cache
+                Debug.WriteLine("Add include file {0} to cache", nfp);
+                var stream = new AntlrInputStream(text.ToString());
+                var lexer = new XSharpLexer(stream);
+                var tokens = new CommonTokenStream(lexer);
+                stream.name = nfp;
+                tokens.Fill();
+                InsertStream(nfp, tokens);
+                file = new CachedIncludeFile();
+                file.Tokens = tokens.GetTokens();
+                file.FileName = nfp;
+                file.Text = text;
+                file = AddIncludeFile(nfp, tokens.GetTokens(), text);
+                return true;
+            }
+            else
+            {
+                // we have a file cache item with the Tokens etc
+                // Create an inputstream from the cached text and tokens
+                Debug.WriteLine("Read include file {0} from cache", file.FileName);
+                var stream = new AntlrInputStream(file.Text.ToString());
+                var lexer = new XSharpLexer(stream);
+                var tokens = new CachedCommonTokenStream(lexer);
+                tokens.SetTokens(file.Tokens);
+                InsertStream(file.FileName, tokens);
+                return true;
+            }
+
+        }
+
         private bool IsDefined(string define)
         {
             // Handle /VO8 compiler option:
@@ -791,58 +941,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 {
                                     Consume();
                                     string fn = ln.Text.Substring(1, ln.Text.Length - 2);
-                                    string nfp = null;
-                                    SourceText text = null;
-                                    Exception fileReadException = null;
-                                    foreach (var p in includeDirs)
+                                    lock(includecache)
                                     {
-                                        bool rooted = System.IO.Path.IsPathRooted(fn);
-                                        string fp;
-                                        try {
-                                            fp = rooted ? fn : System.IO.Path.Combine(p, fn);
-                                        }
-                                        catch (Exception e) {
-                                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error combining path " + p + " and filename  " + fn+" "+e.Message));
-                                            continue;
-                                        }
-                                        try {
-                                            using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
-                                            {
-                                                nfp = (string)PortableShim.FileStream.Name.GetValue(data);
-                                                if (!IncludedFiles.TryGetValue(nfp, out text))
-                                                {
-                                                    text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
-                                                    IncludedFiles.Add(nfp, text);
-                                                }
-                                                break;
-                                            }
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            if (fileReadException == null)
-                                                fileReadException = e;
-                                            nfp = null;
-                                        }
-                                        if (rooted)
-                                            break;
-                                    }
-                                    SkipEmpty();
-                                    SkipToEol();
-                                    if (nfp != null && text != null)
-                                    {
-                                        var stream = new AntlrInputStream(text.ToString());
-                                        var lexer = new XSharpLexer(stream);
-                                        var tokens = new CommonTokenStream(lexer);
-                                        stream.name = nfp;
-                                        tokens.Fill();
-                                        InsertStream(nfp, tokens);
-                                    }
-                                    else
-                                    {
-                                        if (fileReadException != null)
-                                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + fn + "': "+fileReadException.Message));
-                                        else
-                                            _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
+                                        ProcessIncludeFile(ln, fn);
                                     }
 
                                 }

@@ -2129,7 +2129,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // nvk: Not handled here due to datatype, which is processed later
         }
 
-        public void VisitClassvar([NotNull] XP.ClassvarContext context)
+        protected virtual void VisitClassvar([NotNull] XP.ClassvarContext context)
         {
             bool isDim = context.Dim != null && context.ArraySub != null;
             var initExpr = context.Initializer?.Get<ExpressionSyntax>();
@@ -3510,7 +3510,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return MissingType();
         }
 
-        private void VisitLocalvar([NotNull] XP.LocalvarContext context)
+        protected virtual void VisitLocalvar([NotNull] XP.LocalvarContext context)
         {
             bool isConst = context.Const != null;
             bool isStatic = (context.Parent as XP.CommonLocalDeclContext).Static != null;

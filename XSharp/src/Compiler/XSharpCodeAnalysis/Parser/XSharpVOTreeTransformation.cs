@@ -864,6 +864,53 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        private ExpressionSyntax GenerateVulcanArrayInitializer([NotNull]XP.ArraysubContext arraysub)
+        {
+            var args = new List<ArgumentSyntax>();
+            foreach (var index in arraysub._ArrayIndex)
+            {
+                args.Add(MakeArgument(index.Get<ExpressionSyntax>()));
+            }
+            var initializer = GenerateMethodCall("global::Vulcan.__Array.__ArrayNew", MakeArgumentList(args.ToArray()));
+            return initializer;
+        }
+
+        protected override void VisitClassvar([NotNull] XP.ClassvarContext context)
+        {
+            base.VisitClassvar(context);
+            if (context.ArraySub != null)
+            {
+                var vd = context.Get<VariableDeclaratorSyntax>();
+                var initializer = GenerateVulcanArrayInitializer(context.ArraySub);
+                if (context.Initializer != null)
+                {
+                    // You cannot have both an  initializer initial Dimensions
+                    initializer = initializer.WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_VulcanArrayDimAndInit));
+                }
+                context.Put(GenerateVariable(vd.Identifier, initializer));
+            }
+        }
+
+        protected override void VisitLocalvar([NotNull] XP.LocalvarContext context)
+        {
+            if (context.ArraySub != null && context.DataType.Get<TypeSyntax>() == _arrayType)
+            {
+                var initializer = GenerateVulcanArrayInitializer(context.ArraySub);
+                if (context.Expression != null)
+                {
+                    // You cannot have both an  initializer initial Dimensions
+                    initializer = initializer.WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(ErrorCode.ERR_VulcanArrayDimAndInit));
+                }
+                else
+                {
+                    context.Expression = new XP.ExpressionContext(context, 0);
+                }
+                context.Expression.Put<ExpressionSyntax>(initializer);
+            }
+            base.VisitLocalvar(context);
+        }
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
             // This method does NOT call the parent. Code is duplicated here.

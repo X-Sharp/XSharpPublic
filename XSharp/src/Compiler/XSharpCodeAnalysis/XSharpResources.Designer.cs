@@ -8783,6 +8783,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Array initializers cannot be combined with initial dimensions..
+        /// </summary>
+        internal static string ERR_VulcanArrayDimAndInit {
+            get {
+                return ResourceManager.GetString("ERR_VulcanArrayDimAndInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A Windows Runtime event may not be passed as an out or ref parameter..
         /// </summary>
         internal static string ERR_WinRtEventPassedByRef {

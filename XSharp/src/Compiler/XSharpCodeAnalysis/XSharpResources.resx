@@ -4789,5 +4789,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_KeywordExpected" xml:space="preserve">
     <value>Keyword {0} missing</value>
   </data>
+  <data name="ERR_VulcanArrayDimAndInit" xml:space="preserve">
+    <value>Array initializers cannot be combined with initial dimensions.</value>
+  </data>
 
 </root>

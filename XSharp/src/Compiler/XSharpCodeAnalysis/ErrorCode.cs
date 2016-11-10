@@ -1396,5 +1396,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_UnknownLiteralTypeName=9028,
         WRN_CompilerOptionNotImplementedYet = 9029,
         ERR_KeywordExpected = 9030,
+        ERR_VulcanArrayDimAndInit = 9031,
     }
 }

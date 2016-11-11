@@ -45,9 +45,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             options = new XSharpSpecificCompilationOptions();
         }
-        bool hasSeenOvf = false;
-        string previousArgument = string.Empty;
-        bool previousOvfValue = false;
+        
         bool ParseXSharpArgument(ref string name, ref string value, string arg, List<Diagnostic> diagnostics)
         {
             if (options == null)
@@ -135,13 +133,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "fovf":    // synonym for checked
                 case "ovf":     // synonym for checked
-                    if (hasSeenOvf && positive != previousOvfValue)
+                    if (options.OverflowHasBeenSet && positive != options.Overflow)
                     {
-                        AddDiagnostic(diagnostics, ErrorCode.ERR_ConflictingCommandLineOptions, arg, previousArgument);
+                        AddDiagnostic(diagnostics, ErrorCode.ERR_ConflictingCommandLineOptions, arg, options.PreviousArgument);
                     }
-                    previousArgument = arg;
-                    previousOvfValue = positive;
-                    hasSeenOvf = true;
+                    options.PreviousArgument = arg;
+                    options.OverflowHasBeenSet = true;
+
                     options.Overflow = positive;
                     if (positive)
                         name = "checked+";

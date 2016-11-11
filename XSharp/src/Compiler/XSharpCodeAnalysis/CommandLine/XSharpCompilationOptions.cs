@@ -88,5 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool ExplicitVO16 { get; internal set; } = false;
         internal VulcanAssemblies VulcanAssemblies { get; set; } = VulcanAssemblies.None;
         public bool Overflow { get; internal set; } = false;
+        public bool OverflowHasBeenSet { get; internal set; } = false;
+        public string PreviousArgument { get; internal set; } = string.Empty;
     }
 }

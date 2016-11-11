@@ -27,11 +27,21 @@ using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
+    internal static class TokenListExtensions
+    {
+        internal static string AsString (this IList<IToken> tokens)
+        {
+            string result = "";
+            foreach (var t in tokens)
+                result += t.Text;
+            return result;
+        }
+    }
     internal class XSharpPreprocessor : ITokenSource
     {
 
         #region Static Properties
-        static Dictionary<String, CachedIncludeFile> includecache = new Dictionary<string, CachedIncludeFile>();
+        static Dictionary<String, CachedIncludeFile> includecache = new Dictionary<string, CachedIncludeFile>(StringComparer.OrdinalIgnoreCase);
 
 
         internal static void ClearOldIncludes()
@@ -60,7 +70,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             CachedIncludeFile file = null;
             lock (includecache)
             {
-                fileName = fileName.ToLower();
                 if (includecache.ContainsKey(fileName))
                 {
                     file = includecache[fileName];
@@ -91,7 +100,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 file.Tokens = tokens;
                 file.Text = text;
                 file.FileName = fileName;
-                //Debug.WriteLine("Add to Cache: file {0}, # of Tokens {1}", fileName, file.Tokens.Count);
 
                 file.LastWritten = PortableShim.File.GetLastWriteTimeUtc(fileName);
                 return file;
@@ -265,21 +273,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // and automatically include it.
                 // read XsharpDefs.xh
                 StdDefs = "xSharpDefs.xh";
-                //includeFile(null, StdDefs);
+                ProcessIncludeFile(null, StdDefs,true);
             }
         }
 
         internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             ClearOldIncludes();
-            //string symbols = "";
-            //foreach (var sym in options.PreprocessorSymbols)
-            //{
-            //    symbols += sym + " ";
-            //}
-            //Debug.WriteLine("Preprocessing file : {0}", fileName);
-            //Debug.WriteLine("DefaultIncludeDir  : {0}", options.DefaultIncludeDir);
-            //Debug.WriteLine("Symbols            : {0}", symbols);
             _options = options;
             if (_options.VOPreprocessorBehaviour)
                 symbolDefines = new Dictionary<string, IList<IToken>>(CaseInsensitiveComparison.Comparer);
@@ -304,6 +304,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
             inputs = new InputState(input);
+            inputs.SourceFileName= fileName;
+            inputs.MappedFileName = fileName;
+            inputs.MappedLineDiff = 0;
             foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
 
@@ -311,6 +314,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
+
+        internal void DebugOutput(string format, params object[] objects)
+        {
+            Debug.WriteLine("PP: " + format, objects);
+        }
         public int Column
         {
             get
@@ -562,16 +570,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                     }
-
+                    
                     if (equalDefine)
                         _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
                     else
-                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text));
+                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, oldtokens.AsString(), newtokens.AsString()));
                 }
                 symbolDefines[def.Text] = newtokens;
-#if DUMP_UDC
-                Debug.WriteLine("DEF: {0} {1,3} {2}", def.InputStream.SourceName, def.Line, def.Text);
-#endif
+                if (_options.Verbose)
+                {
+                    DebugOutput("Line {0}, add define {1} => {2}", def.Line, def.Text, newtokens.AsString());
+                }
             }
             else
             {
@@ -633,12 +642,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        private bool ProcessIncludeFile(IToken ln, string fn)
+        private bool ProcessIncludeFile(IToken ln, string fn, bool StdDefine = false)
         {
             string nfp = null;
             SourceText text = null;
             Exception fileReadException = null;
-            CachedIncludeFile file = null;
+            CachedIncludeFile cachedFile = null;
             foreach (var p in includeDirs)
             {
                 bool rooted = System.IO.Path.IsPathRooted(fn);
@@ -657,14 +666,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     using (var data = PortableShim.FileStream.Create(fp, PortableShim.FileMode.Open, PortableShim.FileAccess.Read, PortableShim.FileShare.ReadWrite, bufferSize: 1, options: PortableShim.FileOptions.None))
                     {
                         nfp = (string)PortableShim.FileStream.Name.GetValue(data);
-                        file = GetIncludeFile(nfp);
-                        if (file != null)
+                        cachedFile = GetIncludeFile(nfp);
+                        if (cachedFile != null)
                         {
-                            IncludedFiles.Add(nfp, file.Text);
-                            break;
+                            text = cachedFile.Text;
                         }
-                        nfp = (string)PortableShim.FileStream.Name.GetValue(data);
-                        text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                        else
+                        {
+                            nfp = (string)PortableShim.FileStream.Name.GetValue(data);
+                            text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                        }
                         IncludedFiles.Add(nfp, text);
                         break;
                     }
@@ -678,17 +689,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (rooted)
                     break;
             }
-            SkipEmpty();
-            SkipToEol();
-            if (file == null && nfp == null)
+            if (! StdDefine)
+            {
+                SkipEmpty();
+                SkipToEol();
+            }
+            if (nfp == null)
             {
                 if (fileReadException != null)
+                {
                     _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Error Reading include file '" + fn + "': " + fileReadException.Message));
+                }
                 else
+                {
                     _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_PreProcessorError, "Include file not found: '" + fn + "'"));
+                }
+
                 return false;
             }
-            else if (file == null)
+            if (_options.ShowIncludes)
+            {
+                if (ln != null)
+                    DebugOutput("{0} line {1} Include {2}", ln.InputStream.SourceName, ln.Line, nfp);
+                else
+                    DebugOutput("{0} line {1} Include {2}", this.SourceName, 0, nfp);
+
+            }
+            if (cachedFile == null)
             {
                 // we have nfp and text with the file contents
                 // now parse the stuff and insert in the cache
@@ -699,8 +726,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 stream.name = nfp;
                 tokens.Fill();
                 InsertStream(nfp, tokens);
-                file = AddIncludeFile(nfp, tokens.GetTokens(), text);
-                return true;
+                AddIncludeFile(nfp, tokens.GetTokens(), text);
             }
             else
             {
@@ -708,20 +734,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Create a stream from the cached text and tokens
                 // Clone the tokens to avoid problems when concurrently using the tokens
                 var newTokens = new List<IToken>();
-                lock (file.Tokens)
+                lock (cachedFile.Tokens)
                 {
-                    foreach (var token in file.Tokens)
+                    foreach (var token in cachedFile.Tokens)
                     {
                         newTokens.Add(new CommonToken(token));
                     }
                 }
-                var tokenSource = new ListTokenSource(newTokens, file.FileName);
+                var tokenSource = new ListTokenSource(newTokens, cachedFile.FileName);
                 var tokenStream = new CommonTokenStream(tokenSource);
                 tokenStream.Reset();
-                //Debug.WriteLine("From cache: file {0}, # of Tokens {1}", nfp, file.Tokens.Count);
-                InsertStream(file.FileName, tokenStream);
-                return true;
+                InsertStream(cachedFile.FileName, tokenStream);
             }
+            return true;
 
         }
 

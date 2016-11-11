@@ -65,6 +65,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string NameSpace { get; set; } = "";
         public bool PreProcessorOutput { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
+        public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;
         public bool Vo2 { get; internal set; } = false;
         public bool Vo3 { get; internal set; } = false;

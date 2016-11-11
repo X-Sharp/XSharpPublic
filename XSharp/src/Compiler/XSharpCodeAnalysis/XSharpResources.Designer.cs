@@ -11412,7 +11412,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate define with different value detected &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Duplicate define with different value detected &apos;{0}&apos;, {1} &lt;=&gt; {2}.
         /// </summary>
         internal static string WRN_DuplicateDefineDiff {
             get {

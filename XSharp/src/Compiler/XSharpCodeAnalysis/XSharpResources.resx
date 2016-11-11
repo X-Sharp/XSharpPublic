@@ -4733,7 +4733,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Ambiguous case between '{0}' and '{1}'</value>
   </data>
   <data name="WRN_DuplicateDefineDiff" xml:space="preserve">
-    <value>Duplicate define with different value detected '{0}'</value>
+    <value>Duplicate define with different value detected '{0}', {1} &lt;=&gt; {2}</value>
   </data>
   <data name="WRN_DuplicateDefineSame" xml:space="preserve">
     <value>Duplicate define detected '{0}'</value>

@@ -54,6 +54,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; private set; }
         public string SystemDir { get; private set; }
         public bool NoStdDef { get; private set; }
+        public bool ShowIncludes { get; private set; }
+        public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
         public bool VOArithmeticConversions { get; private set; }
@@ -92,6 +94,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 WindowsDir = opt.WindowsDir;
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
+                ShowIncludes = opt.ShowIncludes;
+                Verbose = opt.Verbose;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
                 VulcanRTFuncsIncluded = opt.VulcanRTFuncsIncluded;
                 VulcanRTIncluded = opt.VulcanRTIncluded;
@@ -136,6 +140,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             SystemDir = opt.SystemDir;
             DefaultNamespace = opt.DefaultNamespace;
             IncludePaths = opt.IncludePaths;
+            ShowIncludes = opt.ShowIncludes;
+            NoStdDef = opt.NoStdDef;
+            Verbose = opt.Verbose;
 
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1
             VONullStrings = opt.VONullStrings; // vo2
@@ -155,7 +162,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOInitializeVariables = opt.VOInitializeVariables; // vo16
             VulcanAssemblies = opt.VulcanAssemblies;
             Overflow = opt.Overflow;
-
         }
     }
 }

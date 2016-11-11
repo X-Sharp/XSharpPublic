@@ -2,7 +2,13 @@
 FUNCTION Start() AS VOID
 LOCAL p AS PTR
 LOCAL u AS USUAL
-u := NIL
+u := TestClass{}
 p := NULL_PTR
 u:Something(p)
+
+CLASS TestClass
+	METHOD Something(u)
+		? u == NULL_PTR
+	RETURN NIL
+END CLASS
 

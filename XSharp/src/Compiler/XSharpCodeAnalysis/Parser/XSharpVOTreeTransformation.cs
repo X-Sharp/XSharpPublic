@@ -878,7 +878,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected override void VisitClassvar([NotNull] XP.ClassvarContext context)
         {
             base.VisitClassvar(context);
-            if (context.ArraySub != null)
+            if (context.ArraySub != null && context.Dim == null)
             {
                 var vd = context.Get<VariableDeclaratorSyntax>();
                 var initializer = GenerateVulcanArrayInitializer(context.ArraySub);
@@ -894,7 +894,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected override void VisitLocalvar([NotNull] XP.LocalvarContext context)
         {
-            if (context.ArraySub != null && context.DataType.Get<TypeSyntax>() == _arrayType)
+            if (context.ArraySub != null && context.DataType.Get<TypeSyntax>() == _arrayType && context.Dim == null)
             {
                 var initializer = GenerateVulcanArrayInitializer(context.ArraySub);
                 if (context.Expression != null)

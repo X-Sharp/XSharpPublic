@@ -33,6 +33,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #region Static Properties
         static Dictionary<String, CachedIncludeFile> includecache = new Dictionary<string, CachedIncludeFile>();
 
+
+        internal static void ClearOldIncludes()
+        {
+            // Remove old includes that have not been used in the last 1 minutes
+            lock (includecache)
+            {
+                var oldkeys = new List<string>();
+                var compare = DateTime.Now.Subtract(new TimeSpan(0, 1, 0));
+                foreach (var include in includecache.Values)
+                {
+                    if (include.LastUsed < compare)
+                    {
+                        oldkeys.Add(include.FileName);
+                    }
+                }
+                foreach (var key in oldkeys)
+                {
+                    includecache.Remove(key);
+                }
+            }
+        }
+
         internal static CachedIncludeFile GetIncludeFile(string fileName)
         {
             CachedIncludeFile file = null;
@@ -49,11 +71,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
+            if (file != null)
+            {
+                file.LastUsed = DateTime.Now;
+            }
             return file;
         }
         internal static CachedIncludeFile  AddIncludeFile(string fileName, IList<IToken> tokens, SourceText text)
         {
-            lock(includecache)
+            lock (includecache)
             {
                 fileName = fileName.ToLower();
                 CachedIncludeFile file = GetIncludeFile(fileName);
@@ -65,9 +91,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 file.Tokens = tokens;
                 file.Text = text;
                 file.FileName = fileName;
+                //Debug.WriteLine("Add to Cache: file {0}, # of Tokens {1}", fileName, file.Tokens.Count);
+
                 file.LastWritten = PortableShim.File.GetLastWriteTimeUtc(fileName);
                 return file;
             }
+            return null;
         }
         #endregion
 
@@ -127,19 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             internal String FileName { get; set; }
             internal IList<IToken> Tokens { get; set; }
             internal SourceText Text { get; set; }
-        }
-        internal class CachedCommonTokenStream : CommonTokenStream
-        {
-            internal CachedCommonTokenStream(ITokenSource tokenSource) : base(tokenSource)
-            {
-                
-            }
-            internal void SetTokens(IList<IToken> newtokens)
-            {
-                tokens = newtokens;
-                fetchedEOF = true;
-                Reset();
-            }
+            internal DateTime LastUsed { get; set; }
         }
 
         CSharpParseOptions _options;
@@ -254,7 +271,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
-
+            ClearOldIncludes();
+            //string symbols = "";
+            //foreach (var sym in options.PreprocessorSymbols)
+            //{
+            //    symbols += sym + " ";
+            //}
+            //Debug.WriteLine("Preprocessing file : {0}", fileName);
+            //Debug.WriteLine("DefaultIncludeDir  : {0}", options.DefaultIncludeDir);
+            //Debug.WriteLine("Symbols            : {0}", symbols);
             _options = options;
             if (_options.VOPreprocessorBehaviour)
                 symbolDefines = new Dictionary<string, IList<IToken>>(CaseInsensitiveComparison.Comparer);
@@ -667,17 +692,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // we have nfp and text with the file contents
                 // now parse the stuff and insert in the cache
-                Debug.WriteLine("Add include file {0} to cache", nfp);
+                //Debug.WriteLine("Uncached file {0} ", nfp);
                 var stream = new AntlrInputStream(text.ToString());
                 var lexer = new XSharpLexer(stream);
                 var tokens = new CommonTokenStream(lexer);
                 stream.name = nfp;
                 tokens.Fill();
                 InsertStream(nfp, tokens);
-                file = new CachedIncludeFile();
-                file.Tokens = tokens.GetTokens();
-                file.FileName = nfp;
-                file.Text = text;
                 file = AddIncludeFile(nfp, tokens.GetTokens(), text);
                 return true;
             }
@@ -685,12 +706,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // we have a file cache item with the Tokens etc
                 // Create an inputstream from the cached text and tokens
-                Debug.WriteLine("Read include file {0} from cache", file.FileName);
-                var stream = new AntlrInputStream(file.Text.ToString());
-                var lexer = new XSharpLexer(stream);
-                var tokens = new CachedCommonTokenStream(lexer);
-                tokens.SetTokens(file.Tokens);
-                InsertStream(file.FileName, tokens);
+                var tokenSource = new ListTokenSource(file.Tokens, file.FileName);
+                var tokenStream = new CommonTokenStream(tokenSource);
+                //Debug.WriteLine("From cache: file {0}, # of Tokens {1}", nfp, file.Tokens.Count);
+                InsertStream(file.FileName, tokenStream);
                 return true;
             }
 

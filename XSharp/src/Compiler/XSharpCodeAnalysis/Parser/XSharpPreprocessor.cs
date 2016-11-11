@@ -705,8 +705,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
             {
                 // we have a file cache item with the Tokens etc
-                // Create an inputstream from the cached text and tokens
-                var tokenSource = new ListTokenSource(file.Tokens, file.FileName);
+                // Create a stream from the cached text and tokens
+                // Clone the tokens to avoid problems when concurrently using the tokens
+                var newTokens = new List<IToken>();
+                lock (file.Tokens)
+                {
+                    foreach (var token in file.Tokens)
+                    {
+                        newTokens.Add(new CommonToken(token));
+                    }
+                }
+                var tokenSource = new ListTokenSource(newTokens, file.FileName);
                 var tokenStream = new CommonTokenStream(tokenSource);
                 tokenStream.Reset();
                 //Debug.WriteLine("From cache: file {0}, # of Tokens {1}", nfp, file.Tokens.Count);

@@ -59,6 +59,8 @@ namespace Antlr4.Runtime {
                 this.Args = args;
             }
             internal ParseErrorData(IToken token, ErrorCode code, params object[] args) {
+                if (token == null)
+                    token = new CommonToken(0, "");
                 this.Node = new TerminalNodeImpl(token);
                 this.Code = code;
                 this.Args = args;
@@ -92,9 +94,13 @@ namespace Antlr4.Runtime {
                 get
                 {
                     var ct = (Symbol as CommonToken);
-                    if (ct.TokenSource != null && !String.IsNullOrEmpty(ct.TokenSource.SourceName))
-                        return ct.TokenSource.SourceName;
-                    return ct.SourceFileName;
+                    if (ct != null)
+                    {
+                        if (ct.TokenSource != null && !String.IsNullOrEmpty(ct.TokenSource.SourceName))
+                            return ct.TokenSource.SourceName;
+                        return ct.SourceFileName;
+                    }
+                    return "<unknown>";
                 }
             }
             public string MappedFileName { get { return (Symbol as CommonToken).MappedFileName; } }

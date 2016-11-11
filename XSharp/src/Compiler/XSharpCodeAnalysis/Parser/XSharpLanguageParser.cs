@@ -130,6 +130,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body.Free(_pool);
             }
 #endif
+            if (_options.Verbose)
+            {
+                Debug.WriteLine("Compiling {0}",_fileName);
+            }
+
             ParserRuleContext tree;
             var stream = new AntlrInputStream(_text.ToString());
             stream.name = _fileName;
@@ -176,8 +181,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var errorListener = new XSharpErrorListener(_fileName, parseErrors);
             parser.AddErrorListener(errorListener);
 //#endif
-#if DEBUG && DUMP_TIMES
             pp_tokens.Fill();
+#if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;
                 t += ts;

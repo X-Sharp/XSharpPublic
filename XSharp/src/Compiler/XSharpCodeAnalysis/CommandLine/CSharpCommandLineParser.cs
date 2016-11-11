@@ -190,7 +190,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "showincludes":
                     options.ShowIncludes = positive;
-                    OptionNotImplemented(diagnostics, oldname, "Show list of included include files");
+                    break;
+                case "verbose":
+                    options.Verbose = true;
+                    options.ShowIncludes = true;
                     break;
                 case "vo1":     // Init & Axit mapped to .ctor and .dtor
                     options.Vo1 = positive;

@@ -708,6 +708,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // Create an inputstream from the cached text and tokens
                 var tokenSource = new ListTokenSource(file.Tokens, file.FileName);
                 var tokenStream = new CommonTokenStream(tokenSource);
+                tokenStream.Reset();
                 //Debug.WriteLine("From cache: file {0}, # of Tokens {1}", nfp, file.Tokens.Count);
                 InsertStream(file.FileName, tokenStream);
                 return true;

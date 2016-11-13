@@ -181,8 +181,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var errorListener = new XSharpErrorListener(_fileName, parseErrors);
             parser.AddErrorListener(errorListener);
 //#endif
-            pp_tokens.Fill();
 #if DEBUG && DUMP_TIMES
+            pp_tokens.Fill();
             {
                 var ts = DateTime.Now - t;
                 t += ts;

@@ -304,9 +304,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
             inputs = new InputState(input);
-            inputs.SourceFileName= fileName;
-            inputs.MappedFileName = fileName;
-            inputs.MappedLineDiff = 0;
             foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
 

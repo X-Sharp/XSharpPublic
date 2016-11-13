@@ -104,7 +104,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 file.LastWritten = PortableShim.File.GetLastWriteTimeUtc(fileName);
                 return file;
             }
-            return null;
         }
         #endregion
 
@@ -567,7 +566,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                     }
-                    
+
                     if (equalDefine)
                         _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
                     else

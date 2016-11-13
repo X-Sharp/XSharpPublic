@@ -307,14 +307,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return Identifier(WS, text, WS);
         }
     }
+    [FlagsAttribute]
+    enum XNodeFlags : byte
+    {
+        None = 0,
+        XVodecl = 1 << 0,
+        XVoIsDecl = 1 << 1
+    }
 
     internal abstract partial class CSharpSyntaxNode
     {
         public IParseTree XNode { get; internal set; }
-        public ITokenStream XTokens { get; internal set; }
+        private XNodeFlags xflags = XNodeFlags.None;
+        public bool XVoDecl
+        {
+            get { return xflags.HasFlag(XNodeFlags.XVodecl); }
+            set { if (value) xflags |= XNodeFlags.XVodecl; else xflags &= ~XNodeFlags.XVodecl; }
+        }
+
+        public bool XVoIsDecl
+        {
+            get { return xflags.HasFlag(XNodeFlags.XVoIsDecl); }
+            set { if (value) xflags |= XNodeFlags.XVoIsDecl; else xflags &= ~XNodeFlags.XVoIsDecl; }
+        }
+    }
+
+    internal sealed partial class CompilationUnitSyntax
+    {
         public Dictionary<string, SourceText> IncludedFiles { get; internal set; }
-        public bool XVoDecl { get; internal set; }
-        public bool XVoIsDecl { get; internal set; }
+        public ITokenStream XTokens { get; internal set; }
     }
 }
 
@@ -348,7 +369,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
     {
         public XSharpParser.SourceContext XSource { get { return (XSharpParser.SourceContext)(((InternalSyntax.CompilationUnitSyntax)(this.Green)).XNode); } }
         public ITokenStream XTokenStream { get { return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).XTokens); } }
-        internal Dictionary<string, SourceText> IncludedFiles { get { return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).IncludedFiles); } }
+        internal Dictionary<string, SourceText> IncludedFiles
+        {
+            get
+            {
+                return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).IncludedFiles);
+            }
+        }
     }
 }
 
@@ -371,17 +398,17 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             String Name { get; }
         }
         [FlagsAttribute]
-        enum MethodFlags {
+        enum MethodFlags: ushort {
             None = 0,
-            ClipperCallingConvention = 1,
-            MissingReturnType = 2,
-            UsesPSZ = 4,
-            MustBeUnsafe = 8,
-            MustHaveReturnType = 16,
-            HasTypedParameter = 32,
-            UsesPCount = 64,
-            UsesGetMParam = 128,
-            HasReturnStatementWithoutValue = 256
+            ClipperCallingConvention = 1 << 0,
+            MissingReturnType = 1 << 1,
+            UsesPSZ = 1 << 2,
+            MustBeUnsafe = 1 << 3,
+            MustHaveReturnType = 1 << 4,
+            HasTypedParameter = 1 << 5,
+            UsesPCount = 1 << 6,
+            UsesGetMParam = 1 << 7,
+            HasReturnStatementWithoutValue = 1 << 8
         }
 
         public class EntityData {

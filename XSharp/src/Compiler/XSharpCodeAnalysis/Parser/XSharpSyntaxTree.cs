@@ -398,17 +398,16 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             String Name { get; }
         }
         [FlagsAttribute]
-        enum MethodFlags: ushort {
+        enum MethodFlags: byte {
             None = 0,
             ClipperCallingConvention = 1 << 0,
             MissingReturnType = 1 << 1,
             UsesPSZ = 1 << 2,
             MustBeUnsafe = 1 << 3,
-            MustHaveReturnType = 1 << 4,
-            HasTypedParameter = 1 << 5,
-            UsesPCount = 1 << 6,
-            UsesGetMParam = 1 << 7,
-            HasReturnStatementWithoutValue = 1 << 8
+            HasTypedParameter = 1 << 4,
+            UsesPCount = 1 << 5,
+            UsesGetMParam = 1 << 6,
+            MustBeVoid = 1 << 7
         }
 
         public class EntityData {
@@ -436,10 +435,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
                 set { if(value) flags |= MethodFlags.MustBeUnsafe; else flags &= ~MethodFlags.MustBeUnsafe; }
             }
 
-            public bool MustHaveReturnType {
-                get { return flags.HasFlag(MethodFlags.MustHaveReturnType) ; }
-                set { if(value) flags |= MethodFlags.MustHaveReturnType; else flags &= ~MethodFlags.MustHaveReturnType; }
-            }
             public bool UsesPCount {
                 get { return flags.HasFlag(MethodFlags.UsesPCount) ; }
                 set { if(value) flags |= MethodFlags.UsesPCount; else flags &= ~MethodFlags.UsesPCount; }
@@ -450,10 +445,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
                 set { if(value) flags |= MethodFlags.UsesGetMParam; else flags &= ~MethodFlags.UsesGetMParam; }
             }
 
-            public bool HasReturnStatementWithoutValue
+            public bool MustBeVoid            // Assign, SET, Event Accessor
             {
-                get { return flags.HasFlag(MethodFlags.HasReturnStatementWithoutValue) ; }
-                set { if (value) flags |= MethodFlags.HasReturnStatementWithoutValue; else flags &= ~MethodFlags.HasReturnStatementWithoutValue; }
+                get { return flags.HasFlag(MethodFlags.MustBeVoid); }
+                set { if (value) flags |= MethodFlags.MustBeVoid; else flags &= ~MethodFlags.MustBeVoid; }
             }
 
             private List<MemVarFieldInfo> Fields;

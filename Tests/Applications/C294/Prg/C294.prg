@@ -7,12 +7,29 @@ o:TestAssign := 123
 ? o:n
 
 CLASS TestClass
-	EXPORT n AS INT
+	EXPORT n AS INT 
+	ACCESS TestAccess AS INT
+		RETURN 
 	ASSIGN TestAssign(v AS INT)
 	 RETURN SELF:n := v    
-	PROPERTY Test AS INT
+	PROPERTY Test AS INT  
+		GET    
+			RETURN 
+		END GET
 		SET    
 			RETURN n := VALUE
 		END SET  
-	END PROPERTY
+	END PROPERTY 
+	EVENT TestEvent AS EventHandler
+	ADD       
+		RETURN n := 10
+	END ADD
+	REMOVE
+		RETURN n := 20
+	END REMOVE
+	END EVENT
 END CLASS
+
+PROCEDURE testme
+	LOCAL n AS LONG 
+RETURN n := n * 2

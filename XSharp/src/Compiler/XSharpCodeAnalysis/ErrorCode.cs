@@ -1397,6 +1397,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_CompilerOptionNotImplementedYet = 9029,
         ERR_KeywordExpected = 9030,
         ERR_VulcanArrayDimAndInit = 9031,
-        WRN_AssignWithReturnValue = 9032,
+        WRN_NoReturnValueAllowed = 9032,
     }
 }

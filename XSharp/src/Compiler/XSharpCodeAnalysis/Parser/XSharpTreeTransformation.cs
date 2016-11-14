@@ -2465,11 +2465,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 if (context.T.Token.Type == XP.ASSIGN)
                 {
+                    // Assign does not need a return. 
+                    // So do not add mising returns
                     returntype = VoidType();
                 }
                 else if (context.StmtBlk != null)
                 {
-                    // Assign does not need a return. It is compiled to a VOID method
                     body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
                 }
                 MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(

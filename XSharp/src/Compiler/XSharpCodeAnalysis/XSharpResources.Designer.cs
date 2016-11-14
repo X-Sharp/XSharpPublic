@@ -10161,6 +10161,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASSIGN / SET methods do not return a value. Return value ignored..
+        /// </summary>
+        internal static string WRN_AssignWithReturnValue {
+            get {
+                return ResourceManager.GetString("WRN_AssignWithReturnValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This async method lacks &apos;await&apos; operators and will run synchronously. Consider using the &apos;await&apos; operator to await non-blocking API calls, or &apos;await Task.Run(...)&apos; to do CPU-bound work on a background thread..
         /// </summary>
         internal static string WRN_AsyncLacksAwaits {

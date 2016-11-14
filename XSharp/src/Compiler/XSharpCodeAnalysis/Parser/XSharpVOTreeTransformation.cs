@@ -635,7 +635,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected override BlockSyntax AddMissingReturnStatement(BlockSyntax body, XP.StatementBlockContext stmtBlock, TypeSyntax returnType)
         {
-            if (_options.VOAllowMissingReturns && stmtBlock != null &&  NeedsReturn(stmtBlock._Stmts))
+            if (_options.VOAllowMissingReturns && stmtBlock != null && NeedsReturn(stmtBlock._Stmts))
             {
                 var result = GetReturnExpression(returnType);
                 if (result != null) // this happens for the Void Type
@@ -1267,11 +1267,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
             context.SetSequencePoint(context.end);
+            bool isAssign = false;
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // when / vo9 is enabled then add missing Expression
-            if (expr == null && _options.VOAllowMissingReturns)
+            var ent = CurrentEntity;
+            if (ent is XP.MethodContext)
             {
-                var ent = CurrentEntity;
+                var token = ((XP.MethodContext)ent).T.Token;
+                isAssign = (token.Type == XP.ASSIGN);
+            }
+            else if (ent is XP.PropertyAccessorContext)
+            {
+                var token = ((XP.PropertyAccessorContext)ent).Key;
+                isAssign = (token.Type == XP.SET);
+            }
+            if (expr == null && _options.VOAllowMissingReturns && ! isAssign)
+            {
                 if (ent is XP.MethodContext || ent is XP.FunctionContext)
                 {
                     ent.Data.HasReturnStatementWithoutValue = true;
@@ -1285,20 +1296,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         dataType = ent is XP.MethodContext ? ((XP.MethodContext)ent).Type.Get<TypeSyntax>() :
                             dataType = ((XP.FunctionContext)ent).Type.Get<TypeSyntax>();
                     }
-                    if (ent is XP.MethodContext && ((XP.MethodContext) ent).T.Token.Type != XP.ASSIGN)
+                    if (ent is XP.MethodContext )
                     {
                         expr = GetReturnExpression(dataType);
                         if (expr != null)   // happens for a void method
                         {
                             expr = expr.WithAdditionalDiagnostics(
-                                             new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                                                new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
                         }
                     }
                 }
             }
-            var result = _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                expr,
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            StatementSyntax result;
+            if (isAssign && expr != null)
+            {
+                expr = expr.WithAdditionalDiagnostics(
+                                    new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignWithReturnValue));
+                result = GenerateExpressionStatement(expr);
+            }
+            else
+            {
+                result = _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
+                    expr,
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            }
             context.Put(result);
         }
 

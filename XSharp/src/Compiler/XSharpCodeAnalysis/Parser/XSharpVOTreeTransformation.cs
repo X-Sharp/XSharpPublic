@@ -267,7 +267,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
         private void Check4ClipperCC(XP.IEntityContext context,
-            XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType, bool mustHaveReturnType)
+            XP.ParameterListContext parameters, IToken Convention, XP.DatatypeContext returnType)
         {
             bool isEntryPoint = false;
             bool hasConvention = false;
@@ -276,7 +276,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var fc = context as XP.FunctionContext;
                 isEntryPoint = fc.Id.GetText().ToLower() == "start";
             }
-            context.Data.MustHaveReturnType = mustHaveReturnType;
             context.Data.HasMissingReturnType = (returnType == null);
             context.Data.HasTypedParameter = false;
             if (Convention != null)
@@ -859,7 +858,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _pool.Free(stmts);
             }
             // Add missing return type when needed. OBJECT or USUAL depending on the dialect.
-            if(context.Data.HasMissingReturnType && context.Data.MustHaveReturnType) {
+            if(context.Data.HasMissingReturnType && !context.Data.MustBeVoid) {
                 dataType = _getMissingType();
             }
         }
@@ -1003,7 +1002,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
             }
             else
-                Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, context.T.Token.Type != XP.ASSIGN);
+                Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type);
         }
 
 
@@ -1267,25 +1266,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitReturnStmt([NotNull] XP.ReturnStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            bool isAssign = false;
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // when / vo9 is enabled then add missing Expression
             var ent = CurrentEntity;
-            if (ent is XP.MethodContext)
+            if (expr == null && _options.VOAllowMissingReturns && ! ent.Data.MustBeVoid)
             {
-                var token = ((XP.MethodContext)ent).T.Token;
-                isAssign = (token.Type == XP.ASSIGN);
-            }
-            else if (ent is XP.PropertyAccessorContext)
-            {
-                var token = ((XP.PropertyAccessorContext)ent).Key;
-                isAssign = (token.Type == XP.SET);
-            }
-            if (expr == null && _options.VOAllowMissingReturns && ! isAssign)
-            {
-                if (ent is XP.MethodContext || ent is XP.FunctionContext)
+                if (ent is XP.MethodContext || ent is XP.FunctionContext || ent is XP.PropertyAccessorContext)
                 {
-                    ent.Data.HasReturnStatementWithoutValue = true;
                     TypeSyntax dataType;
                     if (ent.Data.HasMissingReturnType)
                     {
@@ -1293,25 +1280,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     else
                     {
-                        dataType = ent is XP.MethodContext ? ((XP.MethodContext)ent).Type.Get<TypeSyntax>() :
+                        if (ent is XP.MethodContext)
+                            dataType = ((XP.MethodContext)ent).Type.Get<TypeSyntax>();
+                        else if (ent is XP.FunctionContext)
                             dataType = ((XP.FunctionContext)ent).Type.Get<TypeSyntax>();
+                        else if (ent is XP.PropertyAccessorContext)
+                            dataType = ((XP.PropertyContext)ent.Parent).Type.Get<TypeSyntax>();
+                        else
+                            dataType = _getMissingType(); 
                     }
-                    if (ent is XP.MethodContext )
-                    {
-                        expr = GetReturnExpression(dataType);
-                        if (expr != null)   // happens for a void method
-                        {
-                            expr = expr.WithAdditionalDiagnostics(
-                                                new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
-                        }
-                    }
+                    expr = GetReturnExpression(dataType);
+                    expr = expr.WithAdditionalDiagnostics(
+                                        new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
                 }
             }
             StatementSyntax result;
-            if (isAssign && expr != null)
+            if (ent.Data.MustBeVoid && expr != null)
             {
                 expr = expr.WithAdditionalDiagnostics(
-                                    new SyntaxDiagnosticInfo(ErrorCode.WRN_AssignWithReturnValue));
+                                    new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
                 result = GenerateExpressionStatement(expr);
             }
             else
@@ -1794,22 +1781,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     public override void EnterFunction([NotNull] XP.FunctionContext context) {
         base.EnterFunction(context);
-        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type, true);
+        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type);
     }
 
     public override void EnterProcedure([NotNull] XP.ProcedureContext context) {
         base.EnterProcedure(context);
-        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null);
     }
 
     public override void EnterClsctor([NotNull] XP.ClsctorContext context) {
         base.EnterClsctor(context);
-        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null, false);
+        Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, null);
     }
 
     public override void EnterVodll([NotNull] XP.VodllContext context) {
         base.EnterVodll(context);
-       Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type, true);
+       Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Cc, context.Type);
     }
 
     public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)

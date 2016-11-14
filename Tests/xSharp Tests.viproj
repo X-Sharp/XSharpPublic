@@ -7,7 +7,6 @@ GUID = 7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 StartUpApp = 
 PrgEncoding = Default
 SupportCF = 0
-NoAppFileCreate = 1
 
 [ProjectExportOptions]
 ExportResources = 0
@@ -28712,7 +28711,7 @@ VO3=0
 VO4=1
 VO5=0
 VO6=0
-VO7=0
+VO7=1
 VO8=0
 VO9=0
 VO10=0

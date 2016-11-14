@@ -5360,7 +5360,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.OnKeyword),
                 context.OnExpr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
+                SyntaxFactory.MakeToken(SyntaxKind.EqualsKeyword),
                 context.EqExpr.Get<ExpressionSyntax>(),
                 context.Into?.Get<JoinIntoClauseSyntax>()
                 ));

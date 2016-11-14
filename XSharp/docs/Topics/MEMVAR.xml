@@ -9,6 +9,8 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">MEMVAR</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The memvar statement has been added to the language already but the runtime is not ready for it yet</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">memvar &#160; &#160; &#160;: MEMVAR </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> (COMMA </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Identifiers" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">identifier</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">)* EOS</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
   </body>
 </topic>

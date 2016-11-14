@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Destructor</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Destructor</text></para>
+    </header>
+    <para styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">Destructors are automatically called by the .Net runtime when an object is disposed. They are similar to Axit methods in Visual Objects, with a few differences:</text></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">You do not need to call RegisterAxit(). The destructor will always be called</text></li>
+      <li styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">You cannot not call destructors from your own code.</text></li>
+    </list>
+    <para styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">If you want to be able to control the destruction of objects and call cleanup code from your own code, then you can either implement a mechanism similar to the Axit() and Destroy() methods from the VO GUI classes or you implement the Dispose pattern that many .Net classes use.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">Destructors do not have:</text></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">Parameters</text></li>
+      <li styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">A Return type</text></li>
+    </list>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">destructor:</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(attributes)?</text><br/><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(destructorModifiers)?</text><br/><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">DESTRUCTOR (LPAREN RPAREN)? &#160;EOS</text><br/><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">destructorModifiers : ( EXTERN )+</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+  </body>
+</topic>

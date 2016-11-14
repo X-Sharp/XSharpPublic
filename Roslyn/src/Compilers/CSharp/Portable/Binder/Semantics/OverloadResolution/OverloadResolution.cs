@@ -1805,11 +1805,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return BetterResult.Neither;
             }
 
-#if XSHARP
-            //BetterResult result;
-            //if (VOBetterConversionFromExpression(node, t1, t2, out result))
-            //    return result;
-#endif
             var lambdaOpt = node as UnboundLambda;
 
             // Given an implicit conversion C1 that converts from an expression E to a type T1,

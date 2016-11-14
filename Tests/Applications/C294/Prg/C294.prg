@@ -9,5 +9,10 @@ o:TestAssign := 123
 CLASS TestClass
 	EXPORT n AS INT
 	ASSIGN TestAssign(v AS INT)
-	RETURN SELF:n := v
+	 RETURN SELF:n := v    
+	PROPERTY Test AS INT
+		SET    
+			RETURN n := VALUE
+		END SET  
+	END PROPERTY
 END CLASS

@@ -4792,5 +4792,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_VulcanArrayDimAndInit" xml:space="preserve">
     <value>Array initializers cannot be combined with initial dimensions.</value>
   </data>
+  <data name="WRN_AssignWithReturnValue" xml:space="preserve">
+    <value>ASSIGN / SET methods do not return a value. Return value ignored.</value>
+  </data>
 
 </root>

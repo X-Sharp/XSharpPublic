@@ -6,9 +6,9 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Entities</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# language knows the following entity types</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# language knows the following entity types. Some of these are also listed as User Defined Types and Class Members</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="20" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="22" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Keyword</text></para>
@@ -28,7 +28,7 @@
       </thead>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_DLL-Function" styleclass="Normal" translate="true">_DLL function</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_DLL-Function" styleclass="Normal" translate="true">_DLL</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
@@ -44,7 +44,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_DLL-Procedure" styleclass="Normal" translate="true">_DLL procedure</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="CLASS" styleclass="Normal" translate="true">Class</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
@@ -60,13 +60,13 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Class2" styleclass="Normal" translate="true">Class</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Constructor" styleclass="Normal" translate="true">Constructor</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y (Init)</text></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -92,7 +92,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Delegate2" styleclass="Normal" translate="true">Delegate</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="DELEGATE" styleclass="Normal" translate="true">Delegate</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -108,7 +108,23 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="ENUM2" styleclass="Normal" translate="true">Enum</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Destructor" styleclass="Normal" translate="true">Destructor</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y (Axit)</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="ENUM" styleclass="Normal" translate="true">Enum</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -124,7 +140,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Event2" styleclass="Normal" translate="true">Event</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Event" styleclass="Normal" translate="true">Event</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -156,7 +172,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Global2" styleclass="Normal" translate="true">Global</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="GLOBAL" styleclass="Normal" translate="true">Global</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
@@ -172,7 +188,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Global-Attribute" styleclass="Normal" translate="true">Global Attribute</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="INTERFACE" styleclass="Normal" translate="true">Interface</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -188,23 +204,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Interface2" styleclass="Normal" translate="true">Interface</link></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Method2" styleclass="Normal" translate="true">Method</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Method" styleclass="Normal" translate="true">Method</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
@@ -221,6 +221,22 @@
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Namespace" styleclass="Normal" translate="true">Namespace</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Operator" styleclass="Normal" translate="true">Operator</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -268,6 +284,22 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Property" styleclass="Normal" translate="true">Property</link></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
+        </td>
+        <td style="vertical-align:middle;">
+          <para styleclass="Normal" style="text-align:center;"></para>
+        </td>
+        <td style="vertical-align:middle;">
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:middle;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Structure" styleclass="Normal" translate="true">Structure</link></para>
         </td>
         <td style="vertical-align:middle;">
@@ -284,7 +316,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Union2" styleclass="Normal" translate="true">Union</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="UNION" styleclass="Normal" translate="true">Union</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
@@ -316,7 +348,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VoStruct2" styleclass="Normal" translate="true">VoStruct</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="VOSTRUCT" styleclass="Normal" translate="true">VoStruct</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>

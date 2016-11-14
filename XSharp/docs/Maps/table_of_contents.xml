@@ -45,6 +45,9 @@
         <topicref type="topic" id="423998818673834" build="ALL" modified="2016-01-30T21:26:07.774Z" icon="0" href="BEGIN-USING2">
           <caption translate="true">BEGIN USING</caption>
         </topicref>
+        <topicref type="topic" id="426887200470279" build="ALL" modified="2016-11-14T20:02:01.132Z" icon="0" href="Collection-Initializers">
+          <caption translate="true">Collection Initializers</caption>
+        </topicref>
         <topicref type="topic" id="423997959494963" build="ALL" modified="2016-01-30T21:22:44.712Z" icon="0" href="Conditional-Access-Expression">
           <caption translate="true">Conditional Access Expression</caption>
         </topicref>
@@ -72,6 +75,9 @@
         <topicref type="topic" id="424477017488013" build="ALL" modified="2016-03-18T18:44:43.833Z" icon="0" href="NOP">
           <caption translate="true">NOP</caption>
         </topicref>
+        <topicref type="topic" id="426887424244545" build="ALL" modified="2016-11-14T20:16:32.914Z" icon="0" href="Object-and-Collection-Initiali">
+          <caption translate="true">Object </caption>
+        </topicref>
         <topicref type="topic" id="424000091554061" build="ALL" modified="2016-01-30T21:26:07.878Z" icon="0" href="PROCEDURE-inside-CLASS">
           <caption translate="true">PROCEDURE inside CLASS</caption>
         </topicref>
@@ -86,6 +92,9 @@
         </topicref>
         <topicref type="topic" id="424000672684667" build="ALL" modified="2016-11-03T15:16:02.923Z" icon="0" href="YIELD-RETURN-EXAMPLE">
           <caption translate="true">YIELD </caption>
+        </topicref>
+        <topicref type="topic" id="426888066632269" build="ALL" modified="2016-11-14T20:15:03.627Z" icon="0" href="Initializers">
+          <caption translate="true">Initializers</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="426353111383136" build="ALL" modified="2016-09-22T12:29:00.560Z" icon="0" href="Calling-Vulcan-Init-Procedures">
@@ -304,7 +313,7 @@
             <topicref type="topic" id="423889694655495" build="ALL" modified="2016-01-19T20:56:50.161Z" icon="0" href="DELEGATE">
               <caption translate="true">DELEGATE</caption>
             </topicref>
-            <topicref type="topic" id="423888712594007" build="ALL" modified="2016-01-19T20:56:50.219Z" icon="0" href="ENUM2">
+            <topicref type="topic" id="423888712594007" build="ALL" modified="2016-11-14T22:29:55.901Z" icon="0" href="ENUM">
               <caption translate="true">ENUM</caption>
             </topicref>
             <topicref type="topic" id="423886857998346" build="ALL" modified="2016-01-19T21:32:30.999Z" icon="0" href="GLOBAL">
@@ -313,7 +322,7 @@
             <topicref type="topic" id="423887668642635" build="ALL" modified="2016-01-19T20:56:50.287Z" icon="0" href="INTERFACE">
               <caption translate="true">INTERFACE</caption>
             </topicref>
-            <topicref type="topic" id="42660889868" build="ALL" modified="2016-01-19T21:28:06.689Z" icon="0" href="STRUCT">
+            <topicref type="topic" id="42660889868" build="ALL" modified="2016-11-14T20:56:19.041Z" icon="0" href="STRUCTURE">
               <caption translate="true">STRUCTURE</caption>
             </topicref>
             <topicref type="topic" id="423890638386516" build="ALL" modified="2016-01-19T20:56:50.487Z" icon="0" href="UNION">
@@ -325,12 +334,78 @@
             <topicref type="topic" id="423888987638349" build="ALL" modified="2016-01-19T21:33:45.893Z" icon="0" href="Generic-Types">
               <caption translate="true">Generic Types</caption>
             </topicref>
+            <topicref type="topic" id="426888056537623" build="ALL" modified="2016-11-14T20:45:51.596Z" icon="0" href="Class-Members">
+              <caption translate="true">Class Members</caption>
+              <topicref type="topic" id="426889579453603" build="ALL" modified="2016-11-14T20:47:45.325Z" icon="0" href="Constructor">
+                <caption translate="true">Constructor</caption>
+              </topicref>
+              <topicref type="topic" id="426888812338823" build="ALL" modified="2016-11-14T20:50:21.611Z" icon="0" href="Declare">
+                <caption translate="true">Declare</caption>
+              </topicref>
+              <topicref type="topic" id="426886596165885" build="ALL" modified="2016-11-14T20:47:50.901Z" icon="0" href="Destructor">
+                <caption translate="true">Destructor</caption>
+              </topicref>
+              <topicref type="topic" id="426888599036802" build="ALL" modified="2016-11-14T20:47:55.948Z" icon="0" href="Event">
+                <caption translate="true">Event</caption>
+              </topicref>
+              <topicref type="topic" id="4267063896061" build="ALL" modified="2016-11-14T20:47:31.884Z" icon="0" href="Method">
+                <caption translate="true">Method</caption>
+              </topicref>
+              <topicref type="topic" id="426889342137543" build="ALL" modified="2016-11-14T20:48:03.033Z" icon="0" href="Operator">
+                <caption translate="true">Operator</caption>
+              </topicref>
+              <topicref type="topic" id="426889077791030" build="ALL" modified="2016-11-14T20:47:38.725Z" icon="0" href="Property">
+                <caption translate="true">Property</caption>
+              </topicref>
+              <topicref type="topic" id="426889106010530" build="ALL" modified="2016-11-14T20:53:37.830Z" icon="0" href="Fields">
+                <caption translate="true">Fields</caption>
+              </topicref>
+            </topicref>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="426775226856970" build="ALL" modified="2016-11-03T12:11:02.856Z" icon="0" href="Entities">
+          <caption translate="true">Entities</caption>
+          <topicref type="topic" id="426776567415478" build="ALL" modified="2016-11-03T15:22:42.763Z" icon="0" href="Namespace">
+            <caption translate="true">Namespace</caption>
+          </topicref>
+          <topicref type="topic" id="426775251694247" build="ALL" modified="2016-11-03T15:22:43.652Z" icon="0" href="Function2">
+            <caption translate="true">Function</caption>
+          </topicref>
+          <topicref type="topic" id="426775310271573" build="ALL" modified="2016-11-03T15:22:43.786Z" icon="0" href="Procedure2">
+            <caption translate="true">Procedure</caption>
+          </topicref>
+          <topicref type="topic" id="42677938318524" build="ALL" modified="2016-11-03T15:22:44.134Z" icon="0" href="Using3">
+            <caption translate="true">Using</caption>
+          </topicref>
+          <topicref type="topic" id="426775486081077" build="ALL" modified="2016-11-03T15:22:44.243Z" icon="0" href="Pragma">
+            <caption translate="true">Pragma</caption>
+          </topicref>
+          <topicref type="topic" id="426777870630267" build="ALL" modified="2016-11-03T15:22:44.471Z" icon="0" href="Define">
+            <caption translate="true">Define</caption>
+          </topicref>
+          <topicref type="topic" id="426777643398607" build="ALL" modified="2016-11-14T21:24:27.615Z" icon="0" href="_DLL-Function">
+            <caption translate="true">_DLL</caption>
+          </topicref>
+        </topicref>
+        <topicref type="topic" id="426889550198328" build="ALL" modified="2016-11-14T21:20:52.721Z" icon="0" href="Parameters-and-others">
+          <caption translate="true">Parameters and others</caption>
+          <topicref type="topic" id="426886803522208" build="ALL" modified="2016-11-14T21:28:10.054Z" icon="0" href="Parameters">
+            <caption translate="true">Parameters</caption>
+          </topicref>
+          <topicref type="topic" id="426890278535084" build="ALL" modified="2016-11-14T21:27:53.150Z" icon="0" href="Attributes">
+            <caption translate="true">Attributes</caption>
+          </topicref>
+          <topicref type="topic" id="426890654559704" build="ALL" modified="2016-11-14T21:27:56.486Z" icon="0" href="Modifiers">
+            <caption translate="true">Modifiers</caption>
           </topicref>
         </topicref>
         <topicref type="topic" id="423889917318429" build="ALL" modified="2016-01-19T21:00:26.212Z" icon="0" href="Statements">
           <caption translate="true">Statements</caption>
           <topicref type="topic" id="423888476587208" build="ALL" modified="2016-01-19T23:00:17.738Z" icon="0" href="Block-Statements">
             <caption translate="true">Block Statements</caption>
+            <topicref type="topic" id="426888920925236" build="ALL" modified="2016-11-14T21:23:29.857Z" icon="0" href="Statement-Block">
+              <caption translate="true">Statement Block</caption>
+            </topicref>
             <topicref type="topic" id="423889269807360" build="ALL" modified="2016-01-19T22:22:02.600Z" icon="0" href="BEGIN-CHECKED">
               <caption translate="true">BEGIN (UN)CHECKED</caption>
             </topicref>
@@ -367,18 +442,6 @@
             <topicref type="topic" id="425385968646375" build="ALL" modified="2016-06-17T11:27:49.789Z" icon="0" href="PUBLIC">
               <caption translate="true">PUBLIC</caption>
             </topicref>
-            <topicref type="topic" id="42677106712032" build="ALL" modified="2016-11-03T15:20:35.506Z" icon="0" href="STATIC">
-              <caption translate="true">STATIC</caption>
-            </topicref>
-            <topicref type="topic" id="423888911265666" build="ALL" modified="2016-01-19T21:05:53.480Z" icon="0" href="LOCAL_2">
-              <caption translate="true">STATIC</caption>
-            </topicref>
-            <topicref type="topic" id="423890520858901" build="ALL" modified="2016-01-19T21:06:20.114Z" icon="0" href="VAR">
-              <caption translate="true">VAR</caption>
-            </topicref>
-            <topicref type="topic" id="426778359463915" build="ALL" modified="2016-11-03T15:21:31.529Z" icon="0" href="GLOBA">
-              <caption translate="true">GLOBAL</caption>
-            </topicref>
           </topicref>
           <topicref type="topic" id="423891010974848" build="ALL" modified="2016-01-19T23:00:17.806Z" icon="0" href="Exception-Handling">
             <caption translate="true">Exception Handling</caption>
@@ -387,9 +450,6 @@
             </topicref>
             <topicref type="topic" id="426775265173163" build="ALL" modified="2016-11-03T15:19:18.844Z" icon="0" href="BREAK">
               <caption translate="true">BREAK</caption>
-            </topicref>
-            <topicref type="topic" id="423891047459633" build="ALL" modified="2016-01-19T21:30:37.311Z" icon="0" href="RECOVER">
-              <caption translate="true">RECOVER</caption>
             </topicref>
             <topicref type="topic" id="423887467190100" build="ALL" modified="2016-01-19T21:05:10.478Z" icon="0" href="THROW">
               <caption translate="true">THROW</caption>
@@ -489,66 +549,6 @@
             <caption translate="true">Symbol Literals</caption>
           </topicref>
         </topicref>
-        <topicref type="topic" id="426775226856970" build="ALL" modified="2016-11-03T12:11:02.856Z" icon="0" href="Entities">
-          <caption translate="true">Entities</caption>
-          <topicref type="topic" id="426776567415478" build="ALL" modified="2016-11-03T15:22:42.763Z" icon="0" href="Namespace">
-            <caption translate="true">Namespace</caption>
-          </topicref>
-          <topicref type="topic" id="426774643658045" build="ALL" modified="2016-11-03T15:22:42.879Z" icon="0" href="Class2">
-            <caption translate="true">Class</caption>
-          </topicref>
-          <topicref type="topic" id="42677882675199" build="ALL" modified="2016-11-03T15:22:43.007Z" icon="0" href="Structure">
-            <caption translate="true">Structure</caption>
-          </topicref>
-          <topicref type="topic" id="426776552224099" build="ALL" modified="2016-11-03T15:22:43.137Z" icon="0" href="Interface2">
-            <caption translate="true">Interface</caption>
-          </topicref>
-          <topicref type="topic" id="426775256345704" build="ALL" modified="2016-11-03T15:22:43.266Z" icon="0" href="Delegate2">
-            <caption translate="true">Delegate</caption>
-          </topicref>
-          <topicref type="topic" id="426777176649533" build="ALL" modified="2016-11-03T15:22:43.394Z" icon="0" href="Event2">
-            <caption translate="true">Event</caption>
-          </topicref>
-          <topicref type="topic" id="426775776060646" build="ALL" modified="2016-11-03T15:22:43.525Z" icon="0" href="Enum">
-            <caption translate="true">Enum</caption>
-          </topicref>
-          <topicref type="topic" id="426775251694247" build="ALL" modified="2016-11-03T15:22:43.652Z" icon="0" href="Function2">
-            <caption translate="true">Function</caption>
-          </topicref>
-          <topicref type="topic" id="426775310271573" build="ALL" modified="2016-11-03T15:22:43.786Z" icon="0" href="Procedure2">
-            <caption translate="true">Procedure</caption>
-          </topicref>
-          <topicref type="topic" id="426774289796898" build="ALL" modified="2016-11-03T15:22:43.902Z" icon="0" href="Method2">
-            <caption translate="true">Method</caption>
-          </topicref>
-          <topicref type="topic" id="426778070576429" build="ALL" modified="2016-11-03T15:22:44.020Z" icon="0" href="Global-Attribute">
-            <caption translate="true">Global Attribute</caption>
-          </topicref>
-          <topicref type="topic" id="42677938318524" build="ALL" modified="2016-11-03T15:22:44.134Z" icon="0" href="Using3">
-            <caption translate="true">Using</caption>
-          </topicref>
-          <topicref type="topic" id="426775486081077" build="ALL" modified="2016-11-03T15:22:44.243Z" icon="0" href="Pragma">
-            <caption translate="true">Pragma</caption>
-          </topicref>
-          <topicref type="topic" id="426777844022423" build="ALL" modified="2016-11-03T15:22:44.356Z" icon="0" href="Global2">
-            <caption translate="true">Global</caption>
-          </topicref>
-          <topicref type="topic" id="426777870630267" build="ALL" modified="2016-11-03T15:22:44.471Z" icon="0" href="Define">
-            <caption translate="true">Define</caption>
-          </topicref>
-          <topicref type="topic" id="426777643398607" build="ALL" modified="2016-11-03T15:22:44.588Z" icon="0" href="_DLL-Function">
-            <caption translate="true">_DLL Function</caption>
-          </topicref>
-          <topicref type="topic" id="426778299905090" build="ALL" modified="2016-11-03T15:22:44.705Z" icon="0" href="_DLL-Procedure">
-            <caption translate="true">_DLL Procedure</caption>
-          </topicref>
-          <topicref type="topic" id="426774626145320" build="ALL" modified="2016-11-03T15:22:44.819Z" icon="0" href="VoStruct2">
-            <caption translate="true">VoStruct</caption>
-          </topicref>
-          <topicref type="topic" id="426777124480214" build="ALL" modified="2016-11-03T15:22:44.928Z" icon="0" href="Union2">
-            <caption translate="true">Union</caption>
-          </topicref>
-        </topicref>
         <topicref type="topic" id="423890044539152" build="ALL" modified="2016-01-19T21:16:41.371Z" icon="0" href="NameSpaces">
           <caption translate="true">NameSpaces</caption>
           <topicref type="topic" id="423886791199984" build="ALL" modified="2016-01-19T21:17:02.341Z" icon="0" href="USING">
@@ -564,23 +564,14 @@
         <topicref type="topic" id="423890338204503" build="ALL" modified="2016-01-19T21:06:34.356Z" icon="0" href="Expressions">
           <caption translate="true">Expressions</caption>
         </topicref>
-        <topicref type="topic" id="426777486631280" build="ALL" modified="2016-11-03T12:55:21.349Z" icon="0" href="Parameters">
-          <caption translate="true">Parameters</caption>
-        </topicref>
         <topicref type="topic" id="423886881484677" build="ALL" modified="2016-01-19T21:34:53.491Z" icon="0" href="LINQ">
           <caption translate="true">LINQ Expressions</caption>
-        </topicref>
-        <topicref type="topic" id="423889291163878" build="ALL" modified="2016-11-03T12:37:59.943Z" icon="0" href="Attributes">
-          <caption translate="true">Attributes</caption>
         </topicref>
         <topicref type="topic" id="423887027128405" build="ALL" modified="2016-01-19T21:40:41.390Z" icon="0" href="Calling-Conventions">
           <caption translate="true">Calling Conventions</caption>
         </topicref>
         <topicref type="topic" id="423889200092124" build="ALL" modified="2016-01-19T20:51:14.373Z" icon="0" href="Comments">
           <caption translate="true">Comments</caption>
-        </topicref>
-        <topicref type="topic" id="423887080212844" build="ALL" modified="2016-11-03T12:32:17.012Z" icon="0" href="Modifiers">
-          <caption translate="true">Modifiers</caption>
         </topicref>
         <topicref type="topic" id="425386471139560" build="ALL" modified="2016-06-17T11:15:44.425Z" icon="0" href="Compiler-Macros">
           <caption translate="true">Compiler Macros</caption>
@@ -618,9 +609,6 @@
         <topicref type="topic" id="423888894934256" build="ALL" modified="2016-01-19T22:09:49.901Z" icon="0" href="Workarea">
           <caption translate="true">Workarea</caption>
         </topicref>
-      </topicref>
-      <topicref type="topic" id="426775540711191" build="ALL" modified="2016-11-03T10:37:00.164Z" icon="0" href="X-Literals">
-        <caption translate="true">X# Literals</caption>
       </topicref>
       <topicref type="topic" id="423891454294167" build="ALL" modified="2016-01-19T22:47:35.715Z" icon="0" href="X-Preprocessor-Directives">
         <caption translate="true">X# Preprocessor Directives</caption>
@@ -945,6 +933,9 @@
       <caption translate="true">X# Examples</caption>
       <topicref type="topic" id="42424518616889" build="ALL" modified="2016-02-24T20:09:34.366Z" icon="0" href="Anonymous-Methods2">
         <caption translate="true">Anonymous Methods</caption>
+      </topicref>
+      <topicref type="topic" id="426887977972070" build="ALL" modified="2016-11-14T19:59:48.184Z" icon="0" href="Anonymous-Types">
+        <caption translate="true">Anonymous Types</caption>
       </topicref>
       <topicref type="topic" id="424267695938100" build="ALL" modified="2016-02-26T16:53:24.103Z" icon="0" href="ASYNC-Example">
         <caption translate="true">ASYNC Example</caption>

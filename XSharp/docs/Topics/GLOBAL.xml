@@ -10,6 +10,6 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">GLOBAL</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">voglobal &#160; &#160; &#160; &#160; : (attributes)? (funcprocModifiers)? GLOBAL (CONST)? classVarList EOS</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
   </body>
 </topic>

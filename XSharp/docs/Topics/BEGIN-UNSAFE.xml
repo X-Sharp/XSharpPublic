@@ -11,6 +11,6 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">BEGIN UNSAFE</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">BEGIN UNSAFE EOS</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160;</text><tab /><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">END UNSAFE? EOS</text></para>
   </body>
 </topic>

@@ -1,9 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" status="" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Generic Types</title>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Generic Types</title>
   <body>
-    <header><para styleclass="Heading1">Generic Types</para></header>
-    <para styleclass="Normal">Enter topic text here.</para>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Generic Types</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Generic types can be recognized by type parameters and type parameter constraints</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameters &#160; &#160; &#160;: LT typeparameter (COMMA attributes? typeparameter)* GT</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameter &#160; &#160; &#160; : attributes? (IN | OUT)? identifier</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameterconstraintsclause</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;: WHERE identifierName IS typeparameterconstraint (COMMA typeparameterconstraint)*</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">typeparameterconstraint: (CLASS|STRUCTURE)</text><tab /><tab /><tab /><tab /><text styleclass="Code Example" translate="true">// &#160;Class Foo&lt;t&gt; WHERE T IS (CLASS|STRUCTURE)</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; | typeName</text><tab /><tab /><tab /><tab /><tab /><tab /><text styleclass="Code Example" translate="true">// &#160;Class Foo&lt;t&gt; WHERE T IS Customer</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; | NEW LPAREN RPAREN</text><tab /><tab /><tab /><tab /><text styleclass="Code Example" translate="true">// &#160;Class Foo&lt;t&gt; WHERE T IS NEW()</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; ;</text></para>
+    <para styleclass="Code Example"></para>
   </body>
 </topic>

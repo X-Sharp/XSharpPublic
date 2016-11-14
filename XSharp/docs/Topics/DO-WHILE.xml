@@ -12,6 +12,7 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">DO WHILE</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">whilestmt &#160; : DO? WHILE expression EOS</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;StmtBlk=</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">statementBlock</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">&#32;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160; &#160;</text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">(END DO? | ENDDO) EOS &#160; </text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">;</text></para>
   </body>
 </topic>

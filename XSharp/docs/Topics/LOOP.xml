@@ -11,6 +11,6 @@
     </header>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The Loop statement jumps back to the beginning of the current DO WHILE, FOR NEXT, FOREACH NEXT or REPEAT UNTIL block</text></para>
     <para styleclass="Code Example"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">loopstmt &#160; : LOOP EOS</text><br/><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true">loopstmt &#160; : LOOP </text><br/><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;" translate="true"> &#160; &#160; &#160;;</text></para>
   </body>
 </topic>

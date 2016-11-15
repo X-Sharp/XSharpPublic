@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Expression Statement</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Expression Statement</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Expression Statements are stand alone expressions on a single line. The most common expression statement types are:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Invocation Expression (Function call, Method Call)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Assignment Expression</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Object Creation Expression</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Increment and Decrement Expression</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Await Expression</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Conditional Expression</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Conditional Access Expression</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">(Un)Checked Expression</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Parenthesized Expression</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

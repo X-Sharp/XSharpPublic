@@ -11,8 +11,8 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">BEGIN NAMESPACE</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">BEGIN NAMESPACE &lt;Namespace&gt;</text></para>
-    <para styleclass="Normal"><tab /><text styleclass="Normal" translate="true">...</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">END NAMESPACE</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The syntax rule for namespaces is:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">namespace</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">:</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">BEGIN NAMESPACE &lt;Namespace&gt; EOS</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;</text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">(</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Entities" styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">entity</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">)*</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; </text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">END NAMESPACE EOS</text><br/><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
   </body>
 </topic>

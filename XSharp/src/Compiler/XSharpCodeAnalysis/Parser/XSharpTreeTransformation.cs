@@ -46,12 +46,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public SyntaxListBuilder<UsingDirectiveSyntax> Usings;
             public SyntaxListBuilder<AttributeListSyntax> Attributes;
             public SyntaxListBuilder<MemberDeclarationSyntax> Members;
+            public List<Tuple<int,String>> InitProcedures;
 
             internal SyntaxEntities(SyntaxListPool pool) {
                 Externs = pool.Allocate<ExternAliasDirectiveSyntax>();
                 Usings = pool.Allocate<UsingDirectiveSyntax>();
                 Attributes = pool.Allocate<AttributeListSyntax>();
                 Members = pool.Allocate<MemberDeclarationSyntax>();
+                InitProcedures = new List<Tuple<int, String>>();
                 _pool = pool;
             }
 
@@ -1068,7 +1070,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             string nameSpace;
             splitClassNameAndNamespace(ref className, out nameSpace);
-            if (members.Length == 0) {
+            if (members?.Length == 0) {
                 var statements = _pool.Allocate<StatementSyntax>();
                 GenerateAttributeList(attributeLists, CompilerGenerated);
                 statements.Add(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -1339,21 +1341,70 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return prop;
         }
 
-        private static SyntaxTree _defTree;
-        public static SyntaxTree DefaultXSharpSyntaxTree()
+        protected static MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool _private = false)
         {
-            if (_defTree == null) {
-                var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
-
-                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false));
-
-                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                _defTree = CSharpSyntaxTree.Create(
-                    (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                        t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
-
+            var pool = new SyntaxListPool();
+            var members = pool.Allocate<MemberDeclarationSyntax>();
+            // create body for new Init procedure
+            var stmts = pool.Allocate<StatementSyntax>();
+            foreach (var name in procnames)
+            {
+                var args = SyntaxFactory.ArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    new SeparatedSyntaxList<InternalSyntax.ArgumentSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                var mname = SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(name));
+                var invoke = SyntaxFactory.InvocationExpression(mname, args);
+                var stmt = SyntaxFactory.ExpressionStatement(invoke, InternalSyntax.SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                stmts.Add(stmt);
             }
-            return _defTree;
+            var attList = SyntaxFactory.AttributeList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                null,
+                new SeparatedSyntaxList<InternalSyntax.AttributeSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+            var mods = pool.Allocate();
+            var voidType = SyntaxFactory.PredefinedType(
+                SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
+            if (_private)
+                mods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
+            else
+                mods.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+            mods.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+            var mods2 = new SyntaxList<InternalSyntax.SyntaxToken>(mods.ToListNode());
+            var block = SyntaxFactory.Block(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                    stmts,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            var pars = SyntaxFactory.ParameterList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                new SeparatedSyntaxList<InternalSyntax.ParameterSyntax>(),
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            var m = SyntaxFactory.MethodDeclaration(attList, mods2,
+                voidType, /*explicitif*/null,
+                SyntaxFactory.Identifier(functionName), /*typeparams*/null, pars,/* constraints*/null, block,/*exprbody*/null,
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+
+
+            pool.Free(mods);
+            pool.Free(stmts);
+            // Now create class declaration for Globals Class like in the TreeTransform
+            return m;
+
+
+        }
+
+        public static SyntaxTree DefaultXSharpSyntaxTree(List<String> init1, List<String> init2, List<String> init3, bool isApp)
+        {
+            var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+
+            t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false));
+            var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+            var tree = CSharpSyntaxTree.Create(
+                (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
+                    t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
+
+            return tree;
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
@@ -3296,9 +3347,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (context.Init != null )
             {
-                context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_FeatureNotAvailableInDialect,"Init procedure", _options.Dialect.ToString()));
+                if (_options.IsDialectVO)
+                { 
+                    int level = 0;
+                    switch (context.Init.Type )
+                    {
+                        case XP.INIT1:
+                            level = 1;
+                            break;
+                        case XP.INIT2:
+                            level = 2;
+                            break;
+                        case XP.INIT3:
+                            level = 3;
+                            break;
+                    }
+                    GlobalEntities.InitProcedures.Add(new Tuple<int,string>(level, context.Id.GetText()));
+                }
+                else
+                {
+                    context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_FeatureNotAvailableInDialect, "Init procedure", _options.Dialect.ToString()));
+                }
             }
-
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();

@@ -13,7 +13,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Iteration Statements</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="5" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Keyword</text></para>

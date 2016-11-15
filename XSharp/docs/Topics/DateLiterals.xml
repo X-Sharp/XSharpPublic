@@ -9,6 +9,13 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Date Literals</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Date literals are formatted </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">YYYY.MM.DD</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Examples:</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; 2000.01.01</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; 2012.02.29</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; 2015.09.25</text></para>
+    <para styleclass="Body Text"></para>
   </body>
 </topic>

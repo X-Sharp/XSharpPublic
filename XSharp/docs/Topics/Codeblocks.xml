@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Codeblocks</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Codeblocks</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Codeblocks are an important part of the X# language.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Traditionally the codeblock looked like</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">codeblock &#160; </text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">: &#160;LCURLY PIPE codeblockParamList? PIPE expression RCURLY</text><br/><tab /><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">codeblockParamList &#160;: identifier (COMMA identifier)*</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">For example</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; {|a,b| a*b}</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">X# has extended the Codeblock rule. We now not only accept a single expression, but also a statement list and an expressionlist:</text></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">codeblock &#160; </text><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">: &#160;LCURLY PIPE codeblockParamList? PIPE expression RCURLY</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">| LCURLY PIPE codeblockParamList? PIPE </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Statement-Block" styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">statementblock</link><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> RCURLY</text></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">| LCURLY PIPE codeblockParamList? PIPE codeblockExpressionList RCURLY</text><br/><tab /><tab /><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">;</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">codeblockExprList</text><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">: (expression COMMA)+ expression</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;;</text></para>
+    <para styleclass="Code Example"><br/></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Examples of this are</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; {|a,b| a:= Sqrt(a), a*b}</text><tab /><tab /><tab /></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; {|a,b| ? a</text></para>
+    <para styleclass="Code Example"><tab /><tab /><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> ? b }</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The &#160;second example can be seen as an anonymous method.</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"><tab /><tab /><tab /></para>
+  </body>
+</topic>

@@ -39,7 +39,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Literals" styleclass="Normal" translate="true">Literals (X#)</link></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Literals" styleclass="Normal" translate="true">Literals (X#)</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Describes the syntax for literal values in X# and how to specify type information for X# literals.</text></para>

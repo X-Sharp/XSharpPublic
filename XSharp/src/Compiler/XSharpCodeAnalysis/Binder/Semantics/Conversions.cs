@@ -118,7 +118,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var dsttype = destination.SpecialType;
                         if (srctype.IsNumericType() && dsttype.IsNumericType())
                         {
-                            return Conversion.ImplicitNumeric;
+                            // when both same # of bits and integral, use Identity conversion
+                            if (srctype.SizeInBytes() == dsttype.SizeInBytes() &&
+                                srctype.IsIntegralType() && dsttype.IsIntegralType())
+                                return Conversion.Identity;
+                            else
+                                return Conversion.ImplicitNumeric;
                         }
                     }
                     if (conv.Compilation.Options.IsDialectVO)

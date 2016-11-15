@@ -2,5 +2,5 @@
 // no matter of /vo4
 FUNCTION Start() AS VOID
 LOCAL dwNewStyles := 3 AS DWORD         
-dwNewStyles := UNCHECKED( _And(dwNewStyles, _not(1)) )
+dwNewStyles :=  _And(dwNewStyles, _not(1)) 
 ? dwNewStyles

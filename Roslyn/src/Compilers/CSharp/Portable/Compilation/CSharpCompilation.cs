@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Symbols;
 using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
+using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -671,6 +672,27 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (!trees.IsEmpty() && ! Options.HasDefaultTree)
             {
+                List<String> init1 = new List<String>();
+                List<String> init2 = new List<String>();
+                List<String> init3 = new List<String>();
+                foreach (var tree in trees)
+                {
+                    InternalSyntax.CompilationUnitSyntax unit = tree.GetRoot().Green as InternalSyntax.CompilationUnitSyntax;
+
+                    if (unit != null)
+                    {
+                        foreach (var item in unit.InitProcedures)
+                        {
+                            if (item.Item1 == 1)
+                                init1.Add(item.Item2);
+                            else if (item.Item1 == 2)
+                                init2.Add(item.Item2);
+                            else if (item.Item1 == 3)
+                                init3.Add(item.Item2);
+                        }
+                    }
+                }
+
                 SyntaxTree def = null ;
                 if (Options.IsDialectVO)
                 {
@@ -678,7 +700,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
                     }
-                    def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options);
+                    def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options, init1, init2, init3, Options.OutputKind.IsApplication());
                 }
                 else /* core dialect */
                 {
@@ -686,7 +708,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
                     }
-                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree();
+                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree(init1, init2, init3, Options.OutputKind.IsApplication());
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;

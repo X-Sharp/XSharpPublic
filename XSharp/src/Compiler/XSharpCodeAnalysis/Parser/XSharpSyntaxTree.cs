@@ -336,7 +336,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         public Dictionary<string, SourceText> IncludedFiles { get; internal set; }
         public ITokenStream XTokens { get; internal set; }
-    }
+        public IList<Tuple<int, string>> InitProcedures { get; internal set; }
+
+}
+
 }
 
 namespace Microsoft.CodeAnalysis.CSharp

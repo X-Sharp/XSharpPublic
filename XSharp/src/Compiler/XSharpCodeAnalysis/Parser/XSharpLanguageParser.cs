@@ -273,6 +273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = (XSharpParser.SourceContext)tree;
                 result.XTokens = tokens;
+                result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                 result.IncludedFiles = pp.IncludedFiles;
                 return result;
             }

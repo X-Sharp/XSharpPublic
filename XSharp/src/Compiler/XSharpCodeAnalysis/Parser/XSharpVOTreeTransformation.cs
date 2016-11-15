@@ -1063,6 +1063,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitBinaryExpression(context);
         }
 
+        public override void ExitIntrinsicExpression([NotNull] XP.IntrinsicExpressionContext context)
+        {
+            // _And , _OR, _XOR, _NOT should be unchecked to be VO/Vulcan compatible
+            base.ExitIntrinsicExpression(context);
+            ExpressionSyntax expr = context.Get<ExpressionSyntax>();
+            expr = _syntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression,
+                    SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    expr,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            context.Put(expr);
+        }
         public override void ExitJumpStmt([NotNull] XP.JumpStmtContext context)
         {
 			if (context.Key.Type == XP.BREAK)

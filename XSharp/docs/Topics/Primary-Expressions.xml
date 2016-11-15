@@ -8,7 +8,7 @@
     </header>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Primary Expressions are the simplest building blocks in the expression rule in X#</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="31" colcount="6" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="31" colcount="5" style="border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <thead style="vertical-align:top">
         <td style="vertical-align:middle;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Primary Expression type</text></para>
@@ -16,17 +16,14 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Syntax</text></para>
         </td>
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:60px;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">VO</text></para>
         </td>
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:60px;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">VN</text></para>
         </td>
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle; width:60px;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" style="font-weight:bold;" translate="true">X#</text></para>
-        </td>
-        <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Description</text></para>
         </td>
       </thead>
       <tr style="vertical-align:top">
@@ -45,8 +42,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -63,8 +58,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -83,8 +76,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -102,12 +93,10 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">CodeBlock</text></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Codeblocks" styleclass="Normal" translate="true">CodeBlock</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -121,12 +110,10 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">LINQ query</text></para>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="LINQ" styleclass="Normal" translate="true">LINQ query</link></para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
@@ -139,8 +126,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -159,8 +144,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -177,8 +160,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -197,8 +178,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -215,8 +194,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -235,8 +212,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -253,8 +228,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -273,8 +246,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -291,8 +262,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -311,8 +280,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -329,8 +296,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -349,8 +314,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -367,8 +330,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -387,8 +348,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -405,8 +364,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -425,8 +382,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -443,8 +398,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -463,8 +416,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -481,8 +432,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -501,8 +450,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -519,8 +466,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -539,8 +484,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -557,8 +500,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -577,8 +518,6 @@
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"></para>
         </td>
-        <td style="vertical-align:middle;">
-        </td>
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
@@ -595,8 +534,6 @@
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Normal" style="text-align:center;"><text styleclass="Normal" translate="true">Y</text></para>
-        </td>
-        <td style="vertical-align:middle;">
         </td>
       </tr>
     </table></para>

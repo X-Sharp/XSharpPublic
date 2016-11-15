@@ -18,9 +18,9 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.8.2801"
-#define VITextVersion   "0.2.8.2801 (Beta 8)"
-#define TouchDate       "2016-11-03"
+#define VIVersion       "0.2.8.2800"
+#define VITextVersion   "0.2.8.2800 (Beta 8)"
+#define TouchDate       "2016-11-16"
 #define TouchTime       "02:08:00"
 #define InstallPath     "XSharpPath"
 
@@ -131,8 +131,8 @@ Signtool=mssigntool sign /f {# KeyFile} /p {# Keypassword}  /t {# TimeStampURL} 
 Name: "main";             Description: "The XSharp Compiler and Build System";        Types: full compact custom; Flags: fixed; 
 Name: "vs2015";           Description: "Visual Studio 2015 Integration";              Types: full custom;         Check: Vs2015IsInstalled;
 Name: "vs2015\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer22Found;
-Name: "vsnext";           Description: "Visual Studio 15 Preview Integration";        Types: full custom;         Check: VsNextIsInstalled;
-Name: "vsnext\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer23Found;
+Name: "vs2017";           Description: "Visual Studio 2017 Integration";              Types: full custom;         Check: vs2017IsInstalled;
+Name: "vs2017\help";      Description: "Install VS documentation";                    Types: full custom;         Check: HelpViewer23Found;
 Name: "xide";             Description: "Include the XIDE {# XIDEVersion} installer";  Types: full custom;                  
 
 
@@ -154,8 +154,8 @@ Name: "{app}\Uninst";
 Name: "{app}\Xide";
 Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";                              Components: vs2015; 
 Name: "{userdocs}\Visual Studio 2015\Code Snippets\XSharp\My Code Snippets";   Components: vs2015; 
-Name: "{code:GetVsNextIdeDir}\Extensions\XSharp";                              Components: vsNext; 
-Name: "{userdocs}\Visual Studio 15\Code Snippets\XSharp\My Code Snippets";     Components: vsNext; 
+Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";                              Components: vs2017; 
+Name: "{userdocs}\Visual Studio 2017\Code Snippets\XSharp\My Code Snippets";     Components: vs2017; 
 
 
 [Languages]
@@ -231,23 +231,23 @@ Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{pf}\MsBuild
 Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{pf}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: main
 
 ; MsBuild files from VS15 Preview 4 in a private directory per installation
-Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:GetVsNextBaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}Xaml\*.*";                          DestDir: "{code:Getvs2017BaseDir}\MsBuild\{#Product}\Rules";  Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Targets\*.*";                       DestDir: "{code:Getvs2017BaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharp.Build.dll";                  DestDir: "{code:Getvs2017BaseDir}\MsBuild\{#Product}";        Flags: {#StdFlags}; Components: vs2017
 
 ;Documentation
 Source: "{#DocFolder}\XSharp.pdf";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
 Source: "{#DocFolder}\XSharp.chm";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
 Source: "{#DocFolder}\XSVulcan.chm";                      DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: main;
-Source: "{#DocFolder}\XSharp.msha";                       DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: vs2015\help or vsnext\help;     
-Source: "{#DocFolder}\XSharp.cab";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; Components: vs2015\help or vsnext\help;
-Source: "{#DocFolder}\XSVulcan.cab";                      DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; Components: vs2015\help or vsnext\help;
+Source: "{#DocFolder}\XSharp.msha";                       DestDir: "{app}\Help";        Flags: touch {#StdFlags}; Components: vs2015\help or vs2017\help;     
+Source: "{#DocFolder}\XSharp.cab";                        DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; Components: vs2015\help or vs2017\help;
+Source: "{#DocFolder}\XSVulcan.cab";                      DestDir: "{app}\Help";        Flags: touch {#StdFlags} signonce; Components: vs2015\help or vs2017\help;
 
 ;XIDE
 Source: "{#XIDEFolder}{#XIDESetup}";                      DestDir: "{app}\Xide";        Flags: touch {#StdFlags}; Components: Xide
 
 ;VsProjectSystem
-Source: "{#BinPFolder}XSharpProject2015.vsix";            DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015 or vsnext
+Source: "{#BinPFolder}XSharpProject.vsix";            DestDir: "{app}\ProjectSystem"; Flags: {#StdFlags}; Components: vs2015 or vs2017
 #ifdef FOX
 Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
@@ -257,8 +257,8 @@ Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:GetVs2
 #endif
 Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vs2015
 Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVs2015IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinPFolder}XSharpColorizer2015.dll";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinPFolder}XSharpColorizer2015.pdb";           DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpColorizer.pdb";               DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 
 ; ItemTemplates per folder
 Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; Components: vs2015
@@ -274,10 +274,10 @@ Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{code:GetVs2
 
 Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
 
-Source: "{#BinPFolder}XSharpProject2015.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinPFolder}XSharpProject2015.dll.config";      DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinPFolder}XSharpProject2015.pdb";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
-Source: "{#BinPFolder}XSharpProject2015.pkgdef";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015; 
+Source: "{#BinPFolder}XSharpProject.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject.dll.config";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject.pdb";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
+Source: "{#BinPFolder}XSharpProject.pkgdef";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015; 
 Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 
 Source: "{#BinPFolder}XSharp.ico ";                        DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
@@ -289,38 +289,38 @@ Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVs
 ; private snippets
 
 
-; VsNext
-Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vsnext
-Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:GetVsNextIdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharpColorizer2015.dll";           DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharpColorizer2015.pdb";           DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vsnext
+; vs2017
+Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";           DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";           DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpCodeDomProvider.dll";         DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags} {#GACInstall}; StrongAssemblyName: "{#ProviderVersion}"; Components: vs2017
+Source: "{#BinPFolder}XSharpCodeDomProvider.pdb";         DestDir: "{code:Getvs2017IdeDir}\PrivateAssemblies"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpColorizer.dll";               DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpColorizer.pdb";               DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2017
 
 ; ItemTemplates per folder
-Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; Components: vsnext
-;Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\U*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ItemTemplates\Resources";     Flags: recursesubdirs {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}Itemtemplates\Wpf*.Zip";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\WPF";        Flags: recursesubdirs {#StdFlags}; Components: vs2017
+;Source: "{#BinPFolder}Itemtemplates\VO*.Zip";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\VO";         Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\*Internal.Zip";       DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Internal";   Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\Wcf*.Zip";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\WCF";        Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\Form*.Zip";           DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\U*.Zip";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Windows Forms"; Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\C*.Zip";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\H*.Zip";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Code";          Flags: recursesubdirs {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Resources";     Flags: recursesubdirs {#StdFlags}; Components: vs2017
 
-Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2017
 
-Source: "{#BinPFolder}XSharpProject2015.dll";             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharpProject2015.dll.config";      DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharpProject2015.pdb";             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharpProject2015.pkgdef";          DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}XSharpProject.dll";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpProject.dll.config";      DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpProject.pdb";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpProject.pkgdef";          DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}extension.vsixmanifest";            DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2017
 
-Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
-Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext
-;Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vsnext 
-;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVsNextIdeDir}\Extensions\XSharp\Images"; Flags: {#StdFlags}; Components: vsnext
+Source: "{#BinPFolder}XSharp.ico ";                             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2017
+Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2017
+;Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";                  DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2017 
+;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\Images"; Flags: {#StdFlags}; Components: vs2017
 
 ; Examples
 Source: "{#ExamplesFolder}*.prg";                             DestDir: "{commondocs}\XSharp\Examples";    Flags: recursesubdirs {#StdFlags};
@@ -353,11 +353,11 @@ Root: HKLM; Subkey: "Software\{#RegCompany}"; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; Flags: uninsdeletekey 
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "{#InstallPath}"; ValueType: string; ValueData: "{app}" ;
 Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help22Installed"; ValueType: string; ValueData: "yes" ;  Components: vs2015\help;
-Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help23Installed"; ValueType: string; ValueData: "yes" ;  Components: vsnext\help;
+Root: HKLM; Subkey: "Software\{#RegCompany}\{#Product}"; ValueName: "Help23Installed"; ValueType: string; ValueData: "yes" ;  Components: vs2017\help;
 
 ; set the VSHelp to Offline
 Root: HKCU; Subkey: "{#Vs14RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vs2015\help; Flags: noerror;
-Root: HKCU; Subkey: "{#Vs15RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vsnext\help; Flags: noerror;
+Root: HKCU; Subkey: "{#Vs15RegPath}\Help"; ValueName:"UseOnlineHelp"; ValueType: dword; ValueData: 0; Components: vs2017\help; Flags: noerror;
 
 ; When Vulcan is Installed then update its extension registration so we can handle the priorities in our project system
 
@@ -371,23 +371,23 @@ Root: HKCU; Subkey: "{#Vs14RegPath}_Config\{#VulcanEditorGuid}"; ValueName: "vh"
 
 [Ini]
 Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vs2015;
-Filename: "{code:GetVsNextIdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vsnext;
+Filename: "{code:Getvs2017IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vs2017;
 
 [Run]
 Filename: "{app}\Tools\RegisterProvider.exe";
 
 ; Remove old Help contents
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vs2017\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
 
 
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio14 {#HelpInstall2}";     Components: vs2015\help; StatusMsg:"Installing VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     Components: vsnext\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpInstall1} VisualStudio15 {#HelpInstall2}";     Components: vs2017\help; StatusMsg:"Installing VS Help for VS 15";  Flags: waituntilidle;
 Filename:  "{app}\Xide\{#XIDESetup}"; Description:"Run XIDE {# XIDEVersion} Installer"; Flags: postInstall;  Components: XIDE;
 
 [UninstallRun]
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
-Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vsnext\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
+Filename: "{code:GetHelp23Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio15 {#HelpUninstall2}";   Components: vs2017\help; StatusMsg:"UnInstalling VS Help for VS 15"; Flags: waituntilidle;
 
 
 [InstallDelete]
@@ -401,12 +401,12 @@ Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            Co
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";       Components: vs2015
 Type: files;          Name: "{code:GetVs2015IdeDir}\XSharp.CodeAnalysis.dll"; Components: vs2015
 Type: files;          Name: "{code:GetVs2015IdeDir}\XSharp.CodeAnalysis.pdb"; Components: vs2015
-; vsnext
-Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vsnext
-Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vsnext
-Type: filesandordirs; Name: "{code:GetVsNextIdeDir}\Extensions\XSharp";       Components: vsnext
-Type: files;          Name: "{code:GetVsNextIdeDir}\XSharp.CodeAnalysis.dll"; Components: vsnext
-Type: files;          Name: "{code:GetVsNextIdeDir}\XSharp.CodeAnalysis.pdb"; Components: vsnext
+; vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vs2017
+Type: filesandordirs; Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";       Components: vs2017
+Type: files;          Name: "{code:Getvs2017IdeDir}\XSharp.CodeAnalysis.dll"; Components: vs2017
+Type: files;          Name: "{code:Getvs2017IdeDir}\XSharp.CodeAnalysis.pdb"; Components: vs2017
 
 ; remove the old uninstaller because the uninstall file format has changed in one of the previous builds
 Type: filesandordirs; Name: "{app}\Uninst"
@@ -426,7 +426,7 @@ Type: filesandordirs; Name: "{app}\Tools"                         ; Components: 
 Type: filesandordirs; Name: "{app}\Uninst"                        ; Components: main
 Type: filesandordirs; Name: "{pf}\MsBuild\{#Product}"             ; Components: main
 Type: filesandordirs; Name: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Components: vs2015;  
-Type: filesandordirs; Name: "{code:GetVsNextIdeDir}\Extensions\XSharp"; Components: vsnext;  
+Type: filesandordirs; Name: "{code:Getvs2017IdeDir}\Extensions\XSharp"; Components: vs2017;  
 Type: filesandordirs; Name: "{commondocs}\XSharp\Examples";
 Type: dirifempty;     Name: "{app}\Include"; 
 Type: dirifempty;     Name: "{app}"; 
@@ -438,9 +438,9 @@ Type: dirifempty;     Name: "{commondocs}\XSharp";
 ;vs2015
 Type: filesandordirs; Name: "{#Vs14LocalDir}\vtc";                            Components: vs2015
 Type: filesandordirs; Name: "{#Vs14LocalDir}\ComponentModelCache";            Components: vs2015
-;vsnext
-Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vsnext
-Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vsnext
+;vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}\vtc";                            Components: vs2017
+Type: filesandordirs; Name: "{#Vs15LocalDir}\ComponentModelCache";            Components: vs2017
 
 [Messages]
 WelcomeLabel1=Welcome to {# Product} (X#)
@@ -459,9 +459,9 @@ var
   Vs2015BaseDir: String;
   VulcanInstalled: Boolean;
   VulcanBaseDir: String;
-  VsNextPath : String;
-  VsNextInstalled: Boolean;
-  VsNextBaseDir: String;
+  vs2017Path : String;
+  vs2017Installed: Boolean;
+  vs2017BaseDir: String;
   VulcanPrgAssociation: Boolean;
   VulcanGuid : String;
   HelpViewer22Installed : Boolean;
@@ -486,10 +486,10 @@ begin
   VulcanInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Grafx\Vulcan.NET','InstallPath',VulcanBaseDir) ;
   Vs2015Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','14.0',Vs2015BaseDir) ;
   if Vs2015Installed then Vs2015Path := Vs2015BaseDir+'\Common7\Ide\';
-  VsNextInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',VsNextBaseDir) ;
+  vs2017Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',vs2017BaseDir) ;
   HelpViewer22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.2','AppRoot',HelpViewer22Dir) ;
   {HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;}
-  if VsNextInstalled then VsNextPath := VsNextBaseDir+'\Common7\Ide\';
+  if vs2017Installed then vs2017Path := vs2017BaseDir+'\Common7\Ide\';
   VulcanPrgAssociation := false;
   if Vs2015Installed then
   begin
@@ -536,9 +536,9 @@ begin
   result := Vs2015Installed;
 end;
 
-function VsNextIsInstalled: Boolean;
+function vs2017IsInstalled: Boolean;
 begin
-  result := VsNextInstalled;
+  result := vs2017Installed;
 end;
 
 function GetVs2015IdeDir(Param: String): String;
@@ -546,27 +546,16 @@ begin
   result := Vs2015Path;
 end;
 
-function GetVsNextIdeDir(Param: String): String;
+function Getvs2017IdeDir(Param: String): String;
 begin
-  result := VsNextPath;
+  result := vs2017Path;
 end;
 
-function GetVsNextBaseDir(Param: String): String;
+function Getvs2017BaseDir(Param: String): String;
 begin
-  result := VsNextBaseDir;
+  result := vs2017BaseDir;
 end;
 
-{
-function OurHelp22IsInstalled: Boolean;
-begin
-  result := OurHelp22Installed;
-end;
-
-function OurHelp23IsInstalled: Boolean;
-begin
-  result := OurHelp23Installed;
-end;
-}
 function GetHelp22Dir(Param: String): String;
 begin
   result := HelpViewer22Dir;
@@ -599,7 +588,7 @@ var
 begin
   DetectVS();
   result := true;
-  if not Vs2015Installed and not VsNextInstalled then
+  if not Vs2015Installed and not vs2017Installed then
   begin
     if MsgBox('Visual Studio 2015 has not been detected, do you want to download the free Visual Studio Community Edition ?', mbConfirmation, MB_YESNO) = IDYES then
     begin

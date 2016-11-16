@@ -976,6 +976,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
+        public static bool IsRefType(this IToken token)
+        {
+            switch (token.Type)
+            {
+                case XSharpParser.ARRAY:
+                case XSharpParser.CODEBLOCK:
+                case XSharpParser.DYNAMIC:
+                case XSharpParser.OBJECT:
+                case XSharpParser.PSZ:
+                case XSharpParser.PTR:
+                case XSharpParser.STRING:
+                    return true;
+                default:
+                    return false;
+            }
+        }
         public static SyntaxKind OrderingKind(this IToken token)
         {
             SyntaxKind r;

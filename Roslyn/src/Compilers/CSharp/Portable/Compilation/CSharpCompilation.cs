@@ -672,43 +672,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (!trees.IsEmpty() && ! Options.HasDefaultTree)
             {
-                List<String> init1 = new List<String>();
-                List<String> init2 = new List<String>();
-                List<String> init3 = new List<String>();
-                foreach (var tree in trees)
-                {
-                    InternalSyntax.CompilationUnitSyntax unit = tree.GetRoot().Green as InternalSyntax.CompilationUnitSyntax;
-
-                    if (unit != null)
-                    {
-                        foreach (var item in unit.InitProcedures)
-                        {
-                            if (item.Item1 == 1)
-                                init1.Add(item.Item2);
-                            else if (item.Item1 == 2)
-                                init2.Add(item.Item2);
-                            else if (item.Item1 == 3)
-                                init3.Add(item.Item2);
-                        }
-                    }
-                }
-
                 SyntaxTree def = null ;
+                bool isApp = Options.OutputKind.IsApplication();
                 if (Options.IsDialectVO)
                 {
-                    if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
+                    if (isApp && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = Syntax.InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
+                        Options.MainTypeName = InternalSyntax.XSharpVOTreeTransformation.VOGlobalClassName((CSharpParseOptions)trees.First().Options);
                     }
-                    def = Syntax.InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree((CSharpParseOptions)trees.First().Options, init1, init2, init3, Options.OutputKind.IsApplication());
+                    def = InternalSyntax.XSharpVOTreeTransformation.DefaultVOSyntaxTree(trees, isApp);
                 }
                 else /* core dialect */
                 {
-                    if (Options.OutputKind.IsApplication() && String.IsNullOrEmpty(Options.MainTypeName))
+                    if (isApp && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = Syntax.InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
+                        Options.MainTypeName = InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
                     }
-                    def = Syntax.InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree(init1, init2, init3, Options.OutputKind.IsApplication());
+                    def = InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree(trees, isApp);
                 }
                 syntaxAndDeclarations = syntaxAndDeclarations.AddSyntaxTrees(new[] { def });
                 Options.HasDefaultTree = true;

@@ -51,7 +51,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string InitProc1 = "$Init1";
         const string InitProc2 = "$Init2";
         const string InitProc3 = "$Init3";
-        const string CallOurInitProcedures = "Xs$InitProcs";
         // Vulcan Assembly Names
         private const string VulcanRTFuncs = "VulcanRTFuncs";
         private const string VulcanVOSystemClasses = "VulcanVOSystemClasses";
@@ -104,8 +103,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string filename = PathUtilities.GetFileName(name);
                 filename = PathUtilities.RemoveExtension(filename);
                 filename = filename.Replace('.', '_');
-                OutputKind kind = options.CommandLineArguments.CompilationOptions.OutputKind;
-                if (kind.GetDefaultExtension().ToLower() == ".exe")
+                if (options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
                     GlobalClassName = filename + ".Exe.Functions";
                 else
                     GlobalClassName = filename + ".Functions";
@@ -114,9 +112,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 GlobalClassName = XSharpGlobalClassName;
             }
-            // regenerate default tree with new name
-            //CurrentGlobalClassName = GlobalClassName;
-            //DefaultXSharpSyntaxTree = GetDefaultTree();
         }
 
         private void InitializeArrayTypes()
@@ -134,36 +129,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 arrayOfString = _syntaxFactory.ArrayType(_stringType, emptyrank);
             }
         }
-        private List<MemberDeclarationSyntax> CreateInitMembers(List<String> init1, List<String> init2, List<String> init3, bool isApp)
+
+
+        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool _private = false)
+        {
+            var pool = new SyntaxListPool();
+            var members = pool.Allocate<MemberDeclarationSyntax>();
+            // create body for new Init procedure
+            var stmts = pool.Allocate<StatementSyntax>();
+            foreach (var name in procnames)
+            {
+                var invoke = GenerateMethodCall(name, EmptyArgumentList());
+                stmts.Add(GenerateExpressionStatement(invoke));
+            }
+            var attList = EmptyList<AttributeListSyntax>();
+            SyntaxList<SyntaxToken> mods;
+            if (_private)
+                mods = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
+            else
+                mods = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
+            var pars = EmptyParameterList();
+            var m = SyntaxFactory.MethodDeclaration(attList, mods,
+                _voidType, /*explicitif*/null,
+                SyntaxFactory.Identifier(functionName), /*typeparams*/null, pars,/* constraints*/null, MakeBlock(stmts),/*exprbody*/null,
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+
+            pool.Free(stmts);
+            return m;
+        }
+
+        private List<MemberDeclarationSyntax> CreateInitMembers(List<String> init1, List<String> init2, List<String> init3)
         {
             var members = new List<MemberDeclarationSyntax>();
-            List<String> names = new List<String>();
-            if (isApp)
-            {
-                // Put Everything in one method Xs$InternalInitProcedures
-                foreach (string s in init1)
-                    names.Add(s);
-                foreach (string s in init2)
-                    names.Add(s);
-                foreach (string s in init3)
-                    names.Add(s);
-                members.Add(CreateInitFunction(names, CallOurInitProcedures, true));
-            }
-            else
             {
                 // Put Everything in separate methods $Init1 .. $Init3
                 // Always generate $Init1
                 members.Add(CreateInitFunction(init1, InitProc1));
-                names.Add(InitProc1);
                 if (init2.Count > 0)
                 {
                     members.Add(CreateInitFunction(init2, InitProc2));
-                    names.Add(InitProc2);
                 }
                 if (init3.Count > 0)
                 {
                     members.Add(CreateInitFunction(init3, InitProc3));
-                    names.Add(InitProc3);
                 }
             }
             return members;
@@ -171,9 +179,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private SyntaxTree GenerateDefaultSyntaxTree(List<String> init1, List<String> init2, List<String> init3, bool isApp)
         {
-            MemberDeclarationSyntax[] members = null;
-            members = CreateInitMembers(init1, init2, init3,isApp).ToArray();
-            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, members));
+            List<MemberDeclarationSyntax> members ;
+            // Create Global Functions class with the Members to call the Init procedures
+            if (isApp)
+            {
+                members = new List<MemberDeclarationSyntax>();
+                members.Add(CreateAppInit(init1, init2, init3));
+            }
+            else
+            {
+                members = CreateInitMembers(init1, init2, init3);
+            }
+            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, members.ToArray()));
             // Add global attributes
 
             var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
@@ -212,15 +229,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 (Syntax.CompilationUnitSyntax)_syntaxFactory.CompilationUnit(
                     GlobalEntities.Externs, GlobalEntities.Usings, GlobalEntities.Attributes, GlobalEntities.Members, eof).CreateRed());
         }
-        public static SyntaxTree DefaultVOSyntaxTree(CSharpParseOptions options, List<String> init1, List<String> init2, List<String> init3, bool isApp)
+        public static SyntaxTree DefaultVOSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
         {
-            var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            // Trees is NEVER empty !
+            CSharpParseOptions options = (CSharpParseOptions)trees.First().Options;
+            // Collect Init procedures in all trees
+            List<String> init1 = new List<String>();
+            List<String> init2 = new List<String>();
+            List<String> init3 = new List<String>();
+            foreach (var tree in trees)
+            {
+                CompilationUnitSyntax unit = tree.GetRoot().Green as CompilationUnitSyntax;
+
+                if (unit != null)
+                {
+                    foreach (var item in unit.InitProcedures)
+                    {
+                        if (item.Item1 == 1)
+                            init1.Add(item.Item2);
+                        else if (item.Item1 == 2)
+                            init2.Add(item.Item2);
+                        else if (item.Item1 == 3)
+                            init3.Add(item.Item2);
+                    }
+                }
+            }
+
+            var t = getTransform(options);
             return t.GenerateDefaultSyntaxTree(init1, init2, init3,isApp);
         }
 
+        private static XSharpVOTreeTransformation getTransform(CSharpParseOptions options)
+        {
+            return new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+        }
         public static string VOGlobalClassName(CSharpParseOptions options)
         {
-            var t = new XSharpVOTreeTransformation(null, options, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+            var t = getTransform(options);
             return t.GlobalClassName;
         }
 
@@ -398,13 +443,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        protected override BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
+        private MethodDeclarationSyntax CreateAppInit(List<String> init1, List<String> init2, List<String> init3)
         {
-            // This method does 2 things:
-            // - Creates an $AppInit() method,
-            // - Creates Try .. Finally in the Entry Point and call GC routines in the Finally
             var stmts = _pool.Allocate<StatementSyntax>();
-            // First create the AppInit$() method
             var appId = SyntaxFactory.Identifier(AppInit);
             // try
             // {
@@ -419,16 +460,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //    throw new Exception("Error when executing code in INIT procedure", exception);
             // }
 
-            var lhs = GenerateQualifiedName(VulcanRuntimeState+".AppModule");
+            var lhs = GenerateQualifiedName(VulcanRuntimeState + ".AppModule");
 
-            ExpressionSyntax rhs =_syntaxFactory.TypeOfExpression(
+            ExpressionSyntax rhs = _syntaxFactory.TypeOfExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 GenerateQualifiedName(GlobalClassName),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
-            stmts.Add(GenerateExpressionStatement( MakeSimpleAssignment(lhs, rhs)));
+            stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
             // VO11  = stmt 2
             if (_options.VOArithmeticConversions)
             {
@@ -447,8 +488,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             // Add Block of $Init<n> calls
             stmts.Add(CallInitProcedures());
-            // Add Call to our Xs$InternalInitProcedures. This will be generated in the default tree
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(CallOurInitProcedures, EmptyArgumentList())));
+
+            // Call our own Init procedures
+            List<String> names = new List<String>();
+            // Put Everything in one method Xs$InternalInitProcedures
+            foreach (string s in init1)
+                stmts.Add(GenerateExpressionStatement(GenerateMethodCall(s, EmptyArgumentList())));
+            foreach (string s in init2)
+                stmts.Add(GenerateExpressionStatement(GenerateMethodCall(s, EmptyArgumentList())));
+            foreach (string s in init3)
+                stmts.Add(GenerateExpressionStatement(GenerateMethodCall(s, EmptyArgumentList())));
+
             var body = MakeBlock(stmts);
             stmts.Clear();
 
@@ -476,49 +526,134 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Clear();
             stmts.Add(tryStmt);
             body = MakeBlock(stmts);
-            stmts.Clear();
-            // Body of $AppInit() is ready now. Now add the method as a private method
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-
+            // Body is ready now. Now create the method as a private method
+            var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
             var appInit = _syntaxFactory.MethodDeclaration(
-                EmptyList<AttributeListSyntax>(), modifiers.ToTokenList(),
-                _voidType,null, appId, null, EmptyParameterList(),
+                EmptyList<AttributeListSyntax>(), modifiers,
+                _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            _pool.Free(stmts);
+            return appInit;
 
-            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, appInit));
-            _pool.Free(modifiers);
+        }
 
+        protected override BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
+        {
+            // This method changes the body of the entry point for the VO Syntax
+            // It Creates Try .. Finally in the Entry Point 
+            // it calls $AppInit in the Try and 
+            // it calls GC routines in the Finally
+            var stmts = _pool.Allocate<StatementSyntax>();
+            var noargs = EmptyArgumentList();
+            
 
             // Build the try finally statement with the original body in the try, prefixed with a call to $AppInit()
             // and a finally body
-            stmts.Clear();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, EmptyArgumentList())));
-            var type = context.Type?.GetText().ToUpperInvariant();
-            stmts.Add(originalbody);
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
+            foreach (var stmt in originalbody.Statements)
+            {
+                stmts.Add(stmt);
+            }
+
+            //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Start")));
+            //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
+
+            // check the original body for all its variables
+            // and assign them a default value
+
+            foreach (var stmt in originalbody.Statements)
+            {
+                if (stmt is LocalDeclarationStatementSyntax)
+                {
+                    var locdecl = stmt as LocalDeclarationStatementSyntax;
+                    var localvar = locdecl.XNode as XP.LocalvarContext;
+                    var impliedvar = locdecl.XNode as XP.ImpliedvarContext;
+                    bool useNull = true;
+                    bool mustclear = true;
+                    if (impliedvar != null)
+                    {
+                        var name = localvar.Id.GetText();
+                        var value = SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+                        var expr = MakeSimpleAssignment(GenerateSimpleName(name), value);
+                        stmts.Add(GenerateExpressionStatement(expr));
+                    }
+                    else if (localvar != null)
+                    {
+                        var name = localvar.Id.GetText();
+                        TypeSyntax type;
+                        if (localvar.DataType == null)
+                        {
+                            type = _usualType;
+                            useNull = true;
+                            mustclear = true;
+                        }
+                        else
+                        {
+                            type = localvar.DataType.Get<TypeSyntax>();
+
+                            if (localvar.DataType is XP.ArrayDatatypeContext ||
+                                localvar.DataType is XP.NullableDatatypeContext ||
+                                localvar.DataType is XP.PtrDatatypeContext)
+                            {
+                                useNull = true;
+                            }
+                            else
+                            {
+                                var sdc = localvar.DataType as XP.SimpleDatatypeContext;
+                                var tn = sdc.TypeName;
+                                if (tn.XType != null)
+                                {
+                                    useNull = mustclear = tn.XType.Token.IsRefType();
+                                    if (tn.XType.Token.Type == XP.USUAL)
+                                        mustclear = true;
+                                }
+                                else if (tn.NativeType != null)
+                                {
+                                    useNull = mustclear = tn.NativeType.Token.IsRefType();
+                                }
+                                else if (tn.Name != null)
+                                {
+                                    useNull = false;
+                                    mustclear = true;
+                                }
+                            }
+                        }
+                        if (mustclear)
+                        {
+                            ExpressionSyntax value;
+                            if (useNull)
+                                value = SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+                            else
+                                value = MakeDefault(type);
+                            var expr = MakeSimpleAssignment(GenerateSimpleName(name), value);
+                            stmts.Add(GenerateExpressionStatement(expr));
+                        }
+                    }
+                }
+            }
             var trybody = MakeBlock(stmts.ToList());
             // Create the Finally body:
             stmts.Clear();
 
-            //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Start")));
-            //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
-            var args = EmptyArgumentList();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", args)));
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", args)));
+
+
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
+
+
             //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Finish")));
             //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
             var finallybody = MakeBlock(stmts.ToList());
             var finallyClause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword), finallybody);
             // Create the new body which is a try statement only
-            tryStmt = _syntaxFactory.TryStatement(
+            var tryStmt = _syntaxFactory.TryStatement(
                     SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                     trybody,
                     null,
                     finallyClause);
             stmts.Clear();
             stmts.Add(tryStmt);
-            body = MakeBlock(stmts);
+            var body = MakeBlock(stmts);
             _pool.Free(stmts);
             return body;
         }
@@ -1343,9 +1478,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                             dataType = _getMissingType(); 
                     }
-                    expr = GetReturnExpression(dataType);
-                    expr = expr.WithAdditionalDiagnostics(
-                                        new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                    if (dataType != _voidType)
+                    {
+                        expr = GetReturnExpression(dataType);
+                        if (expr != null)
+                        {
+                            expr = expr.WithAdditionalDiagnostics(
+                                                new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnValue));
+                        }
+                    }
                 }
             }
             StatementSyntax result;

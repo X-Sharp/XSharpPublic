@@ -285,6 +285,7 @@ Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVs
 ;Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";             DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";         Flags: {#StdFlags}; Components: vs2015 
 ;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";  Flags: {#StdFlags}; Components: vs2015
 
+Source: "{#BinPFolder}SetupCheck2017.exe";                 DestDir: "{tmp}";  
 
 ; private snippets
 
@@ -374,7 +375,7 @@ Filename: "{code:GetVs2015IdeDir}\Extensions\extensions.configurationchanged"; S
 Filename: "{code:Getvs2017IdeDir}\Extensions\extensions.configurationchanged"; Section:"XSharp"; Key: "Installed"; String: "{#VIVersion}"; Flags: uninsdeletesection; Components: vs2017;
 
 [Run]
-Filename: "{app}\Tools\RegisterProvider.exe";
+Filename: "{app}\Tools\RegisterProvider.exe"; Flags: runhidden;
 
 ; Remove old Help contents
 Filename: "{code:GetHelp22Dir}\HlpCtntMgr.exe"; Parameters: "{#HelpUninstall1} VisualStudio14 {#HelpUninstall2}";   Components: vs2015\help; StatusMsg:"UnInstalling VS Help for VS2015"; Flags: waituntilidle;
@@ -453,15 +454,29 @@ InfoBeforeClickLabel=Only continue the installation if you are aware of the foll
 [Code]
 Program setup;
 var
+
+  vs2017VersionPage: TInputOptionWizardPage;
   PrintButton: TButton;
   Vs2015Path : String;
   Vs2015Installed: Boolean;
   Vs2015BaseDir: String;
   VulcanInstalled: Boolean;
   VulcanBaseDir: String;
+  
   vs2017Path : String;
+  vs2017Version: String;
   vs2017Installed: Boolean;
   vs2017BaseDir: String;
+
+  vs2017Count: Integer;
+  vs2017BaseDir1: String;
+  vs2017BaseDir2: String;
+  vs2017BaseDir3: String;
+
+  vs2017Version1: String;
+  vs2017Version2: String;
+  vs2017Version3: String;
+  
   VulcanPrgAssociation: Boolean;
   VulcanGuid : String;
   HelpViewer22Installed : Boolean;
@@ -480,16 +495,107 @@ if not ShellExec('Print', ExpandConstant('{tmp}\license.txt'),
 //if not ShellExec('', ExpandConstant('{tmp}\license.txt'),
 //     '', '', SW_SHOW, ewNoWait, ResultCode) then
 end;
+{
+VS2017.txt will contain:
+InstanceId: 8aa9303a (Complete)
+InstallationVersion: 15.0.25914.0 (4222126348959744)
+InstallationPath: C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional
+Product: Microsoft.VisualStudio.Product.Professional
+Workloads:
+    Microsoft.VisualStudio.Workload.CoreEditor
+    Microsoft.VisualStudio.Workload.ManagedDesktop
+}
+procedure FindVS2017;
+var FileContents : TArrayOfString;
+  ResultCode: Integer;
+  i: integer;
+  line: String;
+  tokenLength: Integer;
+  token: String;
+begin
+  Log('Detect 2017 start');
+  ExtractTemporaryFile('SetupCheck2017.exe');
+  if Exec(ExpandConstant('{tmp}\SetupCheck2017.exe'),'','',SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+  begin
+      if ResultCode = 0 then
+      begin
+        if LoadStringsFromFile(ExpandConstant('{tmp}\vs2017.txt'), FileContents) then
+        begin
+            Log('========================================');
+            Log('Installed versions of Visual Studio 2017');
+            Log('========================================');
+            for i:= 0 to GetArrayLength(FileContents)-1 do
+            begin
+               line := Trim( FileContents[i]);
+               Log(line);
+               token := 'InstanceId:';
+               if Pos(token, line) > 0  then 
+                  vs2017Count := vs2017Count + 1;
+               token := 'InstallationPath:';
+               if Pos(token, line) > 0  then 
+                begin
+                  tokenLength := Length(token);
+                  vs2017BaseDir := Trim(Copy(line, tokenLength+1, Length(line) - tokenLength));
+                  if vs2017Count = 1 then
+                     vs2017BaseDir1 := vs2017BaseDir;
+                  if vs2017Count = 2 then
+                     vs2017BaseDir2 := vs2017BaseDir;
+                  if vs2017Count = 3 then
+                     vs2017BaseDir3 := vs2017BaseDir;
+                  vs2017Installed := true;
+                end
+               token := 'Product:';
+               if Pos(token, line) > 0 then
+                begin
+                  tokenLength := Length(token);
+                  vs2017Version := ExtractFileExt(line);
+                  vs2017Version := Copy(vs2017Version,2,Length(vs2017Version)-1);
+                  if vs2017Count = 1 then
+                     vs2017Version1 := vs2017Version;
+                  if vs2017Count = 2 then
+                     vs2017Version2 := vs2017Version;
+                  if vs2017Count = 3 then
+                     vs2017Version3 := vs2017Version;
+                  vs2017Installed := true;
+                end
+            end
+        end
+      end
+
+      Log('Vs 2017 # of installations: '+IntToStr(vs2017Count));
+      if vs2017Count > 0 then
+      begin
+        Log('Vs 2017 installation dir 1: '+vs2017BaseDir1);
+        Log('Vs 2017 product version 1 : '+vs2017Version1);
+      end
+      if vs2017Count > 1 then
+      begin
+        Log('Vs 2017 installation dir 2: '+vs2017BaseDir2);
+        Log('Vs 2017 product version 2 : '+vs2017Version2);
+      end
+      if vs2017Count > 2 then
+      begin
+        Log('Vs 2017 installation dir 3: '+vs2017BaseDir3);
+        Log('Vs 2017 product version  3: '+vs2017Version3);
+      end
+  end
+  Log('Detect 2017 end');
+end;
+
+
 procedure DetectVS();
 var temp : String;
 begin
+  Log('Start VS Detection');
   VulcanInstalled := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Grafx\Vulcan.NET','InstallPath',VulcanBaseDir) ;
   Vs2015Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','14.0',Vs2015BaseDir) ;
   if Vs2015Installed then Vs2015Path := Vs2015BaseDir+'\Common7\Ide\';
-  vs2017Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',vs2017BaseDir) ;
+  FindVS2017;
+
   HelpViewer22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.2','AppRoot',HelpViewer22Dir) ;
   {HelpViewer23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Help\v2.3','AppRoot',HelpViewer23Dir) ;}
-  if vs2017Installed then vs2017Path := vs2017BaseDir+'\Common7\Ide\';
+
+
   VulcanPrgAssociation := false;
   if Vs2015Installed then
   begin
@@ -501,6 +607,11 @@ begin
   end
   OurHelp22Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help22Installed',temp) ;
   {OurHelp23Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\{#RegCompany}\{#Product}','Help23Installed',temp) ;}
+  Log('VS2015: '+Vs2015BaseDir); 
+  Log('VS2017: '+Vs2017BaseDir);
+ 
+
+  Log('End VS Detection');
 end;
 
 
@@ -551,9 +662,23 @@ begin
   result := vs2017Path;
 end;
 
+function Getvs2017Version(Param: String): String;
+begin
+  case vs2017VersionPage.SelectedValueIndex of
+    0: result := Vs2017Version1;
+    1: result := Vs2017Version2;
+    2: result := Vs2017Version3;
+  end;
+end;
+
+
 function Getvs2017BaseDir(Param: String): String;
 begin
-  result := vs2017BaseDir;
+  case vs2017VersionPage.SelectedValueIndex of
+    0: result := Vs2017BaseDir1;
+    1: result := Vs2017BaseDir2;
+    2: result := Vs2017BaseDir3;
+  end;
 end;
 
 function GetHelp22Dir(Param: String): String;
@@ -570,22 +695,88 @@ Procedure CurPageChanged(CurPage: Integer);
 
 begin
   PrintButton.Visible := CurPage = wpLicense;
+  if vs2017Installed then 
+  begin
+    Vs2017BaseDir := Getvs2017BaseDir('');
+    Vs2017Version := Getvs2017Version('');
+    vs2017VersionPage.CheckListBox.ItemCaption[0] := Vs2017Version1+' in ' + Vs2017BaseDir1;
+    vs2017VersionPage.CheckListBox.ItemCaption[1] := Vs2017Version2+' in ' + Vs2017BaseDir2;
+    vs2017Path    := vs2017BaseDir+'\Common7\Ide\';
+  end
+  if vs2017Count > 2 then
+    begin
+    vs2017VersionPage.CheckListBox.ItemCaption[2] := Vs2017Version3+' in ' + Vs2017BaseDir3;
+    vs2017VersionPage.CheckListBox.ItemEnabled[2] := true;
+    end
+  else
+    begin
+    vs2017VersionPage.CheckListBox.ItemCaption[2] := '';
+    vs2017VersionPage.CheckListBox.ItemEnabled[2] := false;
+    end
+
+end;
+
+procedure RegisterPreviousData(PreviousDataKey: Integer);
+var
+  Version: String;
+begin
+  { Store the settings so we can restore them next time }
+  case vs2017VersionPage.SelectedValueIndex of
+    0: Version := '1';
+    1: Version:= '2';
+    2: Version := '3';
+  end;
+  SetPreviousData(PreviousDataKey, 'VS2017Version', Version);
 end;
 
 procedure InitializeWizard();
 begin
+    Log('InitializeWizard start');
+    vs2017VersionPage := CreateInputOptionPage(wpSelectComponents,
+                'Visual Studio 2017', 
+                'Please select in which Visual Studio 2017 instance the program must be installed',
+                'Select the Visual Studio 2017 Instance',True, False);
+    vs2017VersionPage.Add('Option 1');
+    vs2017VersionPage.Add('Option 2');
+    vs2017VersionPage.Add('Option 3');
+    vs2017VersionPage.Values[0] := true;
     PrintButton := TButton.Create(WizardForm);
     PrintButton.Caption := '&Print...';
     PrintButton.Left := WizardForm.InfoAfterPage.Left + 96;
     PrintButton.Top := WizardForm.InfoAfterPage.Height + 88;
     PrintButton.OnClick := @PrintButtonClick;
     PrintButton.Parent := WizardForm.NextButton.Parent;
+  case GetPreviousData('VS2017Version', '') of
+    '1': vs2017VersionPage.SelectedValueIndex := 0;
+    '2': vs2017VersionPage.SelectedValueIndex := 1;
+    '3': vs2017VersionPage.SelectedValueIndex := 2;
+  else
+    vs2017VersionPage.SelectedValueIndex := 0;
+  end;
+
+    Log('InitializeWizard end');
+end;
+
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+  {Log('ShouldSkipPage start');}
+  { Skip pages that shouldn't be shown }
+  Result := False;
+    if (PageId = vs2017VersionPage.ID)   then 
+    begin
+      if (vs2017Count < 2 ) then
+        Result := True
+      if not IsComponentSelected('vs2017') then
+        Result := True
+    end
+  {Log('ShouldSkipPage stop');}
 end;
 
 function InitializeSetup(): Boolean;
 var
   ErrorCode: Integer;
 begin
+  Log('InitializeSetup start');
   DetectVS();
   result := true;
   if not Vs2015Installed and not vs2017Installed then
@@ -596,7 +787,13 @@ begin
     result := false;
     end
   end;
-  
+ 
+  {vs2017Installed := RegQueryStringValue(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\VisualStudio\SxS\VS7','15.0',vs2017BaseDir) ;}
+
+  { When more than 1 VS 2017 installation, ask for the instance}
+
+
+  Log('InitializeSetup end');  
 end;
 
 #expr SaveToFile(AddBackslash(SourcePath) + "Preprocessed.iss")

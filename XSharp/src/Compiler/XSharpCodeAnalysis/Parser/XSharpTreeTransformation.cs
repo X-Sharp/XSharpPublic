@@ -1121,53 +1121,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 r = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(r));
             }
             return r;
-
         }
-        /*
-        protected MethodDeclarationSyntax GenerateMainMethod(string startMethodName)
-        {
-            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-            GenerateAttributeList(attributeLists, CompilerGenerated);
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            ParameterListSyntax paramList;
-            {
-                var parameters = _pool.AllocateSeparated<ParameterSyntax>();
-                paramList = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    parameters,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                _pool.Free(parameters);
-            }
-            BlockSyntax blockBody;
-            {
-                var statements = _pool.Allocate<StatementSyntax>();
-                {
-                    ArgumentListSyntax argList = _syntaxFactory.ArgumentList(
-                        openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        arguments: default(SeparatedSyntaxList<ArgumentSyntax>),
-                        closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                    statements.Add(GenerateExpressionStatement(GenerateMethodCall(startMethodName, argList)));
-                }
-                blockBody = MakeBlock(statements);
-                _pool.Free(statements);
-            }
-            var r = _syntaxFactory.MethodDeclaration(
-                attributeLists: attributeLists,
-                modifiers: modifiers.ToTokenList(),
-                returnType: VoidType(),
-                explicitInterfaceSpecifier: null,
-                identifier: SyntaxFactory.Identifier("Main"),
-                typeParameterList: null,
-                parameterList: paramList,
-                constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
-                body: blockBody,
-                expressionBody: null,
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            _pool.Free(attributeLists);
-            _pool.Free(modifiers);
-            return r;
-        }
-        */
+  
         protected BasePropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop) {
             var getMods = _pool.Allocate();
             var setMods = _pool.Allocate();
@@ -1340,71 +1295,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             return prop;
         }
+        private static SyntaxTree _defTree;
 
-        protected static MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool _private = false)
+        public static SyntaxTree DefaultXSharpSyntaxTree(IEnumerable<SyntaxTree> trees, bool isApp)
         {
-            var pool = new SyntaxListPool();
-            var members = pool.Allocate<MemberDeclarationSyntax>();
-            // create body for new Init procedure
-            var stmts = pool.Allocate<StatementSyntax>();
-            foreach (var name in procnames)
+            // trees is NOT used here, but it IS used in the VOTreeTransForm
+            if (_defTree == null)
             {
-                var args = SyntaxFactory.ArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    new SeparatedSyntaxList<InternalSyntax.ArgumentSyntax>(),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                var mname = SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(name));
-                var invoke = SyntaxFactory.InvocationExpression(mname, args);
-                var stmt = SyntaxFactory.ExpressionStatement(invoke, InternalSyntax.SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-                stmts.Add(stmt);
+                var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+
+                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false));
+                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                var tree = CSharpSyntaxTree.Create(
+                    (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
+                        t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
+                _defTree = tree;
+
             }
-            var attList = SyntaxFactory.AttributeList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                null,
-                new SeparatedSyntaxList<InternalSyntax.AttributeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
-            var mods = pool.Allocate();
-            var voidType = SyntaxFactory.PredefinedType(
-                SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
-            if (_private)
-                mods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
-            else
-                mods.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
-            mods.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var mods2 = new SyntaxList<InternalSyntax.SyntaxToken>(mods.ToListNode());
-            var block = SyntaxFactory.Block(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                    stmts,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
-            var pars = SyntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                new SeparatedSyntaxList<InternalSyntax.ParameterSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-            var m = SyntaxFactory.MethodDeclaration(attList, mods2,
-                voidType, /*explicitif*/null,
-                SyntaxFactory.Identifier(functionName), /*typeparams*/null, pars,/* constraints*/null, block,/*exprbody*/null,
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-
-
-            pool.Free(mods);
-            pool.Free(stmts);
-            // Now create class declaration for Globals Class like in the TreeTransform
-            return m;
-
-
-        }
-
-        public static SyntaxTree DefaultXSharpSyntaxTree(List<String> init1, List<String> init2, List<String> init3, bool isApp)
-        {
-            var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
-
-            t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false));
-            var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-            var tree = CSharpSyntaxTree.Create(
-                (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                    t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
-
-            return tree;
+            return _defTree;
         }
 
         public override void VisitErrorNode([NotNull] IErrorNode node)
@@ -3316,7 +3224,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
                 // Special Handling of EntryPoint
-                if (string.Equals(id.Text, WellKnownMemberNames.EntryPointMethodName, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(id.Text, WellKnownMemberNames.EntryPointMethodName, StringComparison.OrdinalIgnoreCase)
+                    && _options.CommandLineArguments.CompilationOptions.OutputKind.IsApplication())
                 {
                     body = CreateEntryPoint(body, context);
                 }
@@ -4960,11 +4869,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitDefaultExpression([NotNull] XP.DefaultExpressionContext context)
         {
-            context.Put(_syntaxFactory.DefaultExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.DefaultKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            context.Put(MakeDefault(context.Type.Get<TypeSyntax>()));
         }
 
         public override void ExitBracketedArgumentList([NotNull] XP.BracketedArgumentListContext context)

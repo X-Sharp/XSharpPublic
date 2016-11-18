@@ -598,9 +598,7 @@ lexer grammar XSharpLexer;
 			int symtype;
 			if (symIds.TryGetValue(t.Text,out symtype)) {
 				t.Type = symtype;
-				if (symtype != PRAGMA && symtype != HASHUSING) {
-					_inPp = true;
-				}
+				_inPp = true;
 			}
 		}
 		if (!_inId) {
@@ -852,15 +850,11 @@ lexer grammar XSharpLexer;
 					{"LOCK", LOCK},
 					{"NAMESPACE", NAMESPACE},
 					{"NEW", NEW},
-					{"OFF", OFF},
 					{"ON", ON},
 					{"OPERATOR", OPERATOR},
-					{"OPTIONS", OPTIONS},
 					{"OUT", OUT},
 					{"PARAMS", PARAMS},
 					{"PARTIAL", PARTIAL},
-					{"POP", POP},
-					{"PUSH", PUSH},
 					{"PROPERTY", PROPERTY},
 					{"REPEAT", REPEAT},
 					{"SCOPE", SCOPE},
@@ -877,7 +871,6 @@ lexer grammar XSharpLexer;
 					{"VALUE", VALUE},
 					{"VIRTUAL", VIRTUAL},
 					{"VOSTRUCT", VOSTRUCT},
-					{"WARNINGS", WARNINGS},
 
 					// XSharp keywords
 					{"__ARGLIST", ARGLIST},
@@ -987,8 +980,6 @@ lexer grammar XSharpLexer;
 
 				var PpSymbols = new System.Collections.Generic.Dictionary<string,int>
 				{
-					{"#PRAGMA", PRAGMA},
-					{"#USING", HASHUSING},
 					{"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>
 					{"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
 					{"#ELSE", PP_ELSE},				// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
@@ -1026,7 +1017,8 @@ options	{
 channels {
 XMLDOC,
 DEFOUT,
-PREPROCESSOR
+PREPROCESSOR,
+PRAGMACHANNEL
 }
 
 tokens {
@@ -1053,13 +1045,12 @@ CATCH,FINALLY,THROW,
 //
 ABSTRACT,ANSI,AUTO,CONSTRUCTOR,CONST,DEFAULT,DELEGATE,DESTRUCTOR,ENUM,EVENT,EXPLICIT,FOREACH,GET,IMPLEMENTS,IMPLICIT,IMPLIED,INITONLY,INTERFACE,INTERNAL,
 LOCK,NAMESPACE,NEW,OPERATOR,OUT,PARTIAL,PROPERTY,REPEAT,SCOPE,SEALED,SET,STRUCTURE,TRY,UNICODE,UNTIL,VALUE,VIRTUAL,VOSTRUCT,
-// Pragma keywords
-OFF,ON,OPTIONS,WARNINGS,PUSH, POP,
+
 
 // New XSharp Keywords (no 4 letter abbreviations)
 // Should also all be part of the identifier rule
 //
-ADD,ARGLIST,ASCENDING,ASSEMBLY,ASYNC,AWAIT,BY,CHECKED,DESCENDING,EQUALS,EXTERN,FIXED,FROM,GROUP,INTO,JOIN,LET,NOP,MODULE,ORDERBY,OVERRIDE,PARAMS,
+ADD,ARGLIST,ASCENDING,ASSEMBLY,ASYNC,AWAIT,BY,CHECKED,DESCENDING,EQUALS,EXTERN,FIXED,FROM,GROUP,INTO,JOIN,LET,NOP,MODULE,ON,ORDERBY,OVERRIDE,PARAMS,
 REMOVE,SELECT,SWITCH, UNCHECKED,UNSAFE,VAR,VOLATILE,WHERE,YIELD,
 
 
@@ -1126,7 +1117,6 @@ LAST_CONSTANT,
 
 // Pre processor symbols
 PP_FIRST,
-PRAGMA,HASHUSING,
 PP_COMMAND,PP_DEFINE,PP_ELSE,PP_ENDIF,PP_ENDREGION,PP_ERROR,PP_IFDEF,PP_IFNDEF,PP_INCLUDE,PP_LINE,PP_REGION,PP_TRANSLATE,PP_UNDEF,PP_WARNING,
 PP_LAST,
 
@@ -1135,6 +1125,9 @@ MACRO,
 
 // Ids
 ID,KWID,
+
+// Pragma
+PRAGMA,
 
 // Comments
 DOC_COMMENT,SL_COMMENT,ML_COMMENT,
@@ -1161,7 +1154,11 @@ REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-'
             | ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) M // decimals cannot have exponential notation
             ;
 
-// Preprocessor symbols are in the handwritten part above as well as #pragma and #using
+USING			 : NUMSIGN U S I N G
+				 ;
+
+PRAGMA			 : NUMSIGN P R A G M A  (~(  '\n' | '\r' ) )*	-> channel(PRAGMACHANNEL)
+				 ;
 
 SYMBOL_CONST     : NUMSIGN IDStartChar (IDChar)*;
 

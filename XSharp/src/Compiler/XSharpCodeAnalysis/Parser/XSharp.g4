@@ -66,7 +66,6 @@ entity              : namespace_
                     | method                    // Method xxx Class xxx syntax
                     | globalAttributes          // Assembly attributes, Module attributes etc.
                     | using_                    // Using Namespace
-                    | pragma                    // Compiler pragma
                     | voglobal                  // This will become part of the 'Globals' class
                     | vodefine                  // This will become part of the 'Globals' class
                     | vodll                     // External method of the Globals class
@@ -140,20 +139,9 @@ funcprocModifiers	: ( Tokens+=(STATIC | INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
                     ;
 
 
-using_              : (HASHUSING|USING) (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name EOS
+using_              : USING (Static=STATIC)? (Alias=identifierName ASSIGN_OP)? Name=name EOS
                     ;
 
-// nvk: roslyn treats #pragma directives as trivia attached to parse nodes. The parser does not handle them directly.
-pragma              : PRAGMA OPTIONS    LPAREN Compileroption=STRING_CONST COMMA Switch=pragmaswitch RPAREN EOS         #pragmaOptions
-                    | PRAGMA WARNINGS   LPAREN WarningNumber=INT_CONST     COMMA Switch=pragmaswitch RPAREN EOS         #pragmaWarnings
-					| PRAGMA WARNINGS   LPAREN Switch=pragmastack									 RPAREN EOS         #pragmaStack
-                    ;
-
-pragmaswitch        : ON | OFF | DEFAULT
-                    ;
-
-pragmastack         : PUSH | POP
-                    ;
 
 voglobal			: (Attributes=attributes)? (Modifiers=funcprocModifiers)? GLOBAL (Const=CONST)? Vars=classVarList end=EOS
                     ;
@@ -358,7 +346,9 @@ classmember			: Member=method										#clsmethod
                     | (Attributes=attributes)?
                       (Modifiers=constructorModifiers)?
                       CONSTRUCTOR (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
-					  (CallingConvention=callingconvention)? end=EOS
+					  (CallingConvention=callingconvention)? 
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					  end=EOS
                       (Chain=(SELF | SUPER)
 					  (
 						  (LPAREN RPAREN)
@@ -367,7 +357,9 @@ classmember			: Member=method										#clsmethod
                       StmtBlk=statementBlock							#clsctor
                     | (Attributes=attributes)?
                       (Modifiers=destructorModifiers)?
-                      DESTRUCTOR (LPAREN RPAREN)?  end=EOS
+                      DESTRUCTOR (LPAREN RPAREN)? 
+					  (CLASS (Namespace=nameDot)? ClassId=identifier)?		// allowed but ignored
+					   end=EOS
                       StmtBlk=statementBlock							#clsdtor
                     | Member=classvars									#clsvars
                     | Member=property									#clsproperty
@@ -378,7 +370,6 @@ classmember			: Member=method										#clsmethod
                     | Member=enum_										#nestedEnum
                     | Member=event_										#nestedEvent
                     | Member=interface_									#nestedInterface
-                    | Pragma=pragma										#nestedPragma
                     | {_ClsFunc}? Member=function						#clsfunction		// Equivalent to static method
                     | {_ClsFunc}? Member=procedure						#clsprocedure		// Equivalent to static method
                     ;
@@ -676,7 +667,7 @@ primary				: Key=SELF													#selfExpression
                     | {InputStream.La(4) != LPAREN}?                            // this makes sure that CUSTOMER->NAME() is not matched
                           Alias=identifier ALIAS Field=identifier               #aliasedField		    // CUSTOMER->NAME
                     | Id=identifier ALIAS Expr=expression                       #aliasedExpr            // id -> expr
-                    | LPAREN Alias=primary RPAREN ALIAS Expr=expression         #aliasedExpr            // (expr) -> expr
+                    | LPAREN Alias=expression RPAREN ALIAS Expr=expression      #aliasedExpr            // (expr) -> expr
                     | AMP LPAREN Expr=expression RPAREN							#macro					// &( expr )
                     | AMP Id=identifierName										#macro					// &id
                     | LPAREN Expr=expression RPAREN							    #parenExpression		// ( expr )
@@ -938,17 +929,17 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CALL
                     | HIDDEN | IF | IIF | IN | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
                     | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
-                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   )
-                    ;
                     // Entity Keywords are added to the keywordvo list, although not strictly VO keyword.
                     // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
+                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   )
+                    ;
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OPTIONS | OFF | ON | OUT | PARTIAL | POP | PUSH | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  | WARNINGS)
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  )
                     ;
 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM |
-                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP |  ORDERBY | OVERRIDE |PARAMS | REMOVE |
+                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE |
                               SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
                               MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
                             )

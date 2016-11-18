@@ -293,7 +293,6 @@ INTERNAL STATIC PARTIAL CLASS Funcs
    
    #endregion
 
-   #define CRLF e"\r\n"
    #define CR e"\r"
    #define LF e"\n"
    STATIC METHOD BufferToLines(cBuffer AS STRING) AS List<STRING>

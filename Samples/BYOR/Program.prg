@@ -6,7 +6,6 @@ using System.Text
 
 
 Function Start() as void
-	VulcanLoader.InitVulcan() // required for VO/Vulcan database support
 
 	LOCAL startingColor AS ConsoleColor
 	startingColor := Console.ForegroundColor
@@ -179,15 +178,3 @@ FUNCTION CodeBlocks() AS VOID
 	RETURN
 
 
-CLASS VulcanLoader
-	STATIC METHOD InitVulcan() AS VOID
-		// This method is needed if you want to use the Macro Compiler or the RDD system
-		LOCAL t AS Type
-
-		t := typeof(VulcanLoader)
-
-		LOCAL mi AS System.Reflection.MethodInfo
-		mi := t:GetMethod( "InitVulcan" )
-		Vulcan.Runtime.State.AppModule := mi:Module
-END CLASS
-	

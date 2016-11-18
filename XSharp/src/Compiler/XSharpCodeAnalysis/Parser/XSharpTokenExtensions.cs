@@ -985,7 +985,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.DYNAMIC:
                 case XSharpParser.OBJECT:
                 case XSharpParser.PSZ:
-                case XSharpParser.PTR:
                 case XSharpParser.STRING:
                     return true;
                 default:

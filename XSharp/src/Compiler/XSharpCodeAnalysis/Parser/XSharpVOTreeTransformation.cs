@@ -239,18 +239,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             List<String> init3 = new List<String>();
             foreach (var tree in trees)
             {
-                CompilationUnitSyntax unit = tree.GetRoot().Green as CompilationUnitSyntax;
-
-                if (unit != null)
+                var root = tree.GetRoot();
+                if (root != null)
                 {
-                    foreach (var item in unit.InitProcedures)
+                    CompilationUnitSyntax unit = root.Green as CompilationUnitSyntax;
+                    if (unit != null && unit.InitProcedures != null)
                     {
-                        if (item.Item1 == 1)
-                            init1.Add(item.Item2);
-                        else if (item.Item1 == 2)
-                            init2.Add(item.Item2);
-                        else if (item.Item1 == 3)
-                            init3.Add(item.Item2);
+                        foreach (var item in unit.InitProcedures)
+                        {
+                            if (item.Item1 == 1)
+                                init1.Add(item.Item2);
+                            else if (item.Item1 == 2)
+                                init2.Add(item.Item2);
+                            else if (item.Item1 == 3)
+                                init3.Add(item.Item2);
+                        }
                     }
                 }
             }

@@ -3050,25 +3050,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(varList);
         }
 
-        public override void ExitNestedPragma([NotNull] XP.NestedPragmaContext context)
-        {
-            // TODO
-        }
-
-        public override void ExitPragmaOptions([NotNull] XP.PragmaOptionsContext context)
-        {
-            // TODO
-        }
-
-        public override void ExitPragmaswitch([NotNull] XP.PragmaswitchContext context)
-        {
-            // TODO
-        }
-
-        public override void ExitPragmaWarnings([NotNull] XP.PragmaWarningsContext context)
-        {
-            // TODO
-        }
 
         public override void EnterVodll([NotNull] XP.VodllContext context)
         {
@@ -5512,7 +5493,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             switch (context.Token.Type) {
                 case XP.PTR:
-                    context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
+                    //context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
+                    context.Put(_ptrType);
                     break;
                 case XP.DYNAMIC:
                     context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));

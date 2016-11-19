@@ -96,7 +96,7 @@ namespace XSharp.Project
         private bool ppo;
         private string includepaths;
         private string defines;
-        private bool nostddef;
+        private bool nostandarddefs;
         private string commandlineoption;
 
         #endregion Fields
@@ -303,10 +303,10 @@ namespace XSharp.Project
         }
 
         [Category(CatPreprocessor), DisplayName(NoStdDefCaption), Description(NoStdDefDescription)]
-        public bool NoStdDef
+        public bool NoStandardDefs
         {
-            get { return this.nostddef; }
-            set { this.nostddef = value; this.IsDirty = true; }
+            get { return this.nostandarddefs; }
+            set { this.nostandarddefs = value; this.IsDirty = true; }
         }
 
 
@@ -351,7 +351,7 @@ namespace XSharp.Project
 
             commandlineoption= getCfgString(nameof(CommandLineOption),  "");
             ppo = getCfgLogic(nameof(PPO),  false);
-            nostddef = getCfgLogic(nameof(NoStdDef),  false);
+            nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  false);
             includepaths = getCfgString(nameof(IncludePaths),  "");
             defines = getCfgString(nameof(DefineConstants), "");
         }
@@ -385,7 +385,7 @@ namespace XSharp.Project
 
             this.SetConfigProperty(nameof(CommandLineOption), this.commandlineoption?.ToString().ToLower());
             this.SetConfigProperty(nameof(PPO), this.ppo.ToString().ToLower());
-            this.SetConfigProperty(nameof(NoStdDef), this.nostddef.ToString().ToLower());
+            this.SetConfigProperty(nameof(NoStandardDefs), this.nostandarddefs.ToString().ToLower());
             this.SetConfigProperty(nameof(IncludePaths), this.includepaths?.ToString());
             this.SetConfigProperty(nameof(DefineConstants), this.defines?.ToString());
 

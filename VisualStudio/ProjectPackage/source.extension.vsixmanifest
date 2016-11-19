@@ -24,6 +24,7 @@
     <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="%CurrentProject%" d:TargetPath="|%CurrentProject%;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    <Asset d:Source="File" Path="Designers.pkgdef" Type="Microsoft.VisualStudio.VsPackage" TargetPath="|%CurrentProject%|"/>
   </Assets>
   <Content>
     <ProjectTemplate>ProjectTemplates</ProjectTemplate>

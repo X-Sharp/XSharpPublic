@@ -176,6 +176,8 @@ namespace Microsoft.VisualStudio.Project
         public SingleFileGeneratorFactory(Guid projectType, System.IServiceProvider serviceProvider)
         {
             this.projectType = projectType;
+            // Redirect to use the C# project Guid, so we will read the C# registry settings
+            //this.projectType = new Guid("{5891b814-a2e0-4e64-9a2f-2c2ecab940fe}");
             this.serviceProvider = serviceProvider;
         }
         #endregion

@@ -58,8 +58,8 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The /vo10 (compatible iif) compiler option no longer adds casts in the Core dialect. It only does that for the VO/Vulcan dialect</text></li>
     </list>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Visual Studio Integration</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">We have changed the way the error list and output window are updated. In previous version some lines could be missing on the output window, and the error code column was empty. This should work as expected now.</text></para>
     <list id="36" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">We have changed the way the error list and output window are updated. In previous version some lines could be missing on the output window, and the error code column was empty. This should work as expected now.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">We have merged some code from some other MPF based project systems, such as WIX (called Votive), NodeJS and Python (PTVS) to help extend our project system. As a result:</text></li>
       <list id="36" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">Our project system now has support for Linked files</text></li>
@@ -80,6 +80,9 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">We fixed several minor issues in the templates</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">When the # of errors and warnings is larger than the built-in limit of 500, then a message will be shown that the error list was truncated</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">At the end of the build process a line will be written to the output window with the total # of warnings and errors found </text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The colors in the Source Code Editor are now shared with the source code editors for standard languages such as C# and VB</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">When you have an inactive code section in your source code, embedded in an #ifdef that evaluates to FALSE then that section will be visibly colored gray and there will be no keyword highlighting. The source code parser for the editor picks up the include files and respects the path settings. Defines in the application properties dialog and the active configuration are not respected yet. That will follow in the next build.</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"></li>
     </list>
     <para style="text-indent:-13px; margin-left:13px;"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.7.1</text></para>

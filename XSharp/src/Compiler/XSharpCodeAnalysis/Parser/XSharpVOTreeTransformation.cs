@@ -47,6 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string ClipperPCount = "Xs$PCount";
         const string RecoverVarName = "Xs$Obj";
         const string ExVarName = "Xs$Exception";
+        const string ReturnName = "Xs$Return";
         const string AppInit = "$AppInit";
         const string InitProc1 = "$Init1";
         const string InitProc2 = "$Init2";
@@ -546,39 +547,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // It Creates Try .. Finally in the Entry Point 
             // it calls $AppInit in the Try and 
             // it calls GC routines in the Finally
-            var stmts = _pool.Allocate<StatementSyntax>();
             var noargs = EmptyArgumentList();
             
-
             // Build the try finally statement with the original body in the try, prefixed with a call to $AppInit()
             // and a finally body
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
-            foreach (var stmt in originalbody.Statements)
-            {
-                stmts.Add(stmt);
-            }
 
             //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Start")));
             //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
 
             // check the original body for all its variables
             // and assign them a default value
+            // but because we do not want to get warnings for unreachable code we need to move some code around:
+            // the variable declarations come outside of the try finally block
+            // the initialization of the variables comes at the original place
+            // and the cleanup in the finalizer
+            var mainbody = new List<StatementSyntax>();
+            var trybody = new List<StatementSyntax>();
+            var finallybody = new List<StatementSyntax>();
+            trybody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
 
             foreach (var stmt in originalbody.Statements)
             {
-                if (stmt is LocalDeclarationStatementSyntax)
+                if (!(stmt is LocalDeclarationStatementSyntax))
                 {
+                    trybody.Add(stmt);
+                }
+                else
+                {
+                    // get the name, type and initialexpression
+                    // build a new local with the name and type
+                    // build an assignment expression with the expression (if any)
+                    // build a clean up expression for the finally body
                     var locdecl = stmt as LocalDeclarationStatementSyntax;
                     var localvar = locdecl.XNode as XP.LocalvarContext;
                     var impliedvar = locdecl.XNode as XP.ImpliedvarContext;
+                    var variable = locdecl.Declaration.Variables[0];
                     bool useNull = true;
                     bool mustclear = true;
                     if (impliedvar != null)
                     {
-                        var name = localvar.Id.GetText();
-                        var value = SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
-                        var expr = MakeSimpleAssignment(GenerateSimpleName(name), value);
-                        stmts.Add(GenerateExpressionStatement(expr));
+                        trybody.Add(locdecl); 
                     }
                     else if (localvar != null)
                     {
@@ -621,6 +629,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                             }
                         }
+                        // move declaration to main body and generate an assignment when needed
+                        if (variable.Initializer != null)
+                        {
+                            trybody.Add(GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(name), variable.Initializer.Value)));
+                            mainbody.Add(GenerateLocalDecl(name, type, null));
+                        }
+                        else
+                        {
+                            mainbody.Add(locdecl);
+                        }
                         if (mustclear)
                         {
                             ExpressionSyntax value;
@@ -629,36 +647,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             else
                                 value = MakeDefault(type);
                             var expr = MakeSimpleAssignment(GenerateSimpleName(name), value);
-                            stmts.Add(GenerateExpressionStatement(expr));
+                            finallybody.Add(GenerateExpressionStatement(expr));
                         }
                     }
                 }
             }
-            var trybody = MakeBlock(stmts.ToList());
-            // Create the Finally body:
-            stmts.Clear();
 
+            var tryblock = MakeBlock(trybody);
+            finallybody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
+            finallybody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
+            var finallyblock = MakeBlock(finallybody);
 
-
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
-
-
-            //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Finish")));
-            //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
-            var finallybody = MakeBlock(stmts.ToList());
-            var finallyClause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword), finallybody);
-            // Create the new body which is a try statement only
+            var finallyClause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword), finallyblock);
             var tryStmt = _syntaxFactory.TryStatement(
                     SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
-                    trybody,
+                    tryblock,
                     null,
                     finallyClause);
-            stmts.Clear();
-            stmts.Add(tryStmt);
-            var body = MakeBlock(stmts);
-            _pool.Free(stmts);
-            return body;
+            // Now create the main block, which consists of the declarations and the try statement
+            mainbody.Add(tryStmt);
+            return MakeBlock(mainbody);
         }
 
 
@@ -821,8 +829,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var statements = _pool.Allocate<StatementSyntax>();
                     statements.AddRange(body.Statements);
-                    statements.Add(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                        result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    statements.Add(GenerateReturn(result));
 
                     body = MakeBlock(statements).WithAdditionalDiagnostics(
                                 new SyntaxDiagnosticInfo(ErrorCode.WRN_MissingReturnStatement));
@@ -1483,6 +1490,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     if (dataType != _voidType)
                     {
+                        // calculate a new return value with a warning
                         expr = GetReturnExpression(dataType);
                         if (expr != null)
                         {
@@ -1492,20 +1500,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            StatementSyntax result;
             if (ent.Data.MustBeVoid && expr != null)
             {
+                // we cannot simply create an expression statement. Some expressions are not allowed as statement
+                // for example
+                // RETURN SELF:Field
+                // We change that to
+                // VAR Xs$Return := SELF:Field
+                // RETURN
                 expr = expr.WithAdditionalDiagnostics(
                                     new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
-                result = GenerateExpressionStatement(expr);
+                var declstmt = GenerateLocalDecl(ReturnName, _impliedType, expr);
+                var retstmt = GenerateReturn(null);
+                var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
+                context.Put(block);
             }
             else
             {
-                result = _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                    expr,
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                context.Put(GenerateReturn(expr));
             }
-            context.Put(result);
+            
         }
 
         private int[] DecodeDateConst(string dateliteral)
@@ -2229,10 +2243,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             GenerateExpressionStatement(GenerateMethodCall("global::VulcanRTFuncs.Functions.__pushWorkarea", MakeArgumentList(MakeArgument(wa)))),
                             _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                                 MakeBlock(MakeList<StatementSyntax>(
-                                    _syntaxFactory.ReturnStatement(
-                                        SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                                        expr,
-                                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                                    GenerateReturn(expr)
                                     )),
                                 EmptyList<CatchClauseSyntax>(),
                                 _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),

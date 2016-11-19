@@ -753,15 +753,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected LocalDeclarationStatementSyntax GenerateLocalDecl(string name, TypeSyntax type, ExpressionSyntax initexpr = null)
         {
-            SyntaxListBuilder modifiers = _pool.Allocate();
             var result =
                     _syntaxFactory.LocalDeclarationStatement(
-                        modifiers.ToTokenList(),
+                        TokenList(),
                         _syntaxFactory.VariableDeclaration(type,
                         MakeSeparatedList<VariableDeclaratorSyntax>(GenerateVariable(name, initexpr))),
                         SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            _pool.Free(modifiers);
             return result;
+        }
+
+        protected ReturnStatementSyntax GenerateReturn (ExpressionSyntax result = null)
+        {
+            return _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
+                        result, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
         }
         protected IdentifierNameSyntax GenerateSimpleName(string name)
         {
@@ -910,6 +914,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected ArgumentSyntax MakeArgument(ExpressionSyntax expr)
         {
             return _syntaxFactory.Argument(null, null, expr);
+        }
+        protected BlockSyntax MakeBlock(IList<StatementSyntax> statements)
+        {
+            var stmts = _pool.Allocate<StatementSyntax>();
+            foreach (var stmt in statements)
+                stmts.Add(stmt);
+            var result = MakeBlock(stmts);
+            _pool.Free(stmts);
+            return result;
         }
         protected BlockSyntax MakeBlock(SyntaxList<StatementSyntax> statements)
         {
@@ -1231,9 +1244,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                         isInInterfaceOrAbstract ? null
                         : MakeBlock(
-                            MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                                GenerateMethodCall(VoPropertyAccessPrefix + vop.idName.Text, MakeArgumentList(voPropArgs)),
-                                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)))
+                            MakeList<StatementSyntax>(GenerateReturn(
+                                GenerateMethodCall(VoPropertyAccessPrefix + vop.idName.Text, MakeArgumentList(voPropArgs))))
                             ),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                         : null)
@@ -2295,9 +2307,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 keyword: context.Key.SyntaxKeyword(),
                 body: context.Key.Type == XP.GET ?
                     (context.Expr == null ? null : MakeBlock(
-                        MakeList<StatementSyntax>(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                            context.Expr.Get<ExpressionSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)))
-                        ))
+                        MakeList<StatementSyntax>(GenerateReturn(context.Expr.Get<ExpressionSyntax>())
+                        )))
                     : (context.ExprList == null && !forceBody) ? null
                     : MakeBlock(context.ExprList?.GetList<StatementSyntax>() ?? EmptyList<StatementSyntax>())
                     ,
@@ -3960,9 +3971,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             var expr = context.Expr?.Get<ExpressionSyntax>();
             // / vo9 is handled in the Subclass
-            context.Put(_syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword),
-                expr,
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            context.Put(GenerateReturn(expr));
         }
 
         public override void ExitYieldStmt([NotNull] XP.YieldStmtContext context)
@@ -5247,7 +5256,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Put(MakeBlock(MakeList<StatementSyntax>(
                 from ctx in context._Exprs select _syntaxFactory.ExpressionStatement(ctx.Get<ExpressionSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                _syntaxFactory.ReturnStatement(SyntaxFactory.MakeToken(SyntaxKind.ReturnKeyword), context.ReturnExpr.Get<ExpressionSyntax>(), SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
+                GenerateReturn(context.ReturnExpr.Get<ExpressionSyntax>())
                 )));
         }
 
@@ -5493,8 +5502,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             switch (context.Token.Type) {
                 case XP.PTR:
-                    //context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
-                    context.Put(_ptrType);
+                    context.Put(_syntaxFactory.PointerType(VoidType(),SyntaxFactory.MakeToken(SyntaxKind.AsteriskToken)));
                     break;
                 case XP.DYNAMIC:
                     context.Put(_syntaxFactory.IdentifierName(context.Token.SyntaxIdentifier()));

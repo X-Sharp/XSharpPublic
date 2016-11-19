@@ -48,8 +48,6 @@ lexer grammar XSharpLexer;
             return iToken == XSharpLexer.SL_COMMENT || iToken == XSharpLexer.ML_COMMENT || iToken == XSharpLexer.DOC_COMMENT;
         }
 
-	public const int COMMENT = 1;
-
 	bool _inId = false;
 	bool _inPp = false;
 	bool _hasEos = true;
@@ -1157,7 +1155,7 @@ REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-'
 USING			 : NUMSIGN U S I N G
 				 ;
 
-PRAGMA			 : NUMSIGN P R A G M A  (~(  '\n' | '\r' ) )*	-> channel(PRAGMACHANNEL)
+PRAGMA			 : {LastToken == NL }? NUMSIGN P R A G M A ((' '|'\t')  (~(  '\n' | '\r' ) )*)?	-> channel(PRAGMACHANNEL)
 				 ;
 
 SYMBOL_CONST     : NUMSIGN IDStartChar (IDChar)*;

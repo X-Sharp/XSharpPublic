@@ -682,6 +682,7 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/moduleassemblyname:", ModuleAssemblyName);
             commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);
             commandLine.AppendPlusOrMinusSwitch("/nostdlib", base.Bag, nameof(NoStandardLib));
+            commandLine.AppendPlusOrMinusSwitch("/nostddefs", base.Bag, nameof(NoStandardDefs));
             commandLine.AppendSwitchIfNotNull("/platform:", PlatformWith32BitPreference);
             commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
             commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));

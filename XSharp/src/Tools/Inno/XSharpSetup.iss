@@ -18,10 +18,10 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2016 XSharp B.V."
-#define VIVersion       "0.2.8.2803"
-#define VITextVersion   "0.2.8.2803 (Beta 8)"
-#define TouchDate       "2016-11-19"
-#define TouchTime       "02:08:03"
+#define VIVersion       "0.2.8.2804"
+#define VITextVersion   "0.2.8.2804 (Beta 8)"
+#define TouchDate       "2016-11-20"
+#define TouchTime       "02:08:04"
 #define InstallPath     "XSharpPath"
 
 

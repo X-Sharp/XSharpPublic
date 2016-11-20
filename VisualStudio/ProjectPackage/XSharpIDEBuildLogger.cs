@@ -46,6 +46,11 @@ namespace XSharp.Project
             if (outputErrors != null)
                 outputErrors.ClearErrors();
         }
+        protected override void BuildStartedHandler(object sender, BuildStartedEventArgs buildEvent)
+        {
+            base.BuildStartedHandler(sender, buildEvent);
+            Clear();
+        }
         protected override void ProjectStartedHandler(object sender, ProjectStartedEventArgs buildEvent)
         {
             base.ProjectStartedHandler(sender, buildEvent);

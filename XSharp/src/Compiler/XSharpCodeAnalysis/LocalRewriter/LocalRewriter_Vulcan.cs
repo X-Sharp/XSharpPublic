@@ -65,24 +65,29 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     foreach (var element in cu?.InitProcedures)
                     {
-                        MethodSymbol symMethod = null;
-                        if (element.Item1 == 1)
+                        var methods = FindMethods(compilation, element.Item2);
+                        foreach (MethodSymbol symMethod in methods)
                         {
-                            symMethod = FindMethod(compilation, element.Item2);
-                            if (symMethod != null)
-                                init1.Add(symMethod);
-                        }
-                        else if (element.Item1 == 2)
-                        {
-                            symMethod = FindMethod(compilation, element.Item2);
-                            if (symMethod != null)
-                                init2.Add(symMethod);
-                        }
-                        else if (element.Item1 == 3)
-                        {
-                            symMethod = FindMethod(compilation, element.Item2);
-                            if (symMethod != null)
-                                init3.Add(symMethod);
+                            if (symMethod.IsFromCompilation(compilation) &&
+                                symMethod.IsStatic &&
+                                symMethod.ParameterCount == 0 &&
+                                symMethod.ReturnsVoid &&
+                                symMethod.ContainingNamespaceOrType() == method.ContainingNamespaceOrType())
+                            {
+                                switch (element.Item1)
+                                {
+                                    case 1:
+                                        init1.Add(symMethod);
+                                        break;
+                                    case 2:
+                                        init2.Add(symMethod);
+                                        break;
+                                    case 3:
+                                        init3.Add(symMethod);
+                                        break;
+                                }
+                                break;
+                            }
                         }
 
                     }
@@ -128,16 +133,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-        static MethodSymbol FindMethod(CSharpCompilation compilation, string name)
+        static IEnumerable<ISymbol> FindMethods(CSharpCompilation compilation, string name)
         {
             Func<string, bool> predicate = n => StringComparer.Ordinal.Equals(name, n);
             SymbolFilter filter = SymbolFilter.Member;
-            var syms = compilation.GetSymbolsWithName(predicate, filter);
-            foreach (MethodSymbol symbol in syms)
-            {
-                return symbol;
-            }
-            return null;
+            return compilation.GetSymbolsWithName(predicate, filter);
 
         }
     }

@@ -4940,6 +4940,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Init procedures cannot define parameters..
+        /// </summary>
+        internal static string ERR_InitProceduresCannotDefineParameters {
+            get {
+                return ResourceManager.GetString("ERR_InitProceduresCannotDefineParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos;: cannot declare instance members in a static class.
         /// </summary>
         internal static string ERR_InstanceMemberInStaticClass {

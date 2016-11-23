@@ -23,19 +23,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
 
     [Flags]
-    public enum VulcanAssemblies
+    public enum VulcanAssemblies : byte
     {
         None = 0,
         VulcanRT = 1,
-        VulcanRTFuncs = 2,
-        System = 4,
-        RDD = 8,
-        GUI = 16,
-        SQL = 32,
-        Console = 64,
-        Internet = 128,
-        Report = 256,
-        Win32API = 512
+        VulcanRTFuncs = 
     }
 
 

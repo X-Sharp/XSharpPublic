@@ -1171,6 +1171,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 bool sawLambdas;
                 bool sawAwaitInExceptionHandler;
+#if XSHARP                   
+                if (method.Name == "$AppInit")
+                {
+                    body = LocalRewriter.RewriteAppInit(
+                        method.DeclaringCompilation,
+                        method,
+                        methodOrdinal,
+                        method.ContainingType,
+                        body,
+                        compilationState,
+                        diagnostics: diagnostics);
+                }
+#endif
                 var loweredBody = LocalRewriter.Rewrite(
                     method.DeclaringCompilation,
                     method,

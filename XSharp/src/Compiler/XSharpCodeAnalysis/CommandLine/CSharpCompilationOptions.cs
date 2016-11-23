@@ -24,8 +24,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
         public bool VONullStrings { get; private set; }
-        //public bool VirtualInstanceMethods { get; private set; }
-        //public bool VOAllowMissingReturns { get; private set; }
+        //public bool VirtualInstanceMethods { get; private set; }  // Handled in the parser
+        //public bool VOAllowMissingReturns { get; private set; }  // Handled in the parser
         public bool VOArithmeticConversions { get; private set; }
         //public bool VOClipperCallingConvention { get; private set; }// Handled in the parser
         //public bool VOClipperIntegerDivisions { get; private set; }// Handled in the parser

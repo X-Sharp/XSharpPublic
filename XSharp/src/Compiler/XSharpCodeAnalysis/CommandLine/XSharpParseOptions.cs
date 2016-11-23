@@ -27,7 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         None = 0,
         VulcanRT = 1,
-        VulcanRTFuncs = 
+        VulcanRTFuncs = 2
     }
 
 

@@ -1398,5 +1398,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_KeywordExpected = 9030,
         ERR_VulcanArrayDimAndInit = 9031,
         WRN_NoReturnValueAllowed = 9032,
+        ERR_InitProceduresCannotDefineParameters = 9033
     }
 }

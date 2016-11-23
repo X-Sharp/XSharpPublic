@@ -3249,21 +3249,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.Init != null )
             {
                 if (_options.IsDialectVO)
-                { 
-                    int level = 0;
-                    switch (context.Init.Type )
+                {
+                    if (context?.Params?.Count > 0)
                     {
-                        case XP.INIT1:
-                            level = 1;
-                            break;
-                        case XP.INIT2:
-                            level = 2;
-                            break;
-                        case XP.INIT3:
-                            level = 3;
-                            break;
+                        context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InitProceduresCannotDefineParameters));
                     }
-                    GlobalEntities.InitProcedures.Add(new Tuple<int,string>(level, context.Id.GetText()));
+                    else
+                    {
+                        int level = 0;
+                        switch (context.Init.Type)
+                        {
+                            case XP.INIT1:
+                                level = 1;
+                                break;
+                            case XP.INIT2:
+                                level = 2;
+                                break;
+                            case XP.INIT3:
+                                level = 3;
+                                break;
+                        }
+                        GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
+                    }
                 }
                 else
                 {

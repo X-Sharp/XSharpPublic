@@ -4795,5 +4795,8 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_NoReturnValueAllowed" xml:space="preserve">
     <value>This entity type cannot return a value. Return value ignored.</value>
   </data>
+  <data name="ERR_InitProceduresCannotDefineParameters" xml:space="preserve">
+    <value>Init procedures cannot define parameters.</value>
+  </data>
 
 </root>

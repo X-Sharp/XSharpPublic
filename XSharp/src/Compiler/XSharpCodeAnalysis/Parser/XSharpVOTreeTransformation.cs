@@ -185,7 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isApp)
             {
                 members = new List<MemberDeclarationSyntax>();
-                members.Add(CreateAppInit(init1, init2, init3));
+                members.Add(CreateAppInit());
             }
             else
             {
@@ -397,69 +397,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        protected BlockSyntax CallInitProcedures()
-        {
-            // Temporary solution for now. It would be better to have the
-            // local rewriter locate all the $Init procedures and create the code
-            // but at least this works with the standard Vulcan class Libs.
-            var stmts = _pool.Allocate<StatementSyntax>();
-            var block = MakeBlock(stmts);
-            var procs1 = new List<String>();
-            var procs3 = new List<String>();
-            var args = EmptyArgumentList();
-            var assemblies = _options.VulcanAssemblies;
-            // Init1()
-            if (assemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs))
-                procs1.Add(VulcanRTFuncs);
-            if (assemblies.HasFlag(VulcanAssemblies.System))
-                procs1.Add(VulcanVOSystemClasses);
-            if (assemblies.HasFlag(VulcanAssemblies.GUI))
-            {
-                procs1.Add(VulcanVOGUIClasses);
-                procs3.Add(VulcanVOGUIClasses);
-            }
-            if (assemblies.HasFlag(VulcanAssemblies.RDD))
-                procs1.Add(VulcanVORDDClasses);
-            if (assemblies.HasFlag(VulcanAssemblies.SQL))
-                procs1.Add(VulcanVOSQLClasses);
-            if (assemblies.HasFlag(VulcanAssemblies.Internet))
-                procs1.Add(VulcanVOInternetClasses);
-            if (assemblies.HasFlag(VulcanAssemblies.Console))
-                procs1.Add(VulcanVOConsoleClasses);
-            if (assemblies.HasFlag(VulcanAssemblies.Report))
-                procs1.Add(VulcanVOReportClasses);
-            if (assemblies.HasFlag(VulcanAssemblies.Win32API))
-                procs1.Add(VulcanVOWin32APILibrary);
-
-            foreach (string proc in procs1)
-            {
-                var mcall = GenerateMethodCall("global::"+proc+ ".Functions.$Init1", args);
-                stmts.Add(GenerateExpressionStatement( mcall));
-            }
-            foreach (string proc in procs3)
-            {
-                var mcall = GenerateMethodCall("global::" + proc + ".Functions.$Init3", args);
-                stmts.Add(GenerateExpressionStatement(mcall));
-            }
-            block = MakeBlock(stmts);
-            _pool.Free(stmts);
-            return block;
-        }
-
-
-        private MethodDeclarationSyntax CreateAppInit(List<String> init1, List<String> init2, List<String> init3)
+        private MethodDeclarationSyntax CreateAppInit()
         {
             var stmts = _pool.Allocate<StatementSyntax>();
             var appId = SyntaxFactory.Identifier(AppInit);
             // try
             // {
             //      State.AppModule = typeof(Functions).Module          // stmt 1
-            //      State.CompilerOptionVO11 = <value of VO11>          // stmt 2
-            //      State.CompilerOptionOvf  = <value of OVF>           // stmt 3
-            //      State.CompilerOptionFOvf = <value of OVF>           // stmt 4
-            //      <Call Init procedures>                              // block
+            //      State.CompilerOptionVO11 = <value of VO11>          // optional stmt 2
+            //      State.CompilerOptionOvf  = <value of OVF>           // optional stmt 3
+            //      State.CompilerOptionFOvf = <value of OVF>           // optional stmt 4
+            //      <Call Init procedures>                              // optional block is generated in the LocalRewriter
             // }
-            //     catch (Exception exception)
+            // catch (Exception exception)
             // {
             //    throw new Exception("Error when executing code in INIT procedure", exception);
             // }
@@ -490,20 +440,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lhs = GenerateQualifiedName(VulcanRuntimeState + ".CompilerOptionFOvf");
                 stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
             }
-            // Add Block of $Init<n> calls
-            stmts.Add(CallInitProcedures());
-
-            // Call our own Init procedures
-            List<String> names = new List<String>();
-            // Put Everything in one method Xs$InternalInitProcedures
-            foreach (string s in init1)
-                stmts.Add(GenerateExpressionStatement(GenerateMethodCall(s, EmptyArgumentList())));
-            foreach (string s in init2)
-                stmts.Add(GenerateExpressionStatement(GenerateMethodCall(s, EmptyArgumentList())));
-            foreach (string s in init3)
-                stmts.Add(GenerateExpressionStatement(GenerateMethodCall(s, EmptyArgumentList())));
-
-            var body = MakeBlock(stmts);
+             var body = MakeBlock(stmts);
             stmts.Clear();
 
             // Create Exception

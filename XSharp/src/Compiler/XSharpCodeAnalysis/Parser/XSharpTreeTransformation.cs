@@ -2450,7 +2450,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // So do not add mising returns
                     returntype = VoidType();
                 }
-                else if (context.StmtBlk != null)
+                else if (context.StmtBlk != null && !isInInterface)
                 {
                     body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
                 }

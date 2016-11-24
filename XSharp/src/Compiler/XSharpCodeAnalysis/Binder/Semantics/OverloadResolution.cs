@@ -48,6 +48,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return true;
                     }
                 }
+                if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
+                {
+                    // In case of 2 methods with the same # of parameters prefer
+                    // the method with a more specific parameter than USUAL
+                    // but do not prefer method with single usual over array type 
+                    var parsLeft  = m1.Member.GetParameters();
+                    var parsRight = m2.Member.GetParameters();
+                    var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                    for (int i = 0; i < parsLeft.Length; i++)
+                    {
+                        var parLeft = parsLeft[i];
+                        var parRight = parsRight[i];
+                        if (parLeft.Type != parRight.Type)
+                        {
+                            if (parLeft.Type == usualType && !parRight.Type.IsArray() )
+                            {
+                                result = BetterResult.Right;
+                                return true;
+                            }
+                            if (parRight.Type == usualType && !parLeft.Type.IsArray() )
+                            {
+                                result = BetterResult.Left;
+                                return true;
+                            }
+                        }
+
+                    }
+                }
             }
             return false;
         }

@@ -128,7 +128,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (conv.Compilation.Options.IsDialectVO)
                     {
+                        // Allow to case BOOL <-> INTEGRAL
                         if (source.SpecialType.IsIntegralType() && destination.SpecialType == SpecialType.System_Boolean)
+                            return Conversion.Identity;
+                        if (destination.SpecialType.IsIntegralType() && source.SpecialType == SpecialType.System_Boolean)
                             return Conversion.Identity;
                     }
                     if (conv.Compilation.Options.LateBinding ||

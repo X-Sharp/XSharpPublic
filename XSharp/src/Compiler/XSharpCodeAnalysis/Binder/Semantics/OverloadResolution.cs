@@ -15,6 +15,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private bool VOBetterFunctionMember<TMember>(
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
+            ArrayBuilder<BoundExpression> arguments,
             out BetterResult result)
             where TMember : Symbol
         {
@@ -56,19 +57,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var parsRight = m2.Member.GetParameters();
                     var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                     var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
-                    for (int i = 0; i < parsLeft.Length; i++)
+                    var len = parsLeft.Length;
+                    if (arguments.Count < len)
+                        len = arguments.Count;
+                    for (int i = 0; i < len; i++)
                     {
                         var parLeft = parsLeft[i];
                         var parRight = parsRight[i];
+                        var arg = arguments[i];
                         if (parLeft.Type != parRight.Type)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
-                            if (parLeft.Type == usualType && !parRight.Type.IsArray() )
+                            if (parLeft.Type == usualType && arg.Type != usualType && !parRight.Type.IsArray() )
                             {
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            if (parRight.Type == usualType && !parLeft.Type.IsArray() )
+                            if (parRight.Type == usualType && arg.Type != usualType && !parLeft.Type.IsArray() )
                             {
                                 result = BetterResult.Left;
                                 return true;

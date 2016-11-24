@@ -984,9 +984,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.CODEBLOCK:
                 case XSharpParser.DYNAMIC:
                 case XSharpParser.OBJECT:
-                case XSharpParser.PSZ:
                 case XSharpParser.STRING:
                     return true;
+                case XSharpParser.PSZ:
                 default:
                     return false;
             }

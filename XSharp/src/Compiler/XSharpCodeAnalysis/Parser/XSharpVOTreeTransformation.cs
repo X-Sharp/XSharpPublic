@@ -2256,6 +2256,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             voStructHasDim = false;
         }
 
+        public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
+        {
+            // Special case for PSZ(_CAST 
+            // PSZ(_CAST, <Expr>) becomes PSZ{<Expr}
+            if (context.Type is XP.SimpleDatatypeContext)
+            {
+                var sdt = context.Type as XP.SimpleDatatypeContext;
+                if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
+                {
+                    var arg = MakeArgument(context.Expr.Get<ExpressionSyntax>());
+                    context.Put(CreateObject(_pszType, MakeArgumentList(arg)));
+                    return;
+                }
+            }
+
+            base.ExitVoCastExpression(context);
+        }
+
         public override void ExitVostruct([NotNull] XP.VostructContext context)
         {
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();

@@ -1213,7 +1213,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             BetterResult result = BetterResult.Neither;
 #if XSHARP
-            if (VOBetterFunctionMember(m1, m2, out result))
+            if (VOBetterFunctionMember(m1, m2, arguments, out result))
                 return result;
 #endif
             bool okToDowngradeResultToNeither = false;

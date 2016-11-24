@@ -163,13 +163,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             if (source != null)
             {
-                if ((source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr) && destination.IsPointerType())
+                if ((source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr) && 
+                    (destination.IsPointerType() || destination.IsVoStructOrUnion()))
                 {
-                    return Conversion.IntPtr;
+                    return Conversion.Identity;
                 }
-                if ((destination.SpecialType == SpecialType.System_IntPtr || destination.SpecialType == SpecialType.System_UIntPtr) && source.IsPointerType())
+                if ((destination.SpecialType == SpecialType.System_IntPtr || destination.SpecialType == SpecialType.System_UIntPtr) 
+                    && (source.IsPointerType() || source.IsVoStructOrUnion()))
                 {
-                    return Conversion.IntPtr;
+                    return Conversion.Identity;
                 }
             }
             if (sourceExpression.Kind == BoundKind.Literal && sourceExpression.IsLiteralNull())

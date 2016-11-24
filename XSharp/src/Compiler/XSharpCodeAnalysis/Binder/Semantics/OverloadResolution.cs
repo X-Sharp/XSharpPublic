@@ -50,18 +50,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 if (m1.Member.GetParameterCount() == m2.Member.GetParameterCount())
                 {
-                    // In case of 2 methods with the same # of parameters prefer
-                    // the method with a more specific parameter than USUAL
-                    // but do not prefer method with single usual over array type 
+                    // In case of 2 methods with the same # of parameters 
+                    // we have different / extended rules compared to C#
                     var parsLeft  = m1.Member.GetParameters();
                     var parsRight = m2.Member.GetParameters();
                     var usualType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                    var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
                     for (int i = 0; i < parsLeft.Length; i++)
                     {
                         var parLeft = parsLeft[i];
                         var parRight = parsRight[i];
                         if (parLeft.Type != parRight.Type)
                         {
+                            // Prefer the method with a more specific parameter which is not an array type over USUAL
                             if (parLeft.Type == usualType && !parRight.Type.IsArray() )
                             {
                                 result = BetterResult.Right;
@@ -70,6 +71,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (parRight.Type == usualType && !parLeft.Type.IsArray() )
                             {
                                 result = BetterResult.Left;
+                                return true;
+                            }
+                            // Prefer the method with Object type over the one with Object[] type
+                            if (parLeft.Type == objectType && parRight.Type.IsArray() && ((ArrayTypeSymbol) parRight.Type).ElementType == objectType)
+                            {
+                                result = BetterResult.Left;
+                                return true;
+                            }
+                            if (parRight.Type == objectType && parLeft.Type.IsArray() && ((ArrayTypeSymbol)parLeft.Type).ElementType == objectType )
+                            {
+                                result = BetterResult.Right;
                                 return true;
                             }
                         }

@@ -916,7 +916,7 @@ namespace XSharp.Project
                 if (vnode != null)
                 {
                     string parent = vnode.GetParentName();
-                    if (! String.IsNullOrEmpty(parent) )
+                    if (! String.IsNullOrEmpty(parent))
                     {
                         if (!(vnode.Parent is XSharpFileNode))
                         {

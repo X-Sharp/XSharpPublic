@@ -344,6 +344,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return;
         }
+        public BoundExpression RewriteIndexAccess(BoundExpression index, DiagnosticBag diagnostics)
+        {
+            if (!index.HasAnyErrors && !this.Compilation.Options.ArrayZero)
+            {
+                var kind = BinaryOperatorKind.Subtraction;
+                var left = index;
+                var right = new BoundLiteral(index.Syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
+                int compoundStringLength = 0;
+                var opKind = left.Type.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
+                    : left.Type.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
+                    : left.Type.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
+                    : BinaryOperatorKind.ULongSubtraction;
+                var resultConstant = FoldBinaryOperator(index.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
+                var sig = this.Compilation.builtInOperators.GetSignature(opKind);
+                index = new BoundBinaryOperator(index.Syntax, kind, left, right, resultConstant, sig.Method,
+                    resultKind: LookupResultKind.Viable,
+                    originalUserDefinedOperatorsOpt: ImmutableArray<MethodSymbol>.Empty,
+                    type: index.Type,
+                    hasErrors: false)
+                { WasCompilerGenerated = true };
+            }
+            return index;
+        }
 
     }
 }

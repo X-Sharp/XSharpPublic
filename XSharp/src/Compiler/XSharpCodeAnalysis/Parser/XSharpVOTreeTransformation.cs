@@ -538,7 +538,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else
                         {
-                            type = localvar.DataType.Get<TypeSyntax>();
+                            type = locdecl.Declaration.Type;
 
                             if (localvar.DataType is XP.ArrayDatatypeContext ||
                                 localvar.DataType is XP.NullableDatatypeContext ||
@@ -578,7 +578,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (variable.Initializer != null)
                         {
                             trybody.Add(GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(name), variable.Initializer.Value)));
-                            mainbody.Add(GenerateLocalDecl(name, type, null));
+                            var newlocdecl = GenerateLocalDecl(name, type, null);
+                            locdecl.XNode.Put(newlocdecl);
+                            mainbody.Add(newlocdecl);
                         }
                         else
                         {

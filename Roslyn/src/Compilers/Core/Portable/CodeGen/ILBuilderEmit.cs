@@ -563,7 +563,11 @@ namespace Microsoft.CodeAnalysis.CodeGen
                     break;
 #if XSHARP
                 case ConstantValueTypeDiscriminator.IntPtr:
-                    EmitIntConstant((int)value.IntPtrValue);
+                    unchecked
+                    {
+                        int intvalue = (int) ((long) value.IntPtrValue & 0xFFFFFFFF);
+                        EmitIntConstant(intvalue);
+                    }
                     break;
                 case ConstantValueTypeDiscriminator.Void:
                     EmitNullConstant();

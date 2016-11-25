@@ -528,6 +528,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else if (localvar != null)
                     {
                         var name = localvar.Id.GetText();
+                        ExpressionSyntax clearExpr = null;
                         TypeSyntax type;
                         if (localvar.DataType == null)
                         {
@@ -553,7 +554,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 {
                                     useNull = mustclear = tn.XType.Token.IsRefType();
                                     if (tn.XType.Token.Type == XP.USUAL)
+                                    {
                                         mustclear = true;
+                                    }
+                                    else if (tn.XType.Token.Type == XP.PSZ)
+                                    {
+                                        mustclear = true;
+                                        clearExpr = GenerateLiteral(0);
+                                    }
                                 }
                                 else if (tn.NativeType != null)
                                 {
@@ -578,12 +586,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (mustclear)
                         {
-                            ExpressionSyntax value;
-                            if (useNull)
-                                value = SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
-                            else
-                                value = MakeDefault(type);
-                            var expr = MakeSimpleAssignment(GenerateSimpleName(name), value);
+                            if (clearExpr == null)
+                            {
+                                if (useNull)
+                                    clearExpr = GenerateLiteralNull();
+                                else
+                                    clearExpr = MakeDefault(type);
+                            }
+                            var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
                             finallybody.Add(GenerateExpressionStatement(expr));
                         }
                     }
@@ -724,7 +734,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case SyntaxKind.ObjectKeyword:
                     case SyntaxKind.StringKeyword:
                     default:
-                        result = _syntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+                        result = GenerateLiteralNull();
                         break;
                 }
             }
@@ -751,7 +761,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // _arrayType , _codeblockType
                     // other reference types all use the default null literal
-                    result = _syntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+                    result = GenerateLiteralNull();
                 }
             }
             return result;
@@ -806,8 +816,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxKind.NotEqualsExpression,
                     GenerateSimpleName(ClipperArgs),
                     SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
-                    SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression,
-                        SyntaxFactory.MakeToken(SyntaxKind.NullKeyword)));
+                    GenerateLiteralNull());
             // if XsArgs != NULL ......
             CachedIfBlock = GenerateIfStatement(ifExpr, MakeBlock(blockstmts));
             _pool.Free(blockstmts);
@@ -1191,12 +1200,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             // _And , _OR, _XOR, _NOT should be unchecked to be VO/Vulcan compatible
             base.ExitIntrinsicExpression(context);
-            ExpressionSyntax expr = context.Get<ExpressionSyntax>();
-            expr = _syntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression,
-                    SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    expr,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            var expr = MakeChecked(context.Get<ExpressionSyntax>(), false);
             context.Put(expr);
         }
         public override void ExitJumpStmt([NotNull] XP.JumpStmtContext context)
@@ -1505,7 +1509,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 var litexpr = ((XP.PrimaryExpressionContext)initexpr).Expr as XP.LiteralExpressionContext;
                 var token = litexpr.Literal.Token;
-                var nullExpr = SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+                var nullExpr = GenerateLiteralNull(); 
                 switch (token.Type)
                 {
                     case XP.NIL:
@@ -2265,8 +2269,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var sdt = context.Type as XP.SimpleDatatypeContext;
                 if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
                 {
-                    var arg = MakeArgument(context.Expr.Get<ExpressionSyntax>());
-                    context.Put(CreateObject(_pszType, MakeArgumentList(arg)));
+                    var exprctxt = context.Expr;
+                    var expr = exprctxt.Get<ExpressionSyntax>();
+                    
+                    if (exprctxt is XP.PrimaryExpressionContext)
+                    {
+                        var primary = exprctxt as XP.PrimaryExpressionContext;
+                        if (primary.Expr is XP.LiteralExpressionContext)
+                        {
+                            // PSZ(_CAST, <Literal>)
+                            var literal = primary.Expr as XP.LiteralExpressionContext;
+                            var token = literal.Literal.Token;
+                            if ( token.IsStringConst())
+                            {
+                                var arg = MakeArgument(expr);
+                                context.Put(CreateObject(_pszType, MakeArgumentList(arg)));
+                                return;
+                            }
+                            if (token.IsNull())
+                            {
+                                expr = GenerateLiteral(0);
+                            }
+                        }
+
+                    }
+                    context.Put(expr);
                     return;
                 }
             }

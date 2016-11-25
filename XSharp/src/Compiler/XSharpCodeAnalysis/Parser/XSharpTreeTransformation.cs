@@ -649,6 +649,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken), expr);
         }
 
+        protected ExpressionSyntax MakeChecked( ExpressionSyntax expr, bool @checked)
+        {
+            if (@checked)
+            {
+                return _syntaxFactory.CheckedExpression(SyntaxKind.CheckedExpression,
+                    SyntaxFactory.MakeToken(SyntaxKind.CheckedKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    expr,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
+            else
+            {
+                return _syntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression,
+                    SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    expr,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            }
+        }
 
         protected AssignmentExpressionSyntax MakeSimpleAssignment(ExpressionSyntax lhs, ExpressionSyntax rhs)
         {
@@ -723,7 +742,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _syntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression,
                                                 SyntaxFactory.Literal(null, source, value, null));
         }
-
+        protected LiteralExpressionSyntax GenerateLiteralNull()
+        {
+            return _syntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression, SyntaxFactory.MakeToken(SyntaxKind.NullKeyword));
+        }
         protected VariableDeclaratorSyntax GenerateVariable(string name, ExpressionSyntax initexpr = null)
         {
             return GenerateVariable(SyntaxFactory.Identifier(name), initexpr);
@@ -4550,11 +4572,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCheckedExpression([NotNull] XP.CheckedExpressionContext context)
         {
-            context.Put(_syntaxFactory.CheckedExpression(context.ch.ExpressionKind(),
-                context.ch.SyntaxKeyword(),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            var expr = MakeChecked(context.Expr.Get<ExpressionSyntax>(), context.ch.Type == XP.CHECKED);
+            context.Put(expr);
         }
 
         private bool GenerateAltD(XP.MethodCallContext context) {
@@ -4830,11 +4849,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
-            context.Put(_syntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression,
-                SyntaxFactory.MakeToken(SyntaxKind.UncheckedKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                MakeCastTo(context.Type.Get<TypeSyntax>(),context.Expr.Get<ExpressionSyntax>()),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            var expr = MakeChecked(MakeCastTo(context.Type.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()), false);
+            context.Put(expr);
         }
 
         public override void ExitVoCastPtrExpression([NotNull] XP.VoCastPtrExpressionContext context)

@@ -991,6 +991,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return false;
             }
         }
+        public static bool IsStringConst(this IToken token)
+        {
+            switch (token.Type)
+            {
+                case XSharpParser.STRING_CONST:
+                case XSharpParser.ESCAPED_STRING_CONST:
+                case XSharpParser.INTERPOLATED_STRING_CONST:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public static bool IsNull(this IToken token)
+        {
+            switch (token.Type)
+            {
+                case XSharpParser.NULL:
+                case XSharpParser.NULL_ARRAY:
+                case XSharpParser.NULL_CODEBLOCK:
+                case XSharpParser.NULL_DATE:
+                case XSharpParser.NULL_OBJECT:
+                case XSharpParser.NULL_PSZ:
+                case XSharpParser.NULL_PTR:
+                case XSharpParser.NULL_STRING:
+                case XSharpParser.NULL_SYMBOL:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public static SyntaxKind OrderingKind(this IToken token)
         {
             SyntaxKind r;

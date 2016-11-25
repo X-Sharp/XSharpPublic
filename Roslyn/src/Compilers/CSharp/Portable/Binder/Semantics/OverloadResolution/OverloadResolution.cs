@@ -1180,7 +1180,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             bool hasAnyRefOmittedArgument1 = m1.Result.HasAnyRefOmittedArgument;
             bool hasAnyRefOmittedArgument2 = m2.Result.HasAnyRefOmittedArgument;
+#if XSHARP
+            // X# does not prefer non ref over ref
+            if (hasAnyRefOmittedArgument1 != hasAnyRefOmittedArgument2 && ! Compilation.Options.VOImplicitCastsAndConversions)
+#else
             if (hasAnyRefOmittedArgument1 != hasAnyRefOmittedArgument2)
+#endif
             {
                 return hasAnyRefOmittedArgument1 ? BetterResult.Right : BetterResult.Left;
             }

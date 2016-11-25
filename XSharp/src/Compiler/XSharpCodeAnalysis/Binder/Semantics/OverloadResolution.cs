@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 result = BetterResult.Right;
                                 return true;
                             }
-                            // Now check for REF parameters and possible REG arguments
+                            // Now check for REF parameters and possible REF arguments
                             if (refLeft != refRight)
                             {
                                 if (refLeft == RefKind.Ref && argCanBeByRef)

@@ -2091,6 +2091,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return expr;
                 }
             }
+            if (expr.Kind == BoundKind.ArrayAccess)
+            {
+                //translate @var[i]  to var[i]
+                return expr;
+            }
+            if (expr.Kind == BoundKind.Local)
+            {
+                if (expr.Type.IsArray())
+                {
+                    // convert from @expr to expr[0]
+                    var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
+                    var arrType = expr.Type as ArrayTypeSymbol;
+                    int index = 0;
+                    var indices = ImmutableArray.Create<BoundExpression>(new BoundLiteral(node, ConstantValue.Create(index), intType) { WasCompilerGenerated = true });
+                    expr = new BoundArrayAccess(node.Operand, expr,indices, arrType.ElementType, false);
+                    return expr;
+                }
+            }
 #endif
             BoundExpression operand = BindValue(node.Operand, diagnostics, BindValueKind.AddressOf);
 

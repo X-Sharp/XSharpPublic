@@ -2060,6 +2060,38 @@ namespace Microsoft.CodeAnalysis.CSharp
         // Based on ExpressionBinder::bindPtrAddr.
         private BoundExpression BindAddressOfExpression(PrefixUnaryExpressionSyntax node, DiagnosticBag diagnostics)
         {
+#if XSHARP
+            // In vulcan when we have defined a structure like:
+            // VOSTRUCT _WINWIN32_FIND_DATA
+            //   MEMBER DIM cFileName[10] AS BYTE
+            // This translates to 
+            // [StructLayout(LayoutKind.Sequential, Pack=8), VOStruct(10, 10)]
+            //    public struct _WINWIN32_FIND_DATA
+            //    {
+            //        [FixedBuffer(typeof(byte), 10)]
+            //        public <cFileName>e__FixedBuffer cFileName;
+            //        // Nested Types
+            //        [StructLayout(LayoutKind.Sequential, Size = 10), CompilerGenerated, UnsafeValueType]
+            //        public struct <cFileName>e__FixedBuffer
+            //{
+            //    public byte FixedElementField;
+            //    }
+            //}
+            // The fixedBuffer is represented with a SourceFixedFieldSymbol
+            // and the cFileName element is then accessed by reference:
+            // cTemp := Psz2String(@pData:cFileName)
+            // in C# we do not need the @ sign. 
+            // So when we detect that the Operand is a Field of the type SourceFixedFieldSymbol
+            // we simply return the direct reference to the field without the AddressOf operator
+            var expr = this.BindExpression(node.Operand, diagnostics: diagnostics, invoked: false, indexed: false);
+            if (expr.Kind == BoundKind.FieldAccess)
+            {
+                if (expr.ExpressionSymbol is SourceFixedFieldSymbol)
+                {
+                    return expr;
+                }
+            }
+#endif
             BoundExpression operand = BindValue(node.Operand, diagnostics, BindValueKind.AddressOf);
 
             bool hasErrors = operand.HasAnyErrors; // This would propagate automatically, but by reading it explicitly we can reduce cascading.

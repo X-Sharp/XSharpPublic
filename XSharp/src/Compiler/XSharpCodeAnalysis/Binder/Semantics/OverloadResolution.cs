@@ -64,7 +64,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         var parLeft = parsLeft[i];
                         var parRight = parsRight[i];
+                        var refLeft = parLeft.RefKind;
+                        var refRight = parRight.RefKind;
                         var arg = arguments[i];
+                        bool argCanBeByRef = arg.Kind == BoundKind.AddressOfOperator;
+                        
                         if (parLeft.Type != parRight.Type)
                         {
                             // Prefer the method with a more specific parameter which is not an array type over USUAL
@@ -88,6 +92,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 result = BetterResult.Right;
                                 return true;
+                            }
+                            // Now check for REF parameters and possible REG arguments
+                            if (refLeft != refRight)
+                            {
+                                if (refLeft == RefKind.Ref && argCanBeByRef)
+                                {
+                                    result = BetterResult.Left;
+                                    return true;
+                                }
+                                if (refRight == RefKind.Ref && argCanBeByRef)
+                                {
+                                    result = BetterResult.Right;
+                                    return true;
+                                }
+
                             }
                         }
 

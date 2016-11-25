@@ -4691,7 +4691,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C224
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C225 *************
 Application = C225
 IDEVersion = 1.06

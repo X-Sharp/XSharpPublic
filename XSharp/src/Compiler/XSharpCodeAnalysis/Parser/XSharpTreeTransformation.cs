@@ -4835,22 +4835,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (context.XType != null)
             {
-                if (context.XType.Token.Type == XSharpParser.PSZ)
-                {
-                    var args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
-                    context.Put(CreateObject(context.XType.Get<TypeSyntax>(), args));
-                }
-                else
-                {
-                    context.Put(MakeCastTo(context.XType.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()));
-                }
+                 context.Put(MakeCastTo(context.XType.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()));
             }
         }
 
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
-            var expr = MakeChecked(MakeCastTo(context.Type.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()), false);
-            context.Put(expr);
+            TypeSyntax type;
+            if (context.Type != null)
+            {
+                type = context.Type.Get<TypeSyntax>();
+            }
+            else
+            {
+                type = context.XType.Get<TypeSyntax>();
+            }
+            context.Put(MakeChecked(MakeCastTo(type, context.Expr.Get<ExpressionSyntax>()), false));
+            return;
         }
 
         public override void ExitVoCastPtrExpression([NotNull] XP.VoCastPtrExpressionContext context)

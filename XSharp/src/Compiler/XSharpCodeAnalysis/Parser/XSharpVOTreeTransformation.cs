@@ -2260,39 +2260,61 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             voStructHasDim = false;
         }
 
+        private ExpressionSyntax GetPszConstructor(XP.ExpressionContext context)
+        {
+            var expr = context.Get<ExpressionSyntax>();
+
+            if (context is XP.PrimaryExpressionContext)
+            {
+                var primary = context as XP.PrimaryExpressionContext;
+                if (primary.Expr is XP.LiteralExpressionContext)
+                {
+                    // PSZ(_CAST, <Literal>)
+                    var literal = primary.Expr as XP.LiteralExpressionContext;
+                    var token = literal.Literal.Token;
+                    if (token.IsStringConst())
+                    {
+                        var arg = MakeArgument(expr);
+                        expr = CreateObject(_pszType, MakeArgumentList(arg));
+                    }
+                    if (token.IsNull())
+                    {
+                        expr = GenerateLiteral(0);
+                    }
+                }
+            }
+            return expr;
+        }
+
+        public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
+        {
+
+            // Special case for PSZ(..) 
+            // PSZ("String") becomes PSZ{"String"}
+            if (context.XType != null)
+            {
+                var xtype = context.XType as XP.XbaseTypeContext;
+                if (xtype.Token.Type == XP.PSZ)
+                {
+                    var expr = GetPszConstructor(context.Expr);
+                    context.Put(expr);
+                    return;
+                }
+            }
+
+            base.ExitVoConversionExpression(context);
+
+        }
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             // Special case for PSZ(_CAST 
-            // PSZ(_CAST, <Expr>) becomes PSZ{<Expr}
-            if (context.Type is XP.SimpleDatatypeContext)
+            // PSZ(_CAST, "String") becomes PSZ{"String"}
+            if (context.XType != null)
             {
-                var sdt = context.Type as XP.SimpleDatatypeContext;
-                if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
+                var xtype = context.XType as XP.XbaseTypeContext;
+                if (xtype.Token.Type == XP.PSZ)
                 {
-                    var exprctxt = context.Expr;
-                    var expr = exprctxt.Get<ExpressionSyntax>();
-                    
-                    if (exprctxt is XP.PrimaryExpressionContext)
-                    {
-                        var primary = exprctxt as XP.PrimaryExpressionContext;
-                        if (primary.Expr is XP.LiteralExpressionContext)
-                        {
-                            // PSZ(_CAST, <Literal>)
-                            var literal = primary.Expr as XP.LiteralExpressionContext;
-                            var token = literal.Literal.Token;
-                            if ( token.IsStringConst())
-                            {
-                                var arg = MakeArgument(expr);
-                                context.Put(CreateObject(_pszType, MakeArgumentList(arg)));
-                                return;
-                            }
-                            if (token.IsNull())
-                            {
-                                expr = GenerateLiteral(0);
-                            }
-                        }
-
-                    }
+                    var expr = GetPszConstructor(context.Expr);
                     context.Put(expr);
                     return;
                 }

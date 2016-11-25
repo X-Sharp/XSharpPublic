@@ -655,7 +655,8 @@ primary				: Key=SELF													#selfExpression
                     | Name=simpleName											#nameExpression			// generic name
                     | Type=nativeType LPAREN Expr=expression RPAREN				#voConversionExpression	// nativetype( expr )
                     | XType=xbaseType LPAREN Expr=expression RPAREN				#voConversionExpression	// xbaseType( expr )
-                    | Type=datatype LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// typename(_CAST, expr )
+                    | Type=nativeType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// nativetype(_CAST, expr )
+                    | XType=xbaseType LPAREN CAST COMMA Expr=expression RPAREN	#voCastExpression		// xbaseType(_CAST, expr )
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
 					| Name=voTypeName											#voTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     | Type=typeName											    #typeExpression			// Standard DotNet Types

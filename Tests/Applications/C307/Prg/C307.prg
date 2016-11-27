@@ -2,5 +2,13 @@
 // related to C166, but this one (307) happens only with /vo4+
 FUNCTION Start() AS VOID
 LOCAL u AS USUAL
+LOCAL d := 12.34m AS Decimal
+u := d
+? u
 u := 123.456m
 ? u
+UsualFunc(d)
+
+FUNCTION UsualFunc(u AS USUAL) AS VOID
+? u
+

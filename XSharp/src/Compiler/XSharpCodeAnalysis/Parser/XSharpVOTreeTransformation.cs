@@ -506,114 +506,142 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // and when needed it returns with X$Return
             // Not that the code only checks for locals in the main body statement list
             // and not for locals hidden inside blocks inside the main body
+            // When the main body has a PSZ Try - Finally then our cleanup code and init code will be inserted before and after 
+            // the try finally
             var noargs = EmptyArgumentList();
             bool needsExtraReturn = false;
-            var mainbody = new List<StatementSyntax>();
-            var endbody = new List<StatementSyntax>();
-            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
-            if (context.Type.Get<TypeSyntax>() != _voidType)
+            bool needsReturnValue = false; 
+            var newbody = new List<StatementSyntax>();     // contains the copied and adjusted statements
+            var endbody = new List<StatementSyntax>();     // contains the cleanup code
+            TryStatementSyntax trystmt = null;
+            StatementSyntax pszdecl = null;
+            var body = originalbody;                    //body where we check for LOCAL and RETURN statements
+            if (context.Data.UsesPSZ && originalbody.Statements.Count == 2 && originalbody.Statements[1] is TryStatementSyntax)
             {
-                mainbody.Add(GenerateLocalDecl(ReturnName, context.Type.Get<TypeSyntax>()));
-                needsExtraReturn = true;
+                // local declaration followed by try .. finally
+                pszdecl = originalbody.Statements[0];
+                trystmt = originalbody.Statements[1] as TryStatementSyntax;
+                body = trystmt.Block;
             }
-            foreach (var stmt in originalbody.Statements)
+            else
+            {
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
+            }
+            if (context.Type.GetText().ToLower() != "void")
+            {
+                newbody.Add(GenerateLocalDecl(ReturnName, context.Type.Get<TypeSyntax>()));
+                needsExtraReturn = true;
+                needsReturnValue = true;
+            }
+            foreach (var stmt in body.Statements)
             {
                 if (stmt is ReturnStatementSyntax)
                 {
+                    needsExtraReturn = true;
                     var retStmt = stmt as ReturnStatementSyntax;
                     var retExpr = retStmt.Expression;
                     if (retExpr != null)
                     {
+                        needsReturnValue = true;
                         var assignStmt = MakeSimpleAssignment(GenerateSimpleName(ReturnName), retExpr);
-                        mainbody.Add(GenerateExpressionStatement(assignStmt));
+                        newbody.Add(GenerateExpressionStatement(assignStmt));
                     }
-                    else
-                        mainbody.Add(stmt);
                 }
                 else
                 {
-                    mainbody.Add(stmt);
-                }
-                if (stmt is LocalDeclarationStatementSyntax)
-                {
-                    var locdecl = stmt as LocalDeclarationStatementSyntax;
-                    var localvar = locdecl.XNode as XP.LocalvarContext;
-                    bool useNull = true;
-                    bool mustclear = true;
-                    if (localvar != null)
+                    newbody.Add(stmt);
+                    if (stmt is LocalDeclarationStatementSyntax)
                     {
-                        var name = localvar.Id.GetText();
-                        ExpressionSyntax clearExpr = null;
-                        TypeSyntax type;
-                        if (localvar.DataType == null)
+                        var locdecl = stmt as LocalDeclarationStatementSyntax;
+                        var localvar = locdecl.XNode as XP.LocalvarContext;
+                        bool useNull = true;
+                        bool mustclear = true;
+                        if (localvar != null)
                         {
-                            type = _usualType;
-                            useNull = true;
-                            mustclear = true;
-                        }
-                        else
-                        {
-                            type = locdecl.Declaration.Type;
-
-                            if (localvar.DataType is XP.ArrayDatatypeContext ||
-                                localvar.DataType is XP.NullableDatatypeContext ||
-                                localvar.DataType is XP.PtrDatatypeContext)
+                            var name = localvar.Id.GetText();
+                            ExpressionSyntax clearExpr = null;
+                            TypeSyntax type;
+                            if (localvar.DataType == null)
                             {
+                                type = _usualType;
                                 useNull = true;
+                                mustclear = true;
                             }
                             else
                             {
-                                var sdc = localvar.DataType as XP.SimpleDatatypeContext;
-                                var tn = sdc.TypeName;
-                                if (tn.XType != null)
+                                type = locdecl.Declaration.Type;
+
+                                if (localvar.DataType is XP.ArrayDatatypeContext ||
+                                    localvar.DataType is XP.NullableDatatypeContext ||
+                                    localvar.DataType is XP.PtrDatatypeContext)
                                 {
-                                    useNull = mustclear = tn.XType.Token.IsRefType();
-                                    if (tn.XType.Token.Type == XP.USUAL)
-                                    {
-                                        mustclear = true;
-                                    }
-                                    else if (tn.XType.Token.Type == XP.PSZ)
-                                    {
-                                        mustclear = true;
-                                        clearExpr = GenerateLiteral(0);
-                                    }
+                                    useNull = true;
                                 }
-                                else if (tn.NativeType != null)
-                                {
-                                    useNull = mustclear = tn.NativeType.Token.IsRefType();
-                                }
-                                else if (tn.Name != null)
-                                {
-                                    useNull = false;
-                                    mustclear = true;
-                                }
-                            }
-                        }
-                        if (mustclear)
-                        {
-                            if (clearExpr == null)
-                            {
-                                if (useNull)
-                                    clearExpr = GenerateLiteralNull();
                                 else
-                                    clearExpr = MakeDefault(type);
+                                {
+                                    var sdc = localvar.DataType as XP.SimpleDatatypeContext;
+                                    var tn = sdc.TypeName;
+                                    if (tn.XType != null)
+                                    {
+                                        useNull = mustclear = tn.XType.Token.IsRefType();
+                                        if (tn.XType.Token.Type == XP.USUAL)
+                                        {
+                                            mustclear = true;
+                                        }
+                                        else if (tn.XType.Token.Type == XP.PSZ)
+                                        {
+                                            mustclear = true;
+                                            clearExpr = GenerateLiteral(0);
+                                        }
+                                    }
+                                    else if (tn.NativeType != null)
+                                    {
+                                        useNull = mustclear = tn.NativeType.Token.IsRefType();
+                                    }
+                                    else if (tn.Name != null)
+                                    {
+                                        useNull = false;
+                                        mustclear = true;
+                                    }
+                                }
                             }
-                            var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
-                            endbody.Add(GenerateExpressionStatement(expr));
+                            if (mustclear)
+                            {
+                                if (clearExpr == null)
+                                {
+                                    if (useNull)
+                                        clearExpr = GenerateLiteralNull();
+                                    else
+                                        clearExpr = MakeDefault(type);
+                                }
+                                var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
+                                endbody.Add(GenerateExpressionStatement(expr));
+                            }
                         }
                     }
                 }
             }
-            mainbody.AddRange(endbody);
-            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppExit, noargs)));
-            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
-            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
-
+            newbody.AddRange(endbody);
+            if (trystmt != null)
+            {
+                trystmt = trystmt.Update(trystmt.TryKeyword, MakeBlock(newbody), trystmt.Catches, trystmt.Finally);
+                newbody.Clear();
+                newbody.Add(pszdecl);
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
+                newbody.Add(trystmt);
+            }
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppExit, noargs)));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
             if (needsExtraReturn)
             {
-                mainbody.Add(GenerateReturn(GenerateSimpleName(ReturnName)));
+                if (needsReturnValue)
+                    newbody.Add(GenerateReturn(GenerateSimpleName(ReturnName)));
+                else
+                    newbody.Add(GenerateReturn(null));
             }
-            return MakeBlock(mainbody);
+
+            return MakeBlock(newbody);
         }
 
 

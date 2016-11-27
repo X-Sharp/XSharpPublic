@@ -1106,6 +1106,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             string nameSpace;
             splitClassNameAndNamespace(ref className, out nameSpace);
             if (members?.Length == 0) {
+                // When no members defined then we create an empty static constructor 
                 var statements = _pool.Allocate<StatementSyntax>();
                 GenerateAttributeList(attributeLists, CompilerGenerated);
                 statements.Add(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));

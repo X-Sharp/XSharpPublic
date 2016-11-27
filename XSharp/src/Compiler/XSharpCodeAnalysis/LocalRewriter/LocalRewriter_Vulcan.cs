@@ -7,11 +7,77 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-
+using Microsoft.CodeAnalysis.CSharp.Emit;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal partial class LocalRewriter
     {
+        public static BoundStatement RewriteAppExit(
+                 CSharpCompilation compilation,
+                 MethodSymbol method,
+                 int methodOrdinal,
+                 NamedTypeSymbol containingType,
+                 BoundStatement statement,
+                 TypeCompilationState compilationState,
+                 DiagnosticBag diagnostics)
+
+        {
+            if (method.Name != XSharpVOTreeTransformation.AppExit)
+                return statement;
+            var refMan = compilation.GetBoundReferenceManager();
+            var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
+            var newstatements = new List<BoundStatement>();
+
+            foreach (var r in refMan.ReferencedAssemblies)
+            {
+                foreach (var attr in r.GetAttributes())
+                {
+                    if (attr.AttributeClass.ConstructedFrom == vcla)
+                    {
+                        var attargs = attr.CommonConstructorArguments;
+                        if (attargs.Length == 2)
+                        {
+                            var functionsClassName = attargs[0].Value.ToString();
+                            if (!string.IsNullOrEmpty(functionsClassName))
+                            {
+                                var type = r.GetTypeByMetadataName(functionsClassName) as TypeSymbol;
+                                var members = type.GetMembers();
+                                foreach (var member in members)
+                                {
+                                    if (member.IsStatic && member.Kind == SymbolKind.Field  )
+                                    {
+                                        var field = member as FieldSymbol;
+                                        var fldtype = field.Type;
+                                        if (field.DeclaredAccessibility == Accessibility.Public
+                                            && fldtype.TypeKind == TypeKind.Class
+                                            && !field.IsReadOnly
+                                            && !field.IsConst
+                                            )
+                                        {
+                                            var lhs = new BoundFieldAccess(statement.Syntax, null, field, null) { WasCompilerGenerated = true };
+                                            var rhs = new BoundLiteral(statement.Syntax, ConstantValue.Null, compilation.GetSpecialType(SpecialType.System_Object)) { WasCompilerGenerated = true };
+                                            var op = new BoundAssignmentOperator(
+                                                statement.Syntax,
+                                                lhs,
+                                                rhs,field.Type)
+                                            { WasCompilerGenerated = true };
+                                            var stmt = new BoundExpressionStatement(statement.Syntax, op);
+                                            newstatements.Add(stmt);
+                                        }
+                                    }
+                                }
+
+                                
+                            }
+                        }
+                    }
+                }
+            }
+            newstatements.Add(new BoundReturnStatement(statement.Syntax, null));
+            var oldbody = statement as BoundBlock;
+            var newbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            return newbody;
+        }
         public static BoundStatement RewriteAppInit(
             CSharpCompilation compilation,
             MethodSymbol method,
@@ -22,7 +88,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics)
 
         {
-            if (method.Name != "$AppInit")
+            if (method.Name != XSharpVOTreeTransformation.AppInit)
                 return statement;
             var newstatements = new List<BoundStatement>();
             var oldbody = statement as BoundBlock;
@@ -48,9 +114,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (!string.IsNullOrEmpty(functionsClassName))
                             {
                                 var type = r.GetTypeByMetadataName(functionsClassName);
-                                init1.AddRange(type.GetMembers("$Init1"));
-                                init2.AddRange(type.GetMembers("$Init2"));
-                                init3.AddRange(type.GetMembers("$Init3"));
+                                init1.AddRange(type.GetMembers(XSharpVOTreeTransformation.InitProc1));
+                                init2.AddRange(type.GetMembers(XSharpVOTreeTransformation.InitProc2));
+                                init3.AddRange(type.GetMembers(XSharpVOTreeTransformation.InitProc3));
                             }
                         }
                     }

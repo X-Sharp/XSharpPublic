@@ -48,10 +48,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string RecoverVarName = "Xs$Obj";
         const string ExVarName = "Xs$Exception";
         const string ReturnName = "Xs$Return";
-        const string AppInit = "$AppInit";
-        const string InitProc1 = "$Init1";
-        const string InitProc2 = "$Init2";
-        const string InitProc3 = "$Init3";
+        internal const string AppInit = "$AppInit";
+        internal const string AppExit = "$AppExit";
+        internal const string InitProc1 = "$Init1";
+        internal const string InitProc2 = "$Init2";
+        internal const string InitProc3 = "$Init3";
         // Vulcan Assembly Names
         private const string VulcanRTFuncs = "VulcanRTFuncs";
         private const string VulcanVOSystemClasses = "VulcanVOSystemClasses";
@@ -186,6 +187,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 members = new List<MemberDeclarationSyntax>();
                 members.Add(CreateAppInit());
+                members.Add(CreateAppExit());
             }
             else
             {
@@ -396,7 +398,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     context.Data.HasClipperCallingConvention = !bHasTypedParameter;
             }
         }
-
+        private MethodDeclarationSyntax CreateAppExit()
+        {
+            var stmts = _pool.Allocate<StatementSyntax>();
+            var body = MakeBlock(stmts);
+            var appId = SyntaxFactory.Identifier(AppExit);
+            var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
+            var appExit = _syntaxFactory.MethodDeclaration(
+                EmptyList<AttributeListSyntax>(), modifiers,
+                _voidType, null, appId, null, EmptyParameterList(),
+                null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            _pool.Free(stmts);
+            appExit.XNode = CurrentEntity;
+            return appExit;
+        }
         private MethodDeclarationSyntax CreateAppInit()
         {
             var stmts = _pool.Allocate<StatementSyntax>();
@@ -440,7 +455,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lhs = GenerateQualifiedName(VulcanRuntimeState + ".CompilerOptionFOvf");
                 stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
             }
-             var body = MakeBlock(stmts);
+            var body = MakeBlock(stmts);
             stmts.Clear();
 
             // Create Exception
@@ -474,6 +489,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
+            appInit.XNode = CurrentEntity;
             return appInit;
 
         }
@@ -481,51 +497,50 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected override BlockSyntax CreateEntryPoint(BlockSyntax originalbody, [NotNull] XP.FunctionContext context)
         {
             // This method changes the body of the entry point for the VO Syntax
-            // It Creates Try .. Finally in the Entry Point 
-            // it calls $AppInit in the Try and 
-            // it calls GC routines in the Finally
+            // it calls $AppInit()
+            // when there is a return statement in the main statement list then the 
+            // value of this return statement is stored in a local Xs$Return
+            // At the end of the main body variables are cleared
+            // And $AppExit() is called to clear the globals in referenced Vulcan Libs
+            // and GC routines are called
+            // and when needed it returns with X$Return
+            // Not that the code only checks for locals in the main body statement list
+            // and not for locals hidden inside blocks inside the main body
             var noargs = EmptyArgumentList();
-            
-            // Build the try finally statement with the original body in the try, prefixed with a call to $AppInit()
-            // and a finally body
-
-            //args = MakeArgumentList(MakeArgument(GenerateLiteral("Finalize Start")));
-            //stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Console.WriteLine", args)));
-
-            // check the original body for all its variables
-            // and assign them a default value
-            // but because we do not want to get warnings for unreachable code we need to move some code around:
-            // the variable declarations come outside of the try finally block
-            // the initialization of the variables comes at the original place
-            // and the cleanup in the finalizer
+            bool needsExtraReturn = false;
             var mainbody = new List<StatementSyntax>();
-            var trybody = new List<StatementSyntax>();
-            var finallybody = new List<StatementSyntax>();
-            trybody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
-
+            var endbody = new List<StatementSyntax>();
+            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
+            if (context.Type.Get<TypeSyntax>() != _voidType)
+            {
+                mainbody.Add(GenerateLocalDecl(ReturnName, context.Type.Get<TypeSyntax>()));
+                needsExtraReturn = true;
+            }
             foreach (var stmt in originalbody.Statements)
             {
-                if (!(stmt is LocalDeclarationStatementSyntax))
+                if (stmt is ReturnStatementSyntax)
                 {
-                    trybody.Add(stmt);
+                    var retStmt = stmt as ReturnStatementSyntax;
+                    var retExpr = retStmt.Expression;
+                    if (retExpr != null)
+                    {
+                        var assignStmt = MakeSimpleAssignment(GenerateSimpleName(ReturnName), retExpr);
+                        mainbody.Add(GenerateExpressionStatement(assignStmt));
+                    }
+                    else
+                        mainbody.Add(stmt);
                 }
                 else
                 {
-                    // get the name, type and initialexpression
-                    // build a new local with the name and type
-                    // build an assignment expression with the expression (if any)
-                    // build a clean up expression for the finally body
+                    mainbody.Add(stmt);
+                }
+                if (stmt is LocalDeclarationStatementSyntax)
+                {
                     var locdecl = stmt as LocalDeclarationStatementSyntax;
                     var localvar = locdecl.XNode as XP.LocalvarContext;
-                    var impliedvar = locdecl.XNode as XP.ImpliedvarContext;
-                    var variable = locdecl.Declaration.Variables[0];
                     bool useNull = true;
                     bool mustclear = true;
-                    if (impliedvar != null)
-                    {
-                        trybody.Add(locdecl); 
-                    }
-                    else if (localvar != null)
+                    if (localvar != null)
                     {
                         var name = localvar.Id.GetText();
                         ExpressionSyntax clearExpr = null;
@@ -574,18 +589,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                             }
                         }
-                        // move declaration to main body and generate an assignment when needed
-                        if (variable.Initializer != null)
-                        {
-                            trybody.Add(GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(name), variable.Initializer.Value)));
-                            var newlocdecl = GenerateLocalDecl(name, type, null);
-                            locdecl.XNode.Put(newlocdecl);
-                            mainbody.Add(newlocdecl);
-                        }
-                        else
-                        {
-                            mainbody.Add(locdecl);
-                        }
                         if (mustclear)
                         {
                             if (clearExpr == null)
@@ -596,25 +599,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     clearExpr = MakeDefault(type);
                             }
                             var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
-                            finallybody.Add(GenerateExpressionStatement(expr));
+                            endbody.Add(GenerateExpressionStatement(expr));
                         }
                     }
                 }
             }
+            mainbody.AddRange(endbody);
+            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppExit, noargs)));
+            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
+            mainbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
 
-            var tryblock = MakeBlock(trybody);
-            finallybody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
-            finallybody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
-            var finallyblock = MakeBlock(finallybody);
-
-            var finallyClause = _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword), finallyblock);
-            var tryStmt = _syntaxFactory.TryStatement(
-                    SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
-                    tryblock,
-                    null,
-                    finallyClause);
-            // Now create the main block, which consists of the declarations and the try statement
-            mainbody.Add(tryStmt);
+            if (needsExtraReturn)
+            {
+                mainbody.Add(GenerateReturn(GenerateSimpleName(ReturnName)));
+            }
             return MakeBlock(mainbody);
         }
 

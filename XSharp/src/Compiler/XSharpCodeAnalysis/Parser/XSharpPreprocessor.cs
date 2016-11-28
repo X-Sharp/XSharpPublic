@@ -185,6 +185,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         Stack<bool> defStates = new Stack<bool> ();
 
         InputState inputs;
+        IToken lastToken = null;
 
 #if UDCSUPPORT
         List<XSharpPreprocessorRule> _rules = new List<XSharpPreprocessorRule>();
@@ -772,6 +773,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return isdefined;
         }
+
+        private bool isDefineAllowed()
+        {
+            // DEFINE will not be accepted immediately after or before a DOT or COLON
+            // So this will not be recognized:
+            // #define Console
+            // System.Console.WriteLine("zxc")
+            // But this will , since there are spaces around the token
+            // System. Console .WriteLine("zxc")
+
+            if (lastToken != null)
+            {
+                if (lastToken.Type == XSharpLexer.DOT ||
+                    lastToken.Type == XSharpLexer.COLON)
+                    return false;
+            }
+            var index = inputs.Index;
+            if (index < inputs.Tokens.Size)
+            {
+                var token = inputs.Tokens.Get(index + 1);
+                if (token.Type == XSharpParser.DOT ||
+                    token.Type == XSharpLexer.COLON)
+                    return false;
+            }
+            return true;
+        }
+
         [return: NotNull]
         public IToken NextToken()
         {
@@ -1019,7 +1047,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (IsActive())
                         {
                             IList<IToken> tl;
-                            if ((XSharpLexer.IsIdentifier(t.Type) || XSharpLexer.IsKeyword(t.Type)) && symbolDefines.TryGetValue(t.Text, out tl))
+                            if ((XSharpLexer.IsIdentifier(t.Type) || XSharpLexer.IsKeyword(t.Type)) && symbolDefines.TryGetValue(t.Text, out tl)
+                                && isDefineAllowed())
                             {
                                 Consume();
                                 if (tl != null)
@@ -1073,6 +1102,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                                 FixToken(t);
                                 Consume();
+                                lastToken = t;
                                 return t;
                             }
                         }

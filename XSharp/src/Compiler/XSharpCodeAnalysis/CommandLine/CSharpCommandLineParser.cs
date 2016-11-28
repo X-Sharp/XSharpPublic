@@ -141,7 +141,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "ppo":
                     options.PreProcessorOutput = positive;
-                    OptionNotImplemented(diagnostics, oldname, "Write preprocessor output to a file");
                     break;
                 case "r":
                 case "reference":

@@ -184,6 +184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         Stack<bool> defStates = new Stack<bool> ();
 
+        string _fileName = null;
         InputState inputs;
         IToken lastToken = null;
 
@@ -193,7 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 #endif
         HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
 
-
+        System.IO.Stream ppoStream;
 
         internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>();
 
@@ -277,21 +278,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        private bool mustWriteToPPO(IToken t)
+        {
+            return ppoStream != null && t != null && (t.TokenSource.SourceName == _fileName || inputs.isSymbol);
+        }
+
+        private void writeToPPO(IToken t)
+        {
+            // do not call t.Text when not needed.
+            if ( mustWriteToPPO(t))
+            {
+                var buffer = _encoding.GetBytes(t.Text);
+                ppoStream.Write(buffer, 0, buffer.Length);
+            }
+        }
+
+        private void writeToPPO(IToken t, string text)
+        {
+            if (mustWriteToPPO(t))
+            {
+                var buffer = _encoding.GetBytes(text);
+                ppoStream.Write(buffer, 0, buffer.Length);
+            }
+        }
         internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             ClearOldIncludes();
             _options = options;
+            _fileName = fileName;
             if (_options.VOPreprocessorBehaviour)
                 symbolDefines = new Dictionary<string, IList<IToken>>(CaseInsensitiveComparison.Comparer);
             else
                 symbolDefines = new Dictionary<string, IList<IToken>>(/* case sensitive */);
             _input = input;
-            _encoding = encoding;
+            _encoding = encoding; 
             _checksumAlgorithm = checksumAlgorithm;
             _parseErrors = parseErrors;
             includeDirs = new List<string>(options.IncludePaths);
-            if (! String.IsNullOrEmpty(fileName))
-                includeDirs.Add( System.IO.Path.GetDirectoryName(fileName) );
+            if ( !String.IsNullOrEmpty(fileName) && PortableShim.File.Exists(fileName))
+            {
+                includeDirs.Add(System.IO.Path.GetDirectoryName(fileName));
+                var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
+                try
+                {
+                    ppoStream = null;
+                    if (_options.PreprocessorOutput)
+                    {
+                        ppoStream = FileUtilities.CreateFileStreamChecked(PortableShim.File.Create, ppoFile, "PPO file");
+                    }
+                    else if (PortableShim.File.Exists(ppoFile))
+                    {
+                        PortableShim.File.Delete(ppoFile);
+                    }
+                }
+                catch (Exception e)
+                {
+                    _parseErrors.Add(new ParseErrorData(ErrorCode.ERR_PreProcessorError, "Error processing PPO file: " + e.Message));
+                }
+            }
             // Add default IncludeDirs;
             if (!String.IsNullOrEmpty(options.DefaultIncludeDir))
             {
@@ -302,13 +346,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
 
-
             inputs = new InputState(input);
             foreach (var symbol in options.PreprocessorSymbols)
                 symbolDefines[symbol] = null;
 
             initStdDefines(options, fileName);
-
         }
 
 
@@ -381,6 +423,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 t = Lt();
             }
+            writeToPPO(t);
             return t;
         }
 
@@ -411,6 +454,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 t = Lt();
             }
+            if (t.Type == XSharpLexer.EOS)
+                writeToPPO(t);
         }
 
         IToken GetSourceSymbol()
@@ -550,7 +595,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
             {
                 Consume();
+                writeToPPO(def, "// #define " + def.Text + " ");
                 var newtokens = ConsumeList();
+                if (newtokens != null)
+                {
+                    foreach (var t in newtokens)
+                    {
+                        writeToPPO(t);
+                    }
+                }
                 if (symbolDefines.ContainsKey(def.Text))
                 {
                     // check to see if this is a new definition or a duplicate definition
@@ -590,6 +643,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
             {
                 Consume();
+                writeToPPO(def,"// #undef " + def.Text );
                 SkipEmpty();
                 if (symbolDefines.ContainsKey(def.Text))
                     symbolDefines.Remove(def.Text);
@@ -862,6 +916,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             Consume();
                             SkipHidden();
                             var def = Lt();
+                            writeToPPO(def, "// #ifdef " + def.Text);
                             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
                             {
                                 Consume();
@@ -886,10 +941,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XSharpLexer.PP_IFNDEF:
                         if (IsActiveElseSkip())
-                        {
+                        { 
                             Consume();
                             SkipHidden();
                             var def = Lt();
+                            writeToPPO(def, "// #ifndef " + def.Text );
                             if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
                             {
                                 Consume();
@@ -918,6 +974,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             defStates.Pop();
                             if (IsActiveElseSkip())
                             {
+                                writeToPPO(Lt(), "// #endif");
                                 Consume();
                                 SkipEmpty();
                                 SkipToEol();
@@ -930,6 +987,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         break;
                     case XSharpLexer.PP_ELSE:
+                        writeToPPO(Lt(), "// #else");
                         if (defStates.Count > 0)
                         {
                             bool a = defStates.Pop();
@@ -958,12 +1016,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             {
                                 Consume();
                                 inputs.MappedLineDiff = (int)ln.SyntaxLiteralValue(_options).Value - (ln.Line + 1);
+                                writeToPPO(ln, "// #line " + ln.Text);
                                 SkipHidden();
                                 ln = Lt();
                                 if (ln.Type == XSharpLexer.STRING_CONST)
                                 {
                                     Consume();
                                     inputs.SourceFileName = ln.Text.Substring(1, ln.Text.Length - 2);
+                                    writeToPPO(ln);
 
                                 }
                                 else
@@ -1006,6 +1066,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_INCLUDE:
                         if (IsActiveElseSkip())
                         {
+                            writeToPPO(Lt(), "// #include ");
                             if (IncludeDepth() == MaxIncludeDepth)
                             {
                                 _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "Reached max include depth: " + MaxIncludeDepth));
@@ -1015,6 +1076,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 Consume();
                                 SkipHidden();
                                 var ln = Lt();
+                                writeToPPO(ln);
                                 if (ln.Type == XSharpLexer.STRING_CONST)
                                 {
                                     Consume();
@@ -1103,12 +1165,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 FixToken(t);
                                 Consume();
                                 lastToken = t;
+                                writeToPPO(t);
                                 return t;
                             }
                         }
-                        else {
+                        else
+                        {
+                            // Token suppressed by Preprocessor
                             ((CommonToken)t).Channel = XSharpLexer.DEFOUT;
                             Consume();
+                            if (t.Type == XSharpLexer.EOS)
+                                writeToPPO(t);
                         }
                         break;
                 }

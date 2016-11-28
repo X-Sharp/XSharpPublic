@@ -3,7 +3,14 @@
 
 #define TestDefine
 
+#define AnotherDefine 123
+
 FUNCTION Start() AS VOID
 #ifdef TestDefine
 ? "defined"
 #endif
+
+#ifdef AnotherDefine
+? "defined"
+#endif
+

@@ -288,6 +288,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 #endif
                 treeTransform.Free();
+                if (pp != null)
+                    pp.Close();
+
             }
         }
 

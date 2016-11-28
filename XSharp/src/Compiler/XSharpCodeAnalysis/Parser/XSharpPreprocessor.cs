@@ -304,6 +304,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 ppoStream.Write(buffer, 0, buffer.Length);
             }
         }
+        internal void Close()
+        {
+            if (ppoStream != null)
+            {
+                ppoStream.Flush();
+                ppoStream.Dispose();
+            }
+            ppoStream = null;
+        }
+
         internal XSharpPreprocessor(ITokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
         {
             ClearOldIncludes();

@@ -1476,10 +1476,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // RETURN
                 expr = expr.WithAdditionalDiagnostics(
                                     new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
-                var declstmt = GenerateLocalDecl(ReturnName, _impliedType, expr);
-                var retstmt = GenerateReturn(null);
-                var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
-                context.Put(block);
+                bool literal = false;
+                if (context.Expr is XP.PrimaryExpressionContext)
+                {
+                    var p = context.Expr as XP.PrimaryExpressionContext;
+                    if (p.Expr is XP.LiteralExpressionContext)
+                    {
+                        literal = true;
+                    }
+                }
+                if (! literal)
+                {
+                    var declstmt = GenerateLocalDecl(ReturnName, _impliedType, expr);
+                    var retstmt = GenerateReturn(null);
+                    var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
+                    context.Put(block);
+                }
+                else
+                {
+                    context.Put(GenerateReturn(null));
+                }
             }
             else
             {

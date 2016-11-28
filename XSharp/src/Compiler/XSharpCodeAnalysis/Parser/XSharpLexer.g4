@@ -52,8 +52,19 @@ lexer grammar XSharpLexer;
 	bool _inPp = false;
 	bool _hasEos = true;
 	private bool isKw(IToken t) {
-		char fc = Char.ToUpper(t.Text?[0] ?? (Char)0);
-		return fc == '_' || (fc >= 'A' && fc <= 'Z');
+        switch (t.Channel)
+        { 
+        case XSharpLexer.Hidden: // 1
+        case XSharpLexer.XMLDOC:  // 2
+        case XSharpLexer.DEFOUT: // 3
+        case XSharpLexer.PRAGMACHANNEL: // 5
+            return false;
+        case XSharpLexer.PREPROCESSOR:	// 4
+        case TokenConstants.DefaultChannel: // 0
+        default:
+			char fc = t.Text?[0] ?? (Char)0;
+			return fc == '_' || (fc >= 'A' && fc <= 'Z')|| (fc >= 'a' && fc <= 'z');
+        }
 	}
 	int _lastToken = NL;
     System.Text.StringBuilder _textSb = new System.Text.StringBuilder();

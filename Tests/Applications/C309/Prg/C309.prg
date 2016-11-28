@@ -8,6 +8,10 @@ dt := Today()
 u := Today() - 1
 dw := dt - u
 ? dw
+dw := u - dt
+? dw
 n := dt - u
+? n         
+n := u - dt
 ? n
 

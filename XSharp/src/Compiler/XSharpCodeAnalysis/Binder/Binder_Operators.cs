@@ -17,7 +17,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             SingleEqualsString,
             SingleEqualsUsual,
             NotEqualsUsual,
-            SubtractString
+            SubtractString,
+            UsualDate
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
@@ -82,6 +83,37 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "String Equals (=) method " + type.Name + "." + methodName, Compilation.Options.Dialect.ToString());
             }
             return opCall;
+        }
+
+        private BoundExpression BindVOUsualDate(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
+            BoundExpression left, BoundExpression right)
+        {
+            var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+            BoundExpression opCall = null;
+            ImmutableArray<Symbol> symbols;
+            if (node.OperatorToken.Kind() == SyntaxKind.MinusToken)
+                symbols = Binder.GetCandidateMembers(usualType, "op_Subtraction", LookupOptions.MustNotBeInstance, this);
+            else
+                symbols = Binder.GetCandidateMembers(usualType, "op_Addition", LookupOptions.MustNotBeInstance, this);
+            if (symbols.Length == 1)
+            {
+                MethodSymbol opMeth = (MethodSymbol)symbols[0];
+                if (right.Type != usualType)
+                {
+                    right = CreateConversion(right, usualType, diagnostics);
+                }
+                if (left.Type != usualType)
+                {
+                    left = CreateConversion(left, usualType, diagnostics);
+                }
+                opCall = BoundCall.Synthesized(node, null, opMeth, left, right);
+            }
+            else
+            {
+                Error(diagnostics, ErrorCode.ERR_FeatureNotAvailableInDialect, node, "Usual - Date operators", Compilation.Options.Dialect.ToString());
+            }
+            return opCall;
+
         }
 
         private BoundExpression BindVOSingleEqualsUsual(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
@@ -215,6 +247,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindVOSubtractString(node, diagnostics, left, right);
                 case VOOperatorType.CompareString:
                     return BindVOCompareString(node, diagnostics, left, right, ref compoundStringLength);
+                case VOOperatorType.UsualDate:
+                    return BindVOUsualDate(node, diagnostics, left, right);
             }
             return null;
         }
@@ -237,6 +271,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO)
             {
                 var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                NamedTypeSymbol typeDate ;
                 TypeSymbol leftType = left.Type;
                 TypeSymbol rightType = right.Type;
                 switch (xnode.Op.Type)
@@ -271,7 +306,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         else if (left.Type?.SpecialType == SpecialType.System_String || right.Type?.SpecialType == SpecialType.System_String)
                         {
-                            // Make to String.Compare or __StringCompare. Decide later
+                            // Convert to String.Compare or __StringCompare. Decide later
                             opType = VOOperatorType.CompareString;
                         }
                         break;
@@ -287,6 +322,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             opType = VOOperatorType.SubtractString;
                         }
+                        // usual - date
+                        // date - usual
+                        typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
+                        if (leftType == typeUsual && right.Type == typeDate)
+                            opType = VOOperatorType.UsualDate;
+                        if (leftType == typeDate && right.Type == typeUsual)
+                            opType = VOOperatorType.UsualDate;
+                        break;
+                    case XSharpParser.ADD:
+                        // usual + date
+                        // date + usual
+                        typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
+                        if (leftType == typeUsual && right.Type == typeDate)
+                            opType = VOOperatorType.UsualDate;
+                        if (leftType == typeDate && right.Type == typeUsual)
+                            opType = VOOperatorType.UsualDate;
                         break;
                     default:
                         opType = VOOperatorType.None;

@@ -32,8 +32,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal static string AsString (this IList<IToken> tokens)
         {
             string result = "";
-            foreach (var t in tokens)
-                result += t.Text;
+            if (tokens != null)
+            {
+                foreach (var t in tokens)
+                    result += t.Text;
+            }
             return result;
         }
     }
@@ -608,23 +611,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // check to see if this is a new definition or a duplicate definition
                     var oldtokens = symbolDefines[def.Text];
-                    bool equalDefine = (oldtokens?.Count == newtokens?.Count);
-                    if (equalDefine && oldtokens?.Count > 0)
-                    {
-                        for (int i = 0; i < oldtokens.Count; i++)
-                        {
-                            if (String.Compare(oldtokens[i].Text, newtokens[i].Text) != 0)
-                            {
-                                equalDefine = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (equalDefine)
+                    var cOld = oldtokens.AsString();
+                    var cNew = newtokens.AsString();
+                    if (cOld == cNew)
                         _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineSame, def.Text));
                     else
-                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, oldtokens.AsString(), newtokens.AsString()));
+                        _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, cOld, cNew));
                 }
                 symbolDefines[def.Text] = newtokens;
                 if (_options.Verbose)

@@ -133,7 +133,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool _private = false)
+        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName)
         {
             var pool = new SyntaxListPool();
             var members = pool.Allocate<MemberDeclarationSyntax>();
@@ -145,11 +145,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 stmts.Add(GenerateExpressionStatement(invoke));
             }
             var attList = EmptyList<AttributeListSyntax>();
-            SyntaxList<SyntaxToken> mods;
-            if (_private)
-                mods = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
-            else
-                mods = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
+            var mods = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
             var m = SyntaxFactory.MethodDeclaration(attList, mods,
                 _voidType, /*explicitif*/null,
@@ -181,17 +177,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private SyntaxTree GenerateDefaultSyntaxTree(List<String> init1, List<String> init2, List<String> init3, bool isApp)
         {
-            List<MemberDeclarationSyntax> members ;
+            var members = new List<MemberDeclarationSyntax>();
             // Create Global Functions class with the Members to call the Init procedures
+            members = CreateInitMembers(init1, init2, init3);
             if (isApp)
             {
-                members = new List<MemberDeclarationSyntax>();
                 members.Add(CreateAppInit());
                 members.Add(CreateAppExit());
-            }
-            else
-            {
-                members = CreateInitMembers(init1, init2, init3);
             }
             GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, members.ToArray()));
             // Add global attributes
@@ -400,6 +392,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private MethodDeclarationSyntax CreateAppExit()
         {
+            // Creates an empty $AppExit method.
+            // The contents will be created in the LocalRewriter
+            // This will contain the code to clear globals
             var stmts = _pool.Allocate<StatementSyntax>();
             var body = MakeBlock(stmts);
             var appId = SyntaxFactory.Identifier(AppExit);
@@ -414,6 +409,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private MethodDeclarationSyntax CreateAppInit()
         {
+            // Creates a skeleton $AppInit method.
+            // The rest of the contents will be created in the LocalRewriter
             var stmts = _pool.Allocate<StatementSyntax>();
             var appId = SyntaxFactory.Identifier(AppInit);
             // try

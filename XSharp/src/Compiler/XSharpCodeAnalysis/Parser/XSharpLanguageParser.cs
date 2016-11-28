@@ -274,6 +274,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 result.XNode = (XSharpParser.SourceContext)tree;
                 result.XTokens = tokens;
                 result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
+                result.Globals = treeTransform.GlobalEntities.Globals;
                 result.IncludedFiles = pp.IncludedFiles;
                 return result;
             }

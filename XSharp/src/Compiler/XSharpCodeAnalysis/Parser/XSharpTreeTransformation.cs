@@ -47,6 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public SyntaxListBuilder<AttributeListSyntax> Attributes;
             public SyntaxListBuilder<MemberDeclarationSyntax> Members;
             public List<Tuple<int,String>> InitProcedures;
+            public List<FieldDeclarationSyntax> Globals;
 
             internal SyntaxEntities(SyntaxListPool pool) {
                 Externs = pool.Allocate<ExternAliasDirectiveSyntax>();
@@ -54,6 +55,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Attributes = pool.Allocate<AttributeListSyntax>();
                 Members = pool.Allocate<MemberDeclarationSyntax>();
                 InitProcedures = new List<Tuple<int, String>>();
+                Globals = new List<FieldDeclarationSyntax>();
                 _pool = pool;
             }
 
@@ -3058,13 +3060,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             foreach (var varCtx in context.Vars._Var) {
                 bool isDim = varCtx.Dim != null && varCtx.ArraySub != null;
                 if (isDim) {
-                    context.Put(_syntaxFactory.FieldDeclaration(
+                    var global = _syntaxFactory.FieldDeclaration(
                         attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                         modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
                         declaration: _syntaxFactory.VariableDeclaration(
                             type: _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(varCtx.ArraySub._ArrayIndex.Count)),
                             variables: MakeSeparatedList(varCtx.Get<VariableDeclaratorSyntax>())),
-                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                        semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    context.Put(global);
+                    GlobalEntities.Globals.Add(global);
                 }
                 else {
                     if (varList.Count > 0)
@@ -3073,13 +3077,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             if (varList.Count > 0) {
-                context.Put(_syntaxFactory.FieldDeclaration(
+                var global = _syntaxFactory.FieldDeclaration(
                     attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword),
                     declaration: _syntaxFactory.VariableDeclaration(
                         type: varType,
                         variables: varList),
-                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                context.Put(global);
+                GlobalEntities.Globals.Add(global);
             }
             _pool.Free(varList);
         }

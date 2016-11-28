@@ -3016,7 +3016,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 foreach (var member in container.GetMembers())
                 {
                     if (!member.IsTypeOrTypeAlias() &&
+#if XSHARP
+                        (member.CanBeReferencedByName || member.IsExplicitInterfaceImplementation() || member.IsIndexer() || member.Name.StartsWith("$")) &&
+#else
                         (member.CanBeReferencedByName || member.IsExplicitInterfaceImplementation() || member.IsIndexer()) &&
+#endif
                         predicate(member.Name))
                     {
                         set.Add(member);

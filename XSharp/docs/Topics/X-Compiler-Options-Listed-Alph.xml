@@ -78,10 +78,10 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td>
+        <td style="height:18px;">
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-baseaddress" styleclass="Normal" translate="true">/baseaddress</link></para>
         </td>
-        <td>
+        <td style="height:18px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the preferred base address at which to load a DLL.</text></para>
         </td>
       </tr>
@@ -258,7 +258,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-lb" styleclass="Normal" translate="true">/lb</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Specifies that the compiler should generate late bound calls when necessary </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Specifies that the compiler should generate late bound calls when necessary </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -314,7 +314,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs" styleclass="Normal" translate="true">/nostddefs</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Suppresses preprocessor definitions in XSharpDefs.xh &#160;</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Suppresses preprocessor definitions in XSharpDefs.xh &#160;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -418,7 +418,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ppo" styleclass="Normal" translate="true">/ppo</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Writes preprocessor output to file </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Writes preprocessor output to file </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

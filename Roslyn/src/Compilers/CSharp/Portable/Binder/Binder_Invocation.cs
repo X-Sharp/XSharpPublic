@@ -24,7 +24,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 case SyntaxKind.IdentifierName:
                 case SyntaxKind.GenericName:
+#if XSHARP
+                    return BindIdentifier((SimpleNameSyntax)node, invoked, diagnostics,true);
+#else
                     return BindIdentifier((SimpleNameSyntax)node, invoked, diagnostics);
+#endif
                 case SyntaxKind.SimpleMemberAccessExpression:
                 case SyntaxKind.PointerMemberAccessExpression:
                     return BindMemberAccess((MemberAccessExpressionSyntax)node, invoked, indexed, diagnostics);

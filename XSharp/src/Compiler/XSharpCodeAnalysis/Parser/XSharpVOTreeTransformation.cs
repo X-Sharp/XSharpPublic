@@ -1090,8 +1090,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var chainArgs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                     var chainExpr = MakeSimpleMemberAccess(
-                        context.Chain.Type == XP.SELF ? (ExpressionSyntax)_syntaxFactory.ThisExpression(context.Chain.SyntaxKeyword()) : _syntaxFactory.BaseExpression(context.Chain.SyntaxKeyword()),
-                        _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+                        context.Chain.Type == XP.SELF ? (ExpressionSyntax)GenerateSelf() : GenerateSuper(),
+                        GenerateSimpleName(".ctor"));
                     body = MakeBlock(MakeList<StatementSyntax>(
                         GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs)),
                         body));

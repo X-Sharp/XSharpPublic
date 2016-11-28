@@ -795,6 +795,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(name));
         }
+        protected ExpressionSyntax GenerateSelf()
+        {
+            return _syntaxFactory.ThisExpression(SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword));
+        }
+        protected ExpressionSyntax GenerateSuper()
+        {
+            return _syntaxFactory.BaseExpression(SyntaxFactory.MakeToken(SyntaxKind.BaseKeyword));
+        }
 
         protected NameEqualsSyntax GenerateNameEquals(string name)
         {
@@ -1264,13 +1272,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             if (vop.AccessMethodCtx != null) {
                 bool isInInterfaceOrAbstract = vop.AccessMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
+                ExpressionSyntax methodCall = null;
+                var args = MakeArgumentList(voPropArgs);
+                var propname = VoPropertyAccessPrefix + vop.idName.Text;
+                if (outerMods.Any(SyntaxKind.StaticKeyword)) // static method no self: prefix in the code
+                {
+                    methodCall = GenerateMethodCall(propname, args);
+                }
+                else
+                {
+                    methodCall = _syntaxFactory.InvocationExpression(
+                                    MakeSimpleMemberAccess(GenerateSelf(),GenerateSimpleName(propname)), args);
+                }
                 accessors.Add(
                     _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), getMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                         isInInterfaceOrAbstract ? null
                         : MakeBlock(
                             MakeList<StatementSyntax>(GenerateReturn(
-                                GenerateMethodCall(VoPropertyAccessPrefix + vop.idName.Text, MakeArgumentList(voPropArgs))))
+                                 methodCall))
                             ),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                         : null)
@@ -1278,14 +1298,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (vop.AssignMethodCtx != null) {
                 bool isInInterfaceOrAbstract = vop.AssignMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
+                ExpressionSyntax methodCall = null;
+                var arg = MakeArgument(GenerateSimpleName("value"));
+                var propname = VoPropertyAssignPrefix + vop.idName.Text;
+                if (outerMods.Any(SyntaxKind.StaticKeyword)) // static method no self: prefix in the code
+                {
+                    methodCall = GenerateMethodCall(propname, MakeArgumentList(voPropArgs.InsertAt(0, arg)));
+                }
+                else
+                {
+                    methodCall = _syntaxFactory.InvocationExpression(
+                                    MakeSimpleMemberAccess(GenerateSelf(),GenerateSimpleName(propname)),
+                                    MakeArgumentList(voPropArgs.InsertAt(0, arg)));
+                }
                 accessors.Add(
                     _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), setMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                         isInInterfaceOrAbstract ? null
-                        : MakeBlock(
-                            MakeList<StatementSyntax>(GenerateExpressionStatement(
-                                GenerateMethodCall(VoPropertyAssignPrefix + vop.idName.Text,
-                                    MakeArgumentList(voPropArgs.InsertAt(0, MakeArgument(GenerateSimpleName("value")))))))
+                        : MakeBlock(MakeList<StatementSyntax>(GenerateExpressionStatement(methodCall))
                             ),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
                         : null)
@@ -5080,12 +5110,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitSelfExpression([NotNull] XP.SelfExpressionContext context)
         {
-            context.Put(_syntaxFactory.ThisExpression(context.Key.SyntaxKeyword()));
+            context.Put(GenerateSelf());
         }
 
         public override void ExitSuperExpression([NotNull] XP.SuperExpressionContext context)
         {
-            context.Put(_syntaxFactory.BaseExpression(context.Key.SyntaxKeyword()));
+            context.Put(GenerateSuper());
         }
 
         public override void ExitArgListExpression([NotNull] XP.ArgListExpressionContext context)

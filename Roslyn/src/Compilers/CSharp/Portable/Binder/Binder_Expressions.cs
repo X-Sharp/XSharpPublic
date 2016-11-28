@@ -828,7 +828,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindIdentifier(
             SimpleNameSyntax node,
             bool invoked,
-            DiagnosticBag diagnostics)
+            DiagnosticBag diagnostics
+#if XSHARP
+            , bool BindStaticMethodCall = false
+#endif
+            )
         {
             Debug.Assert(node != null);
 
@@ -873,6 +877,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var lookupResult = LookupResult.GetInstance();
             LookupOptions options = LookupOptions.AllMethodsOnArityZero;
+#if XSHARP
+            // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
+            if (BindStaticMethodCall && Compilation.Options.IsDialectVO)
+            {
+                options |= LookupOptions.MustNotBeInstance;
+            }
+#endif
             if (invoked)
             {
                 options |= LookupOptions.MustBeInvocableIfMember;

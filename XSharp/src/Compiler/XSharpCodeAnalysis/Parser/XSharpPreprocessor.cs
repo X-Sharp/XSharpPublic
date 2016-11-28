@@ -554,8 +554,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     // check to see if this is a new definition or a duplicate definition
                     var oldtokens = symbolDefines[def.Text];
-                    bool equalDefine = (oldtokens.Count == newtokens.Count);
-                    if (equalDefine)
+                    bool equalDefine = (oldtokens?.Count == newtokens?.Count);
+                    if (equalDefine && oldtokens?.Count > 0)
                     {
                         for (int i = 0; i < oldtokens.Count; i++)
                         {

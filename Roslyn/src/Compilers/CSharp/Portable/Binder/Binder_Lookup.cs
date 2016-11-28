@@ -1182,7 +1182,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else if ((options & LookupOptions.MustNotBeInstance) != 0 && IsInstance(unwrappedSymbol))
             {
+#if XSHARP
+                // In the Vulcan/VO dialect we now require an object reference
+                if (symbol.IsStatic)
+                    diagInfo = diagnose ? new CSDiagnosticInfo(ErrorCode.ERR_ObjectProhibited, unwrappedSymbol) : null;
+                else
+                    diagInfo = diagnose ? new CSDiagnosticInfo(ErrorCode.ERR_ObjectRequired, unwrappedSymbol) : null;
+
+#else
                 diagInfo = diagnose ? new CSDiagnosticInfo(ErrorCode.ERR_ObjectProhibited, unwrappedSymbol) : null;
+#endif
                 return LookupResult.StaticInstanceMismatch(symbol, diagInfo);
             }
             else if ((options & LookupOptions.MustNotBeNamespace) != 0 && unwrappedSymbol.Kind == SymbolKind.Namespace)

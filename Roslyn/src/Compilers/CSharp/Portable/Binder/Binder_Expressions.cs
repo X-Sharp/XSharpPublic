@@ -830,7 +830,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool invoked,
             DiagnosticBag diagnostics
 #if XSHARP
-            , bool BindStaticMethodCall = false
+            , bool preferStaticMethodCall = false
 #endif
             )
         {
@@ -877,13 +877,6 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             var lookupResult = LookupResult.GetInstance();
             LookupOptions options = LookupOptions.AllMethodsOnArityZero;
-#if XSHARP
-            // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
-            if (BindStaticMethodCall && Compilation.Options.IsDialectVO)
-            {
-                options |= LookupOptions.MustNotBeInstance;
-            }
-#endif
             if (invoked)
             {
                 options |= LookupOptions.MustBeInvocableIfMember;
@@ -894,10 +887,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert((options & LookupOptions.NamespacesOrTypesOnly) == 0);
                 options |= LookupOptions.MustNotBeMethodTypeParameter;
             }
+#if XSHARP
+            // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
+            var originalOptions = options;
+            if (preferStaticMethodCall && Compilation.Options.IsDialectVO)
+            {
+                options |= LookupOptions.MustNotBeInstance;
+            }
+#endif
 
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+#if XSHARP
+            if (preferStaticMethodCall && Compilation.Options.IsDialectVO)
+            {
+                if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
+                {
+                    // try again but now allow instance methods
+                    options = originalOptions;
+                    useSiteDiagnostics = null;
+                    lookupResult.Clear();
+                    this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+                }
+            }
+#endif
+
             diagnostics.Add(node, useSiteDiagnostics);
 
             if (lookupResult.Kind != LookupResultKind.Empty)

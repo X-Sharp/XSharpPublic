@@ -47,6 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string SystemDir { get; private set; }
         public bool NoStdDef { get; private set; }
         public bool ShowIncludes { get; private set; }
+        public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }
@@ -88,6 +89,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 NoStdDef = opt.NoStdDef;
                 ShowIncludes = opt.ShowIncludes;
                 Verbose = opt.Verbose;
+                PreprocessorOutput = opt.PreProcessorOutput;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
                 VulcanRTFuncsIncluded = opt.VulcanRTFuncsIncluded;
                 VulcanRTIncluded = opt.VulcanRTIncluded;
@@ -134,6 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             IncludePaths = opt.IncludePaths;
             ShowIncludes = opt.ShowIncludes;
             NoStdDef = opt.NoStdDef;
+            PreprocessorOutput = opt.PreprocessorOutput;
             Verbose = opt.Verbose;
 
             VoInitAxitMethods = opt.VoInitAxitMethods; // vo1

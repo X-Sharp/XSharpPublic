@@ -175,7 +175,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // arity, kind, name must match
                 if ((thisDecl._arity != otherDecl._arity) ||
                     (thisDecl._kind != otherDecl._kind) ||
+#if XSHARP
+                    (String.Compare(thisDecl.name, otherDecl.name,StringComparison.OrdinalIgnoreCase) != 0))
+#else
                     (thisDecl.name != otherDecl.name))
+#endif
                 {
                     return false;
                 }
@@ -192,7 +196,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             public override int GetHashCode()
             {
                 var thisDecl = _decl;
-                return Hash.Combine(thisDecl.Name.GetHashCode(),
+#if XSHARP
+                return Hash.Combine(thisDecl.Name.ToLower().GetHashCode(),
+#else
+                    return Hash.Combine(thisDecl.Name.GetHashCode(),
+#endif
                     Hash.Combine(thisDecl.Arity.GetHashCode(),
                     (int)thisDecl.Kind));
             }

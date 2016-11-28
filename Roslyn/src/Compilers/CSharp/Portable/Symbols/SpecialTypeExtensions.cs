@@ -27,6 +27,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #if XSHARP
         /// <summary>
         /// Checks if a type is considered a "built-in numeric" by CLR.
+        /// Decimal is excluded on purpose. Vulcan treats this type differently
+        /// We may want to change this when we do our own runtime
         /// </summary>
         public static bool IsNumericType(this SpecialType specialType)
         {
@@ -42,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 case SpecialType.System_UInt64:
                 case SpecialType.System_Single:
                 case SpecialType.System_Double:
-                case SpecialType.System_Decimal:
+                //case SpecialType.System_Decimal:
                     return true;
                 default:
                     return false;

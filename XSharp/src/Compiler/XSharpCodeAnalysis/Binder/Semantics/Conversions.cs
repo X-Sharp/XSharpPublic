@@ -116,7 +116,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         var srctype = source.SpecialType;
                         var dsttype = destination.SpecialType;
-                        if (srctype.IsNumericType() && dsttype.IsNumericType())
+                        // when both numeric and both integral or both not integral
+                        if (srctype.IsNumericType() && dsttype.IsNumericType()  && 
+                            srctype.IsIntegralType() == dsttype.IsIntegralType())
                         {
                             // when both same # of bits and integral, use Identity conversion
                             if (srctype.SizeInBytes() == dsttype.SizeInBytes() &&

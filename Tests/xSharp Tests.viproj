@@ -28,12 +28,12 @@ DefaultPropertiesGuid = 25819EAF-9863-441B-90D0-A9072599943A
 
 [Application Groups]
 ApplicationGroup = BUGS,E440B545-3C18-4457-A54F-4F3256349ABE,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
-ApplicationGroup = C250-C299,6817B77E-0C9E-4118-914A-96AC0093E8C8,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = C200-C249,88298FB4-3414-43D5-8469-DCD70E89A8CA,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = C100-C149,D2167BBF-156A-4E64-861D-753C3894EE87,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = C150-C199,58C99556-708F-4FF0-90A7-13774F4F3886,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = C001-C049,D4C4BF75-E4C6-4D72-83FB-AB345AEE3625,E440B545-3C18-4457-A54F-4F3256349ABE
-ApplicationGroup = C050-C099,84D6F36B-73F2-4D6B-9105-4A55EA68E829,E440B545-3C18-4457-A54F-4F3256349ABE
+ApplicationGroup = Some other category,6817B77E-0C9E-4118-914A-96AC0093E8C8,E440B545-3C18-4457-A54F-4F3256349ABE
+ApplicationGroup = Conversions,88298FB4-3414-43D5-8469-DCD70E89A8CA,E440B545-3C18-4457-A54F-4F3256349ABE
+ApplicationGroup = Pointer related,D2167BBF-156A-4E64-861D-753C3894EE87,E440B545-3C18-4457-A54F-4F3256349ABE
+ApplicationGroup = Codeblocks,58C99556-708F-4FF0-90A7-13774F4F3886,E440B545-3C18-4457-A54F-4F3256349ABE
+ApplicationGroup = Uncategorized,D4C4BF75-E4C6-4D72-83FB-AB345AEE3625,E440B545-3C18-4457-A54F-4F3256349ABE
+ApplicationGroup = Name Conflicts,84D6F36B-73F2-4D6B-9105-4A55EA68E829,E440B545-3C18-4457-A54F-4F3256349ABE
 ApplicationGroup = FIXED,715D7617-320E-41FF-B82F-E314D950CD23,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C250-C299,F5307DDC-4DCD-4576-89C9-1B07F6C6D655,715D7617-320E-41FF-B82F-E314D950CD23
@@ -243,9 +243,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C101
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C200 *************
-Application = C200
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C200 - Not clear why USING System.Linq is required *************
+Application = C200 - Not clear why USING System.Linq is required
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -276,18 +276,18 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C200 FileGroups]
-[C200 Files]
+[C200 - Not clear why USING System.Linq is required FileGroups]
+[C200 - Not clear why USING System.Linq is required Files]
 File = %AppPath%\Prg\C200.prg
 FileGUID = DCE5FCF7-C891-40F9-8C41-55F1C42D59D0
 FileType = Code
-[C200 References]
+[C200 - Not clear why USING System.Linq is required References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Core,1,0,4.0.0.0
-[C200 Resources]
-[C200 Native Resources]
-[C200 License files]
-[C200 General Options]
+[C200 - Not clear why USING System.Linq is required Resources]
+[C200 - Not clear why USING System.Linq is required Native Resources]
+[C200 - Not clear why USING System.Linq is required License files]
+[C200 - Not clear why USING System.Linq is required General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -312,7 +312,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C200 Configurations]
+[C200 - Not clear why USING System.Linq is required Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -339,17 +339,17 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C200
+ENDApplication = C200 - Not clear why USING System.Linq is required
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C201 *************
-Application = C201
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C201 - Name onflict between namespace and class *************
+Application = C201 - Name onflict between namespace and class
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Vulcan
@@ -374,19 +374,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C201 FileGroups]
-[C201 Files]
+[C201 - Name onflict between namespace and class FileGroups]
+[C201 - Name onflict between namespace and class Files]
 File = %AppPath%\Prg\C201.prg
 FileGUID = C2BEEAD3-9C33-4BFB-B341-BB8DC6C1075E
 FileType = Code
-[C201 References]
+[C201 - Name onflict between namespace and class References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C201 Resources]
-[C201 Native Resources]
-[C201 License files]
-[C201 General Options]
+[C201 - Name onflict between namespace and class Resources]
+[C201 - Name onflict between namespace and class Native Resources]
+[C201 - Name onflict between namespace and class License files]
+[C201 - Name onflict between namespace and class General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -411,7 +411,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C201 Configurations]
+[C201 - Name onflict between namespace and class Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -438,17 +438,17 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C201
+ENDApplication = C201 - Name onflict between namespace and class
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C202 *************
-Application = C202
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
+; ************** APPLICATION C202 - Name conflict between function and method *************
+Application = C202 - Name conflict between function and method
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Vulcan
@@ -473,19 +473,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C202 FileGroups]
-[C202 Files]
+[C202 - Name conflict between function and method FileGroups]
+[C202 - Name conflict between function and method Files]
 File = %AppPath%\Prg\C202.prg
 FileGUID = 22C3C00E-0F09-41F4-9109-613D40B78359
 FileType = Code
-[C202 References]
+[C202 - Name conflict between function and method References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C202 Resources]
-[C202 Native Resources]
-[C202 License files]
-[C202 General Options]
+[C202 - Name conflict between function and method Resources]
+[C202 - Name conflict between function and method Native Resources]
+[C202 - Name conflict between function and method License files]
+[C202 - Name conflict between function and method General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -510,7 +510,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C202 Configurations]
+[C202 - Name conflict between function and method Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -537,7 +537,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C202
+ENDApplication = C202 - Name conflict between function and method
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C203 *************
@@ -1328,9 +1328,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C210
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C264 *************
-Application = C264
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C264 - Cannot pass PTR as USUAL argument *************
+Application = C264 - Cannot pass PTR as USUAL argument
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -1361,19 +1361,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C264 FileGroups]
-[C264 Files]
+[C264 - Cannot pass PTR as USUAL argument FileGroups]
+[C264 - Cannot pass PTR as USUAL argument Files]
 File = %AppPath%\Prg\C264.prg
 FileGUID = BCDE45D5-C08E-4173-A9C0-EF37C7FE9776
 FileType = Code
-[C264 References]
+[C264 - Cannot pass PTR as USUAL argument References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C264 Resources]
-[C264 Native Resources]
-[C264 License files]
-[C264 General Options]
+[C264 - Cannot pass PTR as USUAL argument Resources]
+[C264 - Cannot pass PTR as USUAL argument Native Resources]
+[C264 - Cannot pass PTR as USUAL argument License files]
+[C264 - Cannot pass PTR as USUAL argument General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -1398,7 +1398,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C264 Configurations]
+[C264 - Cannot pass PTR as USUAL argument Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -1425,7 +1425,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C264
+ENDApplication = C264 - Cannot pass PTR as USUAL argument
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C263 *************
@@ -1722,9 +1722,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C261
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C260 *************
-Application = C260
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C260 - Problem with function PTR *************
+Application = C260 - Problem with function PTR
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -1755,19 +1755,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C260 FileGroups]
-[C260 Files]
+[C260 - Problem with function PTR FileGroups]
+[C260 - Problem with function PTR Files]
 File = %AppPath%\Prg\C260.prg
 FileGUID = 0C93F4C9-6F77-4359-9B0C-9E26416A036B
 FileType = Code
-[C260 References]
+[C260 - Problem with function PTR References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C260 Resources]
-[C260 Native Resources]
-[C260 License files]
-[C260 General Options]
+[C260 - Problem with function PTR Resources]
+[C260 - Problem with function PTR Native Resources]
+[C260 - Problem with function PTR License files]
+[C260 - Problem with function PTR General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -1792,7 +1792,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C260 Configurations]
+[C260 - Problem with function PTR Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -1819,7 +1819,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C260
+ENDApplication = C260 - Problem with function PTR
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C259 *************
@@ -1920,9 +1920,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C259
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C258 *************
-Application = C258
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C258 - Problem with @ operator on VOSTRUCT member *************
+Application = C258 - Problem with @ operator on VOSTRUCT member
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -1953,19 +1953,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C258 FileGroups]
-[C258 Files]
+[C258 - Problem with @ operator on VOSTRUCT member FileGroups]
+[C258 - Problem with @ operator on VOSTRUCT member Files]
 File = %AppPath%\Prg\C258.prg
 FileGUID = 5FFD34F2-240B-4C7F-9CE6-ECE89236EF7D
 FileType = Code
-[C258 References]
+[C258 - Problem with @ operator on VOSTRUCT member References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C258 Resources]
-[C258 Native Resources]
-[C258 License files]
-[C258 General Options]
+[C258 - Problem with @ operator on VOSTRUCT member Resources]
+[C258 - Problem with @ operator on VOSTRUCT member Native Resources]
+[C258 - Problem with @ operator on VOSTRUCT member License files]
+[C258 - Problem with @ operator on VOSTRUCT member General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -1990,7 +1990,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C258 Configurations]
+[C258 - Problem with @ operator on VOSTRUCT member Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2017,11 +2017,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C258
+ENDApplication = C258 - Problem with @ operator on VOSTRUCT member
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C257 *************
-Application = C257
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C257 - Problem with @ on function *************
+Application = C257 - Problem with @ on function
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2052,19 +2052,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C257 FileGroups]
-[C257 Files]
+[C257 - Problem with @ on function FileGroups]
+[C257 - Problem with @ on function Files]
 File = %AppPath%\Prg\C257.prg
 FileGUID = B5BFD021-D7C6-4807-A416-E4EA9E405CA5
 FileType = Code
-[C257 References]
+[C257 - Problem with @ on function References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C257 Resources]
-[C257 Native Resources]
-[C257 License files]
-[C257 General Options]
+[C257 - Problem with @ on function Resources]
+[C257 - Problem with @ on function Native Resources]
+[C257 - Problem with @ on function License files]
+[C257 - Problem with @ on function General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2089,7 +2089,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C257 Configurations]
+[C257 - Problem with @ on function Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2116,11 +2116,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C257
+ENDApplication = C257 - Problem with @ on function
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C256 *************
-Application = C256
+ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+; ************** APPLICATION C256 - Problem with codeblock *************
+Application = C256 - Problem with codeblock
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2151,19 +2151,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C256 FileGroups]
-[C256 Files]
+[C256 - Problem with codeblock FileGroups]
+[C256 - Problem with codeblock Files]
 File = %AppPath%\Prg\C256.prg
 FileGUID = 54D81CA5-A306-4236-9B96-438D574E580E
 FileType = Code
-[C256 References]
+[C256 - Problem with codeblock References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C256 Resources]
-[C256 Native Resources]
-[C256 License files]
-[C256 General Options]
+[C256 - Problem with codeblock Resources]
+[C256 - Problem with codeblock Native Resources]
+[C256 - Problem with codeblock License files]
+[C256 - Problem with codeblock General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2188,7 +2188,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C256 Configurations]
+[C256 - Problem with codeblock Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2215,11 +2215,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C256
+ENDApplication = C256 - Problem with codeblock
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C255 *************
-Application = C255
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C255 - Name conflict between LOCAL and function *************
+Application = C255 - Name conflict between LOCAL and function
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2250,19 +2250,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C255 FileGroups]
-[C255 Files]
+[C255 - Name conflict between LOCAL and function FileGroups]
+[C255 - Name conflict between LOCAL and function Files]
 File = %AppPath%\Prg\C255.prg
 FileGUID = 7120AB2A-5FFD-4F1A-AE5F-C9A8DEFD917A
 FileType = Code
-[C255 References]
+[C255 - Name conflict between LOCAL and function References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C255 Resources]
-[C255 Native Resources]
-[C255 License files]
-[C255 General Options]
+[C255 - Name conflict between LOCAL and function Resources]
+[C255 - Name conflict between LOCAL and function Native Resources]
+[C255 - Name conflict between LOCAL and function License files]
+[C255 - Name conflict between LOCAL and function General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2287,7 +2287,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C255 Configurations]
+[C255 - Name conflict between LOCAL and function Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2314,7 +2314,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C255
+ENDApplication = C255 - Name conflict between LOCAL and function
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C254 *************
@@ -2514,9 +2514,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C253
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C252 *************
-Application = C252
+ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+; ************** APPLICATION C252 - Problem using codeblock param with same name local used in RECOVER USING *************
+Application = C252 - Problem using codeblock param with same name local used in RECOVER USING
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2547,19 +2547,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C252 FileGroups]
-[C252 Files]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING FileGroups]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING Files]
 File = %AppPath%\Prg\C252.prg
 FileGUID = 7E4260C2-6572-46D7-ABEC-535139F56BCB
 FileType = Code
-[C252 References]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C252 Resources]
-[C252 Native Resources]
-[C252 License files]
-[C252 General Options]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING Resources]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING Native Resources]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING License files]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2584,7 +2584,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C252 Configurations]
+[C252 - Problem using codeblock param with same name local used in RECOVER USING Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2611,11 +2611,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C252
+ENDApplication = C252 - Problem using codeblock param with same name local used in RECOVER USING
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C251 *************
-Application = C251
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C251 - PCallNative() not implemented *************
+Application = C251 - PCallNative() not implemented
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2646,19 +2646,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C251 FileGroups]
-[C251 Files]
+[C251 - PCallNative() not implemented FileGroups]
+[C251 - PCallNative() not implemented Files]
 File = %AppPath%\Prg\C251.prg
 FileGUID = 8D45ECEC-FA8F-4D51-9DF9-D68DC2FF257E
 FileType = Code
-[C251 References]
+[C251 - PCallNative() not implemented References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C251 Resources]
-[C251 Native Resources]
-[C251 License files]
-[C251 General Options]
+[C251 - PCallNative() not implemented Resources]
+[C251 - PCallNative() not implemented Native Resources]
+[C251 - PCallNative() not implemented License files]
+[C251 - PCallNative() not implemented General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2683,7 +2683,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C251 Configurations]
+[C251 - PCallNative() not implemented Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2710,11 +2710,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C251
+ENDApplication = C251 - PCallNative() not implemented
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C250 *************
-Application = C250
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C250 - Problem taking the address of vars *************
+Application = C250 - Problem taking the address of vars
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2745,19 +2745,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C250 FileGroups]
-[C250 Files]
+[C250 - Problem taking the address of vars FileGroups]
+[C250 - Problem taking the address of vars Files]
 File = %AppPath%\Prg\C250.prg
 FileGUID = BD421D03-1587-46A0-A9BD-729E9FB308DD
 FileType = Code
-[C250 References]
+[C250 - Problem taking the address of vars References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C250 Resources]
-[C250 Native Resources]
-[C250 License files]
-[C250 General Options]
+[C250 - Problem taking the address of vars Resources]
+[C250 - Problem taking the address of vars Native Resources]
+[C250 - Problem taking the address of vars License files]
+[C250 - Problem taking the address of vars General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2782,7 +2782,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C250 Configurations]
+[C250 - Problem taking the address of vars Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2809,11 +2809,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C250
+ENDApplication = C250 - Problem taking the address of vars
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C249 *************
-Application = C249
+ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+; ************** APPLICATION C249 - Problem with Empty codeblock *************
+Application = C249 - Problem with Empty codeblock
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2844,19 +2844,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C249 FileGroups]
-[C249 Files]
+[C249 - Problem with Empty codeblock FileGroups]
+[C249 - Problem with Empty codeblock Files]
 File = %AppPath%\Prg\C249.prg
 FileGUID = F0B84D04-E118-49D2-B11B-5C1EB7A36B52
 FileType = Code
-[C249 References]
+[C249 - Problem with Empty codeblock References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C249 Resources]
-[C249 Native Resources]
-[C249 License files]
-[C249 General Options]
+[C249 - Problem with Empty codeblock Resources]
+[C249 - Problem with Empty codeblock Native Resources]
+[C249 - Problem with Empty codeblock License files]
+[C249 - Problem with Empty codeblock General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2881,7 +2881,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C249 Configurations]
+[C249 - Problem with Empty codeblock Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2908,11 +2908,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C249
+ENDApplication = C249 - Problem with Empty codeblock
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C248 *************
-Application = C248
+ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+; ************** APPLICATION C248 - Problem with function in codeblock *************
+Application = C248 - Problem with function in codeblock
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2943,19 +2943,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C248 FileGroups]
-[C248 Files]
+[C248 - Problem with function in codeblock FileGroups]
+[C248 - Problem with function in codeblock Files]
 File = %AppPath%\Prg\C248.prg
 FileGUID = 270282CA-C8AE-44E5-B5A9-A0D849E188BD
 FileType = Code
-[C248 References]
+[C248 - Problem with function in codeblock References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C248 Resources]
-[C248 Native Resources]
-[C248 License files]
-[C248 General Options]
+[C248 - Problem with function in codeblock Resources]
+[C248 - Problem with function in codeblock Native Resources]
+[C248 - Problem with function in codeblock License files]
+[C248 - Problem with function in codeblock General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2980,7 +2980,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C248 Configurations]
+[C248 - Problem with function in codeblock Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -3007,7 +3007,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C248
+ENDApplication = C248 - Problem with function in codeblock
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C247 *************
@@ -3108,9 +3108,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C247
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C246 *************
-Application = C246
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C246 - Problem converting PTR to WORD PTR *************
+Application = C246 - Problem converting PTR to WORD PTR
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -3141,19 +3141,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C246 FileGroups]
-[C246 Files]
+[C246 - Problem converting PTR to WORD PTR FileGroups]
+[C246 - Problem converting PTR to WORD PTR Files]
 File = %AppPath%\Prg\C246.prg
 FileGUID = C8087D7B-933B-4EC0-A29E-58A7461553E2
 FileType = Code
-[C246 References]
+[C246 - Problem converting PTR to WORD PTR References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C246 Resources]
-[C246 Native Resources]
-[C246 License files]
-[C246 General Options]
+[C246 - Problem converting PTR to WORD PTR Resources]
+[C246 - Problem converting PTR to WORD PTR Native Resources]
+[C246 - Problem converting PTR to WORD PTR License files]
+[C246 - Problem converting PTR to WORD PTR General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -3178,7 +3178,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C246 Configurations]
+[C246 - Problem converting PTR to WORD PTR Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -3205,7 +3205,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C246
+ENDApplication = C246 - Problem converting PTR to WORD PTR
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C245 *************
@@ -4395,9 +4395,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C221
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C222 *************
-Application = C222
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C222 - Problem (?) with OBJECT PTR *************
+Application = C222 - Problem (?) with OBJECT PTR
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -4428,19 +4428,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C222 FileGroups]
-[C222 Files]
+[C222 - Problem (?) with OBJECT PTR FileGroups]
+[C222 - Problem (?) with OBJECT PTR Files]
 File = %AppPath%\Prg\C222.prg
 FileGUID = BFA45BBC-D1C2-4DF3-8A3D-DE60BAC233F7
 FileType = Code
-[C222 References]
+[C222 - Problem (?) with OBJECT PTR References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C222 Resources]
-[C222 Native Resources]
-[C222 License files]
-[C222 General Options]
+[C222 - Problem (?) with OBJECT PTR Resources]
+[C222 - Problem (?) with OBJECT PTR Native Resources]
+[C222 - Problem (?) with OBJECT PTR License files]
+[C222 - Problem (?) with OBJECT PTR General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -4465,7 +4465,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C222 Configurations]
+[C222 - Problem (?) with OBJECT PTR Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -4492,7 +4492,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C222
+ENDApplication = C222 - Problem (?) with OBJECT PTR
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C223 *************
@@ -5583,9 +5583,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C233
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C234 *************
-Application = C234
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C234 - Problem With PSZ and NULL *************
+Application = C234 - Problem With PSZ and NULL
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -5616,19 +5616,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C234 FileGroups]
-[C234 Files]
+[C234 - Problem With PSZ and NULL FileGroups]
+[C234 - Problem With PSZ and NULL Files]
 File = %AppPath%\Prg\C234.prg
 FileGUID = 70415C99-A364-4C55-A9AA-07EB8CA3DAAD
 FileType = Code
-[C234 References]
+[C234 - Problem With PSZ and NULL References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C234 Resources]
-[C234 Native Resources]
-[C234 License files]
-[C234 General Options]
+[C234 - Problem With PSZ and NULL Resources]
+[C234 - Problem With PSZ and NULL Native Resources]
+[C234 - Problem With PSZ and NULL License files]
+[C234 - Problem With PSZ and NULL General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -5653,7 +5653,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C234 Configurations]
+[C234 - Problem With PSZ and NULL Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -5680,7 +5680,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C234
+ENDApplication = C234 - Problem With PSZ and NULL
 
 ApplicationGroup = BABB7440-6687-477E-BC04-CEBD4A22FCB6
 ; ************** APPLICATION C235 *************
@@ -5781,9 +5781,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C235
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C236 *************
-Application = C236
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C236 - Problem With PSZ and NULL *************
+Application = C236 - Problem With PSZ and NULL
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -5814,19 +5814,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C236 FileGroups]
-[C236 Files]
+[C236 - Problem With PSZ and NULL FileGroups]
+[C236 - Problem With PSZ and NULL Files]
 File = %AppPath%\Prg\C236.prg
 FileGUID = 712D0E79-301F-484E-A7FC-487D92071DB6
 FileType = Code
-[C236 References]
+[C236 - Problem With PSZ and NULL References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C236 Resources]
-[C236 Native Resources]
-[C236 License files]
-[C236 General Options]
+[C236 - Problem With PSZ and NULL Resources]
+[C236 - Problem With PSZ and NULL Native Resources]
+[C236 - Problem With PSZ and NULL License files]
+[C236 - Problem With PSZ and NULL General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -5851,7 +5851,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C236 Configurations]
+[C236 - Problem With PSZ and NULL Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -5878,7 +5878,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C236
+ENDApplication = C236 - Problem With PSZ and NULL
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C237 *************
@@ -6177,9 +6177,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C239
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C240 *************
-Application = C240
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C240 - Problem defining STATIC LOCAL *************
+Application = C240 - Problem defining STATIC LOCAL
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -6210,19 +6210,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C240 FileGroups]
-[C240 Files]
+[C240 - Problem defining STATIC LOCAL FileGroups]
+[C240 - Problem defining STATIC LOCAL Files]
 File = %AppPath%\Prg\C240.prg
 FileGUID = 8B1D6EC0-99F3-4907-A4CC-F79BCB47683C
 FileType = Code
-[C240 References]
+[C240 - Problem defining STATIC LOCAL References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C240 Resources]
-[C240 Native Resources]
-[C240 License files]
-[C240 General Options]
+[C240 - Problem defining STATIC LOCAL Resources]
+[C240 - Problem defining STATIC LOCAL Native Resources]
+[C240 - Problem defining STATIC LOCAL License files]
+[C240 - Problem defining STATIC LOCAL General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -6247,7 +6247,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C240 Configurations]
+[C240 - Problem defining STATIC LOCAL Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -6274,11 +6274,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C240
+ENDApplication = C240 - Problem defining STATIC LOCAL
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C241 *************
-Application = C241
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C241 - Problem assigning return value of MemAlloc() to BYTE PTR *************
+Application = C241 - Problem assigning return value of MemAlloc() to BYTE PTR
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -6309,19 +6309,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C241 FileGroups]
-[C241 Files]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR FileGroups]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR Files]
 File = %AppPath%\Prg\C241.prg
 FileGUID = A23F04DB-F4D1-4104-8BB4-AA961BE7C7B0
 FileType = Code
-[C241 References]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C241 Resources]
-[C241 Native Resources]
-[C241 License files]
-[C241 General Options]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR Resources]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR Native Resources]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR License files]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -6346,7 +6346,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C241 Configurations]
+[C241 - Problem assigning return value of MemAlloc() to BYTE PTR Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -6373,7 +6373,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C241
+ENDApplication = C241 - Problem assigning return value of MemAlloc() to BYTE PTR
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C242 *************
@@ -6475,8 +6475,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C242
 
 ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C243 *************
-Application = C243
+; ************** APPLICATION C243 - Cannot assign Char to BYTE *************
+Application = C243 - Cannot assign Char to BYTE
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -6507,19 +6507,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C243 FileGroups]
-[C243 Files]
+[C243 - Cannot assign Char to BYTE FileGroups]
+[C243 - Cannot assign Char to BYTE Files]
 File = %AppPath%\Prg\C243.prg
 FileGUID = A22375BE-09A6-49D3-B0BD-BC24F9D91089
 FileType = Code
-[C243 References]
+[C243 - Cannot assign Char to BYTE References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C243 Resources]
-[C243 Native Resources]
-[C243 License files]
-[C243 General Options]
+[C243 - Cannot assign Char to BYTE Resources]
+[C243 - Cannot assign Char to BYTE Native Resources]
+[C243 - Cannot assign Char to BYTE License files]
+[C243 - Cannot assign Char to BYTE General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -6544,7 +6544,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C243 Configurations]
+[C243 - Cannot assign Char to BYTE Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -6571,11 +6571,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C243
+ENDApplication = C243 - Cannot assign Char to BYTE
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
-; ************** APPLICATION C244 *************
-Application = C244
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C244 - Problem dereferencing pointer *************
+Application = C244 - Problem dereferencing pointer
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -6606,19 +6606,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C244 FileGroups]
-[C244 Files]
+[C244 - Problem dereferencing pointer FileGroups]
+[C244 - Problem dereferencing pointer Files]
 File = %AppPath%\Prg\C244.prg
 FileGUID = 4BF569CE-65C0-47EE-89DB-EF0C27473041
 FileType = Code
-[C244 References]
+[C244 - Problem dereferencing pointer References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C244 Resources]
-[C244 Native Resources]
-[C244 License files]
-[C244 General Options]
+[C244 - Problem dereferencing pointer Resources]
+[C244 - Problem dereferencing pointer Native Resources]
+[C244 - Problem dereferencing pointer License files]
+[C244 - Problem dereferencing pointer General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -6643,7 +6643,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C244 Configurations]
+[C244 - Problem dereferencing pointer Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -6670,7 +6670,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C244
+ENDApplication = C244 - Problem dereferencing pointer
 
 ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
 ; ************** APPLICATION C102 *************
@@ -7256,9 +7256,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C107
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
-; ************** APPLICATION C108 *************
-Application = C108
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C108 - Conflict between same named class and local *************
+Application = C108 - Conflict between same named class and local
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -7289,17 +7289,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C108 FileGroups]
-[C108 Files]
+[C108 - Conflict between same named class and local FileGroups]
+[C108 - Conflict between same named class and local Files]
 File = %AppPath%\Prg\C108.prg
 FileGUID = 76477AD3-B551-4CAC-B16F-CC6ABEF38F74
 FileType = Code
-[C108 References]
+[C108 - Conflict between same named class and local References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C108 Resources]
-[C108 Native Resources]
-[C108 License files]
-[C108 General Options]
+[C108 - Conflict between same named class and local Resources]
+[C108 - Conflict between same named class and local Native Resources]
+[C108 - Conflict between same named class and local License files]
+[C108 - Conflict between same named class and local General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -7324,7 +7324,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C108 Configurations]
+[C108 - Conflict between same named class and local Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -7351,7 +7351,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C108
+ENDApplication = C108 - Conflict between same named class and local
 
 ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
 ; ************** APPLICATION C109 *************
@@ -8422,9 +8422,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C119
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
-; ************** APPLICATION C120 *************
-Application = C120
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C120 - Conflict between same named type and property *************
+Application = C120 - Conflict between same named type and property
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -8455,17 +8455,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C120 FileGroups]
-[C120 Files]
+[C120 - Conflict between same named type and property FileGroups]
+[C120 - Conflict between same named type and property Files]
 File = %AppPath%\Prg\C120.prg
 FileGUID = 884EA30E-04E9-4009-BBB6-72444FDEAB97
 FileType = Code
-[C120 References]
+[C120 - Conflict between same named type and property References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C120 Resources]
-[C120 Native Resources]
-[C120 License files]
-[C120 General Options]
+[C120 - Conflict between same named type and property Resources]
+[C120 - Conflict between same named type and property Native Resources]
+[C120 - Conflict between same named type and property License files]
+[C120 - Conflict between same named type and property General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -8490,7 +8490,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C120 Configurations]
+[C120 - Conflict between same named type and property Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -8517,7 +8517,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C120
+ENDApplication = C120 - Conflict between same named type and property
 
 ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
 ; ************** APPLICATION C121 *************
@@ -9784,14 +9784,14 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C133
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
-; ************** APPLICATION C134 *************
-Application = C134
+ApplicationGroup = 277C4CD0-A49F-40CE-9680-36717155B0A2
+; ************** APPLICATION C134 - (need to check) Problem with attribute in _DLL FUNC *************
+Application = C134 - (need to check) Problem with attribute in _DLL FUNC
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
-Target = 0
+Target = 2
 Platform = AnyCPU
 Language = XSharp
 Runtime = CLR4
@@ -9817,17 +9817,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C134 FileGroups]
-[C134 Files]
+[C134 - (need to check) Problem with attribute in _DLL FUNC FileGroups]
+[C134 - (need to check) Problem with attribute in _DLL FUNC Files]
 File = %AppPath%\Prg\C134.prg
 FileGUID = E85C93A1-6535-409A-9CA5-BC020C89FE1E
 FileType = Code
-[C134 References]
+[C134 - (need to check) Problem with attribute in _DLL FUNC References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C134 Resources]
-[C134 Native Resources]
-[C134 License files]
-[C134 General Options]
+[C134 - (need to check) Problem with attribute in _DLL FUNC Resources]
+[C134 - (need to check) Problem with attribute in _DLL FUNC Native Resources]
+[C134 - (need to check) Problem with attribute in _DLL FUNC License files]
+[C134 - (need to check) Problem with attribute in _DLL FUNC General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -9852,7 +9852,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C134 Configurations]
+[C134 - (need to check) Problem with attribute in _DLL FUNC Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -9879,7 +9879,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C134
+ENDApplication = C134 - (need to check) Problem with attribute in _DLL FUNC
 
 ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
 ; ************** APPLICATION C135 *************
@@ -9978,9 +9978,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C135
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
-; ************** APPLICATION C136 *************
-Application = C136
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C136 - Cannot use the ParamArray attribute directly *************
+Application = C136 - Cannot use the ParamArray attribute directly
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -10011,17 +10011,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C136 FileGroups]
-[C136 Files]
+[C136 - Cannot use the ParamArray attribute directly FileGroups]
+[C136 - Cannot use the ParamArray attribute directly Files]
 File = %AppPath%\Prg\C136.prg
 FileGUID = ADA5F8C4-0E50-4520-8F1B-095BB5BE8AE7
 FileType = Code
-[C136 References]
+[C136 - Cannot use the ParamArray attribute directly References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C136 Resources]
-[C136 Native Resources]
-[C136 License files]
-[C136 General Options]
+[C136 - Cannot use the ParamArray attribute directly Resources]
+[C136 - Cannot use the ParamArray attribute directly Native Resources]
+[C136 - Cannot use the ParamArray attribute directly License files]
+[C136 - Cannot use the ParamArray attribute directly General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -10046,7 +10046,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C136 Configurations]
+[C136 - Cannot use the ParamArray attribute directly Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -10073,7 +10073,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C136
+ENDApplication = C136 - Cannot use the ParamArray attribute directly
 
 ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
 ; ************** APPLICATION C137 *************
@@ -11542,15 +11542,15 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C151
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C152 *************
-Application = C152
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C152 - Problem using the $ operator in core *************
+Application = C152 - Problem using the $ operator in core
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Core
@@ -11575,17 +11575,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C152 FileGroups]
-[C152 Files]
+[C152 - Problem using the $ operator in core FileGroups]
+[C152 - Problem using the $ operator in core Files]
 File = %AppPath%\Prg\C152.prg
 FileGUID = 6AD4CDF9-D08D-4571-9433-958C4AF20D6B
 FileType = Code
-[C152 References]
+[C152 - Problem using the $ operator in core References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C152 Resources]
-[C152 Native Resources]
-[C152 License files]
-[C152 General Options]
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C152 - Problem using the $ operator in core Resources]
+[C152 - Problem using the $ operator in core Native Resources]
+[C152 - Problem using the $ operator in core License files]
+[C152 - Problem using the $ operator in core General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -11610,7 +11612,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C152 Configurations]
+[C152 - Problem using the $ operator in core Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -11637,7 +11639,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C152
+ENDApplication = C152 - Problem using the $ operator in core
 
 ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C153 *************
@@ -12825,9 +12827,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C164
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C165 *************
-Application = C165
+ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+; ************** APPLICATION C165 - Problems with pointer arithmetic *************
+Application = C165 - Problems with pointer arithmetic
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -12858,19 +12860,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C165 FileGroups]
-[C165 Files]
+[C165 - Problems with pointer arithmetic FileGroups]
+[C165 - Problems with pointer arithmetic Files]
 File = %AppPath%\Prg\C165.prg
 FileGUID = 86D992A7-E4F1-4B91-94E1-8EC0FFC32BCA
 FileType = Code
-[C165 References]
+[C165 - Problems with pointer arithmetic References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C165 Resources]
-[C165 Native Resources]
-[C165 License files]
-[C165 General Options]
+[C165 - Problems with pointer arithmetic Resources]
+[C165 - Problems with pointer arithmetic Native Resources]
+[C165 - Problems with pointer arithmetic License files]
+[C165 - Problems with pointer arithmetic General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -12895,7 +12897,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C165 Configurations]
+[C165 - Problems with pointer arithmetic Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -12922,11 +12924,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C165
+ENDApplication = C165 - Problems with pointer arithmetic
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C166 *************
-Application = C166
+ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+; ************** APPLICATION C166 - Problem assigning System.Decimal to usual *************
+Application = C166 - Problem assigning System.Decimal to usual
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -12957,19 +12959,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C166 FileGroups]
-[C166 Files]
+[C166 - Problem assigning System.Decimal to usual FileGroups]
+[C166 - Problem assigning System.Decimal to usual Files]
 File = %AppPath%\Prg\C166.prg
 FileGUID = F28BB0B9-0E13-4F50-87F7-4CF810E9421F
 FileType = Code
-[C166 References]
+[C166 - Problem assigning System.Decimal to usual References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C166 Resources]
-[C166 Native Resources]
-[C166 License files]
-[C166 General Options]
+[C166 - Problem assigning System.Decimal to usual Resources]
+[C166 - Problem assigning System.Decimal to usual Native Resources]
+[C166 - Problem assigning System.Decimal to usual License files]
+[C166 - Problem assigning System.Decimal to usual General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -12994,7 +12996,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C166 Configurations]
+[C166 - Problem assigning System.Decimal to usual Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -13021,11 +13023,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C166
+ENDApplication = C166 - Problem assigning System.Decimal to usual
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C167 *************
-Application = C167
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C167 - Problem declaring class ClassName and NS.ClassName *************
+Application = C167 - Problem declaring class ClassName and NS.ClassName
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -13056,19 +13058,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C167 FileGroups]
-[C167 Files]
+[C167 - Problem declaring class ClassName and NS.ClassName FileGroups]
+[C167 - Problem declaring class ClassName and NS.ClassName Files]
 File = %AppPath%\Prg\C167.prg
 FileGUID = 4CAD5DEB-60D4-40EF-9790-9F497C6DD590
 FileType = Code
-[C167 References]
+[C167 - Problem declaring class ClassName and NS.ClassName References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C167 Resources]
-[C167 Native Resources]
-[C167 License files]
-[C167 General Options]
+[C167 - Problem declaring class ClassName and NS.ClassName Resources]
+[C167 - Problem declaring class ClassName and NS.ClassName Native Resources]
+[C167 - Problem declaring class ClassName and NS.ClassName License files]
+[C167 - Problem declaring class ClassName and NS.ClassName General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -13093,7 +13095,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C167 Configurations]
+[C167 - Problem declaring class ClassName and NS.ClassName Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -13120,7 +13122,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C167
+ENDApplication = C167 - Problem declaring class ClassName and NS.ClassName
 
 ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C168 *************
@@ -13417,9 +13419,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C170
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C171 *************
-Application = C171
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
+; ************** APPLICATION C171 - Name conflict between function and method *************
+Application = C171 - Name conflict between function and method
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -13450,19 +13452,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C171 FileGroups]
-[C171 Files]
+[C171 - Name conflict between function and method FileGroups]
+[C171 - Name conflict between function and method Files]
 File = %AppPath%\Prg\C171.prg
 FileGUID = EA07E320-5502-4F5B-A9B0-656F65E885E4
 FileType = Code
-[C171 References]
+[C171 - Name conflict between function and method References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C171 Resources]
-[C171 Native Resources]
-[C171 License files]
-[C171 General Options]
+[C171 - Name conflict between function and method Resources]
+[C171 - Name conflict between function and method Native Resources]
+[C171 - Name conflict between function and method License files]
+[C171 - Name conflict between function and method General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -13487,7 +13489,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C171 Configurations]
+[C171 - Name conflict between function and method Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -13514,7 +13516,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C171
+ENDApplication = C171 - Name conflict between function and method
 
 ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C172 *************
@@ -14308,9 +14310,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C179
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C180 *************
-Application = C180
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax *************
+Application = C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -14341,17 +14343,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C180 FileGroups]
-[C180 Files]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax FileGroups]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax Files]
 File = %AppPath%\Prg\C180.prg
 FileGUID = C3B549A2-E4A9-42BF-BECF-0FB761891906
 FileType = Code
-[C180 References]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C180 Resources]
-[C180 Native Resources]
-[C180 License files]
-[C180 General Options]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax Resources]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax Native Resources]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax License files]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -14376,7 +14378,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C180 Configurations]
+[C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -14403,11 +14405,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C180
+ENDApplication = C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C181 *************
-Application = C181
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C181 - Problem resolving to correct overload (REF INT vs Double) *************
+Application = C181 - Problem resolving to correct overload (REF INT vs Double)
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -14438,19 +14440,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C181 FileGroups]
-[C181 Files]
+[C181 - Problem resolving to correct overload (REF INT vs Double) FileGroups]
+[C181 - Problem resolving to correct overload (REF INT vs Double) Files]
 File = %AppPath%\Prg\C181.prg
 FileGUID = 9297BD78-5DEB-40D2-8596-F7E7F507C4E8
 FileType = Code
-[C181 References]
+[C181 - Problem resolving to correct overload (REF INT vs Double) References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C181 Resources]
-[C181 Native Resources]
-[C181 License files]
-[C181 General Options]
+[C181 - Problem resolving to correct overload (REF INT vs Double) Resources]
+[C181 - Problem resolving to correct overload (REF INT vs Double) Native Resources]
+[C181 - Problem resolving to correct overload (REF INT vs Double) License files]
+[C181 - Problem resolving to correct overload (REF INT vs Double) General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -14475,7 +14477,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C181 Configurations]
+[C181 - Problem resolving to correct overload (REF INT vs Double) Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -14502,7 +14504,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C181
+ENDApplication = C181 - Problem resolving to correct overload (REF INT vs Double)
 
 ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C182 *************
@@ -15092,9 +15094,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C187
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C188 *************
-Application = C188
+ApplicationGroup = 277C4CD0-A49F-40CE-9680-36717155B0A2
+; ************** APPLICATION C188 - (need to check) Problem passing FLOAT as REAL4 argument *************
+Application = C188 - (need to check) Problem passing FLOAT as REAL4 argument
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -15125,19 +15127,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C188 FileGroups]
-[C188 Files]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument FileGroups]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument Files]
 File = %AppPath%\Prg\C188.prg
 FileGUID = 67C286FC-9E5A-4155-A888-4B14C6C05A2B
 FileType = Code
-[C188 References]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C188 Resources]
-[C188 Native Resources]
-[C188 License files]
-[C188 General Options]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument Resources]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument Native Resources]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument License files]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -15162,7 +15164,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C188 Configurations]
+[C188 - (need to check) Problem passing FLOAT as REAL4 argument Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -15189,7 +15191,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C188
+ENDApplication = C188 - (need to check) Problem passing FLOAT as REAL4 argument
 
 ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C189 *************
@@ -15585,9 +15587,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C192
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C193 *************
-Application = C193
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C193 - Cannot declare PRIVATE (internal) STRUCTURE *************
+Application = C193 - Cannot declare PRIVATE (internal) STRUCTURE
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -15618,19 +15620,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C193 FileGroups]
-[C193 Files]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE FileGroups]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE Files]
 File = %AppPath%\Prg\C193.prg
 FileGUID = DBAB4D03-DD98-4E22-A253-6ED299C5C98B
 FileType = Code
-[C193 References]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C193 Resources]
-[C193 Native Resources]
-[C193 License files]
-[C193 General Options]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE Resources]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE Native Resources]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE License files]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -15655,7 +15657,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C193 Configurations]
+[C193 - Cannot declare PRIVATE (internal) STRUCTURE Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -15682,7 +15684,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C193
+ENDApplication = C193 - Cannot declare PRIVATE (internal) STRUCTURE
 
 ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C194 *************
@@ -16076,9 +16078,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C197
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
-; ************** APPLICATION C198 *************
-Application = C198
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C198 - Cannot modify iteration variable *************
+Application = C198 - Cannot modify iteration variable
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -16109,19 +16111,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C198 FileGroups]
-[C198 Files]
+[C198 - Cannot modify iteration variable FileGroups]
+[C198 - Cannot modify iteration variable Files]
 File = %AppPath%\Prg\C198.prg
 FileGUID = EF777405-033A-457E-83FB-E3FED2C01CC6
 FileType = Code
-[C198 References]
+[C198 - Cannot modify iteration variable References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C198 Resources]
-[C198 Native Resources]
-[C198 License files]
-[C198 General Options]
+[C198 - Cannot modify iteration variable Resources]
+[C198 - Cannot modify iteration variable Native Resources]
+[C198 - Cannot modify iteration variable License files]
+[C198 - Cannot modify iteration variable General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -16146,7 +16148,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C198 Configurations]
+[C198 - Cannot modify iteration variable Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -16173,7 +16175,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C198
+ENDApplication = C198 - Cannot modify iteration variable
 
 ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C199 *************
@@ -19487,9 +19489,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C033
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
-; ************** APPLICATION C034 *************
-Application = C034
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C034 - Conflict between same named method and class *************
+Application = C034 - Conflict between same named method and class
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -19520,19 +19522,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C034 FileGroups]
-[C034 Files]
+[C034 - Conflict between same named method and class FileGroups]
+[C034 - Conflict between same named method and class Files]
 File = %AppPath%\Prg\C034.prg
 FileGUID = 196A3882-A3A4-4B17-9717-E381F096A14F
 FileType = Code
-[C034 References]
+[C034 - Conflict between same named method and class References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
-[C034 Resources]
-[C034 Native Resources]
-[C034 License files]
-[C034 General Options]
+[C034 - Conflict between same named method and class Resources]
+[C034 - Conflict between same named method and class Native Resources]
+[C034 - Conflict between same named method and class License files]
+[C034 - Conflict between same named method and class General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -19557,7 +19559,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C034 Configurations]
+[C034 - Conflict between same named method and class Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -19584,7 +19586,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C034
+ENDApplication = C034 - Conflict between same named method and class
 
 ApplicationGroup = 85737FA8-B9AF-41E9-A347-4C4093D05606
 ; ************** APPLICATION C035 *************
@@ -20171,8 +20173,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C040
 
 ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
-; ************** APPLICATION C041 *************
-Application = C041
+; ************** APPLICATION C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows *************
+Application = C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -20203,17 +20205,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C041 FileGroups]
-[C041 Files]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows FileGroups]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows Files]
 File = %AppPath%\Prg\C041.prg
 FileGUID = 37EB0FBF-A4DC-495B-BBF8-FA47B98BACEB
 FileType = Code
-[C041 References]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C041 Resources]
-[C041 Native Resources]
-[C041 License files]
-[C041 General Options]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows Resources]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows Native Resources]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows License files]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -20238,7 +20240,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C041 Configurations]
+[C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -20265,7 +20267,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C041
+ENDApplication = C041 - Cannot use the [ExtensionAttribute] directly as vulcan allows
 
 ApplicationGroup = 85737FA8-B9AF-41E9-A347-4C4093D05606
 ; ************** APPLICATION C042 *************
@@ -22304,9 +22306,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C062
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
-; ************** APPLICATION C063 *************
-Application = C063
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace *************
+Application = C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -22337,17 +22339,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C063 FileGroups]
-[C063 Files]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace FileGroups]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace Files]
 File = %AppPath%\Prg\C063.prg
 FileGUID = AD542573-72E8-4606-857C-25E28F790A92
 FileType = Code
-[C063 References]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C063 Resources]
-[C063 Native Resources]
-[C063 License files]
-[C063 General Options]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace Resources]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace Native Resources]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace License files]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -22372,7 +22374,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C063 Configurations]
+[C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -22399,7 +22401,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C063
+ENDApplication = C063 - Function inside BEGIN NAMESPACE does not "see" class name inside namespace
 
 ApplicationGroup = 3A527CCD-FFA2-423D-A17F-3B2D5424CFCE
 ; ************** APPLICATION C064 *************
@@ -23861,8 +23863,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C078
 
 ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
-; ************** APPLICATION C079 *************
-Application = C079
+; ************** APPLICATION C079 - Cannot use static member of class with same name of containing function *************
+Application = C079 - Cannot use static member of class with same name of containing function
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -23893,17 +23895,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C079 FileGroups]
-[C079 Files]
+[C079 - Cannot use static member of class with same name of containing function FileGroups]
+[C079 - Cannot use static member of class with same name of containing function Files]
 File = %AppPath%\Prg\C079.prg
 FileGUID = ACA4434F-A364-4FB0-BF95-95342990D94D
 FileType = Code
-[C079 References]
+[C079 - Cannot use static member of class with same name of containing function References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C079 Resources]
-[C079 Native Resources]
-[C079 License files]
-[C079 General Options]
+[C079 - Cannot use static member of class with same name of containing function Resources]
+[C079 - Cannot use static member of class with same name of containing function Native Resources]
+[C079 - Cannot use static member of class with same name of containing function License files]
+[C079 - Cannot use static member of class with same name of containing function General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -23928,7 +23930,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C079 Configurations]
+[C079 - Cannot use static member of class with same name of containing function Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -23955,7 +23957,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C079
+ENDApplication = C079 - Cannot use static member of class with same name of containing function
 
 ApplicationGroup = 3A527CCD-FFA2-423D-A17F-3B2D5424CFCE
 ; ************** APPLICATION C080 *************
@@ -26101,9 +26103,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C266
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C267 *************
-Application = C267
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C267 - Name conflict between class and namespace *************
+Application = C267 - Name conflict between class and namespace
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -26134,16 +26136,16 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C267 FileGroups]
-[C267 Files]
+[C267 - Name conflict between class and namespace FileGroups]
+[C267 - Name conflict between class and namespace Files]
 File = %AppPath%\Prg\C267.prg
 FileGUID = 4E4A65EE-324E-46ED-A678-C5BBF5131AE1
 FileType = Code
-[C267 References]
-[C267 Resources]
-[C267 Native Resources]
-[C267 License files]
-[C267 General Options]
+[C267 - Name conflict between class and namespace References]
+[C267 - Name conflict between class and namespace Resources]
+[C267 - Name conflict between class and namespace Native Resources]
+[C267 - Name conflict between class and namespace License files]
+[C267 - Name conflict between class and namespace General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -26168,7 +26170,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C267 Configurations]
+[C267 - Name conflict between class and namespace Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -26195,11 +26197,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C267
+ENDApplication = C267 - Name conflict between class and namespace
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C268 *************
-Application = C268
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C268 - Conflict between assembly name and class name *************
+Application = C268 - Conflict between assembly name and class name
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -26230,21 +26232,21 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C268 FileGroups]
-[C268 Files]
+[C268 - Conflict between assembly name and class name FileGroups]
+[C268 - Conflict between assembly name and class name Files]
 File = %AppPath%\Prg\C268.prg
 FileGUID = E2C48F36-5F91-44D1-8842-A9ECCD42B10A
 FileType = Code
-[C268 References]
+[C268 - Conflict between assembly name and class name References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
 ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C268 Resources]
-[C268 Native Resources]
-[C268 License files]
-[C268 General Options]
+[C268 - Conflict between assembly name and class name Resources]
+[C268 - Conflict between assembly name and class name Native Resources]
+[C268 - Conflict between assembly name and class name License files]
+[C268 - Conflict between assembly name and class name General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -26269,7 +26271,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C268 Configurations]
+[C268 - Conflict between assembly name and class name Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -26296,7 +26298,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C268
+ENDApplication = C268 - Conflict between assembly name and class name
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C269 *************
@@ -26395,7 +26397,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C269
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C270 *************
 Application = C270
 IDEVersion = 1.06
@@ -26403,10 +26405,10 @@ GalleryName =
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Core
+Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C270\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -26435,6 +26437,8 @@ FileGUID = 6191D58A-255A-4149-92C2-8B81BB6121E4
 FileType = Code
 [C270 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C270 Resources]
 [C270 Native Resources]
 [C270 License files]
@@ -26589,15 +26593,15 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C271
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C272 *************
-Application = C272
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C272 - Ambiguous call between Char and SByte overloads *************
+Application = C272 - Ambiguous call between Char and SByte overloads
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
-Platform = AnyCPU
+Platform = x86
 Language = XSharp
 Runtime = CLR4
 Dialect = Vulcan
@@ -26622,18 +26626,18 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C272 FileGroups]
-[C272 Files]
+[C272 - Ambiguous call between Char and SByte overloads FileGroups]
+[C272 - Ambiguous call between Char and SByte overloads Files]
 File = %AppPath%\Prg\C272.prg
 FileGUID = 2C44BEA5-92ED-4299-9489-812B67118E52
 FileType = Code
-[C272 References]
+[C272 - Ambiguous call between Char and SByte overloads References]
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C272 Resources]
-[C272 Native Resources]
-[C272 License files]
-[C272 General Options]
+[C272 - Ambiguous call between Char and SByte overloads Resources]
+[C272 - Ambiguous call between Char and SByte overloads Native Resources]
+[C272 - Ambiguous call between Char and SByte overloads License files]
+[C272 - Ambiguous call between Char and SByte overloads General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -26658,7 +26662,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C272 Configurations]
+[C272 - Ambiguous call between Char and SByte overloads Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -26685,11 +26689,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C272
+ENDApplication = C272 - Ambiguous call between Char and SByte overloads
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C273 *************
-Application = C273
+ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+; ************** APPLICATION C273 - Ambiguous resolution between string and logic overloads *************
+Application = C273 - Ambiguous resolution between string and logic overloads
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -26720,19 +26724,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C273 FileGroups]
-[C273 Files]
+[C273 - Ambiguous resolution between string and logic overloads FileGroups]
+[C273 - Ambiguous resolution between string and logic overloads Files]
 File = %AppPath%\Prg\C273.prg
 FileGUID = A6FD22F1-C764-44E5-B32D-E0F40A7A23BC
 FileType = Code
-[C273 References]
+[C273 - Ambiguous resolution between string and logic overloads References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C273 Resources]
-[C273 Native Resources]
-[C273 License files]
-[C273 General Options]
+[C273 - Ambiguous resolution between string and logic overloads Resources]
+[C273 - Ambiguous resolution between string and logic overloads Native Resources]
+[C273 - Ambiguous resolution between string and logic overloads License files]
+[C273 - Ambiguous resolution between string and logic overloads General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -26757,7 +26761,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C273 Configurations]
+[C273 - Ambiguous resolution between string and logic overloads Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -26784,7 +26788,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C273
+ENDApplication = C273 - Ambiguous resolution between string and logic overloads
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C274 *************
@@ -27078,9 +27082,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C276
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C277 *************
-Application = C277
+ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+; ************** APPLICATION C277 - Ambiguous operator with BYTE and without /vo4 *************
+Application = C277 - Ambiguous operator with BYTE and without /vo4
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -27111,17 +27115,17 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C277 FileGroups]
-[C277 Files]
+[C277 - Ambiguous operator with BYTE and without /vo4 FileGroups]
+[C277 - Ambiguous operator with BYTE and without /vo4 Files]
 File = %AppPath%\Prg\C277.prg
 FileGUID = 1453407F-3ACE-47AF-811D-15A3FD97880A
 FileType = Code
-[C277 References]
+[C277 - Ambiguous operator with BYTE and without /vo4 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-[C277 Resources]
-[C277 Native Resources]
-[C277 License files]
-[C277 General Options]
+[C277 - Ambiguous operator with BYTE and without /vo4 Resources]
+[C277 - Ambiguous operator with BYTE and without /vo4 Native Resources]
+[C277 - Ambiguous operator with BYTE and without /vo4 License files]
+[C277 - Ambiguous operator with BYTE and without /vo4 General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -27146,7 +27150,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C277 Configurations]
+[C277 - Ambiguous operator with BYTE and without /vo4 Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -27173,7 +27177,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C277
+ENDApplication = C277 - Ambiguous operator with BYTE and without /vo4
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C278 *************
@@ -27272,9 +27276,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C278
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C279 *************
-Application = C279
+ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+; ************** APPLICATION C279 - Problem assigning return value of iif() to BYTE, without /vo4 *************
+Application = C279 - Problem assigning return value of iif() to BYTE, without /vo4
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -27305,19 +27309,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C279 FileGroups]
-[C279 Files]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 FileGroups]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 Files]
 File = %AppPath%\Prg\C279.prg
 FileGUID = 087DDBD6-63A2-49AB-96F1-36F7B35BDF1C
 FileType = Code
-[C279 References]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C279 Resources]
-[C279 Native Resources]
-[C279 License files]
-[C279 General Options]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 Resources]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 Native Resources]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 License files]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -27342,7 +27346,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C279 Configurations]
+[C279 - Problem assigning return value of iif() to BYTE, without /vo4 Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -27369,7 +27373,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C279
+ENDApplication = C279 - Problem assigning return value of iif() to BYTE, without /vo4
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C280 *************
@@ -27766,9 +27770,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C283
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C284 *************
-Application = C284
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
+; ************** APPLICATION C284 - Name conflict between method and function *************
+Application = C284 - Name conflict between method and function
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -27799,19 +27803,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C284 FileGroups]
-[C284 Files]
+[C284 - Name conflict between method and function FileGroups]
+[C284 - Name conflict between method and function Files]
 File = %AppPath%\Prg\C284.prg
 FileGUID = 2511C4A6-01F8-4A08-B761-9395AC500A5D
 FileType = Code
-[C284 References]
+[C284 - Name conflict between method and function References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C284 Resources]
-[C284 Native Resources]
-[C284 License files]
-[C284 General Options]
+[C284 - Name conflict between method and function Resources]
+[C284 - Name conflict between method and function Native Resources]
+[C284 - Name conflict between method and function License files]
+[C284 - Name conflict between method and function General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -27836,7 +27840,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C284 Configurations]
+[C284 - Name conflict between method and function Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -27863,11 +27867,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C284
+ENDApplication = C284 - Name conflict between method and function
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C285 *************
-Application = C285
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C285 - Name conflict between GLOBAL and FUNCTION *************
+Application = C285 - Name conflict between GLOBAL and FUNCTION
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -27898,19 +27902,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C285 FileGroups]
-[C285 Files]
+[C285 - Name conflict between GLOBAL and FUNCTION FileGroups]
+[C285 - Name conflict between GLOBAL and FUNCTION Files]
 File = %AppPath%\Prg\C285.prg
 FileGUID = C139F499-CEE6-47DF-AD8B-D420249A3E7C
 FileType = Code
-[C285 References]
+[C285 - Name conflict between GLOBAL and FUNCTION References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C285 Resources]
-[C285 Native Resources]
-[C285 License files]
-[C285 General Options]
+[C285 - Name conflict between GLOBAL and FUNCTION Resources]
+[C285 - Name conflict between GLOBAL and FUNCTION Native Resources]
+[C285 - Name conflict between GLOBAL and FUNCTION License files]
+[C285 - Name conflict between GLOBAL and FUNCTION General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -27935,7 +27939,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C285 Configurations]
+[C285 - Name conflict between GLOBAL and FUNCTION Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -27962,11 +27966,11 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C285
+ENDApplication = C285 - Name conflict between GLOBAL and FUNCTION
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C286 *************
-Application = C286
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+; ************** APPLICATION C286 - name conflict between LOCAL and FUNCTION *************
+Application = C286 - name conflict between LOCAL and FUNCTION
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -27997,19 +28001,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C286 FileGroups]
-[C286 Files]
+[C286 - name conflict between LOCAL and FUNCTION FileGroups]
+[C286 - name conflict between LOCAL and FUNCTION Files]
 File = %AppPath%\Prg\C286.prg
 FileGUID = 9C2FD6FF-87BA-431A-B0D2-D0F64FC540E5
 FileType = Code
-[C286 References]
+[C286 - name conflict between LOCAL and FUNCTION References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C286 Resources]
-[C286 Native Resources]
-[C286 License files]
-[C286 General Options]
+[C286 - name conflict between LOCAL and FUNCTION Resources]
+[C286 - name conflict between LOCAL and FUNCTION Native Resources]
+[C286 - name conflict between LOCAL and FUNCTION License files]
+[C286 - name conflict between LOCAL and FUNCTION General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -28034,7 +28038,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C286 Configurations]
+[C286 - name conflict between LOCAL and FUNCTION Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -28061,7 +28065,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C286
+ENDApplication = C286 - name conflict between LOCAL and FUNCTION
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C287 *************

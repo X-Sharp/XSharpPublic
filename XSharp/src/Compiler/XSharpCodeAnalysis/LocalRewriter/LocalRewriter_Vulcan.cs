@@ -73,6 +73,46 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
+            // Now clear the globals in this assembly
+            foreach (var tree in compilation.SyntaxTrees)
+            {
+                var root = tree.GetRoot();
+                var cu = root.Green as CompilationUnitSyntax;
+                if (cu?.Globals != null)
+                {
+                    foreach (var globaldecl in cu?.Globals)
+                    {
+                        for (int i = 0; i < globaldecl.Declaration.Variables.Count; i++)
+                        {
+                            var global = globaldecl.Declaration.Variables[i];
+                            var name = global.Identifier.ToString();
+                            var members = FindMembers(compilation, name);
+                            foreach (FieldSymbol field in members)
+                            {
+                                var fldtype = field.Type;
+                                if (fldtype.TypeKind == TypeKind.Class
+                                    && !field.IsReadOnly
+                                    && !field.IsConst
+                                    && field.IsStatic
+                                    && field.ContainingType.IsStatic
+                                    && string.Compare(field.ContainingType.Name ,"Functions", StringComparison.Ordinal) == 0
+                                    )
+                                {
+                                    var lhs = new BoundFieldAccess(statement.Syntax, null, field, null) { WasCompilerGenerated = true };
+                                    var rhs = new BoundLiteral(statement.Syntax, ConstantValue.Null, compilation.GetSpecialType(SpecialType.System_Object)) { WasCompilerGenerated = true };
+                                    var op = new BoundAssignmentOperator(
+                                        statement.Syntax,
+                                        lhs,
+                                        rhs, field.Type)
+                                    { WasCompilerGenerated = true };
+                                    var stmt = new BoundExpressionStatement(statement.Syntax, op);
+                                    newstatements.Add(stmt);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             newstatements.Add(new BoundReturnStatement(statement.Syntax, null));
             var oldbody = statement as BoundBlock;
             var newbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
@@ -122,46 +162,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                 }
             }
-            foreach (var tree in compilation.SyntaxTrees)
+            // cannot use FindMembers, because the underlying GetSymbolsWithName does not like the $ with which the names start
+
+            var members = FindMembers(compilation, XSharpVOTreeTransformation.InitProc1);
+            foreach (var member in members)
             {
-                
-                var root = tree.GetRoot();
-                var cu = root.Green as CompilationUnitSyntax;
-                if (cu?.InitProcedures !=null)
-                {
-                    foreach (var element in cu?.InitProcedures)
-                    {
-                        var methods = FindMethods(compilation, element.Item2);
-                        foreach (MethodSymbol symMethod in methods)
-                        {
-                            if (symMethod.IsFromCompilation(compilation) &&
-                                symMethod.IsStatic &&
-                                symMethod.ParameterCount == 0 &&
-                                symMethod.ReturnsVoid &&
-                                symMethod.ContainingNamespaceOrType() == method.ContainingNamespaceOrType())
-                            {
-                                switch (element.Item1)
-                                {
-                                    case 1:
-                                        init1.Add(symMethod);
-                                        break;
-                                    case 2:
-                                        init2.Add(symMethod);
-                                        break;
-                                    case 3:
-                                        init3.Add(symMethod);
-                                        break;
-                                }
-                                break;
-                            }
-                        }
-
-                    }
-                }
+                init1.Add((Symbol) member);
             }
-
+            members = FindMembers(compilation, XSharpVOTreeTransformation.InitProc2);
+            foreach (var member in members)
+            {
+                init2.Add((Symbol)member);
+            }
+            members = FindMembers(compilation, XSharpVOTreeTransformation.InitProc3);
+            foreach (var member in members)
+            {
+                init3.Add((Symbol)member);
+            }
+            // Now join to one list
             init1.AddRange(init2);
             init1.AddRange(init3);
+
             var args = ImmutableArray<BoundExpression>.Empty;
             var rettype = compilation.GetSpecialType(SpecialType.System_Void);
             foreach (MethodSymbol sym in init1)
@@ -199,12 +220,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         }
 
-        static IEnumerable<ISymbol> FindMethods(CSharpCompilation compilation, string name)
+        static IEnumerable<ISymbol> FindMembers(CSharpCompilation compilation, string name)
         {
             Func<string, bool> predicate = n => StringComparer.Ordinal.Equals(name, n);
             SymbolFilter filter = SymbolFilter.Member;
             return compilation.GetSymbolsWithName(predicate, filter);
-
         }
     }
 }

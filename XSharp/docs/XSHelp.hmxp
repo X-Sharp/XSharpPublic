@@ -16,11 +16,10 @@
           </export-task>
           <export-task name="Publish as HTM" format="HTM">
             <task-config-group name="settings">
-              <task-config-value name="skin">$(HMSYS)Templates\HTML Skins\Webhelp, iFrames Responsive, Grey.hmskin</task-config-value>
+              <task-config-value name="outputfile">..\Binaries\Help\HTML\index.html</task-config-value>
+              <task-config-value name="skin">XSharp_WebHelp.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
-              <task-config-value name="outputfile">..\Binaries\Help\HTML\index.html</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="VS Help" format="HXS">
@@ -164,6 +163,8 @@
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
       </config-group>
+      <config-value name="make3include">HTML</config-value>
+      <config-value name="make3status">*</config-value>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -211,8 +212,8 @@
       <config-value name="imageconversion">1</config-value>
       <config-value name="jpgquality">90</config-value>
       <config-value name="htmlpopup">3</config-value>
-      <config-value name="topiceditor">1</config-value>
-      <config-value name="topicsimpleheadercolor">#4D4D4D</config-value>
+      <config-value name="topiceditor">0</config-value>
+      <config-value name="topicsimpleheadercolor">#C0C0C0</config-value>
       <config-value name="topicsimpletextcolor">#FFFFFF</config-value>
       <config-value name="topicsimplebuttons">1</config-value>
       <config-group name="TOPICSIMPLEBUTTON1">
@@ -244,7 +245,7 @@
 <body>
 
 <IF_TOPIC_HEADER>
-<table style="width:100%; border:none; border-spacing:0px; padding:5px; background:#4D4D4D">
+<table style="width:100%; border:none; border-spacing:0px; padding:5px; background:#C0C0C0">
   <tr style="vertical-align:middle">
     <td style="text-align:left">
       <%TOPIC_HEADER%>
@@ -266,12 +267,199 @@
 </body>
 </html>]]></config-value>
       </config-group>
-      <config-value name="skin">$(HMSYS)Templates\HTML Skins\Webhelp, iFrames Responsive, Grey.hmskin</config-value>
+      <config-value name="skin">XSharp_WebHelp.hmskin</config-value>
+      <config-value name="navigationstyle">4</config-value>
+      <config-value name="frameeditor">1</config-value>
+      <config-value name="layoutthreeframe">0</config-value>
+      <config-value name="contentwidth">30</config-value>
+      <config-value name="headframeheight">100</config-value>
+      <config-value name="contentborder">1</config-value>
+      <config-value name="headframescroll">0</config-value>
+      <config-value name="iframebackcolor">#FFFFFF</config-value>
+      <config-value name="iframenavwidth">250</config-value>
+      <config-value name="iframemargins">5</config-value>
+      <config-value name="iframeborderwidth">1</config-value>
+      <config-value name="iframebordercolor">#FFFFFF</config-value>
+      <config-value name="iframeheaderheight">60</config-value>
+      <config-value name="iframeheaderhtml" translate="true"><![CDATA[<p><%TITLE%></p>]]></config-value>
+      <config-value name="frametemplate" translate="true"><![CDATA[<!DOCTYPE html>
+<html>
+<head>
+  <title><%TITLE%></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="helpman_settings.js"></script>
+  <script type="text/javascript" src="helpman_navigation.js"></script>
+  <script type="text/javascript" src="<%CONTEXTID_JS_FILE%>"></script>
+
+  <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
+
+  <style type="text/css">
+    html,body { margin:0;padding:0;height:100%;overflow:hidden;
+    			       background:#FFFFFF;
+    }
+
+    #hmheadbox {
+      position: absolute;
+      left: 5px;
+      right: 5px;
+      top: 5px;
+      height: 60px;
+      background: #FFFFFF;
+      border: 1px solid #FFFFFF;
+      }
+
+    #hmheadbox p {
+      font-size: 160%;
+      font-weight: bold;
+      margin-top: 16px;
+      margin-left: 8px;
+     }
+
+    #hmnavbox {
+      position: absolute;
+      left: 5px;
+      width: 250px;
+      min-width: 50px;
+      top: 70px;
+      bottom: 5px;
+      border: 1px solid #FFFFFF;
+      }
+
+    #hmcontentbox {
+      position: absolute;
+      top: 70px;
+      right: 5px;
+      bottom: 5px;
+      left: 260px;
+      border: 1px solid #FFFFFF;
+      }
+
+    iframe {
+      position: absolute;left:0;top:0;width:100%;height:100%;border:none;
+      }
+  </style>
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+      if (!hmSupportsAbspos()) {
+      	$(window).bind("resize", function() {
+      	  hmNoAbsposResize($("#hmheadbox"), true, false);
+      	  hmNoAbsposResize($("#hmnavbox"), false, true);
+      	  hmNoAbsposResize($("#hmcontentbox"), true, true);
+	    });
+	    $(window).trigger("resize");
+	  }
+      hmCreateVSplitter($("#hmnavbox"),$("#hmcontentbox"));
+    });
+  </script>
+
+</head>
+<body>
+<div id="hmheadbox">
+<p><%TITLE%></p></div>
+<div id="hmnavbox">
+  <iframe name="hmnavigation" id="hmnavigation" src="<%HREF_CONTENT_PAGE%>" seamless="seamless" title="Navigation Pane" frameborder="0"></iframe>
+</div>
+
+<div id="hmcontentbox" >
+  <script type="text/javascript">
+    var defaulttopic="<%HREF_DEFAULT_PAGE%>";
+    var query = window.location.search.substring(1), hash = window.location.hash, xssTest = /&#39;|&#x27;|&#34;|&#x22;|&sol;|&colon;|&apos;|&quot;|&rpar;|&lpar;|&#61;|&#x3D;|%27|%22|%3d|&#58;|&#x3a;|http|=|%3a|3a;|58;|:|\"|\/|'|"/i, cntxRX = /contextid=\d*/, cntxMatch = cntxRX.exec(query), cntxSrc = "";
+    if (query != "") {
+      if (typeof(hmGetContextId) != "undefined") {
+        if (cntxMatch != null) {
+		  cntxSrc = hmGetContextId(cntxMatch[0]);
+        };
+        if (cntxSrc != "") {
+          defaulttopic = cntxSrc;
+        } else {
+            if (!xssTest.test(query) && !xssTest.test(hash))
+               defaulttopic = query + hash;
+        }
+      }
+    }
+    document.write('<iframe name="hmcontent" id="hmcontent" src="'+defaulttopic+'" seamless="seamless" title="Content Page" frameborder="0"></iframe>');
+  </script>
+  <noscript>
+    <iframe name="hmcontent" id="hmcontent" src="<%HREF_DEFAULT_PAGE%>" seamless="seamless" title="Content Page" frameborder="0"></iframe>
+  </noscript>
+</div>
+</body>
+</html>]]></config-value>
+      <config-value name="toceditor">0</config-value>
+      <config-value name="tocsimpletext1" translate="true"><![CDATA[<p class="navbar"><b>Contents</b>
+<IF_INDEX_PAGE> | <a href="<%HREF_INDEX_PAGE%>">Index</a></IF_INDEX_PAGE>
+<IF_SEARCH_PAGE> | <a href="<%HREF_SEARCH_PAGE%>">Search</a></IF_SEARCH_PAGE>
+</p>
+<hr/>]]></config-value>
+      <config-value name="tocsimplefont1">font-family:Arial,Helvetica; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; </config-value>
+      <config-value name="tocsimplefont2">font-family:Arial,Helvetica; font-size:9pt; font-weight:normal; font-style:normal; text-decoration:none; </config-value>
+      <config-value name="tocsimplefont3">font-family:Arial,Helvetica; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; </config-value>
+      <config-value name="tocsimplefont4">font-family:Arial,Helvetica; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; </config-value>
+      <config-value name="tocsimplefont5">font-family:Arial,Helvetica; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; </config-value>
+      <config-value name="tocsimplefont6">font-family:Arial,Helvetica; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; </config-value>
+      <config-value name="contenttemplate" translate="true"><![CDATA[<%DOCTYPE%>
+<html><head>
+   <title><%TITLE%></title>
+   <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+   <!-- This line includes the general project style sheet (not required) -->
+   <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
+
+   <!-- This block defines the styles of the TOC headings, change them as needed -->
+   <style type="text/css">
+       body { background:#FFF; }
+       .navbar   { font-size: 120%; }
+
+       .heading1 { font-family: Arial,Helvetica; font-weight: normal; font-size: 10pt; color: #000000; text-decoration: none; }
+       .heading2 { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #000000; text-decoration: none; }
+       .heading3 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #000000; text-decoration: none; }
+       .heading4 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #000000; text-decoration: none; }
+       .heading5 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #000000; text-decoration: none; }
+       .heading6 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #000000; text-decoration: none; }
+
+       .hilight1 { font-family: Arial,Helvetica; font-weight: normal; font-size: 10pt; color: #FFFFFF; background: #002682; text-decoration: none; }
+       .hilight2 { font-family: Arial,Helvetica; font-weight: normal; font-size: 9pt; color: #FFFFFF; background: #002682; text-decoration: none; }
+       .hilight3 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #FFFFFF; background: #002682; text-decoration: none; }
+       .hilight4 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #FFFFFF; background: #002682; text-decoration: none; }
+       .hilight5 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #FFFFFF; background: #002682; text-decoration: none; }
+       .hilight6 { font-family: Arial,Helvetica; font-weight: normal; font-size: 8pt; color: #FFFFFF; background: #002682; text-decoration: none; }
+
+       /* TOC LIST CSS */
+       #toc    { padding: 0; margin: 0 }
+       #toc li { margin-top: 2px }
+       #toc ul { padding-left: 0; padding-right: 0; margin-left: 0; margin-right: 0 }
+       /* TOC LIST CSS */
+   </style>
+</head>
+<body>
+<p class="navbar"><b>Contents</b>
+<IF_INDEX_PAGE> | <a href="<%HREF_INDEX_PAGE%>">Index</a></IF_INDEX_PAGE>
+<IF_SEARCH_PAGE> | <a href="<%HREF_SEARCH_PAGE%>">Search</a></IF_SEARCH_PAGE>
+</p>
+<hr/>
+
+  <!-- Place holder for the TOC - this variable is REQUIRED! -->
+  <%TABLE_OF_CONTENTS%>
+
+
+</body>
+</html>]]></config-value>
+      <config-value name="googleanalytics">UA-68123763-1</config-value>
+      <config-value name="outputfile">..\Binaries\Help\HTML\index.html</config-value>
     </config-group>
     <config-group name="user">
       <config-group name="robert">
         <config-group name="project">
-          <config-value name="lastexport">4</config-value>
+          <config-value name="lastexport">3</config-value>
+        </config-group>
+        <config-group name="report">
+          <config-value name="type">4</config-value>
+          <config-value name="sort">1</config-value>
+          <config-value name="include">ALL</config-value>
         </config-group>
       </config-group>
     </config-group>

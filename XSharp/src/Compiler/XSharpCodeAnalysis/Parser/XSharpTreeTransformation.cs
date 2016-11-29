@@ -3327,6 +3327,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             case XP.INIT3:
                                 level = 3;
                                 break;
+                            case XP.EXIT:
+                                level = -1;
+                                break;
                         }
                         GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
                     }

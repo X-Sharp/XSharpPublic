@@ -85,7 +85,7 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                        PROCEDURE Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
                        (ConstraintsClauses+=typeparameterconstraintsclause)*
-                       (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3)?
+                       (CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3|EXIT)?
    					   (DLLEXPORT STRING_CONST)? end=EOS		// The DLLEXPORT clause exists in VO but is ignored in X#
                        StmtBlk=statementBlock
                     ;

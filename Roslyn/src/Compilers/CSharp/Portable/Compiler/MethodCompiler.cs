@@ -1174,29 +1174,41 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool sawLambdas;
                 bool sawAwaitInExceptionHandler;
 #if XSHARP      
-                if (method.Name == MCCSI.XSharpVOTreeTransformation.AppInit)
+                switch (method.Name)
                 {
-                    body = LocalRewriter.RewriteAppInit(
-                        method.DeclaringCompilation,
-                        method,
-                        methodOrdinal,
-                        method.ContainingType,
-                        body,
-                        compilationState,
-                        diagnostics: diagnostics);
-                    body.WasCompilerGenerated = true;
-                }
-                else if (method.Name == MCCSI.XSharpVOTreeTransformation.AppExit)
-                {
-                    body = LocalRewriter.RewriteAppExit(
-                        method.DeclaringCompilation,
-                        method,
-                        methodOrdinal,
-                        method.ContainingType,
-                        body,
-                        compilationState,
-                        diagnostics: diagnostics);
-                    body.WasCompilerGenerated = true;
+                    case MCCSI.XSharpVOTreeTransformation.AppInit:
+                        body = LocalRewriter.RewriteAppInit(
+                            method.DeclaringCompilation,
+                            method,
+                            methodOrdinal,
+                            method.ContainingType,
+                            body,
+                            compilationState,
+                            diagnostics: diagnostics);
+                        body.WasCompilerGenerated = true;
+                        break;
+                    case MCCSI.XSharpVOTreeTransformation.AppExit:
+                        body = LocalRewriter.RewriteAppExit(
+                            method.DeclaringCompilation,
+                            method,
+                            methodOrdinal,
+                            method.ContainingType,
+                            body,
+                            compilationState,
+                            diagnostics: diagnostics);
+                        body.WasCompilerGenerated = true;
+                        break;
+                    case MCCSI.XSharpVOTreeTransformation.ExitProc:
+                        body = LocalRewriter.RewriteExit(
+                            method.DeclaringCompilation,
+                            method,
+                            methodOrdinal,
+                            method.ContainingType,
+                            body,
+                            compilationState,
+                            diagnostics: diagnostics);
+                        body.WasCompilerGenerated = true;
+                        break;
                 }
 #endif
                 var loweredBody = LocalRewriter.Rewrite(

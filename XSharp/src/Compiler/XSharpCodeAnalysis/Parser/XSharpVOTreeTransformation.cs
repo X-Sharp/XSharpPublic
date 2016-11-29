@@ -53,6 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal const string InitProc1 = "$Init1";
         internal const string InitProc2 = "$Init2";
         internal const string InitProc3 = "$Init3";
+        internal const string ExitProc = "$Exit";
         // Vulcan Assembly Names
         private const string VulcanRTFuncs = "VulcanRTFuncs";
         private const string VulcanVOSystemClasses = "VulcanVOSystemClasses";
@@ -133,7 +134,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName)
+        protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp)
         {
             var pool = new SyntaxListPool();
             var members = pool.Allocate<MemberDeclarationSyntax>();
@@ -145,7 +146,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 stmts.Add(GenerateExpressionStatement(invoke));
             }
             var attList = EmptyList<AttributeListSyntax>();
-            var mods = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
+            var mods = TokenList(isApp ? SyntaxKind.PrivateKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
             var m = SyntaxFactory.MethodDeclaration(attList, mods,
                 _voidType, /*explicitif*/null,
@@ -156,34 +157,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return m;
         }
 
-        private List<MemberDeclarationSyntax> CreateInitMembers(List<String> init1, List<String> init2, List<String> init3)
+        private List<MemberDeclarationSyntax> CreateInitMembers(List<Tuple<int, String>> initprocs, bool isApp)
         {
             var members = new List<MemberDeclarationSyntax>();
+            var init1 = new List<string>();
+            var init2 = new List<string>();
+            var init3 = new List<string>();
+            var exit  = new List<string>();
+            foreach (var element in initprocs)
             {
-                // Put Everything in separate methods $Init1 .. $Init3
-                // Always generate $Init1
-                members.Add(CreateInitFunction(init1, InitProc1));
-                if (init2.Count > 0)
+                switch (element.Item1)
                 {
-                    members.Add(CreateInitFunction(init2, InitProc2));
-                }
-                if (init3.Count > 0)
-                {
-                    members.Add(CreateInitFunction(init3, InitProc3));
+                    case 1:
+                        init1.Add(element.Item2);
+                        break;
+                    case 2:
+                        init2.Add(element.Item2);
+                        break;
+                    case 3:
+                        init3.Add(element.Item2);
+                        break;
+                    case -1:        // Exit procedures, not supported yet
+                        exit.Add(element.Item2);
+                        break;
                 }
             }
+
+            // Put Everything in separate methods $Init1 .. $Init3
+            // Always generate $Init1
+            members.Add(CreateInitFunction(init1, InitProc1, isApp));
+            if (init2.Count > 0)
+            {
+                members.Add(CreateInitFunction(init2, InitProc2, isApp));
+            }
+            if (init3.Count > 0)
+            {
+                members.Add(CreateInitFunction(init3, InitProc3, isApp));
+            }
+            members.Add(CreateInitFunction( exit, ExitProc, isApp));
             return members;
         }
 
-        private SyntaxTree GenerateDefaultSyntaxTree(List<String> init1, List<String> init2, List<String> init3, bool isApp)
+        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int,String>> initprocs, bool isApp)
         {
-            var members = new List<MemberDeclarationSyntax>();
+
             // Create Global Functions class with the Members to call the Init procedures
-            members = CreateInitMembers(init1, init2, init3);
+            // Vulcan only does this for DLLs. We do it for EXE too to make things more consistent
+            // Methods $Init1() and $Exit() are always created.
+            var members = CreateInitMembers(initprocs, isApp);
             if (isApp)
             {
-                members.Add(CreateAppInit());
-                members.Add(CreateAppExit());
+                members.Add(CreateAppInit());   // This will call $Init() procedures
+                members.Add(CreateAppExit());   // This will call $Exit() procedures
             }
             GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, members.ToArray()));
             // Add global attributes
@@ -229,9 +254,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Trees is NEVER empty !
             CSharpParseOptions options = (CSharpParseOptions)trees.First().Options;
             // Collect Init procedures in all trees
-            List<String> init1 = new List<String>();
-            List<String> init2 = new List<String>();
-            List<String> init3 = new List<String>();
+            var initprocs = new List<Tuple<int, string>>(); 
             foreach (var tree in trees)
             {
                 var root = tree.GetRoot();
@@ -240,21 +263,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     CompilationUnitSyntax unit = root.Green as CompilationUnitSyntax;
                     if (unit != null && unit.InitProcedures != null)
                     {
-                        foreach (var item in unit.InitProcedures)
-                        {
-                            if (item.Item1 == 1)
-                                init1.Add(item.Item2);
-                            else if (item.Item1 == 2)
-                                init2.Add(item.Item2);
-                            else if (item.Item1 == 3)
-                                init3.Add(item.Item2);
-                        }
+                        initprocs.AddRange(unit.InitProcedures);
                     }
                 }
             }
 
             var t = getTransform(options);
-            return t.GenerateDefaultSyntaxTree(init1, init2, init3,isApp);
+            return t.GenerateDefaultSyntaxTree(initprocs,isApp);
         }
 
         private static XSharpVOTreeTransformation getTransform(CSharpParseOptions options)

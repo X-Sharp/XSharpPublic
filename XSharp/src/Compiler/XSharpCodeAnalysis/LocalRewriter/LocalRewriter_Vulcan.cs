@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private static BoundExpressionStatement ClearGlobal(CSharpCompilation compilation, CSharpSyntaxNode node, FieldSymbol field)
         {
             var lhs = new BoundFieldAccess(node, null, field, null) { WasCompilerGenerated = true };
-            var rhs = new BoundLiteral(node, ConstantValue.Null, compilation.GetSpecialType(SpecialType.System_Object)) { WasCompilerGenerated = true };
+            var rhs = new BoundDefaultOperator(node, field.Type) { WasCompilerGenerated = true };
             var op = new BoundAssignmentOperator(node, lhs, rhs, field.Type) { WasCompilerGenerated = true };
             var stmt = new BoundExpressionStatement(node, op) { WasCompilerGenerated = true };
             return stmt;
@@ -230,7 +230,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             var newstatements = new List<BoundStatement>();
             var oldbody = statement as BoundBlock;
             // Add exit procedures 
-            newstatements.AddRange(oldbody.Statements);
+            foreach (var stmt in oldbody.Statements)
+            {
+                if (!(stmt is BoundSequencePointWithSpan))
+                {
+                    newstatements.Add(stmt);
+                }
+            }
             // Clear the globals in this assembly
             foreach (var tree in compilation.SyntaxTrees)
             {
@@ -249,7 +255,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             foreach (FieldSymbol field in members)
                             {
                                 var fldtype = field.Type;
-                                if (fldtype.TypeKind == TypeKind.Class
+                                if ( (fldtype.TypeKind == TypeKind.Class ||
+                                    fldtype == compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                                     && !field.IsReadOnly
                                     && !field.IsConst
                                     && field.IsStatic

@@ -135,6 +135,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return Conversion.Identity;
                         if (destination.SpecialType.IsIntegralType() && source.SpecialType == SpecialType.System_Boolean)
                             return Conversion.Identity;
+                        // Allow to cast PTR -> Boolean
+                        if (source.SpecialType == SpecialType.System_IntPtr && destination.SpecialType == SpecialType.System_Boolean)
+                            return Conversion.Identity;
+
+                        if (source == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                        {
+                            // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
+                            if (destination.SpecialType == SpecialType.System_Decimal)
+                                return Conversion.ImplicitReference;
+                        }
+
                     }
                     if (conv.Compilation.Options.LateBinding ||
                         conv.Compilation.Options.VOImplicitCastsAndConversions)

@@ -12,3 +12,10 @@ UsualFunc(d)
 FUNCTION UsualFunc(u AS USUAL) AS VOID
 ? u
 
+
+FUNCTION Usual_DecimalTest() AS VOID
+
+LOCAL a := 0.0 AS USUAL
+LOCAL b AS Decimal
+b := (decimal) (OBJECT) a
+RETURN

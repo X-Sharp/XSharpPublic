@@ -3910,7 +3910,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             var caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
                 _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            caseStmt = (IfStatementSyntax)CheckForMissingKeyword(context.e, context, caseStmt, "END[CASE]");
+            caseStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, caseStmt, "END[CASE]");
             context.Put(caseStmt);
         }
 

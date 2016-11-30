@@ -1,9 +1,9 @@
 ﻿#if PORTABLE
 
-namespace Antlr4.Runtime
+namespace System
 {
-    [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Struct | System.AttributeTargets.Enum | System.AttributeTargets.Delegate, Inherited = false)]
-    internal sealed class SerializableAttribute : System.Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Delegate, Inherited = false)]
+    internal sealed class SerializableAttribute : Attribute
     {
     }
 }

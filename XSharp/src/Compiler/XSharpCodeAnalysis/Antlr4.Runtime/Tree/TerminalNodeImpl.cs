@@ -73,7 +73,7 @@ namespace Antlr4.Runtime.Tree
             {
                 return _parent;
             }
-			set 
+			set
 			{
 				_parent = value;
 			}
@@ -145,7 +145,7 @@ namespace Antlr4.Runtime.Tree
             }
             return null;
         }
-
+#if XSHARP
         public virtual string ToStringTree(Parser parser)
         {
             return _ToString();
@@ -166,10 +166,36 @@ namespace Antlr4.Runtime.Tree
                 return "<null>";
             }
         }
-
         public virtual string ToStringTree()
         {
             return _ToString();
         }
+
+#else
+        public virtual string ToStringTree(Parser parser)
+        {
+            return ToString();
+        }
+
+        public override string ToString()
+        {
+            if (Symbol != null)
+            {
+                if (Symbol.Type == TokenConstants.Eof)
+                {
+                    return "<EOF>";
+                }
+                return Symbol.Text;
+            }
+            else
+            {
+                return "<null>";
+            }
+        }
+        public virtual string ToStringTree()
+        {
+            return ToString();
+        }
+#endif
     }
 }

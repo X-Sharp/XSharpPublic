@@ -40,7 +40,7 @@ namespace Antlr4.Runtime
     /// This signifies any kind of mismatched input exceptions such as
     /// when the current input does not match the expected token.
     /// </remarks>
-    [Serializable]
+    [System.Serializable]
     public class InputMismatchException : RecognitionException
     {
         private const long serialVersionUID = 1532568338707443067L;

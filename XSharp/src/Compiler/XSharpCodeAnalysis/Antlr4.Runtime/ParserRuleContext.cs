@@ -57,7 +57,11 @@ namespace Antlr4.Runtime
     /// group values such as this aggregate.  The getters/setters are there to
     /// satisfy the superclass interface.
     /// </remarks>
+#if XSHARP
     public partial class ParserRuleContext : RuleContext
+#else
+    public class ParserRuleContext : RuleContext
+#endif
     {
         private static readonly Antlr4.Runtime.ParserRuleContext Empty = new Antlr4.Runtime.ParserRuleContext();
 
@@ -382,7 +386,7 @@ namespace Antlr4.Runtime
             {
                 return _start;
             }
-			set 
+			set
 			{
 				_start = value;
 			}
@@ -394,7 +398,7 @@ namespace Antlr4.Runtime
             {
                 return _stop;
             }
-			set 
+			set
 			{
 				_stop = value;
 			}

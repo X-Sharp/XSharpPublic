@@ -43,7 +43,7 @@ namespace Antlr4.Runtime.Tree.Pattern
     /// chunks where the
     /// tag corresponds to a lexer rule or token type.
     /// </summary>
-    [Serializable]
+    [System.Serializable]
     public class TokenTagToken : CommonToken
     {
         /// <summary>

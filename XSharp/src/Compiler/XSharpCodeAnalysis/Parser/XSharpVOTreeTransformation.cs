@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stmts = pool.Allocate<StatementSyntax>();
             foreach (var name in procnames)
             {
-                var invoke = GenerateMethodCall(name, EmptyArgumentList());
+                var invoke = GenerateMethodCall(name);
                 stmts.Add(GenerateExpressionStatement(invoke));
             }
             var attList = EmptyList<AttributeListSyntax>();
@@ -520,7 +520,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // and not for locals hidden inside blocks inside the main body
             // When the main body has a PSZ Try - Finally then our cleanup code and init code will be inserted before and after 
             // the try finally
-            var noargs = EmptyArgumentList();
             bool needsExtraReturn = false;
             bool needsReturnValue = false; 
             var newbody = new List<StatementSyntax>();     // contains the copied and adjusted statements
@@ -537,7 +536,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit)));
             }
             if (context.Type.GetText().ToLower() != "void")
             {
@@ -639,12 +638,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 trystmt = trystmt.Update(trystmt.TryKeyword, MakeBlock(newbody), trystmt.Catches, trystmt.Finally);
                 newbody.Clear();
                 newbody.Add(pszdecl);
-                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit, noargs)));
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppInit)));
                 newbody.Add(trystmt);
             }
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppExit, noargs)));
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect", noargs)));
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers", noargs)));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(AppExit)));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.Collect")));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall("global::System.Gc.WaitForPendingFinalizers")));
             if (needsExtraReturn)
             {
                 if (needsReturnValue)
@@ -791,7 +790,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (returnType == _dateType)
                 {
-                    result = GenerateMethodCall("global::Vulcan.__VODate.NullDate", EmptyArgumentList());
+                    result = GenerateMethodCall("global::Vulcan.__VODate.NullDate");
                 }
                 else if (returnType == _pszType || returnType == _symbolType)
                 {
@@ -827,40 +826,76 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return body;
         }
 
-        protected StatementSyntax CachedIfBlock = null;
+        protected StatementSyntax _cachedIfBlock = null;
         protected StatementSyntax GetClipperCallingConventionIfStatement()
         {
-            if(CachedIfBlock != null)
-                return CachedIfBlock;
-            ExpressionSyntax assignExpr;
-            ExpressionSyntax ifExpr;
-            // This method generates the common block that is used for all Clipper calling convention methods
-            // to retrieve the PCount
-            // the pseudo code for that is
+            if (_cachedIfBlock == null)
+            {
+                lock (gate)
+                {
+                    if (_cachedIfBlock == null)
+                    {
+                        ExpressionSyntax assignExpr;
+                        ExpressionSyntax ifExpr;
+                        // This method generates the common block that is used for all Clipper calling convention methods
+                        // to retrieve the PCount
+                        // the pseudo code for that is
 
-            // IF Xs$Args != NULL
-            //      Xs$PCount := Xs$Args.Length
-            // ENDIF
+                        // IF Xs$Args != NULL
+                        //      Xs$PCount := Xs$Args.Length
+                        // ENDIF
 
-            InitializeArrayTypes();
-            var blockstmts = _pool.Allocate<StatementSyntax>();
-            // Xs$PCount = Xs$Args:Length
-            assignExpr = MakeSimpleAssignment(
-                    GenerateSimpleName(ClipperPCount),
-                    MakeSimpleMemberAccess(GenerateSimpleName(ClipperArgs),GenerateSimpleName("Length")));
+                        InitializeArrayTypes();
+                        var blockstmts = _pool.Allocate<StatementSyntax>();
+                        // Xs$PCount = Xs$Args:Length
+                        assignExpr = MakeSimpleAssignment(
+                                GenerateSimpleName(ClipperPCount),
+                                MakeSimpleMemberAccess(GenerateSimpleName(ClipperArgs), GenerateSimpleName("Length")));
 
-            blockstmts.Add(GenerateExpressionStatement(assignExpr));
-            // Xs$Args != NULL
+                        blockstmts.Add(GenerateExpressionStatement(assignExpr));
+                        // Xs$Args != NULL
 
-            ifExpr = _syntaxFactory.BinaryExpression(
-                    SyntaxKind.NotEqualsExpression,
-                    GenerateSimpleName(ClipperArgs),
-                    SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
-                    GenerateLiteralNull());
-            // if XsArgs != NULL ......
-            CachedIfBlock = GenerateIfStatement(ifExpr, MakeBlock(blockstmts));
-            _pool.Free(blockstmts);
-            return CachedIfBlock;
+                        ifExpr = _syntaxFactory.BinaryExpression(
+                                SyntaxKind.NotEqualsExpression,
+                                GenerateSimpleName(ClipperArgs),
+                                SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
+                                GenerateLiteralNull());
+                        // if XsArgs != NULL ......
+                        _cachedIfBlock = GenerateIfStatement(ifExpr, MakeBlock(blockstmts));
+                        _pool.Free(blockstmts);
+                    }
+                }
+            }
+            return _cachedIfBlock;
+        }
+        static protected ParameterListSyntax _clipperParams = null;
+        protected ParameterListSyntax GetClipperParameters()
+        {
+            if (_clipperParams == null)
+            {
+                lock (gate)
+                {
+                    if (_clipperParams == null)
+                    {
+                        InitializeArrayTypes();
+                        SyntaxListBuilder modifiers = _pool.Allocate();
+                        modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
+                        var attrs = _pool.Allocate<AttributeListSyntax>();
+                        GenerateAttributeList(attrs, CompilerGenerated);
+                        var par = _syntaxFactory.Parameter(
+                                        attrs,
+                                        modifiers.ToList(),
+                                        type: arrayOfUsual,
+                                        identifier: SyntaxFactory.Identifier(ClipperArgs),
+                                        @default: null);
+                        _clipperParams = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            MakeSeparatedList<ParameterSyntax>(par),
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                        _pool.Free(attrs);
+                    }
+                }
+            }
+            return _clipperParams;
         }
         protected override void ImplementClipperAndPSZ(XP.IEntityContext context,
             ref  SyntaxList<AttributeListSyntax> attributes, ref ParameterListSyntax parameters, ref BlockSyntax body,
@@ -947,24 +982,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         stmts.Add(LastStmt);
                     }
                     // Now Change argument to X$Args PARAMS USUAL[]
-                    SyntaxListBuilder modifiers = _pool.Allocate();
-                    modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
-                    var attrs = _pool.Allocate<AttributeListSyntax>();
-                    GenerateAttributeList(attrs, CompilerGenerated);
-                    var par = _syntaxFactory.Parameter(
-                                    attrs,
-                                    modifiers.ToList(),
-                                    type: arrayOfUsual,
-                                    identifier: SyntaxFactory.Identifier(ClipperArgs),
-                                    @default: null );
-                    parameters = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        MakeSeparatedList<ParameterSyntax>(par),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    parameters = GetClipperParameters();
                     // Finally add ClipperCallingConventionAttribute to the method
                     // using the names from the paramNames list
                     // [Vulcan.Internal.ClipperCallingConvention(new string[] { "a", "b" })]
                     // make sure that existing attributes are not removed!
-                    attrs.Clear();
+                    var attrs = _pool.Allocate<AttributeListSyntax>();
                     attrs.AddRange(attributes); // Copy existing attributes
                     var names = new List<ExpressionSyntax>();
                     foreach (var name in paramNames)
@@ -1274,13 +1297,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             context.SetSequencePoint(context.end);
             var stmts = _pool.Allocate<StatementSyntax>();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.EnterBeginSequence",
-                                    EmptyArgumentList())));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.EnterBeginSequence")));
             stmts.Add(MakeBlock(context.StmtBlk.Get<BlockSyntax>()));
             var tryBlock = MakeBlock(stmts);
             stmts.Clear();
-            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.ExitBeginSequence",
-                                    EmptyArgumentList())));
+            stmts.Add(GenerateExpressionStatement(GenerateMethodCall("global::Vulcan.Internal.CompilerServices.ExitBeginSequence")));
             var innerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                  tryBlock,
                  null,
@@ -1315,11 +1336,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                  SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                  context.FinBlock.Get<BlockSyntax>());
             }
-            var outerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+            StatementSyntax outerTry = _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                   tryBlock,
                   catchClause,
                   finallyClause);
-            outerTry = (TryStatementSyntax)CheckForMissingKeyword(context.e, context, outerTry, "END SEQUENCE");
+            outerTry = CheckForMissingKeyword(context.e, outerTry, "END SEQUENCE");
 
             context.Put(outerTry);
             _pool.Free(stmts);

@@ -130,6 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected const string VoPropertyAssignPrefix = "Xs$Assign$";
         protected const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         private static int _unique = 0;
+        protected static object gate = new object();
 
         protected string GlobalClassName = XSharpGlobalClassName;
 
@@ -172,7 +173,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _fileName = fileName;
         }
 
-        internal CSharpSyntaxNode CheckForMissingKeyword(IToken endToken, ParserRuleContext context, CSharpSyntaxNode node, string Keyword)
+        internal StatementSyntax CheckForMissingKeyword(IToken endToken, StatementSyntax node, string Keyword)
         {
             if (endToken == null)
             {
@@ -494,10 +495,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         protected SyntaxList<SyntaxToken> EmptyList()
         {
+            // cannot cache this. SyntaxList<T> is a struct
+            SyntaxList<SyntaxToken> emptyList;
             var rb = _pool.Allocate();
-            var r = rb.ToTokenList();
+            emptyList = rb.ToTokenList();
             _pool.Free(rb);
-            return r;
+            return emptyList;
         }
 
         protected SyntaxList<T> EmptyList<T>() where T : CSharpSyntaxNode
@@ -515,21 +518,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(rb);
             return r;
         }
-
+        static private ArgumentListSyntax _emptyArgs = null;
         protected ArgumentListSyntax EmptyArgumentList()
         {
-            return _syntaxFactory.ArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    default(SeparatedSyntaxList<ArgumentSyntax>),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            if (_emptyArgs== null)
+            {
+                lock (gate)
+                {
+                    if (_emptyArgs == null)
+                    {
+                        _emptyArgs = _syntaxFactory.ArgumentList(
+                                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                default(SeparatedSyntaxList<ArgumentSyntax>),
+                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    }
+                }
+            }
+            return _emptyArgs;
         }
 
+        static private BracketedArgumentListSyntax _emptyBracketedArgs = null;
         protected BracketedArgumentListSyntax EmptyBracketedArgumentList()
         {
-            return _syntaxFactory.BracketedArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    default(SeparatedSyntaxList<ArgumentSyntax>),
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+            if (_emptyBracketedArgs == null)
+            {
+                lock (gate)
+                {
+
+                    if (_emptyBracketedArgs == null)
+                    {
+                        _emptyBracketedArgs = _syntaxFactory.BracketedArgumentList(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        default(SeparatedSyntaxList<ArgumentSyntax>),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                    }
+                }
+            }
+            return _emptyBracketedArgs;
         }
 
         protected SyntaxList<T> MakeList<T>(IEnumerable<IParseTree> t) where T : InternalSyntax.CSharpSyntaxNode
@@ -695,12 +720,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypeExpected));
         }
 
+        private static ParameterListSyntax _emptyParameterList = null;
         protected ParameterListSyntax EmptyParameterList()
         {
-            return _syntaxFactory.ParameterList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                EmptySeparatedList<ParameterSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            if (_emptyParameterList == null)
+            {
+                lock (gate)
+                {
+                    if (_emptyParameterList == null)
+                    {
+
+                        _emptyParameterList = _syntaxFactory.ParameterList(
+                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                            EmptySeparatedList<ParameterSyntax>(),
+                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                    }
+                }
+
+            }
+            return _emptyParameterList;
         }
 
         protected IfStatementSyntax GenerateIfStatement(ExpressionSyntax condition, StatementSyntax statement, ElseClauseSyntax @else = null) {
@@ -923,6 +961,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
                 type, args, init);
             return expr;
+        }
+
+        protected ExpressionSyntax GenerateMethodCall(string MethodName)
+        {
+            return GenerateMethodCall(MethodName, EmptyArgumentList());
         }
 
         protected ExpressionSyntax GenerateMethodCall(string MethodName, ArgumentListSyntax args)
@@ -3744,7 +3787,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
-            whileStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, whileStmt, "END[DO]");
+            whileStmt = CheckForMissingKeyword(context.e, whileStmt, "END[DO]");
             context.Put(whileStmt);
         }
 
@@ -3853,7 +3896,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>());
             _pool.Free(init);
             _pool.Free(incr);
-            forStmt = (StatementSyntax) CheckForMissingKeyword(context.e, context, forStmt, "NEXT");
+            forStmt = CheckForMissingKeyword(context.e, forStmt, "NEXT");
             if (blockStmts == null) {
                 context.Put(forStmt);
             }
@@ -3879,7 +3922,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
 
-            forStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, forStmt, "NEXT");
+            forStmt = CheckForMissingKeyword(context.e, forStmt, "NEXT");
             context.Put(forStmt);
 
         }
@@ -3887,7 +3930,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
             StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
-            ifStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, ifStmt, "END[IF]");
+            ifStmt = CheckForMissingKeyword(context.e, ifStmt, "END[IF]");
             context.Put(ifStmt);
         }
 
@@ -3910,7 +3953,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             StatementSyntax caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
                 _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            caseStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, caseStmt, "END[CASE]");
+            caseStmt = CheckForMissingKeyword(context.e, caseStmt, "END[CASE]");
             context.Put(caseStmt);
         }
 
@@ -4002,7 +4045,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.FinBlock == null ? null : _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                     context.FinBlock.Get<BlockSyntax>()));
             _pool.Free(catches);
-            tryStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, tryStmt, "END [TRY]");
+            tryStmt = CheckForMissingKeyword(context.e, tryStmt, "END [TRY]");
             context.Put(tryStmt);
 
         }
@@ -4104,7 +4147,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 sections,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
 
-            switchStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, switchStmt, "END [SWITCH]");
+            switchStmt = CheckForMissingKeyword(context.e, switchStmt, "END [SWITCH]");
             context.Put(switchStmt);
             _pool.Free(sections);
             _pool.Free(emptyLabels);
@@ -4312,7 +4355,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (!(context._Exprs?.Count > 0)) {
                 if (context.Q.Type == XP.QMARK)
                 {
-                    expr = GenerateMethodCall("global::System.Console.WriteLine", EmptyArgumentList());
+                    expr = GenerateMethodCall("global::System.Console.WriteLine");
                     context.Put(GenerateExpressionStatement(expr));
                 }
                 else
@@ -4353,7 +4396,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitBlockStmt([NotNull] XP.BlockStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            CSharpSyntaxNode node;
+            StatementSyntax node;
             switch (context.Key.Type)
             {
                 case XP.SCOPE:
@@ -4403,7 +4446,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (node != null)
             {
-                node = (StatementSyntax)CheckForMissingKeyword(context.e, context, node, "END ["+context.Key.Text+"]");
+                node = CheckForMissingKeyword(context.e, node, "END ["+context.Key.Text+"]");
                 context.Put(node);
             }
 

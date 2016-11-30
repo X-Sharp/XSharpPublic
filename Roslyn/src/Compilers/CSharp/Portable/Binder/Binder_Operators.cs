@@ -299,7 +299,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             // If the operand is of a class, interface, delegate, array, struct, enum, nullable
             // or type param types, it's legal to use in a dynamic expression. In short, the type
             // must be one that is convertible to object.
-
+#if XSHARP
+            // Allow codeblocks as parameter to latebound method calls
+            if (operand.Kind == BoundKind.UnboundLambda)
+                return true;
+#endif        
             if ((object)type == null)
             {
                 return operand.IsLiteralNull();

@@ -18,7 +18,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             SingleEqualsUsual,
             NotEqualsUsual,
             SubtractString,
-            UsualDate
+            UsualDate,
+            Shift
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
@@ -271,7 +272,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO)
             {
                 var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                NamedTypeSymbol typeDate ;
+                NamedTypeSymbol typeDate;
                 TypeSymbol leftType = left.Type;
                 TypeSymbol rightType = right.Type;
                 switch (xnode.Op.Type)
@@ -340,7 +341,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                             opType = VOOperatorType.UsualDate;
                         break;
                     default:
-                        opType = VOOperatorType.None;
+                        switch (node.Kind())
+                        {
+                            case SyntaxKind.RightShiftExpression:
+                            case SyntaxKind.LeftShiftExpression:
+                            case SyntaxKind.RightShiftAssignmentExpression:
+                            case SyntaxKind.LeftShiftAssignmentExpression:
+                                opType = VOOperatorType.Shift;
+                                break;
+                            default:
+                                opType = VOOperatorType.None;
+                                break;
+                        }
                         break;
                 }
             }
@@ -358,10 +370,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                             opType = VOOperatorType.CompareString;
                         }
                         break;
-                    default:
-                        opType = VOOperatorType.None;
+                    case SyntaxKind.RightShiftExpression:
+                    case SyntaxKind.LeftShiftExpression:
+                    case SyntaxKind.RightShiftAssignmentExpression:
+                    case SyntaxKind.LeftShiftAssignmentExpression:
+                        opType = VOOperatorType.Shift;
                         break;
+
                 }
+
             }
             return opType;
         }
@@ -418,6 +435,63 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return index;
         }
+        public TypeSymbol VOGetType(BoundExpression expr)
+        {
+            if (expr.Kind == BoundKind.Literal)
+            {
+                var lit = expr as BoundLiteral;
+                if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
+                {
+                    var val = lit.ConstantValue.Int32Value;
+                    if (val > Byte.MinValue && val < Byte.MaxValue)
+                        return Compilation.GetSpecialType(SpecialType.System_Byte);
+                    else if (val > Int16.MinValue && val < Int16.MaxValue)
+                        return Compilation.GetSpecialType(SpecialType.System_Int16);
+                }
+            }
+            else if (expr.Kind ==BoundKind.UnaryOperator)
+            {
+                var unary = expr as BoundUnaryOperator;
+                return VOGetType(unary.Operand);
+            }
+            return expr.Type;
+        }
+        public void VODetermineIIFTypes(ConditionalExpressionSyntax node, DiagnosticBag diagnostics,
+            ref BoundExpression trueExpr, ref BoundExpression falseExpr, 
+            ref TypeSymbol trueType, ref TypeSymbol falseType)
+        {
+            if (Compilation.Options.IsDialectVO)
+            {
+                // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
+                trueType = VOGetType(trueExpr);
+                falseType = VOGetType(falseExpr);
+                if (trueType != falseType && trueType.IsIntegralType() && falseType.IsIntegralType())
+                {
+                    // Determine the largest of the two integral types
+                    if (trueType.SpecialType.SizeInBytes() > falseType.SpecialType.SizeInBytes())
+                        falseType = trueType;
+                    else
+                        trueType = falseType;
+                }
 
+                if (Compilation.Options.VOCompatibleIIF)
+                {
+                    if (trueType != falseType)
+                    {
+                        var usualType = GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+                        if (trueType == usualType)
+                        {
+                            falseType = trueType;
+                            falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
+                        }
+                        else if (falseType == usualType)
+                        {
+                            trueType = falseType;
+                            trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -246,23 +246,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             macroDefines.Add("__WINDRIVE__", () => new CommonToken(XSharpLexer.STRING_CONST, '"' + options.WindowsDir?.Substring(0, 2) + '"'));
             macroDefines.Add("__XSHARP__", () => new CommonToken(XSharpLexer.TRUE_CONST));
 
-            bool[] flags  = { options.VoInitAxitMethods ,  // vo1
-                                options.VONullStrings,  // vo2
-                                options.VirtualInstanceMethods, // vo3
-                                options.VOImplicitCastsAndConversions, // vo4
-                                options.VOClipperCallingConvention, // vo5
-                                options.VOResolveTypedFunctionPointersToPtr, // vo6
-                                options.VOImplicitCastsAndConversions, // vo7
-                                options.VOPreprocessorBehaviour, // vo8
-                                options.VOAllowMissingReturns, // vo9
-                                options.VOCompatibleIIF, // vo10
-                                options.VOArithmeticConversions, // vo11
-                                options.VOClipperIntegerDivisions, // vo12
-                                options.VOStringComparisons, // vo13
-                                options.VOFloatConstants, // vo14
-                                options.VOUntypedAllowed, // vo15
-                                options.VOInitializeVariables // vo16
-            };
+            bool[] flags  = { options.vo1,  options.vo2, options.vo3, options.vo4, options.vo5, options.vo6, options.vo7, options.vo8, 
+                                options.vo9, options.vo10, options.vo11, options.vo12, options.vo13, options.vo14, options.vo15, options.vo16 };                                             
             for (int iOpt = 0; iOpt < flags.Length; iOpt++)
             {
                 string flagName = String.Format("__VO{0}__", iOpt + 1);

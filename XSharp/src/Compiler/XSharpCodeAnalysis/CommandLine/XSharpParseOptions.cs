@@ -76,6 +76,22 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
 
+        public bool vo1 => VoInitAxitMethods;
+        public bool vo2 => VONullStrings;
+        public bool vo3 => VirtualInstanceMethods;
+        public bool vo4 => VOSignedUnsignedConversion;
+        public bool vo5 => VOClipperCallingConvention;
+        public bool vo6 => VOResolveTypedFunctionPointersToPtr;
+        public bool vo7 => VOImplicitCastsAndConversions;
+        public bool vo8 => VOPreprocessorBehaviour;
+        public bool vo9 => VOAllowMissingReturns;
+        public bool vo10 => VOCompatibleIIF;
+        public bool vo11 => VOArithmeticConversions;
+        public bool vo12 => VOClipperIntegerDivisions;
+        public bool vo13 => VOStringComparisons;
+        public bool vo14 => VOFloatConstants;
+        public bool vo15 => VOUntypedAllowed;
+        public bool vo16 => VOInitializeVariables;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)

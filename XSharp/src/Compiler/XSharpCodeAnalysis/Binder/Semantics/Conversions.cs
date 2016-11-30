@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
+using XP= LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -110,6 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (this is Conversions)
             {
                 Conversions conv = this as Conversions;
+                
                 if (source != null && destination != null )
                 {
                     if (conv.Compilation.Options.VOSignedUnsignedConversion)
@@ -130,44 +132,109 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     if (conv.Compilation.Options.IsDialectVO)
                     {
-                        // Allow to case BOOL <-> INTEGRAL
-                        if (source.SpecialType.IsIntegralType() && destination.SpecialType == SpecialType.System_Boolean)
-                            return Conversion.Identity;
-                        if (destination.SpecialType.IsIntegralType() && source.SpecialType == SpecialType.System_Boolean)
-                            return Conversion.Identity;
-                        // Allow to cast PTR -> Boolean
-                        if (source.SpecialType == SpecialType.System_IntPtr && destination.SpecialType == SpecialType.System_Boolean)
-                            return Conversion.Identity;
-
+                        bool voCast = false;
+                        bool voConvert = false;
+                        if (sourceExpression.Syntax != null)
+                        {
+                            var xNode = sourceExpression.Syntax.XNode;
+                            if (xNode is XP.PrimaryExpressionContext)
+                            {
+                                voCast = xNode.Parent is XP.VoCastExpressionContext;
+                                voConvert = xNode.Parent is XP.VoConversionExpressionContext;
+                            }
+                        }
+                        // TYPE(_CAST, expr) allows almost everything
+                        if (voCast)
+                        {
+                            // Allow cast -> BOOLEAN
+                            if (destination.SpecialType == SpecialType.System_Boolean)
+                                return Conversion.Identity;
+                            // Allow cast -> INTEGRAL
+                            if (destination.SpecialType.IsIntegralType()) 
+                                return Conversion.Identity;
+                            // Allow cast -> PTR
+                            if (destination is PointerTypeSymbol)
+                                return Conversion.Identity;
+                            // Allow cast -> PSZ
+                            if (destination == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                                return Conversion.Identity;
+                        }
+                        if (voConvert)
+                        {
+                            // we need to convert BYTE(<p>) to dereferencing the <p>
+                            // can we do that here ?
+                            var srctype = source.SpecialType;
+                            var dsttype = destination.SpecialType;
+                            // Integer conversions
+                            if (srctype.IsNumericType() && dsttype.IsNumericType() &&
+                                srctype.IsIntegralType() == dsttype.IsIntegralType())
+                            {
+                                // when both same # of bits and integral, use Identity conversion
+                                // otherwise implicit numeric conversion
+                                if (srctype.SizeInBytes() == dsttype.SizeInBytes() &&
+                                    srctype.IsIntegralType() && dsttype.IsIntegralType())
+                                    return Conversion.Identity;
+                                else
+                                    return Conversion.ImplicitNumeric;
+                            }
+                        }
                         if (source == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                         {
                             // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
                             if (destination.SpecialType == SpecialType.System_Decimal)
+                                return Conversion.Boxing;
+                            else if (destination.SpecialType == SpecialType.System_Object)
                                 return Conversion.ImplicitReference;
                         }
 
                     }
-                    if (conv.Compilation.Options.LateBinding ||
-                        conv.Compilation.Options.VOImplicitCastsAndConversions)
+                    if (conv.Compilation.Options.LateBinding ||                 // lb
+                        conv.Compilation.Options.VOImplicitCastsAndConversions) // vo7
                     {
-                        if (source.SpecialType == SpecialType.System_Object && destination.IsReferenceType && !IsClipperArgsType(destination))
+                        if (source.SpecialType == SpecialType.System_Object 
+                            && destination.IsReferenceType && !IsClipperArgsType(destination))
                         {
                             // Convert Object -> Reference allowed with /lb and with /vo7
                             // except when converting to array of usuals
                             return Conversion.ImplicitReference;
                         }
                     }
-                    // When /vo7 is enabled
-                    if (conv.Compilation.Options.VOImplicitCastsAndConversions)
+                    if (conv.Compilation.Options.VOSignedUnsignedConversion)
                     {
+                        if (source.SpecialType.IsNumericType() && destination.SpecialType.IsNumericType())
+                        {
+                            // integral -> integral
+                            if (source.IsIntegralType() && destination.IsIntegralType())
+                            {
+                                return Conversion.ImplicitNumeric;
+                            }
+                            // non integral -> non integral
+                            if (!source.IsIntegralType() && !destination.IsIntegralType())
+                            {
+                                return Conversion.ImplicitNumeric;
+                            }
+                        }
+                        if (source.SpecialType == SpecialType.System_Char && destination.IsIntegralType())
+                            return Conversion.ImplicitNumeric;
+                        if (source.IsIntegralType() && destination.SpecialType == SpecialType.System_Char)
+                            return Conversion.ImplicitNumeric;
+
+                    }
+                    if (conv.Compilation.Options.VOImplicitCastsAndConversions)     // vo7
+                    {
+                        // Convert Any Ptr -> Any Ptr 
                         if (source.IsPointerType() && destination.IsPointerType())
                         {
-                            // Convert Any Ptr -> Any Ptr allowed with /vo7
                             return Conversion.Identity;
                         }
+                        // Convert Integral type -> Ptr Type 
                         if (source.IsIntegralType() && destination.IsPointerType())
                         {
-                            // Convert Integral type -> Ptr Type allowed with /vo7
+                            return Conversion.Identity;
+                        }
+                        // Convert Ptr type -> Integral Type 
+                        if (source.IsPointerType() && destination.IsIntegralType() )
+                        {
                             return Conversion.Identity;
                         }
                     }

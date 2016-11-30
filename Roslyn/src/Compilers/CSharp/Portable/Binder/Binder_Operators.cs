@@ -490,7 +490,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOOperatorType opType = NeedsVOOperator(node, left, right);
             if (opType != VOOperatorType.None)
             {
-                return BindVOBinaryOperator(node, diagnostics, left, right, ref compoundStringLength,opType);
+                var res =  BindVOBinaryOperator(node, diagnostics, left, right, ref compoundStringLength,opType);
+                if (res != null)
+                    return res;
             }
             // Logical Operators on USUALS require a conversion
             AdjustVOUsualLogicOperands(node, ref left, ref right, diagnostics);
@@ -578,18 +580,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             hasErrors = hasErrors || resultConstant != null && resultConstant.IsBad;
+            BoundExpression result = new BoundBinaryOperator(
+                    node,
+                    resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
+                    resultLeft,
+                    resultRight,
+                    resultConstant,
+                    resultMethod,
+                    resultKind,
+                    originalUserDefinedOperators,
+                    resultType,
+                    hasErrors);
+#if XSHARP
+            if (opType == VOOperatorType.Shift)
+            {
+                result = CreateConversion(result, left.Type, diagnostics);
+            }
+#endif
+            return result;
 
-            return new BoundBinaryOperator(
-                node,
-                resultOperatorKind.WithOverflowChecksIfApplicable(CheckOverflowAtRuntime),
-                resultLeft,
-                resultRight,
-                resultConstant,
-                resultMethod,
-                resultKind,
-                originalUserDefinedOperators,
-                resultType,
-                hasErrors);
         }
 
         private static void ReportUnaryOperatorError(CSharpSyntaxNode node, DiagnosticBag diagnostics, string operatorName, BoundExpression operand, LookupResultKind resultKind)
@@ -3473,23 +3482,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol type;
             bool hasErrors = false;
 #if XSHARP
-            if (Compilation.Options.IsDialectVO)
-            {
-                if (trueType != falseType)
-                {
-                    var usualType = GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
-                    if (trueType == usualType)
-                    {
-                        falseType = trueType;
-                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
-                    }
-                    else if (falseType == usualType)
-                    {
-                        trueType = falseType;
-                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
-                    }
-                }
-            }
+            VODetermineIIFTypes(node, diagnostics, ref trueExpr, ref falseExpr, ref trueType, ref falseType);
 #endif
 
             if (trueType == falseType)

@@ -2053,22 +2053,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     }
 
 
-    public override void ExitIif([NotNull] XP.IifContext context)
-    {
-        // if /vo10 is used then cast the LHS and RHS to USUAL or OBJECT depending on the dialect
-        if(_options.VOCompatibleIIF) {
-            ExpressionSyntax left = CreateObject(_usualType, MakeArgumentList(MakeArgument(context.TrueExpr.Get<ExpressionSyntax>())));
-            ExpressionSyntax right = CreateObject(_usualType, MakeArgumentList(MakeArgument(context.FalseExpr.Get<ExpressionSyntax>())));
-
-            context.Put(_syntaxFactory.ConditionalExpression(
-                context.Cond.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                left,
-                SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                right));
-        } else
-            base.ExitIif(context);
-    }
 
     public override void ExitLiteralArray([NotNull] XP.LiteralArrayContext context)
     {

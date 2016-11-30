@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOArithmeticConversions { get; private set; }
         //public bool VOClipperCallingConvention { get; private set; }// Handled in the parser
         //public bool VOClipperIntegerDivisions { get; private set; }// Handled in the parser
-        //public bool VOCompatibleIIF { get; private set; }// Handled in the parser
+        public bool VOCompatibleIIF { get; private set; }
         //public bool VOFloatConstants { get; private set; }// Handled in the parser
         public bool VOImplicitCastsAndConversions { get; private set; }
         public bool VOImplicitSignedUnsignedConversions { get; private set; }
@@ -47,6 +47,23 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
+
+        //public bool vo1 => VoInitAxitMethods;
+        public bool vo2 => VONullStrings;
+        //public bool vo3 => VirtualInstanceMethods;
+        public bool vo4 => VOSignedUnsignedConversion;
+        //public bool vo5 => VOClipperCallingConvention;
+        public bool vo6 => VOResolveTypedFunctionPointersToPtr;
+        public bool vo7 => VOImplicitCastsAndConversions;
+        //public bool vo8 => VOPreprocessorBehaviour;
+        //public bool vo9 => VOAllowMissingReturns;
+        public bool vo10 => VOCompatibleIIF;
+        public bool vo11 => VOArithmeticConversions;
+        //public bool vo12 => VOClipperIntegerDivisions;
+        public bool vo13 => VOStringComparisons;
+        //public bool vo14 => VOFloatConstants;
+        //public bool vo15 => VOUntypedAllowed;
+        //public bool vo16 => VOInitializeVariables;
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -61,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 VOImplicitCastsAndConversions = opt.Vo7;
                 //VOPreprocessorBehaviour = opt.Vo8;        // Handled in the parser
                 //VOAllowMissingReturns = opt.Vo9;          // Handled in the parser
-                //VOCompatibleIIF = opt.Vo10;               // Handled in the parser
+                VOCompatibleIIF = opt.Vo10;               
                 VOArithmeticConversions = opt.Vo11;
                 //VOClipperIntegerDivisions = opt.Vo12;     // Handled in the parser
                 VOStringComparisons = opt.Vo13;
@@ -97,7 +114,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOImplicitCastsAndConversions = opt.VOImplicitCastsAndConversions; // vo7
             //VOPreprocessorBehaviour = opt.VOPreprocessorBehaviour; // vo8 // Handled in the parser
             //VOAllowMissingReturns = opt.VOAllowMissingReturns; // vo9 // Handled in the parser
-            //VOCompatibleIIF = opt.VOCompatibleIIF; // vo10    // Handled in the parser
+            VOCompatibleIIF = opt.VOCompatibleIIF; // vo10    
             VOArithmeticConversions = opt.VOArithmeticConversions; // vo11
             //VOClipperIntegerDivisions = opt.VOClipperIntegerDivisions; // vo12    // Handled in the parser
             VOStringComparisons = opt.VOStringComparisons; // vo13

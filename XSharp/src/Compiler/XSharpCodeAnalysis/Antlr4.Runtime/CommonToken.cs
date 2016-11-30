@@ -34,8 +34,12 @@ using Antlr4.Runtime.Sharpen;
 
 namespace Antlr4.Runtime
 {
-    [Serializable]
+    [System.Serializable]
+#if XSHARP
     public partial class CommonToken : IWritableToken
+#else
+	public class CommonToken : IWritableToken
+#endif
     {
         private const long serialVersionUID = -6708843461296520577L;
 
@@ -46,7 +50,7 @@ namespace Antlr4.Runtime
         /// <see cref="source"/>
         /// for tokens that do not have a source.
         /// </summary>
-		protected internal static readonly Tuple<ITokenSource, ICharStream> EmptySource = Tuple.Create<ITokenSource, ICharStream>(null, null);
+        protected internal static readonly Tuple<ITokenSource, ICharStream> EmptySource = Tuple.Create<ITokenSource, ICharStream>(null, null);
 
         /// <summary>
         /// This is the backing field for the <see cref="Type"/> property.
@@ -85,7 +89,7 @@ namespace Antlr4.Runtime
         /// containing these values.</p>
         /// </summary>
         [NotNull]
-		protected internal Tuple<ITokenSource, ICharStream> source;
+        protected internal Tuple<ITokenSource, ICharStream> source;
 
         /// <summary>
         /// This is the backing field for the <see cref="Text"/> property.
@@ -121,7 +125,7 @@ namespace Antlr4.Runtime
             this.source = EmptySource;
         }
 
-		public CommonToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop)
+        public CommonToken(Tuple<ITokenSource, ICharStream> source, int type, int channel, int start, int stop)
         {
             this.source = source;
             this._type = type;

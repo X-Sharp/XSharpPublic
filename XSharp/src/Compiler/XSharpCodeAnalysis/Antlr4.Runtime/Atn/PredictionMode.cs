@@ -44,7 +44,7 @@ namespace Antlr4.Runtime.Atn
     /// utility methods for analyzing configuration sets for conflicts and/or
     /// ambiguities.
     /// </remarks>
-    [Serializable]
+    [System.Serializable]
     public sealed class PredictionMode
     {
         /// <summary>The SLL(*) prediction mode.</summary>

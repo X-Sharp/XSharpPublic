@@ -44,7 +44,11 @@ namespace Antlr4.Runtime
     /// uses simplified match() and error recovery mechanisms in the interest
     /// of speed.
     /// </remarks>
+#if XSHARP
     public abstract partial class Lexer : Recognizer<int, LexerATNSimulator>, ITokenSource
+#else
+    public abstract class Lexer : Recognizer<int, LexerATNSimulator>, ITokenSource
+#endif
     {
         public const int DefaultMode = 0;
 
@@ -122,7 +126,7 @@ namespace Antlr4.Runtime
         public Lexer(ICharStream input)
         {
             this._input = input;
-			this._tokenFactorySourcePair = Tuple.Create((ITokenSource)this, input);
+            this._tokenFactorySourcePair = Tuple.Create((ITokenSource)this, input);
         }
 
         public virtual void Reset()
@@ -287,10 +291,10 @@ outer_continue: ;
         public virtual void SetInputStream(ICharStream input)
         {
             this._input = null;
-			this._tokenFactorySourcePair = Tuple.Create((ITokenSource)this, _input);
+            this._tokenFactorySourcePair = Tuple.Create((ITokenSource)this, _input);
             Reset();
             this._input = input;
-			this._tokenFactorySourcePair = Tuple.Create((ITokenSource)this, _input);
+            this._tokenFactorySourcePair = Tuple.Create((ITokenSource)this, _input);
         }
 
         public virtual string SourceName
@@ -397,7 +401,7 @@ outer_continue: ;
 
 		public virtual int TokenStartCharIndex
 		{
-			get 
+			get
 			{
 				return _tokenStartCharIndex;
 			}
@@ -405,7 +409,7 @@ outer_continue: ;
 
 		public virtual int TokenStartLine
 		{
-			get 
+			get
 			{
 				return _tokenStartLine;
 			}
@@ -413,7 +417,7 @@ outer_continue: ;
 
 		public virtual int TokenStartColumn
 		{
-			get 
+			get
 			{
 				return _tokenStartColumn;
 			}

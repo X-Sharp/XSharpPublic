@@ -34,7 +34,7 @@ using Antlr4.Runtime.Sharpen;
 
 namespace Antlr4.Runtime.Misc
 {
-    [Serializable]
+    [System.Serializable]
     public class MultiMap<K, V> : Dictionary<K, IList<V>>
     {
         private const long serialVersionUID = -4956746660057462312L;
@@ -50,14 +50,14 @@ namespace Antlr4.Runtime.Misc
             elementsForKey.Add(value);
         }
 
-		public virtual IList<Tuple<K, V>> GetPairs()
+        public virtual IList<Tuple<K, V>> GetPairs()
         {
-			IList<Tuple<K, V>> pairs = new List<Tuple<K, V>>();
+            IList<Tuple<K, V>> pairs = new List<Tuple<K, V>>();
             foreach (KeyValuePair<K, IList<V>> pair in this)
             {
                 foreach (V value in pair.Value)
                 {
-					pairs.Add(Tuple.Create(pair.Key, value));
+                    pairs.Add(Tuple.Create(pair.Key, value));
                 }
             }
 

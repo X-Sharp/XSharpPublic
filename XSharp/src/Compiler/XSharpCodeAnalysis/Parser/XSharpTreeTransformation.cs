@@ -1070,30 +1070,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        protected ClassDeclarationSyntax GenerateClass(string className, SyntaxListBuilder<MemberDeclarationSyntax> members)
-        {
-            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-            GenerateAttributeList(attributeLists, CompilerGenerated);
-            SyntaxListBuilder modifiers = _pool.Allocate();
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
-            modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            var r = _syntaxFactory.ClassDeclaration(
-                attributeLists: attributeLists,
-                modifiers: modifiers.ToTokenList(),
-                keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                identifier: SyntaxFactory.Identifier(className),
-                typeParameterList: null,
-                baseList: null, // BaseListSyntax baseList = _syntaxFactory.BaseList(colon, list)
-                constraintClauses: default(SyntaxListBuilder<TypeParameterConstraintClauseSyntax>),
-                openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                members: members,
-                closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            _pool.Free(attributeLists);
-            _pool.Free(modifiers);
-            return r;
-        }
-
         protected NamespaceDeclarationSyntax GenerateNamespace(string name, SyntaxList<MemberDeclarationSyntax> members)
         {
             var externs = _pool.Allocate<ExternAliasDirectiveSyntax>();
@@ -1412,15 +1388,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // trees is NOT used here, but it IS used in the VOTreeTransForm
             if (_defTree == null)
             {
-                var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
+                lock (gate)
+                {
+                    if (_defTree == null)
+                    {
+                        var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false));
-                var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
-                var tree = CSharpSyntaxTree.Create(
-                    (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
-                        t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
-                _defTree = tree;
-
+                        t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false));
+                        var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
+                        var tree = CSharpSyntaxTree.Create(
+                            (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
+                                t.GlobalEntities.Externs, t.GlobalEntities.Usings, t.GlobalEntities.Attributes, t.GlobalEntities.Members, eof).CreateRed());
+                        _defTree = tree;
+                    }
+                }
             }
             return _defTree;
         }

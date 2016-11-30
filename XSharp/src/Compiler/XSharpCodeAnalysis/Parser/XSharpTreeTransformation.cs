@@ -3739,12 +3739,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.end);
             context.Expr.SetSequencePoint();
-            var whileStmt = _syntaxFactory.WhileStatement(SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword),
+            StatementSyntax whileStmt = _syntaxFactory.WhileStatement(SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
-            whileStmt = (WhileStatementSyntax)CheckForMissingKeyword(context.e, context, whileStmt, "END[DO]");
+            whileStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, whileStmt, "END[DO]");
             context.Put(whileStmt);
         }
 
@@ -3841,7 +3841,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var incr = _pool.AllocateSeparated<ExpressionSyntax>();
             incr.Add(incrExpr);
-            var forStmt = _syntaxFactory.ForStatement(SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
+            StatementSyntax forStmt = _syntaxFactory.ForStatement(SyntaxFactory.MakeToken(SyntaxKind.ForKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 decl,
                 init,
@@ -3853,7 +3853,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.StmtBlk.Get<BlockSyntax>());
             _pool.Free(init);
             _pool.Free(incr);
-            forStmt = (ForStatementSyntax) CheckForMissingKeyword(context.e, context, forStmt, "NEXT");
+            forStmt = (StatementSyntax) CheckForMissingKeyword(context.e, context, forStmt, "NEXT");
             if (blockStmts == null) {
                 context.Put(forStmt);
             }
@@ -3870,7 +3870,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.SetSequencePoint(context.end);
             context.Id.SetSequencePoint();
             context.Container.SetSequencePoint();
-            var forStmt = _syntaxFactory.ForEachStatement(SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword),
+            StatementSyntax forStmt = _syntaxFactory.ForEachStatement(SyntaxFactory.MakeToken(SyntaxKind.ForEachKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Type?.Get<TypeSyntax>() ?? _impliedType,
                 context.Id.Get<SyntaxToken>(),
@@ -3879,15 +3879,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
                 context.StmtBlk.Get<BlockSyntax>());
 
-            forStmt = (ForEachStatementSyntax)CheckForMissingKeyword(context.e, context, forStmt, "NEXT");
+            forStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, forStmt, "NEXT");
             context.Put(forStmt);
 
         }
 
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
-            var ifStmt = context.IfStmt.Get<IfStatementSyntax>();
-            ifStmt = (IfStatementSyntax)CheckForMissingKeyword(context.e, context, ifStmt, "END[IF]");
+            StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
+            ifStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, ifStmt, "END[IF]");
             context.Put(ifStmt);
         }
 
@@ -3908,7 +3908,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitCaseStmt([NotNull] XP.CaseStmtContext context)
         {
             context.SetSequencePoint(context.end);
-            var caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
+            StatementSyntax caseStmt = (StatementSyntax)context.CaseStmt?.Get<IfStatementSyntax>() ??
                 _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             caseStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, caseStmt, "END[CASE]");
             context.Put(caseStmt);
@@ -3995,14 +3995,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 catches.Add(catchCtx.Get<CatchClauseSyntax>());
             }
-            var tryStmt =
+            StatementSyntax tryStmt =
             _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
                 context.StmtBlk.Get<BlockSyntax>(),
                 catches,
                 context.FinBlock == null ? null : _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
                     context.FinBlock.Get<BlockSyntax>()));
             _pool.Free(catches);
-            tryStmt = (TryStatementSyntax)CheckForMissingKeyword(context.e, context, tryStmt, "END [TRY]");
+            tryStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, tryStmt, "END [TRY]");
             context.Put(tryStmt);
 
         }
@@ -4096,7 +4096,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     emptyLabels.Clear();
                 }
             }
-            var switchStmt = _syntaxFactory.SwitchStatement(SyntaxFactory.MakeToken(SyntaxKind.SwitchKeyword),
+            StatementSyntax switchStmt = _syntaxFactory.SwitchStatement(SyntaxFactory.MakeToken(SyntaxKind.SwitchKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Expr.Get<ExpressionSyntax>(),
                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
@@ -4104,7 +4104,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 sections,
                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
 
-            switchStmt = (SwitchStatementSyntax)CheckForMissingKeyword(context.e, context, switchStmt, "END [SWITCH]");
+            switchStmt = (StatementSyntax)CheckForMissingKeyword(context.e, context, switchStmt, "END [SWITCH]");
             context.Put(switchStmt);
             _pool.Free(sections);
             _pool.Free(emptyLabels);
@@ -4403,7 +4403,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (node != null)
             {
-                node = (CSharpSyntaxNode)CheckForMissingKeyword(context.e, context, node, "END ["+context.Key.Text+"]");
+                node = (StatementSyntax)CheckForMissingKeyword(context.e, context, node, "END ["+context.Key.Text+"]");
                 context.Put(node);
             }
 

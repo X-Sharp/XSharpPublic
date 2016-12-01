@@ -213,7 +213,7 @@ namespace XSharp.Project
         public bool VO7
         {
             get { return this.vo7; }
-            //set { this.vo7 = value; this.IsDirty = true; }
+            set { this.vo7 = value; this.IsDirty = true; }
         }
 
         [Category(CatCompatibility), DisplayName(VO8Caption), Description(VO8Description)]

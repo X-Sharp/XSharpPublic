@@ -800,7 +800,7 @@ namespace XSharp.Project
         protected override NodeProperties CreatePropertiesObject()
         {
             //return new XSharpProjectNodeProperties( this );
-            return new ProjectNodeProperties(this);
+            return new XSharpProjectNodeProperties(this);
         }
         /*
                /// <summary>

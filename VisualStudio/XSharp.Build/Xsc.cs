@@ -618,14 +618,14 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
-            //commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
+            commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
             //commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
             commandline.AppendPlusOrMinusSwitch("/vo2", base.Bag, nameof(VO2));
             commandline.AppendPlusOrMinusSwitch("/vo3", base.Bag, nameof(VO3));
             commandline.AppendPlusOrMinusSwitch("/vo4", base.Bag, nameof(VO4));
             commandline.AppendPlusOrMinusSwitch("/vo5", base.Bag, nameof(VO5));
             //commandline.AppendPlusOrMinusSwitch("/vo6", base.Bag, nameof(VO6));
-            //commandline.AppendPlusOrMinusSwitch("/vo7", base.Bag, nameof(VO7));
+            commandline.AppendPlusOrMinusSwitch("/vo7", base.Bag, nameof(VO7));
             commandline.AppendPlusOrMinusSwitch("/vo8", base.Bag, nameof(VO8));
             commandline.AppendPlusOrMinusSwitch("/vo9", base.Bag, nameof(VO9));
             commandline.AppendPlusOrMinusSwitch("/vo10", base.Bag, nameof(VO10));

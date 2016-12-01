@@ -460,36 +460,51 @@ namespace Microsoft.CodeAnalysis.CSharp
             ref BoundExpression trueExpr, ref BoundExpression falseExpr, 
             ref TypeSymbol trueType, ref TypeSymbol falseType)
         {
-            if (Compilation.Options.IsDialectVO)
+            // do nothing when the types are equal or null
+            if (trueType != null && falseType != null && trueType != falseType)
             {
                 // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
-                trueType = VOGetType(trueExpr);
+                trueType = VOGetType(trueExpr);         
                 falseType = VOGetType(falseExpr);
                 if (trueType != falseType && trueType.IsIntegralType() && falseType.IsIntegralType())
                 {
-                    // Determine the largest of the two integral types
+                    // Determine the largest of the two integral types and scale up
                     if (trueType.SpecialType.SizeInBytes() > falseType.SpecialType.SizeInBytes())
                         falseType = trueType;
                     else
                         trueType = falseType;
                 }
 
-                if (Compilation.Options.VOCompatibleIIF)
+                if (trueType != falseType && Compilation.Options.IsDialectVO)
                 {
-                    if (trueType != falseType)
+                    // convert to usual when one of the two is a usual
+                    var usualType = GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
+                    if (trueType == usualType)
                     {
-                        var usualType = GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
-                        if (trueType == usualType)
-                        {
-                            falseType = trueType;
-                            falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
-                        }
-                        else if (falseType == usualType)
-                        {
-                            trueType = falseType;
-                            trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
-                        }
+                        falseType = trueType;
+                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
                     }
+                    else if (falseType == usualType)
+                    {
+                        trueType = falseType;
+                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
+                    }
+                    else if (Compilation.Options.VOCompatibleIIF)
+                    {
+                        // convert to usual when Compatible IIF is activated
+                        trueExpr = CreateConversion(trueExpr, usualType, diagnostics);
+                        falseExpr = CreateConversion(falseExpr, usualType, diagnostics);
+                        trueType = falseType = usualType;
+                    }
+                }
+                if (trueType != falseType && Compilation.Options.VOCompatibleIIF)
+                {
+                    // convert to object when Compatible IIF is activated
+                    // this will not happen for VO Dialect because that is handled above
+                    var objectType = Compilation. GetSpecialType(SpecialType.System_Object);
+                    trueExpr = CreateConversion(trueExpr, objectType, diagnostics);
+                    falseExpr = CreateConversion(falseExpr, objectType, diagnostics);
+                    trueType = falseType = objectType;
                 }
             }
         }

@@ -114,21 +114,38 @@ namespace Microsoft.CodeAnalysis.CSharp
                 
                 if (source != null && destination != null )
                 {
+                    var srctype = source.SpecialType;
+                    var dsttype = destination.SpecialType;
                     if (conv.Compilation.Options.VOSignedUnsignedConversion)
                     {
-                        var srctype = source.SpecialType;
-                        var dsttype = destination.SpecialType;
+                        var result = Conversion.NoConversion;
+
                         // when both numeric and both integral or both not integral
-                        if (srctype.IsNumericType() && dsttype.IsNumericType()  && 
-                            srctype.IsIntegralType() == dsttype.IsIntegralType())
+                        if (srctype.IsNumericType() && dsttype.IsNumericType())
                         {
-                            // when both same # of bits and integral, use Identity conversion
-                            if (srctype.SizeInBytes() == dsttype.SizeInBytes() &&
-                                srctype.IsIntegralType() && dsttype.IsIntegralType())
-                                return Conversion.Identity;
+                            if (srctype.IsIntegralType() == dsttype.IsIntegralType())
+                            {
+                                // when both same # of bits and integral, use Identity conversion
+                                if (srctype.SizeInBytes() == dsttype.SizeInBytes() &&
+                                    srctype.IsIntegralType() && dsttype.IsIntegralType())
+                                    result = Conversion.Identity;
+                                else
+                                    result = Conversion.ImplicitNumeric;
+                            }
+                            // Vulcan also allows to convert floating point types <-> integral types
                             else
-                                return Conversion.ImplicitNumeric;
+                            {
+                                result = Conversion.ImplicitNumeric;
+                            }
                         }
+                        if (result == Conversion.ImplicitNumeric)
+                        {
+                            var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
+                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                            useSiteDiagnostics.Add(info);
+                        }
+                        if (result != Conversion.NoConversion)
+                            return result;
                     }
                     if (conv.Compilation.Options.IsDialectVO)
                     {
@@ -163,8 +180,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             // we need to convert BYTE(<p>) to dereferencing the <p>
                             // can we do that here ?
-                            var srctype = source.SpecialType;
-                            var dsttype = destination.SpecialType;
                             // Integer conversions
                             if (srctype.IsNumericType() && dsttype.IsNumericType() &&
                                 srctype.IsIntegralType() == dsttype.IsIntegralType())
@@ -185,6 +200,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 return Conversion.Boxing;
                             else if (destination.SpecialType == SpecialType.System_Object)
                                 return Conversion.ImplicitReference;
+                        }
+                        if (conv.Compilation.Options.VOSignedUnsignedConversion)
+                        {
+                            var floatType = conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
+                            if (source == floatType && dsttype.IsNumericType() ||
+                                destination == floatType && srctype.IsNumericType())
+                            {
+                                var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
+                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                                useSiteDiagnostics.Add(info);
+                                return Conversion.ImplicitNumeric;
+                            }
                         }
 
                     }

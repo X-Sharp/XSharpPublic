@@ -789,7 +789,17 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             else
             {
-                return lambdaBodyBinder.BindBlock((BlockSyntax)this.Body, diagnostics);
+#if XSHARP
+                BoundBlock block = lambdaBodyBinder.BindBlock((BlockSyntax)this.Body, diagnostics);
+                if (lambdaBodyBinder.Compilation.Options.IsDialectVO)
+                {
+                    block = Binder.FixCodeBlockProblems(lambdaSymbol, lambdaBodyBinder, block, diagnostics);
+                }
+                return block;
+#else
+                 return lambdaBodyBinder.BindBlock((BlockSyntax)this.Body, diagnostics);
+#endif
+
             }
         }
     }

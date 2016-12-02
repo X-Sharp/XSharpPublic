@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Roslyn.Utilities;
+using System.Collections.Immutable;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -75,5 +76,55 @@ namespace Microsoft.CodeAnalysis.CSharp
                 type: destination)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
         }
+        internal static BoundBlock FixCodeBlockProblems(LambdaSymbol lambdaSymbol, Binder lambdaBodyBinder, BoundBlock block, DiagnosticBag diagnostics)
+        {
+            // check for a Lambda that returns a USUAL
+            var usualType = lambdaBodyBinder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+            if (lambdaSymbol.ReturnType != usualType)
+                return block;
+            // handle 2 problems:
+            // 1) no statements, then add a return statement
+            // 2) last statement is a void expression. Then the conversion to USUAL fails
+            var count = block.Statements.Length;
+            List<BoundStatement> newlist = new List<BoundStatement>();
+            if (count == 0)
+            {
+                var result = new BoundDefaultOperator(block.Syntax, usualType);
+                newlist.Add(new BoundReturnStatement(block.Syntax, result));
+                block = block.Update(block.Locals, newlist.ToImmutableArray<BoundStatement>());
+            }
+            else
+            {
+                var stmt = block.Statements[count - 1];
+                if (stmt is BoundReturnStatement && stmt.HasErrors)
+                {
+                    BoundExpression expr = (stmt as BoundReturnStatement).ExpressionOpt;
+                    // when the last expression is a conversion to USUAL
+                    // and there is an error, then this is most likely the conversion from 
+                    // a void to USUAL. When that happens, then create an extra stmt in the body of the lambda
+                    // store the return expression in an expression statement
+                    // and return a NIL
+                    if (expr is BoundConversion)
+                    {
+                        var boundConv = expr as BoundConversion;
+                        var operand = boundConv.Operand;
+                        if (boundConv.Type == usualType && operand.Type.SpecialType == SpecialType.System_Void)
+                        {
+                            diagnostics.Clear();
+                            for (int i = 0; i < block.Statements.Length - 1; i++)
+                            {
+                                newlist.Add(block.Statements[i]);
+                            }
+                            newlist.Add(new BoundExpressionStatement(stmt.Syntax, operand));
+                            var result = new BoundDefaultOperator(stmt.Syntax, usualType);
+                            newlist.Add(new BoundReturnStatement(stmt.Syntax, result));
+                            block = new BoundBlock(block.Syntax, block.Locals, newlist.ToImmutableArray<BoundStatement>());
+                        }
+                    }
+                }
+            }
+            return block;
+        }
+
     }
 }

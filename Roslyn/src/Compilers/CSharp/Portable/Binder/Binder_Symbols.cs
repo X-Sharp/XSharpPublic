@@ -389,8 +389,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         if (elementType.IsManagedType)
                         {
-                            // "Cannot take the address of, get the size of, or declare a pointer to a managed type ('{0}')"
-                            Error(diagnostics, ErrorCode.ERR_ManagedAddr, node, elementType);
+#if XSHARP
+                            if ( Compilation.Options.IsDialectVO &&  Compilation.Options.AllowUnsafe)
+                            {
+                                ; // Ok, let's hope they know what they are doing....
+                            }
+                            else
+#endif
+                                // "Cannot take the address of, get the size of, or declare a pointer to a managed type ('{0}')"
+                                Error(diagnostics, ErrorCode.ERR_ManagedAddr, node, elementType);
                         }
 
                         return new PointerTypeSymbol(elementType);

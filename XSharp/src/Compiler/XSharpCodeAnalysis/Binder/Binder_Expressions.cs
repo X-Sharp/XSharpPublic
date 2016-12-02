@@ -148,7 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
                 {
                     var arg = analyzedArguments.Arguments[i];
-#if XSHARP
+
                     if (Compilation.Options.VOImplicitCastsAndConversions)
                     {
                         if (arg is BoundAddressOfOperator)
@@ -166,7 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             analyzedArguments.Arguments[i] = arg;
                         }
                     }
-#endif
+
                     if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
@@ -181,7 +181,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (analyzedArguments.RefKind(i) == RefKind.None && result.ValidResult.Member.Parameters[result.ValidResult.Result.ParameterFromArgument(i)].RefKind != RefKind.None)
                 {
                     var arg = analyzedArguments.Arguments[i];
-#if XSHARP
+
                     if (Compilation.Options.VOImplicitCastsAndConversions)
                     {
                         if (arg is BoundAddressOfOperator)
@@ -199,12 +199,59 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         analyzedArguments.Arguments[i] = arg;
                     }
-#endif
+
                     if (!CheckIsVariable(arg.Syntax, arg, BindValueKind.OutParameter, checkingReceiver: false, diagnostics: diagnostics))
                         return false;
                 }
             }
             return true;
+        }
+        private BoundExpression TryBindLateBoundCall(
+            ExpressionSyntax node, 
+            BoundExpression boundLeft, 
+            TypeSymbol leftType, 
+            SimpleNameSyntax right,
+            bool invoked,
+            bool indexed
+            )
+        {
+            if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
+            {
+                string propName = right.Identifier.ValueText;
+                if (leftType != null)
+                {
+                    bool earlyBound = propName == ".ctor";
+                    bool isObject = leftType.IsObjectType();
+                    bool isUsual = !isObject && leftType is NamedTypeSymbol
+                        && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                    // Late bound will only work for OBJECT or USUAL
+                    if (isObject || isUsual)
+                    {
+                        if (isUsual)
+                        {
+                            earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
+                            //earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
+                        }
+                        if (isObject)
+                        {
+                            earlyBound |= leftType.GetMembers(propName).Length > 0;
+                        }
+                        if (!earlyBound)
+                        {
+                            return new BoundDynamicMemberAccess(
+                                syntax: node,
+                                receiver: boundLeft,
+                                typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                                name: propName,
+                                invoked: invoked,
+                                indexed: indexed,
+                                type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                                hasErrors: false);
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
     }

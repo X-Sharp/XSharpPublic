@@ -1,5 +1,5 @@
 // 231. error XS0266: Cannot implicitly convert type 'void*' to '_myVOSTRUCT*'. An explicit conversion exists 
-// needs /vo7
+// /vo4+ /vo7+
 VOSTRUCT _myVOSTRUCT
 MEMBER n AS INT
 MEMBER m AS DWORD

@@ -3108,7 +3108,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C247
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C246 - Problem converting PTR to WORD PTR *************
 Application = C246 - Problem converting PTR to WORD PTR
 IDEVersion = 1.06
@@ -3164,7 +3164,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=0
+VO7=1
 VO8=0
 VO9=0
 VO10=0
@@ -4451,7 +4451,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=0
+VO7=1
 VO8=0
 VO9=0
 VO10=0
@@ -6527,7 +6527,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=0
+VO4=1
 VO5=0
 VO6=0
 VO7=0
@@ -14310,7 +14310,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C179
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax *************
 Application = C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax
 IDEVersion = 1.06
@@ -31038,7 +31038,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C316 - Ambiguous conversion Char<->USUAL with /vo4
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C317 - compiler crash with VS generated code for resources and /lb+ *************
 Application = C317 - compiler crash with VS generated code for resources and /lb+
 IDEVersion = 1.06

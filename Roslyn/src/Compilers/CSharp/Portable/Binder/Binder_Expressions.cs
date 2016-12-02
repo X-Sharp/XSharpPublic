@@ -4634,6 +4634,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
                     //earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
                 }
+                if (leftType != null && leftType.IsObjectType())
+                {
+                    earlyBound = leftType.GetMembers(propName).Length > 0;
+                }
                 if (!earlyBound && (object)leftType != null && (leftType.IsObjectType() || leftNodeUsual))
                 {
                     return new BoundDynamicMemberAccess(

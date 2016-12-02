@@ -2118,7 +2118,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C257 - Problem with @ on function
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C256 - Problem with codeblock *************
 Application = C256 - Problem with codeblock
 IDEVersion = 1.06
@@ -5286,9 +5286,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C230
 
-ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
-; ************** APPLICATION C231 *************
-Application = C231
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C231 - issues with AS VOSTRUCT *************
+Application = C231 - issues with AS VOSTRUCT
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -5319,19 +5319,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C231 FileGroups]
-[C231 Files]
+[C231 - issues with AS VOSTRUCT FileGroups]
+[C231 - issues with AS VOSTRUCT Files]
 File = %AppPath%\Prg\C231.prg
 FileGUID = D755EAE8-64DF-4A3E-9F3D-4554A4658249
 FileType = Code
-[C231 References]
+[C231 - issues with AS VOSTRUCT References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C231 Resources]
-[C231 Native Resources]
-[C231 License files]
-[C231 General Options]
+[C231 - issues with AS VOSTRUCT Resources]
+[C231 - issues with AS VOSTRUCT Native Resources]
+[C231 - issues with AS VOSTRUCT License files]
+[C231 - issues with AS VOSTRUCT General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -5356,7 +5356,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C231 Configurations]
+[C231 - issues with AS VOSTRUCT Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -5383,7 +5383,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C231
+ENDApplication = C231 - issues with AS VOSTRUCT
 
 ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C232 *************
@@ -6474,7 +6474,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C242
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C243 - Cannot assign Char to BYTE *************
 Application = C243 - Cannot assign Char to BYTE
 IDEVersion = 1.06
@@ -12926,7 +12926,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C165 - Problems with pointer arithmetic
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C166 - Problem assigning System.Decimal to usual *************
 Application = C166 - Problem assigning System.Decimal to usual
 IDEVersion = 1.06
@@ -26593,7 +26593,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C271
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C272 - Ambiguous call between Char and SByte overloads *************
 Application = C272 - Ambiguous call between Char and SByte overloads
 IDEVersion = 1.06
@@ -26691,7 +26691,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C272 - Ambiguous call between Char and SByte overloads
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C273 - Ambiguous resolution between string and logic overloads *************
 Application = C273 - Ambiguous resolution between string and logic overloads
 IDEVersion = 1.06
@@ -27082,7 +27082,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C276
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C277 - Ambiguous operator with BYTE and without /vo4 *************
 Application = C277 - Ambiguous operator with BYTE and without /vo4
 IDEVersion = 1.06
@@ -27276,7 +27276,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C278
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C279 - Problem assigning return value of iif() to BYTE, without /vo4 *************
 Application = C279 - Problem assigning return value of iif() to BYTE, without /vo4
 IDEVersion = 1.06
@@ -29849,7 +29849,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C304
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C305 - String2Psz() in Start() function *************
 Application = C305 - String2Psz() in Start() function
 IDEVersion = 1.06
@@ -29948,7 +29948,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C305 - String2Psz() in Start() function
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C306 - Partial class definition with different casing *************
 Application = C306 - Partial class definition with different casing
 IDEVersion = 1.06
@@ -30047,7 +30047,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C306 - Partial class definition with different casing
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C307 - Assign decimal to usual with vo4+ *************
 Application = C307 - Assign decimal to usual with vo4+
 IDEVersion = 1.06
@@ -30146,7 +30146,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C307 - Assign decimal to usual with vo4+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
 ; ************** APPLICATION C308 - GLOBAL with same name as function used inside class code *************
 Application = C308 - GLOBAL with same name as function used inside class code
 IDEVersion = 1.06
@@ -30245,7 +30245,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C308 - GLOBAL with same name as function used inside class code
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C309 - Cannot assign DATE +/- USUAL to INT/DWORD *************
 Application = C309 - Cannot assign DATE +/- USUAL to INT/DWORD
 IDEVersion = 1.06
@@ -30344,7 +30344,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C309 - Cannot assign DATE +/- USUAL to INT/DWORD
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C310 - Preprocessor errors with identifiers next to or after '.' *************
 Application = C310 - Preprocessor errors with identifiers next to or after '.'
 IDEVersion = 1.06
@@ -30443,7 +30443,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C310 - Preprocessor errors with identifiers next to or after '.'
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C311 - Crash with #define Somehing and /define:Something *************
 Application = C311 - Crash with #define Somehing and /define:Something
 IDEVersion = 1.06
@@ -30938,6 +30938,105 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C315 - Compiler crash with /vo4+
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C316 - Ambiguous conversion Char<->USUAL with /vo4 *************
+Application = C316 - Ambiguous conversion Char<->USUAL with /vo4
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C316\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C316
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2A720D39-ED35-4536-94E2-82507F97CB0F
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 FileGroups]
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 Files]
+File = %AppPath%\Prg\C316.prg
+FileGUID = 092CFE42-B877-48A9-A672-4CF1C74BFAAD
+FileType = Code
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 Resources]
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 Native Resources]
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 License files]
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=1
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C316 - Ambiguous conversion Char<->USUAL with /vo4 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C316 - Ambiguous conversion Char<->USUAL with /vo4
 [EndApplications]
 
 [Configurations]

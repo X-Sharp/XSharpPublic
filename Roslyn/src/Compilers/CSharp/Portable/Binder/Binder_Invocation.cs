@@ -222,13 +222,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 result = BindDynamicInvocation(node, boundExpression, analyzedArguments, ImmutableArray<MethodSymbol>.Empty, diagnostics, queryClause);
             }
 #if XSHARP
+            // Bind Late bound call.
             else if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding &&
                 boundExpression.Kind != BoundKind.MethodGroup && (object)boundExpression.Type != null && 
                 (boundExpression.Type.IsObjectType() || ((NamedTypeSymbol)boundExpression.Type).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual)) &&
                 !(expression.IsKind(SyntaxKind.SimpleMemberAccessExpression) && GetName((ExpressionSyntax)expression) == ".ctor"))
             {
                 ImmutableArray<BoundExpression> argArray = BuildArgumentsForDynamicInvocation(analyzedArguments, diagnostics);
-                bool hasErrors = ReportBadDynamicArguments(node, argArray, diagnostics, queryClause);
+                bool hasErrors = ReportBadDynamicArguments(node, argArray, diagnostics, queryClause, lateBound : true);
                 result = new BoundDynamicInvocation(
                     node,
                     boundExpression,
@@ -361,7 +362,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             CSharpSyntaxNode node,
             ImmutableArray<BoundExpression> arguments,
             DiagnosticBag diagnostics,
-            CSharpSyntaxNode queryClause)
+            CSharpSyntaxNode queryClause
+#if XSHARP
+            , bool lateBound = false
+#endif
+            )
         {
             bool hasErrors = false;
             bool reportedBadQuery = false;
@@ -397,7 +402,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // error CS1978: Cannot use an expression of type '__arglist' as an argument to a dynamically dispatched operation
                         Error(diagnostics, ErrorCode.ERR_BadDynamicMethodArg, arg.Syntax, "__arglist");
                     }
+#if XSHARP          
+                    else if (! lateBound)
+#else
                     else
+#endif
                     {
                         // Lambdas,anonymous methods and method groups are the typeless expressions that
                         // are not usable as dynamic arguments; if we get here then the expression must have a type.
@@ -406,7 +415,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         Error(diagnostics, ErrorCode.ERR_BadDynamicMethodArg, arg.Syntax, arg.Type);
                         hasErrors = true;
-                    }
+                }
                 }
             }
             return hasErrors;

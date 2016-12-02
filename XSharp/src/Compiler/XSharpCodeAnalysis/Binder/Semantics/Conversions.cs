@@ -247,7 +247,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return Conversion.ImplicitNumeric;
 
                     }
-                    if (conv.Compilation.Options.VOImplicitCastsAndConversions)     // vo7
+                    if (conv.Compilation.Options.VOImplicitCastsAndConversions && conv.Compilation.Options.IsDialectVO)     // vo7
                     {
                         // Convert Any Ptr -> Any Ptr 
                         if (source.IsPointerType() && destination.IsPointerType())
@@ -256,11 +256,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         // Convert Integral type -> Ptr Type 
                         if (source.IsIntegralType() && destination.IsPointerType())
-                        {
-                            return Conversion.Identity;
-                        }
-                        // Convert Ptr type -> Integral Type 
-                        if (source.IsPointerType() && destination.IsIntegralType() )
                         {
                             return Conversion.Identity;
                         }

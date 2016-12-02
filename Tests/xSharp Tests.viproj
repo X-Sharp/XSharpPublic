@@ -6527,7 +6527,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=1
+VO4=0
 VO5=0
 VO6=0
 VO7=0
@@ -30939,7 +30939,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C315 - Compiler crash with /vo4+
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C316 - Ambiguous conversion Char<->USUAL with /vo4 *************
 Application = C316 - Ambiguous conversion Char<->USUAL with /vo4
 IDEVersion = 1.06
@@ -30992,7 +30992,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=1
+VO4=0
 VO5=0
 VO6=0
 VO7=0

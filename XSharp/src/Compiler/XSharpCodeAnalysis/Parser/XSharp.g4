@@ -932,11 +932,14 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CALL
                     | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
                     // Entity Keywords are added to the keywordvo list, although not strictly VO keyword.
                     // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
-                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   )
+                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
+					// Until cannot be in the keywordVN list because it will match an expression
+					| REPEAT | UNTIL 
+					)
                     ;
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | REPEAT | SCOPE | SEALED | SET |  TRY | UNICODE | UNTIL | VALUE | VIRTUAL  )
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  )
                     ;
 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM |

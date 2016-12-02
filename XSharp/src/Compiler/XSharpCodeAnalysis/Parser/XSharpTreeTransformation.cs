@@ -4930,12 +4930,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitSizeOfExpression([NotNull] XP.SizeOfExpressionContext context)
         {
             context.Put(
-                MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
                 _syntaxFactory.SizeOfExpression(
                 SyntaxFactory.MakeToken(SyntaxKind.SizeOfKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                 context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
         }
 
         public override void ExitTypeOfExpression([NotNull] XP.TypeOfExpressionContext context)

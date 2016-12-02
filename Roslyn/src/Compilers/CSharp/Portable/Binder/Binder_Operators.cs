@@ -2147,6 +2147,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
             if (Compilation.Options.VOImplicitCastsAndConversions)
                 allowManagedAddressOf = true;
+            if (Compilation.Options.IsDialectVO && Compilation.Options.AllowUnsafe)
+                allowManagedAddressOf = true;
 #else
             bool allowManagedAddressOf = Flags.Includes(BinderFlags.AllowManagedAddressOf);
 #endif

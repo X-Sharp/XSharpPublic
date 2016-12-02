@@ -4,10 +4,11 @@
 FUNCTION Start() AS VOID
 LOCAL c AS STRING
 LOCAL b AS BYTE
-LOCAL ch := 'a' AS Char
-
+LOCAL ch := 'a' AS Char                    
 c := "abc"
-b := c[1]
-
-b := ch
-
+b := c[1]	// requires /vo4
+? b
+b := ch     // requires /vo4
+? b
+ch := b
+? ch

@@ -226,7 +226,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return Conversion.ImplicitReference;
                         }
                     }
-                    if (conv.Compilation.Options.VOSignedUnsignedConversion)
+                    if (conv.Compilation.Options.VOSignedUnsignedConversion)    // vo4
                     {
                         if (source.SpecialType.IsNumericType() && destination.SpecialType.IsNumericType())
                         {
@@ -240,12 +240,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 return Conversion.ImplicitNumeric;
                             }
-                        }
-                        if (source.SpecialType == SpecialType.System_Char && destination.IsIntegralType())
-                            return Conversion.ImplicitNumeric;
-                        if (source.IsIntegralType() && destination.SpecialType == SpecialType.System_Char)
-                            return Conversion.ImplicitNumeric;
 
+                        }
                     }
                     if (conv.Compilation.Options.VOImplicitCastsAndConversions && conv.Compilation.Options.IsDialectVO)     // vo7
                     {
@@ -258,6 +254,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (source.IsIntegralType() && destination.IsPointerType())
                         {
                             return Conversion.Identity;
+                        }
+                    }
+                    // From and to CHAR
+                    if (source.SpecialType == SpecialType.System_Char )
+                    {
+                        if (destination.SpecialType == SpecialType.System_UInt16)
+                            return Conversion.Identity;
+                        if (conv.Compilation.Options.VOSignedUnsignedConversion) // vo4
+                        {
+                            if (destination.SpecialType == SpecialType.System_Byte)
+                                return Conversion.ImplicitNumeric;
+                        }
+
+                    }
+                    if (destination.SpecialType == SpecialType.System_Char)
+                    {
+                        switch (source.SpecialType)
+                        {
+                            case SpecialType.System_UInt16:
+                                return Conversion.Identity;
+                            case SpecialType.System_Byte:
+                                return Conversion.ImplicitNumeric;
                         }
                     }
                 }

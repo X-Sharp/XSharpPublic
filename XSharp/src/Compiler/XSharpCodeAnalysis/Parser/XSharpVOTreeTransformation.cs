@@ -1539,6 +1539,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             
         }
+        public override void ExitSizeOfExpression([NotNull] XP.SizeOfExpressionContext context)
+        {
+            // cast result of sizeof to DWORD to be compatible
+            base.ExitSizeOfExpression(context);
+            context.Put(MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)),
+                context.Get<ExpressionSyntax>()));
+        }
 
         private int[] DecodeDateConst(string dateliteral)
         {

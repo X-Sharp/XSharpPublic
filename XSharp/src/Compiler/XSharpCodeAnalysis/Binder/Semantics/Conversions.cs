@@ -138,12 +138,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 result = Conversion.ImplicitNumeric;
                             }
                         }
-                        if (result == Conversion.ImplicitNumeric)
-                        {
-                            var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
-                            useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                            useSiteDiagnostics.Add(info);
-                        }
+                        //if (result == Conversion.ImplicitNumeric)
+                        //{
+                        //    var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
+                        //    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                        //    useSiteDiagnostics.Add(info);
+                        //}
                         if (result != Conversion.NoConversion)
                             return result;
                     }
@@ -201,18 +201,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                             else if (destination.SpecialType == SpecialType.System_Object)
                                 return Conversion.ImplicitReference;
                         }
-                        if (conv.Compilation.Options.VOSignedUnsignedConversion)
-                        {
-                            var floatType = conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
-                            if (source == floatType && dsttype.IsNumericType() ||
-                                destination == floatType && srctype.IsNumericType())
-                            {
-                                var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
-                                useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                                useSiteDiagnostics.Add(info);
-                                return Conversion.ImplicitNumeric;
-                            }
-                        }
+                        //if (conv.Compilation.Options.VOSignedUnsignedConversion)
+                        //{
+                        //    var floatType = conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
+                        //    if (source == floatType && dsttype.IsNumericType() ||
+                        //        destination == floatType && srctype.IsNumericType())
+                        //    {
+                        //        var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
+                        //        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
+                        //        useSiteDiagnostics.Add(info);
+                        //        return Conversion.ImplicitNumeric;
+                        //    }
+                        //}
 
                     }
                     if (conv.Compilation.Options.LateBinding ||                 // lb

@@ -198,8 +198,13 @@ namespace Microsoft.CodeAnalysis.CSharp
                             // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
                             if (destination.SpecialType == SpecialType.System_Decimal)
                                 return Conversion.Boxing;
+                            // Usual -> OBJECT. Get the object out of the Usual 
+                            // Our special call will call in LocalWriter.UnBoxVOType will
+                            // convert the Unbox operation to a call to __Usual.ToObject()
+                            // This method will return the Contents of the usual as an object 
+                            // and not the usual itself as an object
                             else if (destination.SpecialType == SpecialType.System_Object)
-                                return Conversion.ImplicitReference;
+                                return Conversion.Boxing;
                         }
                         //if (conv.Compilation.Options.VOSignedUnsignedConversion)
                         //{

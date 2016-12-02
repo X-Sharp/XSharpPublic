@@ -1328,7 +1328,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C210
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C264 - Cannot pass PTR as USUAL argument *************
 Application = C264 - Cannot pass PTR as USUAL argument
 IDEVersion = 1.06
@@ -2811,7 +2811,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C250 - Problem taking the address of vars
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C249 - Problem with Empty codeblock *************
 Application = C249 - Problem with Empty codeblock
 IDEVersion = 1.06
@@ -2910,7 +2910,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C249 - Problem with Empty codeblock
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C248 - Problem with function in codeblock *************
 Application = C248 - Problem with function in codeblock
 IDEVersion = 1.06
@@ -5286,7 +5286,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C230
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C231 - issues with AS VOSTRUCT *************
 Application = C231 - issues with AS VOSTRUCT
 IDEVersion = 1.06
@@ -30582,9 +30582,9 @@ FileGUID = 09ADA900-3379-4524-9DA0-7927480D3EBA
 FileType = Code
 [C312 - PCALL complete sample References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanRT,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
 [C312 - PCALL complete sample Resources]
 [C312 - PCALL complete sample Native Resources]
 [C312 - PCALL complete sample License files]

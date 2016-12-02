@@ -4623,32 +4623,38 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             if (Compilation.Options.IsDialectVO && Compilation.Options.LateBinding && right.Kind() != SyntaxKind.GenericName)
             {
-                bool leftNodeUsual = false;
                 string propName = right.Identifier.ValueText;
-                bool earlyBound = propName == ".ctor";
-                if ((object)leftType != null &&
-                    leftType is NamedTypeSymbol
-                    && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                if (leftType != null)
                 {
-                    leftNodeUsual = true;
-                    earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
-                    //earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
-                }
-                if (leftType != null && leftType.IsObjectType())
-                {
-                    earlyBound = leftType.GetMembers(propName).Length > 0;
-                }
-                if (!earlyBound && (object)leftType != null && (leftType.IsObjectType() || leftNodeUsual))
-                {
-                    return new BoundDynamicMemberAccess(
-                        syntax: node,
-                        receiver: boundLeft,
-                        typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
-                        name: propName,
-                        invoked: invoked,
-                        indexed: indexed,
-                        type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
-                        hasErrors: false);
+                    bool earlyBound = propName == ".ctor";
+                    bool isObject = leftType.IsObjectType();
+                    bool isUsual = !isObject && leftType is NamedTypeSymbol
+                        && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                    // Late bound will only work for OBJECT or USUAL
+                    if (isObject || isUsual)
+                    {
+                        if (isUsual)
+                        {
+                            earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
+                            //earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
+                        }
+                        if (isObject)
+                        {
+                            earlyBound |= leftType.GetMembers(propName).Length > 0;
+                        }
+                        if (!earlyBound)
+                        {
+                            return new BoundDynamicMemberAccess(
+                                syntax: node,
+                                receiver: boundLeft,
+                                typeArgumentsOpt: default(ImmutableArray<TypeSymbol>),
+                                name: propName,
+                                invoked: invoked,
+                                indexed: indexed,
+                                type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                                hasErrors: false);
+                        }
+                    }
                 }
             }
 

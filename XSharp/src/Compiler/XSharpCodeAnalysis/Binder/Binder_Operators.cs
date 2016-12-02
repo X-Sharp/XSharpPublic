@@ -460,11 +460,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             ref BoundExpression trueExpr, ref BoundExpression falseExpr, 
             ref TypeSymbol trueType, ref TypeSymbol falseType)
         {
-            // do nothing when the types are equal or null
-            if (trueType != null && falseType != null && trueType != falseType)
+            // do nothing when the types null
+            if (trueType != null && falseType != null)
             {
                 // Determine underlying types. For literal numbers this may be Byte, Short, Int or Long
-                trueType = VOGetType(trueExpr);         
+                trueType = VOGetType(trueExpr);
                 falseType = VOGetType(falseExpr);
                 if (trueType != falseType && trueType.IsIntegralType() && falseType.IsIntegralType())
                 {

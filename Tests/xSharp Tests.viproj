@@ -2952,6 +2952,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
 [C248 - Problem with function in codeblock Resources]
 [C248 - Problem with function in codeblock Native Resources]
 [C248 - Problem with function in codeblock License files]

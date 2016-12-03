@@ -12,3 +12,6 @@ n := 0
 SELF:__DBServerEval( { || n += 1, __IterateForSum1( ) })
 END CLASS
 
+FUNCTION Test2 AS VOID
+		ErrorBlock({|e| ErrorDialog{(Exception)e}:Show()})
+RETURN 

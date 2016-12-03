@@ -2205,7 +2205,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         context.Put(type);
     }
-    public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
+        public override void ExitCodeblock([NotNull] XP.CodeblockContext context)
+        {
+            // Convert everything to a stmt like block
+            // so it is easier to fix Void expressions as last expression in the list
+            BlockSyntax body;
+            if (context.StmtBlk != null)
+            {
+                body = context.StmtBlk.Get<BlockSyntax>();
+            }
+            else if (context.ExprList != null)
+            {
+                body = context.ExprList.Get<BlockSyntax>();
+            }
+            else if (context.Expr != null)
+            {
+                var stmt = GenerateReturn(context.Expr.Get<ExpressionSyntax>());
+                body = MakeBlock(MakeList<StatementSyntax>(stmt));
+            }
+            else
+            {
+                body = MakeBlock(MakeList<StatementSyntax>());
+            }
+            context.Put(_syntaxFactory.ParenthesizedLambdaExpression(
+                asyncKeyword: null,
+                parameterList: context.CbParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                body: body));
+        }
+
+        public override void ExitFielddecl([NotNull] XP.FielddeclContext context)
     {
         var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
         context.SetSequencePoint();

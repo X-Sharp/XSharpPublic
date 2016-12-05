@@ -1311,7 +1311,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 stmts.Add(locdecl);
                 foreach (var stmt in AssMet.StmtBlk._Stmts)
                 {
-                    stmts.Add(stmt.Get<StatementSyntax>());
+                    object csNode = stmt.CsNode as CSharpSyntaxNode;
+                    if (csNode is StatementSyntax)
+                    {
+                        stmts.Add(csNode as StatementSyntax);
+                    }
+                    else
+                    {
+                        var list = stmt.GetList<StatementSyntax>();
+                        if (list != null && list.Count > 0)
+                        {
+                            foreach (var element in list)
+                            {
+                                stmts.Add(element);
+                            }
+                        }
+                    }
                 }
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), setMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),

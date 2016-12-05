@@ -4716,12 +4716,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateGetInst(context))
                         return;
                     break;
-                case "PCALL":
-                case "CCALL":
-                case "PCALLNATIVE":
-                case "CCALLNATIVE":
-                    expr = (ExpressionSyntax)NotInDialect(expr, name + " pseudo function");
-                    break;
+                //case "PCALL":
+                //case "CCALL":
+                //case "PCALLNATIVE":
+                //case "CCALLNATIVE":
+                //    expr = (ExpressionSyntax)NotInDialect(expr, name + " pseudo function");
+                //    break;
             }
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
 

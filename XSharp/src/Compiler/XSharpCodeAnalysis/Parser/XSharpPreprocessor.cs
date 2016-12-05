@@ -39,6 +39,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return result;
         }
+        internal static IList<IToken> Clone(this IList<IToken> tokens)
+        {
+            var clone = new List<IToken>(tokens.Count);
+            foreach (var t in tokens)
+            {
+                clone.Add(new CommonToken(t));
+            }
+            return clone; 
+        }
     }
     internal class XSharpPreprocessor : ITokenSource
     {
@@ -81,6 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         includecache.Remove(fileName);
                         return null;
                     }
+                    //DebugOutput("Found include file in cache: {0}", fileName);
                 }
             }
             if (file != null)
@@ -93,17 +103,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             lock (includecache)
             {
-                fileName = fileName.ToLower();
                 CachedIncludeFile file = GetIncludeFile(fileName);
                 if (file == null)
                 {
                     file = new CachedIncludeFile();
                     includecache.Add(fileName, file);
+                    file.LastUsed = DateTime.Now;
                 }
-                file.Tokens = tokens;
+                file.Tokens = tokens.Clone();
                 file.Text = text;
                 file.FileName = fileName;
-
+                //DebugOutput("Add include file to cache: {0}", fileName);
                 file.LastWritten = PortableShim.File.GetLastWriteTimeUtc(fileName);
                 return file;
             }
@@ -352,7 +362,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        internal void DebugOutput(string format, params object[] objects)
+        internal static void DebugOutput(string format, params object[] objects)
         {
             Debug.WriteLine("PP: " + format, objects);
         }
@@ -531,6 +541,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void InsertStream(string filename, ITokenStream input, IToken symbol = null)
         {
+            if (_options.Verbose)
+            {
+                if (symbol != null)
+                    DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens", symbol.Text, input.Size);
+                else
+                    DebugOutput("Input stack: Insert Includefile Stream {0}, # of tokens {1}", filename, input.Size, symbol?.Text);
+            }
             InputState s = new InputState(input);
             s.parent = inputs;
             s.SourceFileName = filename;
@@ -745,7 +762,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 return false;
             }
-            if (_options.ShowIncludes)
+            if (_options.ShowIncludes || _options.Verbose)
             {
                 if (ln != null)
                     DebugOutput("{0} line {1} Include {2}", ln.InputStream.SourceName, ln.Line, nfp);
@@ -771,17 +788,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // we have a file cache item with the Tokens etc
                 // Create a stream from the cached text and tokens
                 // Clone the tokens to avoid problems when concurrently using the tokens
-                var newTokens = new List<IToken>();
-                lock (cachedFile.Tokens)
-                {
-                    foreach (var token in cachedFile.Tokens)
-                    {
-                        newTokens.Add(new CommonToken(token));
-                    }
-                }
+                var newTokens = cachedFile.Tokens.Clone();
                 var tokenSource = new ListTokenSource(newTokens, cachedFile.FileName);
-                var tokenStream = new CommonTokenStream(tokenSource);
-                tokenStream.Reset();
+                var tokenStream = new BufferedTokenStream(tokenSource);
+                tokenStream.Sync(newTokens.Count);
                 InsertStream(cachedFile.FileName, tokenStream);
             }
             return true;

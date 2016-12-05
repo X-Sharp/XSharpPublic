@@ -1289,14 +1289,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
             if (vop.AccessMethodCtx != null)
             {
-                bool isInInterfaceOrAbstract = vop.AccessMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
+                bool isInInterfaceOrAbstract = vop.AccessMethodCtx.isInInterface() ||
+                    outerMods.Any(SyntaxKind.AbstractKeyword) || 
+                    outerMods.Any(SyntaxKind.ExternKeyword);
+                var m = vop.AccessMethodCtx.Get<MethodDeclarationSyntax>();
                 var args = MakeArgumentList(voPropArgs);
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), getMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
-                        isInInterfaceOrAbstract ? null
-                        : vop.AccessMethodCtx.StmtBlk.Get<BlockSyntax>(),
-                        isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
-                        : null);
+                        isInInterfaceOrAbstract ? null : m.Body,
+                        isInInterfaceOrAbstract ? null : m.SemicolonToken);
                 accessors.Add(accessor);
                 accessor.XNode = vop.AccessMethodCtx;
                 vop.AccessMethodCtx.CsNode = null;
@@ -1304,36 +1305,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (vop.AssignMethodCtx != null)
             {
-                bool isInInterfaceOrAbstract = vop.AssignMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
-                var arg = MakeArgument(GenerateSimpleName("value"));
-                var stmts = new List<StatementSyntax>();
-                var locdecl = GenerateLocalDecl(AssMet.ParamList._Params[0].Id.GetText(), _impliedType, GenerateSimpleName("value"));
-                stmts.Add(locdecl);
-                foreach (var stmt in AssMet.StmtBlk._Stmts)
+                bool isInInterfaceOrAbstract = vop.AssignMethodCtx.isInInterface() || 
+                    outerMods.Any(SyntaxKind.AbstractKeyword) || 
+                    outerMods.Any(SyntaxKind.ExternKeyword);
+                var m = vop.AssignMethodCtx.Get<MethodDeclarationSyntax>();
+                BlockSyntax block = null;
+                if (!isInInterfaceOrAbstract)
                 {
-                    object csNode = stmt.CsNode as CSharpSyntaxNode;
-                    if (csNode is StatementSyntax)
+                    var paramName = AssMet.ParamList._Params[0].Id.GetText();
+                    // when the name of the original parameter is value, then there is no need to change things
+                    if (String.Compare(paramName, "value", StringComparison.OrdinalIgnoreCase) == 0)
                     {
-                        stmts.Add(csNode as StatementSyntax);
+                        block = m.Body;
                     }
                     else
                     {
-                        var list = stmt.GetList<StatementSyntax>();
-                        if (list != null && list.Count > 0)
+                        // else create a local with the original parameter name and an assignment from the new value parameter
+                        var stmts = new List<StatementSyntax>();
+                        var arg = MakeArgument(GenerateSimpleName("value"));
+                        var locdecl = GenerateLocalDecl(paramName, _impliedType, GenerateSimpleName("value"));
+                        stmts.Add(locdecl);
+                        foreach (var stmt in m.Body.Statements)
                         {
-                            foreach (var element in list)
-                            {
-                                stmts.Add(element);
-                            }
+                            stmts.Add(stmt);
                         }
+                        block = MakeBlock(stmts);
                     }
                 }
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), setMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
-                        isInInterfaceOrAbstract ? null
-                        : MakeBlock(stmts),
-                        isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
-                        : null);
+                        isInInterfaceOrAbstract ? null : block,
+                        isInInterfaceOrAbstract ? null : m.SemicolonToken);
                 accessors.Add(accessor);
                 accessor.XNode = vop.AssignMethodCtx;
                 vop.AssignMethodCtx.CsNode = null;
@@ -2510,8 +2512,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         returntype = _getMissingType();
                     }
                 }
-
+                var oldbody = body;
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+                if (body != oldbody)
+                {
+                    context.StmtBlk.Put(body);
+                }
                 if (context.T.Token.Type == XP.ASSIGN)
                 {
                     // Assign does not need a return. 

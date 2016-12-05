@@ -126,8 +126,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected const string StaticLocalInitFieldNameSuffix = "$init";
         protected const string StaticLocalLockFieldNameSuffix = "$lock";
         protected const string EventFieldNamePrefix = "Xs$Event$";
-        protected const string VoPropertyAccessPrefix = "Xs$Access$";
-        protected const string VoPropertyAssignPrefix = "Xs$Assign$";
         protected const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
         private static int _unique = 0;
         protected static object gate = new object();
@@ -1289,60 +1287,44 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
-            if (vop.AccessMethodCtx != null) {
+            if (vop.AccessMethodCtx != null)
+            {
                 bool isInInterfaceOrAbstract = vop.AccessMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
-                ExpressionSyntax methodCall = null;
                 var args = MakeArgumentList(voPropArgs);
-                var propname = VoPropertyAccessPrefix + vop.idName.Text;
-                if (outerMods.Any(SyntaxKind.StaticKeyword)) // static method no self: prefix in the code
-                {
-                    methodCall = GenerateMethodCall(propname, args);
-                }
-                else
-                {
-                    methodCall = _syntaxFactory.InvocationExpression(
-                                    MakeSimpleMemberAccess(GenerateSelf(),GenerateSimpleName(propname)), args);
-                }
-                accessors.Add(
-                    _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), getMods.ToTokenList(),
+                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), getMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                         isInInterfaceOrAbstract ? null
-                        : MakeBlock(
-                            MakeList<StatementSyntax>(GenerateReturn(
-                                 methodCall))
-                            ),
+                        : vop.AccessMethodCtx.StmtBlk.Get<BlockSyntax>(),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
-                        : null)
-                    );
+                        : null);
+                accessors.Add(accessor);
+                accessor.XNode = vop.AccessMethodCtx;
+                vop.AccessMethodCtx.CsNode = null;
+                vop.AccessMethodCtx.Parent.CsNode = null;
             }
-            if (vop.AssignMethodCtx != null) {
+            if (vop.AssignMethodCtx != null)
+            {
                 bool isInInterfaceOrAbstract = vop.AssignMethodCtx.isInInterface() || outerMods.Any(SyntaxKind.AbstractKeyword) || outerMods.Any(SyntaxKind.ExternKeyword);
-                ExpressionSyntax methodCall = null;
                 var arg = MakeArgument(GenerateSimpleName("value"));
-                var propname = VoPropertyAssignPrefix + vop.idName.Text;
-                if (outerMods.Any(SyntaxKind.StaticKeyword)) // static method no self: prefix in the code
+                var stmts = new List<StatementSyntax>();
+                var locdecl = GenerateLocalDecl(AssMet.ParamList._Params[0].Id.GetText(), _impliedType, GenerateSimpleName("value"));
+                stmts.Add(locdecl);
+                foreach (var stmt in AssMet.StmtBlk._Stmts)
                 {
-                    methodCall = GenerateMethodCall(propname, MakeArgumentList(voPropArgs.InsertAt(0, arg)));
+                    stmts.Add(stmt.Get<StatementSyntax>());
                 }
-                else
-                {
-                    methodCall = _syntaxFactory.InvocationExpression(
-                                    MakeSimpleMemberAccess(GenerateSelf(),GenerateSimpleName(propname)),
-                                    MakeArgumentList(voPropArgs.InsertAt(0, arg)));
-                }
-                accessors.Add(
-                    _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), setMods.ToTokenList(),
+                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), setMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                         isInInterfaceOrAbstract ? null
-                        : MakeBlock(MakeList<StatementSyntax>(GenerateExpressionStatement(methodCall))
-                            ),
+                        : MakeBlock(stmts),
                         isInInterfaceOrAbstract ? SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)
-                        : null)
-                    );
+                        : null);
+                accessors.Add(accessor);
+                accessor.XNode = vop.AssignMethodCtx;
+                vop.AssignMethodCtx.CsNode = null;
+                vop.AssignMethodCtx.Parent.CsNode = null;
             }
-
             BasePropertyDeclarationSyntax prop;
-
             if (voPropParams != null)
             {
                 prop = _syntaxFactory.IndexerDeclaration(
@@ -1657,10 +1639,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitInterface_([NotNull] XP.Interface_Context context)
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
-            foreach (var mCtx in context._Members) {
-                if (mCtx.CsNode != null)
-                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
-            }
             var generated = ClassEntities.Pop();
             if (generated.Members.Count > 0) {
                 members.AddRange(generated.Members);
@@ -1670,8 +1648,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     members.Add(GenerateVoProperty(vop));
                 }
             }
-
-
+            // Do this after VOProps generation because GenerateVOProperty sets the members
+            // for Access & Assign to NULL
+            foreach (var mCtx in context._Members)
+            {
+                if (mCtx.CsNode != null)
+                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
+            }
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             foreach (var pCtx in context._Parents) {
@@ -1720,10 +1703,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClass_([NotNull] XP.Class_Context context)
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
-            foreach (var mCtx in context._Members) {
-                if (mCtx.CsNode != null)
-                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
-            }
             var generated = ClassEntities.Pop();
             if (generated.Members.Count > 0) {
                 members.AddRange(generated.Members);
@@ -1733,6 +1712,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     members.Add(GenerateVoProperty(vop));
                 }
             }
+            // Do this after VOProps generation because GenerateVOProperty sets the members
+            // for Access & Assign to NULL
+            foreach (var mCtx in context._Members)
+            {
+                if (mCtx.CsNode != null)
+                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
+            }
+
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
             var baseType = context.BaseType?.Get<TypeSyntax>();
@@ -1786,10 +1773,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitStructure_([NotNull] XP.Structure_Context context)
         {
             var members = _pool.Allocate<MemberDeclarationSyntax>();
-            foreach (var mCtx in context._Members) {
-                if (mCtx.CsNode != null)
-                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
-            }
             var generated = ClassEntities.Pop();
             if (generated.Members.Count > 0) {
                 members.AddRange(generated.Members);
@@ -1798,6 +1781,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 foreach (var vop in generated.VoProperties.Values) {
                     members.Add(GenerateVoProperty(vop));
                 }
+            }
+            // Do this after VOProps generation because GenerateVOProperty sets the members
+            // for Access & Assign to NULL
+            foreach (var mCtx in context._Members)
+            {
+                if (mCtx.CsNode != null)
+                    members.Add(mCtx.Get<MemberDeclarationSyntax>());
             }
             generated.Free();
             var baseTypes = _pool.AllocateSeparated<BaseTypeSyntax>();
@@ -2455,23 +2445,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             bool actualDeclaration = true;
             if (context.T.Token.Type != XP.METHOD) {
-                string sName;
-                switch (context.T.Token.Type) {
-                    case XP.ACCESS:
-                        sName = context.Id.GetText();
-                        if (sName.StartsWith("@@"))
-                            sName = sName.Substring(2);
-                        idName = SyntaxFactory.Identifier(VoPropertyAccessPrefix + sName);
-                        idName.XNode = context.Id;
-                        break;
-                    case XP.ASSIGN:
-                        sName = context.Id.GetText();
-                        if (sName.StartsWith("@@"))
-                            sName = sName.Substring(2);
-                        idName = SyntaxFactory.Identifier(VoPropertyAssignPrefix + sName);
-                        idName.XNode = context.Id;
-                        break;
-                }
                 var vomods = _pool.Allocate();
                 vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
                 if (mods.Any(SyntaxKind.StaticKeyword))
@@ -2505,7 +2478,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m.ToTokenList();
                 _pool.Free(m);
             }
-            if (actualDeclaration) {
+            if (actualDeclaration)
+            {
                 var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
@@ -2548,17 +2522,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
 
-                if (context.ClassId != null) {
+                if (context.ClassId != null)
+                {
                     bool GenClass = true;
-                    if (context.isInClass()) {
+                    if (context.isInClass())
+                    {
                         string parentName;
                         XP.Class_Context parent = null;
-                        if (context.Parent is XP.Class_Context) {
+                        if (context.Parent is XP.Class_Context)
+                        {
                             parent = context.Parent as XP.Class_Context;
-                        } else if (context.Parent.Parent is XP.Class_Context) {
+                        }
+                        else if (context.Parent.Parent is XP.Class_Context)
+                        {
                             parent = context.Parent.Parent as XP.Class_Context;
                         }
-                        if (parent != null) {
+                        if (parent != null)
+                        {
                             parentName = parent.Id.GetText();
                             if (parent.Namespace != null)
                                 parentName = parent.Namespace.GetText() + parentName;
@@ -2566,17 +2546,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             className = context.ClassId.GetText();
                             if (context.Namespace != null)
                                 className = context.Namespace.GetText() + className;
-                            if (String.Compare(parentName, className, StringComparison.OrdinalIgnoreCase) != 0) {
+                            if (String.Compare(parentName, className, StringComparison.OrdinalIgnoreCase) != 0)
+                            {
                                 m = m.WithAdditionalDiagnostics(
                                 new SyntaxDiagnosticInfo(
                                         ErrorCode.ERR_NestedMethodMustHaveSameNameAsParentClass, className, parentName));
-                            } else
+                            }
+                            else
                                 GenClass = false;
 
 
                         }
                     }
-                    if (!m.ContainsDiagnostics && GenClass) {
+
+                    if (!m.ContainsDiagnostics && GenClass)
+                    {
                         m = _syntaxFactory.ClassDeclaration(
                             attributeLists: EmptyList<AttributeListSyntax>(),
                             modifiers: TokenList(SyntaxKind.PartialKeyword),
@@ -2590,7 +2574,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                             semicolonToken: null);
                     }
-                    if (context.Namespace != null) {
+                    if (context.Namespace != null)
+                    {
                         m = AddNameSpaceToMember(context.Namespace, m);
                     }
                 }

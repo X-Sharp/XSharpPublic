@@ -15,3 +15,10 @@ c := Psz2String( @buf )
 u := Psz2String( @buf[3] )
 ? u
 
+LOCAL p AS PSZ
+?
+p := PSZ(_CAST, @buf[3])
+? p
+p := PSZ(_CAST, @buf)
+? p
+

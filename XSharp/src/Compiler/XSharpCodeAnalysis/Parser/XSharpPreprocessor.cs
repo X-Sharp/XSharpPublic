@@ -41,10 +41,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static IList<IToken> Clone(this IList<IToken> tokens)
         {
-            var clone = new List<IToken>(tokens.Count);
+            var clone = new IToken[tokens.Count];
+            int i = 0;
             foreach (var t in tokens)
             {
-                clone.Add(new CommonToken(t));
+                clone[i] = new CommonToken(t);
+                i++;
             }
             return clone; 
         }

@@ -20,7 +20,7 @@ namespace XSharp
         internal const string Company = "XSharp BV";
         internal const string RegCompany = "XSharpBV";
         internal const string Product = "XSharp";
-        internal const string Version = "0.2.8.0";
+        internal const string Version = "0.2.8.1";
         internal const string Copyright = "Copyright © XSharp BV 2015-2016";
 
         internal const string RegistryKey = @"Software\" + RegCompany + @"\" + Product;

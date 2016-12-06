@@ -154,7 +154,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (sourceExpression.Syntax != null)
                         {
                             var xNode = sourceExpression.Syntax.XNode;
-                            if (xNode is XP.PrimaryExpressionContext)
+                            if (xNode != null)
                             {
                                 voCast = xNode.Parent is XP.VoCastExpressionContext;
                                 voConvert = xNode.Parent is XP.VoConversionExpressionContext;

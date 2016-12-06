@@ -2848,6 +2848,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        public override void EnterClsdtor([NotNull] XP.ClsdtorContext context)
+        {
+            context.Data.MustBeVoid = true;
+        }
         public override void ExitClsdtor([NotNull] XP.ClsdtorContext context)
         {
             context.SetSequencePoint(context.end);

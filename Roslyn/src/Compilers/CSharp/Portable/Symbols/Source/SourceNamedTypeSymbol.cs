@@ -49,8 +49,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                 var baseBinder = this.DeclaringCompilation.GetBinder(bases);
                 baseBinder = baseBinder.WithAdditionalFlagsAndContainingMemberOrLambda(BinderFlags.SuppressConstraintChecks, this);
-
-                if ((object)backupLocation == null)
+#if XSHARP
+                if ((object)backupLocation == null && inheritedTypeDecls.Count > 0)
+#else
+                if ((object)backupLocation == null )
+#endif
                 {
                     backupLocation = inheritedTypeDecls[0].Type.GetLocation();
                 }
@@ -94,7 +97,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
 
 
-        #region Syntax
+#region Syntax
 
         private static SyntaxToken GetName(CSharpSyntaxNode node)
         {
@@ -118,9 +121,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return SourceDocumentationCommentUtils.GetAndCacheDocumentationComment(this, expandIncludes, ref _lazyDocComment);
         }
 
-        #endregion
+#endregion
 
-        #region Type Parameters
+#region Type Parameters
 
         private ImmutableArray<TypeParameterSymbol> MakeTypeParameters(DiagnosticBag diagnostics)
         {
@@ -1103,6 +1106,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 #endif
         }
 
-        #endregion
+#endregion
     }
 }

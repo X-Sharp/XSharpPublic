@@ -705,7 +705,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             SourceText text = null;
             Exception fileReadException = null;
             CachedIncludeFile cachedFile = null;
+            List<String> dirs = new List<String>();
+            dirs.Add(PathUtilities.GetDirectoryName(_fileName));
             foreach (var p in includeDirs)
+            {
+                dirs.Add(p);
+            }
+            foreach (var p in dirs)
             {
                 bool rooted = System.IO.Path.IsPathRooted(fn);
                 string fp;
@@ -733,7 +739,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             nfp = (string)PortableShim.FileStream.Name.GetValue(data);
                             text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
                         }
-                        IncludedFiles.Add(nfp, text);
+                        if (! IncludedFiles.ContainsKey(nfp))
+                            IncludedFiles.Add(nfp, text);
                         break;
                     }
                 }
@@ -766,10 +773,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (_options.ShowIncludes || _options.Verbose)
             {
+                var fname = PathUtilities.GetFileName(this.SourceName);
                 if (ln != null)
-                    DebugOutput("{0} line {1} Include {2}", ln.InputStream.SourceName, ln.Line, nfp);
+                {
+                    fname = PathUtilities.GetFileName(ln.InputStream.SourceName);
+                    DebugOutput("{0} line {1} Include {2}", fname, ln.Line, nfp);
+                }
                 else
-                    DebugOutput("{0} line {1} Include {2}", this.SourceName, 0, nfp);
+                {
+                    DebugOutput("{0} line {1} Include {2}", fname, 0, nfp);
+                }
 
             }
             if (cachedFile == null)

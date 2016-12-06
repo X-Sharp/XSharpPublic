@@ -2584,6 +2584,56 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         : GenerateVariable(context.Id.Get<SyntaxToken>()))),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
+        public override void ExitDefaultStmt([NotNull] XP.DefaultStmtContext context)
+        {
+            var stmts = _pool.Allocate<StatementSyntax>();
+            var count = context._Variables.Count;
+            
+            for (int i = 0; i < count; i++)
+            {
+                var variable = context._Variables[i];
+                var value = context._Values[i];
+                var args = MakeArgumentList(MakeArgument(variable.Get<IdentifierNameSyntax>(),true), 
+                    MakeArgument(value.Get<ExpressionSyntax>()));
+                var methodCall = GenerateMethodCall("Default", args);
+                methodCall.XNode = context;
+                var stmt = GenerateExpressionStatement(methodCall);
+                stmt.XNode = value;
+                stmts.Add(stmt);
+            }
+            var block = MakeBlock(stmts);
+            context.Put(block);
+            _pool.Free(stmts);
+        }
+
+        public override void ExitWaitAcceptStmt([NotNull] XP.WaitAcceptStmtContext context)
+        {
+            string methodName = null;
+            var message = context.Expr?.Get<ExpressionSyntax>();
+            var variable = context.Variable?.Get<ExpressionSyntax>();
+            
+            if (context.Key.Type == XP.ACCEPT)
+                methodName = "_accept";
+            else
+                methodName = "_wait";
+            ExpressionSyntax expr;
+            if (message == null)
+                expr = GenerateMethodCall(methodName);
+            else
+                expr = GenerateMethodCall(methodName, MakeArgumentList(MakeArgument(message)));
+            expr.XNode = context;
+            if (variable != null)
+            {
+                expr = MakeSimpleAssignment(variable, expr);
+                expr.XNode = context;
+            }
+            context.Put(GenerateExpressionStatement(expr));
+
+        }
+        public override void ExitCancelQuitStmt([NotNull] XP.CancelQuitStmtContext context)
+        {
+            context.Put(GenerateExpressionStatement(GenerateMethodCall("_quit")));
+        }
 
     }
 }

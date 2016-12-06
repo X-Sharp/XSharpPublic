@@ -130,7 +130,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body.Free(_pool);
             }
 #endif
-            if (_options.Verbose)
+            if (_options.Verbose || _options.ShowIncludes)
             {
                 Debug.WriteLine("Compiling {0}",_fileName);
             }

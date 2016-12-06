@@ -950,6 +950,7 @@ keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM |
                               GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE |
                               SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
-                              MEMVAR | PARAMETERS // Added as XS keywords to allow them to be treated as IDs
+                              MEMVAR | PARAMETERS| // Added as XS keywords to allow them to be treated as IDs
+							  WAIT | ACCEPT | CANCEL | QUIT // UDCs 
                             )
                     ;

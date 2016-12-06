@@ -53,8 +53,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSTestCodeAnalysis", "src\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSTestParser", "src\Compiler\XSTestParser\XSTestParser.csproj", "{203B6D4D-D370-46F2-82DB-A5FD30EE58CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "..\..\Parser\Parser.csproj", "{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems*{10993c9b-80cc-4df7-9b32-e6ccd920d64b}*SharedItemsImports = 13
@@ -304,26 +302,6 @@ Global
 		{203B6D4D-D370-46F2-82DB-A5FD30EE58CE}.Release|x64.Build.0 = Release|Any CPU
 		{203B6D4D-D370-46F2-82DB-A5FD30EE58CE}.Release|x86.ActiveCfg = Release|Any CPU
 		{203B6D4D-D370-46F2-82DB-A5FD30EE58CE}.Release|x86.Build.0 = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|ARM.Build.0 = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|x64.Build.0 = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Debug|x86.Build.0 = Debug|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|ARM.ActiveCfg = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|ARM.Build.0 = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|x64.ActiveCfg = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|x64.Build.0 = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|x86.ActiveCfg = Release|Any CPU
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -352,6 +330,5 @@ Global
 		{8B70AE9E-1054-4B80-AC8D-FE20C5041631} = {0E3865DD-590B-4C77-9AAF-E78A9D68473B}
 		{CDB50137-5A12-4515-A15F-DAF46DD62579} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
 		{203B6D4D-D370-46F2-82DB-A5FD30EE58CE} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
-		{C195B7B5-AE3A-43EE-8CC8-E1E7E4BADC2E} = {0881BB9F-A799-47B2-9D39-1F218C037DE5}
 	EndGlobalSection
 EndGlobal

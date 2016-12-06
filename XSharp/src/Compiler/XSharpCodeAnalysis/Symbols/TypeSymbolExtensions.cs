@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Roslyn.Utilities;
+using Microsoft.CodeAnalysis.Symbols;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
@@ -220,4 +221,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             return ConstantValue.Bad;
         }
     }
+    internal sealed partial class AnonymousTypeManager : CommonAnonymousTypeManager
+    {
+        /// <summary>
+        /// Given a codeblock delegate provided constructs a codeblock type symbol.
+        /// </summary>
+        public NamedTypeSymbol ConstructCodeblockTypeSymbol(TypeSymbol[] codeblockParameters, Location location)
+        {
+            return new CodeblockTypePublicSymbol(this, codeblockParameters, location);
+        }
+
+        public NamedTypeSymbol GetCodeblockDelegateType(NamedTypeSymbol cbType)
+        {
+            return (NamedTypeSymbol)((CodeblockTypePublicSymbol)cbType).Properties[0].Type;
+        }
+        public NamedTypeSymbol Vulcan_Codeblock
+        {
+            get { return this.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock); }
+        }
+
+        public NamedTypeSymbol Vulcan_Usual
+        {
+            get { return this.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual); }
+        }
+    }
+
 }

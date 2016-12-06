@@ -4796,7 +4796,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>This entity type cannot return a value. Return value ignored.</value>
   </data>
   <data name="ERR_InitProceduresCannotDefineParameters" xml:space="preserve">
-    <value>Init procedures cannot define parameters.</value>
+    <value>Init and Exit procedures cannot define parameters.</value>
+  </data>
+  <data name="WRN_SuppressAxitMethodCall" xml:space="preserve">
+    <value>Direct calls to Axit methods (Finalizers) are not supported with the /vo1 compiler option.</value>
   </data>
 
 </root>

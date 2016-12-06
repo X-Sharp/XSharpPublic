@@ -1106,57 +1106,159 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             base.VisitLocalvar(context);
         }
-        public override void ExitClsctor([NotNull] XP.ClsctorContext context)
-        {
-            // This method does NOT call the parent. Code is duplicated here.
 
-            if(context.Modifiers?._EXTERN != null) {
-                if (context.StmtBlk?._Stmts?.Count > 0) {
-                    context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody));
-                }
-                context.StmtBlk = null;
-            }
-            if (context.isInInterface()) {
-                context.AddError(new ParseErrorData(context.CONSTRUCTOR(), ErrorCode.ERR_InterfacesCantContainConstructors));
-            }
-            else {
-                var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-                var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-                var body = context.StmtBlk?.Get<BlockSyntax>();
-                TypeSyntax returntype = null;
-                if (context.Chain != null )
+        private ConstructorDeclarationSyntax createConstructor(
+            XP.IEntityContext context,
+            SyntaxList<SyntaxToken> modifiers,
+            XP.AttributesContext atts,
+            XP.ParameterListContext paramlist,
+            XP.StatementBlockContext stmtblock,
+            ParserRuleContext econtext,
+            IToken chain = null,
+            XP.ArgumentListContext args = null,
+            bool isInInterface = false)
+        {
+            if (modifiers.Any(SyntaxKind.ExternKeyword))
+            {
+                if (stmtblock?._Stmts?.Count > 0)
                 {
-                    var chainArgs = context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
+                    econtext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody));
+                }
+                stmtblock = null;
+            }
+            if (isInInterface)
+            {
+                econtext.AddError(new ParseErrorData(econtext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
+                return null;
+            }
+            else
+            {
+                var attributes = atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+                var parameters = paramlist?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+                var body = stmtblock?.Get<BlockSyntax>();
+                TypeSyntax returntype = null;
+                if (chain != null)
+                {
+                    var chainArgs = args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                     var chainExpr = MakeSimpleMemberAccess(
-                        context.Chain.Type == XP.SELF ? (ExpressionSyntax)GenerateSelf() : GenerateSuper(),
+                        chain.Type == XP.SELF ? (ExpressionSyntax)GenerateSelf() : GenerateSuper(),
                         GenerateSimpleName(".ctor"));
                     body = MakeBlock(MakeList<StatementSyntax>(
                         GenerateExpressionStatement(_syntaxFactory.InvocationExpression(chainExpr, chainArgs)),
                         body));
-                    context.Chain = null;
+                    chain = null;
                 }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                var parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                    ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
-                context.Put(_syntaxFactory.ConstructorDeclaration(
+                SyntaxToken parentId;
+                if (context.Parent is XP.ClsmethodContext)
+                {
+                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                }
+                else
+                {
+                    parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                }
+                return _syntaxFactory.ConstructorDeclaration(
                     attributeLists: attributes,
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: modifiers,
                     identifier: parentId,
                     parameterList: parameters,
-                    initializer: context.Chain == null ? null :
-                        _syntaxFactory.ConstructorInitializer(context.Chain.CtorInitializerKind(),
+                    initializer: chain == null ? null :
+                        _syntaxFactory.ConstructorInitializer(chain.CtorInitializerKind(),
                             SyntaxFactory.MakeToken(SyntaxKind.ColonToken),
-                            context.Chain.SyntaxKeyword(),
-                            context.ArgList?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
+                            chain.SyntaxKeyword(),
+                            args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList()),
                     body: body,
-                    semicolonToken: (context.StmtBlk?._Stmts?.Count > 0) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                    semicolonToken: (stmtblock?._Stmts?.Count > 0) ? null : 
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             }
+
+        }
+        protected DestructorDeclarationSyntax createDestructor(
+            XP.IEntityContext context,
+            SyntaxList<SyntaxToken> modifiers,
+            XP.AttributesContext atts,
+            XP.StatementBlockContext stmtblock,
+            ParserRuleContext econtext,
+            bool isInInterface = false)
+        {
+            if (modifiers.Any(SyntaxKind.ExternKeyword))
+            {
+                if (stmtblock?._Stmts?.Count > 0)
+                {
+                    econtext.AddError(new ParseErrorData(stmtblock, ErrorCode.ERR_ExternHasBody, "Destructor"));
+                }
+                stmtblock = null;
+            }
+            if (isInInterface)
+            {
+                econtext.AddError(new ParseErrorData(econtext.Start, ErrorCode.ERR_InterfacesCantContainConstructors));
+            }
+            else
+            {
+                // no return statement needed in DESTRUCTOR
+                // body = AddMissingReturnStatement(body, context.StmtBlk, null);
+                SyntaxToken parentId;
+                if (context.Parent is XP.ClsmethodContext)
+                {
+                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                }
+                else
+                {
+                    parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                        ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                }
+                return _syntaxFactory.DestructorDeclaration(
+                    attributeLists: atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    modifiers: modifiers,
+                    tildeToken: SyntaxFactory.MakeToken(SyntaxKind.TildeToken),
+                    identifier: parentId,
+                    parameterList: EmptyParameterList(),
+                    body: stmtblock.Get<BlockSyntax>(),
+                    semicolonToken: (stmtblock != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            }
+            return null;
         }
 
+        public override void ExitClsctor([NotNull] XP.ClsctorContext context)
+        {
+            var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            var ctor = createConstructor(
+                context, mods, context.Attributes, context.ParamList, context.StmtBlk, context, 
+                context.Chain, context.ArgList, context.isInInterface());
+            if (ctor != null)
+            {
+                context.Put(ctor);
+            }
+            else
+            {
+                context.StmtBlk = null;
+            }
+            return;
+        }
 
-
-
+        public override void ExitClsdtor([NotNull] XP.ClsdtorContext context)
+        {
+            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
+            var dtor = createDestructor(context, modifiers,
+                context.Attributes, context.StmtBlk, context, context.isInInterface());
+            if (dtor != null)
+            {
+                context.Put(dtor);
+            }
+            else
+            {
+                context.StmtBlk = null;
+            }
+            return;
+        }
         public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)
         {
             // TODO nvk (calling convention is silently ignored for now)
@@ -1166,8 +1268,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             base.ExitCallingconvention(context);
         }
-
-
 
         protected override TypeSyntax _getParameterType([NotNull] XP.ParameterContext context) {
             TypeSyntax type = context.Type?.Get<TypeSyntax>();
@@ -1179,7 +1279,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return type;
         }
-
 
         protected override TypeSyntax _getMissingType()
         {
@@ -1962,58 +2061,141 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
     }
-    public override void ExitMethodCall([NotNull] XP.MethodCallContext context) {
-        var expr = context.Expr.Get<ExpressionSyntax>();
-        string name = null;
-        if(expr is IdentifierNameSyntax) {
-            // Intrinsic functions that depend on Vulcan types
-            IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
-            name = ins.Identifier.Text.ToUpper();
-            switch(name) {
-                case "SLEN":
-                    if (GenerateSLen(context))
-                        return;
-                    break;
-                case "STRING2PSZ":
-                case "CAST2PSZ":
-                    if (GenerateString2Psz(context,name))
-                        return;
-                    break;
-                case "PCOUNT":
-                case "_GETMPARAM":
-                case "_GETFPARAM":
-                    if(CurrentEntity.Data.HasClipperCallingConvention) {
-                        if(GenerateClipCallFunc(context, name))
-                            return;
+        public override void ExitMethod([NotNull] XP.MethodContext context)
+        {
+            if (_options.VoInitAxitMethods && !context.isInInterface())
+            {
+                var idName = context.Id.GetText();
+                if (String.Equals(idName, "init", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Convert method to constructor
+                    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? MakeList<SyntaxToken>(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
+                    var ctor = createConstructor(context,
+                        mods, context.Attributes, context.ParamList, context.StmtBlk, context);
+                    if (ctor != null)
+                    {
+                        context.Put(ctor);
                     }
-                    expr = GenerateLiteral("", 0).WithAdditionalDiagnostics(
-                        new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
-                    context.Put(expr);
+                    else
+                    {
+                        context.StmtBlk = null;
+                    }
                     return;
-                case "_CHR":
-                    if(GenerateChr(context))
+                }
+                else if (String.Equals(idName, "axit", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Convert method to destructor
+                    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList<SyntaxToken>();
+                    var dtor = createDestructor(context,
+                        mods, context.Attributes, context.StmtBlk, context);
+                    if (dtor != null)
+                    {
+                        context.Put(dtor);
+                    }
+                    else
+                    {
+                        context.StmtBlk = null;
+                    }
+                    return;
+                }
+            }
+            base.ExitMethod(context);
+        }
+        public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
+        {
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            string name = null;
+            if (expr is IdentifierNameSyntax)
+            {
+                // Intrinsic functions that depend on Vulcan types
+                IdentifierNameSyntax ins = expr as IdentifierNameSyntax;
+                name = ins.Identifier.Text.ToUpper();
+                switch (name)
+                {
+                    case "SLEN":
+                        if (GenerateSLen(context))
+                            return;
+                        break;
+                    case "STRING2PSZ":
+                    case "CAST2PSZ":
+                        if (GenerateString2Psz(context, name))
+                            return;
+                        break;
+                    case "PCOUNT":
+                    case "_GETMPARAM":
+                    case "_GETFPARAM":
+                        if (CurrentEntity.Data.HasClipperCallingConvention)
+                        {
+                            if (GenerateClipCallFunc(context, name))
+                                return;
+                        }
+                        expr = GenerateLiteral("", 0).WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_OnlySupportedForClipperCallingConvention, ins.Identifier.Text));
+                        context.Put(expr);
                         return;
-                    break;
+                    case "_CHR":
+                        if (GenerateChr(context))
+                            return;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
-        } else if(expr is ThisExpressionSyntax || expr is BaseExpressionSyntax) {
-            // SUPER(..) and SELF(..)
-            expr = MakeSimpleMemberAccess(expr,_syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
-            ArgumentListSyntax argList;
-            if(context.ArgList != null) {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            } else {
-                argList = EmptyArgumentList();
+            else if (expr is ThisExpressionSyntax || expr is BaseExpressionSyntax)
+            {
+                // SUPER(..) and SELF(..)
+                expr = MakeSimpleMemberAccess(expr, _syntaxFactory.IdentifierName(SyntaxFactory.Identifier(".ctor")));
+                ArgumentListSyntax argList;
+                if (context.ArgList != null)
+                {
+                    argList = context.ArgList.Get<ArgumentListSyntax>();
+                }
+                else
+                {
+                    argList = EmptyArgumentList();
+                }
+                context.Put(_syntaxFactory.InvocationExpression(expr, argList));
+                return;
             }
-            context.Put(_syntaxFactory.InvocationExpression(expr, argList));
+            else if (_options.VoInitAxitMethods && expr is MemberAccessExpressionSyntax)
+            {
+                var mac = expr as MemberAccessExpressionSyntax;
+                var mName = mac.Name as IdentifierNameSyntax;
+                string methodName = mName?.Identifier.Text;
+                if (string.Equals(methodName, "init", StringComparison.OrdinalIgnoreCase))
+                {
+                    var mExpr = mac.Expression;
+                    if (mExpr is ThisExpressionSyntax || mExpr is BaseExpressionSyntax)
+                    {
+                        expr = MakeSimpleMemberAccess(mExpr, GenerateSimpleName(".ctor"));
+                        ArgumentListSyntax argList;
+                        if (context.ArgList != null)
+                        {
+                            argList = context.ArgList.Get<ArgumentListSyntax>();
+                        }
+                        else
+                        {
+                            argList = EmptyArgumentList();
+                        }
+                        context.Put(_syntaxFactory.InvocationExpression(expr, argList));
+                        return;
+
+                    }
+                }
+                else if (string.Equals(methodName, "axit", StringComparison.OrdinalIgnoreCase))
+                {
+                    var stmt = _syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+                    stmt = stmt.WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(ErrorCode.WRN_SuppressAxitMethodCall));
+                    context.Put(stmt);
+                    return;
+                }
+            }
+            // all other method names or syntaxes
+            base.ExitMethodCall(context);
             return;
         }
-        // all other method names or syntaxes
-        base.ExitMethodCall(context);
-        return;
-    }
 
 
     public override void EnterFunction([NotNull] XP.FunctionContext context) {

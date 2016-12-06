@@ -188,7 +188,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo1":     // Init & Axit mapped to .ctor and .dtor
                     options.Vo1 = positive;
-                    OptionNotImplemented(diagnostics, oldname, "VO Init and Axit methods");
                     break;
                 case "vo2":     // Initialize Strings to Empty string
                     options.Vo2 = positive;

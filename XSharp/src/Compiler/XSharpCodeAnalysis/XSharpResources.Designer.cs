@@ -4940,7 +4940,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Init procedures cannot define parameters..
+        ///   Looks up a localized string similar to Init and Exit procedures cannot define parameters..
         /// </summary>
         internal static string ERR_InitProceduresCannotDefineParameters {
             get {
@@ -12829,6 +12829,15 @@ namespace LanguageService.CodeAnalysis {
         internal static string WRN_SignedUnSignedConversion {
             get {
                 return ResourceManager.GetString("WRN_SignedUnSignedConversion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Direct calls to Axit methods (Finalizers) are not supported with the /vo1 compiler option..
+        /// </summary>
+        internal static string WRN_SuppressAxitMethodCall {
+            get {
+                return ResourceManager.GetString("WRN_SuppressAxitMethodCall", resourceCulture);
             }
         }
         

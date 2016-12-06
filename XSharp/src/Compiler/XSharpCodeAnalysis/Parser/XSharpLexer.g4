@@ -806,6 +806,11 @@ lexer grammar XSharpLexer;
 					{"FALSE", FALSE_CONST},
 					{"TRUE", TRUE_CONST},
 
+					// Vulcan UDCs
+					{"WAIT", WAIT},
+					{"ACCEPT", ACCEPT},
+					{"CANCEL", CANCEL},
+					{"QUIT", QUIT},
 
 				};
 
@@ -1071,6 +1076,9 @@ CHAR,INT64,UINT64,
 
 // XSharp Types
 DYNAMIC,
+
+// Vulcan UDCs
+WAIT, ACCEPT, CANCEL, QUIT,
 
 LAST_KEYWORD,
 

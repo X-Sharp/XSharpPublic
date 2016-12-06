@@ -984,9 +984,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.ExpressionStatement(expr, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
         }
-        protected ArgumentSyntax MakeArgument(ExpressionSyntax expr)
+        protected ArgumentSyntax MakeArgument(ExpressionSyntax expr, bool byref = false)
         {
-            return _syntaxFactory.Argument(null, null, expr);
+            SyntaxToken byrefToken = null;
+            if (byref)
+                byrefToken = SyntaxFactory.MakeToken(SyntaxKind.RefKeyword);
+            return _syntaxFactory.Argument(null, byrefToken, expr);
         }
         protected BlockSyntax MakeBlock(IList<StatementSyntax> statements)
         {
@@ -5805,6 +5808,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 context.Put<ExpressionSyntax>(context.Init.Get<ExpressionSyntax>());
         }
+
+        // Vulcan UDCs
+        public override void ExitDefaultStmt([NotNull] XP.DefaultStmtContext context)
+        {
+            context.Put(NotInDialect("DEFAULT Statement"));
+        }
+
+        public override void ExitWaitAcceptStmt([NotNull] XP.WaitAcceptStmtContext context)
+        {
+            context.Put(NotInDialect(context.Key.Text.ToUpper()+" Statement"));
+        }
+        public override void ExitCancelQuitStmt([NotNull] XP.CancelQuitStmtContext context)
+        {
+            context.Put(NotInDialect(context.Key.Text.ToUpper() + " Statement"));
+        }
+
 
     }
 }

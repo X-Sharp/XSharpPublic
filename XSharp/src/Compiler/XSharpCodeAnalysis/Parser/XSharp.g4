@@ -516,6 +516,11 @@ statement           : Decl=localdecl                                            
                     | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
                        (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
                       Exprs+=expression (COMMA Exprs+=expression)* end=EOS		#expressionStmt
+					// Temporary solution for statements missing from the standard header file
+					| DEFAULT Variables+=simpleName TO Values+=expression 
+						(COMMA Variables+=simpleName TO Values+=expression)* end=EOS	#defaultStmt
+					| Key=(WAIT|ACCEPT)  (Expr=expression)? (TO Variable=simpleName)? end = EOS		#waitAcceptStmt
+					| Key=(CANCEL|QUIT) end=EOS											#cancelQuitStmt
                     ;
 
 ifElseBlock			: Cond=expression end=EOS StmtBlk=statementBlock

@@ -13,13 +13,12 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+using System.IO;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     public sealed partial class CSharpCompilationOptions
     {
         public bool ArrayZero { get; private set; }
-
         public string DefaultIncludeDir { get; set; }
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
@@ -64,6 +63,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         //public bool vo14 => VOFloatConstants;
         //public bool vo15 => VOUntypedAllowed;
         //public bool vo16 => VOInitializeVariables;
+
+        // Access to the console output
+        public TextWriter ConsoleOutput { get; private set; }
+
         public void SetXSharpSpecificOptions(XSharpSpecificCompilationOptions opt)
         {
             if (opt != null)
@@ -88,6 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Dialect = opt.Dialect;
                 LateBinding = opt.LateBinding;
                 CreatingRuntime = opt.CreatingRuntime;
+                ConsoleOutput = opt.ConsoleOutput;
             }
         }
 
@@ -121,6 +125,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOFloatConstants = opt.VOFloatConstants; // vo14  // Handled in the parser
             //VOUntypedAllowed = opt.VOUntypedAllowed; // vo15  // Handled in the parser
             //VOInitializeVariables = opt.VOInitializeVariables; // vo16// Handled in the parser
+            ConsoleOutput = opt.ConsoleOutput;
         }
     }
 }

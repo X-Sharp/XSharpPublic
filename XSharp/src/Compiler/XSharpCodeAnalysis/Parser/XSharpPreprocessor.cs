@@ -363,10 +363,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             initStdDefines(options, fileName);
         }
 
-
-        internal static void DebugOutput(string format, params object[] objects)
+        internal void DebugOutput(string format, params object[] objects)
         {
-            Debug.WriteLine("PP: " + format, objects);
+            _options.ConsoleOutput.WriteLine("PP: " + format, objects);
         }
         public int Column
         {
@@ -543,12 +542,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         void InsertStream(string filename, ITokenStream input, IToken symbol = null)
         {
-            if (_options.Verbose)
+            if ( _options.ShowDefs)
             {
                 if (symbol != null)
-                    DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens", symbol.Text, input.Size);
+                {
+                    var tokens = new List<IToken>();
+                    for (int i = 0; i < input.Size-1; i++)
+                    {
+                        tokens.Add(input.Get(i));
+                    }
+                    DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens => {2}", symbol.Text, input.Size-1, tokens.AsString());
+                }
                 else
-                    DebugOutput("Input stack: Insert Includefile Stream {0}, # of tokens {1}", filename, input.Size, symbol?.Text);
+                    DebugOutput("Input stack: Insert Includefile Stream {0}, # of tokens {1}", filename, input.Size-1, symbol?.Text);
             }
             InputState s = new InputState(input);
             s.parent = inputs;
@@ -633,7 +639,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _parseErrors.Add(new ParseErrorData(def, ErrorCode.WRN_DuplicateDefineDiff, def.Text, cOld, cNew));
                 }
                 symbolDefines[def.Text] = newtokens;
-                if (_options.Verbose)
+                if (_options.ShowDefs)
                 {
                     DebugOutput("Line {0}, add define {1} => {2}", def.Line, def.Text, newtokens.AsString());
                 }
@@ -771,7 +777,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 return false;
             }
-            if (_options.ShowIncludes || _options.Verbose)
+            if (_options.ShowIncludes )
             {
                 var fname = PathUtilities.GetFileName(this.SourceName);
                 if (ln != null)

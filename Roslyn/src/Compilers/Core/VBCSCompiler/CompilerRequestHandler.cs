@@ -61,7 +61,11 @@ namespace Microsoft.CodeAnalysis.CompilerServer
             switch (req.Language)
             {
                 case BuildProtocolConstants.RequestLanguage.CSharpCompile:
+#if XSHARP
+                    CompilerServerLogger.Log("Request to compile X#");
+#else
                     CompilerServerLogger.Log("Request to compile C#");
+#endif
                     return CSharpCompile(req, cancellationToken);
 
                 case BuildProtocolConstants.RequestLanguage.VisualBasicCompile:

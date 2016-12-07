@@ -5741,9 +5741,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var propertyGroup = (BoundPropertyGroup)receiver;
                     return BindIndexedPropertyAccess(node, propertyGroup.ReceiverOpt, propertyGroup.Properties, analyzedArguments, diagnostics);
                 }
-
+#if XSHARP
+                receiver = CheckVulcanIndexedValue(receiver, BindValueKind.RValue, diagnostics);
+#else
                 receiver = CheckValue(receiver, BindValueKind.RValue, diagnostics);
-
+#endif
                 return BindElementOrIndexerAccess(node, receiver, analyzedArguments, diagnostics);
             }
             finally

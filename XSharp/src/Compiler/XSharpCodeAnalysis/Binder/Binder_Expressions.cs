@@ -282,6 +282,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
+        private BoundExpression CheckVulcanIndexedValue(BoundExpression expr, BindValueKind valueKind, DiagnosticBag diagnostics)
+        {
+            var originalexpr = expr;
+            expr = CheckValue(expr, BindValueKind.RValue, diagnostics);
+            if (expr.Kind == BoundKind.BadExpression)
+            {
+                // When a lookup of the Item property fails, then try again
+                if (originalexpr.Kind == BoundKind.MethodGroup)
+                {
+                    var methodGroup = originalexpr as BoundMethodGroup;
+                    if (string.Equals(methodGroup.Name, "Item", StringComparison.OrdinalIgnoreCase))
+                    {
+                        diagnostics.Clear();
+                        expr = CheckValue(methodGroup.InstanceOpt, BindValueKind.RValue, diagnostics);
+                    }
+                }
+            }
+            return expr;
+
+        }
 
     }
 }

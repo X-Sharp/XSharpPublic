@@ -36,7 +36,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         public override Compilation CreateCompilation(TextWriter consoleOutput, TouchedFileLogger touchedFilesLogger, ErrorLogger errorLogger)
         {
+#if XSHARP
+            var parseOptions = Arguments.ParseOptions.WithOutput(consoleOutput);
+#else
             var parseOptions = Arguments.ParseOptions;
+#endif
 
             // We compute script parse options once so we don't have to do it repeatedly in
             // case there are many script files.
@@ -88,7 +92,30 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                     trees[i] = null;
                 }
+#if XSHARP
+                else if (parseOptions.PreprocessorOutput)
+                {
+                    touchedFilesLogger.AddWritten(FileNameUtilities.ChangeExtension(normalizedFilePath, ".ppo"));
+                }
+#endif
             }
+#if XSHARP
+            // Add the names of the header files that we have processed
+            foreach (var tree in trees)
+            {
+                if (tree != null)
+                {
+                    if (tree.HasCompilationUnitRoot)
+                    {
+                        var root = tree.GetCompilationUnitRoot();
+                        foreach (var file in root.IncludedFiles)
+                        {
+                            uniqueFilePaths.Add(file.Key);
+                        }
+                    }
+                }
+            }
+#endif
 
             if (Arguments.TouchedFilesPath != null)
             {

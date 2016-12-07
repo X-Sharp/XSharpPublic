@@ -130,9 +130,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body.Free(_pool);
             }
 #endif
-            if (_options.Verbose || _options.ShowIncludes)
+            if (_options.ShowIncludes)  
             {
-                Debug.WriteLine("Compiling {0}",_fileName);
+                _options.ConsoleOutput.WriteLine("Compiling {0}",_fileName);
             }
 
             ParserRuleContext tree;
@@ -149,7 +149,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var tokens = new CommonTokenStream(lexer);
 #if DEBUG && DUMP_TIMES
-            DateTime t = DateTime.Now;
+                        DateTime t = DateTime.Now;
 #endif
             tokens.Fill(); // Required due to the preprocessor
 #if DEBUG && DUMP_TIMES
@@ -164,7 +164,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var pp_tokens = new CommonTokenStream(pp);
             var parser = new XSharpParser(pp_tokens);
             parser.AllowFunctionInsideClass = true;     // always for now
-            if(_options.Dialect == XSharpDialect.VO) {
+            if (_options.Dialect == XSharpDialect.VO)
+            {
                 parser.AllowXBaseVariables = true;
                 parser.AllowNamedArgs = false;
             }
@@ -173,17 +174,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.AllowXBaseVariables = false;
                 parser.AllowNamedArgs = false;
             }
-            else {                                      // memvar and private statements are not recognized in Vulcan
+            else
+            {                                      // memvar and private statements are not recognized in Vulcan
                 parser.AllowXBaseVariables = false;
                 parser.AllowNamedArgs = true;
             }
 //#if DEBUG
-            var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-            parser.AddErrorListener(errorListener);
-//#endif
+                var errorListener = new XSharpErrorListener(_fileName, parseErrors);
+                parser.AddErrorListener(errorListener);
+            //#endif
 #if DEBUG && DUMP_TIMES
-            pp_tokens.Fill();
-            {
+           pp_tokens.Fill();
+           {
                 var ts = DateTime.Now - t;
                 t += ts;
                 Debug.WriteLine("Preprocessing completed in {0}",ts);
@@ -198,9 +200,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             catch (Exception)
             {
-#if DEBUG
-                Debug.WriteLine("Antlr: SLL parsing failed. Trying again in LL mode.");
-#endif
+                if (_options.Verbose)
+                {
+                    _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed. Trying again in LL mode.");
+                }
+
                 pp_tokens.Reset();
                 parser.Reset();
                 parser.Interpreter.PredictionMode = PredictionMode.Ll;

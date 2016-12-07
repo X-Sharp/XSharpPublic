@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
-using Roslyn.Utilities;
+using System.IO;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -46,6 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; private set; }
         public string SystemDir { get; private set; }
         public bool NoStdDef { get; private set; }
+        public bool ShowDefs { get; private set; }
         public bool ShowIncludes { get; private set; }
         public bool PreprocessorOutput { get; private set; }
         public bool Verbose { get; private set; }
@@ -69,12 +68,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool IsDialectVO { get { return this.Dialect == XSharpDialect.VO || this.Dialect == XSharpDialect.Vulcan; } }
         public bool SupportsMemvars { get { return this.Dialect != XSharpDialect.Vulcan; } }
         public ImmutableArray<string> IncludePaths { get; private set; } = ImmutableArray.Create<string>();
-        public bool VulcanRTFuncsIncluded { get; private set; } = false;
-        public bool VulcanRTIncluded { get; private set; } = false;
+        public bool VulcanRTFuncsIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRTFuncs);
+        public bool VulcanRTIncluded => VulcanAssemblies.HasFlag(VulcanAssemblies.VulcanRT);
         public bool VOUntypedAllowed { get; private set; } = true;
         public VulcanAssemblies VulcanAssemblies { get; private set; } = VulcanAssemblies.None;
         public bool Overflow { get; private set; }
         public CSharpCommandLineArguments CommandLineArguments { get; private set; }
+        public TextWriter ConsoleOutput { get; private set; }
 
         public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;
@@ -103,13 +103,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 WindowsDir = opt.WindowsDir;
                 SystemDir = opt.SystemDir;
                 NoStdDef = opt.NoStdDef;
+                ShowDefs = opt.ShowDefs;
                 ShowIncludes = opt.ShowIncludes;
                 Verbose = opt.Verbose;
                 PreprocessorOutput = opt.PreProcessorOutput;
                 IncludePaths = opt.IncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).ToImmutableArray();
-                VulcanRTFuncsIncluded = opt.VulcanRTFuncsIncluded;
-                VulcanRTIncluded = opt.VulcanRTIncluded;
-
                 VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
                 VirtualInstanceMethods = opt.Vo3;
@@ -128,7 +126,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //VOInitializeVariables = opt.Vo16;
                 VulcanAssemblies = opt.VulcanAssemblies;
                 Overflow = opt.Overflow;
-
+                ConsoleOutput = opt.ConsoleOutput;
             }
         }
 
@@ -150,6 +148,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             SystemDir = opt.SystemDir;
             DefaultNamespace = opt.DefaultNamespace;
             IncludePaths = opt.IncludePaths;
+            ShowDefs = opt.ShowDefs;
             ShowIncludes = opt.ShowIncludes;
             NoStdDef = opt.NoStdDef;
             PreprocessorOutput = opt.PreprocessorOutput;
@@ -173,6 +172,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             //VOInitializeVariables = opt.VOInitializeVariables; // vo16
             VulcanAssemblies = opt.VulcanAssemblies;
             Overflow = opt.Overflow;
+            ConsoleOutput = opt.ConsoleOutput;
+            CommandLineArguments = opt.CommandLineArguments;
+
+        }
+        public  CSharpParseOptions WithOutput(TextWriter consoleOutput)
+        {
+            if (consoleOutput == this.ConsoleOutput)
+            {
+                return this;
+            }
+            var result = new CSharpParseOptions(this);
+            result.SetXSharpSpecificOptions(this);
+            result.ConsoleOutput = consoleOutput;
+            return result;
         }
     }
 }

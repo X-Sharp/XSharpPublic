@@ -179,6 +179,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     handled = false;
                     break;
+                case "showdefs":
+                case "showdefines":
+                    options.ShowDefs = positive;
+                    break;
                 case "showincludes":
                     options.ShowIncludes = positive;
                     break;

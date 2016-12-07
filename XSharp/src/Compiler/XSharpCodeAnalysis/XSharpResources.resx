@@ -4422,37 +4422,38 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
                                4, 5, 6, or Default
 
                         - VULCAN COMPATIBILITY -
-/az[+|-]                       Use Zero based arrays
-/cs[+|-]                       Case Sensitivity on/off
-/dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
-/fovf[+|-]                     Float overflow exceptions(mapped to /checked)
-/ins[+|-]                      Implicit namespace lookup
-/lb[+|-]                       Allow late binding
-/norun[+|-]                    Do not link to any default runtime
-/ns:&lt;string&gt;                   Default Namespace
-/ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
-/vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
-/vo2[+|-]                      Initialize Strings
-/vo3[+|-]                      All instance methods virtual
-/vo4[+|-]                      Implicit signed/unsigned conversions
-/vo5[+|-]                      Implicit CLIPPER calling convention
-/vo6[+|-]                      Implicit pointer conversions
-/vo7[+|-]                      Implicit casts and Conversions
-/vo8[+|-]                      Compatible preprocessor
-/vo9[+|-]                      Allow Missing Return Statements
-/vo10[+|-]                     Compatible IIF Behavior
-/vo11[+|-]                     Compatible numeric conversions
-/vo12[+|-]                     Compatible integer divisions
-/vo13[+|-]                     Compatible String Comparisons
-/vo14[+|-]                     Use Float Literals
-/vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
+ /az[+|-]                       Use Zero based arrays
+ /cs[+|-]                       Case Sensitivity on/off
+ /dialect:&lt;string&gt;              Specify xBase Dialect: Core, VO, Vulcan, dBase, FoxPro, xBase++, Harbour
+ /fovf[+|-]                     Float overflow exceptions(mapped to /checked)
+ /ins[+|-]                      Implicit namespace lookup
+ /lb[+|-]                       Allow late binding
+ /norun[+|-]                    Do not link to any default runtime
+ /ns:&lt;string&gt;                   Default Namespace
+ /ovf[+|-]                      Integer overflow exceptions (mapped to /checked)
+ /vo1[+|-]                      Allow Init() and Axit() as aliases for Constructor and Destructor
+ /vo2[+|-]                      Initialize Strings
+ /vo3[+|-]                      All instance methods virtual
+ /vo4[+|-]                      Implicit signed/unsigned conversions
+ /vo5[+|-]                      Implicit CLIPPER calling convention
+ /vo6[+|-]                      Implicit pointer conversions
+ /vo7[+|-]                      Implicit casts and Conversions
+ /vo8[+|-]                      Compatible preprocessor
+ /vo9[+|-]                      Allow Missing Return Statements
+ /vo10[+|-]                     Compatible IIF Behavior
+ /vo11[+|-]                     Compatible numeric conversions
+ /vo12[+|-]                     Compatible integer divisions
+ /vo13[+|-]                     Compatible String Comparisons
+ /vo14[+|-]                     Use Float Literals
+ /vo15[+|-]                     Allow untyped Locals and return types (default = ON for VO/Vulcan)
 
                         - PREPROCESOR -
 
-/i:&lt;path&gt;                        Additional Include path
-/nostddef[+|-]                 Do not include standard defines from XSharpDefs.xh
-/ppo[+|-]                      Generate preprocessor output
-/showincludes[+|-]             Show names from include files that are processed in the ppo file output
+ /i:&lt;path&gt;                        Additional Include path
+ /nostddef[+|-]                 Do not include standard defines from XSharpDefs.xh
+ /ppo[+|-]                      Generate preprocessor output
+ /showincludes[+|-]             Show names from include files that are processed in the ppo file output
+ /showdefs[+|-]                 Show the defines that were added from the #define commands and their usage
 
                         - SECURITY -
  /delaysign[+|-]               Delay-sign the assembly using only the public
@@ -4467,7 +4468,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /nologo                       Suppress compiler copyright message
  /noconfig                     Do not auto include CSC.RSP file
  /parallel[+|-]                Concurrent build.
-
+ 
                         - ADVANCED -
  /baseaddress:&lt;address&gt;        Base address for the library to be built
  /bugreport:&lt;file&gt;             Create a 'Bug Report' file
@@ -4503,6 +4504,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
  /moduleassemblyname:&lt;string&gt;  Name of the assembly which this module will be
                                a part of
  /modulename:&lt;string&gt;          Specify the name of the source module
+ 
 </value>
     <comment>X# Compiler Options</comment>
   </data>

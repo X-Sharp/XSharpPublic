@@ -44,10 +44,15 @@ namespace Microsoft.CodeAnalysis.CompilerServer
         public override int Run(TextWriter consoleOutput, CancellationToken cancellationToken = default(CancellationToken))
         {
             int returnCode;
-
+#if XSHARP
+            CompilerServerLogger.Log("****Running X# compiler...");
+            returnCode = base.Run(consoleOutput, cancellationToken);
+            CompilerServerLogger.Log("****X# Compilation complete.\r\n****Return code: {0}\r\n****Output:\r\n{1}\r\n", returnCode, consoleOutput.ToString());
+#else
             CompilerServerLogger.Log("****Running C# compiler...");
             returnCode = base.Run(consoleOutput, cancellationToken);
             CompilerServerLogger.Log("****C# Compilation complete.\r\n****Return code: {0}\r\n****Output:\r\n{1}\r\n", returnCode, consoleOutput.ToString());
+#endif
             return returnCode;
         }
 

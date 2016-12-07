@@ -13,14 +13,7 @@ without warranties or conditions of any kind, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Roslyn.Utilities;
-using System.Diagnostics;
-
+using System.IO;
 namespace Microsoft.CodeAnalysis.CSharp
 {
     /// <summary>
@@ -64,6 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool NoStdDef { get; internal set; } = false;
         public string NameSpace { get; set; } = "";
         public bool PreProcessorOutput { get; internal set; } = false;
+        public bool ShowDefs { get; internal set; } = false;
         public bool ShowIncludes { get; internal set; } = false;
         public bool Verbose { get; internal set; } = false;
         public bool Vo1 { get; internal set; } = false;
@@ -91,5 +85,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool Overflow { get; internal set; } = false;
         public bool OverflowHasBeenSet { get; internal set; } = false;
         public string PreviousArgument { get; internal set; } = string.Empty;
+        public TextWriter ConsoleOutput { get; internal set; }
     }
 }

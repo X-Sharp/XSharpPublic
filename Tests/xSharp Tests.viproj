@@ -5649,7 +5649,7 @@ VO12=0
 VO13=0
 VO14=0
 LateBound=0
-Unsafe=0
+Unsafe=1
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
@@ -31830,6 +31830,403 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C324 - Conversion errors without /vo4
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C325 - Problem with VOSTRUCT defined in dll *************
+Application = C325 - Problem with VOSTRUCT defined in dll
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C325\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C325
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 964B5C93-B348-42C3-AB43-5E259414A5FA
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C325 - Problem with VOSTRUCT defined in dll FileGroups]
+[C325 - Problem with VOSTRUCT defined in dll Files]
+File = %AppPath%\Prg\C325.prg
+FileGUID = DA844367-B2AB-4C28-B8B9-5700135AC0C2
+FileType = Code
+[C325 - Problem with VOSTRUCT defined in dll References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceProject = 2CECB285-968F-4DD2-AFFF-982C9C55063C,1,0,C325_helper
+[C325 - Problem with VOSTRUCT defined in dll Resources]
+[C325 - Problem with VOSTRUCT defined in dll Native Resources]
+[C325 - Problem with VOSTRUCT defined in dll License files]
+[C325 - Problem with VOSTRUCT defined in dll General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=1
+VO5=1
+VO6=1
+VO7=1
+VO8=1
+VO9=1
+VO10=1
+VO11=1
+VO12=1
+VO13=1
+VO14=1
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C325 - Problem with VOSTRUCT defined in dll Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C325 - Problem with VOSTRUCT defined in dll
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C325_helper *************
+Application = C325_helper
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C325_helper\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C325_helper
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 2CECB285-968F-4DD2-AFFF-982C9C55063C
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C325_helper FileGroups]
+[C325_helper Files]
+File = %AppPath%\Prg\C325_helper.prg
+FileGUID = C48788D2-3E30-43A0-A601-AEE8B0054D6F
+FileType = Code
+[C325_helper References]
+ReferenceGAC = CLR4,VulcanRT,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,3.0.303.0
+[C325_helper Resources]
+[C325_helper Native Resources]
+[C325_helper License files]
+[C325_helper General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C325_helper Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C325_helper
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * *************
+Application = C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT *
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C326\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C326
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 30112C5C-BFD0-4BCC-B895-42F3BF9DB49C
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * FileGroups]
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * Files]
+File = %AppPath%\Prg\C326.prg
+FileGUID = C7E1AFE5-1183-4491-8A8A-E092C11F9760
+FileType = Code
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * Resources]
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * Native Resources]
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * License files]
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT * Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT *
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C327 - problem with PSZ using function from the VOSDK *************
+Application = C327 - problem with PSZ using function from the VOSDK
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C327\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C327
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = BDC9CB9B-82E4-4B65-9F7A-798249BF1F37
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C327 - problem with PSZ using function from the VOSDK FileGroups]
+[C327 - problem with PSZ using function from the VOSDK Files]
+File = %AppPath%\Prg\C327.prg
+FileGUID = 774200C7-C4F0-489F-88E8-758668ACE2A8
+FileType = Code
+[C327 - problem with PSZ using function from the VOSDK References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+[C327 - problem with PSZ using function from the VOSDK Resources]
+[C327 - problem with PSZ using function from the VOSDK Native Resources]
+[C327 - problem with PSZ using function from the VOSDK License files]
+[C327 - problem with PSZ using function from the VOSDK General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C327 - problem with PSZ using function from the VOSDK Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C327 - problem with PSZ using function from the VOSDK
 [EndApplications]
 
 [Configurations]

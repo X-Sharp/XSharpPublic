@@ -171,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
             }
 #if XSHARP
-            return ClassifyVOImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+            return ClassifyXSImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
 #else
             return Conversion.NoConversion;
 #endif

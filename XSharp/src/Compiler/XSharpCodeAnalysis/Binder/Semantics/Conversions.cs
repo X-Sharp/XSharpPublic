@@ -22,21 +22,26 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (((NamedTypeSymbol)source).ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                 {
+                    var constructedFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
                     {
-                        result = !destination.IsStringType()
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array)
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock)
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), true, ref useSiteDiagnostics) != true
+                        // do not box string, array, codeblock  and clipperargs
+                        result = destination.SpecialType != SpecialType.System_String 
+                            && constructedFrom != null
+                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Array)
+                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock)
+                            && constructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), true, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
                     else
                     {
+                        // do not box symbol, psz, vofloat, vodate
                         result = destination.SpecialType == SpecialType.None
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Symbol)
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz)
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat)
-                            && (destination as NamedTypeSymbol)?.ConstructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
+                            && constructedFrom != null
+                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Symbol)
+                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz)
+                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat)
+                            && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
                     }
                 }
             }
@@ -46,23 +51,25 @@ namespace Microsoft.CodeAnalysis.CSharp
 
        protected override ConversionKind ClassifyVoNullLiteralConversion(BoundExpression source, TypeSymbol destination, out Conversion conv)
         {
-            if (_binder.Compilation.Options.IsDialectVO &&
-                ((NamedTypeSymbol)destination).ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+            if (_binder.Compilation.Options.IsDialectVO && destination is NamedTypeSymbol)
             {
                 var usualType = _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                var op = usualType.GetOperators("op_Implicit")
-                    .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType == usualType)
-                    .AsSingleton() as MethodSymbol;
-                if (op != null)
+                var nts = destination as NamedTypeSymbol;
+                if ( nts.ConstructedFrom == usualType)
                 {
-                    var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);
-                    UserDefinedConversionAnalysis uca = UserDefinedConversionAnalysis.Normal(op, Conversion.ImplicitReference, Conversion.Identity, sourceType, destination);
-                    UserDefinedConversionResult cr = UserDefinedConversionResult.Valid(new[] { uca }.AsImmutable(), 0);
-                    conv = new Conversion(cr, isImplicit: true);
-                    return ConversionKind.ImplicitUserDefined;
+                    var op = usualType.GetOperators("op_Implicit")
+                        .WhereAsArray(o => o.ParameterCount == 1 && o.ParameterTypes[0].IsObjectType() && o.ReturnType == usualType)
+                        .AsSingleton() as MethodSymbol;
+                    if (op != null)
+                    {
+                        var sourceType = _binder.Compilation.GetSpecialType(SpecialType.System_Object);
+                        UserDefinedConversionAnalysis uca = UserDefinedConversionAnalysis.Normal(op, Conversion.ImplicitReference, Conversion.Identity, sourceType, destination);
+                        UserDefinedConversionResult cr = UserDefinedConversionResult.Valid(new[] { uca }.AsImmutable(), 0);
+                        conv = new Conversion(cr, isImplicit: true);
+                        return ConversionKind.ImplicitUserDefined;
+                    }
                 }
             }
-
             conv = Conversion.NoConversion;
             return ConversionKind.NoConversion;
         }
@@ -88,233 +95,247 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return res;
         }
-    }
-    internal abstract partial class ConversionsBase
-    {
-        protected bool IsClipperArgsType(TypeSymbol args)
+
+        protected override Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            // Parameters checks have been done in the calling code
+            // The following conversion Rules are for all dialects
+            var srcType = source.SpecialType;
+            var dstType = destination.SpecialType;
+            // From and to CHAR
+            if (srcType == SpecialType.System_Char)
+            {
+                if (dstType == SpecialType.System_UInt16)
+                    return Conversion.Identity;
+                if (Compilation.Options.VOSignedUnsignedConversion) // vo4
+                {
+                    if (dstType == SpecialType.System_Byte)
+                        return Conversion.ImplicitNumeric;
+                }
+
+            }
+            if (dstType == SpecialType.System_Char)
+            {
+                if (srcType == SpecialType.System_UInt16)
+                {
+                    return Conversion.Identity;
+                }
+                if (srcType == SpecialType.System_Byte)
+                {
+                    return Conversion.ImplicitNumeric;
+                }
+            }
+            // From IntPtr -> Anything
+            if (srcType == SpecialType.System_IntPtr || srcType == SpecialType.System_UIntPtr)
+            {
+                if (destination.IsPointerType())
+                {
+                    return Conversion.IntPtr;
+                }
+                if (destination.IsVoStructOrUnion() || destination.IsIntegralType())
+                {
+                    return Conversion.Identity;
+                }
+            }
+            // From Anything -> IntPtr
+            if (dstType == SpecialType.System_IntPtr || dstType == SpecialType.System_UIntPtr)
+            {
+                if (source.IsPointerType())
+                {
+                    return Conversion.IntPtr;
+                }
+                else if (source.IsVoStructOrUnion() || source.IsIntegralType())
+                {
+                    return Conversion.Identity;
+                }
+            }
+            if (Compilation.Options.VOSignedUnsignedConversion) // vo4
+            {
+                var result = Conversion.NoConversion;
+
+                // when both numeric and both integral or both not integral
+                if (srcType.IsNumericType() && dstType.IsNumericType())
+                {
+                    if (srcType.IsIntegralType() == dstType.IsIntegralType())
+                    {
+                        // when both same # of bits and integral, use Identity conversion
+                        if (srcType.SizeInBytes() == dstType.SizeInBytes() &&
+                            srcType.IsIntegralType() && dstType.IsIntegralType())
+                            result = Conversion.Identity;
+                        else
+                            result = Conversion.ImplicitNumeric;
+                    }
+                    // Vulcan also allows to convert floating point types <-> integral types
+                    else
+                    {
+                        result = Conversion.ImplicitNumeric;
+                    }
+                }
+
+                if (result != Conversion.NoConversion)
+                    return result;
+            }
+
+            return Conversion.NoConversion;
+
+        }
+        protected override Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            // Parameters checks have been done in the calling code
+            var srcType = source.SpecialType;
+            var dstType = destination.SpecialType;
+            bool voCast = false;
+            bool voConvert = false;
+            if (sourceExpression.Syntax != null)
+            {
+                var xNode = sourceExpression.Syntax.XNode;
+                if (xNode != null)
+                {
+                    voCast = xNode.Parent is XP.VoCastExpressionContext;
+                    voConvert = xNode.Parent is XP.VoConversionExpressionContext;
+                }
+            }
+            // TYPE(_CAST, expr) allows almost everything
+            if (voCast)
+            {
+                // Allow cast -> BOOLEAN
+                if (dstType == SpecialType.System_Boolean)
+                    return Conversion.Identity;
+                // Allow cast -> INTEGRAL
+                if (dstType.IsIntegralType())
+                    return Conversion.Identity;
+                // Allow cast -> PTR
+                if (destination is PointerTypeSymbol)
+                    return Conversion.Identity;
+                // Allow cast -> PSZ
+                if (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                    return Conversion.Identity;
+            }
+            if (voConvert)
+            {
+                // we need to convert BYTE(<p>) to dereferencing the <p>
+                // can we do that here ?
+                // Integer conversions
+                if (srcType.IsNumericType() && dstType.IsNumericType() &&
+                    srcType.IsIntegralType() == dstType.IsIntegralType())
+                {
+                    // when both same # of bits and integral, use Identity conversion
+                    // otherwise implicit numeric conversion
+                    if (srcType.SizeInBytes() == dstType.SizeInBytes() &&
+                        srcType.IsIntegralType() && dstType.IsIntegralType())
+                        return Conversion.Identity;
+                    else
+                        return Conversion.ImplicitNumeric;
+                }
+            }
+            if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+            {
+                // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
+                if (dstType == SpecialType.System_Decimal)
+                    return Conversion.Boxing;
+                // Usual -> OBJECT. Get the object out of the Usual 
+                // Our special call will call in LocalWriter.UnBoxVOType will
+                // convert the Unbox operation to a call to __Usual.ToObject()
+                // This method will return the Contents of the usual as an object 
+                // and not the usual itself as an object
+                else if (dstType == SpecialType.System_Object)
+                    return Conversion.Boxing;
+            }
+
+            if (Compilation.Options.LateBinding ||                 // lb
+                Compilation.Options.VOImplicitCastsAndConversions) // vo7
+            {
+                if (srcType == SpecialType.System_Object
+                    && destination.IsReferenceType && !IsClipperArgsType(destination))
+                {
+                    // Convert Object -> Reference allowed with /lb and with /vo7
+                    // except when converting to array of usuals
+                    return Conversion.ImplicitReference;
+                }
+            }
+            if (Compilation.Options.VOImplicitCastsAndConversions)
+            {
+                // Convert Any Ptr -> Any Ptr 
+                if (source.IsPointerType() && destination.IsPointerType())
+                {
+                    return Conversion.Identity;
+                }
+                // Convert Integral type -> Ptr Type 
+                if (source.IsIntegralType() && destination.IsPointerType())
+                {
+                    return Conversion.Identity;
+                }
+            }
+            // when nothing else, then use the Core rules
+            return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+        }
+
+        protected override Conversion ClassifyNullConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            if (sourceExpression.Kind == BoundKind.Literal && sourceExpression.IsLiteralNull())
+            {
+                Conversion result;
+                if (ClassifyVoNullLiteralConversion(sourceExpression, destination, out result) != ConversionKind.NoConversion)
+                {
+                    return result;
+                }
+            }
+            return Conversion.NoConversion;
+        }
+        protected override Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            if (source == null || destination == null)
+            {
+                return ClassifyNullConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+            }
+            if (Compilation.Options.IsDialectVO)
+                return ClassifyVOImplicitBuiltInConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+            else
+                return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
+        }
+
+        protected override bool IsClipperArgsType(TypeSymbol args)
         {
             bool result = false;
             if (args is ArrayTypeSymbol)
             {
                 var ats = args as ArrayTypeSymbol;
-                Conversions conv = this as Conversions;
-                if (conv != null  && conv.Compilation.Options.IsDialectVO)
+                if (Compilation.Options.IsDialectVO)
                 {
-                    result = (ats.ElementType == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual));
+                    result = (ats.ElementType == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual));
                 }
 
             }
             return result;
         }
-        private Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+
+    }
+
+    internal abstract partial class ConversionsBase
+    {
+        protected virtual bool IsClipperArgsType(TypeSymbol args)
         {
-            if (this is Conversions)
-            {
-                Conversions conv = this as Conversions;
-                
-                if (source != null && destination != null )
-                {
-                    var srctype = source.SpecialType;
-                    var dsttype = destination.SpecialType;
-                    if (conv.Compilation.Options.VOSignedUnsignedConversion)
-                    {
-                        var result = Conversion.NoConversion;
+            return false;
+        }
 
-                        // when both numeric and both integral or both not integral
-                        if (srctype.IsNumericType() && dsttype.IsNumericType())
-                        {
-                            if (srctype.IsIntegralType() == dsttype.IsIntegralType())
-                            {
-                                // when both same # of bits and integral, use Identity conversion
-                                if (srctype.SizeInBytes() == dsttype.SizeInBytes() &&
-                                    srctype.IsIntegralType() && dsttype.IsIntegralType())
-                                    result = Conversion.Identity;
-                                else
-                                    result = Conversion.ImplicitNumeric;
-                            }
-                            // Vulcan also allows to convert floating point types <-> integral types
-                            else
-                            {
-                                result = Conversion.ImplicitNumeric;
-                            }
-                        }
-                        //if (result == Conversion.ImplicitNumeric)
-                        //{
-                        //    var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
-                        //    useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                        //    useSiteDiagnostics.Add(info);
-                        //}
-                        if (result != Conversion.NoConversion)
-                            return result;
-                    }
-                    if (conv.Compilation.Options.IsDialectVO)
-                    {
-                        bool voCast = false;
-                        bool voConvert = false;
-                        if (sourceExpression.Syntax != null)
-                        {
-                            var xNode = sourceExpression.Syntax.XNode;
-                            if (xNode != null)
-                            {
-                                voCast = xNode.Parent is XP.VoCastExpressionContext;
-                                voConvert = xNode.Parent is XP.VoConversionExpressionContext;
-                            }
-                        }
-                        // TYPE(_CAST, expr) allows almost everything
-                        if (voCast)
-                        {
-                            // Allow cast -> BOOLEAN
-                            if (destination.SpecialType == SpecialType.System_Boolean)
-                                return Conversion.Identity;
-                            // Allow cast -> INTEGRAL
-                            if (destination.SpecialType.IsIntegralType()) 
-                                return Conversion.Identity;
-                            // Allow cast -> PTR
-                            if (destination is PointerTypeSymbol)
-                                return Conversion.Identity;
-                            // Allow cast -> PSZ
-                            if (destination == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
-                                return Conversion.Identity;
-                        }
-                        if (voConvert)
-                        {
-                            // we need to convert BYTE(<p>) to dereferencing the <p>
-                            // can we do that here ?
-                            // Integer conversions
-                            if (srctype.IsNumericType() && dsttype.IsNumericType() &&
-                                srctype.IsIntegralType() == dsttype.IsIntegralType())
-                            {
-                                // when both same # of bits and integral, use Identity conversion
-                                // otherwise implicit numeric conversion
-                                if (srctype.SizeInBytes() == dsttype.SizeInBytes() &&
-                                    srctype.IsIntegralType() && dsttype.IsIntegralType())
-                                    return Conversion.Identity;
-                                else
-                                    return Conversion.ImplicitNumeric;
-                            }
-                        }
-                        if (source == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
-                        {
-                            // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
-                            if (destination.SpecialType == SpecialType.System_Decimal)
-                                return Conversion.Boxing;
-                            // Usual -> OBJECT. Get the object out of the Usual 
-                            // Our special call will call in LocalWriter.UnBoxVOType will
-                            // convert the Unbox operation to a call to __Usual.ToObject()
-                            // This method will return the Contents of the usual as an object 
-                            // and not the usual itself as an object
-                            else if (destination.SpecialType == SpecialType.System_Object)
-                                return Conversion.Boxing;
-                        }
-                        //if (conv.Compilation.Options.VOSignedUnsignedConversion)
-                        //{
-                        //    var floatType = conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
-                        //    if (source == floatType && dsttype.IsNumericType() ||
-                        //        destination == floatType && srctype.IsNumericType())
-                        //    {
-                        //        var info = new CSDiagnosticInfo(ErrorCode.WRN_ConversionMayLeadToLossOfData, source, destination);
-                        //        useSiteDiagnostics = new HashSet<DiagnosticInfo>();
-                        //        useSiteDiagnostics.Add(info);
-                        //        return Conversion.ImplicitNumeric;
-                        //    }
-                        //}
-
-                    }
-                    if (conv.Compilation.Options.LateBinding ||                 // lb
-                        conv.Compilation.Options.VOImplicitCastsAndConversions) // vo7
-                    {
-                        if (source.SpecialType == SpecialType.System_Object 
-                            && destination.IsReferenceType && !IsClipperArgsType(destination))
-                        {
-                            // Convert Object -> Reference allowed with /lb and with /vo7
-                            // except when converting to array of usuals
-                            return Conversion.ImplicitReference;
-                        }
-                    }
-                    if (conv.Compilation.Options.VOSignedUnsignedConversion)    // vo4
-                    {
-                        if (source.SpecialType.IsNumericType() && destination.SpecialType.IsNumericType())
-                        {
-                            // integral -> integral
-                            if (source.IsIntegralType() && destination.IsIntegralType())
-                            {
-                                return Conversion.ImplicitNumeric;
-                            }
-                            // non integral -> non integral
-                            if (!source.IsIntegralType() && !destination.IsIntegralType())
-                            {
-                                return Conversion.ImplicitNumeric;
-                            }
-
-                        }
-                    }
-                    if (conv.Compilation.Options.VOImplicitCastsAndConversions && conv.Compilation.Options.IsDialectVO)     // vo7
-                    {
-                        // Convert Any Ptr -> Any Ptr 
-                        if (source.IsPointerType() && destination.IsPointerType())
-                        {
-                            return Conversion.Identity;
-                        }
-                        // Convert Integral type -> Ptr Type 
-                        if (source.IsIntegralType() && destination.IsPointerType())
-                        {
-                            return Conversion.Identity;
-                        }
-                    }
-                    // From and to CHAR
-                    if (source.SpecialType == SpecialType.System_Char )
-                    {
-                        if (destination.SpecialType == SpecialType.System_UInt16)
-                            return Conversion.Identity;
-                        if (conv.Compilation.Options.VOSignedUnsignedConversion) // vo4
-                        {
-                            if (destination.SpecialType == SpecialType.System_Byte)
-                                return Conversion.ImplicitNumeric;
-                        }
-
-                    }
-                    if (destination.SpecialType == SpecialType.System_Char)
-                    {
-                        switch (source.SpecialType)
-                        {
-                            case SpecialType.System_UInt16:
-                                return Conversion.Identity;
-                            case SpecialType.System_Byte:
-                                return Conversion.ImplicitNumeric;
-                        }
-                    }
-                }
-
-            }
-            if (source != null)
-            {
-                if ((source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr) && 
-                    (destination.IsPointerType() || destination.IsVoStructOrUnion()))
-                {
-                    if (destination.IsPointerType())
-                        return Conversion.IntPtr;
-                    else
-                        return Conversion.Identity;
-                }
-                if ((destination.SpecialType == SpecialType.System_IntPtr || destination.SpecialType == SpecialType.System_UIntPtr) 
-                    && (source.IsPointerType() || source.IsVoStructOrUnion()))
-                {
-                    if (source.IsPointerType())
-                        return Conversion.IntPtr;
-                    else
-                        return Conversion.Identity;
-                }
-            }
-            if (sourceExpression.Kind == BoundKind.Literal && sourceExpression.IsLiteralNull())
-            {
-                Conversion conv;
-                if (ClassifyVoNullLiteralConversion(sourceExpression, destination, out conv) != ConversionKind.NoConversion)
-                {
-                    return conv;
-                }
-            }
+        protected virtual Conversion ClassifyCoreImplicitConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
             return Conversion.NoConversion;
         }
+        protected virtual Conversion ClassifyVOImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            return Conversion.NoConversion;
+        }
+        protected virtual Conversion ClassifyNullConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            return Conversion.NoConversion;
+        }
+
+        protected virtual Conversion ClassifyXSImplicitBuiltInConversionFromExpression(BoundExpression sourceExpression, TypeSymbol source, TypeSymbol destination, ref HashSet<DiagnosticInfo> useSiteDiagnostics)
+        {
+            return Conversion.NoConversion;
+        }
+
         internal static bool HasImplicitVOConstantExpressionConversion(BoundExpression source, TypeSymbol destination)
         {
             var specialSource = source.Type.GetSpecialTypeSafe();

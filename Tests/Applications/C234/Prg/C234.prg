@@ -4,3 +4,12 @@ FUNCTION TestPsz(p AS PSZ) AS VOID
 FUNCTION Start() AS VOID
 TestPsz(NULL)
 
+
+LOCAL ptrBuffer AS PTR
+LOCAL nLen AS DWORD
+? INT( WNetGetUser( NULL, ptrBuffer, @nLen ) )
+
+
+FUNC WNetGetUser( lpName AS PSZ, lpUserName AS PSZ, lpnLength AS DWORD PTR) AS DWORD PASCAL
+	? lpName, lpUserName, lpnLength
+RETURN 0

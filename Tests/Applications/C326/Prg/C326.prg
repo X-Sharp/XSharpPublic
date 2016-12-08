@@ -1,0 +1,11 @@
+// error XS1503: Argument 1: cannot convert from '_WINFILETIME**' to '_WINFILETIME*'
+VOSTRUCT _WINFILETIME
+	MEMBER dwLowDateTime AS  DWORD
+	MEMBER dwHighDateTime AS DWORD
+
+FUNCTION Start() AS VOID
+LOCAL p AS _WINFILETIME
+TestFunc(@p)
+
+FUNCTION TestFunc(p AS _WINFILETIME) AS VOID
+

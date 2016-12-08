@@ -3,6 +3,7 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">X# Compiler Options By Category</title>
   <keywords>
+    <keyword translate="true">/showdefs</keyword>
     <keyword translate="true">Compiler Options</keyword>
   </keywords>
   <body>
@@ -151,7 +152,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-showincludes" styleclass="Normal" translate="true">/showincludes</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Lists #include files in compiler output </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Lists #include files in compiler output </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -167,7 +168,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo1" styleclass="Normal" translate="true">/vo1</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Use Init and Axit methods in stead of Constructors and Destructors</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Use Init and Axit methods in stead of Constructors and Destructors</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -609,7 +610,7 @@
     <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Preprocessor</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="6" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="7" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -648,6 +649,14 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Suppresses preprocessor definitions in VulcanStdDefs.vh </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td>
+          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="_showdefs" styleclass="Normal" translate="true">/showdefs</link></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Show the defines that are added from the header files and their usage</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

@@ -831,6 +831,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics
 #if XSHARP
             , bool preferStaticMethodCall = false
+            , bool allDialects = false
 #endif
             )
         {
@@ -890,7 +891,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
             var originalOptions = options;
-            if (preferStaticMethodCall && Compilation.Options.IsDialectVO)
+            if (preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
             {
                 options |= LookupOptions.MustNotBeInstance;
             }
@@ -900,7 +901,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
 #if XSHARP
-            if (preferStaticMethodCall && Compilation.Options.IsDialectVO)
+            if (preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
             {
                 if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
                 {
@@ -4468,7 +4469,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var node = (IdentifierNameSyntax)left;
                 var valueDiagnostics = DiagnosticBag.GetInstance();
 #if XSHARP
-                var boundValue = BindIdentifier(node, invoked: false, diagnostics: valueDiagnostics, preferStaticMethodCall : true);
+                var boundValue = BindIdentifier(node, invoked: false, diagnostics: valueDiagnostics, preferStaticMethodCall : true, allDialects : true);
 #else
                 var boundValue = BindIdentifier(node, invoked: false, diagnostics: valueDiagnostics);
 #endif

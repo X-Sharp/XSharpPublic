@@ -144,6 +144,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             ArrayZero = opt.ArrayZero;
             DebugEnabled = opt.DebugEnabled;
             DefaultIncludeDir = opt.DefaultIncludeDir;
+            Dialect = opt.Dialect;
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             DefaultNamespace = opt.DefaultNamespace;

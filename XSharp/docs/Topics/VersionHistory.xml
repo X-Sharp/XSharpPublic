@@ -10,43 +10,57 @@
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.9</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Compiler</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">VO/Vulcan Compatibility</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">New features / changed behavior:</text></para>
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">All Init procedures are now properly called at startup. So not only the init procedures in the VOSDK libraries but also init procedures in other libraries and the main exe</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">When both a function (static method) exists and an instance method we will now call the static method in code inside methods that does not have a SELF: or SUPER: prefix.</text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several problems with the @ operator and VOSTRUCT types</text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem with DIM arrays of VOSTRUCT types</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Changed the method resolution code. A method with a single object parameter is now preferred over a method with an Object[] parameter</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Changed the method resolution code in situations where the @ operator is used to pass variables by reference.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Changed the method resolution to make it more compatible with Vulcan for overloads with different numeric types.</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Optimized the code generation for IIF statements. </text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The sizeof operator now returns a DWORD to be compatible with VO and Vulcan.</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Added support for EXIT PROCEDURES (PROCEDURE MyProcedure EXIT). These procedures will automatically be called during program shutdown, just before all the global variables are cleared.</text><br/><text styleclass="Normal" translate="true">The compiler now generates an $Exit function for each assembly in which the exit procedures will be called and the reference globals in an assembly will be cleared. In the main app a $AppExit() function is created that will call the $Exit functions in all references X# assemblies. When a Vulcan compiled assembly is referenced, then all the public reference globals will be cleared from the $AppExit() function.</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Added support for the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">/vo1 </text><text styleclass="Normal" translate="true">compiler option</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Indexed access to properties defined with the SELF keyword can now also use the &quot;</text><text styleclass="Normal" style="font-weight:bold;" translate="true">Index</text><text styleclass="Normal" translate="true">&quot; property name</text></li>
+    </list>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Bug fixes</text></para>
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several problems with the @ operator and VOSTRUCT types</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem with DIM arrays of VOSTRUCT types</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several problems with the VOStyle _CAST and Conversion operators. </text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several numeric conversion problems</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">RETURN &lt;LiteralValue&gt; inside an ASSIGN method will no longer allocate a variable and produce an warning</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem with USUAL array indexes for multi dimensional XBase Arrays</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed codeblock problems for codeblocks where the last expression was VOID</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several problems with the @ operator</text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The sizeof operator now returns a DWORD to be compatible with VO and Vulcan.</text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Optimized the code generation for IIF statements. </text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Added support for EXIT PROCEDURES (PROCEDURE MyProcedure EXIT). These procedures will automatically be called during program shutdown, just before all the global variables are cleared.</text><br/><text styleclass="Normal" translate="true">The compiler now generates an $Exit function for each assembly in which the exit procedures will be called and the reference globals in an assembly will be cleared. In the main app a $AppExit() function is created that will call the $Exit functions in all references X# assemblies. When a Vulcan compiled assembly is referenced, then all the public reference globals will be cleared from the $AppExit() function.</text></li>
     </list>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">General</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <para style="text-indent:-13px; margin-left:13px;"></para>
+    <para style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">General</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">New features / changed behavior:</text></para>
+    <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">We have added support for the preprocessor output (</text><text styleclass="Normal" style="font-weight:bold;" translate="true">/ppo</text><text styleclass="Normal" translate="true">). When compiling with /ppo disabled then an existing ppo file from a previous compilation run will be deleted to avoid confusion.</text></li>
+    </list>
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The code generation for ACCESS and ASSIGN has changed. There are no longer separate methods in the class, but the content of these methods is now inlined in the generated Get and Set methods for the generated property.</text></li>
+      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Optimized the code generation for IIF statements. </text></li>
+    </list>
+    <para style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Bug fixes:</text></para>
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Indexed pointer access was not respecting the /AZ compiler option (and always assumed 0 based arrays). This has been fixed</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Preprocessor #defines were sometimes conflicting with class or namespace names. For example when /vo8 was selected the method System.Diagnostics.Debug.WriteLine() could not be called because the DEBUG define was removing the &#160;classname. We have changed the preprocessor so it will no longer replace words immediately before or after a DOT or COLON operator.</text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">We have added support for the preprocessor output (</text><text styleclass="Normal" style="font-weight:bold;" translate="true">/ppo</text><text styleclass="Normal" translate="true">). When compiling with /ppo disabled then an existing ppo file from a previous compilation run will be deleted to avoid confusion.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">When two partial classes had the same name and a different casing the compiler would not properly merge the class definitions.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a crash when a #define in code was the same as a define passed on the commandline</text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The code generation for ACCESS and ASSIGN has changed. There are no longer separate methods in the class, but the content of these methods is now inlined in the generated Get and Set methods for the generated property.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem with the caching of preprocessed files, especially files that contain #ifdef constructs.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem with the REPEAT UNTIL statement</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a compiler crash when calling static methods in the System.Object class when Late Binding was enabled</text></li>
-      <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Optimized the code generation for IIF statements. </text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a crash for code with a DO CASE without a matching END CASE</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem which could occur when 2 partial classes had the same name but a different case</text></li>
     </list>
+    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.8</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Compiler</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">VO/Vulcan Compatibility</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Default Parameters are now handled like VO and Vulcan do. This means that you can also have date constants, symbolic constants etc as default parameter</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">String Single Equals rules are now 100% identical with Visual Objects. We found one case where Vulcan does not return the same result as Visual Objects. We have chosen to be compatible with VO.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">When compiling in VO/Vulcan mode then the init procedures in the VO SDK libraries are automatically called. You do not have to call these in your code anymore</text><br/><text styleclass="Normal" translate="true">Also Init procedures in the main assembly are called at startup.</text></li>
@@ -61,7 +75,7 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several numeric conversion problems</text></li>
     </list>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">New features</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">We have added support for</text><link displaytype="text" defaultstyle="true" type="topiclink" href="Collection-Initializers" styleclass="Normal" translate="true"> Collection Initializers</link><text styleclass="Normal" translate="true"> and </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Object-Initializers" styleclass="Normal" translate="true">Object Initializers</link></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Anonymous type members no longer have to be named. If you select a property as an anonymous type member then the same property name will be used for the anonymous type as well.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Missing closing keywords (such as NEXT, ENDIF, ENDCASE and ENDDO) now produce better error messages</text></li>
@@ -72,7 +86,7 @@
     <para styleclass="Code Example"><tab /><text styleclass="Code Example" translate="true">IIF( nValue %2 == 0, lEven := TRUE, lEven := FALSE)</text></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true"> &#160;RETURN lEven</text></para>
     <para style="text-indent:-13px; margin-left:13px;"><tab /><text styleclass="Normal" translate="true">We really do not encourage to hide assignments like this, but in case you have used this coding style,it works now &lt;g&gt;.</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">AS VOID is now allowed as (the only) type specification for PROCEDUREs</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">We have added a .config file to the exe for the shared compiler that should make it faster</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The XSharpStdDefs.xh file in the XSharp is now automatically included when compiling. This file declares the CRLF constant for now.</text></li>
@@ -82,7 +96,7 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Compiler error messages for unexpected tokens have been improved</text></li>
     </list>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Bug fixes</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Several command-line options with a minus sign were not properly handled by the compiler</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several crashes related to assigning NULL_OBJECT or NULL to late bound properties have been fixed</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Partial class no longer are required to specify the parent type on every source code location. When specified, the parent type must be the same of course. Parent interfaces implemented by a class can also be spread over multiple locations</text></li>
@@ -110,7 +124,7 @@
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">The combobox in the Managed Resource editor and Managed Settings tool to choose between internal code and public code is now enabled. Selecting a different value in the combobox will change the tool in the files properties.</text></li>
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:normal;" translate="true">The last response file for the compiler and native resource compiler are now saved in the users Temp folder to aid in debugging problems.</text></li>
     </list>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The response file now has each compiler option to a new line to make it easier to read and debug when this is necessary.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The code generation now preserves comments between entities (methods) </text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">We fixed several minor issues in the templates</text></li>
@@ -123,13 +137,13 @@
     <para style="text-indent:-13px; margin-left:13px;"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.7.1</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Compiler</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The compiler was not accepting wildcard strings for the AssemblyFileVersion Attribute and the AssemblyInformationVersion attribute. This has been fixed</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The #Pragma commands #Pragma Warnings(Push) and #Pragma Warnings(Pop) were not recognized. This has been fixed.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The compiler was not recognizing expressions like global::System.String.Compare(..). This has been fixed</text></li>
     </list>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Visual Studio Integration</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Dependent items in subfolders of a project were not recognized properly and could produce an error when opening a project</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem in the VulcanApp Template</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The Windows Forms Editor would not open forms in a file without begin namespace .. end namespace. This has been fixed</text></li>
@@ -142,13 +156,13 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Added &apos;Copy to Output Directory&apos; property to the properties window</text></li>
     </list>
     <para style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Setup</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The installer, exe files and documentation are now signed with a certificate</text></li>
     </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Changes in 0.2.7</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Compiler</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">New features:</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Added support for the VOSTRUCT and UNION types</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Added support for Types as Numeric values, such as in the construct </text><br/><tab /><text styleclass="Code Example" translate="true">IF UsualType(uValue) == LONG</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Added a FIXED statement and FIXED modifier for variables</text></li>
@@ -159,14 +173,14 @@
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The FOX version of the compiler is now distributed in Release mode and much faster. A debug version of the compiler is also installed in case it is needed to aid in finding compiler problems.</text></li>
     </list>
     <para style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Changed behavior</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">The compiler generated Globals class for the Core dialect is now called </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Functions</text><text styleclass="Normal" style="font-weight:normal;" translate="true"> and no longer Xs$Globals. </text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Overriding functions in VulcanRTFuncs can now be done without specifying the namespace: </text><br/><text styleclass="Normal" translate="true">When the compiler finds two candidate functions and one of them is inside VulcanRTFuncs then the function that is not in VulcanRTFuncs is chosen.</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Warning 9001 (unsafe modifier implied) is now suppressed for the VO/Vulcan dialect. You MUST pass the /unsafe compiler option if you are compiling unsafe code though!</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Improved the error messages for the Release mode of the compiler</text></li>
     </list>
     <para style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Bug fixes</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">RETURN and THROW statements inside a Switch statement would generate an &apos;unreachable code&apos; warning. This has been fixed</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several problems with mixing signed and unsigned Array Indexes</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed several problems with the FOR .. NEXT statement. The &quot;To&quot; expression will now be evaluated for every iteration of the loop, just like in VO and Vulcan.</text></li>
@@ -176,7 +190,7 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Visual Studio Integration</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" style="text-indent:-13px; margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem that the wrong Language Service was selected when XSharp and Vulcan.NET were used in the same Visual Studio and when files were opened from the output window or the Find Results window</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed some problems with &apos;abnormal&apos; line endings in generated code</text></li>
       <li style="text-indent:-13px; margin-left:13px;"><text styleclass="Normal" translate="true">Fixed a problem in the Class Library template</text></li>
@@ -456,7 +470,7 @@
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Several fixes for Virtual and Non virtual methods in combination with the /VO3 compatibility option</text></li>
     </list>
     <para style="text-indent:-13px; margin-bottom:10px; margin-left:13px; line-height:1.05; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Heading2" translate="true">Changes in 0.1.7</text></para>
-    <list id="69" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="68" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The &quot;ns&quot; (add default namespace to classes without namespace) has been implemented</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">The &quot;vo3&quot; compiler option (to make all methods virtual ) has been implemented</text></li>
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Fixed an issue where the send operator on an expression between parentheses was not compiling properly</text></li>

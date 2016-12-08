@@ -9,6 +9,6 @@ o := TestClass{}
 CLASS TestClass
 	PROPERTY TestProp AS INT GET 123
 	METHOD TestMethod() CLIPPER
-	RETURN NIL
+	RETURN "Called correctly"
 END CLASS
 

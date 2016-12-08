@@ -9,5 +9,8 @@ END CLASS
 
 FUNCTION Start() AS VOID
 LOCAL Test AS ITest
-Test.StaticMethod()
+Test.StaticMethod() 
+test := NULL
+? (OBJECT) Test
+RETURN
 

@@ -4467,8 +4467,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var node = (IdentifierNameSyntax)left;
                 var valueDiagnostics = DiagnosticBag.GetInstance();
+#if XSHARP
+                var boundValue = BindIdentifier(node, invoked: false, diagnostics: valueDiagnostics, preferStaticMethodCall : true);
+#else
                 var boundValue = BindIdentifier(node, invoked: false, diagnostics: valueDiagnostics);
-
+#endif
                 Symbol leftSymbol;
                 if (boundValue.Kind == BoundKind.Conversion)
                 {

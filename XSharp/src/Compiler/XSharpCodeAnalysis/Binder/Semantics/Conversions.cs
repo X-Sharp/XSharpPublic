@@ -286,6 +286,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return Conversion.Identity;
             }
+            if (srcType.IsIntegralType() && dstType.IsIntegralType())
+            {
+                if (srcType.SizeInBytes() < dstType.SizeInBytes())
+                {
+                    return Conversion.ImplicitNumeric;
+                }
+            }
             // when nothing else, then use the Core rules
             return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
         }

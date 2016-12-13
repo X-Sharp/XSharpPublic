@@ -88,6 +88,27 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             // SPEC: Find the most specific source type SX of the operators in U...
             TypeSymbol sx = MostSpecificSourceTypeForImplicitUserDefinedConversion(u, source, ref useSiteDiagnostics);
+#if XSHARP
+            if ((object)sx == null)
+            {
+                // When converting to USUAL and no valid operator is found then choose the operator with an Object Parameter
+                if (this is Conversions)
+                {
+                    Conversions conv = this as Conversions;
+                    if (conv.Compilation.Options.IsDialectVO && target == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    {
+                        for( int i = 0; i < u.Length; i++)
+                        {
+                            var x = u[i];
+                            if (x.ToType == target && x.FromType == conv.Compilation.GetSpecialType(SpecialType.System_Object))
+                            {
+                                return UserDefinedConversionResult.Valid(u, i);
+                            }
+                        }
+                    }
+                }
+            }
+#endif
             if ((object)sx == null)
             {
                 return UserDefinedConversionResult.NoBestSourceType(u);

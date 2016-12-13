@@ -2118,7 +2118,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     var arrType = expr.Type as ArrayTypeSymbol;
                     int index = 0;
                     var indices = ImmutableArray.Create<BoundExpression>(new BoundLiteral(node, ConstantValue.Create(index), intType) { WasCompilerGenerated = true });
-                    expr = new BoundArrayAccess(node.Operand, expr,indices, arrType.ElementType, false);
+                    expr = new BoundArrayAccess(node.Operand, expr, indices, arrType.ElementType, false) { WasCompilerGenerated = true };
                     return expr;
                 }
             }

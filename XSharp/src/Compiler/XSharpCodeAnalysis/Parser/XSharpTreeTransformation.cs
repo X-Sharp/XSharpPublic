@@ -412,6 +412,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (strParams?.Length > 0)
                             strParams += ", ";
+                        if (_par.Modifiers != null)
+                        {
+                            string mod = "";
+                            foreach (var m in _par.Modifiers._Tokens )
+                            {
+                                if (m.Type != XP.AS)
+                                    mod += m.Text + " ";
+                            }
+                            strParams += mod;
+                        }
                         if (_par.Type != null)
                             strParams += _par.Type.GetText();
                         else

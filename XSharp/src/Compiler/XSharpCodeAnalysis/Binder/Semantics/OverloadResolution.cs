@@ -136,6 +136,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     return true;
                                 }
                             }
+                            if (argType == parLeft.Type)
+                            {
+                                result = BetterResult.Left;
+                                return true;
+                            }
+                            if (argType == parRight.Type)
+                            {
+                                result = BetterResult.Right;
+                                return true;
+                            }
+
                         }
 
                     }

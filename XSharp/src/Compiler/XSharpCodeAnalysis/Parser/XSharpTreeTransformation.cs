@@ -1048,9 +1048,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             bool found = false;
             NameSyntax usingName = GenerateQualifiedName(name);
+            SyntaxToken tokenStatic = null;
+            if (bStatic)
+                tokenStatic = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
+            var newusing = _syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
+                    tokenStatic,
+                    null,
+                    usingName,
+                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             for (int i = 0; i < usings.Count; i++)
             {
-                if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(), usingName.ToString()) == 0)
+                if (usings[i].ToString() == newusing.ToString())
                 {
                     found = true;
                     break;
@@ -1058,15 +1066,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (!found)
             {
-                SyntaxToken tokenStatic = null;
-                if (bStatic)
-                    tokenStatic = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
-
-                usings.Add(_syntaxFactory.UsingDirective(SyntaxFactory.MakeToken(SyntaxKind.UsingKeyword),
-                    tokenStatic,
-                    null,
-                    usingName,
-                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                usings.Add(newusing);
             }
 
         }
@@ -1459,11 +1459,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
-            var globalMembers = GlobalEntities.Members;
-            if (!string.IsNullOrEmpty(_options.DefaultNamespace))
-            {
-                globalMembers = _pool.Allocate<MemberDeclarationSyntax>();
-            }
+            // Global members are types that are not defined in a namespace
+            // Also methods declared outside class may appear in this list
+            // they will be added to the global namespace of the default namespace later
+            var globalMembers = _pool.Allocate<MemberDeclarationSyntax>();
             foreach (var entityCtx in context._Entities)
             {
                 var s = entityCtx.CsNode;
@@ -1480,12 +1479,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var generated = ClassEntities.Pop();
-            if (generated.Members.Count > 0) {
-                globalMembers.Add(GenerateGlobalClass(GlobalClassName, false, generated.Members));
+            if (generated.Members.Count > 0)
+            {
+                // Static fields and other generated things
+                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, generated.Members));
             }
             generated.Free();
 
-            if (!string.IsNullOrEmpty(_options.DefaultNamespace))
+            if (!string.IsNullOrEmpty(_options.DefaultNamespace) && globalMembers.Count > 0)
             {
                 GlobalEntities.Members.Add(_syntaxFactory.NamespaceDeclaration(SyntaxFactory.MakeToken(SyntaxKind.NamespaceKeyword),
                     name: GenerateQualifiedName(_options.DefaultNamespace),
@@ -1498,9 +1499,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                 AddUsingWhenMissing(GlobalEntities.Usings, _options.DefaultNamespace, false);
             }
+            else // do not add a namespace , simply add the members to the global namespace
+            {
+                GlobalEntities.Members.AddRange(globalMembers);
+            }
 
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, XSharpGlobalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, GlobalClassName, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false);

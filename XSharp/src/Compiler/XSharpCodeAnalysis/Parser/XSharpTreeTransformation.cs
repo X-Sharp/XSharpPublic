@@ -4591,38 +4591,27 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
                     break;
                 case XP.SUBSTR:
-                    context.Put(
-                        _syntaxFactory.BinaryExpression(
-                            SyntaxKind.CoalesceExpression,
-                            _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression,
-                                _syntaxFactory.ConditionalAccessExpression(
-                                    context.Left.Get<ExpressionSyntax>(),
+                    // Convert LHS $ RHS to RHS:IndexOf(LHS) >= 0
+                    // but since they both can be NULL add a condition:
+                    // LHS == NULL ? FALSE: RHS:IndexOf(LHS)
+
+                    var condition = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, context.Left.Get<ExpressionSyntax>(),
+                        SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken), GenerateLiteralNull());
+                    var lhsExp = GenerateLiteral(false);
+                    var indexof = _syntaxFactory.ConditionalAccessExpression(
+                                    context.Right.Get<ExpressionSyntax>(),
                                     SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                                    _syntaxFactory.InvocationExpression(
-                                        _syntaxFactory.MemberBindingExpression(SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                            GenerateSimpleName("IndexOf")
-                                        ),
-                                        _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                            MakeSeparatedList(
-                                                MakeArgument(_syntaxFactory.BinaryExpression(
-                                                    SyntaxKind.CoalesceExpression,
-                                                    context.Right.Get<ExpressionSyntax>(),
-                                                    SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken),
-                                                    GenerateLiteral("")
-                                                )),
-                                                MakeArgument(GenerateQualifiedName("global::System.StringComparison.Ordinal"))
-                                            ),
-                                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)
-                                        )
-                                    )
-                                ),
+                                    _syntaxFactory.InvocationExpression(_syntaxFactory.MemberBindingExpression(SyntaxFactory.MakeToken(SyntaxKind.DotToken),GenerateSimpleName("IndexOf")),
+                                     MakeArgumentList(MakeArgument(context.Left.Get<ExpressionSyntax>()))));
+                    var rhsExp = _syntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression, indexof,
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
-                                GenerateLiteral("-1", -1)
-                            ),
-                            SyntaxFactory.MakeToken(SyntaxKind.QuestionQuestionToken),
-                            GenerateLiteral(false)
-                        )
-                    );
+                                GenerateLiteral("-1", -1));
+
+                    var exp = _syntaxFactory.ConditionalExpression(condition,
+                                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                lhsExp, SyntaxFactory.MakeToken(SyntaxKind.ColonToken), rhsExp);
+
+                    context.Put(exp);
                     break;
                 case XP.ASSIGN_EXP:
                     context.Put(MakeSimpleAssignment(

@@ -6,6 +6,6 @@ LOCAL cChar := "N" AS STRING
 LOCAL l AS LOGIC
 l := cChar $ "ANX9#"
 IF .not. l
-	THROW Exception{"Returned FALSE"}
+	THROW Exception{"$ Operation Returned FALSE"}
 END IF
-
+? l

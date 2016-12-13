@@ -1469,18 +1469,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
-            var globalMembers = GlobalEntities.Members;
-            if (!string.IsNullOrEmpty(_options.DefaultNamespace))
-            {
-                globalMembers = _pool.Allocate<MemberDeclarationSyntax>();
-            }
+            var globalTypes = _pool.Allocate<MemberDeclarationSyntax>();
             foreach (var entityCtx in context._Entities)
             {
                 var s = entityCtx.CsNode;
                 if (s is NamespaceDeclarationSyntax)
                     GlobalEntities.Members.Add(s as MemberDeclarationSyntax);
                 else if (s is MemberDeclarationSyntax)
-                    globalMembers.Add(s as MemberDeclarationSyntax);
+                    globalTypes.Add(s as MemberDeclarationSyntax);
                 else if (s is UsingDirectiveSyntax)
                     GlobalEntities.Usings.Add(s as UsingDirectiveSyntax);
                 else if (s is AttributeListSyntax)
@@ -1491,7 +1487,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var generated = ClassEntities.Pop();
             if (generated.Members.Count > 0) {
-                globalMembers.Add(GenerateGlobalClass(GlobalClassName, false, generated.Members));
+                GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, generated.Members));
             }
             generated.Free();
 
@@ -1502,13 +1498,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                     externs: MakeList<ExternAliasDirectiveSyntax>(),
                     usings: MakeList<UsingDirectiveSyntax>(),
-                    members: globalMembers,
+                    members: globalTypes,
                     closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
 
                 AddUsingWhenMissing(GlobalEntities.Usings, _options.DefaultNamespace, false);
             }
-
+            else
+            {
+                GlobalEntities.Members.AddRange(globalTypes);
+            }
+            _pool.Free(globalTypes);
             // Add: using static Functions
             AddUsingWhenMissing(GlobalEntities.Usings, XSharpGlobalClassName, true);
 
@@ -1546,6 +1546,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(usings);
             _pool.Free(members);
             context.Put(ns);
+            // Now add our namespace to the usings list so functions etc can find members 
+            string ourname = context.Name.GetText();
+            var parent = context.Parent;
+            while (parent is XP.EntityContext)
+            {
+                var parentns = parent.Parent as XP.Namespace_Context;
+                if (parentns != null)
+                {
+                    ourname = parentns.Name.GetText() + "." + ourname;
+                    parent = parentns.Parent;
+                }
+                else
+                    break;
+            }
+            AddUsingWhenMissing(GlobalEntities.Usings, ourname, false);
         }
 
         public override void ExitEntity([NotNull] XP.EntityContext context)
@@ -3340,6 +3355,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 body: body,
                 expressionBody: null,
                 semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+          
         }
         public override void EnterProcedure([NotNull] XP.ProcedureContext context)
         {

@@ -1582,7 +1582,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol targetType = this.BindType(node.Type, diagnostics);
 #if XSHARP
             BoundExpression expression;
-            if (BindVulcanPointerDereference(node, operand, diagnostics, out expression))
+            if (BindVulcanPointerDereference(node, targetType, operand, diagnostics, out expression))
             {
                 return expression;
             }

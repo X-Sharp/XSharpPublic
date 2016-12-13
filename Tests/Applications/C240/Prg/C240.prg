@@ -4,3 +4,6 @@ FUNCTION Start() AS VOID
 STATIC LOCAL StaticLocal := 1 AS INT
 ? StaticLocal
 
+
+CLASS Foo
+END CLASS	

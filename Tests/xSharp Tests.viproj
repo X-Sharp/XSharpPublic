@@ -6277,7 +6277,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C240 - Problem defining STATIC LOCAL
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C241 - Problem assigning return value of MemAlloc() to BYTE PTR *************
 Application = C241 - Problem assigning return value of MemAlloc() to BYTE PTR
 IDEVersion = 1.06
@@ -6333,7 +6333,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=0
+VO7=1
 VO8=0
 VO9=0
 VO10=0
@@ -6574,7 +6574,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C243 - Cannot assign Char to BYTE
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C244 - Problem dereferencing pointer *************
 Application = C244 - Problem dereferencing pointer
 IDEVersion = 1.06
@@ -8423,7 +8423,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C119
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = 62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC
 ; ************** APPLICATION C120 - Conflict between same named type and property *************
 Application = C120 - Conflict between same named type and property
 IDEVersion = 1.06
@@ -12828,7 +12828,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C164
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C165 - Problems with pointer arithmetic *************
 Application = C165 - Problems with pointer arithmetic
 IDEVersion = 1.06
@@ -19490,7 +19490,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C033
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = 85737FA8-B9AF-41E9-A347-4C4093D05606
 ; ************** APPLICATION C034 - Conflict between same named method and class *************
 Application = C034 - Conflict between same named method and class
 IDEVersion = 1.06
@@ -31437,7 +31437,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C320 - Psz2String() with BYTE array
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C321 - Problem CASTing function returned numeric type to LOGIC *************
 Application = C321 - Problem CASTing function returned numeric type to LOGIC
 IDEVersion = 1.06
@@ -31536,7 +31536,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C321 - Problem CASTing function returned numeric type to LOGIC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C322 - Return expression in DESTRUCTOR *************
 Application = C322 - Return expression in DESTRUCTOR
 IDEVersion = 1.06
@@ -31635,7 +31635,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C322 - Return expression in DESTRUCTOR
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C323 - Problem converting to PTR *************
 Application = C323 - Problem converting to PTR
 IDEVersion = 1.06
@@ -31691,7 +31691,7 @@ VO3=0
 VO4=0
 VO5=0
 VO6=0
-VO7=0
+VO7=1
 VO8=0
 VO9=0
 VO10=0
@@ -31700,7 +31700,7 @@ VO12=0
 VO13=0
 VO14=0
 LateBound=0
-Unsafe=1
+Unsafe=0
 IgnoreStdDefs=0
 Ovf=0
 FOvf=0
@@ -31734,7 +31734,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C323 - Problem converting to PTR
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C324 - Conversion errors without /vo4 *************
 Application = C324 - Conversion errors without /vo4
 IDEVersion = 1.06
@@ -32130,7 +32130,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C326 - cannot convert from VOSTRUCT * *  to VOSTRUCT *
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C327 - cannot convert DWORD to IntPtr *************
 Application = C327 - cannot convert DWORD to IntPtr
 IDEVersion = 1.06
@@ -32230,7 +32230,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C327 - cannot convert DWORD to IntPtr
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C328 - Problem converting USUAL to array type *************
 Application = C328 - Problem converting USUAL to array type
 IDEVersion = 1.06
@@ -32329,7 +32329,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C328 - Problem converting USUAL to array type
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C329 - Problem converting USUAL to VOSTRUCT *************
 Application = C329 - Problem converting USUAL to VOSTRUCT
 IDEVersion = 1.06

@@ -32,31 +32,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                 expressions);
         }
 
-        private bool BindVulcanPointerDereference(CastExpressionSyntax node, BoundExpression operand,
+        private bool BindVulcanPointerDereference(CastExpressionSyntax node, TypeSymbol targetType, BoundExpression operand, 
             DiagnosticBag diagnostics, out BoundExpression expression)
         {
-             // Type(pPointer) -> Dereference pointer
+            // Type(pPointer) -> Dereference pointer
             if (node.XNode is PrimaryExpressionContext)
             {
                 PrimaryExpressionContext pe = (PrimaryExpressionContext)node.XNode;
-                if (pe.Expr is VoConversionExpressionContext)
+                if (pe.Expr is VoConversionExpressionContext && operand.Type.IsPointerType())
                 {
-                    TypeSyntax type = node.Type;
-                    if (operand.Type.IsPointerType())
-                    {
-                        PointerTypeSymbol pt = (PointerTypeSymbol)operand.Type;
-                        TypeSymbol ptatType = pt.PointedAtType;
-                        //if (type. == ptatType)
-                        {
-                            // BYTE(pt) -> pt[0]
-                            // convert expression to array access for element 1
-                            // expression = ....
-                            // return true;
-                        }
-
-                    }
+                    // Dereference pointer
+                    // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
+                    // No need to worry about /AZ. This has been handled already
+                    var index = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
+                    var ptrtype = new PointerTypeSymbol(targetType);
+                    HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                    var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
+                    var ptrconv = new BoundConversion(node, operand, newConv, true, true, null, ptrtype);
+                    expression = new BoundPointerElementAccess(node, ptrconv, index, false, targetType);
+                    return true;
                 }
             }
+
             expression = null;
             return false;
         }

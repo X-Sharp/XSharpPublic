@@ -249,12 +249,23 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.LateBinding ||                 // lb
                 Compilation.Options.VOImplicitCastsAndConversions) // vo7
             {
-                if (srcType == SpecialType.System_Object
-                    && destination.IsReferenceType && !IsClipperArgsType(destination))
+                if (srcType == SpecialType.System_Object)
                 {
-                    // Convert Object -> Reference allowed with /lb and with /vo7
-                    // except when converting to array of usuals
-                    return Conversion.ImplicitReference;
+                    if (destination.IsReferenceType && !IsClipperArgsType(destination))
+                    {
+                        // Convert Object -> Reference allowed with /lb and with /vo7
+                        // except when converting to array of usuals
+                        return Conversion.ImplicitReference;
+                    }
+                    if (destination.IsPointerType() || destination.SpecialType == SpecialType.System_IntPtr)
+                        return Conversion.Identity;
+                }
+                if (dstType == SpecialType.System_Object)
+                {
+                    if (source.IsReferenceType)
+                        return Conversion.ImplicitReference;
+                    if (source.IsPointerType() || source.SpecialType == SpecialType.System_IntPtr)
+                        return Conversion.Identity;
                 }
             }
             if (Compilation.Options.VOImplicitCastsAndConversions)
@@ -269,6 +280,11 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return Conversion.Identity;
                 }
+            }
+            // When unsafe we always allow to cast void * to typed *
+            if (source.IsVoidPointer() && destination.IsPointerType() && Compilation.Options.AllowUnsafe)
+            {
+                return Conversion.Identity;
             }
             // when nothing else, then use the Core rules
             return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);

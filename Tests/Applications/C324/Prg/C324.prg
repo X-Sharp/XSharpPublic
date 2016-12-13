@@ -9,4 +9,4 @@ nByte := iif(l,10,0)
 
 LOCAL nUInt64 AS UInt64
 nUInt64 := (LONG) ((Double)nUInt64 / 256)
-
+? nUInt64

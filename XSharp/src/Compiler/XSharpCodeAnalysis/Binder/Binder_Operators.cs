@@ -443,9 +443,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (lit.ConstantValue.Discriminator == ConstantValueTypeDiscriminator.Int32)
                 {
                     var val = lit.ConstantValue.Int32Value;
-                    if (val > Byte.MinValue && val < Byte.MaxValue)
+                    if (val >= Byte.MinValue && val <= Byte.MaxValue)
                         return Compilation.GetSpecialType(SpecialType.System_Byte);
-                    else if (val > Int16.MinValue && val < Int16.MaxValue)
+                    else if (val >= Int16.MinValue && val <= Int16.MaxValue)
                         return Compilation.GetSpecialType(SpecialType.System_Int16);
                 }
             }

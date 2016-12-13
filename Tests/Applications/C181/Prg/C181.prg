@@ -1,5 +1,5 @@
-// 181. error XS0121: The call is ambiguous between the following methods or properties: 'TestClass.MyMethod(ref int)' and 'TestClass.MyMethod(ref double)'
-
+// 181. error XS0121: The call is ambiguous between the following methods or properties: 
+// 'TestClass.MyMethod(ref int)' and 'TestClass.MyMethod(ref double)'
 // vulcan allows passing params by reference without specifying REF in the caller code, 
 // so that must be fully supported in x# as well, but I think it would be btter to make 
 // the compiler report a warning in such calls with missing REF 
@@ -18,7 +18,10 @@ SELF:MyMethod( nDouble ) // ok
 SELF:MyMethod( nDecimal ) // ok
 
 METHOD MyMethod( nInt REF INT ) AS VOID
+	? __SIG__, nInt
 METHOD MyMethod( nDouble REF Double ) AS VOID
+		? __SIG__, nDouble
 METHOD MyMethod( nDecimal REF Decimal ) AS VOID
+		? __SIG__, nDecimal
 END CLASS
 

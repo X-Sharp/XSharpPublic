@@ -6178,7 +6178,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C239
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C240 - Problem defining STATIC LOCAL *************
 Application = C240 - Problem defining STATIC LOCAL
 IDEVersion = 1.06
@@ -6194,7 +6194,7 @@ Folder = %ProjectPath%\Applications\C240\
 PrgSubFolder = \Prg
 ResourcesSubFolder = \Resources
 Description = 
-NameSpace = TestNS
+NameSpace = 
 Assembly = C240
 Extension = 
 ApplicationIcon = 
@@ -14408,7 +14408,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C180 - Problem with parens in REPEAT...UNTIL (lVar) syntax
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C181 - Problem resolving to correct overload (REF INT vs Double) *************
 Application = C181 - Problem resolving to correct overload (REF INT vs Double)
 IDEVersion = 1.06

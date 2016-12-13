@@ -489,10 +489,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             else if (IsVirtual && ContainingType.IsSealed)
             {
+#if XSHARP
+                // Disable warning when compiling with /vo3
+                if (!this.DeclaringCompilation.Options.VirtualInstanceMethods)
+                {
+                    // '{0}' is a new virtual member in sealed class '{1}'
+                    diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+                }
+#else
                 // '{0}' is a new virtual member in sealed class '{1}'
                 diagnostics.Add(ErrorCode.ERR_NewVirtualInSealed, location, this, ContainingType);
+#endif
             }
-
             diagnostics.Add(location, useSiteDiagnostics);
         }
 

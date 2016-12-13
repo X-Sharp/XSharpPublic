@@ -23,7 +23,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public string WindowsDir { get; set; }
         public string SystemDir { get; set; }
         public bool VONullStrings { get; private set; }
-        //public bool VirtualInstanceMethods { get; private set; }  // Handled in the parser
+        public bool VirtualInstanceMethods { get; private set; }  
         //public bool VOAllowMissingReturns { get; private set; }  // Handled in the parser
         public bool VOArithmeticConversions { get; private set; }
         //public bool VOClipperCallingConvention { get; private set; }// Handled in the parser
@@ -49,7 +49,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         //public bool vo1 => VoInitAxitMethods;
         public bool vo2 => VONullStrings;
-        //public bool vo3 => VirtualInstanceMethods;
+        public bool vo3 => VirtualInstanceMethods;
         public bool vo4 => VOSignedUnsignedConversion;
         //public bool vo5 => VOClipperCallingConvention;
         public bool vo6 => VOResolveTypedFunctionPointersToPtr;
@@ -74,7 +74,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 ArrayZero = opt.ArrayZero;
                 //VoInitAxitMethods = opt.Vo1;
                 VONullStrings = opt.Vo2;
-                //VirtualInstanceMethods = opt.Vo3;         // Handled in the parser
+                VirtualInstanceMethods = opt.Vo3;         
                 VOSignedUnsignedConversion = opt.Vo4;
                 //VOClipperCallingConvention = opt.Vo5;     // Handled in the parser
                 VOResolveTypedFunctionPointersToPtr = opt.Vo6;
@@ -111,7 +111,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             //VoInitAxitMethods = opt.VoInitAxitMethods; // vo1 // Handled in the parser
             VONullStrings = opt.VONullStrings; // vo2
-            //VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   // Handled in the parser
+            VirtualInstanceMethods = opt.VirtualInstanceMethods; // vo3   
             VOSignedUnsignedConversion = opt.VOSignedUnsignedConversion; // vo4
             //VOClipperCallingConvention = opt.VOClipperCallingConvention;  // vo5  // Handled in the parser
             VOResolveTypedFunctionPointersToPtr = opt.VOResolveTypedFunctionPointersToPtr; // vo6

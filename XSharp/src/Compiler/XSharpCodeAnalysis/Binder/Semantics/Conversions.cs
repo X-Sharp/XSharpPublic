@@ -189,10 +189,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (sourceExpression.Syntax != null)
             {
                 var xNode = sourceExpression.Syntax.XNode;
+                while (!(xNode is XP.VoCastExpressionContext) && ! (xNode is XP.VoConversionExpressionContext) )
+                {
+                    if (xNode == null)
+                        break;
+                    xNode = xNode.Parent;   
+                }
                 if (xNode != null)
                 {
-                    voCast = xNode.Parent is XP.VoCastExpressionContext;
-                    voConvert = xNode.Parent is XP.VoConversionExpressionContext;
+                    voCast = xNode is XP.VoCastExpressionContext;
+                    voConvert = xNode is XP.VoConversionExpressionContext;
                 }
             }
             // TYPE(_CAST, expr) allows almost everything

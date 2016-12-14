@@ -596,9 +596,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     resultType,
                     hasErrors);
 #if XSHARP
-            if (opType == VOOperatorType.Shift)
+            //if (opType == VOOperatorType.Shift)
+            if (left.Type != result.Type && left.Type.IsIntegralType() && result.Type.IsIntegralType() )
             {
-                result = CreateConversion(result, left.Type, diagnostics);
+                result = new BoundConversion(left.Syntax, result, Conversion.ImplicitNumeric, false, false, null, left.Type) { WasCompilerGenerated = true };
             }
 #endif
             return result;

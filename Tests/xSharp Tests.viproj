@@ -32430,7 +32430,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C329 - Problem converting USUAL to VOSTRUCT
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C330 *************
 Application = C330
 IDEVersion = 1.06
@@ -32441,7 +32441,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Vulcan
+Dialect = Core
 Folder = %ProjectPath%\Applications\C330\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -32529,7 +32529,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C330
 
-ApplicationGroup = 88298FB4-3414-43D5-8469-DCD70E89A8CA
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C331 *************
 Application = C331
 IDEVersion = 1.06

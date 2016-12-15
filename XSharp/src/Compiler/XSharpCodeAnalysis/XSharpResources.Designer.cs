@@ -7154,6 +7154,42 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The first argument to {0} must be a &apos;{1}&apos;..
+        /// </summary>
+        internal static string ERR_PCallFirstArgument {
+            get {
+                return ResourceManager.GetString("ERR_PCallFirstArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0} pseudo function requires one generic type argument to describe its return type..
+        /// </summary>
+        internal static string ERR_PCallNativeGenericType {
+            get {
+                return ResourceManager.GetString("ERR_PCallNativeGenericType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error locating the generated Delegate &apos;{1}&apos; for the pseudo function &apos;{0}&apos;..
+        /// </summary>
+        internal static string ERR_PCallResolveGeneratedDelegate {
+            get {
+                return ResourceManager.GetString("ERR_PCallResolveGeneratedDelegate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; pseudo function uses a typed pointer to the function &apos;{1}&apos; which cannot be found..
+        /// </summary>
+        internal static string ERR_PCallTypedPointerName {
+            get {
+                return ResourceManager.GetString("ERR_PCallTypedPointerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error reading file &apos;{0}&apos; specified for the named argument &apos;{1}&apos; for PermissionSet attribute: &apos;{2}&apos;.
         /// </summary>
         internal static string ERR_PermissionSetAttributeFileReadError {

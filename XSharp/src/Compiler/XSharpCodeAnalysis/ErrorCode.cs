@@ -1400,5 +1400,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_NoReturnValueAllowed = 9032,
         ERR_InitProceduresCannotDefineParameters = 9033,
         WRN_SuppressAxitMethodCall = 9034,
+        ERR_PCallFirstArgument = 9035,
+        ERR_PCallNativeGenericType = 9036,
+        ERR_PCallTypedPointerName = 9037,
+        ERR_PCallResolveGeneratedDelegate = 9038,
+
     }
 }

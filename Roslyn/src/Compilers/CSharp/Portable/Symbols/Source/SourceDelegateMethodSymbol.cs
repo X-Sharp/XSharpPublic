@@ -15,8 +15,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal abstract class SourceDelegateMethodSymbol : SourceMethodSymbol
     {
         private ImmutableArray<ParameterSymbol> _parameters;
+#if XSHARP
+        // HACK: To allow PCall we changed the variable from readonly to read/write
+        private TypeSymbol _returnType;
+#else
         private readonly TypeSymbol _returnType;
-
+#endif
         protected SourceDelegateMethodSymbol(
             SourceMemberContainerTypeSymbol delegateType,
             TypeSymbol returnType,
@@ -29,11 +33,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             this.MakeFlags(methodKind, declarationModifiers, _returnType.SpecialType == SpecialType.System_Void, isExtensionMethod: false);
         }
 
+#if XSHARP
+        // HACK: we added setters for the Return type so we can change the generated
+        // delegates for PCALL and PCALLNATIVE during the binding phase
+        internal void SetReturnType(TypeSymbol newType)
+        {
+            _returnType = newType;
+        }
+        internal void InitializeParameters(ImmutableArray<ParameterSymbol> parameters)
+        {
+            _parameters = parameters;
+        }
+#else
         protected void InitializeParameters(ImmutableArray<ParameterSymbol> parameters)
         {
             Debug.Assert(_parameters.IsDefault);
             _parameters = parameters;
         }
+#endif
 
         internal static void AddDelegateMembers(
             SourceMemberContainerTypeSymbol delegateType,

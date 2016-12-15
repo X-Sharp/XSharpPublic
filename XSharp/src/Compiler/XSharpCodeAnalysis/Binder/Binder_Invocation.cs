@@ -1,0 +1,199 @@
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+using Roslyn.Utilities;
+using XP = LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using Antlr4.Runtime.Tree;
+
+namespace Microsoft.CodeAnalysis.CSharp
+{
+    /// <summary>
+    /// This portion of the binder converts an <see cref="ExpressionSyntax"/> into a <see cref="BoundExpression"/>.
+    /// </summary>
+    internal partial class Binder
+    {
+
+        private void BindPCall(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
+        {
+            if (node.XPCall && node.Expression is QualifiedNameSyntax && ((QualifiedNameSyntax)node.Expression).Right is GenericNameSyntax)
+            {
+                var gns = ((QualifiedNameSyntax)node.Expression).Right as GenericNameSyntax;
+                var arg = gns.TypeArgumentList.Arguments[0];
+                var method = arg.ToFullString();
+                bool pcall = method.IndexOf("$Pcall$", StringComparison.OrdinalIgnoreCase) >= 0;
+                if (pcall)
+                {
+                    BindPCallAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
+                }
+                else
+                {
+                    BindPCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
+                }
+
+            }
+
+        }
+        private string GetTypedPtrName(IParseTree xNode)
+        {
+            if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext)
+            {
+                var cvl = xNode.Parent as XP.ClassVarListContext;
+                if (cvl.Parent is XP.VoglobalContext)
+                {
+                    var pdtc = cvl.DataType as XP.PtrDatatypeContext;
+                    if (pdtc != null)
+                        return pdtc.TypeName.GetText();
+
+                }
+            }
+            return null;
+        }
+        private void BindPCallAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args, 
+            DiagnosticBag diagnostics, TypeSyntax type)
+        {
+            var XNode = node.XNode as XP.MethodCallContext;
+            string method = XNode.Expr.GetText();
+            if (!ValidatePCallArguments(node, args, diagnostics, method))
+                return;
+            var bfa = args[0] as BoundFieldAccess;
+            if (bfa == null)
+            {
+                Error(diagnostics, ErrorCode.ERR_PCallFirstArgument, node, method, "global typed function pointer");
+                return ;
+            }
+            
+            string methodName = null;
+            if (bfa.ExpressionSymbol.DeclaringSyntaxReferences.Length > 0)
+            {
+                var syntaxref = bfa.ExpressionSymbol.DeclaringSyntaxReferences[0] as SyntaxReference;
+                if (syntaxref != null)
+                {
+                    CSharpSyntaxNode syntaxnode = syntaxref.GetSyntax() as CSharpSyntaxNode;
+                    var xNode = syntaxnode?.XNode;
+                    methodName = GetTypedPtrName(xNode);
+                }
+            }
+            if (methodName == null )
+            {
+                // first argument for pcall must be typed ptr
+                Error(diagnostics, ErrorCode.ERR_PCallFirstArgument, node, method, "typed function pointer");
+                return ;
+            }
+            var lookupResult = LookupResult.GetInstance();
+            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+            LookupOptions options = LookupOptions.AllMethodsOnArityZero;
+            options |= LookupOptions.MustNotBeInstance;
+            this.LookupSymbolsWithFallback(lookupResult, methodName, arity: 0, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+            if (!lookupResult.IsSingleViable)
+            {
+                // Cannot locate types pointer for pcall 
+                Error(diagnostics, ErrorCode.ERR_PCallTypedPointerName, node, method, methodName);
+            }
+            else
+            {
+                var methodSym = lookupResult.Symbols[0] as SourceMethodSymbol;
+                lookupResult.Clear();
+                var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
+                if (ts != null && ts.IsDelegateType())
+                {
+                    SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
+                    // clone the parameters from the methodSym
+                    SyntaxToken arglist;
+                    var methodsyntaxnode = methodSym.SyntaxNode as MethodDeclarationSyntax;
+                    var parlistnode = methodsyntaxnode.ParameterList;
+                    var @params = ParameterHelpers.MakeParameters(this, delmeth, parlistnode,
+                        true, out arglist, diagnostics);
+                    delmeth.InitializeParameters(@params);
+                    delmeth.SetReturnType(methodSym.ReturnType);
+                }
+                else
+                {
+                    Error(diagnostics, ErrorCode.ERR_PCallResolveGeneratedDelegate, node, method, type.ToString());
+                }
+            }
+            return;
+        }
+        private TypeSymbol FindPCallDelegateType(IdentifierNameSyntax type)
+        {
+            if (type == null)
+                return null;
+            var lookupResult = LookupResult.GetInstance();
+            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+            LookupOptions options = LookupOptions.NamespacesOrTypesOnly;
+            this.LookupSymbolsSimpleName(lookupResult, null, type.Identifier.Text, 0, null, options, false, ref useSiteDiagnostics);
+            if (lookupResult.IsSingleViable)
+            {
+                return lookupResult.Symbols[0] as TypeSymbol;
+            }
+            return null;
+        }
+
+        private bool ValidatePCallArguments(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
+            DiagnosticBag diagnostics, string method)
+        {
+            bool ok = args.Count == 1;
+            if (ok  )
+            {
+                var argType = args[0].Type;
+                ok = argType == Compilation.GetSpecialType(SpecialType.System_IntPtr);
+                ok = ok | argType.IsVoidPointer();
+            }
+            if (!ok)
+            {
+                Error(diagnostics, ErrorCode.ERR_PCallFirstArgument, node, method, "pointer");
+            }
+            return ok;
+        }
+
+        private void BindPCallNativeAndDelegate(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
+            DiagnosticBag diagnostics, TypeSyntax type)
+        {
+            var XNode = node.XNode as XP.MethodCallContext;
+            string method = XNode.Expr.GetText();
+            if (!ValidatePCallArguments(node, args, diagnostics, method))
+                return;
+            // Our parent is the invocation expression of the delegate
+            var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
+            if (ts != null && ts.IsDelegateType())
+            {
+                SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
+                // create new parameters based on the parameters from out parent call
+                var invoke = node.Parent as InvocationExpressionSyntax;
+                var realargs = invoke.ArgumentList;
+                AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
+                var delparams = ts.DelegateParameters();
+                BindArgumentsAndNames(realargs, diagnostics, analyzedArguments);
+                var builder = ArrayBuilder<ParameterSymbol>.GetInstance();
+                int i = 0;
+                foreach (var expr in analyzedArguments.Arguments)
+                {
+                    var parameter = new SourceSimpleParameterSymbol(
+                        delmeth,
+                        expr.Type,
+                        i,
+                        delparams[i].RefKind,
+                        delparams[i].Name,
+                        delparams[i].Locations);
+                    builder.Add(parameter);
+                    i++;
+                }
+                var parameters = builder.ToImmutableAndFree();
+                delmeth.InitializeParameters(parameters);
+            }
+            else
+            {
+                Error(diagnostics, ErrorCode.ERR_PCallResolveGeneratedDelegate, node, method, type.ToString());
+            }
+
+            return;
+        }
+    }
+}

@@ -277,6 +277,7 @@
     <Compile Include="Antlr4.Runtime\UnbufferedCharStream.cs" />
     <Compile Include="Antlr4.Runtime\UnbufferedTokenStream.cs" />
     <Compile Include="Antlr4.Runtime\Vocabulary.cs" />
+    <Compile Include="Binder\Binder_Invocation.cs" />
     <Compile Include="Binder\Binder_Expressions.cs" />
     <Compile Include="Binder\Binder_Operators.cs" />
     <Compile Include="Binder\Binder_Codeblock.cs" />
@@ -312,6 +313,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Binder\Semantics\Conversions.cs" />
     <Compile Include="Symbols\ConstantValueSpecialized.cs" />
+    <Compile Include="Symbols\SourceMemberFieldSymbol.cs" />
     <Compile Include="Symbols\SourceNamedTypeSymbol.cs" />
     <Compile Include="Symbols\TypeSymbolExtensions.cs" />
     <Compile Include="Symbols\CodeblockType.TypePublicSymbol.cs" />

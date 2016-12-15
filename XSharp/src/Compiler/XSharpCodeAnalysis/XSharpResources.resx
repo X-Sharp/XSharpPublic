@@ -4803,5 +4803,17 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="WRN_SuppressAxitMethodCall" xml:space="preserve">
     <value>Direct calls to Axit methods (Finalizers) are not supported with the /vo1 compiler option.</value>
   </data>
-
+  <data name="ERR_PCallFirstArgument" xml:space="preserve">
+    <value>The first argument to {0} must be a '{1}'.</value>
+  </data>
+  <data name="ERR_PCallNativeGenericType" xml:space="preserve">
+    <value>The '{0} pseudo function requires one generic type argument to describe its return type.</value>
+  </data>
+  <data name="ERR_PCallTypedPointerName" xml:space="preserve">
+    <value>The '{0}' pseudo function uses a typed pointer to the function '{1}' which cannot be found.</value>
+  </data>
+  <data name="ERR_PCallResolveGeneratedDelegate" xml:space="preserve">
+    <value>Error locating the generated Delegate '{1}' for the pseudo function '{0}'.</value>
+  </data>
+  
 </root>

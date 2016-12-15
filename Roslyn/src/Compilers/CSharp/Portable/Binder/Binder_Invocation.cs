@@ -157,6 +157,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
             BindArgumentsAndNames(node.ArgumentList, diagnostics, analyzedArguments, allowArglist: !isArglist);
 
+#if XSHARP
+            BindPCall(node, diagnostics, analyzedArguments);
+#endif                        
+
             if (isArglist)
             {
                 result = BindArgListOperator(node, diagnostics, analyzedArguments);

@@ -9,10 +9,13 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.CodeAnalysis.Text;
-
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
+#if XSHARP
+    internal partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
+#else
     internal class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
+#endif
     {
         private readonly DeclarationModifiers _modifiers;
         private readonly bool _hasInitializer;
@@ -214,7 +217,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 binder = binder.WithContainingMemberOrLambda(this);
                 if (!ContainingType.IsScriptClass)
                 {
-                    type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
+#if XSHARP
+                   type = GetVOGlobalType(compilation, binder);
+                   if (type == null)
+                   {
+                        type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
+                   }
+#else
+                   type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
+#endif
                     if (IsFixed)
                     {
                         type = new PointerTypeSymbol(type);

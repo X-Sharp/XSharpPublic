@@ -1,7 +1,7 @@
 // 312. PCALL sample
 // Mote that this is copy & paste from Arne's code, so PCALL does not
 // appear in the SDK only, but people have been uisng this as well!
-
+// Note that this also needs /vo6
 #include "VOWin32APILibrary.vh"
 GLOBAL gpfnInitCommonControlsEx AS InitCommonControlsEx PTR
 FUNCTION InitCommonControlsEx(lpicex AS PTR) AS LOGIC STRICT

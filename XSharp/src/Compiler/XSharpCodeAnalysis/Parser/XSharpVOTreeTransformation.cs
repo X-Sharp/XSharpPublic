@@ -48,6 +48,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         const string RecoverVarName = "Xs$Obj";
         const string ExVarName = "Xs$Exception";
         const string ReturnName = "Xs$Return";
+        internal const string DelegateNameSpace ="Xs$Delegates";
+        internal const string PCallPrefix = "$PCall";
+        internal const string PCallNativePrefix = "$PCallNative";
         internal const string AppInit = "$AppInit";
         internal const string AppExit = "$AppExit";
         internal const string InitProc1 = "$Init1";
@@ -55,15 +58,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal const string InitProc3 = "$Init3";
         internal const string ExitProc = "$Exit";
         // Vulcan Assembly Names
-        private const string VulcanRTFuncs = "VulcanRTFuncs";
-        private const string VulcanVOSystemClasses = "VulcanVOSystemClasses";
-        private const string VulcanVOGUIClasses = "VulcanVOGUIClasses";
-        private const string VulcanVORDDClasses = "VulcanVORDDClasses";
-        private const string VulcanVOSQLClasses = "VulcanVOSQLClasses";
-        private const string VulcanVOReportClasses = "VulcanVOReportClasses";
-        private const string VulcanVOConsoleClasses = "VulcanVOConsoleClasses";
-        private const string VulcanVOInternetClasses = "VulcanVOInternetClasses";
-        private const string VulcanVOWin32APILibrary = "VulcanVOWin32APILibrary";
         private const string VulcanRuntimeState = "global::Vulcan.Runtime.State";
         private const string LayoutSequential = "global::System.Runtime.InteropServices.LayoutKind.Sequential";
         private const string StructLayout = "global::System.Runtime.InteropServices.StructLayout";
@@ -293,6 +287,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return MakeArrayInitializer(MakeSeparatedList<ExpressionSyntax>(expr));
          }
 
+        internal GenericNameSyntax MakeGenericName( string name, TypeSyntax type)
+        {
+            return _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier(name),
+                           _syntaxFactory.TypeArgumentList(
+                               SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
+                               MakeSeparatedList<TypeSyntax>(type),
+                               SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
+                               ));
+        }
 
         internal ExpressionSyntax GenerateMemVarPut(string memvar, ExpressionSyntax right)
         {
@@ -1021,12 +1024,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // VAR Xs$PszList := List<IntPtr>{}
                     var listOfIntPtr = _syntaxFactory.QualifiedName(GenerateQualifiedName("global::System.Collections.Generic"),
                         SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier("List"),
-                            _syntaxFactory.TypeArgumentList(
-                                SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
-                                MakeSeparatedList<TypeSyntax>(_ptrType),
-                                SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken)
-                                )));
+                        MakeGenericName("List",_ptrType));
                     var expr = CreateObject(listOfIntPtr, EmptyArgumentList());
                     stmts.Add(GenerateLocalDecl(VoPszList, _impliedType, expr));
                     finallyClause = _syntaxFactory.FinallyClause(
@@ -1976,51 +1974,170 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         context.Put(expr);
         return true;
     }
-    private bool GenerateString2Psz(XP.MethodCallContext context, string name) {
-        // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
-        // and the reference to the String2Psz() in the Vulcan Runtime.
-        ArgumentListSyntax argList;
-        ExpressionSyntax expr;
-        if(context.ArgList != null) {
-            argList = context.ArgList.Get<ArgumentListSyntax>();
-        } else {
-            argList = EmptyArgumentList();
+        private bool GenerateString2Psz(XP.MethodCallContext context, string name)
+        {
+            // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
+            // and the reference to the String2Psz() in the Vulcan Runtime.
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            }
+            else
+            {
+                argList = EmptyArgumentList();
+            }
+            if (CurrentEntity != null)
+            {
+                // Add reference to compiler generated List<IntPtr> to the argList
+                if (argList.Arguments.Count != 1)
+                {
+                    expr = GenerateNIL().WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+                }
+                else
+                {
+                    CurrentEntity.Data.UsesPSZ = true;
+                    NameSyntax pszlist = GenerateSimpleName(VoPszList);
+                    expr = argList.Arguments[0].Expression;
+                    argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
+                    expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
+                    var args = MakeArgumentList(MakeArgument(expr));
+                    expr = CreateObject(this._pszType, args);
+                }
+                context.Put(expr);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-        if(CurrentEntity != null ) {
-            // Add reference to compiler generated List<IntPtr> to the argList
-            if (argList.Arguments.Count != 1) {
-                expr = GenerateNIL().WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+
+        private bool AddPCallDelegate(XP.MethodCallContext context, string prefix, TypeSyntax type)
+        {
+            // This method generates a delegate and adds it to the current class
+            // the XNode for the delegate points back to the PCALL or PCALLNATIVE in the ANtlr Parse Tree
+            // At this stage the parameters are generated based on the # of parameters in the call
+            // They are of type OBJECT for now
+            // The first argument is not used since this is used to create the delegate
+            var entity = CurrentEntity;
+            var name = prefix ;
+            if (entity != null)
+            {
+                name += "$" + entity.ShortName;
             }
-            else {
-                CurrentEntity.Data.UsesPSZ = true;
-                NameSyntax pszlist = GenerateSimpleName(VoPszList);
-                expr = argList.Arguments[0].Expression;
-                argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
-                expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
-                var args = MakeArgumentList(MakeArgument(expr));
-                expr = CreateObject(this._pszType, args);
+            name += UniqueNameSuffix;
+            if (context.ArgList == null || context.ArgList?._Args.Count < 1)
+            {
+                context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, context.Expr.GetText(), 0)));
+                return false;
             }
+            // construct fake parameter list, all of type object
+            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            var atts = EmptyList<AttributeListSyntax>();
+            var mods = EmptyList<SyntaxToken>();
+            for (int i = 1; i < context.ArgList._Args.Count; i++)
+            {
+                var pname = SyntaxFactory.Identifier("param" + i.ToString());
+                var param = _syntaxFactory.Parameter(atts, mods, _objectType, pname, null);
+                param.XNode = context.ArgList._Args[i]; // link the parameter to the argument value
+                if ( i > 1)
+                    @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                @params.Add(param);
+            }
+            var paramList = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                @params,SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            _pool.Free(@params);
+            var attrs = _pool.Allocate<AttributeListSyntax>();
+            var id = SyntaxFactory.Identifier(name);
+            GenerateAttributeList(attrs, CompilerGenerated);
+            mods = TokenList(SyntaxKind.InternalKeyword);
+            MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
+               attrs,
+               mods,
+               delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
+               returnType: type,
+               identifier: id,
+               typeParameterList: null,
+               parameterList: paramList,
+               constraintClauses: null,
+               semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            _pool.Free(attrs);
+            m.XNode = context; // link the Delegate to the calling code 
+            ClassEntities.Peek().Members.Add(m);    // add to current class
+            // Now change the context and create the call to the delegate
+            return GeneratePCallDelegateCall(context, name);
+        }
+        private bool GeneratePCallDelegateCall(XP.MethodCallContext context, string name)
+        {
+            // This method changes the PCALL(hFunc, a,b,c) call
+            // and converts it to a delegate call
+            // hFunc = 1st argument
+            // a,b,c etc are rest of the arguments
+            // we assume that the # of parameters has been checked before
+            var marshal = GenerateQualifiedName("global::System.Runtime.InteropServices.Marshal");
+            var argname = GenerateQualifiedName(name);
+            var methodName = MakeGenericName("GetDelegateForFunctionPointer", argname);
+            var fullmethodName = _syntaxFactory.QualifiedName(marshal, SyntaxFactory.MakeToken(SyntaxKind.DotToken), methodName);
+            var marshallargs = MakeArgumentList(context.ArgList._Args[0].Get<ArgumentSyntax>());
+            // expr = global::System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer< <delegatename> >(hFunc)
+            var expr = _syntaxFactory.InvocationExpression(fullmethodName, marshallargs);
+            expr.XPCall = true;         // This is used in the binder to locate the special generated invocation call
+            //
+            // Create the argumentlist that is passed to the delegate
+            var delarglist = new List<ArgumentSyntax>();
+            for (int i = 1; i < context.ArgList._Args.Count; i++)
+            {
+                delarglist.Add(context.ArgList._Args[i].Get<ArgumentSyntax>());
+            }
+            // expr = Delegate (a,b,c) 
+            expr = _syntaxFactory.InvocationExpression(expr, MakeArgumentList(delarglist.ToArray()));
             context.Put(expr);
             return true;
         }
-        else {
-            return false;
+        private bool GeneratePCall(XP.MethodCallContext context)
+        {
+            // Return type and parameters should match the method prototype that the first parameter
+            // For now we default to a return type of _objectType
+            // points to. This is resolved in the binder and rewriter
+            return AddPCallDelegate(context, PCallPrefix, _objectType);
         }
-    }
-
-    private bool GenerateChr(XP.MethodCallContext context) {
-        // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
-        // and the reference to the String2Psz() in the Vulcan Runtime.
-        ArgumentListSyntax argList;
-        if(context.ArgList != null) {
-            argList = context.ArgList.Get<ArgumentListSyntax>();
-        } else {
-            argList = EmptyArgumentList();
+        private bool GeneratePCallNative(XP.MethodCallContext context)
+        {
+            // return type is specified in 1st generic parameter
+            // other parameters are derived from the types of the actual parameters
+            // this is resolved in the binder and rewriter
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            var  gns = expr as GenericNameSyntax;
+            // Check that # of generic parameters is exactly 1
+            if (gns.TypeArgumentList.Arguments.Count != 1)
+            {
+                expr = GenerateLiteral(0).WithAdditionalDiagnostics(
+                    new SyntaxDiagnosticInfo(ErrorCode.ERR_PCallNativeGenericType, gns.Identifier.Text));
+                context.Put(expr);
+                return true;
+            }
+            TypeSyntax arg = gns.TypeArgumentList.Arguments[0];
+            return AddPCallDelegate(context, PCallNativePrefix, arg);
         }
-        context.Put(GenerateMethodCall("global::VulcanRTFuncs.Functions.Chr", argList));
-        return true;
-    }
+        private bool GenerateChr(XP.MethodCallContext context)
+        {
+            // this will only happen when the VO or Vulcan dialect is selected, so we can add a reference to the runtime here.
+            ArgumentListSyntax argList;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            }
+            else
+            {
+                argList = EmptyArgumentList();
+            }
+            context.Put(GenerateMethodCall("global::VulcanRTFuncs.Functions.Chr", argList));
+            return true;
+        }
 
     private bool GenerateClipCallFunc(XP.MethodCallContext context, string name) {
         ArgumentListSyntax argList;
@@ -2101,6 +2218,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             base.ExitMethod(context);
         }
+
+
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
@@ -2112,6 +2231,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 name = ins.Identifier.Text.ToUpper();
                 switch (name)
                 {
+                    case "PCALL":
+                    case "CCALL":
+                        if (GeneratePCall(context))
+                            return;
+                        break;
+                    case "PCALLNATIVE":
+                    case "CCALLNATIVE":
+                        expr = GenerateLiteral(0).WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(ErrorCode.ERR_PCallNativeGenericType, ins.Identifier.Text));
+                        context.Put(expr);
+                        return;
                     case "SLEN":
                         if (GenerateSLen(context))
                             return;
@@ -2139,6 +2269,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
 
                     default:
+                        break;
+                }
+            }
+            else if (expr is GenericNameSyntax)
+            {
+                var gns = expr as GenericNameSyntax;
+                name = gns.Identifier.Text.ToUpper();
+                switch (name)
+                {
+                    case "PCALLNATIVE":
+                        if (GeneratePCallNative(context))
+                            return;
                         break;
                 }
             }

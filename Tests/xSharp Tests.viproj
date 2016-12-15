@@ -2615,9 +2615,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C252 - Problem using codeblock param with same name local used in RECOVER USING
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
-; ************** APPLICATION C251 - PCallNative() not implemented *************
-Application = C251 - PCallNative() not implemented
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
+; ************** APPLICATION C251 - PCall and PCallNative *************
+Application = C251 - PCall and PCallNative
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -2648,19 +2648,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C251 - PCallNative() not implemented FileGroups]
-[C251 - PCallNative() not implemented Files]
+[C251 - PCall and PCallNative FileGroups]
+[C251 - PCall and PCallNative Files]
 File = %AppPath%\Prg\C251.prg
 FileGUID = 8D45ECEC-FA8F-4D51-9DF9-D68DC2FF257E
 FileType = Code
-[C251 - PCallNative() not implemented References]
+[C251 - PCall and PCallNative References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C251 - PCallNative() not implemented Resources]
-[C251 - PCallNative() not implemented Native Resources]
-[C251 - PCallNative() not implemented License files]
-[C251 - PCallNative() not implemented General Options]
+[C251 - PCall and PCallNative Resources]
+[C251 - PCall and PCallNative Native Resources]
+[C251 - PCall and PCallNative License files]
+[C251 - PCall and PCallNative General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -2670,7 +2670,7 @@ VO2=0
 VO3=0
 VO4=0
 VO5=0
-VO6=0
+VO6=1
 VO7=0
 VO8=0
 VO9=0
@@ -2685,7 +2685,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C251 - PCallNative() not implemented Configurations]
+[C251 - PCall and PCallNative Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -2712,7 +2712,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C251 - PCallNative() not implemented
+ENDApplication = C251 - PCall and PCallNative
 
 ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C250 - Problem taking the address of vars *************
@@ -30547,7 +30547,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C311 - Crash with #define Somehing and /define:Something
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C312 - PCALL complete sample *************
 Application = C312 - PCALL complete sample
 IDEVersion = 1.06
@@ -30603,7 +30603,7 @@ VO2=0
 VO3=0
 VO4=0
 VO5=0
-VO6=0
+VO6=1
 VO7=0
 VO8=0
 VO9=0

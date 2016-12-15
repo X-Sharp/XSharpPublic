@@ -207,7 +207,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                     break;
                 case "vo6":     // Resolve typed function PTR to PTR
                     options.Vo6 = positive;
-                    OptionNotImplemented(diagnostics, oldname, "resolve typed function PTR to PTR");
                     break;
                 case "vo7":     // Compatible implicit cast & conversion
                     options.Vo7 = positive;

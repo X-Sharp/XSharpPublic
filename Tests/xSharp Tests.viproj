@@ -32629,8 +32629,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C331 - Problem casting value inside parens
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C332 *************
-Application = C332
+; ************** APPLICATION C332 - Conversion poblem with literal LHS in expression *************
+Application = C332 - Conversion poblem with literal LHS in expression
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -32661,19 +32661,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C332 FileGroups]
-[C332 Files]
+[C332 - Conversion poblem with literal LHS in expression FileGroups]
+[C332 - Conversion poblem with literal LHS in expression Files]
 File = %AppPath%\Prg\C332.prg
 FileGUID = EBDDB5DD-CCBD-493E-BE24-A65AA93A47FA
 FileType = Code
-[C332 References]
+[C332 - Conversion poblem with literal LHS in expression References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C332 Resources]
-[C332 Native Resources]
-[C332 License files]
-[C332 General Options]
+[C332 - Conversion poblem with literal LHS in expression Resources]
+[C332 - Conversion poblem with literal LHS in expression Native Resources]
+[C332 - Conversion poblem with literal LHS in expression License files]
+[C332 - Conversion poblem with literal LHS in expression General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -32698,7 +32698,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C332 Configurations]
+[C332 - Conversion poblem with literal LHS in expression Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -32725,7 +32725,503 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C332
+ENDApplication = C332 - Conversion poblem with literal LHS in expression
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C333 - PCALL() with class field PTR *************
+Application = C333 - PCALL() with class field PTR
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Core
+Folder = %ProjectPath%\Applications\C333\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C333
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 56BB07D1-07E4-4CB0-AD22-E2FB0830E53E
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C333 - PCALL() with class field PTR FileGroups]
+[C333 - PCALL() with class field PTR Files]
+File = %AppPath%\Prg\C333.prg
+FileGUID = 44DD3282-0CE0-4FE1-80E8-6F6151F14ED7
+FileType = Code
+[C333 - PCALL() with class field PTR References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+[C333 - PCALL() with class field PTR Resources]
+[C333 - PCALL() with class field PTR Native Resources]
+[C333 - PCALL() with class field PTR License files]
+[C333 - PCALL() with class field PTR General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=1
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C333 - PCALL() with class field PTR Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C333 - PCALL() with class field PTR
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C334 - problem with #define in expression *************
+Application = C334 - problem with #define in expression
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C334\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C334
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 70CC9C7E-C2A9-40AD-AC05-23DB50E3F46D
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C334 - problem with #define in expression FileGroups]
+[C334 - problem with #define in expression Files]
+File = %AppPath%\Prg\C334.prg
+FileGUID = 70B2AE82-D40F-4699-A6CA-50712DCBC939
+FileType = Code
+[C334 - problem with #define in expression References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C334 - problem with #define in expression Resources]
+[C334 - problem with #define in expression Native Resources]
+[C334 - problem with #define in expression License files]
+[C334 - problem with #define in expression General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C334 - problem with #define in expression Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C334 - problem with #define in expression
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C335 - Name conflict between class and field names *************
+Application = C335 - Name conflict between class and field names
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C335\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C335
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 7B5FEFED-6724-466C-9531-090D8A2450E1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C335 - Name conflict between class and field names FileGroups]
+[C335 - Name conflict between class and field names Files]
+File = %AppPath%\Prg\C335.prg
+FileGUID = B6C2E315-A714-4CF8-AE39-53E3C25FC421
+FileType = Code
+[C335 - Name conflict between class and field names References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C335 - Name conflict between class and field names Resources]
+[C335 - Name conflict between class and field names Native Resources]
+[C335 - Name conflict between class and field names License files]
+[C335 - Name conflict between class and field names General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C335 - Name conflict between class and field names Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C335 - Name conflict between class and field names
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C336 - Problem with assigning NULL to IntPtr *************
+Application = C336 - Problem with assigning NULL to IntPtr
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C336\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C336
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 5FF95AAE-6F94-4BB0-966D-C8580A778CF6
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C336 - Problem with assigning NULL to IntPtr FileGroups]
+[C336 - Problem with assigning NULL to IntPtr Files]
+File = %AppPath%\Prg\C336.prg
+FileGUID = E1DB5F3F-3D09-452B-B7FD-8679D4226FB0
+FileType = Code
+[C336 - Problem with assigning NULL to IntPtr References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C336 - Problem with assigning NULL to IntPtr Resources]
+[C336 - Problem with assigning NULL to IntPtr Native Resources]
+[C336 - Problem with assigning NULL to IntPtr License files]
+[C336 - Problem with assigning NULL to IntPtr General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C336 - Problem with assigning NULL to IntPtr Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C336 - Problem with assigning NULL to IntPtr
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT *************
+Application = C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C337\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C337
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 6FDCCA60-E007-4AA1-8672-7FFB2BA014C5
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT FileGroups]
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT Files]
+File = %AppPath%\Prg\C337.prg
+FileGUID = ABF315C0-B47E-474F-926C-96C9727224B0
+FileType = Code
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT Resources]
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT Native Resources]
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT License files]
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=1
+VO7=1
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=1
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT
 [EndApplications]
 
 [Configurations]

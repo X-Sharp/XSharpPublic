@@ -110,7 +110,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             }
                             // Handle passing Enum values to methods that have a non enum parameter
                             TypeSymbol argType = arg.Type;
-                            if (argType.TypeKind == TypeKind.Enum)
+                            if (argType?.TypeKind == TypeKind.Enum)
                             {
                                 // First check if they have the enum type itself
                                 if (argType == parLeft.Type)

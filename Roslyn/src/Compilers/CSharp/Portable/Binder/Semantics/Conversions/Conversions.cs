@@ -301,7 +301,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return ConversionKind.ImplicitNullable;
                 }
             }
-
+#if XSHARP
+            if (source.Type == null && 
+                (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr 
+                || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr ))
+                return ConversionKind.Identity;
+#endif                        
             return ConversionKind.NoConversion;
         }
 

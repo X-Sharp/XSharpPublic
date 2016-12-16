@@ -2041,9 +2041,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var mods = EmptyList<SyntaxToken>();
             for (int i = 1; i < context.ArgList._Args.Count; i++)
             {
-                var pname = SyntaxFactory.Identifier("param" + i.ToString());
+                var pname = SyntaxFactory.Identifier("$param" + i.ToString());
                 var param = _syntaxFactory.Parameter(atts, mods, _objectType, pname, null);
-                param.XNode = context.ArgList._Args[i]; // link the parameter to the argument value
+                //param.XNode = context.ArgList._Args[i]; // link the parameter to the argument value
                 if ( i > 1)
                     @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
                 @params.Add(param);

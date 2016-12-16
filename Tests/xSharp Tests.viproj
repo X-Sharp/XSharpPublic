@@ -33321,6 +33321,105 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C338 - Problem with PCALL() arguments and same named identifiers
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C339 - Problem with indexed ACCESS *************
+Application = C339 - Problem with indexed ACCESS
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C339\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C339
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 55CAB75D-2D55-49A8-B9F6-1F855529F32A
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C339 - Problem with indexed ACCESS FileGroups]
+[C339 - Problem with indexed ACCESS Files]
+File = %AppPath%\Prg\C339.prg
+FileGUID = 262E122C-989C-473C-B41C-444BD134D22E
+FileType = Code
+[C339 - Problem with indexed ACCESS References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C339 - Problem with indexed ACCESS Resources]
+[C339 - Problem with indexed ACCESS Native Resources]
+[C339 - Problem with indexed ACCESS License files]
+[C339 - Problem with indexed ACCESS General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C339 - Problem with indexed ACCESS Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C339 - Problem with indexed ACCESS
 [EndApplications]
 
 [Configurations]

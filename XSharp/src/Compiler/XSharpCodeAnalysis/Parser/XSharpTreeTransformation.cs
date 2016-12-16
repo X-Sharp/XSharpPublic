@@ -1262,9 +1262,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             TypeSyntax voPropType;
             var AccMet = vop.AccessMethodCtx;
             var AssMet = vop.AssignMethodCtx;
+            var typeMatch = true;
             if (AssMet != null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
             {
                 voPropType = AssMet.ParamList._Params[0].Type?.Get<TypeSyntax>() ?? _getMissingType();
+                if (AccMet != null )
+                {
+                    var accType = AccMet.Type?.Get<TypeSyntax>() ?? _getMissingType();
+                    if (voPropType.ToFullString() != accType.ToFullString())
+                    {
+                        typeMatch = false;
+                    }
+                }
             }
             else if (AccMet != null)
             {
@@ -1277,15 +1286,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             object voPropParams;
             ArgumentSyntax[] voPropArgs;
-            if (AssMet?.ParamList?._Params?.Count > 1)
+            int paramCount = (int) AssMet?.ParamList?._Params?.Count;
+            if ( paramCount> 1)
             {
+                var @params = ArrayBuilder<XP.ParameterContext>.GetInstance();
+                foreach (var p in AssMet.ParamList._Params.Skip(1))
+                {
+                    @params.Add(p);
+                }
                 voPropParams = _syntaxFactory.BracketedParameterList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                    MakeSeparatedList<ParameterSyntax>(AssMet.ParamList._Params.Skip(1)),
+                    MakeSeparatedList<ParameterSyntax>(@params),
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
-                voPropArgs = AssMet.ParamList._Params.Skip(1).Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
+                voPropArgs = @params.Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
             }
-            else if (AccMet?.ParamList?._Params?.Count > 0)
+            else if (paramCount > 0)
             {
                 voPropParams = _syntaxFactory.BracketedParameterList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
@@ -1307,14 +1322,65 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     outerMods.Any(SyntaxKind.ExternKeyword);
                 var m = vop.AccessMethodCtx.Get<MethodDeclarationSyntax>();
                 var args = MakeArgumentList(voPropArgs);
+                BlockSyntax block = m.Body;
+                bool paramMatch = true;
+                if (AccMet.ParamList._Params?.Count != paramCount - 1)
+                {
+                    paramMatch = false;
+                }
+                if (!isInInterfaceOrAbstract && paramCount > 1 && paramMatch)
+                {
+                    // Match the parameter names
+                    for (int iParam = 0; iParam < paramCount-1 && paramMatch; iParam++ )
+                    {
+                        var name1 = AccMet.ParamList._Params[iParam].Id.GetText();
+                        var name2 = AssMet.ParamList._Params[iParam + 1].Id.GetText();
+                        var type1 = AccMet.ParamList._Params[iParam].Type?.Get<TypeSyntax>() ?? _getMissingType();
+                        var type2 = AssMet.ParamList._Params[iParam + 1].Type?.Get<TypeSyntax>() ?? _getMissingType();
+                        if (String.Compare(name1, name2, StringComparison.OrdinalIgnoreCase) != 0
+                            || String.Compare(type1.ToFullString(), type2.ToFullString(), StringComparison.OrdinalIgnoreCase) != 0)
+                        {
+                            paramMatch = false;
+                        }
+
+                    }
+
+                    // Vulcan and VO dome something strange with the parameter names
+                    // We create a local with the original parameter name 1 and assign it the value from parameter 2
+                    // This solves most of the problems
+                    // The correct order of the parameters in an assign is:
+                    // value, [index1 [, index2 [, index3]]]
+                    var paramName1 = AssMet.ParamList._Params[0].Id.GetText();
+                    var paramName2 = AssMet.ParamList._Params[1].Id.GetText();
+                    var stmts = new List<StatementSyntax>();
+                    var locdecl = GenerateLocalDecl(paramName1, _impliedType, GenerateSimpleName(paramName2));
+                    stmts.Add(locdecl);
+                    foreach (var stmt in m.Body.Statements)
+                    {
+                        stmts.Add(stmt);
+                    }
+                    block = MakeBlock(stmts);
+
+                }
                 var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), getMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
-                        isInInterfaceOrAbstract ? null : m.Body,
+                        isInInterfaceOrAbstract ? null : block,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
+                if (!paramMatch)
+                {
+                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignParametersMutchMatch, paramCount-1);
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
+                if (!typeMatch)
+                {
+                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignTypesMutchMatch);
+                    accessor = accessor.WithAdditionalDiagnostics(diag);
+                }
                 accessors.Add(accessor);
                 accessor.XNode = vop.AccessMethodCtx;
                 vop.AccessMethodCtx.CsNode = null;
                 vop.AccessMethodCtx.Parent.CsNode = null;
+
             }
             if (vop.AssignMethodCtx != null)
             {
@@ -1335,7 +1401,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         // else create a local with the original parameter name and an assignment from the new value parameter
                         var stmts = new List<StatementSyntax>();
-                        var arg = MakeArgument(GenerateSimpleName("value"));
                         var locdecl = GenerateLocalDecl(paramName, _impliedType, GenerateSimpleName("value"));
                         stmts.Add(locdecl);
                         foreach (var stmt in m.Body.Statements)

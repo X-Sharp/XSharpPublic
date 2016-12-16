@@ -215,6 +215,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The last {0} parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters the indexers..
+        /// </summary>
+        internal static string ERR_AccessAssignParametersMutchMatch {
+            get {
+                return ResourceManager.GetString("ERR_AccessAssignParametersMutchMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of the first ASSIGN parameter must match the returntype of the ACCESS..
+        /// </summary>
+        internal static string ERR_AccessAssignTypesMutchMatch {
+            get {
+                return ResourceManager.GetString("ERR_AccessAssignTypesMutchMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos;: accessibility modifiers on accessors may only be used if the property or indexer has both a get and a set accessor.
         /// </summary>
         internal static string ERR_AccessModMissingAccessor {

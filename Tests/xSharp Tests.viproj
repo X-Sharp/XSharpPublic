@@ -32926,7 +32926,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C334 - problem with #define in expression
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C335 - Name conflict between class and field names *************
 Application = C335 - Name conflict between class and field names
 IDEVersion = 1.06
@@ -33322,7 +33322,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C338 - Problem with PCALL() arguments and same named identifiers
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C339 - Problem with indexed ACCESS *************
 Application = C339 - Problem with indexed ACCESS
 IDEVersion = 1.06

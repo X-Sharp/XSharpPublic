@@ -4816,4 +4816,10 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Error locating the generated Delegate '{1}' for the pseudo function '{0}'.</value>
   </data>
   
+  <data name="ERR_AccessAssignParametersMutchMatch" xml:space="preserve">
+    <value>The last {0} parameters for the Access and Assign declarations must match by name and type. The first ASSIGN parameter is the value, the other parameters the indexers.</value>
+  </data>
+  <data name="ERR_AccessAssignTypesMutchMatch" xml:space="preserve">
+    <value>The type of the first ASSIGN parameter must match the returntype of the ACCESS.</value>
+  </data>
 </root>

@@ -24,15 +24,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     xNode.Parent is XP.ClassVarListContext)
                 {
                     var cvl = xNode.Parent as XP.ClassVarListContext;
-                    if (cvl.Parent is XP.VoglobalContext)
+                    var dt = cvl.DataType;
+                    if (dt is XP.PtrDatatypeContext)
                     {
-                        var dt = cvl.DataType;
-                        if (dt is XP.PtrDatatypeContext)
-                        {
-                            // So we have a global as typed ptr
-                            // change the type from typed ptr to just ptr
-                            return compilation.GetSpecialType(SpecialType.System_IntPtr);
-                        }
+                        // So we have a global as typed ptr
+                        // change the type from typed ptr to just ptr
+                        return compilation.GetSpecialType(SpecialType.System_IntPtr);
                     }
                 }
             }

@@ -46,13 +46,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (xNode is XP.ClassvarContext && xNode.Parent is XP.ClassVarListContext)
             {
                 var cvl = xNode.Parent as XP.ClassVarListContext;
-                if (cvl.Parent is XP.VoglobalContext)
-                {
-                    var pdtc = cvl.DataType as XP.PtrDatatypeContext;
-                    if (pdtc != null)
-                        return pdtc.TypeName.GetText();
+                var pdtc = cvl.DataType as XP.PtrDatatypeContext;
+                if (pdtc != null)
+                    return pdtc.TypeName.GetText();
 
-                }
             }
             return null;
         }
@@ -92,26 +89,49 @@ namespace Microsoft.CodeAnalysis.CSharp
             LookupOptions options = LookupOptions.AllMethodsOnArityZero;
             options |= LookupOptions.MustNotBeInstance;
             this.LookupSymbolsWithFallback(lookupResult, methodName, arity: 0, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
-            if (!lookupResult.IsSingleViable)
+            SourceMethodSymbol methodSym = null;
+            if (lookupResult.IsClear)
             {
                 // Cannot locate types pointer for pcall 
                 Error(diagnostics, ErrorCode.ERR_PCallTypedPointerName, node, method, methodName);
+                methodSym = null;
+            }
+            else if (lookupResult.IsMultiViable)
+            {
+                foreach (var symbol in lookupResult.Symbols)
+                {
+                    if (symbol.DeclaringCompilation == this.Compilation && symbol is SourceMethodSymbol)
+                    {
+                        methodSym = (SourceMethodSymbol) symbol;
+                        break;
+                    }
+                }
             }
             else
             {
-                var methodSym = lookupResult.Symbols[0] as SourceMethodSymbol;
+                methodSym = (SourceMethodSymbol)lookupResult.Symbols[0];
+            }
+            if (methodSym != null)
+            {
                 lookupResult.Clear();
                 var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
                 if (ts != null && ts.IsDelegateType())
                 {
                     SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
                     // clone the parameters from the methodSym
-                    SyntaxToken arglist;
-                    var methodsyntaxnode = methodSym.SyntaxNode as MethodDeclarationSyntax;
-                    var parlistnode = methodsyntaxnode.ParameterList;
-                    var @params = ParameterHelpers.MakeParameters(this, delmeth, parlistnode,
-                        true, out arglist, diagnostics);
-                    delmeth.InitializeParameters(@params);
+                    var builder = ArrayBuilder<ParameterSymbol>.GetInstance();
+                    foreach (var par in methodSym.Parameters)
+                    {
+                        var parameter = new SourceSimpleParameterSymbol(
+                            delmeth,
+                            par.Type,
+                            par.Ordinal,
+                            par.RefKind,
+                            par.Name,
+                            par.Locations);
+                        builder.Add(parameter);
+                    }
+                    delmeth.InitializeParameters(builder.ToImmutableAndFree());
                     delmeth.SetReturnType(methodSym.ReturnType);
                 }
                 else
@@ -185,8 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     builder.Add(parameter);
                     i++;
                 }
-                var parameters = builder.ToImmutableAndFree();
-                delmeth.InitializeParameters(parameters);
+                delmeth.InitializeParameters(builder.ToImmutableAndFree());
             }
             else
             {

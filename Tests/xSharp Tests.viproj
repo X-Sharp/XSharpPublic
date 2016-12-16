@@ -32727,7 +32727,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C332 - Conversion poblem with literal LHS in expression
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C333 - PCALL() with class field PTR *************
 Application = C333 - PCALL() with class field PTR
 IDEVersion = 1.06
@@ -32738,7 +32738,7 @@ Target = 0
 Platform = x86
 Language = XSharp
 Runtime = CLR4
-Dialect = Core
+Dialect = Vulcan
 Folder = %ProjectPath%\Applications\C333\
 PrgSubFolder = \Prg
 ResourcesSubFolder = 
@@ -32769,7 +32769,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVOWin32APILibrary,1,0,4.0.401.0
 [C333 - PCALL() with class field PTR Resources]
 [C333 - PCALL() with class field PTR Native Resources]
 [C333 - PCALL() with class field PTR License files]
@@ -32783,7 +32783,7 @@ VO2=0
 VO3=0
 VO4=0
 VO5=0
-VO6=0
+VO6=1
 VO7=0
 VO8=0
 VO9=0
@@ -33223,7 +33223,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C338 - Problem with PCALL() arguments and same named identifiers *************
 Application = C338 - Problem with PCALL() arguments and same named identifiers
 IDEVersion = 1.06

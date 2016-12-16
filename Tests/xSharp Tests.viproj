@@ -2219,7 +2219,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C256 - Problem with codeblock
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C255 - Name conflict between LOCAL and function *************
 Application = C255 - Name conflict between LOCAL and function
 IDEVersion = 1.06
@@ -27874,7 +27874,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C284 - Name conflict between method and function
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C285 - Name conflict between GLOBAL and FUNCTION *************
 Application = C285 - Name conflict between GLOBAL and FUNCTION
 IDEVersion = 1.06
@@ -27973,7 +27973,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C285 - Name conflict between GLOBAL and FUNCTION
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C286 - name conflict between LOCAL and FUNCTION *************
 Application = C286 - name conflict between LOCAL and FUNCTION
 IDEVersion = 1.06
@@ -30151,7 +30151,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C307 - Assign decimal to usual with vo4+
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C308 - GLOBAL with same name as function used inside class code *************
 Application = C308 - GLOBAL with same name as function used inside class code
 IDEVersion = 1.06
@@ -32628,7 +32628,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C331 - Problem casting value inside parens
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C332 - Conversion poblem with literal LHS in expression *************
 Application = C332 - Conversion poblem with literal LHS in expression
 IDEVersion = 1.06
@@ -32827,7 +32827,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C333 - PCALL() with class field PTR
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C334 - problem with #define in expression *************
 Application = C334 - problem with #define in expression
 IDEVersion = 1.06
@@ -33025,7 +33025,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C335 - Name conflict between class and field names
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C336 - Problem with assigning NULL to IntPtr *************
 Application = C336 - Problem with assigning NULL to IntPtr
 IDEVersion = 1.06

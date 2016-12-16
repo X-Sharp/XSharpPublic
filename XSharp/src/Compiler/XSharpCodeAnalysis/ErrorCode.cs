@@ -1404,6 +1404,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_PCallNativeGenericType = 9036,
         ERR_PCallTypedPointerName = 9037,
         ERR_PCallResolveGeneratedDelegate = 9038,
-
+        ERR_AccessAssignParametersMutchMatch = 9039,
+        ERR_AccessAssignTypesMutchMatch = 9040,
     }
 }

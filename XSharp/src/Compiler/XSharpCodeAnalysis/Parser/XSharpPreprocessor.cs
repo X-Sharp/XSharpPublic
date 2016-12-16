@@ -848,7 +848,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private bool isDefineAllowed()
         {
-            // DEFINE will not be accepted immediately after or before a DOT or COLON
+            // DEFINE will not be accepted immediately after or before a DOT 
             // So this will not be recognized:
             // #define Console
             // System.Console.WriteLine("zxc")
@@ -857,16 +857,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             if (lastToken != null)
             {
-                if (lastToken.Type == XSharpLexer.DOT ||
-                    lastToken.Type == XSharpLexer.COLON)
+                if (lastToken.Type == XSharpLexer.DOT )
                     return false;
             }
             var index = inputs.Index;
             if (index < inputs.Tokens.Size)
             {
                 var token = inputs.Tokens.Get(index + 1);
-                if (token.Type == XSharpParser.DOT ||
-                    token.Type == XSharpLexer.COLON)
+                if (token.Type == XSharpParser.DOT )
                     return false;
             }
             return true;

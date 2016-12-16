@@ -891,9 +891,19 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP
             // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
             var originalOptions = options;
-            if (preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
+            if ( preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
             {
-                options |= LookupOptions.MustNotBeInstance;
+                bool colon = false;
+                if (node.Parent is MemberAccessExpressionSyntax)
+                {
+                    var xnode = node.Parent.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AccessMemberContext;
+                    if (xnode != null && xnode.Op.Text == ":")
+                    {
+                        colon = true;
+                    }
+                }
+                if (!colon)
+                    options |= LookupOptions.MustNotBeInstance;
             }
 #endif
 
@@ -901,11 +911,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
 #if XSHARP
-            if (preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
+            if ( preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
             {
+                bool lookupAgain = false;
                 if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
                 {
                     // try again but now allow instance methods
+                    lookupAgain = true;
+                }
+                if (lookupResult.Kind == LookupResultKind.Viable && invoked && lookupResult.Symbols.Count == 0)
+                {
+                    Symbol s = lookupResult.Symbols[0];
+                    if (s.Kind != SymbolKind.Method)
+                        lookupAgain = true;
+                }
+                if (lookupAgain)
+                {
                     options = originalOptions;
                     useSiteDiagnostics = null;
                     lookupResult.Clear();
@@ -922,8 +943,36 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool isError = false;
                 bool wasError;
                 var members = ArrayBuilder<Symbol>.GetInstance();
-                Symbol symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
+#if XSHARP
+                Symbol symbol = null;
+                if (!invoked)
+                {
+                    // prefer non-method symbols
+                    foreach (Symbol s in lookupResult.Symbols)
+                    {
+                        if (s.Kind != SymbolKind.Method)
+                        {
+                            members.Add(s);
+                        }
+                    }
+                    if (members.Count == 1)
+                    {
+                        symbol = members[0];
+                    }
+                }
+                if (symbol == null)
+                {
+                    members.Clear();
+                    symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
+                }
+                else
+                {
+                    wasError = false;
+                }
 
+#else
+                Symbol symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
+#endif
                 isError |= wasError;
 
                 if ((object)symbol == null)

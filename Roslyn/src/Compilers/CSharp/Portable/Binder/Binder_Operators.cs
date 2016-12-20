@@ -2104,6 +2104,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     return expr;
                 }
+                var bfa = expr as BoundFieldAccess;
+                // Externally defined fixed Field. Could be a DIM field in a VoStruct class
+                if (bfa.FieldSymbol.IsFixed)
+                {
+                    var type = bfa.FieldSymbol.ContainingType;
+                    if (type.IsVoStructOrUnion())
+                    {
+                        return expr;
+                    }
+                }
+
+
             }
             if (expr.Kind == BoundKind.ArrayAccess)
             {

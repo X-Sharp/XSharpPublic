@@ -1401,7 +1401,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
                 if (!paramMatch)
                 {
-                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignParametersMutchMatch, assParamCount-1);
+                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignParametersMutchMatch);
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
                 if (!typeMatch)

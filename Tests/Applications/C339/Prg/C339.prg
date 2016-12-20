@@ -2,7 +2,7 @@
 CLASS Foo
 ACCESS TabCaption (symTabName) 
 	RETURN symTabName
-ASSIGN TabCaption (cCaption, symTabName) 
+ASSIGN TabCaption (symTabName) 
 	? symTabName , cCaption
 END CLASS
 

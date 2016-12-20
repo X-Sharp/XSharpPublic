@@ -396,6 +396,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         //types declared at the namespace level may only have declared accessibility of public or internal (Section 3.5.1)
                         Accessibility declaredAccessibility = nts.DeclaredAccessibility;
+#if XSHARP
+                        // Allow private structs and classes and treat them as internal
+                        if (DeclaringCompilation.Options.IsDialectVO && declaredAccessibility == Accessibility.Private)
+                        {
+                            declaredAccessibility = Accessibility.Internal;
+                        }
+#endif
                         if ((declaredAccessibility & (Accessibility.Public | Accessibility.Internal)) != declaredAccessibility)
                         {
                             diagnostics.Add(ErrorCode.ERR_NoNamespacePrivate, symbol.Locations[0]);

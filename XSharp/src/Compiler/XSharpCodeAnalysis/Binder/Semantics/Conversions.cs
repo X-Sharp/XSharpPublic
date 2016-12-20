@@ -299,6 +299,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.ImplicitNumeric;
                 }
             }
+            if (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz) ||
+                destination.IsVoidPointer())
+            {
+                if (source.SpecialType == SpecialType.System_String)
+                {
+                    return Conversion.ImplicitReference;
+                }
+            }
             // when nothing else, then use the Core rules
             return ClassifyCoreImplicitConversionFromExpression(sourceExpression, source, destination, ref useSiteDiagnostics);
         }

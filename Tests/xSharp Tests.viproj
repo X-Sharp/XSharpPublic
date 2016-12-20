@@ -245,7 +245,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C101
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C200 - Not clear why USING System.Linq is required *************
 Application = C200 - Not clear why USING System.Linq is required
 IDEVersion = 1.06
@@ -16081,7 +16081,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C197
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C198 - Cannot modify iteration variable *************
 Application = C198 - Cannot modify iteration variable
 IDEVersion = 1.06

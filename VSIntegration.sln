@@ -20,6 +20,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVODesigners", "Visual
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XPorter", "VisualStudio\XPorter\XPorter.xsproj", "{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpModel", "VisualStudio\XSharpModel\XSharpModel.csproj", "{2C3B9217-E012-4681-97CE-F0A658C40336}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,14 @@ Global
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Release|x86.ActiveCfg = Release|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Release|x86.Build.0 = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|x86.Build.0 = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -80,13 +80,7 @@ namespace XSharp.LanguageService
             // continue for the rest of the supported ParseReason values.
             return scope;
         }
-        /*
-        public override Microsoft.VisualStudio.Package.TypeAndMemberDropdownBars CreateDropDownHelper(Microsoft.VisualStudio.TextManager.Interop.IVsTextView forView)
-        {
-            var members = new XSharpTypeAndMemberDropDownBars(this);
-            return members;
-        }
-        */
+
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
         {
             // This called for the online help
@@ -109,6 +103,11 @@ namespace XSharp.LanguageService
             // may be called when the source is saved under a different codepage
             pbstrMessage = String.Empty;
             return VSConstants.S_OK;
+        }
+
+        public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView)
+        {
+            return new XSharpTypeAndMemberDropDownBars( this, forView );
         }
     }
 }

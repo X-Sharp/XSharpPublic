@@ -1311,6 +1311,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 voPropType = _getMissingType();
             }
+            voPropType.XVoDecl = true;
             #endregion
             #region Parameters
             BracketedParameterListSyntax voPropParams;
@@ -2646,7 +2647,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.T.Token.Type == XP.ASSIGN)
                 {
                     // Assign does not need a return. 
-                    // So do not add mising returns
+                    // So do not add missing returns
                     returntype = VoidType();
                 }
                 else if (context.StmtBlk != null && !isInInterface)
@@ -3428,6 +3429,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
             var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            returntype.XVoDecl = true;
             var id = context.Id.Get<SyntaxToken>();
             if (!isInInterface)
             {

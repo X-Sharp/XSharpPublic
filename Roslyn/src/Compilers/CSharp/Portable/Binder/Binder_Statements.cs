@@ -1043,11 +1043,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return true;
             }
-
+#if XSHARP
+            bool result = false;
+#endif                        
             MessageID cause = 0;
             if (local.IsForEach)
             {
                 cause = MessageID.IDS_FOREACHLOCAL;
+#if XSHARP
+                result = true;
+#endif
             }
             else if (local.IsUsing)
             {
@@ -1096,8 +1101,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 Error(diagnostics, ReadOnlyLocalErrors[index], tree, local);
             }
-
+#if XSHARP
+            return result;
+#else
             return false;
+#endif
         }
 
         private static void ReportReadOnlyError(FieldSymbol field, CSharpSyntaxNode node, BindValueKind kind, bool checkingReceiver, DiagnosticBag diagnostics)

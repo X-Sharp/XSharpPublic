@@ -301,7 +301,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
         private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination)
         {
-            if (source.Type.SpecialType == SpecialType.System_String &&
+            if (source.Type != null && source.Type.SpecialType == SpecialType.System_String &&
                 Compilation.Options.IsDialectVO &&
                 (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz)
                 || destination.IsVoidPointer()))

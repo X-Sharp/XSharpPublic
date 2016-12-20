@@ -47,6 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     XS_WRN:ERR_UseDefViolationProperty = 8079,
     XS_WRN:ERR_ConversionWithBase = 553,
     XS_WRN:ERR_ConversionWithDerived = 554,
+    XS_WRN:ERR_AssgReadonlyLocalCause = 1656
     */
 
     internal enum ErrorCode

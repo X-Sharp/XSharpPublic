@@ -1205,63 +1205,91 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var outerMods = _pool.Allocate();
             int getVisLvl;
             int setVisLvl;
-            if (vop.AccessMethodCtx != null) {
-                if (vop.AccessMethodCtx.Modifiers != null)
-                    getMods.AddRange(vop.AccessMethodCtx.Modifiers.GetList<SyntaxToken>());
-                else if (!vop.AccessMethodCtx.isInInterface()) {
+            var AccMet = vop.AccessMethodCtx;
+            var AssMet = vop.AssignMethodCtx;
+            #region modifiers and visibility
+            if (AccMet != null)
+            {
+                if (AccMet.Modifiers != null)
+                {
+                    getMods.AddRange(AccMet.Modifiers.GetList<SyntaxToken>());
+                }
+                else if (!AccMet.isInInterface())
+                {
                     getMods.FixDefaultVisibility();
                     if (_options.VirtualInstanceMethods)
+                    {
                         getMods.FixDefaultVirtual();
+                    }
                     else
+                    {
                         getMods.FixDefaultMethod();
+                    }
                 }
                 getVisLvl = getMods.GetVisibilityLevel();
             }
             else
                 getVisLvl = 15;
-            if (vop.AssignMethodCtx != null) {
-                if (vop.AssignMethodCtx.Modifiers != null)
-                    setMods.AddRange(vop.AssignMethodCtx.Modifiers.GetList<SyntaxToken>());
-                else if (!vop.AssignMethodCtx.isInInterface()) {
+            if (AssMet != null)
+            {
+                if (AssMet.Modifiers != null)
+                {
+                    setMods.AddRange(AssMet.Modifiers.GetList<SyntaxToken>());
+                }
+                else if (!AssMet.isInInterface())
+                {
                     setMods.FixDefaultVisibility();
                     if (_options.VirtualInstanceMethods)
+                    {
                         setMods.FixDefaultVirtual();
+                    }
                     else
+                    {
                         setMods.FixDefaultMethod();
+                    }
                 }
                 setVisLvl = setMods.GetVisibilityLevel();
             }
             else
+            {
                 setVisLvl = 15;
-            if (getVisLvl <= setVisLvl) {
+            }
+            if (getVisLvl <= setVisLvl)
+            {
                 outerMods.AddRange(getMods);
                 getMods.Clear();
             }
-            else {
+            else
+            {
                 outerMods.AddRange(setMods);
                 setMods.Clear();
             }
             var rawMods = getVisLvl <= setVisLvl ? setMods : getMods;
             var innerMods = _pool.Allocate();
-            for (int i = 0; i < rawMods.Count; i++) {
+            for (int i = 0; i < rawMods.Count; i++)
+            {
                 var t = rawMods[i];
-                if (!outerMods.Any(t.Kind)) {
+                if (!outerMods.Any(t.Kind))
+                {
                     if (!SyntaxFacts.IsAccessibilityModifier(t.Kind))
+                    {
                         t = t.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadMemberFlag, t));
+                    }
                     innerMods.Add(t);
                 }
             }
             _pool.Free(rawMods);
-            if (getVisLvl <= setVisLvl) {
+            if (getVisLvl <= setVisLvl)
+            {
                 setMods = innerMods;
             }
-            else {
+            else
+            {
                 getMods = innerMods;
             }
-
+            #endregion
+            #region Property Type
             TypeSyntax voPropType;
-            var AccMet = vop.AccessMethodCtx;
-            var AssMet = vop.AssignMethodCtx;
             var typeMatch = true;
             if (AssMet != null && AssMet.ParamList != null && AssMet.ParamList._Params?.Count > 0)
             {
@@ -1283,11 +1311,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 voPropType = _getMissingType();
             }
-
-            object voPropParams;
+            #endregion
+            #region Parameters
+            BracketedParameterListSyntax voPropParams;
             ArgumentSyntax[] voPropArgs;
-            int paramCount = (int) AssMet?.ParamList?._Params?.Count;
-            if ( paramCount> 1)
+            int accParamCount = 0;
+            int assParamCount = 0;
+            if (AssMet != null && AssMet?.ParamList != null)
+            {
+                assParamCount = AssMet.ParamList._Params.Count;
+            }
+            if (AccMet != null && AccMet.ParamList != null)
+            {
+                accParamCount = AccMet.ParamList._Params.Count;
+            }
+            if ( assParamCount > 1)
             {
                 var @params = ArrayBuilder<XP.ParameterContext>.GetInstance();
                 foreach (var p in AssMet.ParamList._Params.Skip(1))
@@ -1300,7 +1338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                 voPropArgs = @params.Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
             }
-            else if (paramCount > 0)
+            else if (accParamCount > 0)
             {
                 voPropParams = _syntaxFactory.BracketedParameterList(
                     SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
@@ -1308,67 +1346,62 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
                 voPropArgs = AccMet.ParamList._Params.Select(pCtx => _syntaxFactory.Argument(null, null, GenerateSimpleName(pCtx.Id.Start.Text))).ToArray();
             }
-            else
+            else 
             {
                 voPropParams = null;
                 voPropArgs = new ArgumentSyntax[0];
             }
-
+            #endregion
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
-            if (vop.AccessMethodCtx != null)
+            #region ACCESS = Get Accessor
+            if (AccMet != null)
             {
-                bool isInInterfaceOrAbstract = vop.AccessMethodCtx.isInInterface() ||
+                // Create the GET accessor.
+                bool isInInterfaceOrAbstract = AccMet.isInInterface() ||
                     outerMods.Any(SyntaxKind.AbstractKeyword) || 
                     outerMods.Any(SyntaxKind.ExternKeyword);
-                var m = vop.AccessMethodCtx.Get<MethodDeclarationSyntax>();
+                var m = AccMet.Get<MethodDeclarationSyntax>();
                 var args = MakeArgumentList(voPropArgs);
-                BlockSyntax block = m.Body;
+                BlockSyntax block = isInInterfaceOrAbstract ? null : m.Body;
                 bool paramMatch = true;
-                if (AccMet.ParamList._Params?.Count != paramCount - 1)
+                if (AssMet != null)
                 {
-                    paramMatch = false;
-                }
-                if (!isInInterfaceOrAbstract && paramCount > 1 && paramMatch)
-                {
-                    // Match the parameter names
-                    for (int iParam = 0; iParam < paramCount-1 && paramMatch; iParam++ )
+                    // When both Access and Assign exist, then check the parameter names and types
+                    if (accParamCount != assParamCount - 1)
                     {
-                        var name1 = AccMet.ParamList._Params[iParam].Id.GetText();
-                        var name2 = AssMet.ParamList._Params[iParam + 1].Id.GetText();
-                        var type1 = AccMet.ParamList._Params[iParam].Type?.Get<TypeSyntax>() ?? _getMissingType();
-                        var type2 = AssMet.ParamList._Params[iParam + 1].Type?.Get<TypeSyntax>() ?? _getMissingType();
-                        if (String.Compare(name1, name2, StringComparison.OrdinalIgnoreCase) != 0
-                            || String.Compare(type1.ToFullString(), type2.ToFullString(), StringComparison.OrdinalIgnoreCase) != 0)
+                        paramMatch = false;
+                    }
+                    else if (assParamCount > 1 )
+                    {
+                        // Match the parameter names
+                        // The correct order of the parameters in an assign is:
+                        // value, [index1 [, index2 [, index3]]]
+                        // and the matching Access parameters must be (of course)
+                        // [index1 [, index2 [, index3]]]
+                        for (int iParam = 0; iParam < assParamCount - 1 && paramMatch; iParam++)
                         {
-                            paramMatch = false;
+                            var name1 = AccMet.ParamList._Params[iParam].Id.GetText();
+                            var name2 = AssMet.ParamList._Params[iParam + 1].Id.GetText();
+                            var type1 = AccMet.ParamList._Params[iParam].Type?.Get<TypeSyntax>() ?? _getMissingType();
+                            var type2 = AssMet.ParamList._Params[iParam + 1].Type?.Get<TypeSyntax>() ?? _getMissingType();
+                            if (String.Compare(name1, name2, StringComparison.OrdinalIgnoreCase) != 0
+                                || String.Compare(type1.ToFullString(), type2.ToFullString(), StringComparison.OrdinalIgnoreCase) != 0)
+                            {
+                                paramMatch = false;
+                            }
+
                         }
-
                     }
-
-                    // Vulcan and VO dome something strange with the parameter names
-                    // We create a local with the original parameter name 1 and assign it the value from parameter 2
-                    // This solves most of the problems
-                    // The correct order of the parameters in an assign is:
-                    // value, [index1 [, index2 [, index3]]]
-                    var paramName1 = AssMet.ParamList._Params[0].Id.GetText();
-                    var paramName2 = AssMet.ParamList._Params[1].Id.GetText();
-                    var stmts = new List<StatementSyntax>();
-                    var locdecl = GenerateLocalDecl(paramName1, _impliedType, GenerateSimpleName(paramName2));
-                    stmts.Add(locdecl);
-                    foreach (var stmt in m.Body.Statements)
-                    {
-                        stmts.Add(stmt);
-                    }
-                    block = MakeBlock(stmts);
 
                 }
-                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), getMods.ToTokenList(),
+                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, 
+                        EmptyList<AttributeListSyntax>(), getMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.GetKeyword),
                         isInInterfaceOrAbstract ? null : block,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
                 if (!paramMatch)
                 {
-                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignParametersMutchMatch, paramCount-1);
+                    var diag = new SyntaxDiagnosticInfo(ErrorCode.ERR_AccessAssignParametersMutchMatch, assParamCount-1);
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
                 if (!typeMatch)
@@ -1377,17 +1410,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     accessor = accessor.WithAdditionalDiagnostics(diag);
                 }
                 accessors.Add(accessor);
-                accessor.XNode = vop.AccessMethodCtx;
-                vop.AccessMethodCtx.CsNode = null;
-                vop.AccessMethodCtx.Parent.CsNode = null;
+                accessor.XNode = AccMet;
+                AccMet.CsNode = null;
+                AccMet.Parent.CsNode = null;
 
             }
-            if (vop.AssignMethodCtx != null)
+            #endregion
+            #region ASSIGN = Set Accessor
+            if (AssMet != null)
             {
-                bool isInInterfaceOrAbstract = vop.AssignMethodCtx.isInInterface() || 
+                bool isInInterfaceOrAbstract = AssMet.isInInterface() || 
                     outerMods.Any(SyntaxKind.AbstractKeyword) || 
                     outerMods.Any(SyntaxKind.ExternKeyword);
-                var m = vop.AssignMethodCtx.Get<MethodDeclarationSyntax>();
+                var m = AssMet.Get<MethodDeclarationSyntax>();
                 BlockSyntax block = null;
                 if (!isInInterfaceOrAbstract)
                 {
@@ -1410,16 +1445,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         block = MakeBlock(stmts);
                     }
                 }
-                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, EmptyList<AttributeListSyntax>(), setMods.ToTokenList(),
+                var accessor = _syntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, 
+                        EmptyList<AttributeListSyntax>(), setMods.ToTokenList(),
                         SyntaxFactory.MakeToken(SyntaxKind.SetKeyword),
                         isInInterfaceOrAbstract ? null : block,
                         isInInterfaceOrAbstract ? null : m.SemicolonToken);
                 accessors.Add(accessor);
-                accessor.XNode = vop.AssignMethodCtx;
-                vop.AssignMethodCtx.CsNode = null;
-                vop.AssignMethodCtx.Parent.CsNode = null;
+                accessor.XNode = AssMet;
+                AssMet.CsNode = null;
+                AssMet.Parent.CsNode = null;
             }
+            #endregion
             BasePropertyDeclarationSyntax prop;
+            var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        accessors, SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            // A Property in Roslyn is either an Indexer (when there are parameters)
+            // or a property
             if (voPropParams != null)
             {
                 prop = _syntaxFactory.IndexerDeclaration(
@@ -1428,10 +1469,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type: voPropType,
                     explicitInterfaceSpecifier: null,
                     thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, vop.idName.Text),
-                    parameterList: (BracketedParameterListSyntax)voPropParams,
-                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        accessors,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                    parameterList: voPropParams,
+                    accessorList: accessorList,
                     expressionBody: null,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             }
@@ -1443,9 +1482,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     type: voPropType,
                     explicitInterfaceSpecifier: null,
                     identifier: vop.idName,
-                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        accessors,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                    accessorList: accessorList,
                     expressionBody: null,
                     initializer: null,
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
@@ -2376,16 +2413,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 mods = m.ToTokenList();
                 _pool.Free(m);
             }
-            if (context.ParamList == null || context.ParamList._Params.Count == 0)
-                context.Put(_syntaxFactory.PropertyDeclaration(
-                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
-                    modifiers: mods,
-                    type: context.Type?.Get<TypeSyntax>() ?? _getMissingType(),
-                    explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
-                        name: context.ExplicitIface.Get<NameSyntax>(),
-                        dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
-                    identifier: context.Id.Get<SyntaxToken>(),
-                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+            var type = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
+            var atts = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            var id = context.Id.Get<SyntaxToken>();
+            var accessorList = _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                         (context.Auto != null) ?
                             ((context._AutoAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
                             MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), EmptyList(),
@@ -2394,7 +2425,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     SyntaxFactory.MakeToken(SyntaxKind.SetKeyword), null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))) :
                         ((context._LineAccessors?.Count ?? 0) > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
                         MakeList<AccessorDeclarationSyntax>(context._Accessors),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
+            var explicitif = context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
+                        name: context.ExplicitIface.Get<NameSyntax>(),
+                        dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken));
+
+            if (context.ParamList == null || context.ParamList._Params.Count == 0)
+                context.Put(_syntaxFactory.PropertyDeclaration(
+                    attributeLists: atts,
+                    modifiers: mods,
+                    type: type,
+                    explicitInterfaceSpecifier: explicitif,
+                    identifier: id,
+                    accessorList: accessorList,
                     expressionBody: null,
                     initializer: context.Initializer != null ? _syntaxFactory.EqualsValueClause(SyntaxFactory.MakeToken(SyntaxKind.EqualsToken),
                         context.Initializer.Get<ExpressionSyntax>()) : null,
@@ -2403,24 +2446,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (context.Auto != null)
                     context.AddError(new ParseErrorData(context.AUTO(), ErrorCode.ERR_SyntaxError, SyntaxFactory.MakeToken(SyntaxKind.GetKeyword)));
                 context.Put(_syntaxFactory.IndexerDeclaration(
-                    attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                    attributeLists: atts,
                     modifiers: mods,
-                    type: context.Type?.Get<TypeSyntax>() ?? _getMissingType(),
-                    explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
-                        name: context.ExplicitIface.Get<NameSyntax>(),
-                        dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
+                    type: type,
+                    explicitInterfaceSpecifier: explicitif,
                     thisKeyword: SyntaxFactory.MakeToken(SyntaxKind.ThisKeyword, context.Id?.Start.Text ?? ""),
-                    parameterList: context.ParamList.Get<BracketedParameterListSyntax>(),
-                    accessorList: _syntaxFactory.AccessorList(SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                        (context.Auto != null) ?
-                            (context._AutoAccessors?.Count > 0) ? MakeList<AccessorDeclarationSyntax>(context._AutoAccessors) :
-                            MakeList(_syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), EmptyList(),
-                                    SyntaxFactory.MakeToken(SyntaxKind.GetKeyword), null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)),
-                                _syntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, EmptyList<AttributeListSyntax>(), EmptyList(),
-                                    SyntaxFactory.MakeToken(SyntaxKind.SetKeyword), null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))) :
-                        (context._LineAccessors?.Count > 0) ? MakeList<AccessorDeclarationSyntax>(context._LineAccessors) :
-                        MakeList<AccessorDeclarationSyntax>(context._Accessors),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)),
+                    parameterList: context.ParamList?.Get<BracketedParameterListSyntax>(),
+                    accessorList: accessorList,
                     expressionBody: null, // TODO: (grammar) expressionBody methods
                     semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }

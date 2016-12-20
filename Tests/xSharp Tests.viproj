@@ -15590,14 +15590,14 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C192
 
-ApplicationGroup = D4C4BF75-E4C6-4D72-83FB-AB345AEE3625
+ApplicationGroup = EBE227D6-3F55-4251-A268-C654F38F1FAF
 ; ************** APPLICATION C193 - Cannot declare PRIVATE (internal) STRUCTURE *************
 Application = C193 - Cannot declare PRIVATE (internal) STRUCTURE
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
-Target = 0
+Target = 2
 Platform = x86
 Language = XSharp
 Runtime = CLR4

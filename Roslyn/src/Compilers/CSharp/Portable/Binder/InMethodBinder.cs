@@ -216,10 +216,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return;
             }
 
+#if XSHARP
+            if ((options & LookupOptions.MustBeInvocableIfMember) == 0)
+            {
+                foreach (var parameterSymbol in _parameterMap[name])
+                {
+                    result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
+                }
+            }
+#else
             foreach (var parameterSymbol in _parameterMap[name])
             {
                 result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
             }
+#endif
         }
 
         protected override void AddLookupSymbolsInfoInSingleBinder(LookupSymbolsInfo result, LookupOptions options, Binder originalBinder)

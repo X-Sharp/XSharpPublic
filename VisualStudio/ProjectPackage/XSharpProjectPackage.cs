@@ -68,7 +68,8 @@ namespace XSharp.Project
                          CodeSense = true,             // Supports IntelliSense
                          RequestStockColors = false,   // Supplies custom colors
                          EnableCommenting = true,      // Supports commenting out code
-                         EnableAsyncCompletion = true  // Supports background parsing
+                         EnableAsyncCompletion = true, // Supports background parsing
+                         ShowDropDownOptions = true    // Supports NavigationBar 
                          )]
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),

@@ -48,6 +48,11 @@ namespace XSharpModel
                         if (xType != null)
                             break;
                     }
+                    if (xType == null)
+                    {
+                        // Ok, none of our own Type; can be a System/Referenced Type
+                        CheckSystemType(var.TypeName, member.File.Usings);
+                    }
                 }
                 if (xType != null)
                 {
@@ -58,25 +63,34 @@ namespace XSharpModel
 
         public CompletionType( String typeName, List<String> usings )
         {
-            // When we have a TypeName as string, let's suppose it is a System Type
-            Type sType = SystemTypeController.Lookup(typeName);
-            if ( ( sType == null ) && ( usings != null ) )
+            CheckSystemType(typeName, usings);
+        }
+
+        private void CheckSystemType(string typeName, List<string> usings)
+        {
+            // Could it be a "simple" Type ?
+            Type sType = SimpleTypeToSystemType(typeName);
+            if (sType == null)
             {
-                // Search using the USING statements in the File that contains the var
-                foreach (string usingStatement in usings)
+                // When we have a TypeName as string, let's suppose it is a System Type
+                sType = SystemTypeController.Lookup(typeName);
+                if ((sType == null) && (usings != null))
                 {
-                    String fqn = usingStatement + "." + typeName;
-                    sType = SystemTypeController.Lookup(fqn);
-                    if (sType != null)
-                        break;
+                    // Search using the USING statements in the File that contains the var
+                    foreach (string usingStatement in usings)
+                    {
+                        String fqn = usingStatement + "." + typeName;
+                        sType = SystemTypeController.Lookup(fqn);
+                        if (sType != null)
+                            break;
+                    }
                 }
             }
-            if ( sType != null )
+            if (sType != null)
             {
                 this._stype = sType;
             }
         }
-
 
         public bool IsInitialized
         {
@@ -118,6 +132,75 @@ namespace XSharpModel
                 }
                 return null;
             }
+        }
+
+        internal Type SimpleTypeToSystemType(string kw)
+        {
+            if (kw != null)
+            {
+                kw = kw.ToLowerInvariant();
+                if (kw == "string")
+                {
+                    return typeof(string);
+                }
+                if (kw == "char")
+                {
+                    return typeof(char);
+                }
+                if (kw == "byte")
+                {
+                    return typeof(byte);
+                }
+                if (kw == "short")
+                {
+                    return typeof(short);
+                }
+                if (kw == "word")
+                {
+                    return typeof(ushort);
+                }
+                if (kw == "dword")
+                {
+                    return typeof(uint);
+                }
+                if (kw == "long")
+                {
+                    return typeof(int);
+                }
+                if (kw == "longint")
+                {
+                    return typeof(int);
+                }
+                if (kw == "int")
+                {
+                    return typeof(int);
+                }
+                if (kw == "int64")
+                {
+                    return typeof(long);
+                }
+                if (kw == "uint64")
+                {
+                    return typeof(ulong);
+                }
+                if (kw == "real8")
+                {
+                    return typeof(double);
+                }
+                if (kw == "real4")
+                {
+                    return typeof(float);
+                }
+                if (kw == "logic")
+                {
+                    return typeof(bool);
+                }
+                if (kw == "void")
+                {
+                    return typeof(void);
+                }
+            }
+            return null;
         }
     }
 }

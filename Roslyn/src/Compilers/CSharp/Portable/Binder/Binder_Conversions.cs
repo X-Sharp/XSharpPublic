@@ -78,6 +78,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
             ConstantValue constantValue = this.FoldConstantConversion(syntax, source, conversion, destination, diagnostics);
+#if XSHARP
+            if (BindStringToPsz(syntax, ref source, destination))
+            { 
+                constantValue = null;
+                wasCompilerGenerated = true;
+            }
+#endif
             return new BoundConversion(
                 syntax,
                 source,

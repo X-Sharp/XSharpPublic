@@ -31835,7 +31835,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C324 - Conversion errors without /vo4
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C325 - Problem with VOSTRUCT defined in dll *************
 Application = C325 - Problem with VOSTRUCT defined in dll
 IDEVersion = 1.06
@@ -31935,7 +31935,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C325 - Problem with VOSTRUCT defined in dll
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C325_helper *************
 Application = C325_helper
 IDEVersion = 1.06
@@ -33124,7 +33124,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C336 - Problem with assigning NULL to IntPtr
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT *************
 Application = C337 - Cannot convert My_VOSTRUCT to My_VOSTRUCT
 IDEVersion = 1.06
@@ -33520,7 +33520,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C340 - Name conflict between FUNCTION and parameter
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C341 - Cannot assign literal string to PSZ var *************
 Application = C341 - Cannot assign literal string to PSZ var
 IDEVersion = 1.06

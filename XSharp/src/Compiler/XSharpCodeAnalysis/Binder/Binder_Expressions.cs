@@ -299,6 +299,34 @@ namespace Microsoft.CodeAnalysis.CSharp
             return expr;
 
         }
+        private bool BindStringToPsz(CSharpSyntaxNode syntax, ref BoundExpression source, TypeSymbol destination)
+        {
+            if (source.Type.SpecialType == SpecialType.System_String &&
+                Compilation.Options.IsDialectVO &&
+                (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz)
+                || destination.IsVoidPointer()))
+            {
+                // Note this calls the constructor for __PSZ with a string.
+                // The allocated pointer inside the PSZ is never freed by Vulcan !
+                TypeSymbol psz = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+                MethodSymbol stringctor = null;
+                var ctors = psz.GetMembers(".ctor");
+                foreach (MethodSymbol ctor in ctors)
+                {
+                    var pars = ctor.GetParameters();
+                    if (pars.Length == 1 && pars[0].Type.SpecialType == SpecialType.System_String)
+                    {
+                        stringctor = ctor;
+                    }
+                }
 
+                if (stringctor != null)
+                {
+                    source = new BoundObjectCreationExpression(syntax, stringctor, new BoundExpression[] { source });
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

@@ -174,7 +174,7 @@ namespace XSharp.Project
         public bool VO1
         {
             get { return this.vo1; }
-            //set { this.vo1 = value; this.IsDirty = true; }
+            set { this.vo1 = value; this.IsDirty = true; }
         }
 
         [Category(CatCompatibility), DisplayName(VO2Caption), Description(VO2Description)]
@@ -207,7 +207,7 @@ namespace XSharp.Project
         public bool VO6
         {
             get { return this.vo6; }
-            //set { this.vo6 = value; this.IsDirty = true; }
+            set { this.vo6 = value; this.IsDirty = true; }
         }
         [Category(CatCompatibility), DisplayName(VO7Caption), Description(VO7Description)]
         public bool VO7
@@ -241,7 +241,7 @@ namespace XSharp.Project
         public bool VO11
         {
             get { return this.vo11; }
-            //set { this.vo11 = value; this.IsDirty = true; }
+            set { this.vo11 = value; this.IsDirty = true; }
         }
 
         [Category(CatCompatibility),DisplayName(VO12Caption), Description(VO12Description)]

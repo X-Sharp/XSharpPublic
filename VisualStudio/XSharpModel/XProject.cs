@@ -8,18 +8,17 @@ namespace XSharpModel
 {
     public class XProject
     {
-        private string filePath;
         private List<XFile> xFiles;
         private IXSharpProject _projectNode;
         private XType _globalType;
         //
         private SystemTypeController _typeController;
 
-        public XProject(String name)
+        public XProject(IXSharpProject project)
         {
-            this.filePath = name;
+            _projectNode = project;
             xFiles = new List<XFile>();
-            this._globalType = new XType("(Global Scope)", Kind.Namespace , Modifiers.None, Modifiers.Public, new TextRange(), new TextInterval());
+            this._globalType = XType.CreateGlobalType();
             //
             this._typeController = new SystemTypeController();
         }
@@ -28,9 +27,9 @@ namespace XSharpModel
         {
             get
             {
-                return System.IO.Path.GetFileNameWithoutExtension(this.filePath);
+                return System.IO.Path.GetFileNameWithoutExtension(ProjectNode.Url);
             }
-        }
+         }
 
         public List<XFile> Files
         {

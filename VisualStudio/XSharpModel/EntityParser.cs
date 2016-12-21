@@ -96,7 +96,7 @@ namespace XSharpModel
                 }
                 else if (context is XSharpParser.Structure_Context)
                 {
-                    XType newClass = this.FromClass((XSharpParser.Class_Context)context);
+                    XType newClass = this.FromStructure((XSharpParser.Structure_Context)context);
                     newClass.File = this.file;
                     //
                     this.file.TypeList.Add(newClass);
@@ -137,6 +137,7 @@ namespace XSharpModel
                     XSharpParser.FunctionContext current = (XSharpParser.FunctionContext)context;
                     XTypeMember newMethod = this.FromFunction((XSharpParser.FunctionContext)context);
                     newMethod.File = this.file;
+                    this.file.GlobalType.Members.Add(newMethod);
                     newMethod.Parent = file.Project.GlobalType;
                     file.Project.GlobalType.Members.Add(newMethod);
                     this._currentMethod = newMethod;
@@ -146,6 +147,7 @@ namespace XSharpModel
                     XSharpParser.ProcedureContext current = (XSharpParser.ProcedureContext)context;
                     XTypeMember newMethod = this.FromProcedure((XSharpParser.ProcedureContext)context);
                     newMethod.File = this.file;
+                    this.file.GlobalType.Members.Add(newMethod);
                     newMethod.Parent = file.Project.GlobalType;
                     file.Project.GlobalType.Members.Add(newMethod);
                     this._currentMethod = newMethod;

@@ -10,7 +10,7 @@ namespace XSharpModel
     {
 
         string RootNameSpace { get; }
-
+        string Url { get; }
         void SetStatusBarText(string message);
     }
 }

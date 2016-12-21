@@ -27,11 +27,11 @@ namespace XSharpModel
         {
             _members = new List<XTypeMember>();
             _nameSpace = "";
-            if (modifiers == Modifiers.Static)
+            if (modifiers.HasFlag(Modifiers.Static))
             {
                 this._isStatic = true;
             }
-            if (modifiers == Modifiers.Partial)
+            if (modifiers.HasFlag( Modifiers.Partial))
             {
                 this._isPartial = true;
             }
@@ -172,6 +172,11 @@ namespace XSharpModel
                 }
                 this._parentName = value;
             }
+        }
+
+        public static XType CreateGlobalType()
+        {
+            return new XType("(Global Scope)", Kind.Class, Modifiers.Partial|Modifiers.Static, Modifiers.Public, new TextRange(), new TextInterval());
         }
     }
 }

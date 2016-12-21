@@ -1784,6 +1784,7 @@ namespace Microsoft.VisualStudio.Project
                     case VsCommands.Exit:
                     case VsCommands.ProjectSettings:
                     case VsCommands.BuildSln:
+                    case VsCommands.BuildCtx:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
 
@@ -1812,6 +1813,7 @@ namespace Microsoft.VisualStudio.Project
                     case VsCommands.SetStartupProject:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
+
                 }
             }
             else if (cmdGroup == VsMenus.guidStandardCommandSet2K)
@@ -1830,6 +1832,7 @@ namespace Microsoft.VisualStudio.Project
                     case (VsCommands2K) XVsConstants.CommandExploreFolderInWindows:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
+
                 }
             }
             else

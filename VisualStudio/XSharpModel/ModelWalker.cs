@@ -73,6 +73,7 @@ namespace XSharpModel
                 ThreadStart ts = new ThreadStart(this.Walker);
                 _WalkerThread = new Thread(ts);
                 _WalkerThread.IsBackground = true;
+                _WalkerThread.Priority = ThreadPriority.Highest;
                 _WalkerThread.Name = "ModelWalker";
                 _WalkerThread.Start();
             }

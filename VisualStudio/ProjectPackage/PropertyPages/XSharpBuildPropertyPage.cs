@@ -284,7 +284,7 @@ namespace XSharp.Project
         public bool PPO
         {
             get { return this.ppo; }
-            //set { this.ppo = value; this.IsDirty = true; }
+            set { this.ppo = value; this.IsDirty = true; }
         }
 
         [Category(CatPreprocessor), DisplayName(DefCaption), Description(DefDescription)]

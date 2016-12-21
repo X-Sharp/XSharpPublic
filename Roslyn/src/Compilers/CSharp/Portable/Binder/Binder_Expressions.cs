@@ -911,6 +911,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
 #if XSHARP
+            if (! invoked)
+            {
+                if (!lookupResult.IsClear)
+                {
+                    bool ok = false;
+                    foreach (var sym in lookupResult.Symbols)
+                    {
+                        if (sym.Kind != SymbolKind.Method)
+                        {
+                            ok = true;
+                            break;
+                        }
+                    }
+                    if (! ok && ! (node.Parent is AssignmentExpressionSyntax))   // Assigning Event Handler ?
+                    {
+                        diagnostics.Add(ErrorCode.ERR_NameNotInContext, node.Location,name);
+                    }
+                }
+            }
             if ( preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
             {
                 bool lookupAgain = false;

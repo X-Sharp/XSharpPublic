@@ -43,6 +43,14 @@ namespace XSharpModel
             return false;
         }
 
+        public static bool Remove(XProject project)
+        {
+            if (project != null)
+                return Remove(project.Name);
+            return false;
+        }
+
+
         public static XFile FindFile(string fileName)
         {
             XFile file = null;
@@ -76,6 +84,7 @@ namespace XSharpModel
         public static XProject FindProject(string projectFile )
         {
             XProject project;
+            projectFile = System.IO.Path.GetFileNameWithoutExtension(projectFile);
             if (xProjects.TryGetValue(projectFile.ToLower(), out project))
             {
                 return project;

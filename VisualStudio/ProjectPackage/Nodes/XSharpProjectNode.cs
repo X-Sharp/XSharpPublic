@@ -925,7 +925,7 @@ namespace XSharp.Project
                 // Neither ? Ok, Create
                 if (projectModel == null)
                 {
-                    projectModel = new XSharpModel.XProject(this.Url);
+                    projectModel = new XSharpModel.XProject(this);
                     // Set the backlink, so the walker can access the StatusBar
                     projectModel.ProjectNode = this;
                     // Add all references to the Type Controller
@@ -1137,6 +1137,7 @@ namespace XSharp.Project
         }
         public override int Close()
         {
+            XSharpModel.XSolution.Remove(projectModel);
             var res = base.Close();
             if (logger != null)
             {
@@ -1147,6 +1148,21 @@ namespace XSharp.Project
                 errorlistProvider.Clear();
             }
             return res;
+        }
+
+        protected override void RenameProjectFile(string newFile)
+        {
+
+            var model = this.ProjectModel;
+            if (model != null)
+            {
+                XSharpModel.XSolution.Remove(model);
+            }
+            base.RenameProjectFile(newFile);
+            if (model != null)
+            {
+                XSharpModel.XSolution.Add(model);
+            }
         }
     }
 

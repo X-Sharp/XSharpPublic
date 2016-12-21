@@ -1198,6 +1198,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return r;
         }
+
+        bool IsTypeEqual(TypeSyntax t1, TypeSyntax t2)
+        {
+            var id1 = t1.ToFullString().Replace(" ", "");
+            var id2 = t2.ToFullString().Replace(" ", "");
+            if (id1.IndexOf(".") > 0)
+                id1 = id1.Substring(id1.LastIndexOf(".")+1);
+            if (id2.IndexOf(".") > 0)
+                id2 = id2.Substring(id2.LastIndexOf(".")+1);
+
+            return string.Compare(id1, id2, StringComparison.OrdinalIgnoreCase) == 0;
+        }
   
         protected BasePropertyDeclarationSyntax GenerateVoProperty(SyntaxClassEntities.VoPropertyInfo vop) {
             var getMods = _pool.Allocate();
@@ -1297,10 +1309,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (AccMet != null )
                 {
                     var accType = AccMet.Type?.Get<TypeSyntax>() ?? _getMissingType();
-                    if (voPropType.ToFullString() != accType.ToFullString())
-                    {
-                        typeMatch = false;
-                    }
+                    typeMatch = IsTypeEqual(voPropType, accType);
                 }
             }
             else if (AccMet != null)
@@ -1386,7 +1395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var type1 = AccMet.ParamList._Params[iParam].Type?.Get<TypeSyntax>() ?? _getMissingType();
                             var type2 = AssMet.ParamList._Params[iParam + 1].Type?.Get<TypeSyntax>() ?? _getMissingType();
                             if (String.Compare(name1, name2, StringComparison.OrdinalIgnoreCase) != 0
-                                || String.Compare(type1.ToFullString(), type2.ToFullString(), StringComparison.OrdinalIgnoreCase) != 0)
+                                || ! IsTypeEqual(type1,type2))
                             {
                                 paramMatch = false;
                             }

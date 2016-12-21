@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using LanguageService.CodeAnalysis.Text;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using LanguageService.SyntaxTree;
+using LanguageService.SyntaxTree.Misc;
+using LanguageService.SyntaxTree.Tree;
 namespace XSharpModel
 {
+    [DebuggerDisplay("{Prototype:nq}")]
     public class XVariable : XElement
     {
         private String _typeName;

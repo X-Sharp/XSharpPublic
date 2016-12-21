@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
 using LanguageService.CodeAnalysis.Text;
+using System.Diagnostics;
 
 namespace XSharpModel
 {
@@ -12,6 +13,7 @@ namespace XSharpModel
     /// <summary>
     /// Model for Class or a Structure
     /// </summary>
+    [DebuggerDisplay("{FullName:nq}")]
     public class XType : XElement
     {
         private List<XTypeMember> _members;
@@ -25,11 +27,11 @@ namespace XSharpModel
         {
             _members = new List<XTypeMember>();
             _nameSpace = "";
-            if (modifiers == Modifiers.Static)
+            if (modifiers.HasFlag(Modifiers.Static))
             {
                 this._isStatic = true;
             }
-            if (modifiers == Modifiers.Partial)
+            if (modifiers.HasFlag( Modifiers.Partial))
             {
                 this._isPartial = true;
             }
@@ -170,6 +172,11 @@ namespace XSharpModel
                 }
                 this._parentName = value;
             }
+        }
+
+        public static XType CreateGlobalType()
+        {
+            return new XType("(Global Scope)", Kind.Class, Modifiers.Partial|Modifiers.Static, Modifiers.Public, new TextRange(), new TextInterval());
         }
     }
 }

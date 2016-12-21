@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace XSharpModel
 {
+    [DebuggerDisplay("{FullPath:nq}")]
     public class XFile
     {
         private List<String> _usings;

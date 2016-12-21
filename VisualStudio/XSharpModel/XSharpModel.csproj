@@ -53,7 +53,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="XSharp.CodeAnalysis">
-      <HintPath>..\Binaries\Debug\XSharp.CodeAnalysis.dll</HintPath>
+      <HintPath>..\..\External\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

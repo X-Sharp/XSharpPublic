@@ -139,65 +139,43 @@ namespace XSharpModel
             if (kw != null)
             {
                 kw = kw.ToLowerInvariant();
-                if (kw == "string")
+                switch (kw)
                 {
-                    return typeof(string);
-                }
-                if (kw == "char")
-                {
-                    return typeof(char);
-                }
-                if (kw == "byte")
-                {
-                    return typeof(byte);
-                }
-                if (kw == "short")
-                {
-                    return typeof(short);
-                }
-                if (kw == "word")
-                {
-                    return typeof(ushort);
-                }
-                if (kw == "dword")
-                {
-                    return typeof(uint);
-                }
-                if (kw == "long")
-                {
-                    return typeof(int);
-                }
-                if (kw == "longint")
-                {
-                    return typeof(int);
-                }
-                if (kw == "int")
-                {
-                    return typeof(int);
-                }
-                if (kw == "int64")
-                {
-                    return typeof(long);
-                }
-                if (kw == "uint64")
-                {
-                    return typeof(ulong);
-                }
-                if (kw == "real8")
-                {
-                    return typeof(double);
-                }
-                if (kw == "real4")
-                {
-                    return typeof(float);
-                }
-                if (kw == "logic")
-                {
-                    return typeof(bool);
-                }
-                if (kw == "void")
-                {
-                    return typeof(void);
+                    case "string":
+                        return typeof(string);
+                    case "char":
+                        return typeof(char);
+                    case "byte":
+                        return typeof(byte);
+                    case "sbyte":
+                        return typeof(sbyte);
+                    case "int16":
+                    case "short":
+                    case "shortint":
+                        return typeof(short);
+                    case "uint16":
+                    case "word":
+                        return typeof(ushort);
+                    case "dword":
+                    case "uint32":
+                        return typeof(uint);
+                    case "int":
+                    case "int32":
+                    case "long":
+                    case "longint":
+                        return typeof(int);
+                    case "int64":
+                        return typeof(long);
+                    case "uint64":
+                        return typeof(ulong);
+                    case "real8":
+                        return typeof(double);
+                    case "real4":
+                        return typeof(float);
+                    case "logic":
+                        return typeof(bool);
+                    case "void":
+                        return typeof(void);
                 }
             }
             return null;

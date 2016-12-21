@@ -93,7 +93,7 @@ namespace XSharpLanguage
                 return;
             }
             // The Completion list we are building
-            List<Completion> compList = new List<Completion>();
+            CompletionList compList = new CompletionList();
             // Build a list with the tokens we have from the TriggerPoint to the start of the line
             List<String> tokenList = this.GetTokenList(triggerPoint);
             // Check if we can get the member where we are
@@ -103,12 +103,12 @@ namespace XSharpLanguage
             if (cType != null)
             {
                 Modifiers visibleAs = Modifiers.Public;
-                if ( member.ParentName == cType.FullName )
+                if (member.ParentName == cType.FullName)
                 {
                     visibleAs = Modifiers.Private;
                 }
                 // Now, Fill the CompletionList with the available members, from there
-                BuildCompletionList(compList, cType, visibleAs );
+                BuildCompletionList(compList, cType, visibleAs);
             }
             else
             {
@@ -171,7 +171,7 @@ namespace XSharpLanguage
                     else
                     {
                         cType = new CompletionType((XVariable)element);
-                        if ( !cType.IsInitialized )
+                        if (!cType.IsInitialized)
                         {
                             cType = null;
                         }
@@ -192,7 +192,7 @@ namespace XSharpLanguage
             return cType;
         }
 
-        private void BuildCompletionList(List<Completion> compList, XTypeMember currentMember)
+        private void BuildCompletionList(CompletionList compList, XTypeMember currentMember)
         {
             if (currentMember == null)
             {
@@ -204,7 +204,7 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(paramVar.GlyphGroup, paramVar.GlyphItem);
-                compList.Add(new Completion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null));
+                compList.Add(new XSCompletion(paramVar.Name, paramVar.Name, paramVar.Description, icon, null));
             }
             // Then, look for Locals
             // First, look after Parameters
@@ -212,18 +212,18 @@ namespace XSharpLanguage
             {
                 //
                 ImageSource icon = _provider.GlyphService.GetGlyph(localVar.GlyphGroup, localVar.GlyphItem);
-                compList.Add(new Completion(localVar.Name, localVar.Name, localVar.Description, icon, null));
+                compList.Add(new XSCompletion(localVar.Name, localVar.Name, localVar.Description, icon, null));
             }
             // Ok, now look for Members of the Owner of the member... So, the class a Method
             //BuildCompletionList(compList, currentMember.Parent, Modifiers.Private);
             //
         }
 
-        private void BuildCompletionList(List<Completion> compList, XElement parent)
+        private void BuildCompletionList(CompletionList compList, XElement parent)
         {
             BuildCompletionList(compList, parent, Modifiers.Public);
         }
-        private void BuildCompletionList(List<Completion> compList, XElement parent, Modifiers minVisibility)
+        private void BuildCompletionList(CompletionList compList, XElement parent, Modifiers minVisibility)
         {
             if (parent == null)
             {
@@ -253,7 +253,7 @@ namespace XSharpLanguage
                 {
                     toAdd = "(";
                 }
-                compList.Add(new Completion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
+                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
             }
             // Hummm, we should call for Owner of the Owner.. Super !
             if (Owner.Parent != null)
@@ -262,11 +262,11 @@ namespace XSharpLanguage
             }
         }
 
-        private void BuildCompletionList(List<Completion> compList, CompletionType cType)
+        private void BuildCompletionList(CompletionList compList, CompletionType cType)
         {
             BuildCompletionList(compList, cType, Modifiers.Public);
         }
-        private void BuildCompletionList(List<Completion> compList, CompletionType cType, Modifiers minVisibility)
+        private void BuildCompletionList(CompletionList compList, CompletionType cType, Modifiers minVisibility)
         {
             if (cType == null)
             {
@@ -287,7 +287,7 @@ namespace XSharpLanguage
                     BuildCompletionList(compList, new CompletionType(cType.XType.ParentName, cType.XType.File.Usings), Modifiers.Protected);
                 }
             }
-            else if ( cType.SType != null )
+            else if (cType.SType != null)
             {
                 // Now add Members for System types
                 FillMembers(compList, cType.SType, minVisibility);
@@ -300,7 +300,7 @@ namespace XSharpLanguage
         /// <param name="compList"></param>
         /// <param name="xType"></param>
         /// <param name="minVisibility"></param>
-        private void FillMembers(List<Completion> compList, XType xType, Modifiers minVisibility)
+        private void FillMembers(CompletionList compList, XType xType, Modifiers minVisibility)
         {
             // Add Members for our Project Types
             foreach (XTypeMember elt in xType.Members)
@@ -318,7 +318,7 @@ namespace XSharpLanguage
                 {
                     toAdd = "(";
                 }
-                compList.Add(new Completion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
+                compList.Add(new XSCompletion(elt.Name, elt.Name + toAdd, elt.Description, icon, null));
             }
         }
 
@@ -328,14 +328,14 @@ namespace XSharpLanguage
         /// <param name="compList"></param>
         /// <param name="sType"></param>
         /// <param name="minVisibility"></param>
-        private void FillMembers(List<Completion> compList, System.Type sType, Modifiers minVisibility)
+        private void FillMembers(CompletionList compList, System.Type sType, Modifiers minVisibility )
         {
             MemberInfo[] members;
             //
-            if ( minVisibility < Modifiers.Public )
+            if (minVisibility < Modifiers.Public)
             {
                 // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
-                members = sType.GetMembers( BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
+                members = sType.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly);
             }
             else
             {
@@ -343,21 +343,21 @@ namespace XSharpLanguage
                 members = sType.GetMembers();
             }
             //
-            foreach( var member in members )
+            foreach (var member in members)
             {
                 MemberAnalysis analysis = new MemberAnalysis(member);
-                if ( (analysis.IsInitialized) && ( minVisibility <= analysis.Visibility ))
+                if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
                 {
                     if (analysis.Kind == Kind.Constructor)
                         continue;
                     String toAdd = "";
-                    if ((analysis.Kind == Kind.Method) )
+                    if ((analysis.Kind == Kind.Method))
                     {
                         toAdd = "(";
                     }
                     //
                     ImageSource icon = _provider.GlyphService.GetGlyph(analysis.GlyphGroup, analysis.GlyphItem);
-                    compList.Add(new Completion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
+                    compList.Add(new XSCompletion(analysis.Name, analysis.Name + toAdd, analysis.Description, icon, null));
                 }
             }
         }
@@ -554,7 +554,7 @@ namespace XSharpLanguage
             public String Name;
             public String TypeName;
 
-            internal ParamInfo( String n, String t)
+            internal ParamInfo(String n, String t)
             {
                 this.Name = n;
                 this.TypeName = t;
@@ -569,7 +569,7 @@ namespace XSharpLanguage
         private String _typeName;
         private List<ParamInfo> _parameters;
 
-        internal MemberAnalysis( MemberInfo member )
+        internal MemberAnalysis(MemberInfo member)
         {
             Type declType;
             //
@@ -612,14 +612,14 @@ namespace XSharpLanguage
                     this._kind = Kind.Event;
                     EventInfo evt = member as EventInfo;
                     MethodInfo methodInfo = evt.GetAddMethod(true);
-                    if ( methodInfo == null )
+                    if (methodInfo == null)
                     {
                         methodInfo = evt.GetRemoveMethod(true);
                     }
                     //
                     this._isStatic = methodInfo.IsStatic;
                     //
-                    if ( methodInfo.IsAbstract )
+                    if (methodInfo.IsAbstract)
                     {
                         this._modifiers = Modifiers.Abstract;
                     }
@@ -665,7 +665,7 @@ namespace XSharpLanguage
                 case MemberTypes.Method:
                     this.Kind = Kind.Method;
                     MethodInfo method = member as MethodInfo;
-                    if ( method.IsSpecialName )
+                    if (method.IsSpecialName)
                     {
                         // The SpecialName bit is set to flag members that are treated in a special way by some compilers (such as property accessors and operator overloading methods).
                         this._name = null;
@@ -734,7 +734,7 @@ namespace XSharpLanguage
         {
             get
             {
-                return (this.Name != null );
+                return (this.Name != null);
             }
         }
 
@@ -780,7 +780,7 @@ namespace XSharpLanguage
                     return this.Name;
                 //
                 String vars = "";
-                foreach ( var var in this.Parameters)
+                foreach (var var in this.Parameters)
                 {
                     if (vars.Length > 0)
                         vars += ", ";
@@ -915,6 +915,91 @@ namespace XSharpLanguage
                 _parameters = value;
             }
         }
+    }
+
+    /// <summary>
+    /// XSharp CompletionList
+    /// Overload the Add() Method to support "overloads"
+    /// </summary>
+    internal class CompletionList : List<XSCompletion>
+    {
+        public new void Add( XSCompletion item)
+        {
+            int overloads = 0;
+            //
+            foreach ( XSCompletion comp in this)
+            {
+                // Search for the same Name
+                if (comp.DisplayText == item.DisplayText)
+                {
+                    // Already exists in the List !!
+                    // First Overload ?
+                    if ( comp.Properties.ContainsProperty("overloads") )
+                    {
+                        // No ...
+                        overloads = (int)comp.Properties.GetProperty("overloads");
+                    }
+                    else
+                    {
+                        comp.Properties.AddProperty("overloads", overloads);
+                    }
+                    overloads += 1;
+                    // Set the number of Overload(s)
+                    comp.Properties["overloads"] = overloads;
+                    // Now, hack the Description text
+
+                    // Ok, Forget about the newly added Completion please
+                    return;
+                }
+            }
+            // Unknown, Standard behaviour
+            base.Add(item);
+        }
+    }
+
+    /// <summary>
+    /// XSharp Completion class.
+    /// Overload the Description property in order to add "overload" text at the end
+    /// </summary>
+    public class XSCompletion : Completion
+    {
+        public XSCompletion(string displayText, string insertionText, string description, ImageSource iconSource, string iconAutomationText) 
+            : base(displayText, insertionText, description, iconSource, iconAutomationText)
+        {
+        }
+
+        public override string Description
+        {
+            get
+            {
+                string desc;
+                int overloads=0;
+                if (this.Properties.ContainsProperty("overloads"))
+                {
+                    // No ...
+                    overloads = (int)this.Properties.GetProperty("overloads");
+                }
+                if ( overloads > 0 )
+                {
+                    desc = base.Description;
+                    desc += " (+" + overloads + " overload";
+                    if (overloads > 1)
+                        desc += "s";
+                    desc += ")";
+                }
+                else
+                {
+                    desc = base.Description;
+                }
+                //
+                return desc;
+            }
+            set
+            {
+                base.Description = value;
+            }
+        }
+
     }
 }
 

@@ -178,12 +178,43 @@ namespace XSharpModel
                         imgK = ImageListKind.Method;
                         break;
                     case Kind.Structure:
+                    case Kind.VOStruct:
+                    case Kind.Union:
                         imgK = ImageListKind.Structure;
                         break;
                     case Kind.Access:
                     case Kind.Assign:
                     case Kind.Property:
                         imgK = ImageListKind.Property;
+                        break;
+                    case Kind.Event:
+                        imgK = ImageListKind.Event;
+                        break;
+                    case Kind.Delegate:
+                        imgK = ImageListKind.Delegate;
+                        break;
+                    case Kind.Operator:
+                        imgK = ImageListKind.Operator;
+                        break;
+                    case Kind.VODefine:
+                        imgK = ImageListKind.Const;
+                        break;
+                    case Kind.Enum:
+                        imgK = ImageListKind.Enum;
+                        break;
+                    case Kind.Interface:
+                        imgK = ImageListKind.Interface;
+                        break;
+                    case Kind.Namespace:
+                        imgK = ImageListKind.Namespace;
+                        break;
+                    case Kind.VOGlobal:
+                    case Kind.Field:
+                        imgK = ImageListKind.Field;
+                        break;
+                    case Kind.Parameter:
+                    case Kind.Local:
+                        imgK = ImageListKind.Local;
                         break;
                 }
                 //
@@ -242,11 +273,40 @@ namespace XSharpModel
                     case Kind.Property:
                         imgG = StandardGlyphGroup.GlyphGroupProperty;
                         break;
+                    case Kind.Parameter:
                     case Kind.Local:
-                        imgG = StandardGlyphGroup.GlyphGroupProperty;
+                        imgG = StandardGlyphGroup.GlyphGroupVariable;
                         break;
                     case Kind.Event:
                         imgG = StandardGlyphGroup.GlyphGroupEvent;
+                        break;
+                    case Kind.Delegate:
+                        imgG = StandardGlyphGroup.GlyphGroupDelegate;
+                        break;
+                    case Kind.Enum:
+                        imgG = StandardGlyphGroup.GlyphGroupEnum;
+                        break;
+                    case Kind.Operator:
+                        imgG = StandardGlyphGroup.GlyphGroupOperator;
+                        break;
+                    case Kind.Interface:
+                        imgG = StandardGlyphGroup.GlyphGroupInterface;
+                        break;
+                    case Kind.Namespace:
+                        imgG = StandardGlyphGroup.GlyphGroupNamespace;
+                        break;
+                    case Kind.Field:
+                    case Kind.VOGlobal:
+                        imgG = StandardGlyphGroup.GlyphGroupField;
+                        break;
+                    case Kind.Union:
+                        imgG = StandardGlyphGroup.GlyphGroupUnion;
+                        break;
+                    case Kind.VODefine:
+                        imgG = StandardGlyphGroup.GlyphGroupConstant;
+                        break;
+                    case Kind.VOStruct:
+                        imgG = StandardGlyphGroup.GlyphGroupValueType;
                         break;
                 }
                 return imgG;
@@ -309,18 +369,18 @@ namespace XSharpModel
     public enum Modifiers
     {
         Abstract,
-        //Export,
-        //Hidden,
         New,
         Partial,
         Sealed,
         Static,
         Unsafe,
         Private,
+        Hidden=Private,
         ProtectedInternal,
         Internal,
         Protected,
         Public,
+        Export=Public,
         None
     }
 
@@ -344,14 +404,24 @@ namespace XSharpModel
         Field,
         Local,
         Parameter,
-        Event
+        Event,
+        Operator,
+        Interface,
+        Delegate,
+        Enum,
+        Using,
+        VOGlobal,
+        VODefine,
+        VODLL,
+        VOStruct,
+        Union,
     }
 
     /// <summary>
     /// An enum which is synchronized with our image list for the various
     /// kinds of images which are available.  This can be combined with the 
     /// ImageListOverlay to select an image for the appropriate member type
-    /// and indicate the appropiate visiblity.  These can be combined with
+    /// and indicate the appropriate visibility.  These can be combined with
     /// GetImageListIndex to get the final index.
     /// 
     /// Most of these are unused as we're just using an image list shipped

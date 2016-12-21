@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
 using LanguageService.CodeAnalysis.Text;
+using System.Diagnostics;
 
 namespace XSharpModel
 {
+    [DebuggerDisplay("{Prototype:nq}")]
     public class XTypeMember : XElement
     {
 

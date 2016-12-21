@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EnvDTE;
 using LanguageService.CodeAnalysis.Text;
+using System.Diagnostics;
 
 namespace XSharpModel
 {
@@ -12,6 +13,7 @@ namespace XSharpModel
     /// <summary>
     /// Model for Class or a Structure
     /// </summary>
+    [DebuggerDisplay("{FullName:nq}")]
     public class XType : XElement
     {
         private List<XTypeMember> _members;

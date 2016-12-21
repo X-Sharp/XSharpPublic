@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LanguageService.SyntaxTree;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,12 @@ namespace XSharpModel
         private int _EndLine;
         private int _EndColumn;
 
+        public TextRange(ParserRuleContext context)
+            :this(context.Start.Line, context.Start.Column,
+                                            context.Stop.Line, context.Stop.Column)
+        {
+            
+        }
 
         public TextRange(int sl, int sc, int el, int ec)
         {
@@ -110,6 +117,10 @@ namespace XSharpModel
         private int _StartIndex;
         private int _StopIndex;
 
+        public TextInterval (ParserRuleContext context): 
+            this(context.Start.StartIndex, context.Stop.StopIndex)
+       {
+       }
 
         public TextInterval(int start, int stop)
         {

@@ -94,6 +94,15 @@ namespace XSharpModel
                     // Set as Current working Class
                     this._currentTypes.Push(newClass);
                 }
+                else if (context is XSharpParser.Structure_Context)
+                {
+                    XType newClass = this.FromClass((XSharpParser.Class_Context)context);
+                    newClass.File = this.file;
+                    //
+                    this.file.TypeList.Add(newClass);
+                    // Set as Current working Class
+                    this._currentTypes.Push(newClass);
+                }
                 else if (context is XSharpParser.ClsctorContext)
                 {
                     XSharpParser.ClsctorContext current = (XSharpParser.ClsctorContext)context;
@@ -103,6 +112,7 @@ namespace XSharpModel
                     this._currentTypes.Peek().Members.Add(newMethod);
                     this._currentMethod = newMethod;
                 }
+                // clsdtor
                 else if (context is XSharpParser.MethodContext)
                 {
                     XSharpParser.MethodContext current = (XSharpParser.MethodContext)context;
@@ -121,6 +131,7 @@ namespace XSharpModel
                     this._currentTypes.Peek().Members.Add(newMethod);
                     this._currentMethod = newMethod;
                 }
+                // propertyaccessor
                 else if (context is XSharpParser.FunctionContext)
                 {
                     XSharpParser.FunctionContext current = (XSharpParser.FunctionContext)context;
@@ -139,6 +150,12 @@ namespace XSharpModel
                     file.Project.GlobalType.Members.Add(newMethod);
                     this._currentMethod = newMethod;
                 }
+                // event
+                // eventaccessor
+                // vodll
+                // voglobal
+                // delegate
+                // operator
                 //entities.Add((XSharpParser.IEntityContext)context);
             }
             else if (context is XSharpParser.Using_Context)
@@ -150,17 +167,14 @@ namespace XSharpModel
             {
                 XSharpParser.Namespace_Context current = (XSharpParser.Namespace_Context)context;
                 //
-                TextRange range = new TextRange(context.Start.Line, context.Start.Column,
-                                            context.Stop.Line, context.Stop.Column);
-                TextInterval inter = new TextInterval(context.Start.StartIndex, context.Stop.StopIndex);
-                //
-                XType nSpace = new XType(current.Name.GetText(), Kind.Namespace, Modifiers.None, Modifiers.Public, range, inter);
+                XType nSpace = new XType(current.Name.GetText(), Kind.Namespace, Modifiers.None, 
+                    Modifiers.Public, new TextRange(context), new TextInterval(context));
                 this._currentNSpaces.Push(nSpace);
             }
             else if (context is XSharpParser.ClassvarModifiersContext)
             {
                 XSharpParser.ClassvarModifiersContext current = (XSharpParser.ClassvarModifiersContext)context;
-                this._currentVarVisibility = decodeVisibility(current._Tokens);
+                this._currentVarVisibility = decodeVisibility(current?._Tokens);
             }
             else if (context is XSharpParser.ClassVarListContext)
             {
@@ -170,18 +184,18 @@ namespace XSharpModel
                     //
                     foreach (var varContext in current._Var)
                     {
-                        TextRange range = new TextRange(varContext.Start.Line, varContext.Start.Column,
-                                varContext.Stop.Line, varContext.Stop.Column);
-                        TextInterval inter = new TextInterval(varContext.Start.StartIndex, varContext.Stop.StopIndex);
                         //
                         Kind kind = Kind.ClassVar;
                         //
                         XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
                             kind, Modifiers.None, this._currentVarVisibility,
-                            range, inter, current.DataType.GetText());
+                            new TextRange(varContext), new TextInterval(varContext), current.DataType.GetText());
                         //
-                        newClassVar.Parent = this._currentTypes.Peek();
-                        this._currentTypes.Peek().Members.Add(newClassVar);
+                        if (this._currentTypes != null &&  _currentTypes.Count > 0)
+                        {
+                            newClassVar.Parent = this._currentTypes.Peek();
+                            this._currentTypes.Peek().Members.Add(newClassVar);
+                        }
                     }
                 }
             }
@@ -203,8 +217,7 @@ namespace XSharpModel
                         localName = context.Id.GetText();
                         //
                         local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
-                            new TextRange(tmpContext.Start.Line, tmpContext.Start.Column, tmpContext.Stop.Line, tmpContext.Stop.Column),
-                            new TextInterval(tmpContext.Start.StartIndex, tmpContext.Stop.StopIndex),
+                            new TextRange(tmpContext), new TextInterval(tmpContext),
                             localType);
                         local.File = this.file;
                         //
@@ -214,8 +227,7 @@ namespace XSharpModel
                     localName = context.Id.GetText();
                     //
                     local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
-                            new TextRange(context.Start.Line, context.Start.Column, context.Stop.Line, context.Stop.Column),
-                            new TextInterval(context.Start.StartIndex, context.Stop.StopIndex),
+                            new TextRange(context), new TextInterval(context),
                             localType);
                     local.File = this.file;
                     //
@@ -254,8 +266,7 @@ namespace XSharpModel
                         XVariable local;
                         //
                         local = new XVariable(this._currentMethod, "Self", Kind.Local, Modifiers.Public,
-                            new TextRange(context.Start.Line, context.Start.Column, context.Stop.Line, context.Stop.Column),
-                            new TextInterval(context.Start.StartIndex, context.Stop.StopIndex),
+                            new TextRange(context), new TextInterval(context),
                             this._currentMethod.ParentName);
                         //
                         local.File = this.file;
@@ -264,9 +275,8 @@ namespace XSharpModel
                         if ( ! String.IsNullOrEmpty(_currentMethod.Parent.ParentName ))
                         {
                             local = new XVariable(this._currentMethod, "Super", Kind.Local, Modifiers.Public,
-                                new TextRange(context.Start.Line, context.Start.Column, context.Stop.Line, context.Stop.Column),
-                                new TextInterval(context.Start.StartIndex, context.Stop.StopIndex),
-                                this._currentMethod.Parent.ParentName);
+                            new TextRange(context), new TextInterval(context),
+                            this._currentMethod.Parent.ParentName);
                             local.File = this.file;
                             this._currentMethod.Locals.Add(local);
                         }
@@ -292,9 +302,6 @@ namespace XSharpModel
 
         private XTypeMember FromMethod(XSharpParser.MethodContext context)
         {
-            TextRange range = new TextRange(context.Start.Line, context.Start.Column,
-                                            context.Stop.Line, context.Stop.Column);
-            TextInterval inter = new TextInterval(context.Start.StartIndex, context.Stop.StopIndex);
             //
             Kind kind = Kind.Method;
             if (context.Name.Contains(":Access"))
@@ -308,9 +315,9 @@ namespace XSharpModel
             //
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                 kind,
-                (context.Modifiers == null) ? Modifiers.None : decodeModifiers(context.Modifiers._Tokens),
-                (context.Modifiers == null) ? Modifiers.Public : decodeVisibility(context.Modifiers._Tokens),
-                range, inter,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context),
                 (context.Type == null) ? "Void" : context.Type.GetText());
             //
             AddParameters(context.Params, newMethod);
@@ -320,17 +327,14 @@ namespace XSharpModel
 
         private XTypeMember FromProperty(XSharpParser.PropertyContext context)
         {
-            TextRange range = new TextRange(context.Start.Line, context.Start.Column,
-                                            context.Stop.Line, context.Stop.Column);
-            TextInterval inter = new TextInterval(context.Start.StartIndex, context.Stop.StopIndex);
             //
             Kind kind = Kind.Property;
             //
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                 kind,
-                (context.Modifiers == null) ? Modifiers.None : decodeModifiers(context.Modifiers._Tokens),
-                (context.Modifiers == null) ? Modifiers.Public : decodeVisibility(context.Modifiers._Tokens),
-                range, inter,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context),
                 (context.Type == null) ? "Void" : context.Type.GetText());
             //
             AddParameters(context.Params, newMethod);
@@ -344,10 +348,9 @@ namespace XSharpModel
             {
                 foreach (XSharpParser.ParameterContext param in ctxtParams)
                 {
-                    XVariable var = new XVariable(newMethod, param.Id.GetText(), Kind.Parameter, Modifiers.Public,
-                        new TextRange(param.Start.Line, param.Start.Column, param.Stop.Line, param.Stop.Column),
-                        new TextInterval(param.Start.StartIndex, param.Stop.StopIndex),
-                        param.Type.GetText());
+                    XVariable var = new XVariable(newMethod, param.Id?.GetText(), Kind.Parameter, Modifiers.Public,
+                        new TextRange(param), new TextInterval(param),
+                        param.Type?.GetText());
                     var.File = this.file;
                     //
                     newMethod.Parameters.Add(var);
@@ -357,15 +360,12 @@ namespace XSharpModel
 
         private XTypeMember FromCtor(XSharpParser.ClsctorContext context)
         {
-            TextRange range = new TextRange(context.Start.Line, context.Start.Column,
-                                            context.Stop.Line, context.Stop.Column);
-            TextInterval inter = new TextInterval(context.Start.StartIndex, context.Stop.StopIndex);
             //
             XTypeMember newMethod = new XTypeMember("Constructor",
                 Kind.Constructor,
-                (context.Modifiers == null) ? Modifiers.None : decodeModifiers(context.Modifiers._Tokens),
-                (context.Modifiers == null) ? Modifiers.Public : decodeVisibility(context.Modifiers._Tokens),
-                range, inter);
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
             //
             AddParameters(context.Params, newMethod);
             //
@@ -374,23 +374,20 @@ namespace XSharpModel
 
         private XType FromClass(XSharpParser.Class_Context context)
         {
-            TextRange range = new TextRange(context.Start.Line, context.Start.Column,
-                                            context.Stop.Line, context.Stop.Column);
-            TextInterval inter = new TextInterval(context.Start.StartIndex, context.Stop.StopIndex);
             //
-            XType newClass = new XType(context.Id.GetText(),
+            XType newClass = new XType(context.Id?.GetText(),
                 Kind.Class,
-                (context.Modifiers == null) ? Modifiers.None : decodeModifiers(context.Modifiers._Tokens),
-                (context.Modifiers == null) ? Modifiers.Public : decodeVisibility(context.Modifiers._Tokens),
-                range, inter);
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
             //
             newClass.NameSpace = this.CurrentNamespace;
             // and push into the current Namespace
             //CurrentNamespace.Types.Add(newClass);
             // Static Class ?
-            newClass.IsStatic = this.IsStatic(context.Modifiers);
+            newClass.IsStatic = this.IsStatic(context.Modifiers?._Tokens);
             // Partial Class ?
-            newClass.IsPartial = this.IsPartial(context.Modifiers);
+            newClass.IsPartial = this.IsPartial(context.Modifiers?._Tokens);
             // INHERIT from ?
             if (context.BaseType != null)
             {
@@ -409,17 +406,42 @@ namespace XSharpModel
             return newClass;
         }
 
+        private XType FromStructure(XSharpParser.Structure_Context context)
+        {
+            //
+            XType newStruct = new XType(context.Id.GetText(),
+                Kind.Structure,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
+            //
+            newStruct.NameSpace = this.CurrentNamespace;
+            // and push into the current Namespace
+            //CurrentNamespace.Types.Add(newClass);
+            // Static Class ?
+            newStruct.IsStatic = this.IsStatic(context.Modifiers?._Tokens);
+            // Partial Class ?
+            newStruct.IsPartial = this.IsPartial(context.Modifiers?._Tokens);
+            // IMPLEMENTS ?
+            if ((context._Implements != null) && (context._Implements.Count > 0))
+            {
+                foreach (var interfaces in context._Implements)
+                {
+                    //newClass.BaseTypes.Add(new CodeTypeReference(interfaces.GetText()));
+                }
+            }
+            //
+            return newStruct;
+        }
+
         private XTypeMember FromFunction(XSharpParser.FunctionContext context)
         {
-            TextRange range = new TextRange(context.Start.Line, context.Start.Column,
-                                            context.Stop.Line, context.Stop.Column);
-            TextInterval inter = new TextInterval(context.Start.StartIndex, context.Stop.StopIndex);
             //
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                 Kind.Function,
                 Modifiers.None,
                 Modifiers.Public,
-                range, inter,
+                new TextRange(context), new TextInterval(context),
                 (context.Type == null) ? "Void" : context.Type.GetText());
             //
             AddParameters(context.Params, newMethod);
@@ -429,15 +451,12 @@ namespace XSharpModel
 
         private XTypeMember FromProcedure(XSharpParser.ProcedureContext context)
         {
-            TextRange range = new TextRange(context.Start.Line, context.Start.Column,
-                                            context.Stop.Line, context.Stop.Column);
-            TextInterval inter = new TextInterval(context.Start.StartIndex, context.Stop.StopIndex);
             //
             XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
                 Kind.Procedure,
                 Modifiers.None,
                 Modifiers.Public,
-                range, inter);
+                new TextRange(context), new TextInterval(context));
             //
             AddParameters(context.Params, newMethod);
             //
@@ -447,22 +466,25 @@ namespace XSharpModel
         private Modifiers decodeModifiers(IList<IToken> tokens)
         {
             Modifiers retValue = Modifiers.None;
-            foreach (var token in tokens)
+            if (tokens != null)
             {
-                switch (token.Type)
+                foreach (var token in tokens)
                 {
-                    case XSharpParser.ABSTRACT:
-                        retValue = Modifiers.Abstract;
-                        break;
-                    case XSharpParser.NEW:
-                        retValue = Modifiers.New;
-                        break;
-                    case XSharpParser.SEALED:
-                        retValue = Modifiers.Sealed;
-                        break;
-                    case XSharpParser.UNSAFE:
-                        retValue = Modifiers.Unsafe;
-                        break;
+                    switch (token.Type)
+                    {
+                        case XSharpParser.ABSTRACT:
+                            retValue |= Modifiers.Abstract;
+                            break;
+                        case XSharpParser.NEW:
+                            retValue |= Modifiers.New;
+                            break;
+                        case XSharpParser.SEALED:
+                            retValue |= Modifiers.Sealed;
+                            break;
+                        case XSharpParser.UNSAFE:
+                            retValue |= Modifiers.Unsafe;
+                            break;
+                    }
                 }
             }
             return retValue;
@@ -471,65 +493,60 @@ namespace XSharpModel
         private Modifiers decodeVisibility(IList<IToken> tokens)
         {
             Modifiers retValue = Modifiers.Public;
-            bool bHasProtect = false;
-            bool bHasInternal = false;
-            foreach (var token in tokens)
+            if (tokens != null)
             {
-                switch (token.Type)
+                bool bHasProtect = false;
+                bool bHasInternal = false;
+                foreach (var token in tokens)
                 {
-                    case XSharpParser.INTERNAL:
-                        bHasInternal = true;
-                        if (bHasProtect)
-                            retValue = Modifiers.ProtectedInternal;
-                        else
-                            retValue = Modifiers.Internal;
-                        break;
-                    case XSharpParser.PROTECTED:
-                        bHasProtect = true;
-                        if (bHasInternal)
-                            retValue = Modifiers.ProtectedInternal;
-                        else
-                            retValue = Modifiers.Protected;
-                        break;
-                    case XSharpParser.PRIVATE:
-                    case XSharpParser.HIDDEN:
-                        retValue = Modifiers.Private;
-                        break;
-                    case XSharpParser.EXPORT:
-                    case XSharpParser.PUBLIC:
-                        //
-                        retValue = Modifiers.Public;
-                        break;
+                    switch (token.Type)
+                    {
+                        case XSharpParser.INTERNAL:
+                            bHasInternal = true;
+                            if (bHasProtect)
+                                retValue = Modifiers.ProtectedInternal;
+                            else
+                                retValue = Modifiers.Internal;
+                            break;
+                        case XSharpParser.PROTECTED:
+                            bHasProtect = true;
+                            if (bHasInternal)
+                                retValue = Modifiers.ProtectedInternal;
+                            else
+                                retValue = Modifiers.Protected;
+                            break;
+                        case XSharpParser.PRIVATE:
+                        case XSharpParser.HIDDEN:
+                            retValue = Modifiers.Private;
+                            break;
+                        case XSharpParser.EXPORT:
+                        case XSharpParser.PUBLIC:
+                            //
+                            retValue = Modifiers.Public;
+                            break;
+                    }
                 }
             }
             return retValue;
         }
 
-        private bool IsStatic(XSharpParser.ClassModifiersContext modifiers)
+        private bool IsStatic(IList<IToken> modifiers)
         {
             bool retValue = false;
             if (modifiers != null)
             {
-                ITerminalNode[] visibility;
-                //
-                visibility = modifiers.STATIC();
-                if (visibility.Length > 0)
-                    retValue = true;
+                retValue = modifiers.Where(t => t.Type == XSharpParser.STATIC).Count() > 0;
             }
             //
             return retValue;
         }
 
-        private bool IsPartial(XSharpParser.ClassModifiersContext modifiers)
+        private bool IsPartial(IList<IToken> modifiers)
         {
             bool retValue = false;
             if (modifiers != null)
             {
-                ITerminalNode[] visibility;
-                //
-                visibility = modifiers.PARTIAL();
-                if (visibility.Length > 0)
-                    retValue = true;
+                retValue = modifiers.Where(t => t.Type == XSharpParser.PARTIAL).Count() > 0;
             }
             //
             return retValue;

@@ -57,6 +57,7 @@ namespace XSharp.LanguageService
             int nTemp;
             int distance = int.MaxValue;
             int distanceM = int.MaxValue;
+            int nCount = 0;
             //
             if (file.TypeList.Count > 0)
                 nSelType = 0;
@@ -97,25 +98,29 @@ namespace XSharp.LanguageService
                 }
                 //
                 dropDownMembers.Clear();
-                if (eltType.Members.Count > 0)
-                    nSelMbr = 0;
-                foreach (XTypeMember member in eltType.Members)
+                if (selectedType == nCount)
                 {
-                    TextSpan spM = this.TextRangeToTextSpan(member.Range);
-                    //
-                    DropDownMember eltM = new DropDownMember(member.Prototype, spM, member.Glyph, ft);
-                    nTemp = dropDownMembers.Add(eltM);
-                    //
-                    if (TextSpanHelper.ContainsInclusive(spM, line, col))
+                    if (eltType.Members.Count > 0)
+                        nSelMbr = 0;
+                    foreach (XTypeMember member in eltType.Members)
                     {
+                        TextSpan spM = this.TextRangeToTextSpan(member.Range);
                         //
-                        if (line - sp.iStartLine < distanceM)
+                        DropDownMember eltM = new DropDownMember(member.Prototype, spM, member.Glyph, ft);
+                        nTemp = dropDownMembers.Add(eltM);
+                        //
+                        if (TextSpanHelper.ContainsInclusive(spM, line, col))
                         {
-                            distanceM = line - sp.iStartLine;
-                            nSelMbr = nTemp;
+                            //
+                            if (line - sp.iStartLine < distanceM)
+                            {
+                                distanceM = line - sp.iStartLine;
+                                nSelMbr = nTemp;
+                            }
                         }
                     }
                 }
+                nCount++;
             }
             //
             if (nSelType > -1)

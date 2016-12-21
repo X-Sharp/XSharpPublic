@@ -168,7 +168,7 @@ namespace XSharpModel
             {
                 if (this.Parent != null)
                 {
-                    throw new Exception( "Cannot ParentName if Parent is not null" );
+                    throw new Exception( "Cannot set ParentName if Parent is not null" );
                 }
                 this._parentName = value;
             }
@@ -176,7 +176,7 @@ namespace XSharpModel
 
         public static XType CreateGlobalType()
         {
-            return new XType("(Global Scope)", Kind.Class, Modifiers.Partial|Modifiers.Static, Modifiers.Public, new TextRange(), new TextInterval());
+            return new XType("(Global Scope)", Kind.Class, Modifiers.Partial|Modifiers.Static, Modifiers.Public, new TextRange(1,1,1,1), new TextInterval());
         }
     }
 }

@@ -235,18 +235,19 @@ namespace Microsoft.CodeAnalysis.CSharp
             var localsMap = this.LocalsMap;
             if (localsMap != null && (options & LookupOptions.NamespaceAliasesOnly) == 0)
             {
-#if XSHARP
-                if ((options & LookupOptions.MustBeInvocableIfMember) == 0)
-                {
-#endif
                     LocalSymbol localSymbol;
-                    if (localsMap.TryGetValue(name, out localSymbol))
+                if (localsMap.TryGetValue(name, out localSymbol))
+                {
+#if XSHARP
+                    if ((options & LookupOptions.MustBeInvocableIfMember) == 0 || localSymbol.Type.TypeKind == TypeKind.Delegate)
                     {
                         result.MergeEqual(originalBinder.CheckViability(localSymbol, arity, options, null, diagnose, ref useSiteDiagnostics, basesBeingResolved));
                     }
-#if XSHARP
-                }
+#else
+                    result.MergeEqual(originalBinder.CheckViability(localSymbol, arity, options, null, diagnose, ref useSiteDiagnostics, basesBeingResolved));
+
 #endif
+                }
             }
         }
 

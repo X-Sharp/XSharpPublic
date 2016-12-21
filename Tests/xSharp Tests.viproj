@@ -33619,7 +33619,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C341 - Cannot assign literal string to PSZ var
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C342 - Problem when type of ACCESS/ASSIGN differs by casing *************
 Application = C342 - Problem when type of ACCESS/ASSIGN differs by casing
 IDEVersion = 1.06
@@ -33718,7 +33718,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C342 - Problem when type of ACCESS/ASSIGN differs by casing
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C343 - Problem invoking delegate *************
 Application = C343 - Problem invoking delegate
 IDEVersion = 1.06

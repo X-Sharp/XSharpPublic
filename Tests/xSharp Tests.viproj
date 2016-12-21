@@ -1922,7 +1922,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C259
 
-ApplicationGroup = D2167BBF-156A-4E64-861D-753C3894EE87
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C258 - Problem with @ operator on VOSTRUCT member *************
 Application = C258 - Problem with @ operator on VOSTRUCT member
 IDEVersion = 1.06
@@ -33421,7 +33421,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C339 - Problem with indexed ACCESS
 
-ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C340 - Name conflict between FUNCTION and parameter *************
 Application = C340 - Name conflict between FUNCTION and parameter
 IDEVersion = 1.06

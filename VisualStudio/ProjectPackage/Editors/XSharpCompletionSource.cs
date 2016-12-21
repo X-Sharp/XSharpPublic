@@ -276,7 +276,7 @@ namespace XSharpLanguage
             //
             if (cType.XType != null)
             {
-                FillMembers(compList, cType.XType, minVisibility);
+                FillMembers(compList, cType.XType, minVisibility, false);
                 // Hummm, we should call for Owner of the Owner.. Super !
                 if (cType.XType.Parent != null)
                 {
@@ -290,7 +290,7 @@ namespace XSharpLanguage
             else if (cType.SType != null)
             {
                 // Now add Members for System types
-                FillMembers(compList, cType.SType, minVisibility);
+                FillMembers(compList, cType.SType, minVisibility, false);
             }
         }
 
@@ -300,7 +300,7 @@ namespace XSharpLanguage
         /// <param name="compList"></param>
         /// <param name="xType"></param>
         /// <param name="minVisibility"></param>
-        private void FillMembers(CompletionList compList, XType xType, Modifiers minVisibility)
+        private void FillMembers(CompletionList compList, XType xType, Modifiers minVisibility, bool staticOnly)
         {
             // Add Members for our Project Types
             foreach (XTypeMember elt in xType.Members)
@@ -328,7 +328,7 @@ namespace XSharpLanguage
         /// <param name="compList"></param>
         /// <param name="sType"></param>
         /// <param name="minVisibility"></param>
-        private void FillMembers(CompletionList compList, System.Type sType, Modifiers minVisibility )
+        private void FillMembers(CompletionList compList, System.Type sType, Modifiers minVisibility, bool staticOnly)
         {
             MemberInfo[] members;
             //
@@ -350,6 +350,10 @@ namespace XSharpLanguage
                 {
                     if (analysis.Kind == Kind.Constructor)
                         continue;
+                    if ( analysis.IsStatic && !staticOnly)
+                    {
+                        continue;
+                    }
                     String toAdd = "";
                     if ((analysis.Kind == Kind.Method))
                     {
@@ -913,6 +917,19 @@ namespace XSharpLanguage
             set
             {
                 _parameters = value;
+            }
+        }
+
+        public bool IsStatic
+        {
+            get
+            {
+                return _isStatic;
+            }
+
+            set
+            {
+                _isStatic = value;
             }
         }
     }

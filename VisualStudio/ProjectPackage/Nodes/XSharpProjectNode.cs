@@ -25,6 +25,9 @@ using MSBuild = Microsoft.Build.Evaluation;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.Shell.TableManager;
 using System.ComponentModel.Composition;
+
+using XSharpModel;
+
 namespace XSharp.Project
 {
     /// <summary>
@@ -32,7 +35,7 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory
+    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject
     {
 
         static Dictionary<string, string> dependencies;
@@ -239,7 +242,7 @@ namespace XSharp.Project
 
         public override object GetProperty(int propId)
         {
-            if (propId == (int) __VSHPROPID.VSHPROPID_DefaultNamespace)
+            if (propId == (int)__VSHPROPID.VSHPROPID_DefaultNamespace)
             {
                 return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
             }
@@ -404,10 +407,12 @@ namespace XSharp.Project
         /// <param name="itemid">The itemid of the node in the hierarchy</param>
         /// <param name="fileName">The file name of the special file.</param>
         /// <returns></returns>
-        public override int GetFile(int fileId, uint flags, out uint itemid, out string fileName) {
+        public override int GetFile(int fileId, uint flags, out uint itemid, out string fileName)
+        {
             bool fCreateInPropertiesFolder = false;
 
-            switch(fileId) {
+            switch (fileId)
+            {
                 case (int)__PSFFILEID.PSFFILEID_AppConfig:
                     fileName = "app.config";
                     break;
@@ -446,9 +451,11 @@ namespace XSharp.Project
                     return base.GetFile(fileId, flags, out itemid, out fileName);
             }
 
-            if(fCreateInPropertiesFolder) {
+            if (fCreateInPropertiesFolder)
+            {
                 string sPropFolder = ProjectFolder + "\\Properties";
-                if(!System.IO.Directory.Exists(sPropFolder)){
+                if (!System.IO.Directory.Exists(sPropFolder))
+                {
                     System.IO.Directory.CreateDirectory(sPropFolder);
                 }
                 fileName = "Properties\\" + fileName;
@@ -456,32 +463,37 @@ namespace XSharp.Project
 
             HierarchyNode fileNode = FindChild(fileName);
             string fullPath = Path.Combine(ProjectFolder, fileName);
-            if (fCreateInPropertiesFolder) {
-                fullPath = Path.Combine(ProjectFolder , fileName);
-                }
+            if (fCreateInPropertiesFolder)
+            {
+                fullPath = Path.Combine(ProjectFolder, fileName);
+            }
 
-            if(fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0) {
+            if (fileNode == null && (flags & (uint)__PSFFLAGS.PSFF_CreateIfNotExist) != 0)
+            {
                 // Create a zero-length file if does not exist already.
                 //
-                if(!File.Exists(fullPath))
+                if (!File.Exists(fullPath))
                     File.WriteAllText(fullPath, string.Empty);
 
                 fileNode = CreateFileNode(fileName);
-                if (fCreateInPropertiesFolder) {
+                if (fCreateInPropertiesFolder)
+                {
                     var PropsFolder = FindChild("Properties");
-                    if(PropsFolder == null) {
+                    if (PropsFolder == null)
+                    {
                         PropsFolder = CreateFolderNode("Properties");
                         AddChild(PropsFolder);
                     }
                     PropsFolder.AddChild(fileNode);
                 }
-                else {
+                else
+                {
                     AddChild(fileNode);
                 }
             }
 
             itemid = fileNode != null ? fileNode.ID : 0;
-             if((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
+            if ((flags & (uint)__PSFFLAGS.PSFF_FullPath) != 0)
                 fileName = fullPath;
 
             return VSConstants.S_OK;
@@ -583,7 +595,7 @@ namespace XSharp.Project
             string parentFile = fileName.Substring(0, dotPos);
             string extension = fileName.Substring(dotPos).ToLower();
             //
-            if ( dependencies.ContainsKey(extension) )
+            if (dependencies.ContainsKey(extension))
             {
                 //
                 HierarchyNode newParent = parentNode.FindChild(parentFile + dependencies[extension]);
@@ -618,7 +630,7 @@ namespace XSharp.Project
                     }
                     break;
             }
-            var newNode = base.AddNewFileNodeToHierarchyCore(parentNode, fileName,linkPath);
+            var newNode = base.AddNewFileNodeToHierarchyCore(parentNode, fileName, linkPath);
             if (newNode is XSharpFileNode)
             {
                 var xNode = newNode as XSharpFileNode;
@@ -628,7 +640,7 @@ namespace XSharp.Project
         }
 
         protected override Microsoft.VisualStudio.Project.ProjectElement AddFileToMsBuild(string file)
-            {
+        {
 
             string itemPath = PackageUtilities.MakeRelativeIfRooted(file, this.BaseURI);
             string itemType = XFileType.GetItemType(itemPath);
@@ -647,7 +659,8 @@ namespace XSharp.Project
             return false;
         }
 
-        public bool IsVoBinary(string fileName) {
+        public bool IsVoBinary(string fileName)
+        {
             return XFileType.IsVoBinary(fileName);
         }
 
@@ -685,12 +698,13 @@ namespace XSharp.Project
                 || String.Compare(type, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase) == 0     // xaml application definition
                 || String.Compare(type, XSharpProjectFileConstants.NativeResource, StringComparison.OrdinalIgnoreCase) == 0           // rc file
                 || String.Compare(type, XSharpProjectFileConstants.VOBinary, StringComparison.OrdinalIgnoreCase) == 0           // vobinary file
-                ) {
+                )
+            {
                 return true;
             }
 
             // we don't know about this type, ask the base class.
-            return base.IsItemTypeFileType( type );
+            return base.IsItemTypeFileType(type);
         }
 
 
@@ -711,6 +725,9 @@ namespace XSharp.Project
             //event handler generation (EventBindingProvider) for the XAML designer.
             this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
+            // Run the background Walker/Listener, to fill the Model
+            this.ProjectModel.Walk();
+
         }
         #endregion
 
@@ -728,7 +745,7 @@ namespace XSharp.Project
         /// Factory method for reference container node
         /// </summary>
         /// <returns>ReferenceContainerNode created</returns>
-        protected override  ReferenceContainerNode CreateReferenceContainerNode()
+        protected override ReferenceContainerNode CreateReferenceContainerNode()
         {
             return new XSharpReferenceContainerNode(this);
         }
@@ -800,7 +817,7 @@ namespace XSharp.Project
         protected override NodeProperties CreatePropertiesObject()
         {
             //return new XSharpProjectNodeProperties( this );
-            return new XSharpProjectNodeProperties(this);
+            return new ProjectNodeProperties(this);
         }
         /*
                /// <summary>
@@ -894,6 +911,95 @@ namespace XSharp.Project
         #endregion
 
 
+        XSharpModel.XProject projectModel;
+        public XSharpModel.XProject ProjectModel
+        {
+            get
+            {
+                // Already Initialized ?
+                if (projectModel == null)
+                {
+                    // Already in the Solution ?
+                    projectModel = XSharpModel.XSolution.FindProject(this.Url);
+                }
+                // Neither ? Ok, Create
+                if (projectModel == null)
+                {
+                    projectModel = new XSharpModel.XProject(this.Url);
+                    // Set the backlink, so the walker can access the StatusBar
+                    projectModel.ProjectNode = this;
+                    // Add all references to the Type Controller
+                    foreach( Reference reference in this.VSProject.References)
+                    {
+                        if (reference.Type == prjReferenceType.prjReferenceTypeAssembly)
+                        {
+                            string fullPath = reference.Path;
+                            SystemTypeController.LoadAssembly(fullPath);
+                        }
+                    }
+                    //
+                    XSharpModel.XSolution.Add(projectModel);
+                }
+                return projectModel;
+            }
+
+            private set
+            {
+                projectModel = null;
+            }
+        }
+
+        public new void AddURL(String url, HierarchyNode node)
+        {
+            //
+            base.AddURL(url, node);
+            // We can arrive from
+            // XSharpFileNode
+            // XSharpFolderNode
+            // XSharpProjectReference
+            // So, we will add files only (currently) => Don't forget RemoveURL
+            if (!IsProjectFile(url))
+            {
+                if (File.Exists(url) && IsCodeFile(url))
+                {
+                    this.ProjectModel.AddFile(url);
+                }
+            }
+
+        }
+
+        public new void RemoveURL(String url)
+        {
+            //
+            base.RemoveURL(url);
+            //
+            this.ProjectModel.RemoveFile(url);
+        }
+
+
+        private bool IsProjectFile(string fullPath)
+        {
+            return (String.Compare(Path.GetExtension(fullPath), ".xsprj", StringComparison.OrdinalIgnoreCase) == 0);
+        }
+
+        #region IXSharpProject Interface
+        public void SetStatusBarText(string msg)
+        {
+            var statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+            if (statusBar != null)
+            {
+                statusBar.SetText(msg);
+            }
+        }
+
+        public string RootNameSpace
+        {
+            get
+            {
+                return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+            }
+        }
+        #endregion
 
 
         protected override void Reload()
@@ -909,14 +1015,14 @@ namespace XSharp.Project
         protected virtual internal bool ResetDependencies()
         {
             bool bMoved = false;
-            List< Tuple<XSharpFileNode,String,String>> FilesToMove = new List<Tuple<XSharpFileNode, String, String>>();
+            List<Tuple<XSharpFileNode, String, String>> FilesToMove = new List<Tuple<XSharpFileNode, String, String>>();
             foreach (KeyValuePair<string, HierarchyNode> pair in URLNodes)
             {
                 XSharpFileNode vnode = pair.Value as XSharpFileNode;
                 if (vnode != null)
                 {
                     string parent = vnode.GetParentName();
-                    if (! String.IsNullOrEmpty(parent))
+                    if (!String.IsNullOrEmpty(parent))
                     {
                         if (!(vnode.Parent is XSharpFileNode))
                         {
@@ -1044,6 +1150,6 @@ namespace XSharp.Project
         }
     }
 
-        #endregion
-    }
+    #endregion
+}
 

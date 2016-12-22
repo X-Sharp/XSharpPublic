@@ -315,6 +315,7 @@
     <Compile Include="Symbols\ConstantValueSpecialized.cs" />
     <Compile Include="Symbols\SourceMemberFieldSymbol.cs" />
     <Compile Include="Symbols\SourceNamedTypeSymbol.cs" />
+    <Compile Include="Symbols\MemberSymbolExtensions.cs" />
     <Compile Include="Symbols\TypeSymbolExtensions.cs" />
     <Compile Include="Symbols\CodeblockType.TypePublicSymbol.cs" />
     <Compile Include="Syntax\CSharpSyntaxTree.cs" />

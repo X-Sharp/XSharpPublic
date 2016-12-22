@@ -1135,7 +1135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var parameters = paramlist?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = stmtblock?.Get<BlockSyntax>();
                 TypeSyntax returntype = null;
-                if (chain != null)
+                if (chain != null && context.Data.HasClipperCallingConvention)
                 {
                     var chainArgs = args?.Get<ArgumentListSyntax>() ?? EmptyArgumentList();
                     var chainExpr = MakeSimpleMemberAccess(

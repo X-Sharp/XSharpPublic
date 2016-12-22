@@ -9540,7 +9540,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to method group.
+        ///   Looks up a localized string similar to method.
         /// </summary>
         internal static string IDS_MethodGroup {
             get {

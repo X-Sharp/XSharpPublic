@@ -421,15 +421,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
-            if (!invoked && !lookupResult.IsClear && ! (node.Parent is AssignmentExpressionSyntax))
-            {
-                // when not invoked then we should not include methods, unless this is an assignment to an event handler
-                if (lookupResult.Symbols.Where(f => f.Kind != SymbolKind.Method).Count() == 0)
-                {
-                    diagnostics.Add(ErrorCode.ERR_NameNotInContext, node.Location, name);
-                }
-            }
-            // if we did not find a static method then look again but now without the MustNotBeInstance option
             if (preferStatic)
             {
                 bool lookupAgain = false;

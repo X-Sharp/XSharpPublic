@@ -328,5 +328,230 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return false;
         }
+
+        /// <summary>
+        /// Binds a simple identifier.
+        /// </summary>
+        private BoundExpression BindXSIdentifier(
+            SimpleNameSyntax node,
+            bool invoked,
+            DiagnosticBag diagnostics,
+            bool preferStaticMethodCall = false,
+            bool allDialects = false
+            )
+        {
+            // This method replaced the standard C# BindIdentifier
+            // xBase has some different rules for binding
+            // - for calls without object prefix we prefer static method calls over self method calls (In VO SELF: is mandatory)
+            // - when invoked = TRUE then we do not return local variables, with the exception of delegates
+            // - when invoked = FALSE then we do not return methods, with the exception of assigning event handlers
+            bool preferStatic = preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects);
+            Debug.Assert(node != null);
+
+            // If the syntax tree is ill-formed and the identifier is missing then we've already
+            // given a parse error. Just return an error local and continue with analysis.
+            if (node.IsMissing)
+            {
+                return BadExpression(node);
+            }
+
+            // A simple-name is either of the form I or of the form I<A1, ..., AK>, where I is a
+            // single identifier and <A1, ..., AK> is an optional type-argument-list. When no
+            // type-argument-list is specified, consider K to be zero. The simple-name is evaluated
+            // and classified as follows:
+
+            // If K is zero and the simple-name appears within a block and if the block's (or an
+            // enclosing block's) local variable declaration space contains a local variable,
+            // parameter or constant with name I, then the simple-name refers to that local
+            // variable, parameter or constant and is classified as a variable or value.
+
+            // If K is zero and the simple-name appears within the body of a generic method
+            // declaration and if that declaration includes a type parameter with name I, then the
+            // simple-name refers to that type parameter.
+
+            BoundExpression expression;
+
+            // It's possible that the argument list is malformed; if so, do not attempt to bind it;
+            // just use the null array.
+
+            int arity = node.Arity;
+            bool hasTypeArguments = arity > 0;
+
+            SeparatedSyntaxList<TypeSyntax> typeArgumentList = node.Kind() == SyntaxKind.GenericName
+                ? ((GenericNameSyntax)node).TypeArgumentList.Arguments
+                : default(SeparatedSyntaxList<TypeSyntax>);
+
+            Debug.Assert(arity == typeArgumentList.Count);
+
+            var typeArguments = hasTypeArguments ?
+                BindTypeArguments(typeArgumentList, diagnostics) :
+                default(ImmutableArray<TypeSymbol>);
+
+            var lookupResult = LookupResult.GetInstance();
+            LookupOptions options = LookupOptions.AllMethodsOnArityZero;
+            if (invoked)
+            {
+                options |= LookupOptions.MustBeInvocableIfMember;
+            }
+
+            if (!IsInMethodBody && this.EnclosingNameofArgument == null)
+            {
+                Debug.Assert((options & LookupOptions.NamespacesOrTypesOnly) == 0);
+                options |= LookupOptions.MustNotBeMethodTypeParameter;
+            }
+            // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
+            // so we check here if we are called from a memberaccessexpression with a colon separator
+            // so String.Compare will use different lookup options as SELF:ToString()
+            var originalOptions = options;
+            if (preferStatic)
+            {
+                bool colon = false;
+                if (node.Parent is MemberAccessExpressionSyntax)
+                {
+                    var xnode = node.Parent.XNode as AccessMemberContext;
+                    if (xnode != null && xnode.Op.Text == ":")
+                    {
+                        colon = true;
+                    }
+                }
+                if (!colon)
+                    options |= LookupOptions.MustNotBeInstance;
+            }
+
+            var name = node.Identifier.ValueText;
+            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+            this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+            if (!invoked && !lookupResult.IsClear && ! (node.Parent is AssignmentExpressionSyntax))
+            {
+                // when not invoked then we should not include methods, unless this is an assignment to an event handler
+                if (lookupResult.Symbols.Where(f => f.Kind != SymbolKind.Method).Count() == 0)
+                {
+                    diagnostics.Add(ErrorCode.ERR_NameNotInContext, node.Location, name);
+                }
+            }
+            // if we did not find a static method then look again but now without the MustNotBeInstance option
+            if (preferStatic)
+            {
+                bool lookupAgain = false;
+                if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
+                {
+                    // try again but now allow instance methods
+                    lookupAgain = true;
+                }
+                if (lookupResult.Kind == LookupResultKind.Viable && invoked && lookupResult.Symbols.Count != 0)
+                {
+                    Symbol s = lookupResult.Symbols[0];
+                    if (s.Kind != SymbolKind.Method)
+                        lookupAgain = true;
+                }
+                if (lookupAgain)
+                {
+                    // This uses the 'original' BindIdentifier lookup mechanism
+                    options = originalOptions;
+                    useSiteDiagnostics = null;
+                    lookupResult.Clear();
+                    this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
+                }
+            }
+
+            diagnostics.Add(node, useSiteDiagnostics);
+
+            if (lookupResult.Kind != LookupResultKind.Empty)
+            {
+                // have we detected an error with the current node?
+                bool isError = false;
+                bool wasError;
+                var members = ArrayBuilder<Symbol>.GetInstance();
+                Symbol symbol = null;
+                if (!invoked)
+                {
+                    // not invoked, so prefer non-method symbols
+                    members.AddRange(lookupResult.Symbols.Where(f => f.Kind != SymbolKind.Method));
+                    if (members.Count == 1)
+                    {
+                        symbol = members[0];
+                    }
+                }
+                if (symbol == null)
+                {
+                    members.Clear();
+                    symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
+                }
+                else
+                {
+                    wasError = false;
+                }
+
+                isError |= wasError;
+
+                if ((object)symbol == null)
+                {
+                    Debug.Assert(members.Count > 0);
+
+                    var receiver = SynthesizeMethodGroupReceiver(node, members);
+                    expression = ConstructBoundMemberGroupAndReportOmittedTypeArguments(
+                        node,
+                        typeArgumentList,
+                        typeArguments,
+                        receiver,
+                        name,
+                        members,
+                        lookupResult,
+                        receiver != null ? BoundMethodGroupFlags.HasImplicitReceiver : BoundMethodGroupFlags.None,
+                        isError,
+                        diagnostics);
+                }
+                else
+                {
+                    bool isNamedType = (symbol.Kind == SymbolKind.NamedType) || (symbol.Kind == SymbolKind.ErrorType);
+
+                    if (hasTypeArguments && isNamedType)
+                    {
+                        symbol = ConstructNamedTypeUnlessTypeArgumentOmitted(node, (NamedTypeSymbol)symbol, typeArgumentList, typeArguments, diagnostics);
+                    }
+
+                    expression = BindNonMethod(node, symbol, diagnostics, lookupResult.Kind, isError);
+
+                    if (!isNamedType && (hasTypeArguments || node.Kind() == SyntaxKind.GenericName))
+                    {
+                        Debug.Assert(isError); // Should have been reported by GetSymbolOrMethodOrPropertyGroup.
+                        expression = new BoundBadExpression(
+                            syntax: node,
+                            resultKind: LookupResultKind.WrongArity,
+                            symbols: ImmutableArray.Create<Symbol>(symbol),
+                            childBoundNodes: ImmutableArray.Create<BoundNode>(expression),
+                            type: expression.Type,
+                            hasErrors: isError);
+                    }
+                }
+
+                members.Free();
+            }
+            else
+            {
+                // Otherwise, the simple-name is undefined and a compile-time error occurs.
+                expression = BadExpression(node);
+                if (lookupResult.Error != null)
+                {
+                    Error(diagnostics, lookupResult.Error, node);
+                }
+                else if (IsJoinRangeVariableInLeftKey(node))
+                {
+                    Error(diagnostics, ErrorCode.ERR_QueryOuterKey, node, name);
+                }
+                else if (IsInJoinRightKey(node))
+                {
+                    Error(diagnostics, ErrorCode.ERR_QueryInnerKey, node, name);
+                }
+                else
+                {
+                    Error(diagnostics, ErrorCode.ERR_NameNotInContext, node, name);
+                }
+            }
+
+            lookupResult.Free();
+            return expression;
+        }
+
     }
 }

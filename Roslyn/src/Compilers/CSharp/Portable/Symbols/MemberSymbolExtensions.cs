@@ -553,34 +553,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 member.IsExplicitInterfaceImplementation() ? ExplicitInterfaceHelpers.GetMemberNameWithoutInterfaceName(member.Name) :
                 member.Name;
         }
-#if XSHARP
-        internal static bool HasClipperCallingConvention(this Symbol method)
-        {
-            if (method is SourceMethodSymbol)
-            {
-                var sms = method as SourceMethodSymbol;
-                var xnode = sms.SyntaxNode?.XNode;
-                if (xnode != null)
-                {
-                    var clsmethod = xnode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.ClsmethodContext;
-                    if (clsmethod != null)
-                    {
-                        return clsmethod.Member.Data.HasClipperCallingConvention;
-                    }
-                }
-            }
 
-            if (method.GetParameterCount() != 1)
-                return false;
-            var atts = method.GetAttributes();
-            foreach (var att in atts)
-            {
-                var aclass = att.AttributeClass;
-                if (aclass.IsVulcanRTAttribute("ClipperCallingConvention"))
-                    return true;
-            }
-            return false;
-        }
-#endif
     }
 }

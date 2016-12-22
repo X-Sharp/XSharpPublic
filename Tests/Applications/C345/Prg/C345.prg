@@ -1,0 +1,12 @@
+// error XS1503: Argument 2: cannot convert from 'string' to 'System.IntPtr'
+// similar to C341, but this one uses the function as defined in the vulcan-compiled Win32APILibrary dll file
+
+FUNCTION Start( ) AS VOID
+	LOCAL cText := "message box text" AS STRING
+	MessageBox(NULL_PTR , cText , "caption" , 1)
+RETURN
+
+// redefining it here works ok
+/*_DLL FUNCTION MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
+	AS INT PASCAL:USER32.MessageBoxA*/
+

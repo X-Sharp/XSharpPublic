@@ -512,14 +512,34 @@ namespace Microsoft.CodeAnalysis.CSharp
                         trueType = falseType = usualType;
                     }
                 }
-                if (trueType != falseType && Compilation.Options.VOCompatibleIIF)
+                if (trueType != falseType )
                 {
-                    // convert to object when Compatible IIF is activated
-                    // this will not happen for VO Dialect because that is handled above
-                    var objectType = Compilation. GetSpecialType(SpecialType.System_Object);
-                    trueExpr = CreateConversion(trueExpr, objectType, diagnostics);
-                    falseExpr = CreateConversion(falseExpr, objectType, diagnostics);
-                    trueType = falseType = objectType;
+                    if (trueType.IsVoidPointer())
+                    {
+                        if (falseType == Compilation.GetSpecialType(SpecialType.System_IntPtr))
+                        {
+                            trueExpr = CreateConversion(trueExpr, falseType, diagnostics);
+                            trueType = falseType;
+                        }
+                    }
+                    else if (falseType.IsVoidPointer())
+                    {
+                        if (trueType == Compilation.GetSpecialType(SpecialType.System_IntPtr))
+                        {
+                            falseExpr = CreateConversion(falseExpr, trueType, diagnostics);
+                            falseType = trueType;
+                        }
+                    }
+                    else if (Compilation.Options.VOCompatibleIIF)
+                    {
+                        // convert to object when Compatible IIF is activated
+                        // this will not happen for VO Dialect because that is handled above
+                        var objectType = Compilation.GetSpecialType(SpecialType.System_Object);
+                        trueExpr = CreateConversion(trueExpr, objectType, diagnostics);
+                        falseExpr = CreateConversion(falseExpr, objectType, diagnostics);
+                        trueType = falseType = objectType;
+                    }
+
                 }
             }
         }

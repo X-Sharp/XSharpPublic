@@ -423,7 +423,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindObjectCreationExpression((ObjectCreationExpressionSyntax)node, diagnostics);
                 case SyntaxKind.IdentifierName:
                 case SyntaxKind.GenericName:
+#if XSHARP
+                    return BindXSIdentifier((SimpleNameSyntax)node, invoked, diagnostics);
+#else
                     return BindIdentifier((SimpleNameSyntax)node, invoked, diagnostics);
+
+#endif
                 case SyntaxKind.SimpleMemberAccessExpression:
                 case SyntaxKind.PointerMemberAccessExpression:
                     return BindMemberAccess((MemberAccessExpressionSyntax)node, invoked, indexed, diagnostics: diagnostics);
@@ -821,7 +826,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             TypeSymbol type = this.BindType(node.Type, diagnostics);
             return new BoundDefaultOperator(node, type);
         }
-
+#if !XSHARP
         /// <summary>
         /// Binds a simple identifier.
         /// </summary>
@@ -829,10 +834,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             SimpleNameSyntax node,
             bool invoked,
             DiagnosticBag diagnostics
-#if XSHARP
-            , bool preferStaticMethodCall = false
-            , bool allDialects = false
-#endif
             )
         {
             Debug.Assert(node != null);
@@ -888,71 +889,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 Debug.Assert((options & LookupOptions.NamespacesOrTypesOnly) == 0);
                 options |= LookupOptions.MustNotBeMethodTypeParameter;
             }
-#if XSHARP
-            // In the VO and Vulcan dialect you cannot call an instance method without SELF: prefix
-            var originalOptions = options;
-            if ( preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
-            {
-                bool colon = false;
-                if (node.Parent is MemberAccessExpressionSyntax)
-                {
-                    var xnode = node.Parent.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AccessMemberContext;
-                    if (xnode != null && xnode.Op.Text == ":")
-                    {
-                        colon = true;
-                    }
-                }
-                if (!colon)
-                    options |= LookupOptions.MustNotBeInstance;
-            }
-#endif
 
             var name = node.Identifier.ValueText;
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
-#if XSHARP
-            if (! invoked)
-            {
-                if (!lookupResult.IsClear)
-                {
-                    bool ok = false;
-                    foreach (var sym in lookupResult.Symbols)
-                    {
-                        if (sym.Kind != SymbolKind.Method)
-                        {
-                            ok = true;
-                            break;
-                        }
-                    }
-                    if (! ok && ! (node.Parent is AssignmentExpressionSyntax))   // Assigning Event Handler ?
-                    {
-                        diagnostics.Add(ErrorCode.ERR_NameNotInContext, node.Location,name);
-                    }
-                }
-            }
-            if ( preferStaticMethodCall && (Compilation.Options.IsDialectVO || allDialects))
-            {
-                bool lookupAgain = false;
-                if (lookupResult.Kind == LookupResultKind.StaticInstanceMismatch)
-                {
-                    // try again but now allow instance methods
-                    lookupAgain = true;
-                }
-                if (lookupResult.Kind == LookupResultKind.Viable && invoked && lookupResult.Symbols.Count == 0)
-                {
-                    Symbol s = lookupResult.Symbols[0];
-                    if (s.Kind != SymbolKind.Method)
-                        lookupAgain = true;
-                }
-                if (lookupAgain)
-                {
-                    options = originalOptions;
-                    useSiteDiagnostics = null;
-                    lookupResult.Clear();
-                    this.LookupSymbolsWithFallback(lookupResult, name, arity: arity, useSiteDiagnostics: ref useSiteDiagnostics, options: options);
-                }
-            }
-#endif
 
             diagnostics.Add(node, useSiteDiagnostics);
 
@@ -962,36 +902,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool isError = false;
                 bool wasError;
                 var members = ArrayBuilder<Symbol>.GetInstance();
-#if XSHARP
-                Symbol symbol = null;
-                if (!invoked)
-                {
-                    // prefer non-method symbols
-                    foreach (Symbol s in lookupResult.Symbols)
-                    {
-                        if (s.Kind != SymbolKind.Method)
-                        {
-                            members.Add(s);
-                        }
-                    }
-                    if (members.Count == 1)
-                    {
-                        symbol = members[0];
-                    }
-                }
-                if (symbol == null)
-                {
-                    members.Clear();
-                    symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
-                }
-                else
-                {
-                    wasError = false;
-                }
-
-#else
                 Symbol symbol = GetSymbolOrMethodOrPropertyGroup(lookupResult, node, name, node.Arity, members, diagnostics, out wasError);  // reports diagnostics in result.
-#endif
                 isError |= wasError;
 
                 if ((object)symbol == null)
@@ -1062,7 +973,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             lookupResult.Free();
             return expression;
         }
-
+#endif
         private BoundExpression SynthesizeMethodGroupReceiver(CSharpSyntaxNode syntax, ArrayBuilder<Symbol> members)
         {
             // SPEC: For each instance type T starting with the instance type of the immediately
@@ -4537,7 +4448,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var node = (IdentifierNameSyntax)left;
                 var valueDiagnostics = DiagnosticBag.GetInstance();
 #if XSHARP
-                var boundValue = BindIdentifier(node, invoked: false, diagnostics: valueDiagnostics, preferStaticMethodCall : true, allDialects : true);
+                var boundValue = BindXSIdentifier(node, invoked: false, diagnostics: valueDiagnostics, preferStaticMethodCall : true, allDialects : true);
 #else
                 var boundValue = BindIdentifier(node, invoked: false, diagnostics: valueDiagnostics);
 #endif

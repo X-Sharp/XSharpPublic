@@ -4,7 +4,7 @@ CONSTRUCTOR(o AS OBJECT)
 END CLASS
 
 CLASS Child INHERIT Parent
-CONSTRUCTOR()
-SUPER(SELF)
+CONSTRUCTOR(a) 
+SUPER(SELF)		/// Note that this only works for CLIPPER constructors !
 END CLASS
 

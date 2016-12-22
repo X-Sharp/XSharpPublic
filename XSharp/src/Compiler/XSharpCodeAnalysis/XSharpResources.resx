@@ -4822,4 +4822,13 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_AccessAssignTypesMutchMatch" xml:space="preserve">
     <value>The type of the first ASSIGN parameter must match the returntype of the ACCESS.</value>
   </data>
+  <data name="ERR_ClipperInParentClass" xml:space="preserve">
+    <value>Override of virtual method '{0}' has STRICT calling convention but overridden method in parent class is CLIPPER.</value>
+  </data>
+  <data name="ERR_ClipperInSubClass" xml:space="preserve">
+    <value>Override of virtual method '{0}' has CLIPPER calling convention but overridden method in parent class is STRICT.</value>
+  </data>
+
+
+
 </root>

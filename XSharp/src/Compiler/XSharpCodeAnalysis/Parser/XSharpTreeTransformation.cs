@@ -2647,6 +2647,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         returntype = _getMissingType();
                     }
                 }
+                else
+                {
+                    returntype.XVoDecl = true;
+                }
                 var oldbody = body;
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 if (body != oldbody)

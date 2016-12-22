@@ -335,6 +335,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // on the assumption that they will be updated appropriately.
                     MethodSymbol overriddenMethod = this.OverriddenMethod;
 
+#if XSHARP
+                    if ((object)overriddenMethod != null)
+                    {
+                        if (this.HasClipperCallingConvention() != overriddenMethod.HasClipperCallingConvention())
+                        {
+                            if (this.HasClipperCallingConvention())
+                            {
+                                diagnostics.Add(ErrorCode.ERR_ClipperInSubClass, location, this.Name);
+                            }
+                            else
+                            {
+                                diagnostics.Add(ErrorCode.ERR_ClipperInParentClass, location, this.Name);
+                            }
+                            overriddenMethod = null;
+                        }
+                    }
+#endif
+
                     if ((object)overriddenMethod != null)
                     {
                         CustomModifierUtils.CopyMethodCustomModifiers(overriddenMethod, this, out _lazyReturnType, out _lazyReturnTypeCustomModifiers, out _lazyParameters, alsoCopyParamsModifier: true);

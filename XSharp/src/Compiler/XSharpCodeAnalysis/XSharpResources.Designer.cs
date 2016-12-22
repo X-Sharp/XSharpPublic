@@ -2618,6 +2618,24 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Override of virtual method &apos;{0}&apos; has STRICT calling convention but overridden method in parent class is CLIPPER..
+        /// </summary>
+        internal static string ERR_ClipperInParentClass {
+            get {
+                return ResourceManager.GetString("ERR_ClipperInParentClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Override of virtual method &apos;{0}&apos; has CLIPPER calling convention but overridden method in parent class is STRICT..
+        /// </summary>
+        internal static string ERR_ClipperInSubClass {
+            get {
+                return ResourceManager.GetString("ERR_ClipperInSubClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ) expected.
         /// </summary>
         internal static string ERR_CloseParenExpected {

@@ -1382,9 +1382,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_DuplicateDefineSame = 9013,
         ERR_DialectRequiresReferenceToRuntime = 9014,
         WRN_ImplicitParentConstructorInitializer = 9015,
-        ERR_NestedMethodMustHaveSameNameAsParentClass=9016,
+        ERR_NestedMethodMustHaveSameNameAsParentClass = 9016,
         ERR_InvalidDialect = 9017,
-        ERR_InvalidDLLEntryPoint=9018,
+        ERR_InvalidDLLEntryPoint = 9018,
         ERR_CompilerOptionNotSupportedForDialect = 9019,
         WRN_ConversionMayLeadToLossOfData = 9020,
         WRN_SignedUnSignedConversion = 9021,
@@ -1394,7 +1394,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_MissingReturnStatement = 9025,
         WRN_MissingReturnValue = 9026,
         ERR_IllegalVoStructMemberType = 9027,
-        ERR_UnknownLiteralTypeName=9028,
+        ERR_UnknownLiteralTypeName = 9028,
         WRN_CompilerOptionNotImplementedYet = 9029,
         ERR_KeywordExpected = 9030,
         ERR_VulcanArrayDimAndInit = 9031,
@@ -1407,5 +1407,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_PCallResolveGeneratedDelegate = 9038,
         ERR_AccessAssignParametersMutchMatch = 9039,
         ERR_AccessAssignTypesMutchMatch = 9040,
+        ERR_ClipperInParentClass = 9041,
+        ERR_ClipperInSubClass = 9042,
     }
 }

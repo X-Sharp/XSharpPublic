@@ -34016,7 +34016,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C345 - Problem passing string as PSZ parameter
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C346 - Problem with == operator on VOSTRUCT (AS) *************
 Application = C346 - Problem with == operator on VOSTRUCT (AS)
 IDEVersion = 1.06
@@ -34115,7 +34115,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C346 - Problem with == operator on VOSTRUCT (AS)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C347 - Problem with == operator on VOSTRUCT (IS) *************
 Application = C347 - Problem with == operator on VOSTRUCT (IS)
 IDEVersion = 1.06
@@ -34854,7 +34854,7 @@ FileType = Code
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanVORDDClasses,1,0,4.0.401.0
 [C354 - No error with missing /ins compiler option Resources]
 [C354 - No error with missing /ins compiler option Native Resources]
 [C354 - No error with missing /ins compiler option License files]

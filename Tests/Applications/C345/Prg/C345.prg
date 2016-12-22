@@ -1,6 +1,7 @@
 // error XS1503: Argument 2: cannot convert from 'string' to 'System.IntPtr'
 // similar to C341, but this one uses the function as defined in the vulcan-compiled Win32APILibrary dll file
-
+// the problem is that Vulcan does not mark the parameters in the DLL as __Psz, but marks them as IntPtr
+// and added an ActualTypeAttribute that says that the expected parameters should be PSZ
 FUNCTION Start( ) AS VOID
 	LOCAL cText := "message box text" AS STRING
 	MessageBox(NULL_PTR , cText , "caption" , 1)

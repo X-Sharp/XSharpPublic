@@ -362,5 +362,30 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return BetterResult.Neither;
         }
+        private bool VOStructBinaryOperatorComparison(BinaryOperatorKind kind, BoundExpression left, BoundExpression right, BinaryOperatorOverloadResolutionResult result)
+        {
+            if (left.Type == right.Type)
+            {
+                bool isVoStruct = false;
+                if (left.Type.IsPointerType())
+                {
+                    var pt = left.Type as PointerTypeSymbol;
+                    isVoStruct = pt.PointedAtType.IsVoStructOrUnion();
+                }
+                else
+                {
+                    isVoStruct = left.Type.IsVoStructOrUnion();
+                }
+                if (isVoStruct && (kind == BinaryOperatorKind.Equal || kind == BinaryOperatorKind.NotEqual))
+                {
+                    BinaryOperatorSignature sig = new BinaryOperatorSignature(kind, left.Type, right.Type, Compilation.GetSpecialType(SpecialType.System_Boolean));
+                    BinaryOperatorAnalysisResult best = BinaryOperatorAnalysisResult.Applicable(sig, Conversion.Identity, Conversion.Identity);
+                    result.Results.Clear();
+                    result.Results.Add(best);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

@@ -24,6 +24,13 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             BinaryOperatorKind underlyingKind = kind & ~BinaryOperatorKind.Logical;
 
+
+#if XSHARP
+            if (VOStructBinaryOperatorComparison(kind, left, right, result))
+            {
+                return;
+            }
+#endif
             // We can do a table lookup for well-known problems in overload resolution.
 
             BinaryOperatorEasyOut(underlyingKind, left, right, result);

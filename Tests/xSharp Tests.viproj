@@ -34214,7 +34214,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C347 - Problem with == operator on VOSTRUCT (IS)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C348 - Incorrect error about mixing STRICT/CLIPPER *************
 Application = C348 - Incorrect error about mixing STRICT/CLIPPER
 IDEVersion = 1.06

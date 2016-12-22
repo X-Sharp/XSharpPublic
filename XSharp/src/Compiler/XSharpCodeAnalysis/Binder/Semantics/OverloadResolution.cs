@@ -21,6 +21,8 @@ using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
+using Antlr4.Runtime;
+using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -387,5 +389,27 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return false;
         }
+    }
+    internal static class CastExtensionMethods
+    {
+        internal static bool IsVoCast(this ParserRuleContext node)
+        {
+            if (node is PrimaryExpressionContext)
+            {
+                var pec = node as PrimaryExpressionContext;
+                return pec.Expr is VoCastExpressionContext;
+            }
+            return false;
+        }
+        internal static bool IsVoConvert(this ParserRuleContext node)
+        {
+            if (node is PrimaryExpressionContext)
+            {
+                var pec = node as PrimaryExpressionContext;
+                return pec.Expr is VoConversionExpressionContext;
+            }
+            return false;
+        }
+
     }
 }

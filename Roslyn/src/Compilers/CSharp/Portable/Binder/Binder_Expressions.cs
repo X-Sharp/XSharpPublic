@@ -1565,6 +1565,13 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return expression;
             }
+            if (node.XNode != null)
+            {
+                if ( ((Antlr4.Runtime.ParserRuleContext) node.XNode).IsVoCast())
+                {
+                    operand.WasCompilerGenerated = true;
+                }
+            }
 #endif
 
 

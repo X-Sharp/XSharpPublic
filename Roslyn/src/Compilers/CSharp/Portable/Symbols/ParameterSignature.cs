@@ -5,7 +5,8 @@ using System.Threading;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-
+using Roslyn.Utilities;
+using System;
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal class ParameterSignature
@@ -36,8 +37,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             for (int parm = 0; parm < parameters.Length; ++parm)
             {
                 var parameter = parameters[parm];
+#if XSHARP
+                if (parameter is Metadata.PE.PEParameterSymbol)
+                {
+                    var type = parameter.Type;
+                    var attrs = parameter.GetAttributes();
+                    foreach (var attr in attrs)
+                    {
+                        var atype = attr.AttributeClass;
+                        if (atype.IsVulcanRTAttribute("ActualTypeAttribute"))
+                        {
+                            object t = attr.CommonConstructorArguments[0].DecodeValue<object>(SpecialType.None);
+                            if (t is TypeSymbol)
+                            {
+                                type = (TypeSymbol)t;
+                            }
+                        }
+                    }
+                    types.Add(type);
+                }
+                else
+                {
+                    types.Add(parameter.Type);
+                }
+#else
                 types.Add(parameter.Type);
-
+#endif
                 var refKind = parameter.RefKind;
                 if (refs == null)
                 {

@@ -1965,7 +1965,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = methodResult.Result;
 
             // Parameter types should be taken from the least overridden member:
+#if XSHARP
+            var parameterTypes = methodResult.LeastOverriddenMember.GetParameterTypes();
+#else
             var parameters = methodResult.LeastOverriddenMember.GetParameters();
+#endif
 
             for (int arg = 0; arg < arguments.Count; ++arg)
             {
@@ -1974,10 +1978,14 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                 if (!kind.IsIdentity)
                 {
+#if XSHARP
+                    TypeSymbol type = GetCorrespondingParameterType(ref result, parameterTypes, arg);
+#else
                     TypeSymbol type = GetCorrespondingParameterType(ref result, parameters, arg);
-
+#endif
                     // NOTE: for some reason, dev10 doesn't report this for indexer accesses.
                     if (!methodResult.Member.IsIndexer() && !argument.HasAnyErrors && type.IsUnsafe())
+
                     {
                         // CONSIDER: dev10 uses the call syntax, but this seems clearer.
                         ReportUnsafeIfNotAllowed(argument.Syntax, diagnostics);
@@ -1988,7 +1996,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-
+#if XSHARP
+        private static TypeSymbol GetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<TypeSymbol> parameterTypes, int arg)
+        {
+            int paramNum = result.ParameterFromArgument(arg);
+            var type =
+                (paramNum == parameterTypes.Length - 1 && result.Kind == MemberResolutionKind.ApplicableInExpandedForm) ?
+                ((ArrayTypeSymbol)parameterTypes[paramNum]).ElementType :
+                parameterTypes[paramNum];
+            return type;
+        }
+#else
         private static TypeSymbol GetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<ParameterSymbol> parameters, int arg)
         {
             int paramNum = result.ParameterFromArgument(arg);
@@ -1998,7 +2016,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 parameters[paramNum].Type;
             return type;
         }
-
+#endif
         private BoundExpression BindArrayCreationExpression(ArrayCreationExpressionSyntax node, DiagnosticBag diagnostics)
         {
             // SPEC begins

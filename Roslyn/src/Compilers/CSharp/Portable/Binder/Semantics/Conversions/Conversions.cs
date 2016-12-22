@@ -302,7 +302,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 #if XSHARP
-            if (source.Type == null && 
+            if (source.Type == null  &&
+                source.Kind != BoundKind.MethodGroup && 
                 (destination.GetSpecialTypeSafe() == SpecialType.System_IntPtr 
                 || destination.GetSpecialTypeSafe() == SpecialType.System_UIntPtr ))
                 return ConversionKind.Identity;

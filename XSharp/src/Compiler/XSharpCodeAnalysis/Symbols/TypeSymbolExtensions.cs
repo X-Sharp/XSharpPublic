@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 type = _type.OriginalDefinition as NamedTypeSymbol;
             if (type is SourceNamedTypeSymbol)
             {
-                return ((SourceNamedTypeSymbol)type).IsVoStructOrUnion();
+                return (type as SourceNamedTypeSymbol).IsSourceVoStructOrUnion ;
             }
             if (type is Metadata.PE.PENamedTypeSymbol)
             {

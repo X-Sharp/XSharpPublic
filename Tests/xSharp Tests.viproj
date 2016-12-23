@@ -34315,7 +34315,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C348 - Incorrect error about mixing STRICT/CLIPPER
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C349 - Casting negative literral to unsigned type *************
 Application = C349 - Casting negative literral to unsigned type
 IDEVersion = 1.06
@@ -34613,7 +34613,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C351 - Cannot compare codeblock with STRING (makes sense, eh? :)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C352 - Problem with iif() and NULL_PTR,PTR arguments *************
 Application = C352 - Problem with iif() and NULL_PTR,PTR arguments
 IDEVersion = 1.06
@@ -34712,7 +34712,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C352 - Problem with iif() and NULL_PTR,PTR arguments
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C353 - Some issues with VOSTRUCTs *************
 Application = C353 - Some issues with VOSTRUCTs
 IDEVersion = 1.06
@@ -34912,7 +34912,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C354 - No error with missing /ins compiler option
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C355 - Assertion failed and compiler crash with DWORD(_CAST , value) *************
 Application = C355 - Assertion failed and compiler crash with DWORD(_CAST , value)
 IDEVersion = 1.06

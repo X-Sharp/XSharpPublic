@@ -1565,15 +1565,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 return expression;
             }
-            if (node.XNode != null)
-            {
-                if ( ((Antlr4.Runtime.ParserRuleContext) node.XNode).IsVoCast())
-                {
-                    operand.WasCompilerGenerated = true;
-                }
-            }
 #endif
-
 
             if (targetType.IsNullableType() &&
                 !operand.HasAnyErrors &&
@@ -1998,8 +1990,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         ReportUnsafeIfNotAllowed(argument.Syntax, diagnostics);
                         //CONSIDER: Return a bad expression so that HasErrors is true?
                     }
-
+#if XSHARP
+                    bool cast = (argument.Syntax is CastExpressionSyntax);
+                    arguments[arg] = CreateConversion(argument.Syntax, argument, kind, cast, type, diagnostics);
+#else
                     arguments[arg] = CreateConversion(argument.Syntax, argument, kind, false, type, diagnostics);
+#endif
                 }
             }
         }

@@ -5046,15 +5046,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             TypeSyntax type;
+            int mask = 0;
             if (context.Type != null)
             {
                 type = context.Type.Get<TypeSyntax>();
+                switch (context.Type.Token.Type)
+                {
+                    case XP.BYTE:
+                        mask = 0xff;
+                        break;
+                    case XP.CHAR:
+                    case XP.WORD:
+                    case XP.SHORTINT:
+                        mask = 0xffff;
+                        break;
+                }
             }
             else
             {
                 type = context.XType.Get<TypeSyntax>();
             }
-            context.Put(MakeChecked(MakeCastTo(type, context.Expr.Get<ExpressionSyntax>()), false));
+            var expr = MakeChecked(context.Expr.Get<ExpressionSyntax>(),false);
+            if (mask != 0)
+            {
+                expr = _syntaxFactory.BinaryExpression(
+                        SyntaxKind.BitwiseAndExpression,
+                        expr,
+                        SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
+                        GenerateLiteral(mask));
+            }
+            context.Put(MakeChecked(MakeCastTo(type, MakeChecked(expr,false)), false));
             return;
         }
 

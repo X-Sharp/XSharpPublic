@@ -77,20 +77,15 @@ namespace Microsoft.CodeAnalysis.CSharp
                 return CreateUserDefinedConversion(syntax, source, conversion, isCast, destination, diagnostics);
             }
 
+            ConstantValue constantValue = this.FoldConstantConversion(syntax, source, conversion, destination, diagnostics);
+
 #if XSHARP
-            ConstantValue constantValue = null;
-            if (! wasCompilerGenerated)
-            {
-                constantValue = this.FoldConstantConversion(syntax, source, conversion, destination, diagnostics);
-            }
+            // This is a last resort to convert to PSZ. Should normally never be called
             if (BindStringToPsz(syntax, ref source, destination))
             { 
                 constantValue = null;
                 wasCompilerGenerated = true;
             }
-#else
-            ConstantValue constantValue = this.FoldConstantConversion(syntax, source, conversion, destination, diagnostics);
-
 #endif
             return new BoundConversion(
                 syntax,

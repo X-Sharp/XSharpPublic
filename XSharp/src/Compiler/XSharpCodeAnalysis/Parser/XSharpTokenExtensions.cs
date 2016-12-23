@@ -434,20 +434,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, token.Text, SyntaxFactory.WS)
                         .WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, "DATE constant ("+token.Text+")", options.Dialect.ToString()));
                     break;
-                case XSharpParser.NULL_ARRAY:
-                case XSharpParser.NULL_CODEBLOCK:
-                    r = SyntaxFactory.MakeToken(SyntaxKind.NullKeyword);
-                    switch (options.Dialect)
-                    {
-                        case XSharpDialect.VO:
-                        case XSharpDialect.Vulcan:
-                            // Ok
-                            break;
-                        default:
-                            r.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_FeatureNotAvailableInDialect, token.Text, options.Dialect.ToString()));
-                            break;
-                    }
-                    break;
                 case XSharpParser.NULL_STRING:
                     switch (options.Dialect)
                     {
@@ -479,6 +465,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                     break;
                 case XSharpParser.NIL:
+                case XSharpParser.NULL_ARRAY:
+                case XSharpParser.NULL_CODEBLOCK:
                 case XSharpParser.NULL_DATE:
                 case XSharpParser.NULL_PSZ:
                 case XSharpParser.NULL_PTR:
@@ -976,17 +964,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return r;
         }
 
-        public static bool IsRefType(this IToken token)
+        public static bool MustBeCleared(this IToken token)
         {
+            // This is used to determine in the Start() function which locals and globals must be cleared.
             switch (token.Type)
             {
-                case XSharpParser.ARRAY:
-                case XSharpParser.CODEBLOCK:
-                case XSharpParser.DYNAMIC:
-                case XSharpParser.OBJECT:
-                case XSharpParser.STRING:
+                case XSharpParser.ARRAY:            // clear with null
+                case XSharpParser.CODEBLOCK:        // clear with null
+                case XSharpParser.DYNAMIC:          // clear with null
+                case XSharpParser.OBJECT:           // clear with null
+                case XSharpParser.PSZ:              // clear with 0
+                case XSharpParser.STRING:           // clear with null
+                case XSharpParser.USUAL:            // default(__Usual)
                     return true;
-                case XSharpParser.PSZ:
                 default:
                     return false;
             }

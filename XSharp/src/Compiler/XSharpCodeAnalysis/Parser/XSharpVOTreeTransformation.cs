@@ -573,13 +573,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (localvar != null)
                         {
                             var name = localvar.Id.GetText();
-                            ExpressionSyntax clearExpr = null;
                             TypeSyntax type;
                             if (localvar.DataType == null)
                             {
                                 type = _usualType;
-                                useNull = true;
                                 mustclear = true;
+                                useNull = false;
                             }
                             else
                             {
@@ -597,20 +596,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     var tn = sdc.TypeName;
                                     if (tn.XType != null)
                                     {
-                                        useNull = mustclear = tn.XType.Token.IsRefType();
-                                        if (tn.XType.Token.Type == XP.USUAL)
+                                        useNull = mustclear = tn.XType.Token.MustBeCleared();
+                                        if (tn.XType.Token.Type == XP.USUAL ||
+                                            tn.XType.Token.Type == XP.PSZ)
                                         {
-                                            mustclear = true;
-                                        }
-                                        else if (tn.XType.Token.Type == XP.PSZ)
-                                        {
-                                            mustclear = true;
-                                            clearExpr = GenerateLiteral(0);
+                                            useNull = false;
                                         }
                                     }
                                     else if (tn.NativeType != null)
                                     {
-                                        useNull = mustclear = tn.NativeType.Token.IsRefType();
+                                        useNull = mustclear = tn.NativeType.Token.MustBeCleared();
                                     }
                                     else if (tn.Name != null)
                                     {
@@ -621,13 +616,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                             if (mustclear)
                             {
-                                if (clearExpr == null)
-                                {
-                                    if (useNull)
-                                        clearExpr = GenerateLiteralNull();
-                                    else
-                                        clearExpr = MakeDefault(type);
-                                }
+                                ExpressionSyntax clearExpr = null;
+
+                                if (useNull)
+                                    clearExpr = GenerateLiteralNull();
+                                else
+                                    clearExpr = MakeDefault(type);
                                 var expr = MakeSimpleAssignment(GenerateSimpleName(name), clearExpr);
                                 endbody.Add(GenerateExpressionStatement(expr));
                             }
@@ -2454,8 +2448,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = MakeSimpleMemberAccess(_ptrType,GenerateSimpleName("Zero"));
                 break;
             case XP.NULL_PSZ:
-                arg0 = MakeArgument(GenerateLiteral(""));
-                expr = CreateObject(_pszType, MakeArgumentList(arg0));
+                expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword)), GenerateLiteralNull());
+                expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(expr)));
                 break;
             case XP.NULL_DATE:
                 expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());

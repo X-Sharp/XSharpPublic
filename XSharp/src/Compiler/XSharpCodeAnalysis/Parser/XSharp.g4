@@ -512,15 +512,17 @@ statement           : Decl=localdecl                                            
                       StmtBlk=statementBlock
                       (e=END FIXED? EOS)?										#blockStmt
 
-					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
-                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
-                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
-                      Exprs+=expression (COMMA Exprs+=expression)* end=EOS		#expressionStmt
 					// Temporary solution for statements missing from the standard header file
 					| DEFAULT Variables+=simpleName TO Values+=expression 
 						(COMMA Variables+=simpleName TO Values+=expression)* end=EOS	#defaultStmt
 					| Key=(WAIT|ACCEPT)  (Expr=expression)? (TO Variable=simpleName)? end = EOS		#waitAcceptStmt
 					| Key=(CANCEL|QUIT) end=EOS											#cancelQuitStmt
+
+					// NOTE: The ExpressionStmt rule MUST be last, even though it already existed in VO
+                    | {InputStream.La(2) != LPAREN || // This makes sure that CONSTRUCTOR, DESTRUCTOR etc will not enter the expression rule
+                       (InputStream.La(1) != CONSTRUCTOR && InputStream.La(1) != DESTRUCTOR) }?
+                      Exprs+=expression (COMMA Exprs+=expression)* end=EOS		#expressionStmt
+
                     ;
 
 ifElseBlock			: Cond=expression end=EOS StmtBlk=statementBlock
@@ -665,7 +667,6 @@ primary				: Key=SELF													#selfExpression
                     | PTR LPAREN Type=datatype COMMA Expr=expression RPAREN		#voCastPtrExpression	// PTR( typeName, expr )
 					| Name=voTypeName											#voTypeNameExpression	// LONG, STRING etc., used as NUMERIC in expressions
                     | Type=typeName											    #typeExpression			// Standard DotNet Types
-                    //| XType=xbaseType											#typeExpression			// ARRAY, CODEBLOCK, etc.
                     | Expr=iif													#iifExpression			// iif( expr, expr, expr )
                     | Op=(VO_AND | VO_OR | VO_XOR | VO_NOT) LPAREN Exprs+=expression
                       (COMMA Exprs+=expression)* RPAREN							#intrinsicExpression	// _Or(expr, expr, expr)

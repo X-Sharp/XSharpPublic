@@ -1951,29 +1951,45 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
 
-    private bool GenerateSLen(XP.MethodCallContext context) {
-        // Pseudo function SLen
-        ArgumentListSyntax argList;
-        ExpressionSyntax expr;
-        if(context.ArgList != null) {
-            argList = context.ArgList.Get<ArgumentListSyntax>();
-        } else {
-            return false;
+        private bool GenerateSLen(XP.MethodCallContext context)
+        {
+            // Pseudo function SLen
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            }
+            else
+            {
+                return false;
+            }
+
+            expr = MakeCastTo(_stringType, argList.Arguments[0].Expression);
+
+            expr = _syntaxFactory.ConditionalAccessExpression(expr,
+                                    SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
+                                    _syntaxFactory.MemberBindingExpression(
+                                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                                        GenerateSimpleName("Length")
+                                        ));
+            expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
+
+            context.Put(expr);
+            return true;
         }
 
-        expr = MakeCastTo(_stringType, argList.Arguments[0].Expression);
+        private void _GenerateString2Psz(ParserRuleContext context, ExpressionSyntax expr)
+        {
+            CurrentEntity.Data.UsesPSZ = true;
+            NameSyntax pszlist = GenerateSimpleName(VoPszList);
+            var argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
+            expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
+            var args = MakeArgumentList(MakeArgument(expr));
+            expr = CreateObject(this._pszType, args);
+            context.Put(expr);
+        }
 
-        expr = _syntaxFactory.ConditionalAccessExpression( expr,
-                                SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
-                                _syntaxFactory.MemberBindingExpression(
-                                    SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                                    GenerateSimpleName("Length")
-                                    ));
-        expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
-
-        context.Put(expr);
-        return true;
-    }
         private bool GenerateString2Psz(XP.MethodCallContext context, string name)
         {
             // this will only happen when the VO or Vulcan dialect is selected, so we can use the psz type here
@@ -1995,18 +2011,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     expr = GenerateNIL().WithAdditionalDiagnostics(
                         new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+                    context.Put(expr);
                 }
                 else
                 {
-                    CurrentEntity.Data.UsesPSZ = true;
-                    NameSyntax pszlist = GenerateSimpleName(VoPszList);
-                    expr = argList.Arguments[0].Expression;
-                    argList = MakeArgumentList(MakeArgument(expr), MakeArgument(pszlist));
-                    expr = GenerateMethodCall("global::Vulcan.Internal.CompilerServices.String2Psz", argList);
-                    var args = MakeArgumentList(MakeArgument(expr));
-                    expr = CreateObject(this._pszType, args);
+                    _GenerateString2Psz(context, argList.Arguments[0].Expression);
                 }
-                context.Put(expr);
                 return true;
             }
             else
@@ -2711,14 +2721,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
 
             // Special case for PSZ(..) 
-            // PSZ("String") becomes PSZ{"String"}
+            // PSZ(_CAST, "String") becomes String2Psz("String")
             if (context.XType != null)
             {
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    var expr = GetPszConstructor(context.Expr);
-                    context.Put(expr);
+                    _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
                     return;
                 }
             }
@@ -2726,21 +2735,64 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base.ExitVoConversionExpression(context);
 
         }
+
+        public override void ExitTypeCast([NotNull] XP.TypeCastContext context)
+        {
+            // Special case for (PSZ) Expression, this becomes String2Psz(<Expression>)
+            var dt = context.Type as XP.DatatypeContext;
+            if (dt is XP.SimpleDatatypeContext)
+            {
+                var sdt = dt as XP.SimpleDatatypeContext;
+                if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
+                {
+                    _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                    return;
+                }
+            }
+            base.ExitTypeCast(context);
+            return;
+        }
+
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             // Special case for PSZ(_CAST 
-            // PSZ(_CAST, "String") becomes PSZ{"String"}
+            // PSZ(_CAST, "String") becomes String2Psz("String")
             if (context.XType != null)
             {
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    var expr = GetPszConstructor(context.Expr);
-                    context.Put(expr);
+                    bool bCanCallStringPsz = true;
+                    var pe = context.Expr as XP.PrimaryExpressionContext;
+                    if (pe != null)
+                    {
+                        if (pe.Expr is XP.LiteralExpressionContext)
+                        {
+                            var lit = pe.Expr as XP.LiteralExpressionContext;
+                            var lv = lit.Literal;
+                            switch (lv.Token.Type)
+                            {
+                                case XP.STRING_CONST:
+                                case XP.ESCAPED_STRING_CONST:
+                                case XP.CHAR_CONST:
+                                    break;
+                                default:
+                                    bCanCallStringPsz = false;
+                                    break;
+                            }
+                        }
+                    }
+                    if (bCanCallStringPsz)
+                    {
+                        _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                    }
+                    else
+                    {
+                        context.Put(GetPszConstructor(context.Expr));
+                    }
                     return;
                 }
             }
-
             base.ExitVoCastExpression(context);
         }
 

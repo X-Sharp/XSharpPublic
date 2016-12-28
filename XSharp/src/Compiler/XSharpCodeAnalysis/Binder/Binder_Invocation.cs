@@ -209,9 +209,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 int i = 0;
                 foreach (var expr in analyzedArguments.Arguments)
                 {
+                    var ptype = expr.Type;
+                    if (ptype == null)
+                        ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
                     var parameter = new SourceSimpleParameterSymbol(
                         delmeth,
-                        expr.Type,
+                        ptype,
                         i,
                         delparams[i].RefKind,
                         delparams[i].Name,

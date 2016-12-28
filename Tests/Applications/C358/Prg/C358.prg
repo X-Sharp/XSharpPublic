@@ -12,8 +12,8 @@ FUNCTION Start() AS VOID
    
    hModule := LoadLibrary( "user32.dll" )   
    hFunc   := GetProcAddress( hModule, "MessageBoxW" )   
-   hStr1   := Marshal.StringToHGlobalUni( "Hello from Vulcan.NET")
-   hStr2   := Marshal.StringToHGlobalUni( "__pcall() From Vulcan.NET" )
+   hStr1   := Marshal.StringToHGlobalUni( "Hello from XSharp")
+   hStr2   := Marshal.StringToHGlobalUni( "__pcallnative() From XSharp" )
    ? "MessageBox() returns", PCallNative<INT>( hFunc, NULL, hStr1, hStr2, 3 )
    Marshal.FreeHGlobal( hStr1 )
    Marshal.FreeHGlobal( hStr2 )

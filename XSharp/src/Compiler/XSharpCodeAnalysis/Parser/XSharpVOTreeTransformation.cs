@@ -2764,12 +2764,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    bool bCanCallStringPsz = true;
+                    bool bCanCallStringPsz = false;
                     var pe = context.Expr as XP.PrimaryExpressionContext;
                     if (pe != null)
                     {
                         if (pe.Expr is XP.LiteralExpressionContext)
                         {
+                            bCanCallStringPsz = true;
                             var lit = pe.Expr as XP.LiteralExpressionContext;
                             var lv = lit.Literal;
                             switch (lv.Token.Type)

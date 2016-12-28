@@ -239,7 +239,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             {
                                 var declbinder = usingsBinder.WithAdditionalFlags(BinderFlags.SuppressConstraintChecks);
                                 var _diagnostics = DiagnosticBag.GetInstance();
-                                string[] defNs = {"Vulcan", "VulcanRTFuncs.Functions", "Vulcan.VO"};
+                                string[] defNs = {"Vulcan"};
                                 foreach (var n in defNs)
                                 {
                                     var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(n);
@@ -270,7 +270,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                     foreach (var attr in r.GetAttributes())
                                     {
                                         // Check for VulcanImplicitNameSpace attribute
-                                        if(attr.AttributeClass.ConstructedFrom == vins) {
+                                        if(attr.AttributeClass.ConstructedFrom == vins && compilation.Options.ImplicitNameSpace) {
                                             var args = attr.CommonConstructorArguments;
                                             if(args.Length == 1) {
                                                 // only one argument, must be default namespace
@@ -311,7 +311,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                                 }
                                                 // second element is the default namespace
                                                 var defaultNamespace = args[1].Value.ToString();
-                                                if (!string.IsNullOrEmpty(defaultNamespace))
+                                                if (!string.IsNullOrEmpty(defaultNamespace) && compilation.Options.ImplicitNameSpace)
                                                 {
                                                     var _name = Syntax.InternalSyntax.XSharpTreeTransformation.ExtGenerateQualifiedName(defaultNamespace);
                                                     var _imported = declbinder.BindNamespaceOrTypeSymbol(_name, _diagnostics, basesBeingResolved);

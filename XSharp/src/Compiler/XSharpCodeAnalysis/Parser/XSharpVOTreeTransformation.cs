@@ -1708,8 +1708,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         return MakeDefaultParameter(nullExpr, GenerateLiteral(4));                       // 4 = PSZ, null = empty
                     case XP.NULL_PTR:
                         return MakeDefaultParameter(GenerateLiteral(0L), GenerateLiteral(5));            // 5 = IntPtr
-                    case XP.NULL_ARRAY:
                     case XP.NULL_STRING:
+                        if (_options.VONullStrings)
+                        {
+                            return MakeDefaultParameter(GenerateLiteral(""), GenerateLiteral(0));               // 0 = regular .Net Value
+                        }
+                        else
+                        {
+                            return MakeDefaultParameter(nullExpr, GenerateLiteral(0));                          // 0 = regular .Net Value
+                        }
+                    case XP.NULL_ARRAY:
                     case XP.NULL_OBJECT:
                     case XP.NULL_CODEBLOCK:
                         return MakeDefaultParameter(nullExpr, GenerateLiteral(0));                          // 0 = regular .Net Value

@@ -38,11 +38,11 @@ ApplicationGroup = PSZ,3D21BF3B-D4BB-4A9E-8A1F-5F6EBC234911,E440B545-3C18-4457-A
 ApplicationGroup = FIXED,715D7617-320E-41FF-B82F-E314D950CD23,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = C200-C249,AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C250-C299,F5307DDC-4DCD-4576-89C9-1B07F6C6D655,715D7617-320E-41FF-B82F-E314D950CD23
-ApplicationGroup = C300-C400,CB2E170B-0122-4D3B-8692-FF0130BAE231,F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ApplicationGroup = C100-C149,62CDEEEA-3C4C-4E5E-9B0A-FD8DF7D670BC,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C150-C199,EBE227D6-3F55-4251-A268-C654F38F1FAF,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C050-C099,3A527CCD-FFA2-423D-A17F-3B2D5424CFCE,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = C001-C049,85737FA8-B9AF-41E9-A347-4C4093D05606,715D7617-320E-41FF-B82F-E314D950CD23
+ApplicationGroup = C300-C400,CB2E170B-0122-4D3B-8692-FF0130BAE231,715D7617-320E-41FF-B82F-E314D950CD23
 ApplicationGroup = RUNTIME ISSUES,BABB7440-6687-477E-BC04-CEBD4A22FCB6,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
 ApplicationGroup = Fixed,601137E1-03A5-45B4-994E-BFD3410FDE72,BABB7440-6687-477E-BC04-CEBD4A22FCB6
 ApplicationGroup = MUST REPORT ERROR,A95A4D23-3574-40FD-B873-22D28ACCA212,7A4D68CC-1F6B-46FA-B99B-A8CD8EA65C11
@@ -2516,7 +2516,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C253
 
-ApplicationGroup = 58C99556-708F-4FF0-90A7-13774F4F3886
+ApplicationGroup = F5307DDC-4DCD-4576-89C9-1B07F6C6D655
 ; ************** APPLICATION C252 - Problem using codeblock param with same name local used in RECOVER USING *************
 Application = C252 - Problem using codeblock param with same name local used in RECOVER USING
 IDEVersion = 1.06
@@ -35109,6 +35109,303 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C356 - Issues with PSZ CAST and DIM array
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C357 - Problem with PSZ(_CAST,ptrVar) *************
+Application = C357 - Problem with PSZ(_CAST,ptrVar)
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C357\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C357
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 85AC60A6-2352-4223-9C25-E11B12D27A0C
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C357 - Problem with PSZ(_CAST,ptrVar) FileGroups]
+[C357 - Problem with PSZ(_CAST,ptrVar) Files]
+File = %AppPath%\Prg\C357.prg
+FileGUID = F31E77B3-1AA8-47B9-AD80-12B5586E60C6
+FileType = Code
+[C357 - Problem with PSZ(_CAST,ptrVar) References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C357 - Problem with PSZ(_CAST,ptrVar) Resources]
+[C357 - Problem with PSZ(_CAST,ptrVar) Native Resources]
+[C357 - Problem with PSZ(_CAST,ptrVar) License files]
+[C357 - Problem with PSZ(_CAST,ptrVar) General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C357 - Problem with PSZ(_CAST,ptrVar) Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C357 - Problem with PSZ(_CAST,ptrVar)
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C358 - pcall native sample crash *************
+Application = C358 - pcall native sample crash
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C358\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C358
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 30B09EE6-4472-4FE1-B644-DE19684C8F37
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C358 - pcall native sample crash FileGroups]
+[C358 - pcall native sample crash Files]
+File = %AppPath%\Prg\C358.prg
+FileGUID = AAD98D25-EA08-4138-903D-F528F54073DB
+FileType = Code
+[C358 - pcall native sample crash References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C358 - pcall native sample crash Resources]
+[C358 - pcall native sample crash Native Resources]
+[C358 - pcall native sample crash License files]
+[C358 - pcall native sample crash General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C358 - pcall native sample crash Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C358 - pcall native sample crash
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C359 - Bogus warning on USING NameSpace *************
+Application = C359 - Bogus warning on USING NameSpace
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C359\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C359
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 1022A4CA-060E-4E80-AE1B-D5AE14C366C1
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C359 - Bogus warning on USING NameSpace FileGroups]
+[C359 - Bogus warning on USING NameSpace Files]
+File = %AppPath%\Prg\C359.prg
+FileGUID = 29D4EB96-4D3A-4343-81AA-F24535927DCC
+FileType = Code
+[C359 - Bogus warning on USING NameSpace References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C359 - Bogus warning on USING NameSpace Resources]
+[C359 - Bogus warning on USING NameSpace Native Resources]
+[C359 - Bogus warning on USING NameSpace License files]
+[C359 - Bogus warning on USING NameSpace General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=0
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C359 - Bogus warning on USING NameSpace Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=1
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C359 - Bogus warning on USING NameSpace
 [EndApplications]
 
 [Configurations]

@@ -1054,10 +1054,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
 
-        protected void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, string name, bool bStatic)
+
+        protected void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, NameSyntax usingName, bool bStatic)
         {
             bool found = false;
-            NameSyntax usingName = GenerateQualifiedName(name);
             for (int i = 0; i < usings.Count; i++)
             {
                 if (CaseInsensitiveComparison.Compare(GlobalEntities.Usings[i].Name.ToString(), usingName.ToString()) == 0)
@@ -1079,6 +1079,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             }
 
+        }
+        protected void AddUsingWhenMissing(SyntaxListBuilder<UsingDirectiveSyntax> usings, string name, bool bStatic)
+        {
+            NameSyntax usingName = GenerateQualifiedName(name);
+            AddUsingWhenMissing(usings, usingName, bStatic);
         }
 
         protected NamespaceDeclarationSyntax GenerateNamespace(string name, SyntaxList<MemberDeclarationSyntax> members)
@@ -1590,7 +1595,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (s is MemberDeclarationSyntax)
                     globalTypes.Add(s as MemberDeclarationSyntax);
                 else if (s is UsingDirectiveSyntax)
-                    GlobalEntities.Usings.Add(s as UsingDirectiveSyntax);
+                {
+                    NameSyntax ns = (s as UsingDirectiveSyntax).Name;
+                    bool bStatic = (s as UsingDirectiveSyntax).StaticKeyword != null;
+                    AddUsingWhenMissing(GlobalEntities.Usings, ns, bStatic);
+                }
                 else if (s is AttributeListSyntax)
                     GlobalEntities.Attributes.Add(s as AttributeListSyntax);
                 else if (s is ExternAliasDirectiveSyntax)

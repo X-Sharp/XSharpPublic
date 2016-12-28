@@ -2075,6 +2075,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         private BoundExpression BindAddressOfExpression(PrefixUnaryExpressionSyntax node, DiagnosticBag diagnostics)
         {
 #if XSHARP
+
             // In vulcan when we have defined a structure like:
             // VOSTRUCT _WINWIN32_FIND_DATA
             //   MEMBER DIM cFileName[10] AS BYTE
@@ -2120,21 +2121,46 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expr.Kind == BoundKind.ArrayAccess)
             {
                 //translate @var[i]  to var[i]
-                return expr;
+                var bac = expr as BoundArrayAccess;
+                var type = expr.Type;
+                if (bac.Expression.ExpressionSymbol is SourceLocalSymbol && type.IsVoStructOrUnion())
+                {
+                    var sls = bac.Expression.ExpressionSymbol as SourceLocalSymbol;
+                    var syntaxes = sls.DeclaringSyntaxReferences;
+                    if (syntaxes.Length > 0)
+                    {
+                        var syntaxNode = syntaxes[0].GetSyntax() as CSharpSyntaxNode;
+                        var lvc = syntaxNode.XNode as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.LocalvarContext;
+                        if (lvc.As.Type == LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.AS)
+                        {
+                            return expr;
+                        }
+
+
+                    }
+                }
             }
             if (expr.Kind == BoundKind.Local)
             {
+                var bl = expr as BoundLocal;
+                // only translate @name to name[0] when not IsDecl
                 if (expr.Type.IsArray())
                 {
+                    var eltype = (expr.Type as ArrayTypeSymbol).ElementType;
                     // convert from @expr to expr[0]
                     var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
                     var arrType = expr.Type as ArrayTypeSymbol;
+                    var elType = arrType.ElementType;
+                    //if (elType.IsVoStructOrUnion() )
+                    //    elType = new PointerTypeSymbol(elType);
                     int index = 0;
                     var indices = ImmutableArray.Create<BoundExpression>(new BoundLiteral(node, ConstantValue.Create(index), intType) { WasCompilerGenerated = true });
-                    expr = new BoundArrayAccess(node.Operand, expr,indices, arrType.ElementType, false);
-                    return expr;
+                    
+                    var bacc  = new BoundArrayAccess(node.Operand, expr, indices, elType, false);
+                    TypeSymbol ptrType = new PointerTypeSymbol(elType);
+                    return new BoundAddressOfOperator(node, bacc, false, ptrType, hasErrors: false);
                 }
-            }
+              }
 #endif
             BoundExpression operand = BindValue(node.Operand, diagnostics, BindValueKind.AddressOf);
 

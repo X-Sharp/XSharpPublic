@@ -3780,6 +3780,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         null);
                 }
                 varType = _syntaxFactory.ArrayType(varType, MakeArrayRankSpecifier(context.ArraySub._ArrayIndex.Count));
+                if (context.As?.Type == XP.IS)
+                {
+                    varType.XVoIsDecl = true;
+                }
             }
             else
             {

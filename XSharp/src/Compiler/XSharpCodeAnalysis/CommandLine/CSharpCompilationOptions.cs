@@ -40,6 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public bool VOStringComparisons { get; private set; }
         //public bool VOUntypedAllowed { get; private set; }// Handled in the parser
         public XSharpDialect Dialect { get; private set; }
+        public bool ImplicitNameSpace { get; private set; }
         public bool LateBinding { get; private set; }
         public bool HasDefaultTree { get; set; } = false;
         public bool CreatingRuntime { get; private set; }
@@ -89,6 +90,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 //VOUntypedAllowed = opt.Vo15;              // Handled in the parser
                 //VOInitializeVariables = opt.Vo16;         // Handled in the parser
                 Dialect = opt.Dialect;
+                ImplicitNameSpace = opt.ImplicitNameSpace;
                 LateBinding = opt.LateBinding;
                 CreatingRuntime = opt.CreatingRuntime;
                 ConsoleOutput = opt.ConsoleOutput;
@@ -106,6 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             WindowsDir = opt.WindowsDir;
             SystemDir = opt.SystemDir;
             Dialect = opt.Dialect;
+            ImplicitNameSpace = opt.ImplicitNameSpace;
             LateBinding = opt.LateBinding;
             CreatingRuntime = opt.CreatingRuntime;
 

@@ -293,7 +293,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return true;
                 }
             }
-
+#if XSHARP
+            if (newSymbolKind == SymbolKind.Parameter)
+            {
+                return true;
+            }
+#endif
             if (newSymbolKind == SymbolKind.Local || newSymbolKind == SymbolKind.Parameter)
             {
                 // A local or parameter named '{0}' cannot be declared in this scope because that name is used in an enclosing local scope to define a local or parameter

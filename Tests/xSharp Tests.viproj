@@ -34812,7 +34812,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C353 - Some issues with VOSTRUCTs
 
-ApplicationGroup = A95A4D23-3574-40FD-B873-22D28ACCA212
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
 ; ************** APPLICATION C354 - No error with missing /ins compiler option *************
 Application = C354 - No error with missing /ins compiler option
 IDEVersion = 1.06
@@ -35209,7 +35209,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C357 - Problem with PSZ(_CAST,ptrVar)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C358 - pcall native sample crash *************
 Application = C358 - pcall native sample crash
 IDEVersion = 1.06
@@ -35308,7 +35308,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C358 - pcall native sample crash
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C359 - Bogus warning on USING NameSpace *************
 Application = C359 - Bogus warning on USING NameSpace
 IDEVersion = 1.06
@@ -35407,7 +35407,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C359 - Bogus warning on USING NameSpace
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C360 - Runtime problem with NULL_STRING defualt param and /vo2+ *************
 Application = C360 - Runtime problem with NULL_STRING defualt param and /vo2+
 IDEVersion = 1.06

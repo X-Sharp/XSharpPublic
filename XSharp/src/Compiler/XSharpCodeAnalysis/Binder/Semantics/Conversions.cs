@@ -260,7 +260,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // and not the usual itself as an object
                 else if (dstType == SpecialType.System_Object)
                     return Conversion.Boxing;
-                else if (destination.IsReferenceType)
+                else if (destination.IsReferenceType && !IsClipperArgsType(destination))
                     return Conversion.Boxing;
                 else if (destination.IsPointerType())
                     return Conversion.Boxing;

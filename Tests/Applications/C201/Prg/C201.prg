@@ -7,9 +7,11 @@
 USING SomeNamespace
 
 CLASS SomeNamespace.System
+EXPORT n AS INT
 END CLASS
 
 FUNCTION Start() AS VOID
 LOCAL o AS System
-o := NULL
+o := System{}
+? o:n
 

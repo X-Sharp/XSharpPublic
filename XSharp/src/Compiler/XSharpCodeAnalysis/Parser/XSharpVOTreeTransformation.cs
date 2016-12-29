@@ -2488,8 +2488,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = MakeSimpleMemberAccess(_ptrType,GenerateSimpleName("Zero"));
                 break;
             case XP.NULL_PSZ:
-                //expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(GenerateLiteral(0))));
-                expr = GenerateLiteralNull();
+                expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(GenerateLiteral(0))));
+                //expr = GenerateLiteralNull();
                 break;
             case XP.NULL_DATE:
                 expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());

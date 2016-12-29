@@ -220,9 +220,11 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal Symbol BindTypeOrAlias(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<Symbol> basesBeingResolved = null)
         {
             Debug.Assert(diagnostics != null);
-
+#if XSHARP
+            var symbol = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null, includeNameSpace: false);
+#else
             var symbol = BindNamespaceOrTypeOrAliasSymbol(syntax, diagnostics, basesBeingResolved, basesBeingResolved != null);
-
+#endif
             // symbol must be a TypeSymbol or an Alias to a TypeSymbol
             var result = UnwrapAliasNoDiagnostics(symbol, basesBeingResolved) as TypeSymbol;
             if ((object)result != null)
@@ -301,8 +303,11 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return (NamespaceOrTypeSymbol)UnwrapAlias(result, diagnostics, syntax, basesBeingResolved);
         }
-
+#if XSHARP
+        internal Symbol BindNamespaceOrTypeOrAliasSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<Symbol> basesBeingResolved, bool suppressUseSiteDiagnostics, bool includeNameSpace = true)
+#else
         internal Symbol BindNamespaceOrTypeOrAliasSymbol(ExpressionSyntax syntax, DiagnosticBag diagnostics, ConsList<Symbol> basesBeingResolved, bool suppressUseSiteDiagnostics)
+#endif
         {
             switch (syntax.Kind())
             {
@@ -325,10 +330,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
 
                 case SyntaxKind.IdentifierName:
+#if XSHARP
+                    return BindNonGenericSimpleNamespaceOrTypeOrAliasSymbol((IdentifierNameSyntax)syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics, qualifierOpt: null, includeNameSpace: includeNameSpace);
+#else
                     return BindNonGenericSimpleNamespaceOrTypeOrAliasSymbol((IdentifierNameSyntax)syntax, diagnostics, basesBeingResolved, suppressUseSiteDiagnostics, qualifierOpt: null);
-
+#endif
                 case SyntaxKind.GenericName:
+#if XSHARP
+                    return BindGenericSimpleNamespaceOrTypeOrAliasSymbol((GenericNameSyntax)syntax, diagnostics, basesBeingResolved, qualifierOpt: null, includeNameSpace: includeNameSpace);
+#else
                     return BindGenericSimpleNamespaceOrTypeOrAliasSymbol((GenericNameSyntax)syntax, diagnostics, basesBeingResolved, qualifierOpt: null);
+#endif
 
                 case SyntaxKind.AliasQualifiedName:
                     {
@@ -478,7 +490,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             bool suppressUseSiteDiagnostics,
             NamespaceOrTypeSymbol qualifierOpt,
             bool isNameofArgument = false,
+#if XSHARP
+            ArrayBuilder<Symbol> symbols = null,
+            bool includeNameSpace = true)
+#else
             ArrayBuilder<Symbol> symbols = null)
+#endif
         {
             var identifierValueText = node.Identifier.ValueText;
 
@@ -503,6 +520,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             var result = LookupResult.GetInstance();
             // If it is a nameof argument, we do not care the arity for both Methods and NamedTypes.
             LookupOptions options = isNameofArgument ? LookupOptions.AllMethodsOnArityZero | LookupOptions.AllNamedTypesOnArityZero : GetSimpleNameLookupOptions(node, node.Identifier.IsVerbatimIdentifier());
+
+#if XSHARP
+            if (!includeNameSpace)
+                options |= LookupOptions.ExcludeNameSpaces;
+#endif
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             this.LookupSymbolsSimpleName(result, qualifierOpt, identifierValueText, 0, basesBeingResolved, options, diagnose: true, useSiteDiagnostics: ref useSiteDiagnostics);
@@ -656,7 +678,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             GenericNameSyntax node,
             DiagnosticBag diagnostics,
             ConsList<Symbol> basesBeingResolved,
+#if XSHARP
+            NamespaceOrTypeSymbol qualifierOpt,bool includeNameSpace = true)
+#else
             NamespaceOrTypeSymbol qualifierOpt)
+#endif
+
         {
             // We are looking for a namespace, alias or type name and the user has given
             // us an identifier followed by a type argument list. Therefore they

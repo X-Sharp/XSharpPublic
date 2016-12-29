@@ -231,5 +231,22 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             return;
         }
+
+        internal void RemoveNamespacesFromResult(LookupResult result)
+        {
+            var correctSymbols = ArrayBuilder<Symbol>.GetInstance();
+            foreach (var s in result.Symbols)
+            {
+                if (s.Kind != SymbolKind.Namespace)
+                    correctSymbols.Add(s);
+            }
+            if (correctSymbols.Count != result.Symbols.Count)
+            {
+                result.Clear();
+                result.Symbols.AddRange(correctSymbols);
+            }
+            return;
+        }
+
     }
 }

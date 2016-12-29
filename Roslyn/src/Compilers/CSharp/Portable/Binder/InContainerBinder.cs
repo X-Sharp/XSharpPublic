@@ -204,8 +204,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var error = new ExtendedErrorTypeSymbol((NamespaceOrTypeSymbol)null, name, arity, diagInfo, unreported: true);
                         result.SetFrom(LookupResult.Good(error)); // force lookup to be done w/ error symbol as result
                     }
-
-                    return;
+#if XSHARP
+                    if ((options & LookupOptions.ExcludeNameSpaces) != 0)
+                    {
+                        // remove names paces from the result list
+                        RemoveNamespacesFromResult(result);
+                    }
+                    if (! result.IsClear)
+                        return;
+#else
+                        return;
+#endif
                 }
             }
 

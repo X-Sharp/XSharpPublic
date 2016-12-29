@@ -557,6 +557,31 @@ namespace Microsoft.CodeAnalysis.CSharp
             lookupResult.Free();
             return expression;
         }
+        private static TypeSymbol XsGetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<TypeSymbol> parameterTypes, int arg)
+        {
+            int paramNum = result.ParameterFromArgument(arg);
+            var type =
+                (paramNum == parameterTypes.Length - 1 && result.Kind == MemberResolutionKind.ApplicableInExpandedForm) ?
+                ((ArrayTypeSymbol)parameterTypes[paramNum]).ElementType :
+                parameterTypes[paramNum];
+            return type;
+        }
+        private BoundExpression XsFixPszArgumentProblems (BoundExpression argument, TypeSymbol type, ref Conversion kind)
+        {
+            if (argument.Kind == BoundKind.Literal)
+            {
+                if (type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                {
+                    var lit = argument as BoundLiteral;
+                    if (lit.IsLiteralNull())
+                    {
+                        argument = new BoundLiteral(argument.Syntax, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
+                        kind = Conversion.Identity;
+                    }
+                }
+            }
+            return argument;
+        }
 
     }
 }

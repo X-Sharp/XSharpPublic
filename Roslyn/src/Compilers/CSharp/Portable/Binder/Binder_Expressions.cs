@@ -1978,19 +1978,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (!kind.IsIdentity)
                 {
 #if XSHARP
-                    TypeSymbol type = GetCorrespondingParameterType(ref result, parameterTypes, arg);
-                    if (argument.Kind == BoundKind.Literal)
-                    {
-                        if (type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
-                        {
-                            var lit = argument as BoundLiteral;
-                            if (lit.IsLiteralNull())
-                            {
-                                argument = new BoundLiteral(argument.Syntax, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
-                                kind = Conversion.Identity;
-                            }
-                        }
-                    }
+                    TypeSymbol type = XsGetCorrespondingParameterType(ref result, parameterTypes, arg);
+                    argument = XsFixPszArgumentProblems(argument, type, ref kind);
 #else
                     TypeSymbol type = GetCorrespondingParameterType(ref result, parameters, arg);
 #endif
@@ -2011,17 +2000,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
         }
-#if XSHARP
-        private static TypeSymbol GetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<TypeSymbol> parameterTypes, int arg)
-        {
-            int paramNum = result.ParameterFromArgument(arg);
-            var type =
-                (paramNum == parameterTypes.Length - 1 && result.Kind == MemberResolutionKind.ApplicableInExpandedForm) ?
-                ((ArrayTypeSymbol)parameterTypes[paramNum]).ElementType :
-                parameterTypes[paramNum];
-            return type;
-        }
-#else
         private static TypeSymbol GetCorrespondingParameterType(ref MemberAnalysisResult result, ImmutableArray<ParameterSymbol> parameters, int arg)
         {
             int paramNum = result.ParameterFromArgument(arg);
@@ -2031,7 +2009,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 parameters[paramNum].Type;
             return type;
         }
-#endif
         private BoundExpression BindArrayCreationExpression(ArrayCreationExpressionSyntax node, DiagnosticBag diagnostics)
         {
             // SPEC begins

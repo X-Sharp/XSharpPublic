@@ -160,14 +160,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (type == null)
                 return null;
             var lookupResult = LookupResult.GetInstance();
-            HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-            LookupOptions options = LookupOptions.NamespacesOrTypesOnly;
-            this.LookupSymbolsSimpleName(lookupResult, null, type.Identifier.Text, 0, null, options, false, ref useSiteDiagnostics);
-            if (lookupResult.IsSingleViable)
+            try
             {
-                return lookupResult.Symbols[0] as TypeSymbol;
+                HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                LookupOptions options = LookupOptions.NamespacesOrTypesOnly;
+                this.LookupSymbolsSimpleName(lookupResult, null, type.Identifier.Text, 0, null, options, false, ref useSiteDiagnostics);
+                if (lookupResult.IsSingleViable)
+                {
+                    return lookupResult.Symbols[0] as TypeSymbol;
+                }
+
+                return null;
             }
-            return null;
+            finally
+            {
+                lookupResult.Free();
+            }
         }
 
         private bool ValidatePCallArguments(InvocationExpressionSyntax node, ArrayBuilder<BoundExpression> args,
@@ -195,57 +203,71 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (!ValidatePCallArguments(node, args, diagnostics, method))
                 return;
             // Our parent is the invocation expression of the delegate
-            var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
-            if (ts != null && ts.IsDelegateType())
+            AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
+            try
             {
-                SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
-                // create new parameters based on the parameters from out parent call
-                var invoke = node.Parent as InvocationExpressionSyntax;
-                var realargs = invoke.ArgumentList;
-                AnalyzedArguments analyzedArguments = AnalyzedArguments.GetInstance();
-                var delparams = ts.DelegateParameters();
-                BindArgumentsAndNames(realargs, diagnostics, analyzedArguments);
-                var builder = ArrayBuilder<ParameterSymbol>.GetInstance();
-                int i = 0;
-                foreach (var expr in analyzedArguments.Arguments)
+                var ts = FindPCallDelegateType(type as IdentifierNameSyntax);
+                if (ts != null && ts.IsDelegateType())
                 {
-                    var ptype = expr.Type;
-                    if (ptype == null)
-                        ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
-                    var parameter = new SourceSimpleParameterSymbol(
-                        delmeth,
-                        ptype,
-                        i,
-                        delparams[i].RefKind,
-                        delparams[i].Name,
-                        delparams[i].Locations);
-                    builder.Add(parameter);
-                    i++;
+                    SourceDelegateMethodSymbol delmeth = ts.DelegateInvokeMethod() as SourceDelegateMethodSymbol;
+                    // create new parameters based on the parameters from out parent call
+                    var invoke = node.Parent as InvocationExpressionSyntax;
+                    var realargs = invoke.ArgumentList;
+                    var delparams = ts.DelegateParameters();
+                    BindArgumentsAndNames(realargs, diagnostics, analyzedArguments);
+                    var builder = ArrayBuilder<ParameterSymbol>.GetInstance();
+                    int i = 0;
+                    foreach (var expr in analyzedArguments.Arguments)
+                    {
+                        var ptype = expr.Type;
+                        if (ptype == null)
+                            ptype = new PointerTypeSymbol(Compilation.GetSpecialType(SpecialType.System_Void));
+                        var parameter = new SourceSimpleParameterSymbol(
+                            delmeth,
+                            ptype,
+                            i,
+                            delparams[i].RefKind,
+                            delparams[i].Name,
+                            delparams[i].Locations);
+                        builder.Add(parameter);
+                        i++;
+                    }
+                    delmeth.InitializeParameters(builder.ToImmutableAndFree());
                 }
-                delmeth.InitializeParameters(builder.ToImmutableAndFree());
-            }
-            else
-            {
-                Error(diagnostics, ErrorCode.ERR_PCallResolveGeneratedDelegate, node, method, type.ToString());
-            }
+                else
+                {
+                    Error(diagnostics, ErrorCode.ERR_PCallResolveGeneratedDelegate, node, method, type.ToString());
+                }
 
-            return;
+                return;
+            }
+            finally
+            {
+                analyzedArguments.Free();
+            }
         }
 
         internal void RemoveNamespacesFromResult(LookupResult result)
         {
             var correctSymbols = ArrayBuilder<Symbol>.GetInstance();
-            foreach (var s in result.Symbols)
+            try
             {
-                if (s.Kind != SymbolKind.Namespace)
-                    correctSymbols.Add(s);
+                foreach (var s in result.Symbols)
+                {
+                    if (s.Kind != SymbolKind.Namespace)
+                        correctSymbols.Add(s);
+                }
+                if (correctSymbols.Count != result.Symbols.Count)
+                {
+                    result.Clear();
+                    result.Symbols.AddRange(correctSymbols);
+                }
+                return;
             }
-            if (correctSymbols.Count != result.Symbols.Count)
+            finally
             {
-                result.Clear();
-                result.Symbols.AddRange(correctSymbols);
+                correctSymbols.Free();
             }
-            return;
         }
 
     }

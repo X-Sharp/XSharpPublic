@@ -229,11 +229,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     arguments,
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
             var target = _syntaxFactory.AttributeTargetSpecifier(SyntaxFactory.Identifier("assembly"), SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
-            var attrlist = _syntaxFactory.AttributeList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+            var attrlist = MakeAttributeList(
                 target,
-                attributes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                attributes);
             GlobalEntities.Attributes.Add(attrlist);
             _pool.Free(arguments);
             _pool.Free(attributes);
@@ -446,11 +444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var lhs = GenerateQualifiedName(VulcanRuntimeState + ".AppModule");
 
-            ExpressionSyntax rhs = _syntaxFactory.TypeOfExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                GenerateQualifiedName(GlobalClassName),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            ExpressionSyntax rhs = MakeTypeOf(GenerateQualifiedName(GlobalClassName));
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
             stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
@@ -991,8 +985,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         names.Add(GenerateLiteral(name));
                     }
-                    attrs.Add(_syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    attrs.Add(MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(_syntaxFactory.Attribute(
                             name: GenerateQualifiedName("global::Vulcan.Internal.ClipperCallingConvention"),
@@ -1007,8 +1000,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                                 MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
                                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken))))),
-                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)))),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))))
+                        ));
                     attributes = attrs;
                     _pool.Free(attrs);
                 }
@@ -1811,12 +1804,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var attrs = _pool.AllocateSeparated<AttributeSyntax>();
                     attrs.Add(attr);
 
-                    var atlist = _syntaxFactory.AttributeList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        null,
-                        attrs,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
-                        );
+                    var atlist = MakeAttributeList(
+                        target: null,
+                        attributes: attrs);
                     attributeLists.Add(atlist);
                     _pool.Free(attrs);
                     context.Put(_syntaxFactory.Parameter(attributeLists, mod, type, id, null));
@@ -2766,14 +2756,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (hasPsz)
             {
-                var typeofExpr = _syntaxFactory.TypeOfExpression(
-                        SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        _pszType,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-
                 var arguments = MakeSeparatedList(
-                    _syntaxFactory.AttributeArgument(null, null, typeofExpr));
+                    _syntaxFactory.AttributeArgument(null, null, MakeTypeOf(_pszType)));
 
                 var attribute = _syntaxFactory.Attribute(
                                 name: GenerateQualifiedName("global::Vulcan.Internal.ActualTypeAttribute"),
@@ -2783,11 +2767,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
                 var attributes = MakeSeparatedList<AttributeSyntax>(attribute);
 
-                var attributeList = _syntaxFactory.AttributeList(
-                    openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                var attributeList = MakeAttributeList(
                     target: null,
-                    attributes: attributes,
-                    closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                    attributes: attributes);
 
                 var @params = _pool.AllocateSeparated<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
@@ -2918,8 +2900,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
@@ -2935,8 +2916,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 )
-                            ),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                            ))
                     ),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
@@ -2995,8 +2975,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
@@ -3010,8 +2989,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 )
-                            ),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                            ))
                     ),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
@@ -3045,8 +3023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 voStructHasDim = true;
             context.Put(_syntaxFactory.FieldDeclaration(
                 MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
@@ -3060,8 +3037,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 )
-                            ),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                            ))
                     ),
                 TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
                 _syntaxFactory.VariableDeclaration(varType,

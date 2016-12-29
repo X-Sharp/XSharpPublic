@@ -2955,6 +2955,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Put(context.Member.Get<MemberDeclarationSyntax>());
         }
 
+        public override void EnterClsctor([NotNull] XP.ClsctorContext context)
+        {
+            context.Data.MustBeVoid = true;
+        }
+
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
             context.SetSequencePoint(context.end);

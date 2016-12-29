@@ -2751,6 +2751,76 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
+        internal override ParameterListSyntax UpdateVODLLParameters(ParameterListSyntax parameters)
+        {
+            // real work implemented in the subclass to check for PSZ parameters
+            bool hasPsz = false;
+            for (int i = 0; i < parameters.Parameters.Count; i++)
+            {
+                var p = parameters.Parameters[i];
+                if (p.Type == _pszType)
+                {
+                    hasPsz = true;
+                    break;
+                }
+            }
+            if (hasPsz)
+            {
+                var typeofExpr = _syntaxFactory.TypeOfExpression(
+                        SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        _pszType,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+
+                var arguments = MakeSeparatedList(
+                    _syntaxFactory.AttributeArgument(null, null, typeofExpr));
+
+                var attribute = _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("global::Vulcan.Internal.ActualTypeAttribute"),
+                                argumentList: _syntaxFactory.AttributeArgumentList(
+                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                    arguments: arguments,
+                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                var attributes = MakeSeparatedList<AttributeSyntax>(attribute);
+
+                var attributeList = _syntaxFactory.AttributeList(
+                    openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    target: null,
+                    attributes: attributes,
+                    closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+
+                var @params = _pool.AllocateSeparated<ParameterSyntax>();
+                for (int i = 0; i < parameters.Parameters.Count; i++)
+                {
+                    if (@params.Count > 0)
+                        @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    var p = parameters.Parameters[i];
+                    if (p.Type != _pszType)
+                    {
+                        @params.Add(p);
+                    }
+                    else
+                    {
+                        var newParam = _syntaxFactory.Parameter(
+                            attributeLists: attributeList,
+                            modifiers: p.Modifiers,
+                            type: _ptrType,
+                            identifier: p.Identifier,
+                            @default: p.Default
+                            );
+                        @params.Add(newParam);
+                    }
+                }
+                parameters = _syntaxFactory.ParameterList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                @params,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                _pool.Free(@params);
+            }
+            return parameters;
+        }
+
+
         public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
         {
 

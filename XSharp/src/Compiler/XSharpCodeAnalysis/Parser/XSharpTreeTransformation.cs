@@ -3318,6 +3318,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
+        internal virtual ParameterListSyntax UpdateVODLLParameters(ParameterListSyntax parameters)
+        {
+            // real work implemented in the subclass to check for PSZ parameters
+            return parameters;
+        }
+
         public override void ExitVodll([NotNull] XP.VodllContext context)
         {
             // The Parser Rule has attributes but these are ignored for now.
@@ -3336,6 +3342,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             returnType.XVoDecl = true;
 
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            parameters = UpdateVODLLParameters(parameters);
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
             var attributes = MakeSeparatedList(
                             _syntaxFactory.Attribute(

@@ -3327,12 +3327,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, context.Ordinal.Text));
             } else
                 EntrypointExpr = GenerateLiteral(context.Entrypoint.GetText());
-            context.Put(_syntaxFactory.MethodDeclaration(
-                attributeLists: MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        target: null,
-                        attributes: MakeSeparatedList(
+            var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType());
+            returnType.XVoDecl = true;
+
+            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
+            var attributes = MakeSeparatedList(
                             _syntaxFactory.Attribute(
                                 name: GenerateQualifiedName("global::System.Runtime.InteropServices.DllImport"),
                                 argumentList: _syntaxFactory.AttributeArgumentList(
@@ -3349,16 +3349,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         context.CallingConvention?.Get<AttributeArgumentSyntax>()
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                )
-                            ),
+                                ));
+            var attList = MakeList(
+                    _syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: null, attributes: attributes,
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
-                    ),
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword),
-                returnType: context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType()),
+                    );
+
+            context.Put(_syntaxFactory.MethodDeclaration(
+                attributeLists: attList ,
+                modifiers: modifiers,
+                returnType: returnType,
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
                 typeParameterList: null,
-                parameterList: context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList(),
+                parameterList: parameters,
                 constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
                 body: null,
                 expressionBody: null,
@@ -3382,7 +3388,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     conv = "global::System.Runtime.InteropServices.CallingConvention.Cdecl";
                     break;
             }
-            if (conv != null && conv != "") {
+            if (!String.IsNullOrEmpty(conv)) {
                 context.Put(_syntaxFactory.AttributeArgument(
                     GenerateNameEquals("CallingConvention"),
                     null,

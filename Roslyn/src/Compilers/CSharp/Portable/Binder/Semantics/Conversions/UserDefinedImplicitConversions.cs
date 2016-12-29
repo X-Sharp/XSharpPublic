@@ -92,15 +92,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             if ((object)sx == null)
             {
                 // When converting to USUAL and no valid operator is found then choose the operator with an Object Parameter
+                // Except when the source is a pointer type.
                 if (this is Conversions)
                 {
                     Conversions conv = this as Conversions;
+                    bool usePointer = source.IsPointerType();
                     if (conv.Compilation.Options.IsDialectVO && target == conv.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                     {
                         for( int i = 0; i < u.Length; i++)
                         {
                             var x = u[i];
-                            if (x.ToType == target && x.FromType == conv.Compilation.GetSpecialType(SpecialType.System_Object))
+                            if (usePointer && x.ToType == target && x.FromType.IsVoidPointer())
+                            {
+                                return UserDefinedConversionResult.Valid(u, i);
+                            }
+                            if (!usePointer  && x.ToType == target && x.FromType == conv.Compilation.GetSpecialType(SpecialType.System_Object))
                             {
                                 return UserDefinedConversionResult.Valid(u, i);
                             }

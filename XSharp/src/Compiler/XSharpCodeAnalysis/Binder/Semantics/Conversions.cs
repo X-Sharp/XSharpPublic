@@ -154,13 +154,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             // From Anything -> IntPtr
             if (dstType == SpecialType.System_IntPtr || dstType == SpecialType.System_UIntPtr)
             {
-                if (source.IsPointerType())
-                {
-                    return Conversion.IntPtr;
-                }
-                else if (source.IsVoStructOrUnion() || source.IsIntegralType())
+                if (source.IsVoStructOrUnion() || source.IsIntegralType())
                 {
                     return Conversion.Identity;
+                }
+                else if (source.IsPointerType())
+                {
+                    var pt = source as PointerTypeSymbol;
+                    if (pt.PointedAtType.IsVoStructOrUnion())
+                        return Conversion.Identity;
+                    return Conversion.IntPtr;
                 }
             }
             if (Compilation.Options.VOSignedUnsignedConversion) // vo4

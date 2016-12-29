@@ -2488,8 +2488,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = MakeSimpleMemberAccess(_ptrType,GenerateSimpleName("Zero"));
                 break;
             case XP.NULL_PSZ:
-                expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword)), GenerateLiteralNull());
-                expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(expr)));
+                //expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(GenerateLiteral(0))));
+                expr = GenerateLiteralNull();
                 break;
             case XP.NULL_DATE:
                 expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
@@ -2773,20 +2773,46 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitTypeCast([NotNull] XP.TypeCastContext context)
         {
             // Special case for (PSZ) Expression, this becomes String2Psz(<Expression>)
+            // but only when <Expression> is a literal string
             var dt = context.Type as XP.DatatypeContext;
             if (dt is XP.SimpleDatatypeContext)
             {
                 var sdt = dt as XP.SimpleDatatypeContext;
                 if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
                 {
-                    _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
-                    return;
+                    if (IsLiteralString(context.Expr))
+                    {
+                        _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                        return;
+                    }
                 }
             }
             base.ExitTypeCast(context);
             return;
         }
 
+        protected bool IsLiteralString(XP.ExpressionContext expr)
+        {
+            var pe = expr as XP.PrimaryExpressionContext;
+            if (pe != null)
+            {
+                if (pe.Expr is XP.LiteralExpressionContext)
+                {
+                    var lit = pe.Expr as XP.LiteralExpressionContext;
+                    var lv = lit.Literal;
+                    switch (lv.Token.Type)
+                    {
+                        case XP.STRING_CONST:
+                        case XP.ESCAPED_STRING_CONST:
+                        case XP.CHAR_CONST:
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return false;
+        }
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             // Special case for PSZ(_CAST 
@@ -2796,28 +2822,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    bool bCanCallStringPsz = false;
-                    var pe = context.Expr as XP.PrimaryExpressionContext;
-                    if (pe != null)
-                    {
-                        if (pe.Expr is XP.LiteralExpressionContext)
-                        {
-                            bCanCallStringPsz = true;
-                            var lit = pe.Expr as XP.LiteralExpressionContext;
-                            var lv = lit.Literal;
-                            switch (lv.Token.Type)
-                            {
-                                case XP.STRING_CONST:
-                                case XP.ESCAPED_STRING_CONST:
-                                case XP.CHAR_CONST:
-                                    break;
-                                default:
-                                    bCanCallStringPsz = false;
-                                    break;
-                            }
-                        }
-                    }
-                    if (bCanCallStringPsz)
+                    if (IsLiteralString(context.Expr))
                     {
                         _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
                     }

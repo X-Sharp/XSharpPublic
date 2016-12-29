@@ -582,6 +582,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return argument;
         }
-
+        private BoundExpression PszFromNull(BoundExpression expression)
+        {
+            var targetType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+            return new BoundDefaultOperator(expression.Syntax, targetType);
+        }
     }
 }

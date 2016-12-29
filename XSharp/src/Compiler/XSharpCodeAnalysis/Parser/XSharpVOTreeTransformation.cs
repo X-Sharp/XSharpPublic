@@ -1141,18 +1141,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     chain = null;
                 }
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                SyntaxToken parentId;
-                if (context.Parent is XP.ClsmethodContext)
+                SyntaxToken parentId = null;
+                if (context is XP.MethodContext)
                 {
-                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    var clsm = context as XP.MethodContext;
+                    if (clsm.ClassId != null)
+                    {
+                        // Method Init Class Foo
+                        parentId = clsm.ClassId.Get<SyntaxToken>();
+                    }
                 }
-                else
+                if (parentId == null)
                 {
-                    parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    if (context.Parent is XP.ClsmethodContext)
+                    {
+                        {
+                            parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                                ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                                ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                        }
+                    }
+                    else
+                    {
+                        parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    }
+                }
+                if (parentId == null)
+                {
+                    return null;
                 }
                 return _syntaxFactory.ConstructorDeclaration(
                     attributeLists: attributes,
@@ -1194,19 +1212,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 // no return statement needed in DESTRUCTOR
                 // body = AddMissingReturnStatement(body, context.StmtBlk, null);
-                SyntaxToken parentId;
-                if (context.Parent is XP.ClsmethodContext)
+                SyntaxToken parentId = null;
+                if (context is XP.MethodContext)
                 {
-                    parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    var clsm = context as XP.MethodContext;
+                    if (clsm.ClassId != null)
+                    {
+                        // Method Axit Class Foo
+                        parentId = clsm.ClassId.Get<SyntaxToken>();
+                    }
                 }
-                else
+                if (parentId == null)
                 {
-                    parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
-                        ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    if (context.Parent is XP.ClsmethodContext)
+                    {
+                        parentId = (context.Parent.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    }
+                    else
+                    {
+                        parentId = (context.Parent as XP.Class_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent as XP.Structure_Context)?.Id.Get<SyntaxToken>()
+                            ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
+                    }
                 }
+                if (parentId == null)
+                    return null;
                 return _syntaxFactory.DestructorDeclaration(
                     attributeLists: atts?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
                     modifiers: modifiers,

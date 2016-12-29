@@ -494,7 +494,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             VOOperatorType opType = NeedsVOOperator(node, left, right);
             if (opType != VOOperatorType.None)
             {
-                var res =  BindVOBinaryOperator(node, diagnostics, left, right, ref compoundStringLength,opType);
+                var res =  BindVOBinaryOperator(node, diagnostics, ref left, ref right, ref compoundStringLength,opType);
                 if (res != null)
                     return res;
             }

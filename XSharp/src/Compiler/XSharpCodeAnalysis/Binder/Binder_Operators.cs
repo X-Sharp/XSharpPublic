@@ -34,7 +34,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             NotEqualsUsual,
             SubtractString,
             UsualDate,
-            Shift
+            Shift,
+            PSZCompare
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
@@ -131,6 +132,21 @@ namespace Microsoft.CodeAnalysis.CSharp
             return opCall;
 
         }
+        private BoundExpression BindVOPszCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
+                ref BoundExpression left, ref BoundExpression right)
+        {
+            var pszType = this.GetWellKnownType(WellKnownType.Vulcan___Psz, diagnostics, node);
+            if (right.Type != pszType)
+            {
+                right = CreateConversion(right, pszType, diagnostics);
+            }
+            if (left.Type != pszType)
+            {
+                left = CreateConversion(left, pszType, diagnostics);
+            }
+            return null;
+        }
+
 
         private BoundExpression BindVOSingleEqualsUsual(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
              BoundExpression left, BoundExpression right)
@@ -249,7 +265,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         }
 
         private BoundExpression BindVOBinaryOperator(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
-            BoundExpression left, BoundExpression right, ref int compoundStringLength, VOOperatorType opType)
+            ref BoundExpression left, ref BoundExpression right, ref int compoundStringLength, VOOperatorType opType)
         {
             switch (opType)
             {
@@ -265,6 +281,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindVOCompareString(node, diagnostics, left, right, ref compoundStringLength);
                 case VOOperatorType.UsualDate:
                     return BindVOUsualDate(node, diagnostics, left, right);
+                case VOOperatorType.PSZCompare:
+                    return BindVOPszCompare(node, diagnostics, ref left, ref right);
             }
             return null;
         }
@@ -287,6 +305,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (Compilation.Options.IsDialectVO)
             {
                 var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                var typePSZ = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
                 NamedTypeSymbol typeDate;
                 TypeSymbol leftType = left.Type;
                 TypeSymbol rightType = right.Type;
@@ -302,12 +321,26 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             opType = VOOperatorType.SingleEqualsUsual;
                         }
+                        if (leftType == typePSZ || rightType == typePSZ)
+                        {
+                            opType = VOOperatorType.PSZCompare;
+                        }
+                        break;
+                    case XSharpParser.EEQ:
+                        if (leftType == typePSZ || rightType == typePSZ)
+                        {
+                            opType = VOOperatorType.PSZCompare;
+                        }
                         break;
                     case XSharpParser.NEQ:
                     case XSharpParser.NEQ2:
                         if (leftType == typeUsual || rightType == typeUsual) // || right.Type?.SpecialType == SpecialType.System_String))
                         {
                             opType = VOOperatorType.NotEqualsUsual;
+                        }
+                        else if (leftType == typePSZ || rightType == typePSZ)
+                        {
+                            opType = VOOperatorType.PSZCompare;
                         }
                         break;
                     case XSharpParser.GT:

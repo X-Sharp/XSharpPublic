@@ -2,5 +2,7 @@
 FUNCTION Test(n AS INT) AS VOID
 FUNCTION Start() AS VOID
 LOCAL p AS PTR
+// both should report an error message suggesting to use a delegate for callbacks
 p := @Test()
+p := @Test(1)
 

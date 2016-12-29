@@ -1979,6 +1979,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
 #if XSHARP
                     TypeSymbol type = GetCorrespondingParameterType(ref result, parameterTypes, arg);
+                    if (argument.Kind == BoundKind.Literal)
+                    {
+                        if (type == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                        {
+                            var lit = argument as BoundLiteral;
+                            if (lit.IsLiteralNull())
+                            {
+                                argument = new BoundLiteral(argument.Syntax, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32));
+                                kind = Conversion.Identity;
+                            }
+                        }
+                    }
 #else
                     TypeSymbol type = GetCorrespondingParameterType(ref result, parameters, arg);
 #endif

@@ -2118,6 +2118,15 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 diagnostics = new DiagnosticBag();
             }
+#if XSHARP
+            if (Compilation.Options.IsDialectVO && targetType == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+            {
+                if (IsNullNode(expression))
+                {
+                    return PszFromNull(expression);
+                }
+            }
+#endif
 
             HashSet<DiagnosticInfo> useSiteDiagnostics = null;
             var conversion = this.Conversions.ClassifyConversionFromExpression(expression, targetType, ref useSiteDiagnostics);

@@ -132,17 +132,55 @@ namespace Microsoft.CodeAnalysis.CSharp
             return opCall;
 
         }
+
+        private bool IsNullNode(BoundExpression node)
+        {
+            if (node.Syntax?.XNode != null)
+            {
+                var xnode = node.Syntax.XNode as XSharpParser.LiteralExpressionContext;
+                if (xnode ==null && node.Syntax.XNode is XSharpParser.PrimaryExpressionContext)
+                {
+                    var pexp = node.Syntax.XNode as XSharpParser.PrimaryExpressionContext;
+                    xnode = pexp.Expr as XSharpParser.LiteralExpressionContext;
+                }
+                if (xnode != null)
+                {
+                    switch (xnode.Literal.Token.Type)
+                    {
+                        case XSharpParser.NULL:
+                        case XSharpParser.NULL_PTR:
+                        case XSharpParser.NULL_PSZ:
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
         private BoundExpression BindVOPszCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
                 ref BoundExpression left, ref BoundExpression right)
         {
             var pszType = this.GetWellKnownType(WellKnownType.Vulcan___Psz, diagnostics, node);
             if (right.Type != pszType)
             {
-                right = CreateConversion(right, pszType, diagnostics);
+                if (IsNullNode(right))
+                {
+                    right = PszFromNull(right); 
+                }
+                else
+                {
+                    right = CreateConversion(right, pszType, diagnostics);
+                }
             }
             if (left.Type != pszType)
             {
-                left = CreateConversion(left, pszType, diagnostics);
+                if (IsNullNode(left))
+                {
+                    left = PszFromNull(left);
+                }
+                else
+                {
+                    left = CreateConversion(left, pszType, diagnostics);
+                }
             }
             return null;
         }

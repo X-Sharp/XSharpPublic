@@ -266,7 +266,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 else if (destination.IsReferenceType && !IsClipperArgsType(destination))
                     return Conversion.Boxing;
                 else if (destination.IsPointerType())
-                    return Conversion.Boxing;
+                    return Conversion.NoConversion;
             }
 
             if (Compilation.Options.LateBinding ||                 // lb

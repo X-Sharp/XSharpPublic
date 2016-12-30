@@ -262,11 +262,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // This method will return the Contents of the usual as an object 
                 // and not the usual itself as an object
                 else if (dstType == SpecialType.System_Object)
+                {
                     return Conversion.Boxing;
+                }
                 else if (destination.IsReferenceType && !IsClipperArgsType(destination))
+                {
                     return Conversion.Boxing;
-                else if (destination.IsPointerType())
+                }
+                else if (destination.IsVoidPointer())
+                {
                     return Conversion.NoConversion;
+                }
+                else if (destination.IsPointerType())
+                {
+                    return Conversion.IntPtr;
+                }
             }
 
             if (Compilation.Options.LateBinding ||                 // lb

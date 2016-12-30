@@ -38,28 +38,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 var parameter = parameters[parm];
 #if XSHARP
-                if (parameter is Metadata.PE.PEParameterSymbol)
-                {
-                    var type = parameter.Type;
-                    var attrs = parameter.GetAttributes();
-                    foreach (var attr in attrs)
-                    {
-                        var atype = attr.AttributeClass;
-                        if (atype.IsVulcanRTAttribute("ActualTypeAttribute"))
-                        {
-                            object t = attr.CommonConstructorArguments[0].DecodeValue<object>(SpecialType.None);
-                            if (t is TypeSymbol)
-                            {
-                                type = (TypeSymbol)t;
-                            }
-                        }
-                    }
-                    types.Add(type);
-                }
-                else
-                {
-                    types.Add(parameter.Type);
-                }
+                // Decode ActualTypeAttribute when it is there
+                types.Add(parameter.GetActualType());
 #else
                 types.Add(parameter.Type);
 #endif

@@ -269,4 +269,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
     }
 
+    internal static partial class ParameterSymbolExtensions
+    {
+        public static TypeSymbol GetActualType(this ParameterSymbol parameter)
+        {
+            var type = parameter.Type;
+            if (type.SpecialType == SpecialType.System_IntPtr)
+            {
+                var attrs = parameter.GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.IsVulcanRTAttribute("ActualTypeAttribute"))
+                    {
+                        object t = attr.CommonConstructorArguments[0].DecodeValue<object>(SpecialType.None);
+                        if (t is TypeSymbol)
+                        {
+                            type = (TypeSymbol)t;
+                        }
+                    }
+                }
+            }
+            return type;
+        }
+    }
 }

@@ -3338,6 +3338,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return parameters;
         }
 
+        private AttributeSyntax _unmanagedCodeAttribute()
+        {
+            var attrargs = _pool.AllocateSeparated<AttributeArgumentSyntax>();
+            var attrib = _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("System.Security.SuppressUnmanagedCodeSecurityAttribute"),
+                                argumentList: _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                                attrargs,
+                                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            _pool.Free(attrargs);
+            return attrib;
+
+        }
+        private AttributeSyntax _dllImportAttribute(XP.VodllContext context, ExpressionSyntax dllExpr, ExpressionSyntax entrypointExpr)
+        {
+            return _syntaxFactory.Attribute(
+                name: GenerateQualifiedName("global::System.Runtime.InteropServices.DllImport"),
+                argumentList: _syntaxFactory.AttributeArgumentList(
+                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    arguments: MakeSeparatedList(
+                        _syntaxFactory.AttributeArgument(null, null, dllExpr),
+                        _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, entrypointExpr),
+                        _syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)),
+                        _syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)),
+                        context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
+                                MakeSimpleMemberAccess(GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"),
+                                     _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))
+                            : null,
+                        context.CallingConvention?.Get<AttributeArgumentSyntax>()
+                    ),
+                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                );
+
+        }
         public override void ExitVodll([NotNull] XP.VodllContext context)
         {
             // The Parser Rule has attributes but these are ignored for now.
@@ -3346,40 +3379,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 dllName += "." + context.Extension.GetText();
             }
             ExpressionSyntax dllExpr = GenerateLiteral(dllName);
-            ExpressionSyntax EntrypointExpr;
+            ExpressionSyntax entrypointExpr;
             if (context.Ordinal != null) {
-                EntrypointExpr = GenerateLiteral(context.Ordinal.Text).WithAdditionalDiagnostics(
+                entrypointExpr = GenerateLiteral(context.Ordinal.Text).WithAdditionalDiagnostics(
                     new SyntaxDiagnosticInfo(ErrorCode.ERR_InvalidDLLEntryPoint, context.Ordinal.Text));
             } else
-                EntrypointExpr = GenerateLiteral(context.Entrypoint.GetText());
+                entrypointExpr = GenerateLiteral(context.Entrypoint.GetText());
             var returnType = context.Type?.Get<TypeSyntax>() ?? (context.T.Type == XP.FUNCTION ? _getMissingType() : VoidType());
             returnType.XVoDecl = true;
 
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
             parameters = UpdateVODLLParameters(parameters);
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
-            var attributes = MakeSeparatedList(
-                            _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.DllImport"),
-                                argumentList: _syntaxFactory.AttributeArgumentList(
-                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                    arguments: MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null, null, dllExpr),
-                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, EntrypointExpr),
-                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)),
-                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)),
-                                        context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
-                                                MakeSimpleMemberAccess(GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"),
-                                                     _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))
-                                            : null,
-                                        context.CallingConvention?.Get<AttributeArgumentSyntax>()
-                                    ),
-                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                ));
-            var attList = MakeList(
-                    MakeAttributeList(
-                        target: null, attributes: attributes)
-                    );
+            var attributes = MakeSeparatedList( _unmanagedCodeAttribute(),
+                                                _dllImportAttribute(context, dllExpr, entrypointExpr)
+                                              );
+            var attList = MakeList( MakeAttributeList( target: null, attributes: attributes)  );
 
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: attList ,
@@ -3401,9 +3416,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (context.Cc.Type) {
                 case XP.CLIPPER:
                 case XP.STRICT:
+                    conv = "global::System.Runtime.InteropServices.CallingConvention.Cdecl";
                     break;
                 case XP.PASCAL:
-                    conv = "global::System.Runtime.InteropServices.CallingConvention.StdCall";
+                    conv = ""; // "global::System.Runtime.InteropServices.CallingConvention.StdCall";
                     break;
                 case XP.THISCALL:
                     conv = "global::System.Runtime.InteropServices.CallingConvention.ThisCall";

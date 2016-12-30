@@ -2741,6 +2741,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
+        static protected AttributeListSyntax _actualArgs= null;
+        protected AttributeListSyntax GetActualArgs()
+        {
+            if (_actualArgs == null)
+            {
+                lock (gate)
+                {
+                    if (_actualArgs == null)
+                    {
+                        var arguments = MakeSeparatedList(
+                            _syntaxFactory.AttributeArgument(null, null, MakeTypeOf(_pszType)));
+
+                        var attribute = _syntaxFactory.Attribute(
+                                        name: GenerateQualifiedName("global::Vulcan.Internal.ActualTypeAttribute"),
+                                        argumentList: _syntaxFactory.AttributeArgumentList(
+                                            openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                            arguments: arguments,
+                                            closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                        var attributes = MakeSeparatedList<AttributeSyntax>(attribute);
+
+                        _actualArgs = MakeAttributeList(
+                            target: null,
+                            attributes: attributes);
+
+                    }
+
+                }
+            }
+            return _actualArgs;
+        }
         internal override ParameterListSyntax UpdateVODLLParameters(ParameterListSyntax parameters)
         {
             // real work implemented in the subclass to check for PSZ parameters
@@ -2756,20 +2786,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (hasPsz)
             {
-                var arguments = MakeSeparatedList(
-                    _syntaxFactory.AttributeArgument(null, null, MakeTypeOf(_pszType)));
-
-                var attribute = _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName("global::Vulcan.Internal.ActualTypeAttribute"),
-                                argumentList: _syntaxFactory.AttributeArgumentList(
-                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                    arguments: arguments,
-                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
-                var attributes = MakeSeparatedList<AttributeSyntax>(attribute);
-
-                var attributeList = MakeAttributeList(
-                    target: null,
-                    attributes: attributes);
 
                 var @params = _pool.AllocateSeparated<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
@@ -2784,7 +2800,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                     {
                         var newParam = _syntaxFactory.Parameter(
-                            attributeLists: attributeList,
+                            attributeLists: GetActualArgs(),
                             modifiers: p.Modifiers,
                             type: _ptrType,
                             identifier: p.Identifier,

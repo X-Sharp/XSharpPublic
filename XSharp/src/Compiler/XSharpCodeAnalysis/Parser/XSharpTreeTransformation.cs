@@ -678,6 +678,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(sizes);
             return r;
         }
+
+        protected AttributeListSyntax MakeAttributeList(AttributeTargetSpecifierSyntax target, SeparatedSyntaxList<AttributeSyntax> attributes)
+        {
+            return _syntaxFactory.AttributeList(
+                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                        target: target,
+                        attributes: attributes,
+                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
+                        );
+        }
         protected ExpressionSyntax MakeCastTo(TypeSyntax type, ExpressionSyntax expr)
         {
             return _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -704,6 +714,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected LockStatementSyntax MakeLock(ExpressionSyntax expr, StatementSyntax statement)
+        {
+            return _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
+                                               SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                                expr,
+                                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                                statement);
+
+
+        }
         protected AssignmentExpressionSyntax MakeSimpleAssignment(ExpressionSyntax lhs, ExpressionSyntax rhs)
         {
             return _syntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
@@ -714,6 +734,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, lhs,
                                                         SyntaxFactory.MakeToken(SyntaxKind.DotToken), rhs);
+        }
+        protected TypeOfExpressionSyntax MakeTypeOf( TypeSyntax type)
+        {
+            return _syntaxFactory.TypeOfExpression(
+                    SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                    type,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
         }
 
 
@@ -954,11 +982,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     name: GenerateQualifiedName(attributeName),
                     argumentList: null));
             }
-            attributeLists.Add(_syntaxFactory.AttributeList(
-                openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                target: null,
-                attributes: attributes,
-                closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+            attributeLists.Add(MakeAttributeList(null, attributes));
             _pool.Free(attributes);
         }
 
@@ -2147,10 +2171,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             modifiers: EmptyList(),
                             keyword: SyntaxFactory.MakeToken(SyntaxKind.AddKeyword),
                             body: MakeBlock(
-                                _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
-                                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                    GenerateSimpleName(evtFldName),
-                                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                MakeLock(GenerateSimpleName(evtFldName),
                                     GenerateExpressionStatement(
                                         _syntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression,
                                             GenerateSimpleName(evtFldName),
@@ -2161,10 +2182,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     attributeLists: EmptyList<AttributeListSyntax>(),
                                     modifiers: EmptyList(),
                                     keyword: SyntaxFactory.MakeToken(SyntaxKind.RemoveKeyword),
-                                    body: MakeBlock(_syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
-                                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                            GenerateSimpleName(evtFldName),
-                                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                                    body: MakeBlock(MakeLock(GenerateSimpleName(evtFldName),
                                             GenerateExpressionStatement(
                                                 _syntaxFactory.AssignmentExpression(SyntaxKind.SubtractAssignmentExpression,
                                                     GenerateSimpleName(evtFldName),
@@ -3136,11 +3154,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 attributes.Add(attrCtx.Get<AttributeSyntax>());
             }
-            context.Put(_syntaxFactory.AttributeList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+            context.Put(MakeAttributeList(
                 context.Target?.Get<AttributeTargetSpecifierSyntax>(),
-                attributes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                attributes));
             _pool.Free(attributes);
         }
 
@@ -3236,11 +3252,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 attributes.Add(attrCtx.Get<AttributeSyntax>());
             }
-            context.Put(_syntaxFactory.AttributeList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+            context.Put(MakeAttributeList(
                 context.Target.Get<AttributeTargetSpecifierSyntax>(),
-                attributes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                attributes));
             _pool.Free(attributes);
         }
 
@@ -3318,6 +3332,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
+        internal virtual ParameterListSyntax UpdateVODLLParameters(ParameterListSyntax parameters)
+        {
+            // real work implemented in the subclass to check for PSZ parameters
+            return parameters;
+        }
+
         public override void ExitVodll([NotNull] XP.VodllContext context)
         {
             // The Parser Rule has attributes but these are ignored for now.
@@ -3336,6 +3356,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             returnType.XVoDecl = true;
 
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            parameters = UpdateVODLLParameters(parameters);
             var modifiers = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(false, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
             var attributes = MakeSeparatedList(
                             _syntaxFactory.Attribute(
@@ -3356,10 +3377,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 ));
             var attList = MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        target: null, attributes: attributes,
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                    MakeAttributeList(
+                        target: null, attributes: attributes)
                     );
 
             context.Put(_syntaxFactory.MethodDeclaration(
@@ -3866,10 +3885,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     decl.Add(GenerateIfStatement(
                         GenerateSimpleName(staticName + StaticLocalInitFieldNameSuffix),
 
-                        _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
-                            SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                            GenerateSimpleName(staticName + StaticLocalLockFieldNameSuffix),
-                            SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                        MakeLock(GenerateSimpleName(staticName + StaticLocalLockFieldNameSuffix),
                             GenerateIfStatement(GenerateSimpleName(staticName + StaticLocalInitFieldNameSuffix),
 
                                 MakeBlock(MakeList<StatementSyntax>(
@@ -4559,10 +4575,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     node = context.StmtBlk.Get<BlockSyntax>();
                     break;
                 case XP.LOCK:
-                    node = _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                        context.Expr.Get<ExpressionSyntax>(),
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken),
+                    node = MakeLock(context.Expr.Get<ExpressionSyntax>(),
                         context.StmtBlk.Get<BlockSyntax>());
                     break;
                 case XP.UNSAFE:
@@ -4833,11 +4846,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             TypeSyntax globaltype = GenerateQualifiedName(GlobalClassName);
-            expr = _syntaxFactory.TypeOfExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                globaltype,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            expr = MakeTypeOf(globaltype);
 
             expr = MakeSimpleMemberAccess(expr,GenerateSimpleName("Module"));
             argList = MakeArgumentList(MakeArgument(expr));
@@ -4897,10 +4906,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else
                 {
-                    var openParen = SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken);
-                    var closeParen = SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken);
-                    var args = default(SeparatedSyntaxList<ArgumentSyntax>);
-                    argList = _syntaxFactory.ArgumentList(openParen, args, closeParen);
+                    argList = EmptyArgumentList();
                 }
                 if (context.Init != null)
                 {
@@ -5124,11 +5130,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTypeOfExpression([NotNull] XP.TypeOfExpressionContext context)
         {
-            context.Put(_syntaxFactory.TypeOfExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                context.Type.Get<TypeSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+            context.Put(MakeTypeOf(context.Type.Get<TypeSyntax>()));
         }
 
         public override void ExitDefaultExpression([NotNull] XP.DefaultExpressionContext context)

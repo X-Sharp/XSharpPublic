@@ -10,3 +10,6 @@ p2 := NULL
 ? p2 == NULL
 ? p2 != NULL
 
+_DLL FUNC GetPrivateProfileInt(lpAppName AS PSZ, lpKeyName AS PSZ, nDefault AS INT,;
+	lpFileName AS PSZ) AS DWORD PASCAL:KERNEL32.GetPrivateProfileIntA
+

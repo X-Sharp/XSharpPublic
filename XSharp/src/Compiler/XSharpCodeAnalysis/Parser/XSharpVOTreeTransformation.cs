@@ -229,11 +229,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     arguments,
                     SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
             var target = _syntaxFactory.AttributeTargetSpecifier(SyntaxFactory.Identifier("assembly"), SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
-            var attrlist = _syntaxFactory.AttributeList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+            var attrlist = MakeAttributeList(
                 target,
-                attributes,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken));
+                attributes);
             GlobalEntities.Attributes.Add(attrlist);
             _pool.Free(arguments);
             _pool.Free(attributes);
@@ -446,11 +444,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var lhs = GenerateQualifiedName(VulcanRuntimeState + ".AppModule");
 
-            ExpressionSyntax rhs = _syntaxFactory.TypeOfExpression(
-                SyntaxFactory.MakeToken(SyntaxKind.TypeOfKeyword),
-                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                GenerateQualifiedName(GlobalClassName),
-                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            ExpressionSyntax rhs = MakeTypeOf(GenerateQualifiedName(GlobalClassName));
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
             stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
@@ -991,8 +985,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         names.Add(GenerateLiteral(name));
                     }
-                    attrs.Add(_syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    attrs.Add(MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(_syntaxFactory.Attribute(
                             name: GenerateQualifiedName("global::Vulcan.Internal.ClipperCallingConvention"),
@@ -1007,8 +1000,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                                 MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
                                                 SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken))))),
-                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)))),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
+                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))))
+                        ));
                     attributes = attrs;
                     _pool.Free(attrs);
                 }
@@ -1811,12 +1804,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     var attrs = _pool.AllocateSeparated<AttributeSyntax>();
                     attrs.Add(attr);
 
-                    var atlist = _syntaxFactory.AttributeList(
-                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                        null,
-                        attrs,
-                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
-                        );
+                    var atlist = MakeAttributeList(
+                        target: null,
+                        attributes: attrs);
                     attributeLists.Add(atlist);
                     _pool.Free(attrs);
                     context.Put(_syntaxFactory.Parameter(attributeLists, mod, type, id, null));
@@ -2751,6 +2741,84 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return expr;
         }
 
+        static protected AttributeListSyntax _actualArgs= null;
+        protected AttributeListSyntax GetActualArgs()
+        {
+            if (_actualArgs == null)
+            {
+                lock (gate)
+                {
+                    if (_actualArgs == null)
+                    {
+                        var arguments = MakeSeparatedList(
+                            _syntaxFactory.AttributeArgument(null, null, MakeTypeOf(_pszType)));
+
+                        var attribute = _syntaxFactory.Attribute(
+                                        name: GenerateQualifiedName("global::Vulcan.Internal.ActualTypeAttribute"),
+                                        argumentList: _syntaxFactory.AttributeArgumentList(
+                                            openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                                            arguments: arguments,
+                                            closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                        var attributes = MakeSeparatedList<AttributeSyntax>(attribute);
+
+                        _actualArgs = MakeAttributeList(
+                            target: null,
+                            attributes: attributes);
+
+                    }
+
+                }
+            }
+            return _actualArgs;
+        }
+        internal override ParameterListSyntax UpdateVODLLParameters(ParameterListSyntax parameters)
+        {
+            // real work implemented in the subclass to check for PSZ parameters
+            bool hasPsz = false;
+            for (int i = 0; i < parameters.Parameters.Count; i++)
+            {
+                var p = parameters.Parameters[i];
+                if (p.Type == _pszType)
+                {
+                    hasPsz = true;
+                    break;
+                }
+            }
+            if (hasPsz)
+            {
+
+                var @params = _pool.AllocateSeparated<ParameterSyntax>();
+                for (int i = 0; i < parameters.Parameters.Count; i++)
+                {
+                    if (@params.Count > 0)
+                        @params.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
+                    var p = parameters.Parameters[i];
+                    if (p.Type != _pszType)
+                    {
+                        @params.Add(p);
+                    }
+                    else
+                    {
+                        var newParam = _syntaxFactory.Parameter(
+                            attributeLists: GetActualArgs(),
+                            modifiers: p.Modifiers,
+                            type: _ptrType,
+                            identifier: p.Identifier,
+                            @default: p.Default
+                            );
+                        @params.Add(newParam);
+                    }
+                }
+                parameters = _syntaxFactory.ParameterList(
+                SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                @params,
+                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+                _pool.Free(@params);
+            }
+            return parameters;
+        }
+
+
         public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
         {
 
@@ -2848,8 +2916,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
@@ -2865,8 +2932,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 )
-                            ),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                            ))
                     ),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
@@ -2925,8 +2991,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
@@ -2940,8 +3005,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 )
-                            ),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                            ))
                     ),
                 modifiers: mods,
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.StructKeyword),
@@ -2975,8 +3039,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 voStructHasDim = true;
             context.Put(_syntaxFactory.FieldDeclaration(
                 MakeList(
-                    _syntaxFactory.AttributeList(
-                        openBracketToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    MakeAttributeList(
                         target: null,
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
@@ -2990,8 +3053,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     ),
                                     closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
                                 )
-                            ),
-                        closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))
+                            ))
                     ),
                 TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
                 _syntaxFactory.VariableDeclaration(varType,

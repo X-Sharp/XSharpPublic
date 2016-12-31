@@ -5784,7 +5784,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C235
 
-ApplicationGroup = 3D21BF3B-D4BB-4A9E-8A1F-5F6EBC234911
+ApplicationGroup = AFC1C415-FAD6-4C6F-B86D-3D981AB09BAD
 ; ************** APPLICATION C236 - Problem With PSZ and NULL *************
 Application = C236 - Problem With PSZ and NULL
 IDEVersion = 1.06
@@ -36696,7 +36696,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C372 - Problem converting PTR to PSZ
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C373 - No support for EXPORT LOCAL clause *************
 Application = C373 - No support for EXPORT LOCAL clause
 IDEVersion = 1.06

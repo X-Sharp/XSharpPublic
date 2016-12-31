@@ -47,6 +47,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                             && constructedFrom.IsDerivedFrom(_binder.Compilation.GetWellKnownType(WellKnownType.Vulcan_Codeblock), true, ref useSiteDiagnostics) != true
                             && !IsClipperArgsType(destination);
                     }
+                    else if (destination.IsPointerType())
+                    {
+                       return true;
+                    }
                     else
                     {
                         // do not box symbol, psz, vofloat, vodate
@@ -160,10 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
                 else if (source.IsPointerType())
                 {
-                    var pt = source as PointerTypeSymbol;
-                    if (pt.PointedAtType.IsVoStructOrUnion())
-                        return Conversion.Identity;
-                    return Conversion.IntPtr;
+                    return Conversion.Identity;
                 }
             }
             if (Compilation.Options.VOSignedUnsignedConversion) // vo4
@@ -263,19 +264,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // and not the usual itself as an object
                 else if (dstType == SpecialType.System_Object)
                 {
+                    // All Objects are boxed in a usual
                     return Conversion.Boxing;
                 }
                 else if (destination.IsReferenceType && !IsClipperArgsType(destination))
                 {
+                    // all user reference types are boxed. But not the Usual[] args
                     return Conversion.Boxing;
-                }
-                else if (destination.IsVoidPointer())
-                {
-                    return Conversion.NoConversion;
                 }
                 else if (destination.IsPointerType())
                 {
-                    return Conversion.IntPtr;
+                    // Not really boxed, but we handle this in LocalRewriter.UnBoxVOType
+                    return Conversion.Boxing;
                 }
             }
 

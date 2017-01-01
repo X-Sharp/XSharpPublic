@@ -314,6 +314,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XVodecl = 1 << 0,
         XVoIsDecl = 1 << 1,
         XPCall = 1 << 2,
+        XGenerated =1 << 3,
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -336,6 +337,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             get { return xflags.HasFlag(XNodeFlags.XPCall); }
             set { if (value) xflags |= XNodeFlags.XPCall; else xflags &= ~XNodeFlags.XPCall; }
         }
+        public bool XGenerated
+        {
+            get { return xflags.HasFlag(XNodeFlags.XGenerated); }
+            set { if (value) xflags |= XNodeFlags.XGenerated; else xflags &= ~XNodeFlags.XGenerated; }
+        }
     }
 
     internal sealed partial class CompilationUnitSyntax
@@ -357,6 +363,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool XVoDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoDecl; } }
         internal bool XVoIsDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDecl; } }
         internal bool XPCall { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XPCall; } }
+        internal bool XGenerated { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XGenerated; } }
         internal bool XIsMissingArgument {
             get
             {

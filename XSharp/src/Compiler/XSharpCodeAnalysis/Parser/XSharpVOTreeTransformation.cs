@@ -70,6 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private TypeSyntax _pszType;
         private TypeSyntax _codeblockType;
         private TypeSyntax _stringType;
+        private TypeSyntax _intType;
 
         private ArrayTypeSyntax arrayOfUsual = null;
         private ArrayTypeSyntax arrayOfString = null;
@@ -86,6 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pszType = GenerateQualifiedName("global::Vulcan.__Psz");
             _codeblockType = GenerateQualifiedName("global::Vulcan.Codeblock");
             _stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+            _intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
 
             // calculate the global class name;
             string name = options.CommandLineArguments.CompilationOptions.ModuleName;
@@ -912,15 +914,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         // When the PCount function is used then we need to introduce a helper variable
                         // and also when there are defined parameters
 
-                        // VAR Xs$PCount  := 0
-                        stmts.Add(GenerateLocalDecl(ClipperPCount, _impliedType, GenerateLiteral("0", 0)));
+                        // LOCAL Xs$PCount  AS INT
+                        stmts.Add(GenerateLocalDecl(ClipperPCount, _intType));
                         // Other common statements are cached
                         stmts.Add(GetClipperCallingConventionIfStatement());
                     }
 
                     // Assuming the parameters are called oPar1 and oPar2 then the following code is generated
-                    // LOCAL oPar1 := NIL as USUAL
-                    // LOCAL oPar2 := NIL as USUAL
+                    // LOCAL oPar1 as USUAL
+                    // LOCAL oPar2 as USUAL
                     // IF Xs$PCount > 0
                     //   oPar1 := Xs$Args[0]
                     //   IF Xs$PCount > 1
@@ -934,7 +936,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ParameterSyntax parm = parameters.Parameters[i];
                             string name = parm.Identifier.Text;
                             paramNames.Add(name);
-                            stmts.Add(GenerateLocalDecl(name, _usualType, nilExpr));
+                            var decl = GenerateLocalDecl(name, _usualType, null);
+                            decl.XGenerated = true;
+                            var variable = decl.Declaration.Variables[0];
+                            variable.XGenerated = true;
+                            stmts.Add(decl);
                         }
                         int iAdd = 1;
                         if(_options.ArrayZero)
@@ -1990,13 +1996,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             expr = MakeCastTo(_stringType, argList.Arguments[0].Expression);
-
             expr = _syntaxFactory.ConditionalAccessExpression(expr,
                                     SyntaxFactory.MakeToken(SyntaxKind.QuestionToken),
                                     _syntaxFactory.MemberBindingExpression(
                                         SyntaxFactory.MakeToken(SyntaxKind.DotToken),
                                         GenerateSimpleName("Length")
                                         ));
+            expr = MakeSimpleMemberAccess(expr, GenerateSimpleName("Value"));
             expr = MakeCastTo(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword)), expr);
 
             context.Put(expr);

@@ -799,6 +799,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             int slot = VariableSlot(symbol);
             if (slot <= 0) return;
             if (slot >= _alreadyReported.Capacity) _alreadyReported.EnsureCapacity(nextVariableSlot);
+#if XSHARP
+            if (symbol.Kind == SymbolKind.Local)
+            {
+                if (symbol.Name.IndexOf("Xs$") > -1)
+                {
+                    _alreadyReported[slot] = true;
+                }
+                else
+                {
+                    var syntaxref = symbol.DeclaringSyntaxReferences[0] as SyntaxReference;
+                    if (syntaxref != null)
+                    {
+                        CSharpSyntaxNode syntaxnode = syntaxref.GetSyntax() as CSharpSyntaxNode;
+                        if (syntaxnode.XGenerated)
+                        {
+                            _alreadyReported[slot] = true;
+                        }
+                    }
+                }
+
+            }
+#endif
+
             if (symbol.Kind == SymbolKind.Local && (symbol.Locations.Length == 0 || node.Span.End < symbol.Locations[0].SourceSpan.Start))
             {
                 // We've already reported the use of a local before its declaration.  No need to emit
@@ -808,7 +831,6 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // CONSIDER: could suppress this diagnostic in cases where the local was declared in a using
                 // or fixed statement because there's a special error code for not initializing those.
-
                 ErrorCode errorCode =
                     (symbol.Kind == SymbolKind.Parameter && ((ParameterSymbol)symbol).RefKind == RefKind.Out) ?
                     (((ParameterSymbol)symbol).IsThis) ? ErrorCode.ERR_UseDefViolationThis : ErrorCode.ERR_UseDefViolationOut :

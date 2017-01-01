@@ -39,6 +39,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         internal void SetReturnType(TypeSymbol newType)
         {
             _returnType = newType;
+            SetReturnsVoid((newType.SpecialType == SpecialType.System_Void));
+
         }
         internal void InitializeParameters(ImmutableArray<ParameterSymbol> parameters)
         {

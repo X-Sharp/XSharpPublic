@@ -226,7 +226,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (dstType == SpecialType.System_Boolean)
                     return Conversion.Identity;
                 // Allow cast -> INTEGRAL
-                if (dstType.IsIntegralType())
+                if (dstType.IsIntegralType() && ! source.IsNullableType())
                     return Conversion.Identity;
                 // Allow cast -> PTR
                 if (destination is PointerTypeSymbol)

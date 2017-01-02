@@ -47,6 +47,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return _usual2Ptr;
         }
+
         private ConversionKind UnBoxVOType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
             if (_compilation.Options.IsDialectVO)
@@ -71,7 +72,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             return ConversionKind.PointerToPointer; 
                         }
                     }
-                    else // System.Decimals, Objects and reference types
+                    else // System.Decimals, Objects and reference types, but not String
                     {
                         rewrittenOperand = _factory.StaticCall(usualType, "ToObject", rewrittenOperand);
                         conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;

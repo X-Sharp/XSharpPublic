@@ -46,6 +46,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 int voStructSize = 0;
                 int voStructElementSize = 0;
                 int align = this.Layout.Alignment;
+                if (align == 0)
+                    align = 4;
                 foreach (var m in GetMembers())
                 {
                     if (m.Kind == SymbolKind.Field)
@@ -68,8 +70,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                             {
                                 elsz = f.Type.VoStructOrUnionLargestElementSizeInBytes();
                             }
+                            else if (f.Type == DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan___WinBool))
+                            {
+                                elsz = sz = 4;
+                            }
                             else
+                            {
                                 elsz = sz;
+                            }
                         }
                         if (sz != 0)
                         {
@@ -95,8 +103,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 }
                             }
 
-                            if (voStructElementSize < sz)
-                                voStructElementSize = sz;
+                            if (voStructElementSize < elsz )
+                                voStructElementSize = elsz;
                         }
                     }
                 }

@@ -218,18 +218,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             attributes.Add(_syntaxFactory.Attribute(
                 name: GenerateQualifiedName("global::Vulcan.Internal.VulcanClassLibraryAttribute"),
-                argumentList: _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    arguments,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                argumentList: MakeAttributeArgumentList(arguments)));
             arguments.Clear();
             // VulcanVersion
             arguments.Add(_syntaxFactory.AttributeArgument(null, null, GenerateLiteral("X# " + global::XSharp.Constants.Version+" - dialect:" +_options.Dialect.ToString())));
             attributes.AddSeparator(SyntaxFactory.MakeToken(SyntaxKind.CommaToken));
             attributes.Add(_syntaxFactory.Attribute(
                 name: GenerateQualifiedName("global::Vulcan.Internal.VulcanCompilerVersion"),
-                argumentList: _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    arguments,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                argumentList: MakeAttributeArgumentList(arguments)));
             var target = _syntaxFactory.AttributeTargetSpecifier(SyntaxFactory.Identifier("assembly"), SyntaxFactory.MakeToken(SyntaxKind.ColonToken));
             var attrlist = MakeAttributeList(
                 target,
@@ -665,6 +661,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var jmpstmt = stmt as XP.JumpStmtContext;
                 if (jmpstmt.Key.Type == XP.THROW)
                     return false;
+                if (jmpstmt.Key.Type == XP.BREAK)
+                    return false;
             }
             if (stmt is XP.IfStmtContext)
             {
@@ -995,9 +993,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         target: null,
                         attributes: MakeSeparatedList(_syntaxFactory.Attribute(
                             name: GenerateQualifiedName("global::Vulcan.Internal.ClipperCallingConvention"),
-                            argumentList: _syntaxFactory.AttributeArgumentList(
-                                openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                arguments: MakeSeparatedList(
+                            argumentList: MakeAttributeArgumentList(
+                                MakeSeparatedList(
                                     _syntaxFactory.AttributeArgument(null, null,
                                         _syntaxFactory.ArrayCreationExpression(
                                             SyntaxFactory.MakeToken(SyntaxKind.NewKeyword),
@@ -1005,9 +1002,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                             _syntaxFactory.InitializerExpression(SyntaxKind.ArrayInitializerExpression,
                                                 SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
                                                 MakeSeparatedList<ExpressionSyntax>(names.ToArray()),
-                                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken))))),
-                                closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))))
-                        ));
+                                                SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken)))))
+                                ))
+                        )));
                     attributes = attrs;
                     _pool.Free(attrs);
                 }
@@ -1691,10 +1688,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.AttributeArgument(null, null, arg1),
                         _syntaxFactory.AttributeArgument(null, null, arg2)
                         );
-            var arglist = _syntaxFactory.AttributeArgumentList(
-                    SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    args,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            var arglist = MakeAttributeArgumentList(args);
 
             var attr = _syntaxFactory.Attribute(GenerateQualifiedName("global::Vulcan.Internal.DefaultParameterValueAttribute"), arglist);
             return attr;
@@ -2761,10 +2755,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
                         var attribute = _syntaxFactory.Attribute(
                                         name: GenerateQualifiedName("global::Vulcan.Internal.ActualTypeAttribute"),
-                                        argumentList: _syntaxFactory.AttributeArgumentList(
-                                            openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                            arguments: arguments,
-                                            closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                                        argumentList: MakeAttributeArgumentList(arguments));
                         var attributes = MakeSeparatedList<AttributeSyntax>(attribute);
 
                         _actualArgs = MakeAttributeList(
@@ -2920,6 +2911,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
                 mods = modBuilder.ToTokenList();
             }
+            var attargs = ArrayBuilder<AttributeArgumentSyntax>.GetInstance();
+            attargs.Add(_syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(LayoutSequential)));
+            if (context.Alignment != null )
+            {
+                var lit = _syntaxFactory.LiteralExpression(context.Alignment.ExpressionKindLiteral(), context.Alignment.SyntaxLiteralValue(_options));
+                attargs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null,lit));
+            }
+
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
                     MakeAttributeList(
@@ -2927,16 +2926,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
                                 name: GenerateQualifiedName(StructLayout),
-                                argumentList: _syntaxFactory.AttributeArgumentList(
-                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                    arguments: MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(LayoutSequential)),
-                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null,
-                                            context.Alignment == null ?
-                                                GenerateLiteral("8", 8)
-                                                : _syntaxFactory.LiteralExpression(context.Alignment.ExpressionKindLiteral(), context.Alignment.SyntaxLiteralValue(_options)))
-                                    ),
-                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                argumentList: MakeAttributeArgumentList(MakeSeparatedList(attargs.ToArrayAndFree()))
                                 )
                             ))
                     ),
@@ -2958,20 +2948,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             context.Put(m);
         }
 
+        private TypeSyntax voStructMemberDataType(XP.VostructmemberContext context)
+        {
+            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
+            if (context.DataType is XP.SimpleDatatypeContext)
+            {
+                var sdt = context.DataType as XP.SimpleDatatypeContext;
+                if (sdt.TypeName.NativeType != null)
+                {
+                    if (sdt.TypeName.NativeType.Token.Type == XP.LOGIC)
+                    {
+                        varType = GenerateQualifiedName("global::Vulcan.__WinBool");
+                    }
+                }
+            }
+            return varType;
+        }
 
         public override void ExitVostructmember([NotNull] XP.VostructmemberContext context)
         {
             bool isDim = context.Dim != null;
-            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
+            bool isUnionMember = (context.Parent is XP.VounionContext);
+            var varType = voStructMemberDataType(context);
+
             varType.XVoDecl = true;
             if (context.As?.Type == XP.IS)
             {
                 varType.XVoIsDecl = true;
             }
             if (isDim)
+            {
                 voStructHasDim = true;
+            }
+
+            SyntaxList<AttributeListSyntax> atts = null;
+            if (isUnionMember)
+            {
+                var args = MakeSeparatedList(
+                                        _syntaxFactory.AttributeArgument(null, null,
+                                            GenerateLiteral("0", 0)));
+                var arglist = MakeAttributeArgumentList(args);
+                var att = MakeSeparatedList(
+                            _syntaxFactory.Attribute(
+                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.FieldOffset"),
+                                argumentList: arglist));
+                atts = MakeAttributeList(null, att);
+            }
+            else
+            {
+                atts = EmptyList<AttributeListSyntax>();
+            }
             context.Put(_syntaxFactory.FieldDeclaration(
-                EmptyList<AttributeListSyntax>(),
+                atts,
                 TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
                 _syntaxFactory.VariableDeclaration(varType,
                     MakeSeparatedList(
@@ -2995,6 +3023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 modBuilder.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
                 mods = modBuilder.ToTokenList();
             }
+
             MemberDeclarationSyntax m = _syntaxFactory.StructDeclaration(
                 attributeLists: MakeList(
                     MakeAttributeList(
@@ -3002,14 +3031,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         attributes: MakeSeparatedList(
                             _syntaxFactory.Attribute(
                                 name: GenerateQualifiedName(StructLayout),
-                                argumentList: _syntaxFactory.AttributeArgumentList(
-                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                    arguments: MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(LayoutExplicit)),
-                                        _syntaxFactory.AttributeArgument(GenerateNameEquals("Pack"), null, GenerateLiteral("4", 4))
-
-                                    ),
-                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                                argumentList: MakeAttributeArgumentList(
+                                    MakeSeparatedList(_syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(LayoutExplicit)))
+                                    )
                                 )
                             ))
                     ),
@@ -3032,42 +3056,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        public override void ExitVounionmember([NotNull] XP.VounionmemberContext context)
-        {
-            bool isDim = context.Dim != null;
-            var varType = context.DataType?.Get<TypeSyntax>() ?? MissingType();
-            varType.XVoDecl = true;
-            if (context.As?.Type == XP.IS)
-            {
-                varType.XVoIsDecl = true;
-            }
-            if (isDim)
-                voStructHasDim = true;
-            context.Put(_syntaxFactory.FieldDeclaration(
-                MakeList(
-                    MakeAttributeList(
-                        target: null,
-                        attributes: MakeSeparatedList(
-                            _syntaxFactory.Attribute(
-                                name: GenerateQualifiedName("global::System.Runtime.InteropServices.FieldOffset"),
-                                argumentList: _syntaxFactory.AttributeArgumentList(
-                                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                    arguments: MakeSeparatedList(
-                                        _syntaxFactory.AttributeArgument(null, null,
-                                            GenerateLiteral("0", 0)
-                                        )
-                                    ),
-                                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
-                                )
-                            ))
-                    ),
-                TokenList(SyntaxKind.PublicKeyword, isDim ? SyntaxKind.FixedKeyword : SyntaxKind.None),
-                _syntaxFactory.VariableDeclaration(varType,
-                    MakeSeparatedList(
-                        isDim ? GenerateBuffer(context.Id.Get<SyntaxToken>(), MakeBracketedArgumentList(context.ArraySub._ArrayIndex.Select(e => _syntaxFactory.Argument(null, null, e.Get<ExpressionSyntax>())).ToArray()))
-                        : GenerateVariable(context.Id.Get<SyntaxToken>()))),
-                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-        }
         public override void ExitDefaultStmt([NotNull] XP.DefaultStmtContext context)
         {
             var stmts = _pool.Allocate<StatementSyntax>();

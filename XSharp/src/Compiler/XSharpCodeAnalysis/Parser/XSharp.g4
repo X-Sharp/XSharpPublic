@@ -180,16 +180,12 @@ vostructmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As
 
 vounion				: (Modifiers=votypeModifiers)?
                       UNION (Namespace=nameDot)? Id=identifier EOS
-                      (Members+=vounionmember)+
+                      (Members+=vostructmember)+
                     ;
 
 votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
                     ;
 
-
-vounionmember		: MEMBER Dim=DIM Id=identifier LBRKT ArraySub=arraysub RBRKT (As=(AS | IS) DataType=datatype)? EOS
-                    | MEMBER Id=identifier (As=(AS | IS) DataType=datatype)? EOS
-                    ;
 
 namespace_			: BEGIN NAMESPACE Name=name EOS
                       (Entities+=entity)*

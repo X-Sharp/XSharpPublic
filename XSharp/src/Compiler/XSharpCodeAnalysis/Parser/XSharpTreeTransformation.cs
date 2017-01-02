@@ -688,6 +688,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         closeBracketToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)
                         );
         }
+        protected AttributeArgumentListSyntax MakeAttributeArgumentList(SeparatedSyntaxList<AttributeArgumentSyntax> args)
+        {
+            return _syntaxFactory.AttributeArgumentList(
+                        SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
+                        args,
+                        SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)
+                        );
+        }
+
         protected ExpressionSyntax MakeCastTo(TypeSyntax type, ExpressionSyntax expr)
         {
             return _syntaxFactory.CastExpression(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -3180,9 +3189,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(_syntaxFactory.Attribute(
                 name: context.Name.Get<NameSyntax>(),
-                argumentList: _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    arguments,
-                    SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                argumentList: MakeAttributeArgumentList(arguments)));
             _pool.Free(arguments);
         }
 
@@ -3239,8 +3246,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     arguments.Add(newarg);
 
                                     attrCtx.Put(_syntaxFactory.Attribute(attrCtx.Get<AttributeSyntax>().Name,
-                                        _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                            arguments, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))));
+                                        MakeAttributeArgumentList(arguments)));
                                     _pool.Free(arguments);
                                 }
 
@@ -3343,9 +3349,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attrargs = _pool.AllocateSeparated<AttributeArgumentSyntax>();
             var attrib = _syntaxFactory.Attribute(
                                 name: GenerateQualifiedName("System.Security.SuppressUnmanagedCodeSecurityAttribute"),
-                                argumentList: _syntaxFactory.AttributeArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                                                attrargs,
-                                                SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken)));
+                                argumentList: MakeAttributeArgumentList(attrargs));
             _pool.Free(attrargs);
             return attrib;
 
@@ -3354,9 +3358,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return _syntaxFactory.Attribute(
                 name: GenerateQualifiedName("global::System.Runtime.InteropServices.DllImport"),
-                argumentList: _syntaxFactory.AttributeArgumentList(
-                    openParenToken: SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
-                    arguments: MakeSeparatedList(
+                argumentList: MakeAttributeArgumentList(
+                    MakeSeparatedList(
                         _syntaxFactory.AttributeArgument(null, null, dllExpr),
                         _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, entrypointExpr),
                         _syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)),
@@ -3366,8 +3369,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                      _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))
                             : null,
                         context.CallingConvention?.Get<AttributeArgumentSyntax>()
-                    ),
-                    closeParenToken: SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken))
+                    ))
                 );
 
         }

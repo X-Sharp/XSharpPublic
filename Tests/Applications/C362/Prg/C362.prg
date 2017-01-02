@@ -5,6 +5,7 @@ RETURN
 
 FUNCTION Test() AS VOID
   LOCAL DIM pTemp[10] AS BYTE
+  #error pTemp is not pinned
   Split(PSZ(_CAST, @pTemp[1]))
   ? pTemp[1],pTemp[2],pTemp[3],pTemp[4]
 

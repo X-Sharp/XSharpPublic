@@ -37244,7 +37244,7 @@ ImplicitNamespace=0
 VO1=0
 VO2=0
 VO3=0
-VO4=1
+VO4=0
 VO5=0
 VO6=0
 VO7=0
@@ -37291,28 +37291,28 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C378 - Runtime problem calculating INT(_CAST, SLen())
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C380 PaintStruct *************
-Application = C380 PaintStruct
+; ************** APPLICATION C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members *************
+Application = C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
 GalleryDefaultName = 
 Target = 0
 Platform = x86
-Language = XSharp
+Language = VulcanNet
 Runtime = CLR4
-Dialect = Vulcan
-Folder = %ProjectPath%\Applications\C380 PaintStruct\
+Dialect = None
+Folder = %ProjectPath%\Applications\C379\
 PrgSubFolder = \Prg
-ResourcesSubFolder = \Resources
-Description = Just a simple x# application
+ResourcesSubFolder = 
+Description = 
 NameSpace = 
-Assembly = C380 PaintStruct
+Assembly = C379
 Extension = 
 ApplicationIcon = 
 OutputFolder = 
 Frameworks = 1
-GUID = E7F47FBD-1600-4FEC-9D8E-4BCAB0D661E0
+GUID = 631F3E53-F9CD-4BDE-B8FE-EDEA2D924CF1
 IncludeInProjectBuild = 1
 IncludeInProjectSearch = 1
 IncludeInProjectExport = 1
@@ -37323,19 +37323,119 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C380 PaintStruct FileGroups]
-[C380 PaintStruct Files]
-File = %AppPath%\Prg\Start.prg
-FileGUID = 493FD461-7CD6-45DD-9BCB-18A963A61EEA
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members FileGroups]
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members Files]
+File = %AppPath%\Prg\C379.prg
+FileGUID = 7F46E353-68EC-46D3-B1FE-C35832FBB59F
 FileType = Code
-[C380 PaintStruct References]
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C380 PaintStruct Resources]
-[C380 PaintStruct Native Resources]
-[C380 PaintStruct License files]
-[C380 PaintStruct General Options]
+ReferenceProject = 25D8192F-0481-4B80-A152-35237B4EE8A0,1,0,C379_helper
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members Resources]
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members Native Resources]
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members License files]
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=1
+VO8=0
+VO9=0
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C379 - Incompatible values emitted in VOStructAttribute for VOSTRUCT with DIM members
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C379_helper *************
+Application = C379_helper
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 2
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C379_helper\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C379_helper
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = 25D8192F-0481-4B80-A152-35237B4EE8A0
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C379_helper FileGroups]
+[C379_helper Files]
+File = %AppPath%\Prg\C379_helper.prg
+FileGUID = 31319416-96DE-4612-8C83-1664DBF23FA2
+FileType = Code
+[C379_helper References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+[C379_helper Resources]
+[C379_helper Native Resources]
+[C379_helper License files]
+[C379_helper General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -37360,7 +37460,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C380 PaintStruct Configurations]
+[C379_helper Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -37371,7 +37471,7 @@ AppConfig = Debug,11111111-1111-1111-1111-111111111111
   DefineDebug=1
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
 AppConfig = Release,22222222-2222-2222-2222-222222222222
@@ -37384,10 +37484,10 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   DefineDebug=0
   DefineTrace=0
   SyntaxOnly=0
-  WarningsErrors=1
+  WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C380 PaintStruct
+ENDApplication = C379_helper
 [EndApplications]
 
 [Configurations]

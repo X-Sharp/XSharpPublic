@@ -267,9 +267,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // All Objects are boxed in a usual
                     return Conversion.Boxing;
                 }
-                else if (destination.IsReferenceType && !IsClipperArgsType(destination))
+                else if (destination.IsReferenceType && !IsClipperArgsType(destination) && ! destination.IsStringType())
                 {
-                    // all user reference types are boxed. But not the Usual[] args
+                    // all user reference types are boxed. But not the Usual[] args and not string
                     return Conversion.Boxing;
                 }
                 else if (destination.IsPointerType())

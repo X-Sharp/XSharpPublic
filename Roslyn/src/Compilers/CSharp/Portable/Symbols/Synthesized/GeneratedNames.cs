@@ -398,7 +398,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             // the native compiler adds numeric digits at the end.  Roslyn does not.
             Debug.Assert((char)GeneratedNameKind.FixedBufferField == 'e');
+#if XSHARP
+            return "$DIM_Array_" + fieldName;
+#else
             return "<" + fieldName + ">e__FixedBuffer";
+#endif
         }
 
         internal static string MakeStateMachineStateFieldName()

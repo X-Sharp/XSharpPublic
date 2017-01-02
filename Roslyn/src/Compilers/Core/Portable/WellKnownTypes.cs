@@ -261,6 +261,7 @@ namespace Microsoft.CodeAnalysis
         Vulcan___Psz,
         Vulcan___Usual,
         Vulcan___Array,
+        Vulcan___WinBool,
 #endif
         Available,
         Last = Available - 1,
@@ -517,7 +518,8 @@ namespace Microsoft.CodeAnalysis
             "Vulcan.__Symbol",
             "Vulcan.__Psz",
             "Vulcan.__Usual",
-            "Vulcan.__Array"
+            "Vulcan.__Array",
+            "Vulcan.__WinBool"
 #endif
         };
 
@@ -551,7 +553,7 @@ namespace Microsoft.CodeAnalysis
                 else if (typeId == WellKnownType.Last)
                 {
 #if XSHARP
-                    typeIdName = "Vulcan.__Array";
+                    typeIdName = "Vulcan.__WinBool";
 #else
                     typeIdName = "System.IFormatProvider";
 #endif

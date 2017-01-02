@@ -138,9 +138,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             {
                 if ((object)_lazyType != null)
                 {
+#if !XSHARP
                     Debug.Assert(_lazyType.IsPointerType() ==
                         IsPointerFieldSyntactically());
-
+#endif
                     return _lazyType.IsPointerType();
                 }
 

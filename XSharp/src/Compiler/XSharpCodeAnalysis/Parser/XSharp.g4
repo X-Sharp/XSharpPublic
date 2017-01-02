@@ -439,7 +439,7 @@ globalAttributeTarget : Token=(ASSEMBLY | MODULE) COLON
 statement           : Decl=localdecl                                            #declarationStmt
                     | {_xBaseVars}? xbasedecl									#xbasedeclStmt
                     | Decl=fielddecl											#fieldStmt
-                    | DO? WHILE Expr=expression end=EOS
+                    | DO? WHILE Expr=expression EOS
                       StmtBlk=statementBlock ((e=END DO? | e=ENDDO) EOS)?		#whileStmt
                     | NOP end=EOS												#nopStmt
                     | FOR
@@ -449,9 +449,9 @@ statement           : Decl=localdecl                                            
                         )
                       Dir=(TO | UPTO | DOWNTO) FinalExpr=expression
                       (STEP Step=expression)? end=EOS
-                      StmtBlk=statementBlock (e=NEXT EOS)?							#forStmt
+                      StmtBlk=statementBlock (e=NEXT EOS)?						#forStmt
                     | IF IfStmt=ifElseBlock
-                      ((e=END IF? | e=ENDIF)  EOS)?									#ifStmt
+                      ((e=END IF? | e=ENDIF)  EOS)?								#ifStmt
                     | DO CASE end=EOS
                       CaseStmt=caseBlock?
                       ((e=END CASE? | e=ENDCASE) EOS)?							#caseStmt

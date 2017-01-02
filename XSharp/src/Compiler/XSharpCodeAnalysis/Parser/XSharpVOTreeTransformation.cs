@@ -1390,12 +1390,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 			if (context.Key.Type == XP.BREAK)
 			{
 	            ArgumentListSyntax args;
-	            context.SetSequencePoint(context.end);
 	            if (context.Expr != null)
-	                args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
-	            else
-	                args = MakeArgumentList(MakeArgument(GenerateNIL()));
-	            var expr = CreateObject(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"), args);
+                {
+                    context.SetSequencePoint(context.Expr.Start);
+                    context.Expr.SetSequencePoint();
+                    args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+                }
+                else
+                {
+                    context.SetSequencePoint(context.end);
+                    args = MakeArgumentList(MakeArgument(GenerateNIL()));
+                }
+                var expr = CreateObject(GenerateQualifiedName("global::Vulcan.Internal.VulcanWrappedException"), args);
 	            context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
 	                expr,
 	                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
@@ -3060,7 +3066,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var stmts = _pool.Allocate<StatementSyntax>();
             var count = context._Variables.Count;
-            
+            context.SetSequencePoint();
             for (int i = 0; i < count; i++)
             {
                 var variable = context._Variables[i];
@@ -3081,6 +3087,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitWaitAcceptStmt([NotNull] XP.WaitAcceptStmtContext context)
         {
             string methodName = null;
+            context.SetSequencePoint();
             var message = context.Expr?.Get<ExpressionSyntax>();
             var variable = context.Variable?.Get<ExpressionSyntax>();
             
@@ -3104,6 +3111,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitCancelQuitStmt([NotNull] XP.CancelQuitStmtContext context)
         {
+            context.SetSequencePoint();
             context.Put(GenerateExpressionStatement(GenerateMethodCall("_quit")));
         }
 

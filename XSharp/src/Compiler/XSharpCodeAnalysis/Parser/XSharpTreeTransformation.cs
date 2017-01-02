@@ -3970,7 +3970,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitWhileStmt([NotNull] XP.WhileStmtContext context)
         {
-            context.SetSequencePoint(context.end);
+            context.SetSequencePoint(context.Expr.Start);
             context.Expr.SetSequencePoint();
             StatementSyntax whileStmt = _syntaxFactory.WhileStatement(SyntaxFactory.MakeToken(SyntaxKind.WhileKeyword),
                 SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
@@ -4120,6 +4120,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
             StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
+            context.SetSequencePoint(context.IfStmt.Start);
             ifStmt = CheckForMissingKeyword(context.e, ifStmt, "END[IF]");
             context.Put(ifStmt);
         }
@@ -4128,6 +4129,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.SetSequencePoint(context.end);
             context.Cond.SetSequencePoint();
+            context.StmtBlk.SetSequencePoint();
             context.Put(GenerateIfStatement(
                 context.Cond.Get<ExpressionSyntax>(),
                 context.StmtBlk.Get<BlockSyntax>(),
@@ -4180,7 +4182,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 	            context.Put(NotInDialect("BREAK statement"));
 				break;
 			case XP.THROW:
-	            context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                    if (context.Expr != null)
+                    {
+                        context.SetSequencePoint(context.Expr.Start);
+                        context.Expr.SetSequencePoint();
+                    }
+                    context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
 	                context.Expr.Get<ExpressionSyntax>(),
 	                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
 				break;
@@ -4191,7 +4198,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitExpressionStmt([NotNull] XP.ExpressionStmtContext context)
         {
-            context.SetSequencePoint(context.end);
+            //context.SetSequencePoint(context.end);
             var statements = _pool.Allocate<StatementSyntax>();
             foreach (var exprCtx in context._Exprs)
             {

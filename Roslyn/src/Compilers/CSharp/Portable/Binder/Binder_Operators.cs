@@ -2088,7 +2088,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             //        public <cFileName>e__FixedBuffer cFileName;
             //        // Nested Types
             //        [StructLayout(LayoutKind.Sequential, Size = 10), CompilerGenerated, UnsafeValueType]
-            //        public struct <cFileName>e__FixedBuffer
+            //        public struct $DIM_Array_cFileName
             //{
             //    public byte FixedElementField;
             //    }
@@ -2144,20 +2144,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (expr.Kind == BoundKind.Local)
             {
                 var bl = expr as BoundLocal;
-                // only translate @name to name[0] when not IsDecl
+                // only translate @name to @name[0] when not IsDecl
                 if (expr.Type.IsArray())
                 {
                     var eltype = (expr.Type as ArrayTypeSymbol).ElementType;
-                    // convert from @expr to expr[0]
+                    // convert from @expr to @expr[0]
                     var intType = Compilation.GetSpecialType(SpecialType.System_Int32);
                     var arrType = expr.Type as ArrayTypeSymbol;
                     var elType = arrType.ElementType;
-                    //if (elType.IsVoStructOrUnion() )
-                    //    elType = new PointerTypeSymbol(elType);
-                    int index = 0;
-                    var indices = ImmutableArray.Create<BoundExpression>(new BoundLiteral(node, ConstantValue.Create(index), intType) { WasCompilerGenerated = true });
-                    
-                    var bacc  = new BoundArrayAccess(node.Operand, expr, indices, elType, false);
+                    var aindex = ArrayBuilder<BoundExpression>.GetInstance();
+                    for (int i = 0; i < arrType.Rank; i++)
+                    {
+                        aindex.Add(new BoundLiteral(node, ConstantValue.Create(0), intType));
+                    }
+                    var bacc  = new BoundArrayAccess(node.Operand, expr, aindex.ToImmutableAndFree(), elType, false);
                     TypeSymbol ptrType = new PointerTypeSymbol(elType);
                     return new BoundAddressOfOperator(node, bacc, false, ptrType, hasErrors: false);
                 }

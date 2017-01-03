@@ -5036,26 +5036,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             var kind = context.Op.ExpressionKindBinaryOp();
             var syntax = context.Op.SyntaxOp();
-            if (kind == SyntaxKind.BitwiseNotExpression) {
-                if (context._Exprs?.Count > 1) {
+            if (kind == SyntaxKind.BitwiseNotExpression)
+            {
+                if (context._Exprs.Count > 1)
+                {
                     context.AddError(new ParseErrorData(context.COMMA()[0], ErrorCode.ERR_CloseParenExpected));
                 }
                 context.Put(_syntaxFactory.PrefixUnaryExpression(
                     kind,
                     syntax,
-                    context._Exprs?[0].Get<ExpressionSyntax>()));
+                    context._Exprs[0].Get<ExpressionSyntax>()));
             }
-            else {
-                var e = context._Exprs?[0].Get<ExpressionSyntax>();
+            else
+            {
+                var e = context._Exprs[0].Get<ExpressionSyntax>();
                 if (context._Exprs.Count > 1)
                 {
-                    for (int i = 1; i < context._Exprs?.Count; i++) {
-                        context.Put(_syntaxFactory.BinaryExpression(
-                            kind,
-                            e,
-                            syntax,
-                            context._Exprs[i].Get<ExpressionSyntax>()));
+                    for (int i = 1; i < context._Exprs.Count; i++)
+                    {
+                        e = _syntaxFactory.BinaryExpression(kind,
+                                                            e,
+                                                            syntax,
+                                                            context._Exprs[i].Get<ExpressionSyntax>());
                     }
+                    context.Put(e);
                 }
                 else
                 {

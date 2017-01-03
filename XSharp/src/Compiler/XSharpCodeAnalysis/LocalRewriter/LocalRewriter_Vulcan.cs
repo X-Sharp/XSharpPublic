@@ -239,55 +239,57 @@ namespace Microsoft.CodeAnalysis.CSharp
                  DiagnosticBag diagnostics)
 
         {
-            if (method.Name != XSharpVOTreeTransformation.ExitProc)
-                return statement;
-            var newstatements = new List<BoundStatement>();
-            var oldbody = statement as BoundBlock;
-            // Add exit procedures 
-            foreach (var stmt in oldbody.Statements)
-            {
-                if (!(stmt is BoundSequencePointWithSpan))
-                {
-                    newstatements.Add(stmt);
-                }
-            }
-            // Clear the globals in this assembly
-            foreach (var tree in compilation.SyntaxTrees)
-            {
-                var root = tree.GetRoot();
-                var cu = root.Green as CompilationUnitSyntax;
-                if (cu?.Globals != null)
-                {
-                    foreach (var globaldecl in cu?.Globals)
-                    {
-                        // Each declaration may have 1 or more variables.
-                        for (int i = 0; i < globaldecl.Declaration.Variables.Count; i++)
-                        {
-                            var global = globaldecl.Declaration.Variables[i];
-                            var name = global.Identifier.ToString();
-                            var members = FindMembers(compilation, name);
-                            foreach (FieldSymbol field in members)
-                            {
-                                var fldtype = field.Type;
-                                if ( (fldtype.TypeKind == TypeKind.Class ||
-                                    fldtype == compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
-                                    && !field.IsReadOnly
-                                    && !field.IsConst
-                                    && field.IsStatic
-                                    && field.ContainingType.IsStatic
-                                    && field.ContainingType.Name.StartsWith( "Functions", StringComparison.Ordinal) 
-                                    )
-                                {
-                                    newstatements.Add(ClearGlobal(compilation, statement.Syntax, field));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            newstatements.Add(new BoundReturnStatement(statement.Syntax, null));
-            var newbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
-            return newbody;
+            return statement;
+            // Commented out for now because this kills GUIExit in the GUI classes
+            //if (method.Name != XSharpVOTreeTransformation.ExitProc)
+            //return statement;
+            //var newstatements = new List<BoundStatement>();
+            //var oldbody = statement as BoundBlock;
+            //// Add exit procedures 
+            //foreach (var stmt in oldbody.Statements)
+            //{
+            //    if (!(stmt is BoundSequencePointWithSpan))
+            //    {
+            //        newstatements.Add(stmt);
+            //    }
+            //}
+            //// Clear the globals in this assembly
+            //foreach (var tree in compilation.SyntaxTrees)
+            //{
+            //    var root = tree.GetRoot();
+            //    var cu = root.Green as CompilationUnitSyntax;
+            //    if (cu?.Globals != null)
+            //    {
+            //        foreach (var globaldecl in cu?.Globals)
+            //        {
+            //            // Each declaration may have 1 or more variables.
+            //            for (int i = 0; i < globaldecl.Declaration.Variables.Count; i++)
+            //            {
+            //                var global = globaldecl.Declaration.Variables[i];
+            //                var name = global.Identifier.ToString();
+            //                var members = FindMembers(compilation, name);
+            //                foreach (FieldSymbol field in members)
+            //                {
+            //                    var fldtype = field.Type;
+            //                    if ( (fldtype.TypeKind == TypeKind.Class ||
+            //                        fldtype == compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+            //                        && !field.IsReadOnly
+            //                        && !field.IsConst
+            //                        && field.IsStatic
+            //                        && field.ContainingType.IsStatic
+            //                        && field.ContainingType.Name.StartsWith( "Functions", StringComparison.Ordinal) 
+            //                        )
+            //                    {
+            //                        newstatements.Add(ClearGlobal(compilation, statement.Syntax, field));
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //newstatements.Add(new BoundReturnStatement(statement.Syntax, null));
+            //var newbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            //return newbody;
         }
 
     }

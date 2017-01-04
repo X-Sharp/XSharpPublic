@@ -154,9 +154,17 @@ namespace Antlr4.Runtime {
 
     public partial class ParserRuleContext : Microsoft.CodeAnalysis.IMessageSerializable {
         int iBPLength = -1;
-
+        int iBpStart = -1;
         public override bool IsHidden { get { return iBPLength == -1; } }
-        public override int Position { get { return Start.StartIndex; } }
+        public override int Position
+        {
+            get
+            {
+                if (iBpStart >= 0)
+                    return iBpStart;
+                return Start.StartIndex;
+            }
+        }
         public override int FullWidth {
             get {
                 if(iBPLength > 0)
@@ -177,12 +185,25 @@ namespace Antlr4.Runtime {
             var s = this.GetType().ToString();
             return s.Substring(s.LastIndexOfAny(".+".ToCharArray()) + 1).Replace("Context", "");
         }
-        public void SetSequencePoint(IToken end)
+        public void SetSequencePoint(IToken start, IToken end)
         {
-			if (end != null)
+            if (end != null && start != null)
+            {
+                iBpStart = start.StartIndex;
+                if (end.StopIndex >= start.StartIndex)
+                    iBPLength = end.StopIndex - start.StartIndex+1;
+                else
+                    iBPLength = 1;
+            }
+
+        }
+
+        public void SetSequencePoint(IToken next)
+        {
+			if (next != null)
 			{
-	            if (end.StartIndex > this.Start.StartIndex)
-	                iBPLength = end.StartIndex - this.Start.StartIndex ;
+	            if (next.StartIndex > this.Start.StartIndex)
+	                iBPLength = next.StartIndex - this.Start.StartIndex ;
 	            else
 	                iBPLength = 1;
 	            if (iBPLength < 0)
@@ -190,19 +211,18 @@ namespace Antlr4.Runtime {
 			}
 
         }
-        public void SetSequencePoint(int len)
-        {
-            iBPLength = len;
-        }
 
         public void SetSequencePoint()
         {
-            if (Stop != null)
-                iBPLength = this.Stop.StopIndex - this.Start.StartIndex + 1;
+            SetSequencePoint(Start, Stop);
+        }
+
+        public void SetSequencePoint(ParserRuleContext context)
+        {
+            if (context.Stop != null)
+                SetSequencePoint(context.Start, context.Stop);
             else
-                iBPLength = this.Start.StopIndex - this.Start.StartIndex + 1;
-            if (iBPLength < 0)
-                iBPLength = 1;
+                SetSequencePoint(context.Start, context.Start);
         }
         internal string ParentName
         {

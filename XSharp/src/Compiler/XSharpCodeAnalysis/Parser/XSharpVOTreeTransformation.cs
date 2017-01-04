@@ -2484,12 +2484,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             case XP.NULL_DATE:
                 expr = GenerateMethodCall("global::Vulcan.__VODate.NullDate",EmptyArgumentList());
                 break;
-            case XP.NULL_SYMBOL:
-                arg0 = MakeArgument(GenerateLiteral(""));
-                expr = CreateObject(_symbolType, MakeArgumentList(arg0));
-                //expr = GenerateLiteralNull();
-                break;
-            case XP.DATE_CONST:
+             case XP.DATE_CONST:
                 int[] elements = DecodeDateConst(context.Token.Text);
                 if (elements != null)
                 {

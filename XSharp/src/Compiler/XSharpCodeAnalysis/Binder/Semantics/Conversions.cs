@@ -25,6 +25,27 @@ using XP= LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
+    internal static class VOTypeConversions
+    {
+        internal static bool CanVOCast(this TypeSymbol source)
+        {
+            if (source.IsIntegralType())
+                return true;
+            if (source.IsVoidPointer())
+                return true;
+            if (source.IsPointerType())
+                return true;
+            if (source.SpecialType == SpecialType.System_IntPtr)
+                return true;
+            if (source.SpecialType == SpecialType.System_UIntPtr)
+                return true;
+            if (source.IsValueType)     // PSZ for example
+                return true;
+            if (source.IsReferenceType)
+                return false;
+            return false;
+        }
+    }
     internal sealed partial class Conversions
     {
 
@@ -220,28 +241,92 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
             // TYPE(_CAST, expr) allows almost everything
-            if (voCast)
+            // source must be PTR, Integral, IntPtr, UIntPtr
+            // this is handled in CanVOCast
+            if (voCast && source.CanVOCast() && destination.CanVOCast())
             {
                 // No _CAST on USUAL
                 if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                {
                     return Conversion.NoConversion;
+                }
                 // Allow cast -> BOOLEAN
+                // from all allowed types
                 if (dstType == SpecialType.System_Boolean)
+                {
                     return Conversion.Identity;
+                }
                 // Allow cast -> INTEGRAL
-                if (dstType.IsIntegralType() && ! source.IsNullableType())
-                    return Conversion.Identity;
-                // Allow cast -> PTR
+                // except from NullableTypes and Reference Types
+                if (dstType.IsIntegralType() && ! source.IsNullableType() &&! source.IsReferenceType)
+                {
+                    if (srcType.IsIntegralType() )
+                    {
+                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
+                        {
+                            return Conversion.Identity;
+                        }
+                    }
+                    if (source.SpecialType == SpecialType.System_Boolean)
+                    {
+                        return Conversion.Identity;
+                    }
+
+                    // source non Integral or a different size
+                    if (srcType.IsNumericType())
+                    {
+                        return Conversion.ImplicitNumeric;
+                    }
+                    // Allow PTR -> Integral when size matches
+                    if (source.IsVoidPointer())
+                    {
+                        if (dstType.SizeInBytes() == 4 && Compilation.Options.Platform == Platform.X86)
+                        {
+                            return Conversion.Identity;
+                        }
+                        if (dstType.SizeInBytes() == 8 && Compilation.Options.Platform == Platform.X64)
+                        {
+                            return Conversion.Identity;
+                        }
+                    }
+                }
+                // Allow cast -> PTR when 
+                // source is integral and source size matches the Integral size
+                // source is Ptr, IntPtr, UintPtr
+                // source is PSZ
                 if (destination is PointerTypeSymbol)
-                    return Conversion.Identity;
+                {
+                    if (source.IsIntegralType())
+                    {
+                        if (Compilation.Options.Platform == Platform.X86 && srcType.SizeInBytes() == 4)
+                        {
+                            return Conversion.Identity;
+                        }
+                        if (Compilation.Options.Platform == Platform.X64 && srcType.SizeInBytes() == 8)
+                        {
+                            return Conversion.Identity;
+                        }
+                    }
+                    if (source.IsPointerType() || source.IsVoidPointer() 
+                        || source.SpecialType == SpecialType.System_IntPtr || source.SpecialType == SpecialType.System_UIntPtr)
+                    {
+                        return Conversion.Identity;
+                    }
+                    if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                    {
+                        return Conversion.Identity;
+                    }
+                }
                 // Allow cast -> PSZ
                 if (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz))
+                {
                     return Conversion.Identity;
+                }
             }
             if (voConvert)
             {
                 // we need to convert BYTE(<p>) to dereferencing the <p>
-                // can we do that here ?
+                // This is done else where in Binder.BindVulcanPointerDereference()
                 // Integer conversions
                 if (srcType.IsNumericType() && dstType.IsNumericType() &&
                     srcType.IsIntegralType() == dstType.IsIntegralType())

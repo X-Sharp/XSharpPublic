@@ -54,18 +54,29 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (node.XNode is PrimaryExpressionContext)
             {
                 PrimaryExpressionContext pe = (PrimaryExpressionContext)node.XNode;
-                if (pe.Expr is VoConversionExpressionContext && operand.Type.IsVoidPointer())
+                if (pe.Expr is VoConversionExpressionContext && operand.Type.IsPointerType())
                 {
                     // Dereference pointer
+                    // only allowed when source is Void Ptr
+                    // or source is <TargetType> PTR
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
                     // No need to worry about /AZ. This has been handled already
-                    var index = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32)) { WasCompilerGenerated = true };
-                    var ptrtype = new PointerTypeSymbol(targetType);
-                    HashSet<DiagnosticInfo> useSiteDiagnostics = null;
-                    var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
-                    var ptrconv = new BoundConversion(node, operand, newConv, true, true, null, ptrtype) { WasCompilerGenerated = true };
-                    expression = new BoundPointerElementAccess(node, ptrconv, index, false, targetType) { WasCompilerGenerated = true };
-                    return true;
+                    bool canConvert = operand.Type.IsVoidPointer();
+                    if ( ! canConvert)
+                    {
+                        PointerTypeSymbol pt = operand.Type as PointerTypeSymbol;
+                        canConvert = pt.PointedAtType == targetType;
+                    }
+                    if (canConvert)
+                    {
+                        var index = new BoundLiteral(node, ConstantValue.Create(0), Compilation.GetSpecialType(SpecialType.System_Int32)) { WasCompilerGenerated = true };
+                        var ptrtype = new PointerTypeSymbol(targetType);
+                        HashSet<DiagnosticInfo> useSiteDiagnostics = null;
+                        var newConv = Conversions.ClassifyConversionForCast(operand, ptrtype, ref useSiteDiagnostics);
+                        var ptrconv = new BoundConversion(node, operand, newConv, true, true, null, ptrtype) { WasCompilerGenerated = true };
+                        expression = new BoundPointerElementAccess(node, ptrconv, index, false, targetType) { WasCompilerGenerated = true };
+                        return true;
+                    }
                 }
             }
 

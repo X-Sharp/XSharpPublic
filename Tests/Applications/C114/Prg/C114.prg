@@ -20,4 +20,11 @@ FUNCTION Start() AS VOID
 	o := Child{}
 	? o:met() // ok
 	? o:acc   // calls parent
+	
+	IF o:met() != "Child"
+		THROW Exception{"Parent incorrectly called"}
+	END IF
+	IF o:acc != "Child"
+		THROW Exception{"Parent incorrectly called"}
+	END IF
 

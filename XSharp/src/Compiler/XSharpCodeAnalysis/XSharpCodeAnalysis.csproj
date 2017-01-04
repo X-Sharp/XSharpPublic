@@ -291,6 +291,7 @@
     <Compile Include="CommandLine\CSharpCommandLineParser.cs" />
     <Compile Include="CommandLine\XSharpCompilationOptions.cs" />
     <Compile Include="CommandLine\CSharpCompilationOptions.cs" />
+    <Compile Include="Declarations\MergedTypeDeclaration.cs" />
     <Compile Include="Generated\XSharpBaseListener.cs" />
     <Compile Include="Generated\XSharpLexer.cs" />
     <Compile Include="Generated\XSharpListener.cs" />

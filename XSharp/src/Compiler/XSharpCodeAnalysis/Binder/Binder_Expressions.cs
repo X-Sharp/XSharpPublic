@@ -50,10 +50,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics, out BoundExpression expression)
         {
             // Type(pPointer) -> Dereference pointer
+            // Vulcan only allows this with pPointer is of tyope PTR (Void pointer)
             if (node.XNode is PrimaryExpressionContext)
             {
                 PrimaryExpressionContext pe = (PrimaryExpressionContext)node.XNode;
-                if (pe.Expr is VoConversionExpressionContext && operand.Type.IsPointerType())
+                if (pe.Expr is VoConversionExpressionContext && operand.Type.IsVoidPointer())
                 {
                     // Dereference pointer
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]

@@ -222,6 +222,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             // TYPE(_CAST, expr) allows almost everything
             if (voCast)
             {
+                // No _CAST on USUAL
+                if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    return Conversion.NoConversion;
                 // Allow cast -> BOOLEAN
                 if (dstType == SpecialType.System_Boolean)
                     return Conversion.Identity;

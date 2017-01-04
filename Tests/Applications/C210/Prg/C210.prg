@@ -5,6 +5,9 @@ LOCAL o AS OBJECT // USUAL is ok
 o := TestClass{}
 ? o:TestProp
 ? o:TestMethod()
+IF .not. o:TestMethod() == "Called correctly"
+	THROW Exception{"Bad method call"}
+END IF
 
 CLASS TestClass
 	PROPERTY TestProp AS INT GET 123

@@ -9,8 +9,18 @@ FUNCTION Start() AS VOID
 CLASS FileSpec
 	CONSTRUCTOR(file) CLIPPER
 	? "from constructor:", file
+	IF ((UsualType(file) == INT) .and. (file != 123)) .or. ;
+		((UsualType(file) == STRING) .and. ! file == "TEST") .or. ;
+		(UsualType(file) != INT .and. UsualType(file) != STRING)
+		THROW Exception{"Incorrect value passed to constructor"}
+	END IF
 	METHOD Test(file) CLIPPER
 	? "from method:", file
+	IF ((UsualType(file) == INT) .and. (file != 123)) .or. ;
+		((UsualType(file) == STRING) .and. ! file == "TEST") .or. ;
+		(UsualType(file) != INT .and. UsualType(file) != STRING)
+		THROW Exception{"Incorrect value passed to constructor"}
+	END IF
 	RETURN NIL
 END CLASS
 

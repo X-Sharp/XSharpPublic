@@ -7,3 +7,6 @@ LOCAL u := 0 AS USUAL
 LOCAL c := "{0:g}" AS STRING
 c := String.Format(c , u)
 ? c 
+IF c != "0"
+	THROW Exception{"Incorrect result from String.Format(c , u)"}
+END IF

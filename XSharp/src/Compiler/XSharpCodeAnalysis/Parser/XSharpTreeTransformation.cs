@@ -4120,13 +4120,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitIfStmt([NotNull] XP.IfStmtContext context)
         {
             StatementSyntax ifStmt = context.IfStmt.Get<IfStatementSyntax>();
+            context.SetSequencePoint(context.IfStmt.Start);
             ifStmt = CheckForMissingKeyword(context.e, ifStmt, "END[IF]");
             context.Put(ifStmt);
         }
 
         public override void ExitIfElseBlock([NotNull] XP.IfElseBlockContext context)
         {
-            context.SetSequencePoint(context.end);
+            context.SetSequencePoint(context.Cond.Start);
             context.Cond.SetSequencePoint();
             context.Put(GenerateIfStatement(
                 context.Cond.Get<ExpressionSyntax>(),
@@ -4149,10 +4150,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitCaseBlock([NotNull] XP.CaseBlockContext context)
         {
-            context.SetSequencePoint(context.end);
             if (context.Key.Type == XP.OTHERWISE)
+            {
+                context.SetSequencePoint(context.end);
                 context.Put(context.StmtBlk.Get<StatementSyntax>());
-            else {
+            }
+            else
+            {
+                context.SetSequencePoint(context.Cond.Start);
                 context.Cond.SetSequencePoint();
                 context.Put(GenerateIfStatement(
                     context.Cond.Get<ExpressionSyntax>(),

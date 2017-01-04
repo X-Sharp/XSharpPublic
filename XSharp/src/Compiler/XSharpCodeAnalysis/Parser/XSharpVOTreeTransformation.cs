@@ -111,6 +111,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 GlobalClassName = XSharpGlobalClassName;
             }
+            // calculate the default vo class attributes
+            GetVOClassAttributes();
         }
 
         private void InitializeArrayTypes()
@@ -129,27 +131,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        private SyntaxList<AttributeListSyntax> _compilerGenerated = null;
+        protected SyntaxList<AttributeListSyntax> CompilerGeneratedAttributes()
+        {
+            if (_compilerGenerated == null)
+            {
+                lock (gate)
+                {
+                    if (_compilerGenerated == null)
+                    {
+                        SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
+                        GenerateAttributeList(attributeLists, CompilerGenerated);
+                        _compilerGenerated = attributeLists.ToList();
+                        _pool.Free(attributeLists);
+                    }
+                }
+            }
+            return _compilerGenerated;
+        }
 
         protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp)
         {
-            var pool = new SyntaxListPool();
-            var members = pool.Allocate<MemberDeclarationSyntax>();
             // create body for new Init procedure
-            var stmts = pool.Allocate<StatementSyntax>();
+            var stmts = _pool.Allocate<StatementSyntax>();
             foreach (var name in procnames)
             {
                 var invoke = GenerateMethodCall(name);
                 stmts.Add(GenerateExpressionStatement(invoke));
             }
-            var attList = EmptyList<AttributeListSyntax>();
             var mods = TokenList(isApp ? SyntaxKind.PrivateKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
-            var m = SyntaxFactory.MethodDeclaration(attList, mods,
+            var m = SyntaxFactory.MethodDeclaration(CompilerGeneratedAttributes(), mods,
                 _voidType, /*explicitif*/null,
                 SyntaxFactory.Identifier(functionName), /*typeparams*/null, pars,/* constraints*/null, MakeBlock(stmts),/*exprbody*/null,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
 
-            pool.Free(stmts);
+            _pool.Free(stmts);
             return m;
         }
 
@@ -206,7 +223,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members.Add(CreateAppInit());   // This will call $Init() procedures
                 members.Add(CreateAppExit());   // This will call $Exit() procedures
             }
-            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, members.ToArray()));
+            GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, true, members.ToArray()));
             // Add global attributes
 
             var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
@@ -413,8 +430,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var body = MakeBlock(stmts);
             var appId = SyntaxFactory.Identifier(AppExit);
             var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
+
             var appExit = _syntaxFactory.MethodDeclaration(
-                EmptyList<AttributeListSyntax>(), modifiers,
+                CompilerGeneratedAttributes(), modifiers,
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
@@ -491,8 +509,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             body = MakeBlock(stmts);
             // Body is ready now. Now create the method as a private method
             var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
+
             var appInit = _syntaxFactory.MethodDeclaration(
-                EmptyList<AttributeListSyntax>(), modifiers,
+                CompilerGeneratedAttributes(), modifiers,
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
@@ -872,9 +891,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         SyntaxListBuilder modifiers = _pool.Allocate();
                         modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
                         var attrs = _pool.Allocate<AttributeListSyntax>();
-                        GenerateAttributeList(attrs, CompilerGenerated);
                         var par = _syntaxFactory.Parameter(
-                                        attrs,
+                                        CompilerGeneratedAttributes(),
                                         modifiers.ToList(),
                                         type: arrayOfUsual,
                                         identifier: SyntaxFactory.Identifier(ClipperArgs),
@@ -882,7 +900,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _clipperParams = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             MakeSeparatedList<ParameterSyntax>(par),
                             SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
-                        _pool.Free(attrs);
                     }
                 }
             }
@@ -1247,6 +1264,60 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return null;
         }
 
+        private static SyntaxList<AttributeListSyntax> _voClassAttribs = null;
+        internal static SyntaxList<AttributeListSyntax> VOClassAttribs {  get { return _voClassAttribs; } }
+
+        internal SyntaxList<AttributeListSyntax> GetVOClassAttributes()
+        {
+            if (_voClassAttribs == null)
+            {
+                lock (gate)
+                {
+                    if (_voClassAttribs == null)
+                    {
+                        var attlist = _pool.Allocate<AttributeListSyntax>();
+                        var attargs = ArrayBuilder<AttributeArgumentSyntax>.GetInstance();
+                        attargs.Add(_syntaxFactory.AttributeArgument(null, null, GenerateQualifiedName(LayoutSequential)));
+                        attargs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
+                                        MakeSimpleMemberAccess(GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"),
+                                             _syntaxFactory.IdentifierName(SyntaxFactory.Identifier("Auto")))));
+                        var attrib = _syntaxFactory.Attribute(
+                                        name: GenerateQualifiedName(StructLayout),
+                                        argumentList: MakeAttributeArgumentList(MakeSeparatedList(attargs.ToArrayAndFree()))
+                                        );
+                        attlist.Add(MakeAttributeList(null, MakeSeparatedList<AttributeSyntax>(attrib)));
+                        _voClassAttribs = attlist.ToList();
+                        _pool.Free(attlist);
+                    }
+                }
+            }
+            return _voClassAttribs;
+        }
+        //public override void ExitClass_([NotNull] XP.Class_Context context)
+        //{
+        //    var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+        //    if (!mods.Any(SyntaxKind.PartialKeyword))
+        //    {
+        //        var attribs = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+        //        var builder = _pool.Allocate<AttributeListSyntax>();
+        //        foreach (var a in attribs)
+        //        {
+        //            builder.Add(a);
+        //        }
+        //        foreach (var a in VOClassAttribs)
+        //        {
+        //            builder.Add(a);
+        //        }
+                
+        //        if (context.Attributes == null)
+        //        {
+        //            context.Attributes = new XP.AttributesContext(context,0);
+        //        }
+        //        context.Attributes.PutList<AttributeListSyntax>(builder.ToList());
+        //        _pool.Free(builder);
+        //    }
+        //    base.ExitClass_(context);
+        //}
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
@@ -2085,12 +2156,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var paramList = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                 @params,SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
             _pool.Free(@params);
-            var attrs = _pool.Allocate<AttributeListSyntax>();
             var id = SyntaxFactory.Identifier(name);
-            GenerateAttributeList(attrs, CompilerGenerated);
             mods = TokenList(SyntaxKind.InternalKeyword);
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
-               attrs,
+               CompilerGeneratedAttributes(),
                mods,
                delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
                returnType: type,
@@ -2099,7 +2168,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                parameterList: paramList,
                constraintClauses: null,
                semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-            _pool.Free(attrs);
             m.XNode = context; // link the Delegate to the calling code 
             ClassEntities.Peek().Members.Add(m);    // add to current class
             // Now change the context and create the call to the delegate

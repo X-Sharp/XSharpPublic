@@ -13,3 +13,18 @@ c := NULL
 ? NULL == c // TRUE
 ? NULL != c // FALSE
 
+xAssert( c == NULL )
+xAssert( c = NULL )
+
+xAssert( null_string == c )// TRUE
+xAssertNot( null_string != c )// FALSE
+xAssert( NULL = c)  // TRUE
+xAssert( NULL == c) // TRUE
+xAssertNot( NULL != c) // FALSE
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result"}
+END IF
+PROC xAssertNot(l AS LOGIC)
+xAssert(.not. l)

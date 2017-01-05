@@ -217,3 +217,5 @@ XSharp/docs/Help/
 *.vicfg
 *.viapp
 *.exe
+/Tests/Applications/C386/NativeResources.RES
+/Tests/Applications/C386/NativeResources.rc

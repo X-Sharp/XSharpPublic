@@ -5,11 +5,13 @@ FUNCTION TDragFinish(hDrop AS PTR) AS VOID STRICT
 RETURN
 
 CLASS Test
+	EXPORT lSucces := FALSE AS LOGIC
 	METHOD Dispatch() AS VOID
 		? "entered dispatch" // exception happens before this line
 		IF __LoadShellDll()
 			PCALL(gpfnDragFinish, PTR(_CAST, 0)) // commenting this no more runtime error
 			? "PCALLed"
+			SELF:lSucces := TRUE
 		ENDIF
 	RETURN
 END CLASS
@@ -28,4 +30,6 @@ LOCAL o AS Test
 o := Test{}
 ? "before dispatch"
 o:Dispatch() // exception here
-
+IF .not. o:lSucces
+	THROW Exception{"Program did not run correctly"}
+END IF

@@ -464,13 +464,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             rhs = MakeSimpleMemberAccess(rhs, GenerateSimpleName("Module"));
             stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
+
             // VO11  = stmt 2
-            if (_options.VOArithmeticConversions)
-            {
-                rhs = GenerateLiteral(true);
-                lhs = GenerateQualifiedName(VulcanRuntimeState + ".CompilerOptionVO11");
-                stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
-            }
+            rhs = GenerateLiteral(_options.VOArithmeticConversions);
+            lhs = GenerateQualifiedName(VulcanRuntimeState + ".CompilerOptionVO11");
+            stmts.Add(GenerateExpressionStatement(MakeSimpleAssignment(lhs, rhs)));
             // OVF+  = stmt 3 and 4
             if (_options.Overflow)
             {

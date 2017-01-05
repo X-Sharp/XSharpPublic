@@ -1,4 +1,4 @@
-	#include "VOGUIClasses.vh"
+#include "VOGUIClasses.vh"
 #include "VOSystemLibrary.vh"
 #include "VOWin32APILibrary.vh"
 PARTIAL CLASS HelpDisplay INHERIT VObject

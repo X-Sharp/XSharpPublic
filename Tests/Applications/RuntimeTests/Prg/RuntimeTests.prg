@@ -6,7 +6,8 @@ FUNCTION Start() AS VOID
 	LOCAL nSuccess,nFail,nTotal AS INT
 	aTests := <STRING>;
 	{"C008", "C091", "C114", "C142", "C147", "C151", "C152", "C159", "C160", "C164", "C169", "C176", ;
-	"C195", "C204", "C210", "C235", "C303", "C378", "C382", "C383", "C384"}
+	"C195", "C204", "C210", "C235", "C303", "C376", "C377", "C378", "C382", "C383", "C384", "C385", ;
+	"C386"}
 	
 	// TODO Must fail: "C135"
 	

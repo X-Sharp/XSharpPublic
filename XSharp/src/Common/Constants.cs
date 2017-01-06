@@ -1,5 +1,5 @@
 ﻿/*
-   Copyright 2016 XSharp B.V.
+   Copyright 2016-2017 XSharp B.V.
 
 Licensed under the X# compiler source code License, Version 1.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ namespace XSharp
         internal const string Company = "XSharp BV";
         internal const string RegCompany = "XSharpBV";
         internal const string Product = "XSharp";
-        internal const string Version = "0.2.8.1";
-        internal const string Copyright = "Copyright © XSharp BV 2015-2016";
+        internal const string Version = "0.2.8.2";
+        internal const string Copyright = "Copyright © XSharp BV 2015-2017";
 
         internal const string RegistryKey = @"Software\" + RegCompany + @"\" + Product;
         internal const string RegistryKey64 = @"Software\WOW6432Node\" + RegCompany + @"\" + Product;

@@ -570,7 +570,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo6" styleclass="Normal" translate="true">/vo6</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Resolves typed function pointers to PTR </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Resolves typed function pointers to PTR </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">

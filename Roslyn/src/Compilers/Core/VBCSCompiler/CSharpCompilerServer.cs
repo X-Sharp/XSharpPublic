@@ -37,8 +37,12 @@ namespace Microsoft.CodeAnalysis.CompilerServer
 
             TextWriter output = new StringWriter(CultureInfo.InvariantCulture);
             int returnCode = compiler.Run(output, cancellationToken);
-
+#if XSHARP
+            var dest = compiler.Arguments.OutputDirectory + "\\" + compiler.Arguments.OutputFileName; 
+            return new CompletedBuildResponse(returnCode, utf8output, output.ToString(), string.Empty, dest);
+#else
             return new CompletedBuildResponse(returnCode, utf8output, output.ToString(), string.Empty);
+#endif
         }
 
         public override int Run(TextWriter consoleOutput, CancellationToken cancellationToken = default(CancellationToken))

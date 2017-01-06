@@ -385,16 +385,26 @@ namespace Microsoft.CodeAnalysis.CompilerServer
         public readonly bool Utf8Output;
         public readonly string Output;
         public readonly string ErrorOutput;
+#if XSHARP
+        public readonly string OutputFileName;
+#endif
 
         public CompletedBuildResponse(int returnCode,
                                       bool utf8output,
                                       string output,
-                                      string errorOutput)
+                                      string errorOutput
+#if XSHARP
+                                     , string outputFileName = ""
+#endif
+            )
         {
             ReturnCode = returnCode;
             Utf8Output = utf8output;
             Output = output;
             ErrorOutput = errorOutput;
+#if XSHARP
+            OutputFileName = outputFileName;
+#endif
         }
 
         public override ResponseType Type { get { return ResponseType.Completed; } }
@@ -403,16 +413,25 @@ namespace Microsoft.CodeAnalysis.CompilerServer
         {
             var returnCode = reader.ReadInt32();
             var utf8Output = reader.ReadBoolean();
+#if XSHARP
+            var outputFileName = ReadLengthPrefixedString(reader);
+#endif
             var output = ReadLengthPrefixedString(reader);
             var errorOutput = ReadLengthPrefixedString(reader);
-
+#if XSHARP
+            return new CompletedBuildResponse(returnCode, utf8Output, output, errorOutput, outputFileName);
+#else
             return new CompletedBuildResponse(returnCode, utf8Output, output, errorOutput);
+#endif
         }
 
         protected override void AddResponseBody(BinaryWriter writer)
         {
             writer.Write(ReturnCode);
             writer.Write(Utf8Output);
+#if XSHARP
+            WriteLengthPrefixedString(writer, OutputFileName);
+#endif
             WriteLengthPrefixedString(writer, Output);
             WriteLengthPrefixedString(writer, ErrorOutput);
         }

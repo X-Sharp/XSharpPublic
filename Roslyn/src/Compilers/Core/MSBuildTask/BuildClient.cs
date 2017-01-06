@@ -129,7 +129,17 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                 var response = responseTask.Result;
                 if (response != null)
                 {
+#if XSHARP
+                    int result = HandleResponse(response, clientDir, sdkDir, analyzerLoader, fallbackCompiler, parsedArgs);
+                    if (response is CompletedBuildResponse)
+                    {
+                        var file = ((CompletedBuildResponse)response).OutputFileName;
+                        CSharp.CommandLine.Xsc.FixResources(file);
+                    }
+                    return result;
+#else
                     return HandleResponse(response, clientDir, sdkDir, analyzerLoader, fallbackCompiler, parsedArgs);
+#endif
                 }
             }
 
@@ -284,7 +294,7 @@ namespace Microsoft.CodeAnalysis.BuildTasks
                                                             , winDir 
                                                             , SystemDir 
 
-#endif                                                                                                                            
+#endif
                                                               );
 
                             return TryCompile(pipe, request, cancellationToken);

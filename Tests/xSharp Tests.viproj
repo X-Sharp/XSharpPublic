@@ -38222,9 +38222,9 @@ FileGUID = 4419F2FB-ACB8-460D-8A03-B4B97F9D9804
 FileType = Code
 [C386 - Probem embedding native resource files References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
-ReferenceGAC = CLR4,VulcanRT,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanRTFuncs,1,0,3.0.303.0
-ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,3.0.303.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanVOGUIClasses,1,0,4.0.401.0
 [C386 - Probem embedding native resource files Resources]
 [C386 - Probem embedding native resource files Native Resources]
 NativeResourceFile = External , %AppPath%\Prg\C386.rc

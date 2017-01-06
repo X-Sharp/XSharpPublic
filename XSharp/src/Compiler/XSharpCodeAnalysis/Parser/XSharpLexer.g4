@@ -1,5 +1,5 @@
 /*
-   Copyright 2016 XSharp B.V.
+   Copyright 2016-2017 XSharp B.V.
 
 Licensed under the X# compiler source code License, Version 1.0 (the "License");
 you may not use this file except in compliance with the License.

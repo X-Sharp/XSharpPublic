@@ -130,19 +130,19 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:340px;">
+        <td style="width:340px; height:19px;">
           <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">BEGIN SEQUENCE .. RECOVER .. END SEQUENCE</text></para>
         </td>
-        <td style="width:290px;">
+        <td style="width:290px; height:19px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
-        <td style="width:275px;">
+        <td style="width:275px; height:19px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td style="width:256px;">
+        <td style="width:256px; height:19px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
-        <td>
+        <td style="height:19px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
         </td>
       </tr>
@@ -538,10 +538,10 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td style="width:275px;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td style="width:256px;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
@@ -555,10 +555,10 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
         </td>
         <td style="width:275px;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td style="width:256px;">
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Not yet</text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">n/a</text></para>
@@ -640,7 +640,6 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:340px;">
-          <para styleclass="Normal"></para>
         </td>
         <td style="width:290px;">
         </td>

@@ -127,6 +127,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected const string StaticLocalLockFieldNameSuffix = "$lock";
         protected const string EventFieldNamePrefix = "Xs$Event$";
         protected const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
+        protected const string CompilerGlobalScope = "global::System.Runtime.CompilerServices.CompilerGlobalScope";
         private static int _unique = 0;
         protected static object gate = new object();
 
@@ -723,6 +724,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+        protected SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
+        {
+            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
+            GenerateAttributeList(attributeLists, CompilerGenerated);
+            if (lWithGlobalScope)
+            {
+                GenerateAttributeList(attributeLists, CompilerGlobalScope);
+            }
+            var compilerGenerated = attributeLists.ToList();
+            _pool.Free(attributeLists);
+            return compilerGenerated;
+        }
+
         protected LockStatementSyntax MakeLock(ExpressionSyntax expr, StatementSyntax statement)
         {
             return _syntaxFactory.LockStatement(SyntaxFactory.MakeToken(SyntaxKind.LockKeyword),
@@ -1148,7 +1162,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             string nameSpace;
             splitClassNameAndNamespace(ref className, out nameSpace);
-            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
             if (bInternalClass)
@@ -1156,14 +1169,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            if (withAttribs)
-            {
-                GenerateAttributeList(attributeLists, "global::System.Runtime.CompilerServices.CompilerGlobalScope");
-                GenerateAttributeList(attributeLists, CompilerGenerated);
-            }
             MemberDeclarationSyntax r =
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: attributeLists,
+                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute(true) : EmptyList<AttributeListSyntax>(),
                 modifiers: modifiers.ToTokenList(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -1174,7 +1182,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: members,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) /*))*/;
-            _pool.Free(attributeLists);
             _pool.Free(modifiers);
             if (nameSpace.Length > 0) {
                 r = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(r));
@@ -1185,36 +1192,30 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected MemberDeclarationSyntax GenerateGlobalClass(string className, bool internalClass, bool withAttribs, params MemberDeclarationSyntax[] members)
         {
             SyntaxListBuilder<MemberDeclarationSyntax> globalClassMembers = _pool.Allocate<MemberDeclarationSyntax>();
-            SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
             string nameSpace;
             splitClassNameAndNamespace(ref className, out nameSpace);
-            if (withAttribs)
+            if (members.Length > 0)
             {
-                GenerateAttributeList(attributeLists, "global::System.Runtime.CompilerServices.CompilerGlobalScope");
-                GenerateAttributeList(attributeLists, CompilerGenerated);
+                foreach (var m in members)
+                    globalClassMembers.Add(m);
             }
-            if (members?.Length == 0) {
+            else
+            {
                 // When no members defined then we create an empty static constructor 
                 var statements = _pool.Allocate<StatementSyntax>();
                 statements.Add(_syntaxFactory.EmptyStatement(SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
                 var block = MakeBlock(statements);
                 _pool.Free(statements);
-
-                members = new MemberDeclarationSyntax[] {
-                    _syntaxFactory.ConstructorDeclaration(
-                    attributeLists: attributeLists,
-                    modifiers: TokenList(SyntaxKind.StaticKeyword),
-                    identifier: SyntaxFactory.Identifier(className),
-                    parameterList: EmptyParameterList(),
-                    initializer: null,
-                    body: block,
-                    semicolonToken: null )
-
-                };
-            }
-            if (members.Length > 0) {
-                foreach (var m in members)
-                    globalClassMembers.Add(m);
+                globalClassMembers.Add(
+                        _syntaxFactory.ConstructorDeclaration(
+                        attributeLists: MakeCompilerGeneratedAttribute(),
+                        modifiers: TokenList(SyntaxKind.StaticKeyword),
+                        identifier: SyntaxFactory.Identifier(className),
+                        parameterList: EmptyParameterList(),
+                        initializer: null,
+                        body: block,
+                        semicolonToken: null)
+                    );
             }
             SyntaxListBuilder modifiers = _pool.Allocate();
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PartialKeyword));
@@ -1223,9 +1224,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             else
                 modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.PublicKeyword));
             modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-            MemberDeclarationSyntax r =
+            MemberDeclarationSyntax classdecl =
                 _syntaxFactory.ClassDeclaration(
-                attributeLists: attributeLists, // will only be filled when the static constructor is created
+                attributeLists: withAttribs ? MakeCompilerGeneratedAttribute(true) : EmptyList<AttributeListSyntax>(),
                 modifiers: modifiers.ToTokenList(),
                 keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
                 identifier: SyntaxFactory.Identifier(className),
@@ -1236,13 +1237,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members: globalClassMembers,
                 closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)) /*))*/;
-            _pool.Free(attributeLists);
             _pool.Free(modifiers);
             _pool.Free(globalClassMembers);
-            if (nameSpace.Length > 0) {
-                r = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(r));
+            if (nameSpace.Length > 0)
+            {
+                classdecl = GenerateNamespace(nameSpace, MakeList<MemberDeclarationSyntax>(classdecl));
             }
-            return r;
+            return classdecl;
         }
 
         bool IsTypeEqual(TypeSyntax t1, TypeSyntax t2)

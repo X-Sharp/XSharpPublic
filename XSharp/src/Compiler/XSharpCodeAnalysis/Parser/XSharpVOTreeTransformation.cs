@@ -131,24 +131,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        private SyntaxList<AttributeListSyntax> _compilerGenerated = null;
-        protected SyntaxList<AttributeListSyntax> CompilerGeneratedAttributes()
-        {
-            if (_compilerGenerated == null)
-            {
-                lock (gate)
-                {
-                    if (_compilerGenerated == null)
-                    {
-                        SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-                        GenerateAttributeList(attributeLists, CompilerGenerated);
-                        _compilerGenerated = attributeLists.ToList();
-                        _pool.Free(attributeLists);
-                    }
-                }
-            }
-            return _compilerGenerated;
-        }
 
         protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp)
         {
@@ -161,7 +143,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var mods = TokenList(isApp ? SyntaxKind.PrivateKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
-            var m = SyntaxFactory.MethodDeclaration(CompilerGeneratedAttributes(), mods,
+            var m = SyntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods,
                 _voidType, /*explicitif*/null,
                 SyntaxFactory.Identifier(functionName), /*typeparams*/null, pars,/* constraints*/null, MakeBlock(stmts),/*exprbody*/null,
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
@@ -296,10 +278,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                               SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken));
          }
 
-        internal InitializerExpressionSyntax MakeArrayInitializer(ExpressionSyntax expr) {
-            return MakeArrayInitializer(MakeSeparatedList<ExpressionSyntax>(expr));
-         }
-
         internal GenericNameSyntax MakeGenericName( string name, TypeSyntax type)
         {
             return _syntaxFactory.GenericName(SyntaxFactory.MakeIdentifier(name),
@@ -377,7 +355,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         private ExpressionSyntax GenerateNIL()
         {
-            return CreateObject(_usualType, EmptyArgumentList());
+            return MakeDefault(_usualType);
         }
 
         private void Check4ClipperCC(XP.IEntityContext context,
@@ -432,7 +410,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
 
             var appExit = _syntaxFactory.MethodDeclaration(
-                CompilerGeneratedAttributes(), modifiers,
+                MakeCompilerGeneratedAttribute(), modifiers,
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
@@ -509,7 +487,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
 
             var appInit = _syntaxFactory.MethodDeclaration(
-                CompilerGeneratedAttributes(), modifiers,
+                MakeCompilerGeneratedAttribute(), modifiers,
                 _voidType, null, appId, null, EmptyParameterList(),
                 null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
             _pool.Free(stmts);
@@ -890,7 +868,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         modifiers.Add(SyntaxFactory.MakeToken(SyntaxKind.ParamsKeyword));
                         var attrs = _pool.Allocate<AttributeListSyntax>();
                         var par = _syntaxFactory.Parameter(
-                                        CompilerGeneratedAttributes(),
+                                        MakeCompilerGeneratedAttribute(),
                                         modifiers.ToList(),
                                         type: arrayOfUsual,
                                         identifier: SyntaxFactory.Identifier(ClipperArgs),
@@ -2157,7 +2135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var id = SyntaxFactory.Identifier(name);
             mods = TokenList(SyntaxKind.InternalKeyword);
             MemberDeclarationSyntax m = _syntaxFactory.DelegateDeclaration(
-               CompilerGeneratedAttributes(),
+               MakeCompilerGeneratedAttribute(),
                mods,
                delegateKeyword: SyntaxFactory.MakeToken(SyntaxKind.DelegateKeyword),
                returnType: type,

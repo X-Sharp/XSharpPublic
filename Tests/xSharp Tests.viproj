@@ -37489,7 +37489,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C379_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C380 - PaintStruct *************
 Application = C380 - PaintStruct
 IDEVersion = 1.06
@@ -37588,7 +37588,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C380 - PaintStruct
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C381 - Helpdisplay *************
 Application = C381 - Helpdisplay
 IDEVersion = 1.06
@@ -38182,7 +38182,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C385 - Various compatibility issues with conversions and casts
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C386 - Probem embedding native resource files *************
 Application = C386 - Probem embedding native resource files
 IDEVersion = 1.06

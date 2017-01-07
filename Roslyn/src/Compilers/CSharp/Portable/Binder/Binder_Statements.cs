@@ -470,6 +470,18 @@ namespace Microsoft.CodeAnalysis.CSharp
             AliasSymbol alias;
             TypeSymbol declType = BindVariableType(node, diagnostics, typeSyntax, ref isConst, isVar: out isVar, alias: out alias);
 
+#if XSHARP
+            if (declType.IsPointerType() && Compilation.Options.VOResolveTypedFunctionPointersToPtr)
+            {
+                var pt = declType as PointerTypeSymbol;
+                // Check if pointing at Method
+                if (pt.PointedAtType.Kind == SymbolKind.ErrorType)
+                {
+                    diagnostics.Clear();
+                    declType = Compilation.GetSpecialType(SpecialType.System_IntPtr);
+                }
+            }
+#endif
             // UNDONE: "possible expression" feature for IDE
 
             LocalDeclarationKind kind = LocalDeclarationKind.RegularVariable;

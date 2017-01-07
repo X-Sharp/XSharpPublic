@@ -22,6 +22,13 @@ FUNCTION Start() AS VOID
    hStr2   := System.Runtime.InteropServices.Marshal.StringToHGlobalUni( "pcallnative() From XSharp" )
    
    ? "MessageBox() returns with PCallNative()", PCallNative<INT>(hFuncUntyped, IntPtr.Zero, hStr1, hStr2, 3 )	
+
+   #region new test for FUNC PTR
+   LOCAL hLocalTyped AS MessageBox PTR
+   hLocalTyped := GetProcAddress( hModule, "MessageBoxW" )
+   ? "MessageBox() returns with PCallNative() and LOCAL FUNC PTR", PCallNative<INT>(hLocalTyped, IntPtr.Zero, hStr1, hStr2, 3 )	
+   #endregion
+
    System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr1 )
    System.Runtime.InteropServices.Marshal.FreeHGlobal( hStr2 )
    FreeLibrary( hModule )

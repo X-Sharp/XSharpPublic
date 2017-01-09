@@ -1791,7 +1791,7 @@ If such a class is used as a base class and if the deriving class defines a dest
     <value>Literal of type double cannot be implicitly converted to type '{1}'; use an '{0}' suffix to create a literal of this type</value>
   </data>
   <data name="WRN_IncorrectBooleanAssg" xml:space="preserve">
-    <value>Assignment in conditional expression is always constant; did you mean to use == instead of = ?</value>
+    <value>Assignment in conditional expression is always constant; did you mean to use == instead of := ?</value>
   </data>
   <data name="WRN_IncorrectBooleanAssg_Title" xml:space="preserve">
     <value>Assignment in conditional expression is always constant</value>
@@ -4677,7 +4677,7 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
     <value>Alignment value has a magnitude that may result in a large formatted string</value>
   </data>
   <data name="ERR_ConstantStringTooLong" xml:space="preserve">
-    <value>Length of String constant exceeds current memory limit.  Try splitting the string into multiple constants.</value>
+    <value>Length of String constant exceeds current memory limit. Try splitting the string into multiple constants.</value>
   </data>
   <data name="ERR_DebugEntryPointNotSourceMethodDefinition" xml:space="preserve">
     <value>Debug entry point must be a definition of a method declared in the current compilation.</value>

@@ -2879,7 +2879,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Length of String constant exceeds current memory limit.  Try splitting the string into multiple constants..
+        ///   Looks up a localized string similar to Length of String constant exceeds current memory limit. Try splitting the string into multiple constants..
         /// </summary>
         internal static string ERR_ConstantStringTooLong {
             get {
@@ -11972,7 +11972,7 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assignment in conditional expression is always constant; did you mean to use == instead of = ?.
+        ///   Looks up a localized string similar to Assignment in conditional expression is always constant; did you mean to use == instead of := ?.
         /// </summary>
         internal static string WRN_IncorrectBooleanAssg {
             get {

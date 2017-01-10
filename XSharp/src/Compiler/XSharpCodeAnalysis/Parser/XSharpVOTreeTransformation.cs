@@ -2716,6 +2716,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //     __popWorkarea()
             //   end
             // }:Eval()
+            // Please note that if the expression is a assignment expression then we need 
+            // to do something special
+            // we need to change the expression to a fieldput(LHS, RHS)
+            //
+            if (expr is AssignmentExpressionSyntax)
+            {
+                var ass = expr as AssignmentExpressionSyntax;
+                var lhs = ass.Left;
+                var rhs = ass.Right;
+                expr = GenerateFieldSet(null, lhs.XNode.GetText(), rhs);
+            }
+            else if (expr is IdentifierNameSyntax)
+            {
+                var ins = expr as IdentifierNameSyntax;
+                expr = GenerateFieldGet(null, ins.Identifier.XNode.GetText());
+            }
 
             return _syntaxFactory.InvocationExpression(
             MakeSimpleMemberAccess(

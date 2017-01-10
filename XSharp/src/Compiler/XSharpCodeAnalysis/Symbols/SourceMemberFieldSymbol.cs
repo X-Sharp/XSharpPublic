@@ -42,7 +42,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     {
                         // So we have a global as typed ptr
                         // change the type from typed ptr to just ptr
-                        return compilation.GetSpecialType(SpecialType.System_IntPtr);
+                        var ptrdtc = dt as XP.PtrDatatypeContext;
+                        if (ptrdtc.TypeName.Name != null)           // User Define Typename PTR
+                        {
+                            string name = ptrdtc.TypeName.Name.GetText();
+                            // Lookup name ?
+                            return compilation.GetSpecialType(SpecialType.System_IntPtr);
+                        }
+
                     }
                 }
             }

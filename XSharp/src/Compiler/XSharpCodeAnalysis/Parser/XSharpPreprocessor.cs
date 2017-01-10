@@ -743,7 +743,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                         {
                             nfp = (string)PortableShim.FileStream.Name.GetValue(data);
-                            text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                            try
+                            {
+                                text = EncodedStringText.Create(data, _encoding, _checksumAlgorithm);
+                            }
+                            catch (Exception)
+                            {
+                                text = null;
+                            }
+                            if (text == null)
+                            {
+                                // Encoding problem ?
+                                text = EncodedStringText.Create(data);
+                            }
                         }
                         if (! IncludedFiles.ContainsKey(nfp))
                             IncludedFiles.Add(nfp, text);

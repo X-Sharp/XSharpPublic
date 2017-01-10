@@ -48,6 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public SyntaxListBuilder<MemberDeclarationSyntax> Members;
             public List<Tuple<int,String>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
+            public bool HasPCall;
 
             internal SyntaxEntities(SyntaxListPool pool) {
                 Externs = pool.Allocate<ExternAliasDirectiveSyntax>();
@@ -57,6 +58,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 InitProcedures = new List<Tuple<int, String>>();
                 Globals = new List<FieldDeclarationSyntax>();
                 _pool = pool;
+                HasPCall = false;
             }
 
             internal void Free()

@@ -370,6 +370,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public ITokenStream XTokens { get; internal set; }
         public IList<Tuple<int, string>> InitProcedures { get; internal set; }
         public IList<FieldDeclarationSyntax> Globals { get; internal set; }
+        public bool HasPCall { get; internal set; }
 
     }
 

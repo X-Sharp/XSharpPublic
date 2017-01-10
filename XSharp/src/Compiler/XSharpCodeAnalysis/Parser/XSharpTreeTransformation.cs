@@ -1774,6 +1774,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     string filename = PathUtilities.GetFileName(_fileName);
                     filename = PathUtilities.RemoveExtension(filename);
+                    filename = RemoveUnwantedCharacters(filename);
                     className = className + "$" + filename + "$";
                 }
                 AddUsingWhenMissing(GlobalEntities.Usings, className, true);
@@ -1783,6 +1784,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.Put(ch.Get<CSharpSyntaxNode>());
             }
+        }
+
+        private string RemoveUnwantedCharacters(string input)
+        {
+            StringBuilder result = new StringBuilder(input.Length);
+            foreach (char ch in input)
+            {
+                if (Char.IsLetterOrDigit(ch))
+                    result.Append(ch);
+                else
+                    result.Append('_');
+            }
+            return result.ToString();
+
         }
 
         public override void ExitUsing_([NotNull] XP.Using_Context context)

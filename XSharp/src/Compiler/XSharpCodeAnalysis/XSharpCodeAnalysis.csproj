@@ -281,6 +281,7 @@
     <Compile Include="Binder\Binder_Expressions.cs" />
     <Compile Include="Binder\Binder_Operators.cs" />
     <Compile Include="Binder\Binder_Codeblock.cs" />
+    <Compile Include="Binder\Imports.cs" />
     <Compile Include="Binder\Semantics\OverloadResolution.cs" />
     <Compile Include="CodeAnalysisResources.Designer.cs">
       <AutoGen>True</AutoGen>

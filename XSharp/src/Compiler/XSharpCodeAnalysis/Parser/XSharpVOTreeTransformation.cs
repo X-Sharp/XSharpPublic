@@ -2716,10 +2716,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             //     __popWorkarea()
             //   end
             // }:Eval()
-            // Please note that if the expression is a assignment expression then we need 
-            // to do something special
-            // we need to change the expression to a fieldput(LHS, RHS)
-            //
+            // If the expression is a assignment expression 
+            // then convert to FieldSet
+            // If it is an identifiername then convert
+            // to FieldGet
             if (expr is AssignmentExpressionSyntax)
             {
                 var ass = expr as AssignmentExpressionSyntax;
@@ -2931,8 +2931,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
-                    return;
+                    if (context.Expr is XP.PrimaryExpressionContext)
+                    {
+                        var pec = context.Expr as XP.PrimaryExpressionContext;
+                        if (pec.Expr is XP.LiteralExpressionContext)
+                        {
+                            var lit = pec.Expr as XP.LiteralExpressionContext;
+                            if (lit.Literal.Token.Type == XP.STRING_CONST)
+                            {
+                                _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
+                                return;
+                            }
+                        }
+                    }
+
                 }
             }
 

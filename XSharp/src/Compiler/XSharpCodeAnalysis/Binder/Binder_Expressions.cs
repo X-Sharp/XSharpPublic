@@ -61,7 +61,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     // or source is <TargetType> PTR
                     // Convert INT(<ptr>) to ((INT PTR) <ptr>)[0]
                     // No need to worry about /AZ. This has been handled already
-                    bool canConvert = operand.Type.IsVoidPointer();
+                    // make sure that PSZ(ptr) is not dereferenced !
+                    bool canConvert = operand.Type.IsVoidPointer() && targetType != Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
                     if ( ! canConvert)
                     {
                         PointerTypeSymbol pt = operand.Type as PointerTypeSymbol;

@@ -1844,27 +1844,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         else
                             return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
                     case XP.REAL_CONST:
-                        if (negative)
+                        double dValue;
+                        switch (token.Text.Last())
                         {
-                            double dValue;
-                            switch (token.Text.Last())
-                            {
-                                case 'M':
-                                case 'm':
-                                case 'S':
-                                case 's':
-                                case 'D':
-                                case 'd':
-                                    dValue = double.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
-                                    break;
-                                default:
-                                    dValue = double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
-                                    break;
-                            }
-                            return MakeDefaultParameter(GenerateLiteral(dValue *-1), GenerateLiteral(0));   // 0 = regular .Net Value
+                            case 'M':
+                            case 'm':
+                            case 'S':
+                            case 's':
+                            case 'D':
+                            case 'd':
+                                dValue = double.Parse(token.Text.Substring(0, token.Text.Length - 1), System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                            default:
+                                dValue = double.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
+                                break;
                         }
+                        if (negative)
+                            return MakeDefaultParameter(GenerateLiteral(dValue *-1), GenerateLiteral(0));   // 0 = regular .Net Value
                         else
-                            return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
+                            return MakeDefaultParameter(GenerateLiteral(dValue ), GenerateLiteral(0));   // 0 = regular .Net Value
+
                     default:
                         return MakeDefaultParameter(litexpr.Get<ExpressionSyntax>(), GenerateLiteral(0));   // 0 = regular .Net Value
                 }

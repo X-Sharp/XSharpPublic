@@ -1744,7 +1744,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 bProcess = true;
                 var modifiers = ((XP.ProcedureContext)ch).Modifiers;
                 if (modifiers != null)
+                {
+                    var proc = (XP.ProcedureContext)ch;
                     bStaticVisibility = modifiers.IsStaticVisible;
+                    if (bStaticVisibility && proc.Init != null)
+                    {
+                        // init procedures should not be moved to the static functions namespace
+                        bStaticVisibility = false;
+                    }
+                }
             }
             else if (ch is XP.VoglobalContext)
             {
@@ -3559,6 +3567,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitProcedure([NotNull] XP.ProcedureContext context)
         {
             var isInInterface = context.isInInterface();
+            bool initProc = false;
             context.SetSequencePoint(context.end);
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
@@ -3589,6 +3598,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 level = -1;
                                 break;
                         }
+                        initProc = true;
                         GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
                     }
                 }

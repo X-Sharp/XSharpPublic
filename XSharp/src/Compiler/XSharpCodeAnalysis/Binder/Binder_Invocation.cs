@@ -37,9 +37,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         private void BindPCall(InvocationExpressionSyntax node, DiagnosticBag diagnostics, AnalyzedArguments analyzedArguments)
         {
-            if (node.XPCall && node.Expression is QualifiedNameSyntax && ((QualifiedNameSyntax)node.Expression).Right is GenericNameSyntax)
+            if (node.XPCall && node.Expression is GenericNameSyntax)
             {
-                var gns = ((QualifiedNameSyntax)node.Expression).Right as GenericNameSyntax;
+                var gns = node.Expression as GenericNameSyntax;
                 var arg = gns.TypeArgumentList.Arguments[0];
                 var method = arg.ToFullString();
                 bool pcall = method.IndexOf("$Pcall$", StringComparison.OrdinalIgnoreCase) >= 0;

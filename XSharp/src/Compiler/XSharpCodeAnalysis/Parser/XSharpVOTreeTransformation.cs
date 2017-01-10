@@ -57,6 +57,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal const string InitProc2 = "$Init2";
         internal const string InitProc3 = "$Init3";
         internal const string ExitProc = "$Exit";
+        internal const string PCallProc = "$PCallGetDelegate";
         // Vulcan Assembly Names
         private const string VulcanRuntimeState = "global::Vulcan.Runtime.State";
         private const string LayoutSequential = "global::System.Runtime.InteropServices.LayoutKind.Sequential";
@@ -131,7 +132,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-
+        protected MethodDeclarationSyntax CreatePCallFunction()
+        {
+            var id = SyntaxFactory.Identifier(PCallProc);
+            var p = SyntaxFactory.Identifier("p");
+            var t = SyntaxFactory.Identifier("T");
+            // body
+            var tname = GenerateSimpleName("T");
+            var arg1 = MakeArgument(GenerateSimpleName("p"));
+            var arg2 = MakeArgument(MakeTypeOf(tname));
+            var args = MakeArgumentList(arg1, arg2);
+            ExpressionSyntax expr = GenerateMethodCall("global::System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer", args);
+            expr = MakeCastTo(_objectType, expr);
+            expr = MakeCastTo(tname, expr);
+            var stmt = GenerateReturn(expr);
+            var block = MakeBlock(stmt);
+            var tparameters = _pool.AllocateSeparated<TypeParameterSyntax>();
+            tparameters.Add(_syntaxFactory.TypeParameter(null, null, t));
+            var typeparams = _syntaxFactory.TypeParameterList(SyntaxFactory.MakeToken(SyntaxKind.LessThanToken),
+                tparameters,
+                SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken));
+            _pool.Free(tparameters);
+            var mods = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
+            var @params = _pool.AllocateSeparated<ParameterSyntax>();
+            @params.Add(_syntaxFactory.Parameter(null, null, _ptrType, p, null));
+            var pars = _syntaxFactory.ParameterList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken), @params, SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
+            _pool.Free(@params);
+            var m = SyntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods,
+                tname, /*explicitif*/null,
+                id, typeparams, pars,/* constraints*/null, block,/*exprbody*/null,
+                SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            return m;
+        }
         protected MethodDeclarationSyntax CreateInitFunction(IList<String> procnames, string functionName, bool isApp)
         {
             // create body for new Init procedure
@@ -152,7 +184,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return m;
         }
 
-        private List<MemberDeclarationSyntax> CreateInitMembers(List<Tuple<int, String>> initprocs, bool isApp)
+        private List<MemberDeclarationSyntax> CreateInitMembers(List<Tuple<int, String>> initprocs, bool isApp, bool hasPCall)
         {
             var members = new List<MemberDeclarationSyntax>();
             var init1 = new List<string>();
@@ -190,16 +222,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 members.Add(CreateInitFunction(init3, InitProc3, isApp));
             }
             members.Add(CreateInitFunction( exit, ExitProc, isApp));
+            if (hasPCall)
+            {
+                members.Add(CreatePCallFunction());
+            }
             return members;
         }
 
-        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int,String>> initprocs, bool isApp)
+        private SyntaxTree GenerateDefaultSyntaxTree(List<Tuple<int,String>> initprocs, bool isApp, bool hasPCall)
         {
 
             // Create Global Functions class with the Members to call the Init procedures
             // Vulcan only does this for DLLs. We do it for EXE too to make things more consistent
             // Methods $Init1() and $Exit() are always created.
-            var members = CreateInitMembers(initprocs, isApp);
+            var members = CreateInitMembers(initprocs, isApp, hasPCall);
             if (isApp)
             {
                 members.Add(CreateAppInit());   // This will call $Init() procedures
@@ -243,22 +279,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Trees is NEVER empty !
             CSharpParseOptions options = (CSharpParseOptions)trees.First().Options;
             // Collect Init procedures in all trees
-            var initprocs = new List<Tuple<int, string>>(); 
+            var initprocs = new List<Tuple<int, string>>();
+            bool hasPCall = false;
             foreach (var tree in trees)
             {
                 var root = tree.GetRoot();
                 if (root != null)
                 {
                     CompilationUnitSyntax unit = root.Green as CompilationUnitSyntax;
-                    if (unit != null && unit.InitProcedures != null)
+                    if (unit != null)
                     {
-                        initprocs.AddRange(unit.InitProcedures);
+                        if (unit.InitProcedures != null)
+                        {
+                                initprocs.AddRange(unit.InitProcedures);
+                            }
+                        hasPCall = hasPCall || unit.HasPCall;
                     }
+
                 }
             }
 
             var t = getTransform(options);
-            return t.GenerateDefaultSyntaxTree(initprocs,isApp);
+            return t.GenerateDefaultSyntaxTree(initprocs,isApp,hasPCall);
         }
 
         private static XSharpVOTreeTransformation getTransform(CSharpParseOptions options)
@@ -2156,13 +2198,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // hFunc = 1st argument
             // a,b,c etc are rest of the arguments
             // we assume that the # of parameters has been checked before
-            var marshal = GenerateQualifiedName("global::System.Runtime.InteropServices.Marshal");
+            GlobalEntities.HasPCall = true;
             var argname = GenerateQualifiedName(name);
-            var methodName = MakeGenericName("GetDelegateForFunctionPointer", argname);
-            var fullmethodName = _syntaxFactory.QualifiedName(marshal, SyntaxFactory.MakeToken(SyntaxKind.DotToken), methodName);
+            var methodName = MakeGenericName(PCallProc, argname);
             var marshallargs = MakeArgumentList(context.ArgList._Args[0].Get<ArgumentSyntax>());
-            // expr = global::System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer< <delegatename> >(hFunc)
-            var expr = _syntaxFactory.InvocationExpression(fullmethodName, marshallargs);
+            // expr = Pcall$GetDelegate< <delegatename> >(hFunc)
+            var expr = _syntaxFactory.InvocationExpression(methodName, marshallargs);
             expr.XPCall = true;         // This is used in the binder to locate the special generated invocation call
             //
             // Create the argumentlist that is passed to the delegate

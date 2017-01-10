@@ -280,6 +280,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                 result.Globals = treeTransform.GlobalEntities.Globals;
                 result.IncludedFiles = pp.IncludedFiles;
+                result.HasPCall = treeTransform.GlobalEntities.HasPCall;
                 return result;
             }
             finally

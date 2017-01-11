@@ -187,6 +187,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var argType = args[0].Type;
                 ok = argType == Compilation.GetSpecialType(SpecialType.System_IntPtr);
                 ok = ok | argType.IsVoidPointer();
+                ok = ok | argType.IsPointerType();
             }
             if (!ok)
             {

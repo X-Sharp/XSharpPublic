@@ -15,6 +15,12 @@ v:n := 1
 v:sym := #TEST
 v:ip := @v
 ? v:n , v:sym , v:ip
+IF v:sym != #TEST
+	THROW Exception{"Incorrect result"}
+END IF
+IF v:ip != @v
+	THROW Exception{"Incorrect result"}
+END IF
 
 LOCAL u IS myUNION
 u:sym := #ATEST

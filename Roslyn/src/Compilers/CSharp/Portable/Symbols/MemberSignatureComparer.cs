@@ -64,7 +64,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             considerReturnType: true,
             considerTypeConstraints: false, // constraints are checked by caller instead
             considerCallingConvention: true,
+#if XSHARP
+            considerRefOutDifference: false,
+#else
             considerRefOutDifference: true,
+#endif
             considerCustomModifiers: false);
 
         /// <summary>
@@ -292,7 +296,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             _ignoreDynamic = ignoreDynamic;
         }
 
-        #region IEqualityComparer<Symbol> Members
+#region IEqualityComparer<Symbol> Members
 
         public bool Equals(Symbol member1, Symbol member2)
         {

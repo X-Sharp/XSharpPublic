@@ -55,7 +55,8 @@ namespace Microsoft.CodeAnalysis.CSharp
 
             if (!result && _binder.Compilation.Options.IsDialectVO && destination != null && source is NamedTypeSymbol)
             {
-                if (((NamedTypeSymbol)source).ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                var nts = source as NamedTypeSymbol;
+                if (nts.ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
                 {
                     var constructedFrom = (destination as NamedTypeSymbol)?.ConstructedFrom;
                     if (destination.IsReferenceType)
@@ -71,6 +72,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     else if (destination.IsPointerType())
                     {
                        return true;
+                    }
+                    else if (destination.SpecialType == SpecialType.System_DateTime)
+                    {
+                        return true;
                     }
                     else
                     {

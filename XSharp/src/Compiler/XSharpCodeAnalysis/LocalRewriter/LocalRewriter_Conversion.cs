@@ -27,25 +27,18 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
 
         // Cache the Usual2Ptr conversion since it may be used quite often and there are 43 overloads for op_Implicit.
-        private MethodSymbol _usual2Ptr;
-        private MethodSymbol getUsual2PtrOperator()
+        private MethodSymbol getImplicitOperator(NamedTypeSymbol srcType, NamedTypeSymbol destType)
         {
-            if (_usual2Ptr == null)
+            var members = srcType.GetMembers("op_Implicit");
+            foreach (MethodSymbol m in members)
             {
-                var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                var ptrType = _compilation.GetSpecialType(SpecialType.System_IntPtr); ;
-                var members = usualType.GetMembers("op_Implicit");
-                foreach (MethodSymbol m in members)
+                if (m.ReturnType == destType)
                 {
-                    if (m.ReturnType == ptrType)
-                    {
-                        _usual2Ptr = m;
-                        break;
-                    }
-
+                    return m;
                 }
+
             }
-            return _usual2Ptr;
+            return null;
         }
 
         private ConversionKind UnBoxVOType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
@@ -64,13 +57,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // Pointer types are not really boxed
                         // we call the appropriate implicit operator here
-                        MethodSymbol m = getUsual2PtrOperator();
+                        MethodSymbol m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
                         if (m != null)
                         { 
                             rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                             rewrittenOperand.WasCompilerGenerated = true;
                             return ConversionKind.PointerToPointer; 
                         }
+                    }
+                    else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
+                    {
+                        rewrittenOperand = _factory.StaticCall(usualType, "ToObject", rewrittenOperand);
+                        return ConversionKind.Unboxing;
                     }
                     else // System.Decimals, Objects and reference types, but not String
                     {

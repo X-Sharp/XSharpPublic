@@ -1412,6 +1412,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             #endregion
             var accessors = _pool.Allocate<AccessorDeclarationSyntax>();
+            IParseTree xnode = null;
             #region ACCESS = Get Accessor
             if (AccMet != null)
             {
@@ -1472,7 +1473,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 accessor.XNode = AccMet;
                 AccMet.CsNode = null;
                 AccMet.Parent.CsNode = null;
-
+                xnode = AccMet;
             }
             #endregion
             #region ASSIGN = Set Accessor
@@ -1513,6 +1514,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 accessor.XNode = AssMet;
                 AssMet.CsNode = null;
                 AssMet.Parent.CsNode = null;
+                if (xnode == null)
+                    xnode = AssMet;
             }
             #endregion
             BasePropertyDeclarationSyntax prop;
@@ -1551,7 +1554,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(getMods);
             _pool.Free(setMods);
             _pool.Free(outerMods);
-
+            prop.XNode = xnode;
             return prop;
         }
         private static SyntaxTree _defTree;
@@ -2624,11 +2627,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitPropertyAccessor([NotNull] XP.PropertyAccessorContext context)
         {
             context.SetSequencePoint(context.end);
+            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            ParameterListSyntax parameters = null;
+            var body = context.StmtBlk.Get<BlockSyntax>();
+            TypeSyntax returntype = null;
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+
             context.Put(_syntaxFactory.AccessorDeclaration(context.Key.AccessorKind(),
-                attributeLists: context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>(),
+                attributeLists: attributes,
                 modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? EmptyList(),
                 keyword: context.Key.SyntaxKeyword(),
-                body: context.StmtBlk.Get<BlockSyntax>(),
+                body: body,
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
         public override void EnterMethod([NotNull] XP.MethodContext context)
@@ -3567,7 +3576,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitProcedure([NotNull] XP.ProcedureContext context)
         {
             var isInInterface = context.isInInterface();
-            bool initProc = false;
             context.SetSequencePoint(context.end);
             if (isInInterface && context.StmtBlk != null && context.StmtBlk._Stmts.Count > 0) {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
@@ -3598,7 +3606,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 level = -1;
                                 break;
                         }
-                        initProc = true;
                         GlobalEntities.InitProcedures.Add(new Tuple<int, string>(level, context.Id.GetText()));
                     }
                 }

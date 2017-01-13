@@ -114,7 +114,7 @@ namespace XSharpLanguage
             // Build a list with the tokens we have from the TriggerPoint to the start of the line
             List<String> tokenList = this.GetTokenList(triggerPoint);
             // and make it a string
-            String tokenLine = TokenListAsString(tokenList, 0);
+            //String tokenLine = TokenListAsString(tokenList, 0);
             String filterText = "";
             // We might be here due to a COMPLETEWORD command, so we have no typedChar
             // but we "may" have a incomplete word like System.String.To
@@ -136,7 +136,7 @@ namespace XSharpLanguage
                                 String startToken = extract.Substring(0, dotPos);
                                 filterText = extract.Substring(dotPos + 1);
                                 typedChar = '.';
-                                tokenList[0] = startToken+".";
+                                tokenList[0] = startToken + ".";
                             }
                         }
                         else
@@ -150,7 +150,7 @@ namespace XSharpLanguage
                             extract = tokenList[tokenList.Count - 2];
                             typedChar = extract[extract.Length - 1];
                             tokenList.RemoveAt(tokenList.Count - 1);
-                            tokenLine = TokenListAsString(tokenList, 0);
+                            //tokenLine = TokenListAsString(tokenList, 0);
                         }
                         // Include the filter as the text to replace
                         start -= filterText.Length;
@@ -165,25 +165,34 @@ namespace XSharpLanguage
             switch (typedChar)
             {
                 case '.':
-                    // It can be a namespace 
-                    AddNamespaces(compList, file.Project, tokenLine);
-                    // It can be Type, FullyQualified
-                    AddTypeNames(compList, file.Project, tokenLine);
-                    // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                    List<String> Usings = file.Usings;
-                    XType currentNamespace = this.FindNamespace(triggerPoint.Position);
-                    if (currentNamespace != null)
-                    {
-                        Usings.Add(currentNamespace.Name);
-                    }
-                    foreach (String nspace in Usings)
-                    {
-                        AddTypeNames(compList, file.Project, nspace + "." + tokenLine);
-                    }
-                    // it can be a static Type/Method/Property
+                    // it can be a static Type/Method/Property/Enum
                     if (cType != null)
                     {
                         BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
+                    }
+                    else
+                    {
+                        if (String.IsNullOrEmpty(filterText))
+                        {
+                            filterText = TokenListAsString(tokenList, 0);
+                            if (!filterText.EndsWith("."))
+                                filterText += ".";
+                        }
+                        // It can be a namespace 
+                        AddNamespaces(compList, file.Project, filterText);
+                        // It can be Type, FullyQualified
+                        AddTypeNames(compList, file.Project, filterText);
+                        // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                        List<String> Usings = new List<String>(file.Usings);
+                        XType currentNamespace = this.FindNamespace(triggerPoint.Position);
+                        if (currentNamespace != null)
+                        {
+                            Usings.Add(currentNamespace.Name);
+                        }
+                        foreach (String nspace in Usings)
+                        {
+                            AddTypeNames(compList, file.Project, nspace + "." + filterText);
+                        }
                     }
                     break;
                 case ':':
@@ -220,12 +229,14 @@ namespace XSharpLanguage
                     {
                         if (member != null) // Fill with the context ( Parameters and Locals )
                         {
-                            BuildCompletionList(compList, member, filterText );
+                            BuildCompletionList(compList, member, filterText);
                         }
                         // Now Add Functions and Procedures
                         BuildCompletionList(compList, file.Project.GlobalType, Modifiers.Public, false, filterText);
                         // and Add NameSpaces
                         AddNamespaces(compList, file.Project, filterText);
+                        // and Types
+                        AddTypeNames(compList, file.Project, filterText);
                     }
                     break;
             }
@@ -369,13 +380,13 @@ namespace XSharpLanguage
                 currentToken = tokenList[currentPos];
                 //
                 int dotPos = currentToken.LastIndexOf(".");
-                if ( dotPos > -1 )
+                if (dotPos > -1)
                 {
                     String startToken = currentToken.Substring(0, dotPos);
                     cType = new CompletionType(startToken, currentMember.File);
-                    currentToken = currentToken.Substring(dotPos+1);
+                    currentToken = currentToken.Substring(dotPos + 1);
                     currentPos++;
-                    if( String.IsNullOrEmpty(currentToken))
+                    if (String.IsNullOrEmpty(currentToken))
                     {
                         continue;
                     }
@@ -848,7 +859,7 @@ namespace XSharpLanguage
             return new CompletionType();
         }
 
-        private void BuildCompletionList(CompletionList compList, XTypeMember currentMember, String startWith )
+        private void BuildCompletionList(CompletionList compList, XTypeMember currentMember, String startWith)
         {
             if (currentMember == null)
             {
@@ -1015,7 +1026,7 @@ namespace XSharpLanguage
             //
             foreach (var member in members)
             {
-                if (member.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture ))
+                if (member.Name.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
                 {
                     MemberAnalysis analysis = new MemberAnalysis(member);
                     if ((analysis.IsInitialized) && (minVisibility <= analysis.Visibility))
@@ -1054,13 +1065,32 @@ namespace XSharpLanguage
                 System.Diagnostics.Debug.WriteLine(String.Format("Cannot find file {0} .", this._fileName));
                 return null;
             }
+            // First, Check for Function/Procedure
+            XType gbl = file.GlobalType;
+            int maxPosition = 0;
+            XTypeMember lastElt = null;
             //
+            foreach (XTypeMember elt in gbl.Members)
+            {
+                if (elt.Interval.Stop > maxPosition)
+                {
+                    // Keep track of the last position, in the corresponding XType
+                    maxPosition = elt.Interval.Stop;
+                    lastElt = elt;
+                }
+                if (elt.Interval.ContainsInclusive(position))
+                {
+                    return elt;
+                }
+            }
+            // If we are here, we found nothing
+            // but we might be after the code of the last Function in the file, so the parser don't know where we are
+            // Keep it in lastElt, and check Members
+            XTypeMember lastElt2 = null;
             foreach (XType eltType in file.TypeList)
             {
                 if (eltType.Interval.ContainsInclusive(position))
                 {
-                    int maxPosition = 0;
-                    XTypeMember lastElt = null;
                     //
                     foreach (XTypeMember elt in eltType.Members)
                     {
@@ -1068,7 +1098,7 @@ namespace XSharpLanguage
                         {
                             // Keep track of the last position, in the corresponding XType
                             maxPosition = elt.Interval.Stop;
-                            lastElt = elt;
+                            lastElt2 = elt;
                         }
                         if (elt.Interval.ContainsInclusive(position))
                         {
@@ -1077,9 +1107,15 @@ namespace XSharpLanguage
                     }
                     // We are in the right Type, but found no Member ?
                     // So it must the Last Member, before the Closing-Keyword
-                    return lastElt;
+                    if ((lastElt != null) && (lastElt2==null ))
+                        return lastElt;
+                    //
+                    return lastElt2;
                 }
             }
+            //
+            if (lastElt != null)
+                return lastElt;
             //
             System.Diagnostics.Debug.WriteLine(String.Format("Cannot find member as position {0} in file {0} .", position, this._fileName));
             return null;

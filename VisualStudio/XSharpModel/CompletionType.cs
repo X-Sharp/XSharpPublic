@@ -20,7 +20,21 @@ namespace XSharpModel
             this._xtype = xType;
         }
 
+        public CompletionType( Type sType)
+        {
+            this._stype = sType;
+        }
+
+        public CompletionType()
+        {
+        }
+
         public CompletionType(XElement element)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public CompletionType(XTypeMember element)
         {
             //throw new NotImplementedException();
         }
@@ -36,35 +50,51 @@ namespace XSharpModel
             XTypeMember member = var.Parent as XTypeMember;
             if (member != null)
             {
-                // First, easy way..Use the simple name
-                XType xType = var.File.Project.Lookup(var.TypeName, true);
-                if (xType == null)
-                {
-                    // Search using the USING statements in the File that contains the var
-                    foreach (string usingStatement in member.File.Usings)
-                    {
-                        String fqn = usingStatement + "." + var.TypeName;
-                        xType = var.File.Project.Lookup(fqn, true);
-                        if (xType != null)
-                            break;
-                    }
-                    if (xType == null)
-                    {
-                        // Ok, none of our own Type; can be a System/Referenced Type
-                        CheckSystemType(var.TypeName, member.File.Usings);
-                    }
-                }
-                if (xType != null)
-                {
-                    this._xtype = xType;
-                }
+                CheckProjectType(var.TypeName, member.File);
             }
         }
 
-        public CompletionType( String typeName, List<String> usings )
+        public CompletionType(String typeName, List<String> usings)
         {
             CheckSystemType(typeName, usings);
         }
+
+        public CompletionType(String typeName, XFile xFile )
+        {
+            CheckProjectType(typeName, xFile);
+            if ( !this.IsInitialized )
+            {
+                CheckSystemType(typeName, xFile.Usings);
+            }
+        }
+
+
+        private void CheckProjectType(string typeName, XFile xFile )
+        {
+            // First, easy way..Use the simple name
+            XType xType = xFile.Project.Lookup( typeName, true);
+            if (xType == null)
+            {
+                // Search using the USING statements in the File that contains the var
+                foreach (string usingStatement in xFile.Usings)
+                {
+                    String fqn = usingStatement + "." + typeName;
+                    xType = xFile.Project.Lookup(fqn, true);
+                    if (xType != null)
+                        break;
+                }
+                if (xType == null)
+                {
+                    // Ok, none of our own Type; can be a System/Referenced Type
+                    CheckSystemType(typeName, xFile.Usings);
+                }
+            }
+            if (xType != null)
+            {
+                this._xtype = xType;
+            }
+        }
+
 
         private void CheckSystemType(string typeName, List<string> usings)
         {
@@ -122,11 +152,11 @@ namespace XSharpModel
         {
             get
             {
-                if ( this._xtype != null )
+                if (this._xtype != null)
                 {
                     return this._xtype.FullName;
                 }
-                if ( this._stype != null )
+                if (this._stype != null)
                 {
                     return this._stype.FullName;
                 }

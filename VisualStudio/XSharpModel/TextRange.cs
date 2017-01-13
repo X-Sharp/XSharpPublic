@@ -14,11 +14,19 @@ namespace XSharpModel
         private int _EndLine;
         private int _EndColumn;
 
+        public static TextRange Empty
+        {
+            get
+            {
+                return new TextRange(1, 1, 1, 1);
+            }
+        }
+
         public TextRange(ParserRuleContext context)
-            :this(context.Start.Line, context.Start.Column,
+            : this(context.Start.Line, context.Start.Column,
                                             context.Stop.Line, context.Stop.Column)
         {
-            
+
         }
 
         public TextRange(int sl, int sc, int el, int ec)
@@ -61,7 +69,7 @@ namespace XSharpModel
             }
         }
 
-        public bool ContainsExclusive( int line, int col)
+        public bool ContainsExclusive(int line, int col)
         {
             if ((line > this._StartLine) && (line < this._EndLine))
             {
@@ -85,7 +93,7 @@ namespace XSharpModel
             return ((line == this._EndLine) && (col < this._EndColumn));
         }
 
-        public bool ContainsInclusive( int line, int col)
+        public bool ContainsInclusive(int line, int col)
         {
             if ((line > this._StartLine) && (line < this._EndLine))
             {
@@ -117,10 +125,18 @@ namespace XSharpModel
         private int _StartIndex;
         private int _StopIndex;
 
-        public TextInterval (ParserRuleContext context): 
+        public static TextInterval Empty
+        {
+            get
+            {
+                return new TextInterval();
+            }
+        }
+
+        public TextInterval(ParserRuleContext context) :
             this(context.Start.StartIndex, context.Stop.StopIndex)
-       {
-       }
+        {
+        }
 
         public TextInterval(int start, int stop)
         {
@@ -152,9 +168,9 @@ namespace XSharpModel
             }
         }
 
-        public bool ContainsInclusive(int position )
+        public bool ContainsInclusive(int position)
         {
-            if ((position >= this._StartIndex) && (position <= this._StopIndex ))
+            if ((position >= this._StartIndex) && (position <= this._StopIndex))
             {
                 return true;
             }

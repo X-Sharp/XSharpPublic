@@ -29,7 +29,7 @@ namespace XSharpModel
             {
                 return System.IO.Path.GetFileNameWithoutExtension(ProjectNode.Url);
             }
-         }
+        }
 
         public List<XFile> Files
         {
@@ -129,11 +129,11 @@ namespace XSharpModel
         /// <param name="typeName"></param>
         /// <param name="caseInvariant"></param>
         /// <returns></returns>
-        public XType Lookup( string typeName, bool caseInvariant )
+        public XType Lookup(string typeName, bool caseInvariant)
         {
             XType xType = null;
             XType xTemp = null;
-            foreach( XFile file in this.Files)
+            foreach (XFile file in this.Files)
             {
                 //
                 if (caseInvariant)
@@ -144,12 +144,12 @@ namespace XSharpModel
                 {
                     xTemp = file.TypeList.Find(x => x.FullName.ToLower() == typeName.ToLower());
                 }
-                if ( xTemp != null )
+                if (xTemp != null)
                 {
-                    if ( xTemp.IsPartial )
+                    if (xTemp.IsPartial)
                     {
                         // Do we have the other parts ?
-                        if ( xType != null )
+                        if (xType != null)
                         {
                             xType.Merge(xTemp);
                         }
@@ -167,6 +167,31 @@ namespace XSharpModel
                 }
             }
             return xType;
+        }
+
+        public List<XType> Namespaces
+        {
+            get
+            {
+                List<XType> ns = new List<XType>();
+                //
+                foreach (XFile file in this.Files)
+                {
+                    foreach (XType elmt in file.TypeList)
+                    {
+                        if (elmt.Kind == Kind.Namespace)
+                        {
+                            // Check for Duplicates
+                            XType duplicate = ns.Find(x => x.Name.ToLowerInvariant() == elmt.Name.ToLowerInvariant());
+                            if (duplicate == null)
+                            {
+                                ns.Add(elmt);
+                            }
+                        }
+                    }
+                }
+                return ns;
+            }
         }
 
     }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace XSharpModel
 {
-    class AssemblyInfo
+    public class AssemblyInfo
     {
         // Fields
         /// <summary>
@@ -81,6 +81,14 @@ namespace XSharpModel
             set
             {
                 aTypes = value;
+            }
+        }
+
+        public List<string> Namespaces
+        {
+            get
+            {
+                return _NameSpaceTexts;
             }
         }
 
@@ -223,7 +231,8 @@ namespace XSharpModel
                                     container = new NameSpaceContainer(nspace);
                                     container.Types.Add(simpleName, this.GetTypeTypesFromType(types[num - 1]));
                                     this._NameSpaces.Add(str3, container);
-                                    this._NameSpaceTexts.Add(nspace + ".");
+                                    //this._NameSpaceTexts.Add(nspace + ".");
+                                    this._NameSpaceTexts.Add(nspace );
                                 }
                                 else
                                 {
@@ -236,9 +245,9 @@ namespace XSharpModel
                                 while (nspace.Contains("."))
                                 {
                                     nspace = nspace.Substring(0, nspace.LastIndexOf('.'));
-                                    if (!this._NameSpaceTexts.Contains(nspace + "."))
+                                    if (!this._NameSpaceTexts.Contains(nspace ))
                                     {
-                                        this._NameSpaceTexts.Add(nspace + ".");
+                                        this._NameSpaceTexts.Add(nspace);
                                     }
                                 }
                             }

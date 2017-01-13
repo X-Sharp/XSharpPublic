@@ -44,6 +44,7 @@ namespace XSharp.Project
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             bool handled = false;
+            bool completeAndStart = false;
             int hresult = VSConstants.S_OK;
 
             // 1. Pre-process
@@ -67,9 +68,31 @@ namespace XSharp.Project
                         break;
                     case VSConstants.VSStd2KCmdID.TYPECHAR:
                         char ch = GetTypeChar(pvaIn);
+                        if (_currentSession != null)
+                        {
+                            switch (ch)
+                            {
+                                case ' ':
+                                    Complete(true);
+                                    break;
+                                case ':':
+                                case '.':
+                                    Complete(true);
+                                    completeAndStart = true;                                    
+                                    break;
+                                case '=':
+                                    Cancel();
+                                    break;
+                                default:
+                                    Filter();
+                                    break;
+                            }
+                        }
+
                         break;
                 }
             }
+            
 
             if (!handled)
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
@@ -84,19 +107,9 @@ namespace XSharp.Project
                             char ch = GetTypeChar(pvaIn);
                             if (_currentSession != null)
                             {
-                                switch (ch)
+                                if (completeAndStart)
                                 {
-                                    case ' ':
-                                    case ':':
-                                    case '.':
-                                        handled = Complete(true);
-                                        break;
-                                    case '=':
-                                        handled = Cancel();
-                                        break;
-                                    default:
-                                        Filter();
-                                        break;
+                                    StartSession(nCmdID, ch);
                                 }
                             }
                             else
@@ -176,13 +189,18 @@ namespace XSharp.Project
                 _currentSession = Broker.GetSessions(TextView)[0];
             }
 
-            _currentSession.Dismissed += (sender, args) => _currentSession = null;
+            _currentSession.Dismissed += OnSessionDismiss;
 
             _currentSession.Properties["Command"] = nCmdId;
             _currentSession.Properties["Char"] = typedChar;
             _currentSession.Start();
 
             return true;
+        }
+
+        private void OnSessionDismiss(object sender, EventArgs e)
+        {
+            _currentSession = null;
         }
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
@@ -208,6 +226,10 @@ namespace XSharp.Project
             }
             return Next.QueryStatus(pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
+
+
+
+
     }
 
 

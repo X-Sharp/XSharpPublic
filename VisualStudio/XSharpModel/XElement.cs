@@ -84,7 +84,7 @@ namespace XSharpModel
         {
             get
             {
-                if (this._parent != null )
+                if (this._parent != null)
                 {
                     return this._parent.FullName;
                 }
@@ -155,6 +155,34 @@ namespace XSharpModel
             }
         }
 
+        public virtual String Prototype
+        {
+            get
+            {
+                return this.Name;
+            }
+        }
+
+        public virtual String Description
+        {
+            get
+            {
+                String modVis = "";
+                if (this.Modifiers != Modifiers.None)
+                {
+                    modVis += this.Modifiers.ToString() + " ";
+                }
+                modVis += this.Visibility.ToString() + " ";
+                //
+                String desc = modVis;
+                //
+                desc += this.Kind.ToString() + " ";
+                desc += this.Prototype;
+                //
+                return desc;
+            }
+        }
+
         /// <summary>
         /// Glyph constant used by DropDown Types/Members Comboxes in Editor
         /// </summary>
@@ -165,7 +193,7 @@ namespace XSharpModel
                 ImageListKind imgK = ImageListKind.Class;
                 ImageListOverlay imgOv = ImageListOverlay.Public;
                 //
-                switch ( this.Kind )
+                switch (this.Kind)
                 {
                     case Kind.Class:
                         imgK = ImageListKind.Class;
@@ -348,9 +376,6 @@ namespace XSharpModel
             }
         }
 
-
-
-
         /// <summary>
         /// Turns an image list kind / overlay into the proper index in the image list.
         /// </summary>
@@ -375,12 +400,12 @@ namespace XSharpModel
         Static,
         Unsafe,
         Private,
-        Hidden=Private,
+        Hidden = Private,
         ProtectedInternal,
         Internal,
         Protected,
         Public,
-        Export=Public,
+        Export = Public,
         None
     }
 

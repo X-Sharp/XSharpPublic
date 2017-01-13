@@ -106,33 +106,52 @@ namespace XSharpModel
                 foreach (XFile file in project.Files)
                 {
                     //
-                    project.ProjectNode.SetStatusBarText( String.Format( "Walking {0} : Processing File {1} ", project.Name, file.Name ) );
+                    project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ", project.Name, file.Name));
 #if DEBUG                    
                     Debug.WriteLine(String.Format("Walking {0} : Processing File {1} ", project.Name, file.Name));
                     stopWatch.Start();
 #endif
                     //file.Name
                     var code = System.IO.File.ReadAllText(file.FullPath);
-                    var stream = new AntlrInputStream(code.ToString());
-                    var lexer = new XSharpLexer(stream);
-                    // if you want VO style lexing uncomment the following lines.
-                    //lexer.AllowFourLetterAbbreviations = true; // enables 4 letter abbreviations
-                    //lexer.AllowOldStyleComments = true; // enables && commments
-
-                    var tokens = new CommonTokenStream(lexer);
-                    var parser = new XSharpParser(tokens);
-                    var tree = parser.source();
-                    var walker = new ParseTreeWalker();
-                    var entityparser = new EntityParser(file);
-                    walker.Walk(entityparser, tree);
+                    FileWalk(file, code);
                     //
 #if DEBUG             
-                    stopWatch.Stop();       
+                    stopWatch.Stop();
                     Debug.WriteLine(String.Format("   needs {0}", stopWatch.Elapsed));
 #endif
                 }
                 project.ProjectNode.SetStatusBarText("");
             } while (true);
+        }
+
+        public void FileWalk(XFile file, string code)
+        {
+            var stream = new AntlrInputStream(code.ToString());
+            var lexer = new XSharpLexer(stream);
+            // if you want VO style lexing uncomment the following lines.
+            //lexer.AllowFourLetterAbbreviations = true; // enables 4 letter abbreviations
+            //lexer.AllowOldStyleComments = true; // enables && commments
+
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new XSharpParser(tokens);
+            var tree = parser.source();
+            var walker = new ParseTreeWalker();
+            var entityparser = new EntityParser(file);
+            file.Parsing = true;
+            try
+            {
+                walker.Walk(entityparser, tree);
+            }
+            catch (Exception ex)
+            {
+                // Push Exception away...
+                throw ex;
+            }
+            finally
+            {
+                // And don't forget to release the Mutex
+                file.Parsing = false;
+            }
         }
 
         internal void StopThread()

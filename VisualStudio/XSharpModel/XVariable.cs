@@ -11,7 +11,7 @@ using LanguageService.SyntaxTree.Misc;
 using LanguageService.SyntaxTree.Tree;
 namespace XSharpModel
 {
-    [DebuggerDisplay("{Prototype:nq}")]
+    [DebuggerDisplay("{Prototype,nq}")]
     public class XVariable : XElement
     {
         private String _typeName;

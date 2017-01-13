@@ -13,7 +13,7 @@ namespace XSharpModel
     /// <summary>
     /// Model for Class or a Structure
     /// </summary>
-    [DebuggerDisplay("{FullName:nq}")]
+    [DebuggerDisplay("{FullName,nq}")]
     public class XType : XElement
     {
         private List<XTypeMember> _members;
@@ -171,6 +171,29 @@ namespace XSharpModel
                     throw new Exception( "Cannot set ParentName if Parent is not null" );
                 }
                 this._parentName = value;
+            }
+        }
+
+        public override String Description
+        {
+            get
+            {
+                String modVis = "";
+                if (this.Kind == Kind.Class)
+                {
+                    if (this.Modifiers != Modifiers.None)
+                    {
+                        modVis += this.Modifiers.ToString() + " ";
+                    }
+                    modVis += this.Visibility.ToString() + " ";
+                }
+                //
+                String desc = modVis;
+                //
+                desc += this.Kind.ToString() + " ";
+                desc += this.Prototype;
+                //
+                return desc;
             }
         }
 

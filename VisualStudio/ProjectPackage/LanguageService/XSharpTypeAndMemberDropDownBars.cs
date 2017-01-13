@@ -46,6 +46,8 @@ namespace XSharp.LanguageService
                 // Uhh !??, Something went wrong
                 return false;
             }
+            // we may have to wait for the file to be parsed at least once...
+            file.WaitParsing();
             List<XType> typeAtPos = new List<XType>();
             //
             dropDownTypes.Clear();
@@ -98,7 +100,7 @@ namespace XSharp.LanguageService
                 }
                 //
                 dropDownMembers.Clear();
-                if (selectedType == nCount)
+                if (nSelType == nCount)
                 {
                     if (eltType.Members.Count > 0)
                         nSelMbr = 0;

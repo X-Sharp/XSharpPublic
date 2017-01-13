@@ -93,7 +93,6 @@ namespace XSharpModel
             return oAssembly;
         }
 
-
         public static Type Lookup(string typeName)
         {
             System.Type sType = null;
@@ -106,9 +105,31 @@ namespace XSharpModel
                 {
                     break;
                 }
-
             }
             return sType;
+        }
+
+        public List<String> Namespaces
+        {
+            get
+            {
+                List<string> ns = new List<string>();
+                //
+                foreach (AssemblyInfo assembly in SystemTypeController.assemblies)
+                {
+                    //
+                    ns.AddRange(assembly.Namespaces);
+                }
+                return ns;
+            }
+        }
+
+        public List<AssemblyInfo> Assemblies
+        {
+            get
+            {
+                return SystemTypeController.assemblies;
+            }
         }
 
     }

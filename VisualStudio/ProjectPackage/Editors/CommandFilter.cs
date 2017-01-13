@@ -53,7 +53,7 @@ namespace XSharp.Project
                 {
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-                        handled = StartSession();
+                        handled = StartSession(nCmdID, '\0');
                         break;
                     case VSConstants.VSStd2KCmdID.RETURN:
                         handled = Complete(false);
@@ -88,6 +88,7 @@ namespace XSharp.Project
                                 {
                                     case ' ':
                                     case ':':
+                                    case '.':
                                         handled = Complete(true);
                                         break;
                                     case '=':
@@ -100,8 +101,15 @@ namespace XSharp.Project
                             }
                             else
                             {
-                                if (ch == ':')
-                                    StartSession();
+                                switch (ch)
+                                {
+                                    case ':':
+                                    case '.':
+                                        StartSession(nCmdID, ch);
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                             break;
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
@@ -151,7 +159,7 @@ namespace XSharp.Project
             }
         }
 
-        bool StartSession()
+        bool StartSession(uint nCmdId, char typedChar)
         {
             if (_currentSession != null)
                 return false;
@@ -167,8 +175,11 @@ namespace XSharp.Project
             {
                 _currentSession = Broker.GetSessions(TextView)[0];
             }
+
             _currentSession.Dismissed += (sender, args) => _currentSession = null;
 
+            _currentSession.Properties["Command"] = nCmdId;
+            _currentSession.Properties["Char"] = typedChar;
             _currentSession.Start();
 
             return true;
@@ -182,6 +193,15 @@ namespace XSharp.Project
                 {
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                        prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
+                        return VSConstants.S_OK;
+                }
+            }
+            else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
+            {
+                switch ((VSConstants.VSStd97CmdID)prgCmds[0].cmdID)
+                {
+                    case VSConstants.VSStd97CmdID.GotoDefn:
                         prgCmds[0].cmdf = (uint)OLECMDF.OLECMDF_ENABLED | (uint)OLECMDF.OLECMDF_SUPPORTED;
                         return VSConstants.S_OK;
                 }

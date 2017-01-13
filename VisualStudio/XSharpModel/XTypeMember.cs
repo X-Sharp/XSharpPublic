@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace XSharpModel
 {
-    [DebuggerDisplay("{Prototype:nq}")]
+    [DebuggerDisplay("{Prototype,nq}")]
     public class XTypeMember : XElement
     {
 
@@ -105,7 +105,7 @@ namespace XSharpModel
             }
         }
 
-        public String Description
+        public override String Description
         {
             get
             {
@@ -131,7 +131,7 @@ namespace XSharpModel
             }
         }
 
-        public String Prototype
+        public override String Prototype
         {
             get
             {

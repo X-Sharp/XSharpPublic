@@ -124,7 +124,7 @@ namespace XSharpModel
         /// </summary>
         public void WaitParsing()
         {
-            _parsedEvent.WaitOne();
+            //_parsedEvent.WaitOne();
         }
 
     }

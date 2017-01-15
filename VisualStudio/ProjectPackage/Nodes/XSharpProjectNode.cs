@@ -530,6 +530,14 @@ namespace XSharp.Project
             HierarchyNode parent = null;
 
             string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
+            // strip path when it is available
+            if (dependentOf.IndexOf(System.IO.Path.DirectorySeparatorChar) >= 0)
+            {
+                // strip path out of dependendentUpon property
+                dependentOf = System.IO.Path.GetFileName(dependentOf);
+                item.SetMetadataValue(ProjectFileConstants.DependentUpon, dependentOf);
+                SetProjectFileDirty(true);
+            }
             Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
             if (subitems.ContainsKey(dependentOf))
             {

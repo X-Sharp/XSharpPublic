@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/subsystemversion</title>
   <keywords>
     <keyword translate="true">/subsystemversion compiler option</keyword>
@@ -9,6 +9,108 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/subsystemversion</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the minimum version of the subsystem on which the generated executable file can run, thereby determining the versions of Windows on which the executable file can run. Most commonly, this option ensures that the executable file can leverage particular security features that aren’t available with older versions of Windows.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><br/><text styleclass="Normal" translate="true"> Note </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To specify the subsystem itself, use the /target compiler option.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/subsystemversion:major.minor &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Parameters</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">major.minor</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The minimum required version of the subsystem, as expressed in a dot notation for major and minor versions. For example, you can specify that an application can&apos;t run on an operating system that&apos;s older than Windows 7 if you set the value of this option to 6.01, as the table later in this topic describes. You must specify the values for major and minor as integers.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Leading zeroes in the minor version don&apos;t change the version, but trailing zeroes do. For example, 6.1 and 6.01 refer to the same version, but 6.10 refers to a different version. We recommend expressing the minor version as two digits to avoid confusion.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following table lists common subsystem versions of Windows.</text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="8" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows version</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Subsystem version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows 2000</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">5.00</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows XP</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">5.01</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows Server 2003</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">5.02</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows Vista</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">6.00</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows 7</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">6.01</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows Server 2008</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">6.01</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:296px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Windows 8</text></para>
+        </td>
+        <td style="width:256px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">6.02</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Default values</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The default value of the /subsystemversion compiler option depends on the conditions in the following list:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="92" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The default value is 6.02 if any compiler option in the following list is set:</text></li>
+    </list>
+    <list id="93" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:39px; font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:39px;"><text styleclass="Normal" translate="true">/target:appcontainerexe</text></li>
+      <li styleclass="Normal" style="margin-left:39px;"><text styleclass="Normal" translate="true">/target:winmdobj</text></li>
+      <li styleclass="Normal" style="margin-left:39px;"><text styleclass="Normal" translate="true">/platform:arm</text></li>
+    </list>
+    <list id="94" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The default value is 6.00 if you&apos;re using MSBuild, you&apos;re targeting .NET Framework 4.5, and you haven&apos;t set any of the compiler options that were specified earlier in this list.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The default value is 4.00 if none of the previous conditions is true.</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Setting this option</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To set the /subsystemversion compiler option in Visual Studio, you must open the .csproj file and specify a value for the </text><text styleclass="Code Example" translate="true">SubsystemVersion</text><text styleclass="Normal" translate="true"> property in the MSBuild XML. You can&apos;t set this option in the Visual Studio IDE. For more information, see &quot;Default values&quot; earlier in this topic or Common MSBuild Project Properties.</text></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

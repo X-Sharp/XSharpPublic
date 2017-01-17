@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS9036</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS9036</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The &apos;{0} pseudo function requires one generic type argument to describe its return type.</text></para>
+  </body>
+</topic>

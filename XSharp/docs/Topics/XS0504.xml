@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0504</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0504</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The constant &apos;variable&apos; cannot be marked static</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If a variable is const, it is also static. If you want a const and static variable, just declare that variable as const; if all you want is a static variable, just mark it static.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0504:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0504.cs &#160;</text><br/><text styleclass="Code with box" translate="true">namespace x &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; abstract public class clx &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;static const int i = 0; &#160; // CS0504, cannot be both static and const &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;abstract public void f(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

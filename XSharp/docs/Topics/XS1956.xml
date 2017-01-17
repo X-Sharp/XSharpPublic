@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1956</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1956</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Member &apos;name&apos; implements interface member &apos;name&apos; in type &apos;type&apos;. There are multiple matches for the interface member at run-time. It is implementation dependent which method will be called.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This warning can be generated when two interface methods are differentiated only by whether a particular parameter is marked with ref or with out. It is best to change your code to avoid this warning because it is not obvious or guaranteed which method is called at runtime.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Although C# distinguishes between out and ref, the CLR sees them as the same. When deciding which method implements the interface, the CLR just picks one.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To avoid this warning</text></para>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Give the compiler some way to differentiate the methods. For example, you can give them different names or provide an additional parameter on one of them.</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code generates CS1956 because the two Test methods in Base differ only by the ref/out modifier on the first parameter.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">// cs1956.cs &#160;</text><br/><text styleclass="Code with box" translate="true">class Base&lt;T, S&gt; &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// This is the method that should be called. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public virtual int Test(out T x) // CS1956 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;x = default(T); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;return 0; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// This is the &quot;last&quot; method and is the one that ends up being called &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public virtual int Test(ref S x) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;return 1; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">interface IFace &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;int Test(out int x); &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">class Derived : Base&lt;int, int&gt;, IFace &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static int Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;IFace x = new Derived(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;int y; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;return x.Test(out y); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1721</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1721</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Class &apos;class&apos; cannot have multiple base classes: &apos;class_1&apos; and &apos;class_2&apos;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The most common cause of this error message is attempting to use multiple inheritance. A class in C# may only inherit directly from one class. However, a class can implement any number of interfaces.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example shows one way in which SC1721 is generated, and then shows two possible ways to avoid the error.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1721.cs &#160;</text><br/><text styleclass="Code with box" translate="true">public class A {} &#160;</text><br/><text styleclass="Code with box" translate="true">public class B {} &#160;</text><br/><text styleclass="Code with box" translate="true">public class MyClass : A, B {} &#160; // CS1721 &#160;</text><br/><br/><text styleclass="Code with box" translate="true">// One possible fix is to use the following approach instead: &#160;</text><br/><text styleclass="Code with box" translate="true">public class A {} &#160;</text><br/><text styleclass="Code with box" translate="true">public class B : A {} &#160;</text><br/><text styleclass="Code with box" translate="true">public class C : B {} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">// Another possible fix is to use interfaces instead of base classes: &#160;</text><br/><text styleclass="Code with box" translate="true">public class A {} &#160;</text><br/><text styleclass="Code with box" translate="true">public interface B {} &#160;</text><br/><text styleclass="Code with box" translate="true">public class C : A, B {} &#160;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

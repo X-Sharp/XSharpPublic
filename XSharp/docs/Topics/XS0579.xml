@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0579</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0579</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Duplicate &apos;attribute&apos; attribute</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">It is not possible to specify the same attribute more than once unless the attribute specifies AllowMultiple=true in its AttributeUsage.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS0579.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">// CS0579.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">public class MyAttribute : Attribute &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">[AttributeUsage(AttributeTargets.All,AllowMultiple=true)] &#160;</text><br/><text styleclass="Code with box" translate="true">public class MyAttribute2 : Attribute &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">public class z &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;[MyAttribute, MyAttribute] &#160; &#160; // CS0579 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public void zz() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;[MyAttribute2, MyAttribute2] &#160; // OK &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public void zzz() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

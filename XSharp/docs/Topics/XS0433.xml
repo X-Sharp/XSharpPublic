@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0433</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0433</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The type TypeName1 exists in both TypeName2 and TypeName3</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Two different assemblies referenced in your application contain the same namespace and type, which produces ambiguity.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To resolve this error, use the alias feature of the /reference (C# Compiler Options) compiler option or do not reference one of your assemblies.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code creates the DLL with the first copy of the ambiguous type.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0433_1.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">namespace TypeBindConflicts &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public class AggPubImpAggPubImp {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code creates the DLL with the second copy of the ambiguous type.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0433_2.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">namespace TypeBindConflicts &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public class AggPubImpAggPubImp {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS0433.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0433_3.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:cs0433_1.dll /reference:cs0433_2.dll &#160;</text><br/><text styleclass="Code with box" translate="true">using TypeBindConflicts; &#160;</text><br/><text styleclass="Code with box" translate="true">public class Test &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;AggPubImpAggPubImp n6 = new AggPubImpAggPubImp(); &#160; // CS0433 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example shows how you can use the alias feature of the /reference compiler option to resolve this CS0433 error.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0433_4.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:cs0433_1.dll /reference:TypeBindConflicts=cs0433_2.dll &#160;</text><br/><text styleclass="Code with box" translate="true">using TypeBindConflicts; &#160;</text><br/><text styleclass="Code with box" translate="true">public class Test &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;AggPubImpAggPubImp n6 = new AggPubImpAggPubImp(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

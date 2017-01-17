@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1762</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1762</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A reference was created to embedded interop assembly &apos;&lt;assembly1&gt;&apos; because of an indirect reference to that assembly from assembly &apos;&lt;assembly2&gt;&apos;. Consider changing the &apos;Embed Interop Types&apos; property on either assembly.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You have added a reference to an assembly (assembly1) that has the Embed Interop Types property set to True. This instructs the compiler to embed interop type information from that assembly. However, the compiler cannot embed interop type information from that assembly because another assembly that you have referenced (assembly2) also references that assembly (assembly1) and has the Embed Interop Types property set to False.</text></para>
+    <para styleclass="Normal"><br/></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> Note </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Setting the Embed Interop Types property on an assembly reference to True is equivalent to referencing the assembly by using the /link option for the command-line compiler.</text><br/></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To address this warning</text></para>
+    <para styleclass="Normal"></para>
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">To embed interop type information for both assemblies, set the Embed Interop Types property on all references to assembly1 to True. For more information about how to set that property, see Walkthrough: Embedding Types from Managed Assemblies.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">To remove the warning, you can set the Embed Interop Types property of assembly1 to False. In this case, a primary interop assembly (PIA) provides interop type information.</text></li>
+    </list>
+  </body>
+</topic>

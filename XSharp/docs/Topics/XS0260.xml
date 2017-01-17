@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0260</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0260</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing partial modifier on declaration of type &apos;type&apos;; another partial declaration of this type exists</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error indicates that you have declared multiple classes that have the same name. In addition, at least one but not all of the declarations contains the partial modifier. If you want to define a class in several parts, you must declare each part by using the keyword partial.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error also occurs if you declare a class and accidentally give it the same name as a partial class that&apos;s declared elsewhere in the same namespace.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0260:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">// CS0260.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// You must mark both parts of the definition of class C &#160; </text><br/><text styleclass="Code with box" translate="true">// by using the partial keyword. &#160;</text><br/><br/><text styleclass="Code with box" translate="true">// The following line causes CS0260. To resolve the error, add &#160;</text><br/><text styleclass="Code with box" translate="true">// the &apos;partial&apos; keyword to the declaration. &#160;</text><br/><text styleclass="Code with box" translate="true">class C &#160; &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">partial class C &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} </text><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

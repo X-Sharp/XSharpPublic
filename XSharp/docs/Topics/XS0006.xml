@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0006</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0006</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Metadata file &apos;dll_name&apos; could not be found</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The program was compiled and explicitly passed the name of a file that contained metadata; however, the .dll was not found. For more information, see /reference (C# Compiler Options).</text></para>
+  </body>
+</topic>

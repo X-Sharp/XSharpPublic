@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0703</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0703</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Inconsistent accessibility: constraint type &apos;identifier&apos; is less accessible than &apos;identifier&apos;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A constraint may not force the generic parameter to be less accessible than the generic class itself. In the following example, while the generic class C&lt;T&gt; is declared public, the constraint attempts to force T to implement an internal interface. Even if this were allowed, only clients with internal access would be able to create the parameter for the class, so in effect, the class could be used only by clients with internal access.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To get rid of this error, make sure the access level of the generic class is not less restrictive than any classes or interfaces that appear in the bounds.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0703:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0703.cs &#160;</text><br/><text styleclass="Code with box" translate="true">internal interface I {} &#160;</text><br/><text styleclass="Code with box" translate="true">public class C&lt;T&gt; where T : I &#160;// CS0703 – I is internal; C&lt;T&gt; is public &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

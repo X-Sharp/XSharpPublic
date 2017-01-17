@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/optimize</title>
   <keywords>
     <keyword translate="true">/optimize compiler option</keyword>
@@ -9,6 +9,40 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/optimize</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /optimize option enables or disables optimizations performed by the compiler to make your output file smaller, faster, and more efficient.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/optimize[+ | -] &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/optimize also tells the common language runtime to optimize code at runtime.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">By default, optimizations are disabled. Specify /optimize+ to enable optimizations.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When building a module to be used by an assembly, use the same /optimize settings as those of the assembly.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/o is the short form of /optimize.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">It is possible to combine the /optimize and /debug options.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Build property page.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Modify the Optimize Code property.</text></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For information on how to set this compiler option programmatically, see Optimize.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compile </text><text styleclass="Code Example" translate="true">t2.prg</text><text styleclass="Normal" translate="true"> and enable compiler optimizations:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc t2.prg /optimize &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

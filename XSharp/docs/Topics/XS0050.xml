@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0050</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0050</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Inconsistent accessibility: return type &apos;type&apos; is less accessible than method &apos;method&apos;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The return type and each of the types referenced in the formal parameter list of a method must be at least as accessible as the method itself. For more information, see Access Modifiers.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0050 because no accessiblity modifier is supplied for MyClass and its accessibility therefore defaults to private.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0050.cs &#160;</text><br/><text styleclass="Code with box" translate="true">class MyClass //accessibility defaults to private &#160;</text><br/><text styleclass="Code with box" translate="true">// try the following line instead &#160;</text><br/><text styleclass="Code with box" translate="true">// public class MyClass &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><text styleclass="Code with box" translate="true">public class MyClass2 &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static MyClass MyMethod() &#160; // CS0050 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;return new MyClass(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() { } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

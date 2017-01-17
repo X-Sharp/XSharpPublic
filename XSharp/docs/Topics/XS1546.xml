@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1546</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1546</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Property, indexer, or event &apos;property&apos; is not supported by the language; try directly calling accessor method &apos;accessor&apos;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Your code is consuming an object that has a default indexed property and tried to use the indexed syntax. To resolve this error, call the property&apos;s accessor method. For more information on indexers and properties, see Indexers.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1546.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code sample consists of a .cpp file, which compiles to a .dll, and a .cs file, which uses that .dll. The following code is for the .dll file, and defines a property to be accessed by the code in the .cs file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CPP1546.cpp &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /clr /LD &#160;</text><br/><text styleclass="Code with box" translate="true">using namespace System; &#160;</text><br/><text styleclass="Code with box" translate="true">public ref class MCPP &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">public: &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;property int Prop [int,int] &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;int get( int i, int b ) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;return i; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">}; &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This is the C# file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1546.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /r:CPP1546.dll &#160; </text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">public class Test &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;int i = 0; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;MCPP mcpp = new MCPP(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;i = mcpp.Prop(1,1); // CS1546 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;// Try the following line instead: &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;// i = mcpp.get_Prop(1,1); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

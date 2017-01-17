@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/pdb</title>
   <keywords>
     <keyword translate="true">/pdb compiler option</keyword>
@@ -9,6 +9,30 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/pdb</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /pdb compiler option specifies the name and location of the debug symbols file.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/pdb:filename &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">filename</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The name and location of the debug symbols file.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you specify /debug (C# Compiler Options), the compiler will create a .pdb file in the same directory where the compiler will create the output file (.exe or .dll) with a file name that is the same as the name of the output file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/pdb allows you to specify a non-default file name and location for the .pdb file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option cannot be set in the Visual Studio development environment, nor can it be changed programmatically.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compile </text><text styleclass="Code Example" translate="true">t.prg</text><text styleclass="Normal" translate="true"> and create a .pdb file called tt.pdb:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc /debug /pdb:tt t.prg &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

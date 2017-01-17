@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1703</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1703</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">An assembly with the same simple name &apos;name&apos; has already been imported. Try removing one of the references or sign them to enable side-by-side.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler removes references that have the same path and file name, but it is possible that the same file exists in two places, or that you forgot to change the version number. This error points out that two references have the same assembly identity and thus the compiler has no way of distinguishing between them in metadata. Either remove one of the redundant references, or make the references unique somehow, such as by incrementing the assembly version number.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code generates error CS1703.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code creates assembly A in the .\bin1 directory.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Save this example in a file named CS1703a1.cs, and compile it with the following flags: </text><text styleclass="Code Example" translate="true">/t:library /out:.\bin1\cs1703.dll /keyfile:key.snk</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">public class A { } &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code creates a copy of assembly A in the .\bin2 directory.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Save this example in a file named CS1703a2.cs, and compile it with the following flags: </text><text styleclass="Code Example" translate="true">/t:library /out:.\bin2\cs1703.dll /keyfile:key.snk</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">public class A { } &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code references the assembly A in the two prior modules.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Save this example in a file named CS1703ref.cs, and compile it with the following flags: </text><text styleclass="Code Example" translate="true">/t:library /r:A2=.\bin2\cs1703.dll /r:A1=.\bin1\cs1703.dll</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">extern alias A1; &#160;</text><br/><text styleclass="Code with box" translate="true">extern alias A2; &#160;</text><br/></para>
+  </body>
+</topic>

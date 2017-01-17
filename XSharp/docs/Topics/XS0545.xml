@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0545</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0545</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;function&apos; : cannot override because &apos;property&apos; does not have an overridable get accessor</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A try was made to define an override for a property accessor when the base class has no such definition to override. You can resolve this error by:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="42" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Adding a set accessor in the base class.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Removing the set accessor from the derived class.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Hiding the base class property by adding the new keyword to a property in a derived class.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Making the base class property virtual.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information, see Using Properties.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0545.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0545.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">// CS0545 &#160;</text><br/><text styleclass="Code with box" translate="true">public class a &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public virtual int i &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;set {} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// Uncomment the following line to resolve. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// get { return 0; } &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">public class b : a &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public override int i &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;get { return 0; } &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;set {} &#160; // OK &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,14 +1,81 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/ns</title>
   <keywords>
     <keyword translate="true">/ns compiler option</keyword>
+    <keyword translate="true">BEGIN NAMESPACE</keyword>
+    <keyword translate="true">CLASS</keyword>
+    <keyword translate="true">DELEGATE</keyword>
+    <keyword translate="true">ENUM</keyword>
+    <keyword translate="true">INTERFACE</keyword>
+    <keyword translate="true">STRUCTURE</keyword>
+    <keyword translate="true">VOSTRUCT</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/ns</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ns option explicitly specifies the default namespace for all types that do not have an explicit namespace in their name.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/ns[: ]namespaceName</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">namespaceName</text><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of the default namespace for all types declared in the application or class library. </text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If the /ns option is not specified, then types that are not prefixed with a namespace and types that are not in a BEGIN NAMESPACE .. END NAMESPACE construct will be compiled as so-called global types.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ns option will work on the following types:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="93" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Classes </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Interfaces </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Structures </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Vostructs </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Delegates </text></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Namespace names must follow the same rules for program identifiers: they must begin with an uppercase or lowercase letter or an underscore, followed by zero or more uppercase or lowercase letters, numbers or underscores. All other characters are illegal, and will raise a compile-time error.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The default namespace is used for any declared types that do not have an explicit namespace in their name.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="94" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page (see How to: Set Build Properties). </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Application tab. </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Application section, modify the Default Namespace property. </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Namespaces section, modify the Prefix classes with Default Namespace property. </text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When the following code is compiled without /ns compiler option the following types will be produced:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="95" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Customer </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Point </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">MyProject.Customer </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">MyProject.Data.Customer </text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">CLASS Customer</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">END CLASS</text><br/><br/><text styleclass="Code with box" translate="true">STRUCT Point</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">END STRUCT</text><br/><br/><text styleclass="Code with box" translate="true">ENUM CustomerType</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">END ENUM</text><br/><br/><text styleclass="Code with box" translate="true">CLASS MyProject.Customer</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">END CLASS</text><br/><br/><br/><text styleclass="Code with box" translate="true">BEGIN NAMESPACE MyProject.Data</text><br/><text styleclass="Code with box" translate="true">CLASS Customer</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">.</text><br/><text styleclass="Code with box" translate="true">END CLASS</text><br/><text styleclass="Code with box" translate="true">END NAMESPACE</text><br/></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you compile the same code with a /ns:MyNameSpace option the following types will be produced:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="96" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">MyNameSpace.Customer </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">MyNameSpace.Point </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">MyProject.Customer </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">MyProject.Data.Customer </text></li>
+    </list>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

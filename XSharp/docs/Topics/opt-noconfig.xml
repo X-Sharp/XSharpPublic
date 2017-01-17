@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/noconfig</title>
   <keywords>
     <keyword translate="true">/noconfig compiler option</keyword>
@@ -9,6 +9,22 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/noconfig</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /noconfig option tells the compiler not to compile with the csc.rsp file, which is located in and loaded from the same directory as the csc.exe file.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/noconfig &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The csc.rsp file references all the assemblies shipped with the .NET Framework. The actual references that the Visual Studio .NET development environment includes depend on the project type.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can modify the csc.rsp file and specify additional compiler options that should be included in every compilation from the command line with csc.exe (except the /noconfig option).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler processes the options passed to the csc command last. Therefore, any option on the command line overrides the setting of the same option in the csc.rsp file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you do not want the compiler to look for and use the settings in the csc.rsp file, specify /noconfig.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</text></para>
   </body>
 </topic>

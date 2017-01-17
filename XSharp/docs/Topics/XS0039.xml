@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0039</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0039</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Cannot convert type &apos;type1&apos; to &apos;type2&apos; via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A conversion with the as operator is allowed by inheritance, reference conversions, and boxing conversions. For more information, see Conversion Operators.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS0039.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0039.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">class A &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><text styleclass="Code with box" translate="true">class B: A &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><text styleclass="Code with box" translate="true">class C: A </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><text styleclass="Code with box" translate="true">class M &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;A a = new C(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;B b = new B(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;C c; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;// This is valid; there is a built-in reference &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;// conversion from A to C. </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;c = a as C; &#160; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;//The following generates CS0039; there is no &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;// built-in reference conversion from B to C. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;c = b as C; &#160;// CS0039 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

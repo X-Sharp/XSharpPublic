@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/out</title>
   <keywords>
     <keyword translate="true">/out compiler option</keyword>
@@ -9,6 +9,53 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/out</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /out option specifies the name of the output file.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/out:filename &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">filename</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of the output file created by the compiler.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">On the command line, it is possible to specify multiple output files for your compilation. The compiler expects to find one or more source code files following the /out option. Then, all source code files will be compiled into the output file specified by that /out option.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specify the full name and extension of the file you want to create.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you do not specify the name of the output file:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">An .exe will take its name from the source code file that contains the Main method.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">A .dll or .netmodule will take its name from the first source code file.</text></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A source code file used to compile one output file cannot be used in the same compilation for the compilation of another output file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When producing multiple output files in a command-line compilation, keep in mind that only one of the output files can be an assembly and that only the first output file specified (implicitly or explicitly with /out) can be the assembly.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Any modules produced as part of a compilation become files associated with any assembly also produced in the compilation. Use ildasm.exe to view the assembly manifest to see the associated files.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /out compiler option is required in order for an exe to be the target of a friend assembly. For more information see Friend Assemblies.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <list id="3" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Application property page.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Modify the Assembly name property.</text></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To set this compiler option programmatically: the OutputFileName is a read-only property, which is determined by a combination of the project type (exe, library, and so forth) and the assembly name. Modifying one or both of these properties will be necessary to set the output file name.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compile t.prg and create output file </text><text styleclass="Code Example" translate="true">t.exe</text><text styleclass="Normal" translate="true">, as well as build </text><text styleclass="Code Example" translate="true">t2.prg</text><text styleclass="Normal" translate="true"> and create module output file </text><text styleclass="Code Example" translate="true">mymodule.netmodule</text><text styleclass="Normal" translate="true">:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc t.prg /out:mymodule.netmodule /target:module t2.prg &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

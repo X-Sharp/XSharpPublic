@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1946</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1946</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">An anonymous method expression cannot be converted to an expression tree.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">An anonymous method represents a set of statements but an expression tree must not contain a statement. Therefore an anonymous method cannot be represented by an expression tree.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
+    <para styleclass="Normal"></para>
+    <list id="36" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Change the anonymous method to a lambda expression.</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS1946:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// cs1946.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;using System.Linq.Expressions; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public delegate void D(); &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;class Test &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;Expression&lt;D&gt; tree = delegate() { }; //CS1946 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;// Try using a lambda expression instead. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;// Expression&lt;D&gt; tree = (x) =&gt; x + 1; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1674</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1674</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;T&apos;: type used in a using statement must be implicitly convertible to &apos;System.IDisposable&apos;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The using Statement is intended to be used to ensure the disposal of an object at the end of the using block, thus, only types which are disposable may be used in such a statement. For example, value types are not disposable, and type parameters which are not constrained to be classes may not be assumed to be disposable.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1674.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1674.cs &#160;</text><br/><text styleclass="Code with box" translate="true">class C &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;int a = 0; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;a++; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;using (a) {} &#160; // CS1674 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1674.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1674_b.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">class C { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public void Test() { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;using (C c = new C()) {} &#160; // CS1674 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">// OK &#160;</text><br/><text styleclass="Code with box" translate="true">class D : IDisposable { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; void IDisposable.Dispose() {} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public void Dispose() {} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;using (D d = new D()) {} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following case illustrates the need for a class type constraint to guarantee that an unknown type parameter is disposable. The following sample generates CS1674.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1674_c.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">public class C&lt;T&gt; &#160;</text><br/><text styleclass="Code with box" translate="true">// Add a class type constraint that specifies a disposable class. &#160;</text><br/><text styleclass="Code with box" translate="true">// Uncomment the following line to resolve. &#160;</text><br/><text styleclass="Code with box" translate="true">// public class C&lt;T&gt; where T : IDisposable &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public void F(T t) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;using (t) {} &#160; // CS1674 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

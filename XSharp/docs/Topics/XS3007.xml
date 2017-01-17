@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS3007</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS3007</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Overloaded method &apos;method&apos; differing only by unnamed array types is not CLS-compliant</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error occurs if you have an overloaded method that takes a jagged array and the only difference between the method signatures is the element type of the array. To avoid this error, consider using a rectangular array rather than a jagged array; use an additional parameter to disambiguate the function call; rename one or more of the overloaded methods; or, if CLS Compliance is not needed, remove the CLSCompliantAttribute attribute. For more information on CLS Compliance, see Language Independence and Language-Independent Components.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS3007:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS3007.cs &#160;</text><br/><text styleclass="Code with box" translate="true">[assembly: System.CLSCompliant(true)] &#160;</text><br/><text styleclass="Code with box" translate="true">public struct S &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public void F(int[][] array) { } &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public void F(byte[][] array) { } &#160;// CS3007 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// Try this instead: &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// public void F1(int[][] array) {} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// public void F2(byte[][] array) {} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// or &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// public void F(int[,] array) {} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// public void F(byte[,] array) {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

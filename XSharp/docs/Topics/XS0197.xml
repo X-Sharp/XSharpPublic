@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0197</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0197</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Passing &apos;{0}&apos; as ref or out or taking its address may cause a runtime exception because it is a field of a marshal-by-reference class</text></para>
+  </body>
+</topic>

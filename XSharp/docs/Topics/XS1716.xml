@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1716</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1716</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Do not use &apos;System.Runtime.CompilerServices.FixedBuffer&apos; attribute. Use the &apos;fixed&apos; field modifier instead.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error arises in an unsafe code section that contains a fixed-size array declaration similar to a field declaration. Do not use this attribute. Instead, use the keyword fixed.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS1716.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1716.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /unsafe &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Runtime.CompilerServices; &#160;</text><br/><br/><text styleclass="Code with box" translate="true">public struct UnsafeStruct &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;[FixedBuffer(typeof(int), 4)] &#160;// CS1716 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;unsafe public int aField; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// Use this single line instead of the above two lines. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// unsafe public fixed int aField[4]; &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">public class TestUnsafe &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static int Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;UnsafeStruct us = new UnsafeStruct(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;unsafe &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;if (us.aField[0] == 0) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;return us.aField[1]; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160;else &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;return us.aField[2]; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

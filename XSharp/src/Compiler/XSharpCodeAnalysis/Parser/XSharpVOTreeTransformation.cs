@@ -807,7 +807,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                if (returnType == _usualType)
+                if (returnType is QualifiedNameSyntax)
+                {
+                    var qns = returnType as QualifiedNameSyntax;
+                    if (qns.ToFullString().Equals(GenerateQualifiedName("System.Void").ToFullString(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return null;
+                    }
+                    if (qns.ToFullString().Equals(GenerateQualifiedName("global::System.Void").ToFullString(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return null;
+                    }
+                }
+               if (returnType == _usualType)
                 {
                     result = GenerateNIL();
                 }

@@ -176,8 +176,6 @@ namespace Microsoft.VisualStudio.Project
         #endregion
 
         #region event delegates
-        protected int errors;
-        protected int warnings;
         /// <summary>
         /// This is the delegate for BuildStartedHandler events.
         /// </summary>
@@ -189,7 +187,6 @@ namespace Microsoft.VisualStudio.Project
             ClearQueuedTasks();
 
             QueueOutputEvent(MessageImportance.Low, buildEvent);
-            errors = warnings = 0;
         }
 
         /// <summary>
@@ -201,7 +198,6 @@ namespace Microsoft.VisualStudio.Project
         {
             // NOTE: This may run on a background thread!
             MessageImportance importance = buildEvent.Succeeded ? MessageImportance.Low : MessageImportance.High;
-            QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
             QueueOutputText(importance, Environment.NewLine);
             QueueOutputEvent(importance, buildEvent);
 
@@ -287,7 +283,6 @@ namespace Microsoft.VisualStudio.Project
             // NOTE: This may run on a background thread!
             QueueOutputText(GetFormattedErrorMessage(errorEvent.File, errorEvent.LineNumber, errorEvent.ColumnNumber, false, errorEvent.Code, errorEvent.Message));
             QueueTaskEvent(errorEvent);
-            errors += 1;
         }
 
         /// <summary>
@@ -298,7 +293,6 @@ namespace Microsoft.VisualStudio.Project
             // NOTE: This may run on a background thread!
             QueueOutputText(MessageImportance.High, GetFormattedErrorMessage(warningEvent.File, warningEvent.LineNumber, warningEvent.ColumnNumber, true, warningEvent.Code, warningEvent.Message));
             QueueTaskEvent(warningEvent);
-            warnings += 1;
         }
 
         /// <summary>

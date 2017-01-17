@@ -5,8 +5,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartWorkingDirectory>c:\Users\robert\Documents\Visual Studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\</StartWorkingDirectory>
+    <StartWorkingDirectory>
+    </StartWorkingDirectory>
     <StartProgram>c:\Program Files %28x86%29\MSBuild\14.0\Bin\MSBuild.exe</StartProgram>
-    <StartArguments>"c:\Users\robert\Documents\Visual Studio 2015\Projects\ConsoleApplication1\ConsoleApplication1\ConsoleApplication1.xsproj" /target:NativeResourceCompiler</StartArguments>
+    <StartArguments>
+    </StartArguments>
   </PropertyGroup>
 </Project>

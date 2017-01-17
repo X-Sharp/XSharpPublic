@@ -275,6 +275,7 @@
     VO14="$(VO14)"
     VO15="$(VO15)"
     />
+
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />
     </ItemGroup>

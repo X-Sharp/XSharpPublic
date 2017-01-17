@@ -36,7 +36,7 @@ namespace XSharpModel
             }
         }
 
-        public String Description
+        public override String Description
         {
             get
             {
@@ -44,7 +44,7 @@ namespace XSharpModel
             }
         }
 
-        public String Prototype
+        public override String Prototype
         {
             get
             {

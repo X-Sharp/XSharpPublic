@@ -7,6 +7,7 @@
 using System;
 using System.Globalization;
 using Microsoft.VisualStudio.Project;
+using MSBuildConstruction = Microsoft.Build.Construction;
 
 namespace XSharp.Project
 {
@@ -48,6 +49,44 @@ namespace XSharp.Project
             get
             {
                 return String.Format(CultureInfo.InvariantCulture, XProjectConfig.ConfigAndPlatformConditionString, this.ConfigCanonicalName.ConfigName, this.ConfigCanonicalName.MSBuildPlatform);
+            }
+        }
+
+       private void RemovePropertyUnderCondition(string propertyName, string condition)
+       {
+            string conditionTrimmed = (condition == null) ? String.Empty : condition.Trim();
+            var evaluatedProject = this.ProjectMgr.BuildProject;
+
+            if (conditionTrimmed.Length == 0)
+            {
+                var prop = evaluatedProject.GetProperty(propertyName) ;
+                if (prop != null)
+                    evaluatedProject.RemoveProperty(prop);
+                return;
+            }
+
+            // New OM doesn't have a convenient equivalent for setting a property with a particular property group condition.
+            // So do it ourselves.
+            MSBuildConstruction.ProjectPropertyGroupElement newGroup = null;
+
+            foreach (MSBuildConstruction.ProjectPropertyGroupElement group in evaluatedProject.Xml.PropertyGroups)
+            {
+                if (String.Equals(group.Condition.Trim(), conditionTrimmed, StringComparison.OrdinalIgnoreCase))
+                {
+                    newGroup = group;
+                    break;
+                }
+            }
+
+            foreach (MSBuildConstruction.ProjectPropertyElement property in newGroup.PropertiesReversed) // If there's dupes, pick the last one so we win
+            {
+                if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
+                {
+                    var prop = evaluatedProject.GetProperty(property.Name);
+                    if (prop != null)
+                        evaluatedProject.RemoveProperty(prop);
+                    return;
+                }
             }
         }
     }

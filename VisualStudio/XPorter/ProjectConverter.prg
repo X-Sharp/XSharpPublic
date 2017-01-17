@@ -87,19 +87,14 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 		SWITCH oElement:Name:ToLower()
 		CASE "compile"    
 		CASE "none"    
-			VAR oLink := oElement:FirstChild
-			IF oLink != NULL .and. oLink:Name:ToLowerInvariant() == "link"
-				LOCAL cChild AS STRING
-				LOCAL cNew   AS STRING
-				cChild := oElement:GetAttribute("Include")
-				cNew   := System.IO.Path.GetFileName(cChild)
-				cChild := System.IO.Path.Combine(cPath, cChild)
-				cNew   := System.IO.Path.Combine(cPath, cNew)
-				IF System.IO.File.Exists(cChild)                         
-					// create a normal file that includes the original file
-					System.IO.File.WriteAllText(cNew, e"#include \"" + oElement:GetAttribute("Include") + e"\"\r\n")
-					oElement:SetAttribute("Include", System.IO.Path.GetFileName(cChild))
-					oElement:RemoveChild(oLink)
+		CASE "vobinary"
+		CASE "nativeresource"
+			VAR oChild1 := oElement:FirstChild
+			IF oChild1 != NULL .and. oChild1:Name:ToLowerInvariant() == "dependentupon"
+				VAR  cInnerText := oChild1:InnerText
+				IF cInnerText:Contains("\")
+					cInnerText := cInnerText:Substring(cInnerText:IndexOf("\")+1)
+					oChild1:InnerText := cInnerText
 				ENDIF
 			ENDIF
 
@@ -318,5 +313,6 @@ STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress) AS VOID
 	
         
 END CLASS        
+
 
 

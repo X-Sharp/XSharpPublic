@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1616</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1616</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Option &apos;option&apos; overrides attribute &apos;attribute&apos; given in a source file or added module</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This warning occurs if the assembly attributes AssemblyKeyFileAttribute or AssemblyKeyNameAttribute found in source conflict with the /keyfile or /keycontainer command line option or key file name or key container specified in the Project Properties.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For the example below, assume you have a key file named cs1616.snk. This file could be generated with the command line:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">sn –k CS1616.snk &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1616:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1616.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /keyfile:cs1616.snk &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Reflection; &#160;</text><br/><br/><text styleclass="Code with box" translate="true">// To fix the error, remove the next line &#160;</text><br/><text styleclass="Code with box" translate="true">[assembly: AssemblyKeyFile(&quot;cs1616b.snk&quot;)] &#160;// CS1616 &#160;</text><br/><br/><text styleclass="Code with box" translate="true">class C &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160;public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} </text><text styleclass="Normal" translate="true">&#32;</text></para>
+  </body>
+</topic>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS9025</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS9025</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing RETURN statement. A statement with a default &apos;empty&apos; return value is returned.</text></para>
+  </body>
+</topic>

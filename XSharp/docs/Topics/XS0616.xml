@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0616</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0616</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">&apos;class&apos; is not an attribute class</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">An attempt was made to use a non-attribute class in an attribute block. All the attribute types need to be inherited from System.Attribute.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0616.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0616.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">[CMyClass(i = 5)] &#160; // CS0616 &#160;</text><br/><text styleclass="Code with box" translate="true">public class CMyClass {} &#160;</text><br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample shows how you might define an attribute:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CreateAttrib.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><br/><text styleclass="Code with box" translate="true">[AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface)] &#160;</text><br/><text styleclass="Code with box" translate="true">public class MyAttr : Attribute &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public int Name = 0; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public int Count = 0; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; public MyAttr (int iCount, int sName) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;Count = iCount; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;Name = sName; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">[MyAttr(5, 50)] &#160;</text><br/><text styleclass="Code with box" translate="true">class Class1 {} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">[MyAttr(6, 60)] &#160;</text><br/><text styleclass="Code with box" translate="true">interface Interface1 {} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

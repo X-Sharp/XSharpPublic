@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/target</title>
   <keywords>
     <keyword translate="true">/target compiler option</keyword>
@@ -9,6 +9,42 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/target</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /target compiler option can be specified in one of four forms:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:appcontainerexe</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create an .exe file for Windows 8.x Store apps.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:exe</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create an .exe file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:library</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create a code library.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:module</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create a module.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:winexe</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create a Windows program.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:winmdobj</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create an intermediate .winmdobj file.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Unless you specify /target:module, /target causes a .NET Framework assembly manifest to be placed in an output file. For more information, see Assemblies in the Common Language Runtime and Common Attributes.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The assembly manifest is placed in the first .exe output file in the compilation or in the first DLL, if there is no .exe output file. For example, in the following command line, the manifest will be placed in</text><text styleclass="Code Example" translate="true"> 1.exe</text><text styleclass="Normal" translate="true">:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc /out:1.exe t1.prg /out:2.netmodule t2.prg &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler creates only one assembly manifest per compilation. Information about all files in a compilation is placed in the assembly manifest. All output files except those created with /target:module can contain an assembly manifest. When producing multiple output files at the command line, only one assembly manifest can be created and it must go into the first output file specified on the command line. No matter what the first output file is (/target:exe, /target:winexe, /target:library or /target:module), any other output files produced in the same compilation must be modules (/target:module).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you create an assembly, you can indicate that all or part of your code is CLS compliant with the CLSCompliantAttribute attribute.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// target_clscompliant.prg &#160;</text><br/><text styleclass="Code with box" translate="true">[assembly:System.CLSCompliant(true)] &#160; // specify assembly compliance </text><br/><text styleclass="Code with box" translate="true">&#32;</text><br/><text styleclass="Code with box" translate="true"> &#160;[System.CLSCompliant(false)] &#160; // specify compliance for an element &#160;</text><br/><text styleclass="Code with box" translate="true">public class TestClass &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information about setting this compiler option programmatically, see OutputType.Enter topic text here.</text></para>
   </body>
 </topic>

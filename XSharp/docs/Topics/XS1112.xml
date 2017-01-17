@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1112</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1112</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Do not use &apos;System.Runtime.CompilerServices.ExtensionAttribute&apos;. Use the &apos;this&apos; keyword instead.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error is generated when the ExtensionAttribute is used on a non-static class that contains extension methods. If this attribute is used on a static class, another error, such as CS0708: &quot;Cannot declare instance members in a static class,&quot; might occur.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In C#, extension methods must be defined in a static class and the first parameter of the method is modified with the this keyword. Do not use the attribute at all in the source code. For more information, see Extension Methods.</text></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
+    <para styleclass="Normal"></para>
+    <list id="30" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Remove the attribute and apply the this modifier to the first parameter of the method.</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS1112:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// cs1112.cs &#160;</text><br/><text styleclass="Code with box" translate="true">[System.Runtime.CompilerServices.ExtensionAttribute] // CS1112 &#160;</text><br/><text styleclass="Code with box" translate="true">public class Extensions &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public bool A(bool b) { return b; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160;</text><br/><text styleclass="Code with box" translate="true">class A { } </text></para>
+  </body>
+</topic>

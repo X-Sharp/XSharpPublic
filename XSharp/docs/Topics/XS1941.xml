@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1941</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1941</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The type of one of the expressions in the &apos;clause&apos; clause is incorrect. Type inference failed in the call to &apos;method&apos;.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Type inference in query expressions flows from the type of the elements in the data source(s).</text></para>
+    <para styleclass="Heading3"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <list id="51" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">If it is not immediately obvious why the error is occurring, examine the query carefully and trace the type of the result of each clause from the data source to the point where the error is occurring.</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code generates CS1941 because the equals operator is being asked to compare an int to a string.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// cs1941.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Collections; &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Linq; &#160;</text><br/><text styleclass="Code with box" translate="true">class Test &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static int Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;var nums = new[] { 1, 2, 3, 4, 5, 6 }; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;var words = new string[] { &quot;lake&quot;, &quot;mountain&quot;, &quot;sky&quot; }; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;IEnumerable e = from n in nums &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;join w in words on n equals w // CS1941 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;select w; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;return 0; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The method in which type inference fails is the method that the query clause is translated to at compile time.</text></para>
+  </body>
+</topic>

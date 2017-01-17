@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/vo9</title>
   <keywords>
     <keyword translate="true">/vo9 compiler option</keyword>
@@ -9,6 +9,42 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo9</text><tab /><tab /><text styleclass="Heading1" translate="true">Allow Missing Return Statements </text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo9 option prevents the compiler from raising error VNxxxx when a function or method does not have any RETURN statements</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo9[+|-]</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">+ | - </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifying +, or just /vo9, allows functions and methods that do not have any RETURN statement to compile without raising an error. </text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Visual Objects allows functions and methods whose return type is not VOID to omit RETURN statements. The return value from any such functions or methods will always be the default value for the return type.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This is illegal in Vulcan.NET; all functions and methods must explicitly return a value unless the return type is VOID. However, this may prevent code that was originally written in Visual Objects from compiling in Vulcan.NET.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If /vo9 is enabled, any non-void functions or methods that do not have any RETURN statements will raise warning VN3014 instead of error VN4006. The warning may be disabled if desired, but it is strongly recommended that you fix the code in question. &#160;If the return value is never used, then type the function or method AS VOID. Otherwise, add a RETURN statement with an appropriate return value.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page (see How to: Set Build Properties). </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the Allow Missing RETURN Statements property. </text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">FUNCTION x( y )</text><br/><text styleclass="Code with box" translate="true"> &#160; ? y</text><br/><br/><text styleclass="Code with box" translate="true">METHOD x( y AS INT ) AS INT</text><br/><text styleclass="Code with box" translate="true"> &#160; ? y &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In the first example, the return type is not specified so it defaults to USUAL, and since there is no RETURN statement the function will always returns NIL (the default value for USUAL) in Visual Objects. In the second example, since there is no RETURN statement the method will always return zero (the default value for INT) in Visual Objects.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Both of the above examples are illegal in Vulcan.NET, and will raise error VN4006. If /vo9 is used, both examples will raise warning VN3014.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo9 option is enabled in projects created by the Transporter.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

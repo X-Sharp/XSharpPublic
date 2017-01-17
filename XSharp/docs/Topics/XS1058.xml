@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1058</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1058</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A previous catch clause already catches all exceptions. All exceptions thrown will be wrapped in a System.Runtime.CompilerServices.RuntimeWrappedException</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This attribute causes CS1058 if a catch() block has no specified exception type after a catch (System.Exception e) block. The warning advises that the catch() block will not catch any exceptions.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A catch() block after a catch (System.Exception e) block can catch non-CLS exceptions if the RuntimeCompatibilityAttribute is set to false in the AssemblyInfo.cs file: [assembly: RuntimeCompatibilityAttribute(WrapNonExceptionThrows = false)]. If this attribute is not set explicitly to false, all thrown non-CLS exceptions are wrapped as Exceptions and the catch (System.Exception e) block catches them. For more information, see How to: Catch a non-CLS Exception.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS1058.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1058.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// CS1058 expected &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Runtime.CompilerServices; &#160;</text><br/><br/><text styleclass="Code with box" translate="true">// the following attribute is set to true by default in the C# compiler &#160;</text><br/><text styleclass="Code with box" translate="true">// set to false in your source code to resolve CS1058 &#160;</text><br/><text styleclass="Code with box" translate="true">[assembly: RuntimeCompatibilityAttribute(WrapNonExceptionThrows = true)] &#160;</text><br/><br/><text styleclass="Code with box" translate="true">class TestClass &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; static void Main() &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;try {} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;catch (System.Exception e) { &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160; System. Console.WriteLine(&quot;Caught exception {0}&quot;, e); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;catch {} &#160; // CS1058. This line will never be reached. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/></para>
+  </body>
+</topic>

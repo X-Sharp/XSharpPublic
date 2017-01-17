@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1591</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1591</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Missing XML comment for publicly visible type or member &apos;Type_or_Member&apos;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /doc compiler option was specified, but one or more constructs did not have comments.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1591:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Normal" translate="true">/</text><text styleclass="Code with box" translate="true">/ CS1591.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /W:4 /doc:x.xml &#160;</text><br/><br/><text styleclass="Code with box" translate="true">/// text &#160;</text><br/><text styleclass="Code with box" translate="true">public class Test &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; // /// text &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() &#160; // CS1591, remove &quot;//&quot; from previous line &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/></para>
+  </body>
+</topic>

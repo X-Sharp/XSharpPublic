@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1009</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1009</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Unrecognized escape sequence</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">An unexpected character follows a backslash (\) in a string. The compiler expects one of the valid escape characters. For more information, see Character Escapes.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1009.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">// CS1009-a.cs &#160;</text><br/><text styleclass="Code with box" translate="true">class MyClass &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// The following line causes CS1009. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;string a = &quot;\m&quot;; &#160; &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// Try the following line instead. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// string a = &quot;\t&quot;; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} </text><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A common cause of this error is using the backslash character in a file name, as the following example shows.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">string filename = &quot;c:\myFolder\myFile.txt&quot;; &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To resolve this error, use &quot;\\&quot; or the @-quoted string literal, as the following example shows.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">// CS1009-b.cs &#160;</text><br/><text styleclass="Code with box" translate="true">class MyClass &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// The following line causes CS1009. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;string filename = &quot;c:\myFolder\myFile.txt&quot;; &#160; &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// Try one of the following lines instead. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// string filename = &quot;c:\\myFolder\\myFile.txt&quot;; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;// string filename = @&quot;c:\myFolder\myFile.txt&quot;; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

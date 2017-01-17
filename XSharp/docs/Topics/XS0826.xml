@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0826</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0826</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">No best type found for implicitly typed array.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Array elements must all be the same type or implicitly convertible to the same type according to the type inference rules used by the compiler. The best type must be one of the types present in the array expression. Elements will not be converted to a new type such as object. For an implicitly typed array, the compiler must infer the array type based on the type of elements assigned to it.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Give the array an explicit type.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Give all array elements the same type.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Provide explicit casts on those elements that might be causing the problem.</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code generates CS0826 because the array elements are not all the same type, and the compiler&apos;s type inference logic does not find a single best type:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// cs0826.cs &#160;</text><br/><text styleclass="Code with box" translate="true">public class C &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static int Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;var x = new[] { 1, &quot;str&quot; }; // CS0826 &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;char c = &apos;c&apos;; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;short s1 = 0; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;short s2 = -0; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;short s3 = 1; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;short s4 = -1; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;var array1 = new[] { s1, s2, s3, s4, c, &apos;1&apos; }; // CS0826 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;return 1; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

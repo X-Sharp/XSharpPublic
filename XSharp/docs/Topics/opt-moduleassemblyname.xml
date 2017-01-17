@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/moduleassemblyname</title>
   <keywords>
     <keyword translate="true">/moduleassemblyname compiler option</keyword>
@@ -9,6 +9,54 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/moduleassemblyname</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies an assembly whose non-public types a .netmodule can access.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/moduleassemblyname:assembly_name &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">assembly_name</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of the assembly whose non-public types the .netmodule can access.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">/moduleassemblyname should be used when building a .netmodule, and where the following conditions are true:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The .netmodule needs access to non-public types in an existing assembly.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">You know the name of the assembly into which the .netmodule will be built.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The existing assembly has granted friend assembly access to the assembly into which the .netmodule will be built.</text></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information on building a .netmodule, see /target:module (C# Compiler Options).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information on friend assemblies, see Friend Assemblies.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option is not available from within the development environment; it is only available when compiling from the command line.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option is unavailable in Visual Studio and cannot be changed programmatically.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample builds an assembly with a private type, and that gives friend assembly access to an assembly called csman_an_assembly.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// moduleassemblyname_1.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Runtime.CompilerServices; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160;[assembly:InternalsVisibleTo (&quot;csman_an_assembly&quot;)] &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160;class An_Internal_Class &#160;</text><br/><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public void Test() &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160; </text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;Console.WriteLine(&quot;An_Internal_Class.Test called&quot;); &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample builds a .netmodule that accesses a non-public type in the assembly moduleassemblyname_1.dll. By knowing that this .netmodule will be built into an assembly called csman_an_assembly, we can specify /moduleassemblyname, allowing the .netmodule to access non-public types in an assembly that has granted friend assembly access to csman_an_assembly.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// moduleassemblyname_2.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /moduleassemblyname:csman_an_assembly /target:module /reference:moduleassemblyname_1.dll &#160;</text><br/><text styleclass="Code with box" translate="true">class B { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public void Test() { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;An_Internal_Class x = new An_Internal_Class(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;x.Test(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This code sample builds the assembly csman_an_assembly, referencing the previously-built assembly and .netmodule.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// csman_an_assembly.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /addmodule:moduleassemblyname_2.netmodule /reference:moduleassemblyname_1.dll &#160;</text><br/><text styleclass="Code with box" translate="true">class A { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;B bb = new B(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;bb.Test(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">An_Internal_Class.Test called</text></para>
   </body>
 </topic>

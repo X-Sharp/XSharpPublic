@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0106</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0106</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The modifier &apos;modifier&apos; is not valid for this item</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A class or interface member was marked with an invalid access modifier. The following examples describe some of these invalid modifiers:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="72" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The static and public modifiers are not permitted on interface methods.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The</text><text styleclass="Code Example" translate="true"> public</text><text styleclass="Normal" translate="true"> keyword is not allowed on an explicit interface declaration. In this case, remove the </text><text styleclass="Code Example" translate="true">public</text><text styleclass="Normal" translate="true"> keyword from the explicit interface declaration.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The abstract keyword is not allowed on an explicit interface declaration because an explicit interface implementation can never be overridden.</text></li>
+    </list>
+    <para styleclass="Normal" style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In prior releases of Visual Studio, the </text><text styleclass="Code Example" translate="true">static</text><text styleclass="Normal" translate="true"> modifier was not permitted on a class, but </text><text styleclass="Code Example" translate="true">static</text><text styleclass="Normal" translate="true"> classes are allowed starting with Microsoft Visual Studio 2005.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information, see Interfaces</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0106.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0106.cs &#160;</text><br/><text styleclass="Code with box" translate="true">namespace MyNamespace &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; interface I &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;void m(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;static public void f(); &#160; // CS0106 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; public class MyClass &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;public void I.m() {} &#160; // CS0106 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;public static void Main() {} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

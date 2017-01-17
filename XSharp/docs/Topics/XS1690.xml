@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1690</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1690</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Accessing a member on &apos;member&apos; may cause a runtime exception because it is a field of a marshal-by-reference class</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This warning occurs when you try to call a method, property, or indexer on a member of a class that derives from MarshalByRefObject, and the member is a value type. Objects that inherit from MarshalByRefObject are typically intended to be marshaled by reference across an application domain. If any code ever attempts to directly access the value-type member of such an object across an application domain, a runtime exception will occur. To resolve the warning, first copy the member into a local variable and call the method on that variable.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1690:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1690.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><br/><text styleclass="Code with box" translate="true">class WarningCS1690: MarshalByRefObject &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; int i = 5; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; WarningCS1690 e = new WarningCS1690(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; e.i.ToString(); &#160; // CS1690 &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160; // OK &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; int i = e.i; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; i.ToString(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; e.i = i; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

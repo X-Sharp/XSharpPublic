@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS1700</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1700</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Assembly reference Assembly Name is invalid and cannot be resolved</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This warning indicates that an attribute, such as InternalsVisibleToAttribute, was not specified correctly.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information, see Friend Assemblies.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS1700.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS1700.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Runtime.CompilerServices; &#160;</text><br/><text styleclass="Code with box" translate="true">[assembly:InternalsVisibleTo(&quot;app2, Retargetable=f&quot;)] &#160; // CS1700 &#160;</text><br/><text styleclass="Code with box" translate="true">[assembly:InternalsVisibleTo(&quot;app2&quot;)] &#160; // OK &#160;</text><br/></para>
+  </body>
+</topic>

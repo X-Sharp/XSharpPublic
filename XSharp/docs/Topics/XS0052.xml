@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0052</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0052</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Inconsistent accessibility: field type &apos;type&apos; is less accessible than field &apos;field&apos;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The type of a field cannot be less accessible than the field itself because all public constructs must return a publicly accessible object.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0052:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">// CS0052.cs &#160;</text><br/><text styleclass="Code with box" translate="true">public class MyClass2 &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// The following line causes an error because the field, M, is declared &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// as public, but the type, MyClass, is private. Therefore the type is &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// less accessible than the field. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public MyClass M; &#160; // CS0052 &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;private class MyClass &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// One way to resolve the error is to change the accessibility of the type &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// to public. &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;//public class MyClass &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// Another solution is to change the accessibility of the field to private. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// private MyClass M; &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public class MainClass &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;public static void Main() </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

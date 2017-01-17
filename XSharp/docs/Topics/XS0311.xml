@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">XS0311</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0311</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The type &apos;type1&apos; cannot be used as type parameter &apos;T&apos; in the generic type or method &apos;&lt;name&gt;&apos;. There is no implicit reference conversion from &apos;type1&apos; to &apos;type2&apos;.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When a constraint is applied to a generic type parameter, an implicit identity or reference conversion must exist from the concrete argument to the type of the constraint.</text></para>
+    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
+    <list id="24" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Change the argument you are using to create the class.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">If you own the class, you can remove the constraint or else do something to enable an implicit reference or identity conversion. For example, you can make the second type inherit from the first.</text></li>
+    </list>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// cs0311.cs &#160;</text><br/><text styleclass="Code with box" translate="true">class B{} &#160;</text><br/><text styleclass="Code with box" translate="true">class C{} &#160;</text><br/><text styleclass="Code with box" translate="true">class Test&lt;T&gt; where T : C &#160;</text><br/><text styleclass="Code with box" translate="true">{ } &#160;</text><br/><br/><text styleclass="Code with box" translate="true">class Program &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;Test&lt;B&gt; test = new Test&lt;B&gt;(); //CS0311 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If this error occurs when trying to use a value-type argument, notice that an implicit numeric conversion, for example from short to int, does not satisfy a generic type parameter.</text></para>
+  </body>
+</topic>

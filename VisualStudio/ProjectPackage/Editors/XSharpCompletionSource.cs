@@ -169,6 +169,8 @@ namespace XSharpLanguage
             {
                 Usings.Add(currentNamespace.Name);
             }
+            // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
+
             // LookUp for the BaseType, reading the TokenList (From left to right)
             cType = this.RetrieveType(tokenList, member);
             switch (typedChar)
@@ -203,7 +205,7 @@ namespace XSharpLanguage
                             case XSharpLexer.IMPLEMENTS:
                                 // It can be a namespace 
                                 AddNamespaces(compList, file.Project, filterText);
-                                // TODO : add Interfaces only
+                                // TODO: add Interfaces only
                                 break;
                             default:
                                 // It can be a namespace 

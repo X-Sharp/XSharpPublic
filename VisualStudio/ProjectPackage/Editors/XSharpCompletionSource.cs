@@ -62,6 +62,8 @@ namespace XSharpLanguage
         private bool _disposed = false;
         private XSharpCompletionSourceProvider _provider;
         private bool _settingIgnoreCase;
+        // Keep a trace of the Context of the TokenList build
+        private IToken _stopToken;
 
         public XSharpCompletionSource(XSharpCompletionSourceProvider provider, ITextBuffer buffer, String fileName)
         {
@@ -70,6 +72,7 @@ namespace XSharpLanguage
             _fileName = fileName;
             // Currently, set as default, but should be VS Settings Based
             _settingIgnoreCase = true;
+            _stopToken = null;
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
@@ -178,20 +181,27 @@ namespace XSharpLanguage
                             if (!filterText.EndsWith("."))
                                 filterText += ".";
                         }
-                        // It can be a namespace 
-                        AddNamespaces(compList, file.Project, filterText);
-                        // It can be Type, FullyQualified
-                        AddTypeNames(compList, file.Project, filterText);
-                        // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                        List<String> Usings = new List<String>(file.Usings);
-                        XType currentNamespace = this.FindNamespace(triggerPoint.Position);
-                        if (currentNamespace != null)
+                        if ((this._stopToken == null) || (this._stopToken.Type == XSharpLexer.USING))
                         {
-                            Usings.Add(currentNamespace.Name);
+                            // It can be a namespace 
+                            AddNamespaces(compList, file.Project, filterText);
                         }
-                        foreach (String nspace in Usings)
+                        if ((this._stopToken == null) ||
+                            ((this._stopToken.Type == XSharpLexer.AS) || (this._stopToken.Type == XSharpLexer.IS) || (this._stopToken.Type == XSharpLexer.REF)))
                         {
-                            AddTypeNames(compList, file.Project, nspace + "." + filterText);
+                            // It can be Type, FullyQualified
+                            AddTypeNames(compList, file.Project, filterText);
+                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                            List<String> Usings = new List<String>(file.Usings);
+                            XType currentNamespace = this.FindNamespace(triggerPoint.Position);
+                            if (currentNamespace != null)
+                            {
+                                Usings.Add(currentNamespace.Name);
+                            }
+                            foreach (String nspace in Usings)
+                            {
+                                AddTypeNames(compList, file.Project, nspace + "." + filterText);
+                            }
                         }
                     }
                     break;
@@ -1223,21 +1233,27 @@ namespace XSharpLanguage
                         // ...
                         token = "{}";
                         break;
+                    case XSharpLexer.ASSIGN_OP:
+                    case XSharpLexer.COLON:
+                    case XSharpLexer.USING:
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.AS:
+                    case XSharpLexer.IS:
+                    case XSharpLexer.REF:
+                    case XSharpLexer.IMPLEMENTS:
+                    case XSharpLexer.INHERIT:
+                        // Stop here
+                        this._stopToken = triggerToken;
+                        triggerToken = null;
+                        break;
                 }
                 //
-                tokenList.Add(token);
+                if (token != null )
+                    tokenList.Add(token);
                 //
-                triggerToken = GetPreviousToken(tokens, triggerToken);
                 if (triggerToken != null)
-                {
-                    switch (triggerToken.Type)
-                    {
-                        case XSharpLexer.ASSIGN_OP:
-                            // Stop here
-                            triggerToken = null;
-                            break;
-                    }
-                }
+                    triggerToken = GetPreviousToken(tokens, triggerToken);
             }
             // 
             tokenList.Reverse();

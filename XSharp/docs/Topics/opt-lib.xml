@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/lib</title>
   <keywords>
     <keyword translate="true">/lib compiler option</keyword>
@@ -50,7 +50,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For information on how to set this compiler option programmatically, see ReferencePath.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compile t2.cs to create an .exe file. The compiler will look in the working directory and in the root directory of the C drive for assembly references.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Compile t2.prg to create an .exe file. The compiler will look in the working directory and in the root directory of the C drive for assembly references.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc /lib:c:\ /reference:t2.dll t2.prg &#160;</text></para>

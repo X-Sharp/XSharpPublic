@@ -2,25 +2,28 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1564</title>
+  <keywords>
+    <keyword translate="true">XS1564</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1564</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Conflicting options specified: Win32 resource file; Win32 manifest.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you use the /Win32res compiler option, you must include the custom Win32 manifest (if it is required) in the resource file. You cannot provide a custom Win32 manifest separately from a Win32 resource file. Use the /win32manifest option only if you are not specifying a win32 resource file.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you use the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res" styleclass="Normal" translate="true">/Win32res</link><text styleclass="Normal" translate="true"> compiler option, you must include the custom Win32 manifest (if it is required) in the resource file. You cannot provide a custom Win32 manifest separately from a Win32 resource file. Use the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32manifest" styleclass="Normal" translate="true">/win32manifest</link><text styleclass="Normal" translate="true"> option only if you are not specifying a win32 resource file.</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
     <para styleclass="Normal"></para>
-    <list id="33" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Add the win32 manifest to the win32 resource file and remove the /win32manifest compiler option.</text></li>
+    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Add the win32 manifest to the win32 resource file and remove the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32manifest" styleclass="Normal" translate="true">/win32manifest</link><text styleclass="Normal" translate="true"> compiler option.</text></li>
     </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example produces CS1564 if it is compiled with the /Win32res option and no manifest is included in the resource file.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example produces XS1564 if it is compiled with the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res" styleclass="Normal" translate="true">/Win32res</link><text styleclass="Normal" translate="true"> option and no manifest is included in the resource file.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// cs1564.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// Compile with: /Win32res &#160;</text><br/><text styleclass="Code with box" translate="true">public class Test &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static int Main(string[] args) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;return 1; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1564.prg  </text><br/><text styleclass="Code with box" translate="true">// Compile with: /Win32res  </text><br/><text styleclass="Code with box" translate="true">public class Test  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    static int Main(string[] args)  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        return 1;  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The C# 3.0 compiler adds a default win32Manifest to all binaries.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# 3.0 compiler adds a default win32Manifest to all binaries.</text></para>
   </body>
 </topic>

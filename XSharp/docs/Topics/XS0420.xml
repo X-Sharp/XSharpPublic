@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0420</title>
+  <keywords>
+    <keyword translate="true">XS0420</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0420</text></para>
@@ -10,10 +13,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">A volatile field should not normally be passed using a ref or out parameter, since it will not be treated as volatile within the scope of the function. There are exceptions to this, such as when calling an interlocked API. As with any warning, you may use the #pragma warning to disable this warning in those rare cases where you are intentionally using a volatile field as a reference parameter.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0420:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0420:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0420.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /W:1 &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><br/><text styleclass="Code with box" translate="true">class TestClass &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; private volatile int i; &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; public void TestVolatile(ref int ii) &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;TestClass x = new TestClass(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;x.TestVolatile(ref x.i); &#160; // CS0420 &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0420.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /W:1  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><br/><text styleclass="Code with box" translate="true">class TestClass  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   private volatile int i;  </text><br/><br/><text styleclass="Code with box" translate="true">   public void TestVolatile(ref int ii)  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><br/><text styleclass="Code with box" translate="true">   public static void Main()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      TestClass x = new TestClass();  </text><br/><text styleclass="Code with box" translate="true">      x.TestVolatile(ref x.i);   // XS0420   </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

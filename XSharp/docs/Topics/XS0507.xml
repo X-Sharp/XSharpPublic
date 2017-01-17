@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0507</title>
+  <keywords>
+    <keyword translate="true">XS0507</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0507</text></para>
@@ -11,24 +14,24 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">An attempt was made to change the access specification in a method override.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0507.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0507.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0507.cs &#160;</text><br/><text styleclass="Code with box" translate="true">abstract public class clx &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; virtual protected void f() {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">public class cly : clx &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public override void f() {} &#160; // CS0507 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">CS0507 can also occur if a class attempts to override a method marked as </text><text styleclass="Code Example" translate="true">protected internal</text><text styleclass="Normal" translate="true"> defined in referenced metadata. In this situation, the overriding method should be marked as </text><text styleclass="Code Example" translate="true">protected</text><text styleclass="Normal" translate="true">.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0507_b.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">abstract public class clx &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; virtual protected internal void f() {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0507.prg  </text><br/><text styleclass="Code with box" translate="true">abstract public class clx  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   virtual protected void f() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">public class cly : clx  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public override void f() {}   // XS0507  </text><br/><text styleclass="Code with box" translate="true">   public static void Main() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0507.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">XS0507 can also occur if a class attempts to override a method marked as </text><text styleclass="Code Example" translate="true">protected internal</text><text styleclass="Normal" translate="true"> defined in referenced metadata. In this situation, the overriding method should be marked as </text><text styleclass="Code Example" translate="true">protected</text><text styleclass="Normal" translate="true">.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0507_c.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:cs0507_b.dll &#160;</text><br/><text styleclass="Code with box" translate="true">public class cly : clx &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; protected internal override void f() {} &#160; // CS0507 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; // try the following line instead &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; // protected override void f() {} &#160; // OK &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() {} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0507_b.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">abstract public class clx  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   virtual protected internal void f() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0507.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0507_c.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:XS0507_b.dll  </text><br/><text styleclass="Code with box" translate="true">public class cly : clx  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   protected internal override void f() {}   // XS0507  </text><br/><text styleclass="Code with box" translate="true">   // try the following line instead  </text><br/><text styleclass="Code with box" translate="true">   // protected override void f() {}   // OK  </text><br/><br/><text styleclass="Code with box" translate="true">   public static void Main() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

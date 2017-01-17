@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0417</title>
+  <keywords>
+    <keyword translate="true">XS0417</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0417</text></para>
@@ -11,10 +14,10 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This error occurs if a call to the new operator on a type parameter has arguments. The only constructor that can be called by using the new operator on an unknown parameter type is a constructor that has no arguments. If you need to call another constructor, consider using a class type constraint or interface constraint.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS0417:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0417:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">// CS0417 &#160;</text><br/><text styleclass="Code with box" translate="true">class ExampleClass&lt;T&gt; where T : new() &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// The following line causes CS0417. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;T instance1 = new T(1); &#160; &#160; </text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// The following line doesn&apos;t cause the error. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;T instance2 = new T(); &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">X#</text><br/><br/><text styleclass="Code with box" translate="true">// XS0417 &#160;</text><br/><text styleclass="Code with box" translate="true">class ExampleClass&lt;T&gt; where T : new() &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// The following line causes XS0417. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;T instance1 = new T(1); &#160; &#160; </text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// The following line doesn&apos;t cause the error. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;T instance2 = new T(); &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
     <para styleclass="Normal"></para>
   </body>

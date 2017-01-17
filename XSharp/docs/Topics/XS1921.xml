@@ -2,20 +2,23 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1921</title>
+  <keywords>
+    <keyword translate="true">XS1921</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1921</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The best overloaded method match for &apos;method&apos; has wrong signature for the initializer element. The initializable Add must be an accessible instance method.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error is generated when you try to use a collection initializer with a class that has no public non-static Add method. If the Add method is not accessible because of its protection level (private, protected, internal) then you will get CS0122, so that this error probably means that the method is defined as static.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This error is generated when you try to use a collection initializer with a class that has no public non-static Add method. If the Add method is not accessible because of its protection level (private, protected, internal) then you will get XS0122, so that this error probably means that the method is defined as static.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS1921:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS1921:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// cs1921.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System.Collections; &#160;</text><br/><text styleclass="Code with box" translate="true">public class C : CollectionBase &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Add(int i) </text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><text styleclass="Code with box" translate="true">public class Test &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;var collection = new C { 1, 2, 3 }; // CS1921 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1921.prg  </text><br/><text styleclass="Code with box" translate="true">using System.Collections;  </text><br/><text styleclass="Code with box" translate="true">public class C : CollectionBase  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public static void Add(int i) </text><br/><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><text styleclass="Code with box" translate="true">public class Test  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public static void Main()  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        var collection = new C { 1, 2, 3 }; // XS1921  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

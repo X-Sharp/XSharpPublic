@@ -34,12 +34,15 @@ namespace XSharp.Project
         internal const string catOutput = "Output";
         internal const string catAdvanced = "Advanced";
         internal const string CatPreprocessor = "Preprocessor";
+        internal const string catXML = "XML Output";
         internal const string captOutputPath = "Output Path";
         internal const string descOutputPath = "Output Path (macros are allowed)";
         internal const string captIntermediateOutputPath = "Intermediate Output Path";
         internal const string descIntermediateOutputPath = "Intermediate Output Path  (macros are allowed)";
         internal const string captDocumentationFile = "Generate XML doc comments file";
         internal const string descDocumentationFile = "Generate XML doc comments file";
+        internal const string captDocumentationFile1 = "XML doc comments file name";
+        internal const string descDocumentationFile1 = "XML doc comments file name";
         internal const string captOptimize = "Optimize";
         internal const string descOptimize = "Should compiler optimize output?";
         internal const string captUseSharedCompilation = "Use Shared Compiler";
@@ -89,7 +92,8 @@ namespace XSharp.Project
         private string prebuildevent;
         private string postbuildevent;
         private RunPostBuildEvent runpostbuildevent;
-        private bool documentationfile;
+        private bool docfile;
+        private string documentationFile;
         private string outputpath;
         private string intermediateoutputpath;
         private bool usesharedcompilation;
@@ -133,9 +137,7 @@ namespace XSharp.Project
         }
 
 
-        [Category(catOutput)]
-        [DisplayName(captOutputPath)]
-        [Description(descOutputPath)]
+        [Category(catOutput),DisplayName(captOutputPath),Description(descOutputPath)]
         [Editor(typeof(XSharpSLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public string OutputPath
         {
@@ -149,9 +151,7 @@ namespace XSharp.Project
                 this.outputpath = AddSlash(value);
                 this.IsDirty = true;}
         }
-        [Category(catOutput)]
-        [DisplayName(captIntermediateOutputPath)]
-        [Description(descIntermediateOutputPath)]
+        [Category(catOutput),DisplayName(captIntermediateOutputPath),Description(descIntermediateOutputPath)]
         [Editor(typeof(XSharpSLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public string IntermediateOutputPath
         {
@@ -167,13 +167,25 @@ namespace XSharp.Project
                 this.IsDirty = true; }
         }
 
-        [Category(catOutput)]
+        [Category(catXML)]
         [DisplayName(captDocumentationFile)]
         [Description(descDocumentationFile)]
-        public bool DocumentationFile
+        public bool DocFile
         {
-            get { return this.documentationfile; }
-            //set { this.documentationfile = value; this.IsDirty = true; }
+            get { return this.docfile; }
+            //set { this.docfile = value;
+            //    this.IsDirty = true;
+            //    // now set the XML Documentation Filename
+            //    SetDocumentationFile();
+            //}
+        }
+
+        [Category(catXML)]
+        [DisplayName(captDocumentationFile1)]
+        [Description(descDocumentationFile1)]
+        public string DocumentationFile
+        {
+            get { return this.documentationFile; }
         }
 
         [Category(catMisc)]
@@ -333,7 +345,6 @@ namespace XSharp.Project
             outputpath = AddSlash(outputpath);
             intermediateoutputpath = getCfgString(nameof(IntermediateOutputPath),  defaultIntermediatePath);
             intermediateoutputpath = AddSlash(intermediateoutputpath);
-            documentationfile= getCfgLogic(nameof(DocumentationFile), false);
             optimize = getCfgLogic(nameof(Optimize),  false);
             usesharedcompilation = getCfgLogic(nameof(UseSharedCompilation),  true);
             prebuildevent = getCfgString(nameof(PreBuildEvent),"");
@@ -341,6 +352,11 @@ namespace XSharp.Project
             string temp= "";
             temp = getCfgString(nameof(RunPostBuildEvent),  "Always");
             runpostbuildevent = (RunPostBuildEvent) new RunPostBuildEventConverter().ConvertFromString(temp);
+
+            temp = getCfgString(nameof(DocumentationFile), "");
+            docfile = !string.IsNullOrEmpty(temp);
+            documentationFile = temp;
+
             disabledwarnings = getCfgString(nameof(DisabledWarnings),  "");
             warningLevel= getCfgInteger(nameof(WarningLevel), 4);
             warningLevel = ValidateWarningLevel(warningLevel);
@@ -366,11 +382,17 @@ namespace XSharp.Project
             {
                 return VSConstants.E_INVALIDARG;
             }
-
             this.SetConfigProperty(nameof(TreatWarningsAsErrors), this.warningAsErrors.ToString().ToLower());
             this.SetConfigProperty(nameof(OutputPath), this.outputpath?.ToString());
             this.SetConfigProperty(nameof(IntermediateOutputPath), this.intermediateoutputpath?.ToString());
-            this.SetConfigProperty(nameof(DocumentationFile), this.documentationfile.ToString().ToLower());
+            if (!docfile)
+            {
+                this.RemovePrjProperty(nameof(DocumentationFile));
+            }
+            else
+            {
+                this.SetConfigProperty(nameof(DocumentationFile), documentationFile);
+            }
             this.SetConfigProperty(nameof(Optimize), this.optimize.ToString().ToLower());
             this.SetConfigProperty(nameof(UseSharedCompilation), this.usesharedcompilation.ToString().ToLower());
             this.SetConfigProperty(nameof(PreBuildEvent), this.prebuildevent?.ToString());
@@ -392,6 +414,21 @@ namespace XSharp.Project
             this.IsDirty = false;
 
             return VSConstants.S_OK;
+        }
+        private void SetDocumentationFile()
+        {
+            if (docfile)
+            {
+                if (String.IsNullOrEmpty(DocumentationFile))
+                {
+                    var asmName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
+                    documentationFile = System.IO.Path.ChangeExtension(asmName, ".Xml");
+                }
+            }
+            else
+            {
+                documentationFile = "";
+            }
         }
 
         #endregion

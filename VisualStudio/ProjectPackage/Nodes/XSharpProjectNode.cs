@@ -719,6 +719,22 @@ namespace XSharp.Project
         public override void Load(string filename, string location, string name, uint flags, ref Guid iidProject, out int canceled)
         {
             base.Load(filename, location, name, flags, ref iidProject, out canceled);
+
+            // remove Documentationfile properties for now
+            if (this.BuildProject != null)
+            {
+                var props = new List<MSBuild.ProjectProperty>();
+                foreach (var prop in this.BuildProject.Properties)
+                {
+                    if (prop.Name.ToLower() == "documentationfile")
+                        props.Add(prop);
+                }
+                foreach (var prop in props)
+                {
+                    this.BuildProject.RemoveProperty(prop);
+                }
+            }
+
             // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);

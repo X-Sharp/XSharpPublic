@@ -180,6 +180,13 @@ namespace XSharp.Project
             return property;
         }
 
+        internal void RemovePrjProperty(String Name)
+        {
+            var prop = this.ProjectMgr.BuildProject.GetProperty(Name);
+            if (prop != null)
+                this.ProjectMgr.BuildProject.RemoveProperty(prop);
+        }
+
         internal static string AddSlash(string folderName)
         {
             if (String.IsNullOrEmpty(folderName))

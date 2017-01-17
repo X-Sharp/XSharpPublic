@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/checked</title>
   <keywords>
     <keyword translate="true">/checked compiler option</keyword>
@@ -35,7 +35,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">To access this compiler option programmatically, see CheckForOverflowUnderflow.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following command compiles </text><text styleclass="Code Example" translate="true">t2.cs</text><text styleclass="Normal" translate="true">. The use of </text><text styleclass="Code Example" translate="true">/checked</text><text styleclass="Normal" translate="true"> in the command specifies that any integer arithmetic statement in the file that is not in the scope of a checked or unchecked keyword, and that results in a value that is outside the range of the data type, causes an exception at run time.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following command compiles </text><text styleclass="Code Example" translate="true">t2.prg</text><text styleclass="Normal" translate="true">. The use of </text><text styleclass="Code Example" translate="true">/checked</text><text styleclass="Normal" translate="true"> in the command specifies that any integer arithmetic statement in the file that is not in the scope of a checked or unchecked keyword, and that results in a value that is outside the range of the data type, causes an exception at run time.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc t2.prg /checked &#160;</text></para>

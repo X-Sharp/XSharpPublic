@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0446</title>
+  <keywords>
+    <keyword translate="true">XS0446</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0446</text></para>
@@ -11,10 +14,10 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This error is caused by specifying a method without parentheses or an anonymous method without parentheses in the part of the foreach statement where you would normally put a collection class. Note that it is valid, though unusual, to put a method call in that location, if the method returns a collection class.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code will generate CS0446.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code will generate XS0446.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0446.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><text styleclass="Code with box" translate="true">class Tester &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static void Main() &#160; </text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;int[] intArray = new int[5]; &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160; &#160;foreach (int i in M) { } // CS0446 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;static void M() { } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0446.prg  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">class Tester   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    static void Main()   </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        int[] intArray = new int[5];  </text><br/><text styleclass="Code with box" translate="true">        foreach (int i in M) { } // XS0446  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">    static void M() { }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

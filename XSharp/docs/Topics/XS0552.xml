@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0552</title>
+  <keywords>
+    <keyword translate="true">XS0552</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0552</text></para>
@@ -10,10 +13,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">You cannot create a user-defined conversion to or from an interface. If you need the conversion routine, resolve this error by making the interface a class or derive a class from the interface.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0552:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0552:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0552.cs &#160;</text><br/><text styleclass="Code with box" translate="true">public interface ii &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">public class a &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; // delete the routine to resolve CS0552 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public static implicit operator ii(a aa) // CS0552 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160; &#160;return new ii(); &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; { &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; } &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0552.prg  </text><br/><text styleclass="Code with box" translate="true">public interface ii  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">public class a  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   // delete the routine to resolve XS0552  </text><br/><text styleclass="Code with box" translate="true">   public static implicit operator ii(a aa) // XS0552  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      return new ii();  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><br/><text styleclass="Code with box" translate="true">   public static void Main()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

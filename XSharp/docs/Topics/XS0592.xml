@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0592</title>
+  <keywords>
+    <keyword translate="true">XS0592</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0592</text></para>
@@ -11,10 +14,10 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">When you define an attribute, you define what constructs it can be applied to by specifying an AttributeTargets value. In the following example, the MyAttribute attribute can be applied to interfaces only, because the AttributeUsage attribute specifies AttributeTargets.Iterface. The error is generated because the attribute is applied to a class (class A).</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0592:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0592:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0592.cs &#160;</text><br/><text styleclass="Code with box" translate="true">using System; &#160;</text><br/><br/><text styleclass="Code with box" translate="true">[AttributeUsage(AttributeTargets.Interface)] &#160;</text><br/><text styleclass="Code with box" translate="true">public class MyAttribute : Attribute &#160; </text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">[MyAttribute] &#160;</text><br/><text styleclass="Code with box" translate="true">// Generates CS0592 because MyAttribute is not valid for a class. &#160; </text><br/><text styleclass="Code with box" translate="true">public class A &#160; &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0592.prg  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><br/><text styleclass="Code with box" translate="true">[AttributeUsage(AttributeTargets.Interface)]  </text><br/><text styleclass="Code with box" translate="true">public class MyAttribute : Attribute   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">[MyAttribute]  </text><br/><text styleclass="Code with box" translate="true">// Generates XS0592 because MyAttribute is not valid for a class.   </text><br/><text styleclass="Code with box" translate="true">public class A    </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public static void Main()  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

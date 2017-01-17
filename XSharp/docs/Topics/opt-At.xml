@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">@</title>
   <keywords>
     <keyword translate="true">@ compiler option</keyword>
@@ -34,7 +34,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler processes the command options as they are encountered. Therefore, command line arguments can override previously listed options in response files. Conversely, options in a response file will override options listed previously on the command line or in other response files.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">C# provides the csc.rsp file, which is located in the same directory as the csc.exe file. See /noconfig for more information on csc.rsp.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">X# provides the xsc.rsp file, which is located in the same directory as the xsc.exe file. See /noconfig for more information on xsc.rsp.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option cannot be set in the Visual Studio development environment, nor can it be changed programmatically.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>

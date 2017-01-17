@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0702</title>
+  <keywords>
+    <keyword translate="true">XS0702</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0702</text></para>
@@ -11,10 +14,10 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following types may not be used as constraints: System.Object,``System.Array, System.Delegate, System.Enum, or System.ValueType.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0702:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0702:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0702.cs &#160;</text><br/><text styleclass="Code with box" translate="true">class C&lt;T&gt; where T : System.Array &#160;// CS0702 &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0702.prg  </text><br/><text styleclass="Code with box" translate="true">class C&lt;T&gt; where T : System.Array  // XS0702  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

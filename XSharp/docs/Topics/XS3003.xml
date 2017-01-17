@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS3003</title>
+  <keywords>
+    <keyword translate="true">XS3003</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS3003</text></para>
@@ -11,10 +14,10 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">A public, protected, or protected internal variable must be of a type that is compliant with the Common Language Specification (CLS). For more information on CLS Compliance, see Language Independence and Language-Independent Components.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS3003:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS3003:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS3003.cs &#160;</text><br/><br/><text styleclass="Code with box" translate="true">[assembly:System.CLSCompliant(true)] &#160;</text><br/><text styleclass="Code with box" translate="true">public class a &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public ushort a1; &#160; // CS3003, public variable &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;public static void Main() &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;} &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS3003.prg  </text><br/><br/><text styleclass="Code with box" translate="true">[assembly:System.CLSCompliant(true)]  </text><br/><text styleclass="Code with box" translate="true">public class a  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public ushort a1;   // XS3003, public variable  </text><br/><text styleclass="Code with box" translate="true">    public static void Main()  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

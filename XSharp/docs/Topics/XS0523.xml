@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0523</title>
+  <keywords>
+    <keyword translate="true">XS0523</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0523</text></para>
@@ -10,10 +13,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The definitions of two structs include recursive references. Change the struct definitions such that each does not define itself on the other. This limitation applies only to structs, since structs are value types. If using recursive references, declare your types as classes.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates CS0523:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0523:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0523.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">struct RecursiveLayoutStruct1 &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public RecursiveLayoutStruct2 field; &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text><br/><br/><text styleclass="Code with box" translate="true">struct RecursiveLayoutStruct2 &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; public RecursiveLayoutStruct1 field; &#160; // CS0523 &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0523.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">struct RecursiveLayoutStruct1  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public RecursiveLayoutStruct2 field;  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">struct RecursiveLayoutStruct2  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public RecursiveLayoutStruct1 field;   // XS0523  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

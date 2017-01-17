@@ -2,6 +2,9 @@
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0270</title>
+  <keywords>
+    <keyword translate="true">XS0270</keyword>
+  </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS0270</text></para>
@@ -10,10 +13,10 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This error occurs when a size is specified as part of an array declaration. To resolve, use the new Operator expression.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates CS0270:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0270:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CS0270.cs &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /t:module &#160;</text><br/><br/><text styleclass="Code with box" translate="true">public class Test &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; int[10] a; &#160; // CS0270 &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; // To resolve, use the following line instead: &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; // int[] a = new int[10]; &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0270.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /t:module  </text><br/><br/><text styleclass="Code with box" translate="true">public class Test  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   int[10] a;   // XS0270  </text><br/><text styleclass="Code with box" translate="true">   // To resolve, use the following line instead:  </text><br/><text styleclass="Code with box" translate="true">   // int[] a = new int[10];  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

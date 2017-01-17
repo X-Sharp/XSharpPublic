@@ -634,7 +634,7 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/vo8", base.Bag, nameof(VO8));
             commandline.AppendPlusOrMinusSwitch("/vo9", base.Bag, nameof(VO9));
             commandline.AppendPlusOrMinusSwitch("/vo10", base.Bag, nameof(VO10));
-            commandline.AppendPlusOrMinusSwitch("/vo11", base.Bag, nameof(VO11));
+            //commandline.AppendPlusOrMinusSwitch("/vo11", base.Bag, nameof(VO11));
             commandline.AppendPlusOrMinusSwitch("/vo12", base.Bag, nameof(VO12));
             commandline.AppendPlusOrMinusSwitch("/vo13", base.Bag, nameof(VO13));
             commandline.AppendPlusOrMinusSwitch("/vo14", base.Bag, nameof(VO14));

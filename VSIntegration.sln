@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharp.Build", "VisualStudi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpColorizer", "VisualStudio\XSharpColorizer\XSharpColorizer.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVODesigners", "VisualStudio\VODesigners\XSharpVODesigners.xsprj", "{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XPorter", "VisualStudio\XPorter\XPorter.xsproj", "{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpModel", "VisualStudio\XSharpModel\XSharpModel.csproj", "{2C3B9217-E012-4681-97CE-F0A658C40336}"
@@ -62,14 +60,6 @@ Global
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.ActiveCfg = Release|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.Build.0 = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|x86.Build.0 = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|x86.ActiveCfg = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|x86.Build.0 = Release|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Debug|x86.ActiveCfg = Debug|Any CPU

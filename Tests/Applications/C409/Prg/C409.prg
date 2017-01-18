@@ -17,3 +17,14 @@ FUNCTION Start( ) AS VOID
 	MessageBox(NULL_PTR , "message box text" , "from DllImport" , 1)
 RETURN
 
+
+STATIC CLASS Foo
+	[DllImport("user32.dll", CharSet := CharSet.Ansi)];
+	STATIC EXTERN METHOD MessageBox1(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
+		AS INT PASCAL
+	
+	[DllImport("user32.dll", CharSet := CharSet.Ansi)];
+	STATIC METHOD MessageBox2(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
+		AS INT PASCAL
+	
+END CLASS	

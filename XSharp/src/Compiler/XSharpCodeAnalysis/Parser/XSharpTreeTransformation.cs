@@ -2659,23 +2659,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isInInterface && context.ClassId != null) {
                 context.AddError(new ParseErrorData(context.ClassId, ErrorCode.ERR_InterfacesCannotContainTypes));
             }
-            if (isAbstract) {
-                if (isExtern) {
+            if (isAbstract)
+            {
+                if (isExtern)
+                {
                     context.AddError(new ParseErrorData(context.Modifiers, ErrorCode.ERR_AbstractAndExtern));
                 }
-                if (context.StmtBlk?._Stmts?.Count > 0) {
+                if (context.StmtBlk?._Stmts?.Count > 0)
+                {
                     context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_AbstractHasBody));
                 }
                 context.StmtBlk = null;
             }
-            else if (isExtern) {
-                if (context.StmtBlk?._Stmts?.Count > 0) {
+            else if (isExtern)
+            {
+                if (context.StmtBlk?._Stmts?.Count > 0)
+                {
                     context.AddError(new ParseErrorData(context.StmtBlk, ErrorCode.ERR_ExternHasBody, "Method"));
                 }
                 context.StmtBlk = null;
             }
             bool actualDeclaration = true;
-            if (context.T.Token.Type != XP.METHOD) {
+            if (context.T.Token.Type != XP.METHOD)
+            {
                 var vomods = _pool.Allocate();
                 vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.PrivateKeyword));
                 if (mods.Any(SyntaxKind.StaticKeyword))
@@ -2712,7 +2718,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (actualDeclaration)
             {
                 var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+                if (! isExtern)
+                {
+                    isExtern = hasDllImport(attributes);
+                    hasNoBody = hasNoBody || isExtern;
+                }
+                if (isExtern && ! mods.Any(SyntaxKind.ExternKeyword))
+                {
+                    // Add extern keyword to mods
+                    var m1 = _pool.Allocate();
+                    m1.AddRange(mods);
+                    m1.Add(SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword));
+                    mods = m1.ToTokenList();
+                    _pool.Free(m1);
+
+                }
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+                if (isExtern)
+                {
+                    parameters = UpdateVODLLParameters(parameters);
+                }
                 var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
                 var returntype = context.Type?.Get<TypeSyntax>();
                 if (returntype == null)
@@ -2742,7 +2767,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // So do not add missing returns
                     returntype = VoidType();
                 }
-                else if (context.StmtBlk != null && !isInInterface)
+                else if (context.StmtBlk != null && !hasNoBody)
                 {
                     body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
                 }
@@ -3576,6 +3601,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             var hasnobody = (isInInterface || isextern);
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            if (isextern)
+            {
+                parameters = UpdateVODLLParameters(parameters);
+            }
             var body = hasnobody ? null : context.StmtBlk.Get<BlockSyntax>();
             var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
             returntype.XVoDecl = true;
@@ -3653,6 +3682,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
             bool isextern = hasDllImport(attributes);
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            if (isextern)
+            {
+                parameters = UpdateVODLLParameters(parameters);
+            }
             var returntype = VoidType();
             var modifiers = GetFuncProcModifiers(context.Modifiers, isextern, isInInterface);
             if (!isextern)

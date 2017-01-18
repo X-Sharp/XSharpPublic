@@ -163,45 +163,65 @@ namespace XSharpLanguage
             }
             // Check if we can get the member where we are
             XTypeMember member = this.FindMember(triggerPoint.Position);
+            XType currentNamespace = this.FindNamespace(triggerPoint.Position);
+            List<String> Usings = new List<String>(file.Usings);
+            if (currentNamespace != null)
+            {
+                Usings.Add(currentNamespace.Name);
+            }
+            // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
+
             // LookUp for the BaseType, reading the TokenList (From left to right)
             cType = this.RetrieveType(tokenList, member);
             switch (typedChar)
             {
                 case '.':
-                    // it can be a static Type/Method/Property/Enum
-                    if (cType != null)
+                    if (String.IsNullOrEmpty(filterText))
                     {
-                        BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
+                        filterText = TokenListAsString(tokenList, 0);
+                        if (!filterText.EndsWith("."))
+                            filterText += ".";
                     }
-                    else
+                    if (this._stopToken != null)
                     {
-                        if (String.IsNullOrEmpty(filterText))
+                        switch (this._stopToken.Type)
                         {
-                            filterText = TokenListAsString(tokenList, 0);
-                            if (!filterText.EndsWith("."))
-                                filterText += ".";
-                        }
-                        if ((this._stopToken == null) || (this._stopToken.Type == XSharpLexer.USING))
-                        {
-                            // It can be a namespace 
-                            AddNamespaces(compList, file.Project, filterText);
-                        }
-                        if ((this._stopToken == null) ||
-                            ((this._stopToken.Type == XSharpLexer.AS) || (this._stopToken.Type == XSharpLexer.IS) || (this._stopToken.Type == XSharpLexer.REF)))
-                        {
-                            // It can be Type, FullyQualified
-                            AddTypeNames(compList, file.Project, filterText);
-                            // we should also walk all the USINGs, and the current Namespace if any, to search Types
-                            List<String> Usings = new List<String>(file.Usings);
-                            XType currentNamespace = this.FindNamespace(triggerPoint.Position);
-                            if (currentNamespace != null)
-                            {
-                                Usings.Add(currentNamespace.Name);
-                            }
-                            foreach (String nspace in Usings)
-                            {
-                                AddTypeNames(compList, file.Project, nspace + "." + filterText);
-                            }
+                            case XSharpLexer.USING:
+                                // It can be a namespace 
+                                AddNamespaces(compList, file.Project, filterText);
+                                break;
+                            case XSharpLexer.AS:
+                            case XSharpLexer.IS:
+                            case XSharpLexer.REF:
+                            case XSharpLexer.INHERIT:
+                                // It can be a namespace 
+                                AddNamespaces(compList, file.Project, filterText);
+                                // It can be Type, FullyQualified
+                                // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                                AddTypeNames(compList, file.Project, filterText, Usings);
+                                //
+                                AddXSharpTypeNames(compList, filterText);
+                                break;
+                            case XSharpLexer.IMPLEMENTS:
+                                // It can be a namespace 
+                                AddNamespaces(compList, file.Project, filterText);
+                                // TODO: add Interfaces only
+                                break;
+                            default:
+                                // It can be a namespace 
+                                AddNamespaces(compList, file.Project, filterText);
+                                // It can be Type, FullyQualified
+                                // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                                AddTypeNames(compList, file.Project, filterText, Usings);
+                                //
+                                AddXSharpTypeNames(compList, filterText);
+                                // it can be a static Method/Property/Enum
+                                if (cType != null)
+                                {
+                                    BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
+                                }
+                                break;
+
                         }
                     }
                     break;
@@ -246,7 +266,9 @@ namespace XSharpLanguage
                         // and Add NameSpaces
                         AddNamespaces(compList, file.Project, filterText);
                         // and Types
-                        AddTypeNames(compList, file.Project, filterText);
+                        AddTypeNames(compList, file.Project, filterText, Usings);
+                        //
+                        AddXSharpTypeNames(compList, filterText);
                     }
                     break;
             }
@@ -255,6 +277,15 @@ namespace XSharpLanguage
             compList.Sort((comp1, comp2) => comp1.DisplayText.CompareTo(comp2.DisplayText));
             // and put in the SelectionList
             completionSets.Add(new CompletionSet("All", "All", applicableTo, compList, Enumerable.Empty<Completion>()));
+        }
+
+        private void AddTypeNames(CompletionList compList, XProject project, string startWith, List<String> usings)
+        {
+            AddTypeNames(compList, project, startWith);
+            foreach (String nspace in usings)
+            {
+                AddTypeNames(compList, project, nspace + "." + startWith);
+            }
         }
 
         private void AddTypeNames(CompletionList compList, XProject project, string startWith)
@@ -311,6 +342,35 @@ namespace XSharpLanguage
                         ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
                         compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
                     }
+                }
+            }
+        }
+
+        private void AddXSharpTypeNames(CompletionList compList, string startWith)
+        {
+            //
+            int startLen = 0;
+            int dotPos = startWith.LastIndexOf('.');
+            if (dotPos != -1)
+                startLen = dotPos + 1;
+            //
+            // And our own Types
+            List<XType> xsharpTypes = XSharpTypes.Get();
+            foreach (XType typeInfo in xsharpTypes)
+            {
+                if (typeInfo.FullName.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
+                {
+                    String realTypeName = typeInfo.FullName;
+                    // remove the start
+                    if (startLen > 0)
+                        realTypeName = realTypeName.Substring(startLen);
+                    // Do we have another part 
+                    dotPos = realTypeName.IndexOf('.');
+                    // Then remove it
+                    if (dotPos > 0)
+                        realTypeName = realTypeName.Substring(0, dotPos);
+                    ImageSource icon = _provider.GlyphService.GetGlyph(typeInfo.GlyphGroup, typeInfo.GlyphItem);
+                    compList.Add(new XSCompletion(realTypeName, realTypeName, typeInfo.Description, icon, null));
                 }
             }
         }
@@ -1117,7 +1177,7 @@ namespace XSharpLanguage
                     }
                     // We are in the right Type, but found no Member ?
                     // So it must the Last Member, before the Closing-Keyword
-                    if ((lastElt != null) && (lastElt2==null ))
+                    if ((lastElt != null) && (lastElt2 == null))
                         return lastElt;
                     //
                     return lastElt2;
@@ -1246,10 +1306,11 @@ namespace XSharpLanguage
                         // Stop here
                         this._stopToken = triggerToken;
                         triggerToken = null;
+                        token = null;
                         break;
                 }
                 //
-                if (token != null )
+                if (token != null)
                     tokenList.Add(token);
                 //
                 if (triggerToken != null)
@@ -2076,6 +2137,34 @@ namespace XSharpLanguage
             }
         }
 
+    }
+
+
+    // TODO: Maybe it would be better to use XSharpLexer.kwIds, but it is protected...
+    internal static class XSharpTypes
+    {
+        static List<XType> _xTypes;
+
+        static XSharpTypes()
+        {
+            _xTypes = new List<XType>();
+            //
+            _xTypes.Add(new XType("BYTE", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+            _xTypes.Add(new XType("DWORD", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+            _xTypes.Add(new XType("DYNAMIC", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+            _xTypes.Add(new XType("SHORTINT", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+            _xTypes.Add(new XType("INT", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+            _xTypes.Add(new XType("INT64", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+            _xTypes.Add(new XType("LOGIC", Kind.Class, Modifiers.None, Modifiers.Public, TextRange.Empty, TextInterval.Empty));
+
+        }
+
+        internal static List<XType> Get()
+        {
+            List<XType> retTypes = new List<XType>();
+            retTypes.AddRange(_xTypes);
+            return retTypes;
+        }
     }
 }
 

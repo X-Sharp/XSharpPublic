@@ -18,6 +18,12 @@ lexer grammar XSharpLexer;
 /*
  * Lexer Rules
 */
+@lexer::header
+{
+using System.Collections.Immutable;
+using System.Collections.Generic;
+}
+
 
 @lexer::members
 {
@@ -51,7 +57,7 @@ lexer grammar XSharpLexer;
 	bool _inId = false;
 	bool _inPp = false;
 	bool _hasEos = true;
-	private bool isKw(IToken t) {
+	private bool _isKw(IToken t) {
         switch (t.Channel)
         { 
         case XSharpLexer.Hidden: // 1
@@ -596,7 +602,7 @@ lexer grammar XSharpLexer;
 		var type = t.Type;
 		if (type == ID) {
 			int kwtype;
-			if (kwIds.TryGetValue(t.Text,out kwtype)) {
+			if (KwIds.TryGetValue(t.Text,out kwtype)) {
 				t.Type = kwtype;
 			}
 		}
@@ -605,13 +611,13 @@ lexer grammar XSharpLexer;
 		}*/
 		else if (type == SYMBOL_CONST && LastToken == NL) {
 			int symtype;
-			if (symIds.TryGetValue(t.Text,out symtype)) {
+			if (SymIds.TryGetValue(t.Text,out symtype)) {
 				t.Type = symtype;
 				_inPp = true;
 			}
 		}
 		if (!_inId) {
-			if (isKw(t) && InputStream.La(1) == (int)'.') {
+			if (_isKw(t) && InputStream.La(1) == (int)'.') {
 				t.Type = ID;
 				_inId = true;
 			}
@@ -619,7 +625,7 @@ lexer grammar XSharpLexer;
 				_inId = true;
 		}
 		else {
-			if (isKw(t))
+			if (_isKw(t))
 				t.Type = ID;
 			else if (type != DOT && type != ID && type != KWID)
 				_inId = false;
@@ -666,11 +672,305 @@ lexer grammar XSharpLexer;
 		set {_OldComment = value;}
 	}
 	static Object kwlock = new Object();
-	static System.Collections.Generic.Dictionary<string,int> voKwIds = null;
-	static System.Collections.Generic.Dictionary<string,int> xsKwIds = null;
-	System.Collections.Generic.Dictionary<string,int> _kwIds;
+	static IDictionary<string,int> voKwIds = null;
+	static IDictionary<string,int> xsKwIds = null;
+	private IDictionary<string,int> _kwIds;
 
-	System.Collections.Generic.Dictionary<string,int> kwIds {
+	private IDictionary<string,int> _getIds(bool lFour)
+	{
+		var ids = new Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+
+		var VoKeywords = new Dictionary<string,int>
+		{
+			{"ACCESS", ACCESS},
+			{"ALIGN", ALIGN},
+			{"_AND", VO_AND},
+			{"AS", AS},
+			{"ASPEN", ASPEN},
+			{"ASSIGN", ASSIGN},
+			{"BEGIN", BEGIN},
+			{"BREAK", BREAK},
+			{"CALLBACK", CALLBACK},
+			{"CASE", CASE},
+			{"_CAST", CAST},
+			{"CLASS", CLASS},
+			{"CLIPPER", CLIPPER},
+			{"DECLARE", DECLARE},
+			{"DEFINE", DEFINE},
+			{"DIM", DIM},
+			{"_DLL", DLL},
+			{"DLLEXPORT", DLLEXPORT},
+			{"DO", DO},
+			{"DOWNTO", DOWNTO},
+			{"ELSE", ELSE},
+			{"ELSEIF", ELSEIF},
+			{"END", END},
+			{"ENDCASE", ENDCASE},
+			{"ENDDO", ENDDO},
+			{"ENDIF", ENDIF},
+			{"EXIT", EXIT},
+			{"EXPORT", EXPORT},
+			{"FASTCALL", FASTCALL},
+			{"FIELD", FIELD},
+			{"_FIELD", FIELD_},
+			{"FOR", FOR},
+			{"FUNCTION", FUNCTION},
+			{"GLOBAL", GLOBAL},
+			{"HIDDEN", HIDDEN},
+			{"IF", IF},
+			{"IIF", IIF},
+			{"IN", IN},
+			{"INHERIT", INHERIT},
+			{"_INIT1", INIT1},
+			{"_INIT2", INIT2},
+			{"_INIT3", INIT3},
+			{"INSTANCE", INSTANCE},
+			{"IS", IS},
+			{"LOCAL", LOCAL},
+			{"LOOP", LOOP},
+			{"MEMBER", MEMBER},
+			{"MEMVAR", MEMVAR},
+			{"METHOD", METHOD},
+			{"NEXT", NEXT},
+			{"_NOT", VO_NOT},
+			{"_OR", VO_OR},
+			{"OTHERWISE", OTHERWISE},
+			{"PARAMETERS", PARAMETERS},
+			{"PASCAL", PASCAL},
+			{"PRIVATE", PRIVATE},
+			{"PROCEDURE", PROCEDURE},
+			{"PROTECTED", PROTECTED},
+			{"PUBLIC", PUBLIC},
+			{"RECOVER", RECOVER},
+			{"REF", REF},
+			{"RETURN", RETURN},
+			{"SELF", SELF},
+			{"SEQUENCE", SEQUENCE},
+			{"_SIZEOF", SIZEOF},
+			{"STATIC", STATIC},
+			{"STEP", STEP},
+			{"STRICT", STRICT},
+			{"SUPER", SUPER},
+			{"THISCALL", THISCALL},
+			{"TO", TO},
+			{"_TYPEOF", TYPEOF},
+			{"UNION", UNION},
+			{"UPTO", UPTO},
+			{"USING", USING},
+			{"WINCALL", WINCALL},
+			{"WHILE", WHILE},
+			{"_XOR", VO_XOR},
+
+			// Predefined types
+			{"ARRAY", ARRAY},
+			{"BYTE", BYTE},
+			{"_CODEBLOCK", CODEBLOCK},
+			{"CODEBLOCK", CODEBLOCK},
+			{"DATE", DATE},
+			{"DWORD", DWORD},
+			{"FLOAT", FLOAT},
+			{"INT", INT},
+			{"LOGIC", LOGIC},
+			{"LONGINT", LONGINT},
+			{"OBJECT", OBJECT},
+			{"PSZ", PSZ},
+			{"PTR", PTR},
+			{"REAL4", REAL4},
+			{"REAL8", REAL8},
+			{"SHORTINT", SHORTINT},
+			{"STRING", STRING},
+			{"SYMBOL", SYMBOL},
+			{"USUAL", USUAL},
+			{"VOID", VOID},
+			{"WORD", WORD},
+
+			// Null types
+			{"NIL", NIL},
+			{"NULL", NULL},
+			{"NULL_ARRAY", NULL_ARRAY},
+			{"NULL_CODEBLOCK", NULL_CODEBLOCK},
+			{"NULL_DATE", NULL_DATE},
+			{"NULL_OBJECT", NULL_OBJECT},
+			{"NULL_PSZ", NULL_PSZ},
+			{"NULL_PTR", NULL_PTR},
+			{"NULL_STRING", NULL_STRING},
+			{"NULL_SYMBOL", NULL_SYMBOL},
+
+			// Consts
+			{"FALSE", FALSE_CONST},
+			{"TRUE", TRUE_CONST},
+
+			// Vulcan UDCs
+			{"WAIT", WAIT},
+			{"ACCEPT", ACCEPT},
+			{"CANCEL", CANCEL},
+			{"QUIT", QUIT},
+
+		};
+
+		if (! lFour)
+		{
+			// These are predefined abbreviations of some keywords that are also valid in Vulcan
+			VoKeywords.Add("PROC", PROCEDURE);
+			VoKeywords.Add("FUNC", FUNCTION);
+			VoKeywords.Add("PROTECT", PROTECTED);
+			VoKeywords.Add("SHORT", SHORTINT);
+			VoKeywords.Add("LONG", LONGINT);
+		}
+		foreach (var text in VoKeywords.Keys) {
+			var token = VoKeywords[text];
+			ids.Add(text,token);
+			if (lFour) {
+				var s = text;
+				while (s.Length > 4) {
+					s = s.Substring(0,s.Length-1);
+					if (!ids.ContainsKey(s))
+						ids.Add(s,token);
+				}
+			}
+		}
+
+		var Keywords = new Dictionary<string,int>
+		{
+			// Vulcan keywords
+			{"ABSTRACT", ABSTRACT},
+			{"ANSI", ANSI},
+			{"AUTO", AUTO},
+			{"CATCH", CATCH},
+			{"CHAR", CHAR},
+			{"CONSTRUCTOR", CONSTRUCTOR},
+			{"CONST", CONST},
+			{"DEFAULT", DEFAULT},
+			{"DELEGATE", DELEGATE},
+			{"DESTRUCTOR", DESTRUCTOR},
+			{"ENUM", ENUM},
+			{"EVENT", EVENT},
+			{"EXPLICIT", EXPLICIT},
+			{"FINALLY", FINALLY},
+			{"FOREACH", FOREACH},
+			{"GET", GET},
+			{"IMPLEMENTS", IMPLEMENTS},
+			{"IMPLICIT", IMPLICIT},
+			{"IMPLIED", IMPLIED},
+			{"INITONLY", INITONLY},
+			{"INTERFACE", INTERFACE},
+			{"INTERNAL", INTERNAL},
+			{"LOCK", LOCK},
+			{"NAMESPACE", NAMESPACE},
+			{"NEW", NEW},
+			{"ON", ON},
+			{"OPERATOR", OPERATOR},
+			{"OUT", OUT},
+			{"PARAMS", PARAMS},
+			{"PARTIAL", PARTIAL},
+			{"PROPERTY", PROPERTY},
+			{"REPEAT", REPEAT},
+			{"SCOPE", SCOPE},
+			{"SEALED", SEALED},
+			{"SET", SET},
+			{"SIZEOF", SIZEOF},
+			{"STRUCTURE", STRUCTURE},
+			{"STRUCT", STRUCTURE},
+			{"THROW", THROW},
+			{"TRY", TRY},
+			{"TYPEOF", TYPEOF},
+			{"UNICODE", UNICODE},
+			{"UNTIL", UNTIL},
+			{"VALUE", VALUE},
+			{"VIRTUAL", VIRTUAL},
+			{"VOSTRUCT", VOSTRUCT},
+
+			// XSharp keywords
+			{"__ARGLIST", ARGLIST},
+			{"ADD", ADD},
+			{"ASCENDING", ASCENDING},
+			{"ASSEMBLY", ASSEMBLY},
+			{"ASYNC", ASYNC},
+			{"AWAIT", AWAIT},
+			{"BY", BY},
+			{"CHECKED", CHECKED},
+			{"DESCENDING", DESCENDING},
+			{"EQUALS", EQUALS},
+			{"EXTERN", EXTERN},
+			{"FIXED", FIXED},
+			{"FROM", FROM},
+			{"GROUP", GROUP},
+			{"INTO", INTO},
+			{"JOIN", JOIN},
+			{"LET", LET},
+			{"NOP", NOP},
+			{"MODULE", MODULE},
+			{"NAMEOF", NAMEOF},
+			{"ORDERBY", ORDERBY},
+			{"OVERRIDE", OVERRIDE},
+			{"REMOVE", REMOVE},
+			{"SELECT", SELECT},
+			{"SWITCH", SWITCH},
+			{"UNCHECKED", UNCHECKED},
+			{"UNSAFE", UNSAFE},
+			{"VAR", VAR},
+			{"VOLATILE", VOLATILE},
+			{"WHERE", WHERE},
+			{"YIELD", YIELD},
+
+			// Vulcan types
+			{"INT64", INT64},
+			{"UINT64", UINT64},
+
+			// XSharp types
+			{"DYNAMIC", DYNAMIC},
+
+			// Macros
+			{"__ARRAYBASE__", MACRO},
+			{"__CLR2__", MACRO},
+			{"__CLR4__", MACRO},
+			{"__CLRVERSION__", MACRO},
+			{"__DATE__", MACRO},
+			{"__DATETIME__", MACRO},
+			{"__DEBUG__", MACRO},
+			{"__DIALECT__", MACRO},
+			{"__DIALECT_CORE__", MACRO},
+			{"__DIALECT_VO__", MACRO},
+			{"__DIALECT_VULCAN__", MACRO},
+			{"__ENTITY__", MACRO},
+			{"__FILE__", MACRO},
+			{"__LINE__", MACRO},
+			{"__MODULE__", MACRO},
+			{"__SIG__", MACRO},
+			{"__SRCLOC__", MACRO},
+			{"__SYSDIR__", MACRO},
+			{"__TIME__", MACRO},
+			{"__UTCTIME__", MACRO},
+			{"__VERSION__", MACRO},
+			{"__VO1__", MACRO},
+			{"__VO2__", MACRO},
+			{"__VO3__", MACRO},
+			{"__VO4__", MACRO},
+			{"__VO5__", MACRO},
+			{"__VO6__", MACRO},
+			{"__VO7__", MACRO},
+			{"__VO8__", MACRO},
+			{"__VO9__", MACRO},
+			{"__VO10__", MACRO},
+			{"__VO11__", MACRO},
+			{"__VO12__", MACRO},
+			{"__VO13__", MACRO},
+			{"__VO14__", MACRO},
+			{"__VO15__", MACRO},
+			{"__VO16__", MACRO},
+			{"__WINDIR__", MACRO},
+			{"__WINDRIVE__", MACRO},
+			{"__XSHARP__", MACRO},
+		};
+		// These keywords are inserted without abbreviations
+		foreach (var text in Keywords.Keys) {
+			var token = Keywords[text];
+			ids.Add(text,token);
+		}
+		return ids.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+	}
+
+	public IDictionary<string,int> KwIds {
 		get {
 			if (_kwIds == null)
 			{
@@ -681,340 +981,58 @@ lexer grammar XSharpLexer;
 					else
 						_kwIds = voKwIds;
 				}
-			}
-			if (_kwIds == null)
-			{
-				_kwIds = new System.Collections.Generic.Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
-
-				var VoKeywords = new System.Collections.Generic.Dictionary<string,int>
+				if (_kwIds == null)
 				{
-					{"ACCESS", ACCESS},
-					{"ALIGN", ALIGN},
-					{"_AND", VO_AND},
-					{"AS", AS},
-					{"ASPEN", ASPEN},
-					{"ASSIGN", ASSIGN},
-					{"BEGIN", BEGIN},
-					{"BREAK", BREAK},
-					{"CALLBACK", CALLBACK},
-					{"CASE", CASE},
-					{"_CAST", CAST},
-					{"CLASS", CLASS},
-					{"CLIPPER", CLIPPER},
-					{"DECLARE", DECLARE},
-					{"DEFINE", DEFINE},
-					{"DIM", DIM},
-					{"_DLL", DLL},
-					{"DLLEXPORT", DLLEXPORT},
-					{"DO", DO},
-					{"DOWNTO", DOWNTO},
-					{"ELSE", ELSE},
-					{"ELSEIF", ELSEIF},
-					{"END", END},
-					{"ENDCASE", ENDCASE},
-					{"ENDDO", ENDDO},
-					{"ENDIF", ENDIF},
-					{"EXIT", EXIT},
-					{"EXPORT", EXPORT},
-					{"FASTCALL", FASTCALL},
-					{"FIELD", FIELD},
-					{"_FIELD", FIELD_},
-					{"FOR", FOR},
-					{"FUNCTION", FUNCTION},
-					{"GLOBAL", GLOBAL},
-					{"HIDDEN", HIDDEN},
-					{"IF", IF},
-					{"IIF", IIF},
-					{"IN", IN},
-					{"INHERIT", INHERIT},
-					{"_INIT1", INIT1},
-					{"_INIT2", INIT2},
-					{"_INIT3", INIT3},
-					{"INSTANCE", INSTANCE},
-					{"IS", IS},
-					{"LOCAL", LOCAL},
-					{"LOOP", LOOP},
-					{"MEMBER", MEMBER},
-					{"MEMVAR", MEMVAR},
-					{"METHOD", METHOD},
-					{"NEXT", NEXT},
-					{"_NOT", VO_NOT},
-					{"_OR", VO_OR},
-					{"OTHERWISE", OTHERWISE},
-					{"PARAMETERS", PARAMETERS},
-					{"PASCAL", PASCAL},
-					{"PRIVATE", PRIVATE},
-					{"PROCEDURE", PROCEDURE},
-					{"PROTECTED", PROTECTED},
-					{"PUBLIC", PUBLIC},
-					{"RECOVER", RECOVER},
-					{"REF", REF},
-					{"RETURN", RETURN},
-					{"SELF", SELF},
-					{"SEQUENCE", SEQUENCE},
-					{"_SIZEOF", SIZEOF},
-					{"STATIC", STATIC},
-					{"STEP", STEP},
-					{"STRICT", STRICT},
-					{"SUPER", SUPER},
-					{"THISCALL", THISCALL},
-					{"TO", TO},
-					{"_TYPEOF", TYPEOF},
-					{"UNION", UNION},
-					{"UPTO", UPTO},
-					{"USING", USING},
-					{"WINCALL", WINCALL},
-					{"WHILE", WHILE},
-					{"_XOR", VO_XOR},
-
-					// Predefined types
-					{"ARRAY", ARRAY},
-					{"BYTE", BYTE},
-					{"_CODEBLOCK", CODEBLOCK},
-					{"CODEBLOCK", CODEBLOCK},
-					{"DATE", DATE},
-					{"DWORD", DWORD},
-					{"FLOAT", FLOAT},
-					{"INT", INT},
-					{"LOGIC", LOGIC},
-					{"LONGINT", LONGINT},
-					{"OBJECT", OBJECT},
-					{"PSZ", PSZ},
-					{"PTR", PTR},
-					{"REAL4", REAL4},
-					{"REAL8", REAL8},
-					{"SHORTINT", SHORTINT},
-					{"STRING", STRING},
-					{"SYMBOL", SYMBOL},
-					{"USUAL", USUAL},
-					{"VOID", VOID},
-					{"WORD", WORD},
-
-					// Null types
-					{"NIL", NIL},
-					{"NULL", NULL},
-					{"NULL_ARRAY", NULL_ARRAY},
-					{"NULL_CODEBLOCK", NULL_CODEBLOCK},
-					{"NULL_DATE", NULL_DATE},
-					{"NULL_OBJECT", NULL_OBJECT},
-					{"NULL_PSZ", NULL_PSZ},
-					{"NULL_PTR", NULL_PTR},
-					{"NULL_STRING", NULL_STRING},
-					{"NULL_SYMBOL", NULL_SYMBOL},
-
-					// Consts
-					{"FALSE", FALSE_CONST},
-					{"TRUE", TRUE_CONST},
-
-					// Vulcan UDCs
-					{"WAIT", WAIT},
-					{"ACCEPT", ACCEPT},
-					{"CANCEL", CANCEL},
-					{"QUIT", QUIT},
-
-				};
-
-				if (! _Four)
-				{
-					// These are predefined abbreviations of some keywords that are also valid in Vulcan
-					VoKeywords.Add("PROC", PROCEDURE);
-					VoKeywords.Add("FUNC", FUNCTION);
-					VoKeywords.Add("PROTECT", PROTECTED);
-					VoKeywords.Add("SHORT", SHORTINT);
-					VoKeywords.Add("LONG", LONGINT);
-				}
-				foreach (var text in VoKeywords.Keys) {
-					var token = VoKeywords[text];
-					_kwIds.Add(text,token);
-					if (_Four) {
-						var s = text;
-						while (s.Length > 4) {
-							s = s.Substring(0,s.Length-1);
-							if (!_kwIds.ContainsKey(s))
-								_kwIds.Add(s,token);
-						}
+					_kwIds = _getIds(_Four);
+					lock (kwlock)
+					{
+						if (! _Four)
+							xsKwIds = _kwIds;
+						else
+							voKwIds = _kwIds;
 					}
-				}
-
-				var Keywords = new System.Collections.Generic.Dictionary<string,int>
-				{
-					// Vulcan keywords
-					{"ABSTRACT", ABSTRACT},
-					{"ANSI", ANSI},
-					{"AUTO", AUTO},
-					{"CATCH", CATCH},
-					{"CHAR", CHAR},
-					{"CONSTRUCTOR", CONSTRUCTOR},
-					{"CONST", CONST},
-					{"DEFAULT", DEFAULT},
-					{"DELEGATE", DELEGATE},
-					{"DESTRUCTOR", DESTRUCTOR},
-					{"ENUM", ENUM},
-					{"EVENT", EVENT},
-					{"EXPLICIT", EXPLICIT},
-					{"FINALLY", FINALLY},
-					{"FOREACH", FOREACH},
-					{"GET", GET},
-					{"IMPLEMENTS", IMPLEMENTS},
-					{"IMPLICIT", IMPLICIT},
-					{"IMPLIED", IMPLIED},
-					{"INITONLY", INITONLY},
-					{"INTERFACE", INTERFACE},
-					{"INTERNAL", INTERNAL},
-					{"LOCK", LOCK},
-					{"NAMESPACE", NAMESPACE},
-					{"NEW", NEW},
-					{"ON", ON},
-					{"OPERATOR", OPERATOR},
-					{"OUT", OUT},
-					{"PARAMS", PARAMS},
-					{"PARTIAL", PARTIAL},
-					{"PROPERTY", PROPERTY},
-					{"REPEAT", REPEAT},
-					{"SCOPE", SCOPE},
-					{"SEALED", SEALED},
-					{"SET", SET},
-					{"SIZEOF", SIZEOF},
-					{"STRUCTURE", STRUCTURE},
-					{"STRUCT", STRUCTURE},
-					{"THROW", THROW},
-					{"TRY", TRY},
-					{"TYPEOF", TYPEOF},
-					{"UNICODE", UNICODE},
-					{"UNTIL", UNTIL},
-					{"VALUE", VALUE},
-					{"VIRTUAL", VIRTUAL},
-					{"VOSTRUCT", VOSTRUCT},
-
-					// XSharp keywords
-					{"__ARGLIST", ARGLIST},
-					{"ADD", ADD},
-					{"ASCENDING", ASCENDING},
-					{"ASSEMBLY", ASSEMBLY},
-					{"ASYNC", ASYNC},
-					{"AWAIT", AWAIT},
-					{"BY", BY},
-					{"CHECKED", CHECKED},
-					{"DESCENDING", DESCENDING},
-					{"EQUALS", EQUALS},
-					{"EXTERN", EXTERN},
-					{"FIXED", FIXED},
-					{"FROM", FROM},
-					{"GROUP", GROUP},
-					{"INTO", INTO},
-					{"JOIN", JOIN},
-					{"LET", LET},
-					{"NOP", NOP},
-					{"MODULE", MODULE},
-					{"NAMEOF", NAMEOF},
-					{"ORDERBY", ORDERBY},
-					{"OVERRIDE", OVERRIDE},
-					{"REMOVE", REMOVE},
-					{"SELECT", SELECT},
-					{"SWITCH", SWITCH},
-					{"UNCHECKED", UNCHECKED},
-					{"UNSAFE", UNSAFE},
-					{"VAR", VAR},
-					{"VOLATILE", VOLATILE},
-					{"WHERE", WHERE},
-					{"YIELD", YIELD},
-
-					// Vulcan types
-					{"INT64", INT64},
-					{"UINT64", UINT64},
-
-					// XSharp types
-					{"DYNAMIC", DYNAMIC},
-
-					// Macros
-					{"__ARRAYBASE__", MACRO},
-					{"__CLR2__", MACRO},
-					{"__CLR4__", MACRO},
-					{"__CLRVERSION__", MACRO},
-					{"__DATE__", MACRO},
-					{"__DATETIME__", MACRO},
-					{"__DEBUG__", MACRO},
-					{"__DIALECT__", MACRO},
-					{"__DIALECT_CORE__", MACRO},
-					{"__DIALECT_VO__", MACRO},
-					{"__DIALECT_VULCAN__", MACRO},
-					{"__ENTITY__", MACRO},
-					{"__FILE__", MACRO},
-					{"__LINE__", MACRO},
-					{"__MODULE__", MACRO},
-					{"__SIG__", MACRO},
-					{"__SRCLOC__", MACRO},
-					{"__SYSDIR__", MACRO},
-					{"__TIME__", MACRO},
-					{"__UTCTIME__", MACRO},
-					{"__VERSION__", MACRO},
-					{"__VO1__", MACRO},
-					{"__VO2__", MACRO},
-					{"__VO3__", MACRO},
-					{"__VO4__", MACRO},
-					{"__VO5__", MACRO},
-					{"__VO6__", MACRO},
-					{"__VO7__", MACRO},
-					{"__VO8__", MACRO},
-					{"__VO9__", MACRO},
-					{"__VO10__", MACRO},
-					{"__VO11__", MACRO},
-					{"__VO12__", MACRO},
-					{"__VO13__", MACRO},
-					{"__VO14__", MACRO},
-					{"__VO15__", MACRO},
-					{"__VO16__", MACRO},
-					{"__WINDIR__", MACRO},
-					{"__WINDRIVE__", MACRO},
-					{"__XSHARP__", MACRO},
-				};
-				// These keywords are inserted without abbreviations
-				foreach (var text in Keywords.Keys) {
-					var token = Keywords[text];
-					_kwIds.Add(text,token);
-				}
-				lock (kwlock)
-				{
-					if (! _Four)
-						xsKwIds = _kwIds;
-					else
-						voKwIds = _kwIds;
 				}
 			}
 			return _kwIds;
 		}
 	}
 
-	System.Collections.Generic.Dictionary<string,int> _symIds;
+	static IDictionary<string,int> _symIds;
 
-	System.Collections.Generic.Dictionary<string,int> symIds {
-		get {
-			if (_symIds == null) {
-				_symIds = new System.Collections.Generic.Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+	private IDictionary<string,int> _getppIds() 
+	{
+		var symIds = new Dictionary<string,int>(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer)
+		{
+			{"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>
+			{"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
+			{"#ELSE", PP_ELSE},				// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+			{"#ENDIF", PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+			{"#ENDREGION", PP_ENDREGION},	// #region [description]sourceCode#endregion
+			{"#ERROR", PP_ERROR},			// #error [errorMessage]
+			{"#IFDEF", PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
+			{"#IFNDEF", PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
+			{"#INCLUDE", PP_INCLUDE},		// #include "<headerfilename>"
+			{"#LINE", PP_LINE},				// #line <number> [FileName] or #line default
+			{"#REGION", PP_REGION},			// #region [description]sourceCode#endregion
+			{"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
+			{"#UNDEF", PP_UNDEF},			// #undef <identifier>
+			{"#WARNING", PP_WARNING},		// #warning [warningMessage]
+			{"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
+			{"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
+		};
+		return symIds.ToImmutableDictionary(Microsoft.CodeAnalysis.CaseInsensitiveComparison.Comparer);
+	}
 
-				var PpSymbols = new System.Collections.Generic.Dictionary<string,int>
+	public IDictionary<string,int> SymIds 
+	{
+		get 
+		{
+			if (_symIds == null) 
+			{
+				
+				lock (kwlock)
 				{
-					{"#COMMAND", PP_COMMAND},		// #command   <matchPattern> => <resultPattern>
-					{"#DEFINE", PP_DEFINE},			// #define <idConstant> [<resultText>] or #define <idFunction>([<arg list>]) [<exp>]
-					{"#ELSE", PP_ELSE},				// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-					{"#ENDIF", PP_ENDIF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-					{"#ENDREGION", PP_ENDREGION},	// #region [description]sourceCode#endregion
-					{"#ERROR", PP_ERROR},			// #error [errorMessage]
-					{"#IFDEF", PP_IFDEF},			// #ifdef <identifier>   <statements>...[#else]   <statements>...#endif
-					{"#IFNDEF", PP_IFNDEF},			// #ifndef <identifier>   <statements>...[#else]   <statements>...#endif
-					{"#INCLUDE", PP_INCLUDE},		// #include "<headerfilename>"
-					{"#LINE", PP_LINE},				// #line <number> [FileName] or #line default
-					{"#REGION", PP_REGION},			// #region [description]sourceCode#endregion
-					{"#TRANSLATE", PP_TRANSLATE},	// #translate <matchPattern> => <resultPattern>
-					{"#UNDEF", PP_UNDEF},			// #undef <identifier>
-					{"#WARNING", PP_WARNING},		// #warning [warningMessage]
-					{"#XCOMMAND", PP_COMMAND},		// #xcommand   <matchPattern> => <resultPattern>  // alias for #command   , no 4 letter abbrev
-					{"#XTRANSLATE", PP_TRANSLATE},	// #xtranslate <matchPattern> => <resultPattern>  // alias for #translate , no 4 letter abbrev
-				};
-
-				foreach (var text in PpSymbols.Keys) {
-					var token = PpSymbols[text];
-					_symIds.Add(text,token);
+					_symIds = _getppIds();
 				}
 			}
 			return _symIds;

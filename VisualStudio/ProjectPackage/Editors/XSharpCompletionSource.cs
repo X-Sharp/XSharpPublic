@@ -33,8 +33,11 @@ namespace XSharpLanguage
 
         public ICompletionSource TryCreateCompletionSource(ITextBuffer textBuffer)
         {
-
+#if CODEMODEL
             return new XSharpCompletionSource(this, textBuffer, GetFileName(textBuffer));
+#else
+            return null;
+#endif
         }
 
 

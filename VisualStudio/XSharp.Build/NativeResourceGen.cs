@@ -140,10 +140,14 @@ namespace XSharp.Build {
                 foreach(var item in this.Sources) {
                     try {
                         var fileName = item.GetMetadata("Fullpath");
-                        cmds.Append("#include \"");
-                        cmds.Append(fileName);
-                        cmds.Append("\"\r\n");
-                    } catch(Exception e) {
+                        if (System.IO.File.Exists(fileName))
+                        {
+                            cmds.Append("#include \"");
+                            cmds.Append(fileName);
+                            cmds.Append("\"\r\n");
+                        }
+                    }
+                    catch (Exception e) {
                         base.Log.LogErrorFromException(e);
                     }
                 }

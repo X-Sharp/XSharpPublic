@@ -655,7 +655,9 @@ namespace XSharp.Build
                         sb.Append(';');
                     sb.Append(s);
                 }
-                commandline.AppendTextUnquoted("/i:\"" + sb.ToString() + "\"");
+                string path = sb.ToString();
+                path = path.Replace(@"\\", @"\");
+                commandline.AppendTextUnquoted("/i:\"" + path + "\"");
             }
         }
         internal string PlatformWith32BitPreference

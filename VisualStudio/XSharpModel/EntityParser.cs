@@ -103,13 +103,30 @@ namespace XSharpModel
                     // Set as Current working Class
                     this._currentTypes.Push(newClass);
                 }
+                else if (context is XSharpParser.Interface_Context)
+                {
+                    XType newIf = this.FromInterface((XSharpParser.Interface_Context)context);
+                    newIf.File = this.file;
+                    //
+                    this.file.TypeList.Add(newIf);
+                    // Set as Current working Interface
+                    this._currentTypes.Push(newIf);
+                }
                 else if (context is XSharpParser.ClsctorContext)
                 {
                     XSharpParser.ClsctorContext current = (XSharpParser.ClsctorContext)context;
                     XTypeMember newMethod = this.FromCtor((XSharpParser.ClsctorContext)context);
                     newMethod.File = this.file;
-                    newMethod.Parent = this._currentTypes.Peek();
-                    this._currentTypes.Peek().Members.Add(newMethod);
+                    if (this._currentTypes.Count > 0)
+                    {
+                        newMethod.Parent = this._currentTypes.Peek();
+                        this._currentTypes.Peek().Members.Add(newMethod);
+                    }
+                    else
+                    {
+                        if (System.Diagnostics.Debugger.IsAttached)
+                            System.Diagnostics.Debugger.Break();
+                    }
                     this._currentMethod = newMethod;
                 }
                 // clsdtor
@@ -118,8 +135,16 @@ namespace XSharpModel
                     XSharpParser.MethodContext current = (XSharpParser.MethodContext)context;
                     XTypeMember newMethod = this.FromMethod((XSharpParser.MethodContext)context);
                     newMethod.File = this.file;
-                    newMethod.Parent = this._currentTypes.Peek();
-                    this._currentTypes.Peek().Members.Add(newMethod);
+                    if (this._currentTypes.Count > 0)
+                    {
+                        newMethod.Parent = this._currentTypes.Peek();
+                        this._currentTypes.Peek().Members.Add(newMethod);
+                    }
+                    //else
+                    //{
+                    //    if (System.Diagnostics.Debugger.IsAttached)
+                    //        System.Diagnostics.Debugger.Break();
+                    //}
                     this._currentMethod = newMethod;
                 }
                 else if (context is XSharpParser.PropertyContext)
@@ -127,8 +152,16 @@ namespace XSharpModel
                     XSharpParser.PropertyContext current = (XSharpParser.PropertyContext)context;
                     XTypeMember newMethod = this.FromProperty((XSharpParser.PropertyContext)context);
                     newMethod.File = this.file;
-                    newMethod.Parent = this._currentTypes.Peek();
-                    this._currentTypes.Peek().Members.Add(newMethod);
+                    if (this._currentTypes.Count > 0)
+                    {
+                        newMethod.Parent = this._currentTypes.Peek();
+                        this._currentTypes.Peek().Members.Add(newMethod);
+                    }
+                    //else
+                    //{
+                    //    if (System.Diagnostics.Debugger.IsAttached)
+                    //        System.Diagnostics.Debugger.Break();
+                    //}
                     this._currentMethod = newMethod;
                 }
                 // propertyaccessor
@@ -252,7 +285,13 @@ namespace XSharpModel
                 if (context is XSharpParser.Class_Context)
                 {
                     //XSharpParser.Class_Context current = (XSharpParser.Class_Context)context;
-                    this._currentTypes.Pop();
+                    if (_currentTypes.Count > 0)
+                    { 
+                        this._currentTypes.Pop();
+                    }
+                    //else
+                    //    if (System.Diagnostics.Debugger.IsAttached)
+                    //        System.Diagnostics.Debugger.Break();
                 }
                 else if ((context is XSharpParser.ClsctorContext) ||
                             (context is XSharpParser.MethodContext) ||
@@ -434,6 +473,26 @@ namespace XSharpModel
             }
             //
             return newStruct;
+        }
+        private XType FromInterface(XSharpParser.Interface_Context context)
+        {
+            //
+            XType newIf = new XType(context.Id.GetText(),
+                Kind.Structure,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
+            //
+            newIf.NameSpace = this.CurrentNamespace;
+            // and push into the current Namespace
+            //CurrentNamespace.Types.Add(newClass);
+            // Static Class ?
+            newIf.IsStatic = this.IsStatic(context.Modifiers?._Tokens);
+            // Partial Class ?
+            newIf.IsPartial = this.IsPartial(context.Modifiers?._Tokens);
+            // IMPLEMENTS ?
+            //
+            return newIf;
         }
 
         private XTypeMember FromFunction(XSharpParser.FunctionContext context)

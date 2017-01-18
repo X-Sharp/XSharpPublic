@@ -982,6 +982,7 @@ namespace XSharp.Project
             // XSharpFolderNode
             // XSharpProjectReference
             // So, we will add files only (currently) => Don't forget RemoveURL
+#if CODEMODEL
             if (!IsProjectFile(url))
             {
                 if (File.Exists(url) && IsCodeFile(url))
@@ -989,7 +990,7 @@ namespace XSharp.Project
                     this.ProjectModel.AddFile(url);
                 }
             }
-
+#endif
         }
 
         public new void RemoveURL(String url)
@@ -997,7 +998,9 @@ namespace XSharp.Project
             //
             base.RemoveURL(url);
             //
+#if CODEMODEL
             this.ProjectModel.RemoveFile(url);
+#endif
         }
 
 
@@ -1006,7 +1009,7 @@ namespace XSharp.Project
             return (String.Compare(Path.GetExtension(fullPath), ".xsprj", StringComparison.OrdinalIgnoreCase) == 0);
         }
 
-        #region IXSharpProject Interface
+#region IXSharpProject Interface
         public void SetStatusBarText(string msg)
         {
             var statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
@@ -1023,7 +1026,7 @@ namespace XSharp.Project
                 return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
             }
         }
-        #endregion
+#endregion
 
 
         protected override void Reload()
@@ -1083,7 +1086,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-        #region IVsSingleFileGeneratorFactory
+#region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -1129,10 +1132,10 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-        #endregion
+#endregion
 
 
-        #region TableManager
+#region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ITableManager errorListTableManager;
         ErrorListProvider errorlistProvider;
@@ -1190,6 +1193,6 @@ namespace XSharp.Project
         }
     }
 
-    #endregion
+#endregion
 }
 

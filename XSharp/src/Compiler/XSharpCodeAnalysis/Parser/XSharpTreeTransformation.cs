@@ -3531,6 +3531,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return originalbody;
         }
 
+        bool hasDllImport(SyntaxList<AttributeListSyntax> attributes)
+        {
+            if (attributes != null && attributes.Count > 0)
+            {
+                foreach (AttributeListSyntax al in attributes)
+                {
+                    var ats = al.Attributes;
+                    for (int i = 0; i < ats.Count; i++)
+                    {
+                        var at = ats[i] as AttributeSyntax;
+                        if (at.ToString().ToLower().Contains("dllimport"))
+                        {
+                            return true;
+                        }
+                    }
+
+                }
+            }
+            return false;
+        }
+
+        SyntaxList<SyntaxToken> GetFuncProcModifiers(XP.FuncprocModifiersContext context, bool isExtern, bool isInInterface)
+        {
+            if (isExtern)
+                return context?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword, SyntaxKind.ExternKeyword);
+            else
+                return context?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword);
+
+        }
         public override void ExitFunction([NotNull] XP.FunctionContext context)
         {
             context.SetSequencePoint(context.end);
@@ -3539,12 +3568,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            bool isextern = hasDllImport(attributes);
+            var modifiers = GetFuncProcModifiers(context.Modifiers, isextern, isInInterface);
+            if (! isextern)
+            {
+                isextern = modifiers.Any(SyntaxKind.ExternKeyword);
+            }
+            var hasnobody = (isInInterface || isextern);
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
+            var body = hasnobody ? null : context.StmtBlk.Get<BlockSyntax>();
             var returntype = context.Type?.Get<TypeSyntax>() ?? _getMissingType();
             returntype.XVoDecl = true;
             var id = context.Id.Get<SyntaxToken>();
-            if (!isInInterface)
+            if (!hasnobody)
             {
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
@@ -3557,7 +3593,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword),
+                modifiers: modifiers,
                 returnType: returntype,
                 explicitInterfaceSpecifier: null,
                 identifier: id,
@@ -3566,8 +3602,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
                 body: body,
                 expressionBody: null,
-                semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-          
+                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+
         }
         public override void EnterProcedure([NotNull] XP.ProcedureContext context)
         {
@@ -3615,15 +3651,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
             }
             var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            bool isextern = hasDllImport(attributes);
             var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-            var body = isInInterface ? null : context.StmtBlk.Get<BlockSyntax>();
             var returntype = VoidType();
+            var modifiers = GetFuncProcModifiers(context.Modifiers, isextern, isInInterface);
+            if (!isextern)
+            {
+                isextern = modifiers.Any(SyntaxKind.ExternKeyword);
+            }
+            var hasnobody = isextern && isInInterface;
+            var body = hasnobody ? null : context.StmtBlk.Get<BlockSyntax>();
             // no return statement needed in PROCEDURE
             // body = AddMissingReturnStatement(body, context.StmtBlk, null);
-            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            if (! hasnobody)
+            {
+                ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            }
             context.Put(_syntaxFactory.MethodDeclaration(
                 attributeLists: attributes,
-                modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(isInInterface, SyntaxKind.StaticKeyword),
+                modifiers: modifiers,
                 returnType: returntype,
                 explicitInterfaceSpecifier: null,
                 identifier: context.Id.Get<SyntaxToken>(),
@@ -3632,7 +3678,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
                 body: body,
                 expressionBody: null,
-                semicolonToken: (!isInInterface && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+                semicolonToken: (body != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
         public override void ExitCallingconvention([NotNull] XP.CallingconventionContext context)

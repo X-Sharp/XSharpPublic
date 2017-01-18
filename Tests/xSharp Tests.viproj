@@ -40470,6 +40470,107 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceConsole=0
   ForceX86=0
 ENDApplication = C408 - Problem with /vo9 and RETURN type written as System.Void
+
+ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+; ************** APPLICATION C409 - Problem with DllImport FUNC and /vo9 *************
+Application = C409 - Problem with DllImport FUNC and /vo9
+IDEVersion = 1.06
+GalleryName = 
+GalleryPage = 
+GalleryDefaultName = 
+Target = 0
+Platform = x86
+Language = XSharp
+Runtime = CLR4
+Dialect = Vulcan
+Folder = %ProjectPath%\Applications\C409\
+PrgSubFolder = \Prg
+ResourcesSubFolder = 
+Description = 
+NameSpace = 
+Assembly = C409
+Extension = 
+ApplicationIcon = 
+OutputFolder = 
+Frameworks = 1
+GUID = A8918354-4456-42BC-B356-759CD876524B
+IncludeInProjectBuild = 1
+IncludeInProjectSearch = 1
+IncludeInProjectExport = 1
+IncludePath = 
+SignAssembly = 0
+KeyFile = 
+
+[ExportOptions]
+ExportResources = 0
+ExportImages = 0
+[C409 - Problem with DllImport FUNC and /vo9 FileGroups]
+[C409 - Problem with DllImport FUNC and /vo9 Files]
+File = %AppPath%\Prg\C409.prg
+FileGUID = 91673317-263A-436C-A677-E2A823DDBC68
+FileType = Code
+[C409 - Problem with DllImport FUNC and /vo9 References]
+ReferenceGAC = CLR4,System,1,0,4.0.0.0
+ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
+ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
+ReferenceGAC = CLR4,System.Windows.Forms,1,0,4.0.0.0
+ReferenceGAC = CLR4,System.Drawing,1,0,4.0.0.0
+[C409 - Problem with DllImport FUNC and /vo9 Resources]
+[C409 - Problem with DllImport FUNC and /vo9 Native Resources]
+[C409 - Problem with DllImport FUNC and /vo9 License files]
+[C409 - Problem with DllImport FUNC and /vo9 General Options]
+Switches=
+ZeroArrays=0
+CaseSensitive=0
+ImplicitNamespace=0
+VO1=0
+VO2=0
+VO3=0
+VO4=0
+VO5=0
+VO6=0
+VO7=0
+VO8=0
+VO9=1
+VO10=0
+VO11=0
+VO12=0
+VO13=0
+VO14=0
+LateBound=0
+Unsafe=1
+IgnoreStdDefs=0
+Ovf=0
+FOvf=0
+ResponseOnly=0
+[C409 - Problem with DllImport FUNC and /vo9 Configurations]
+AppConfig = Debug,11111111-1111-1111-1111-111111111111
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=1
+  DebugInit=1
+  DefineDebug=1
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+AppConfig = Release,22222222-2222-2222-2222-222222222222
+  Switches=
+  SwitchesCF=
+  CommandLine=
+  CommandLineCF=
+  Debug=0
+  DebugInit=0
+  DefineDebug=0
+  DefineTrace=0
+  SyntaxOnly=0
+  WarningsErrors=0
+  ForceConsole=0
+  ForceX86=0
+ENDApplication = C409 - Problem with DllImport FUNC and /vo9
 [EndApplications]
 
 [Configurations]

@@ -9,6 +9,19 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/additionalfile</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The /additionalfile commandline option allows you to include extra files in the assembly. To support this scenario the X# compiler can accept additional, non-source text files as inputs.</text></para>
+    <para styleclass="Body Text"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/additionalfile:file &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Body Text"></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">For example, an analyzer may enforce that a set of banned terms is not used within a project, or that every source file has a certain copyright header. The terms or copyright header could be passed to the analyzer as an additional file, rather than being hard-coded in the analyzer itself.</text></para>
+    <para styleclass="Body Text"><text styleclass="Heading2" translate="true">Example</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">On the command line, additional files can be passed using the /additionalfile option. For example:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">xsc alpha.prg /additionalfile:terms.txt &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

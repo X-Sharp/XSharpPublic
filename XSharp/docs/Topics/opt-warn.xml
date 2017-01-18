@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/warn</title>
   <keywords>
     <keyword translate="true">/warn compiler option</keyword>
@@ -17,8 +17,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">option</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The warning level you want displayed for the compilation: Lower numbers show only high severity warnings; higher numbers show more warnings. Valid values are 0-4:</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">option</text><tab /><text styleclass="List" translate="true">The warning level you want displayed for the compilation: Lower numbers show only high severity warnings; higher numbers show more warnings. Valid values are 0-4:</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:285px;">
@@ -71,9 +70,9 @@
     </table></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To get information about an error or warning, you can look up the error code in the Help Index. For other ways to get information about an error or warning, see C# Compiler Errors.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To get information about an error or warning, you can look up the error code in the Help Index. For other ways to get information about an error or warning, see </text><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Errors" styleclass="Normal" translate="true">X# Compiler Errors</link><text styleclass="Normal" translate="true">.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use /warnaserror to treat all warnings as errors. Use /nowarn to disable certain warnings.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Use </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror" styleclass="Normal" translate="true">/warnaserror</link><text styleclass="Normal" translate="true"> to treat all warnings as errors. Use </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn" styleclass="Normal" translate="true">/nowarn</link><text styleclass="Normal" translate="true"> to disable certain warnings.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">/w is the short form of /warn.</text></para>
     <para styleclass="Normal"></para>

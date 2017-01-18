@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/parallel</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Enter topic text here.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Specifies whether to use concurrent build (+).</text></para>
   </body>
 </topic>

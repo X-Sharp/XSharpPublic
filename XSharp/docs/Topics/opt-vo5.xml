@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/vo5</title>
   <keywords>
     <keyword translate="true">/vo5 compiler option</keyword>
@@ -18,8 +18,7 @@
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo5[+|-]</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">+ | - </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifying +, or just /vo5, directs the compiler to implicitly use the CLIPPER calling convention for functions, methods and constructors that are declared with zero arguments and no explicit calling convention. </text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo5, directs the compiler to implicitly use the CLIPPER calling convention for functions, methods and constructors that are declared with zero arguments and no explicit calling convention. </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For compatibility with Clipper, Visual Objects uses the CLIPPER calling convention for all functions and methods that are declared with zero arguments and no explicit calling convention. The STRICT keyword may be used to override the default, and cause the function to use the STRICT calling convention.</text></para>
@@ -33,8 +32,8 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Regardless of whether this option is enabled or not, the CLIPPER and STRICT keywords can always be used to explicitly specify the desired calling convention.</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>
-    <list id="24" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page (see How to: Set Build Properties). </text></li>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the Implicit CLIPPER Calling Convention property. </text></li>
     </list>

@@ -11,7 +11,14 @@
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option will allow you to control what the compiler will do with local variables, parameters and return types without type specification.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The default is /vo15+ for the VO and Vulcan dialects. For the Core dialect the default is /vo15-</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo15[+|-]</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </text></para>
+    <para styleclass="Heading2"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code Example"><text styleclass="Code Example" translate="true">FUNCTION LongSquare(nLong as LONG)</text><tab /><tab /><text styleclass="Code Example" translate="true">// Note that the return type is missing</text></para>

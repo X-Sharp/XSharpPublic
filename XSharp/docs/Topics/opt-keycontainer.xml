@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/keycontainer</title>
   <keywords>
     <keyword translate="true">/keycontainer compiler option</keyword>
@@ -18,9 +18,7 @@
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">string</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of the strong name key container.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">string</text><tab /><text styleclass="List" translate="true">The name of the strong name key container.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">When the /keycontainer option is used, the compiler creates a sharable component by inserting a public key from the specified container into the assembly manifest and signing the final assembly with the private key. To generate a key file, type sn -k file at the command line. sn -i installs the key pair into a container.</text></para>
@@ -32,10 +30,9 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">You can also pass your encryption information to the compiler with /keyfile. Use /delaysign if you want the public key added to the assembly manifest but want to delay signing the assembly until it has been tested.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information, see Creating and Using Strong-Named Assemblies and Delay Signing an Assembly.</text></para>
-    <para styleclass="Heading3"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
     <para styleclass="Normal"></para>
-    <list id="10" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">This compiler option is not available in the Visual Studio development environment.</text></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/define</title>
   <keywords>
     <keyword translate="true">/define compiler option</keyword>
@@ -9,15 +9,14 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/define</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /define option defines name as a symbol in all source code files your program.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /define compiler option defines name as a symbol in all source code files your program.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/define:name[;name2] &#160;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">name, name2</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of one or more symbols that you want to define.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">name, name2</text><tab /><text styleclass="List" translate="true">The name of one or more symbols that you want to define.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /define option has the same effect as using a #define preprocessor directive except that the compiler option is in effect for all files in the project. A symbol remains defined in a source file until an #undef directive in the source file removes the definition. When you use the /define option, an #undef directive in one file has no effect on other source code files in the project.</text></para>

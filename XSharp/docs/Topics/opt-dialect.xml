@@ -15,13 +15,16 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/dialect</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The syntax is: </text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">/dialect:Core</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">/dialect:VO</text></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">/dialect:Vulcan</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">etc.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /dialect compiler option selects the dialect that the compiler should follow. Valid options are: Core, VO, Vulcan, dBase, FoxPro, xBase++ and Harbour.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/dialect: Core | VO | Vulcan</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="List" translate="true">Core</text><tab /><text styleclass="List" translate="true">Use the Core dialect. This is like C# with an xBase syntax. </text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">VO</text><tab /><text styleclass="List" translate="true">This activates the VO dialect. At this moment this only works in BYOR mode.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">Vulcan</text><tab /><text styleclass="List" translate="true">This activates the Vulcan dialect. At this moment this only works in BYOR mode.</text></para>
     <para styleclass="Heading3"><link displaytype="text" defaultstyle="true" type="topiclink" href="Dialects" styleclass="Heading3" style="font-weight:normal;" translate="true">See the dialect topic for differences between dialects</link></para>
     <para styleclass="Normal"></para>
   </body>

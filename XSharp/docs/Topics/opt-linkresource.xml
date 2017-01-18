@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/linkresource</title>
   <keywords>
     <keyword translate="true">/linkresource compiler option</keyword>
@@ -17,14 +17,11 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">filename</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The .NET Framework resource file to which you want to link from the assembly.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">filename</text><tab /><text styleclass="List" translate="true">The .NET Framework resource file to which you want to link from the assembly.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Code Example" translate="true">identifier</text><text styleclass="Normal" translate="true"> (optional)</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">identifier</text><text styleclass="List" translate="true"> (optional)</text><tab /><text styleclass="List" translate="true">The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Code Example" translate="true">accessibility-modifier</text><text styleclass="Normal" translate="true"> (optional)</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The accessibility of the resource: public or private. The default is public.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">accessibility-modifier</text><text styleclass="List" translate="true"> (optional)</text><tab /><text styleclass="List" translate="true">The accessibility of the resource: public or private. The default is public.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">By default, linked resources are public in the assembly when they are created with the C# compiler. To make the resources private, specify </text><text styleclass="Code Example" translate="true">private</text><text styleclass="Normal" translate="true"> as the accessibility modifier. No other modifier other than </text><text styleclass="Code Example" translate="true">public</text><text styleclass="Normal" translate="true"> or </text><text styleclass="Code Example" translate="true">private</text><text styleclass="Normal" translate="true"> is allowed.</text></para>

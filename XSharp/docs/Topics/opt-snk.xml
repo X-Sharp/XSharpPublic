@@ -1,36 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/snk</title>
   <keywords>
+    <keyword translate="true">/keyfile</keyword>
     <keyword translate="true">/snk compiler option</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/snk</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /snk option specifies a file containing a cryptographic key that will be used to sign the output assembly.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/snk:filename</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">filename</text><text styleclass="Normal" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the filename containing the cryptographic key. </text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When this option is used, the compiler inserts the public key from the specified file into the assembly manifest and then signs the final assembly with the private key. To generate a key file, type sn -k file at the command line.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information, see Delay Signing an Assembly.</text></para>
-    <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page (see How to: Set Build Properties). </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Build tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Signing section, modify the Key File property. </text></li>
-    </list>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /snk compiler option is an alias for the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-keyfile" styleclass="Normal" translate="true">/keyfile </link><text styleclass="Normal" translate="true">option, for compatibility with Vulcan</text></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

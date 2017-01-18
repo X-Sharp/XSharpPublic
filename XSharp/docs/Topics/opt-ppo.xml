@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/ppo</title>
   <keywords>
     <keyword translate="true">/ppo compiler option</keyword>
@@ -16,12 +16,11 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Arguments</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">+ | - </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifying +, or just /ppo, directs the compiler to write the output of the preprocessor to a file. </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Remarks</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /ppo, directs the compiler to write the output of the preprocessor to a file. </text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Each source file will be written to a file with the same base name and an extension of .ppo, in the same directory as the source file. If a .ppo file already exists, it will be overwritten without warning.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> Tip: </text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true"> Tip: </text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">.ppo files can be viewed within Visual Studio. After enabling the /ppo option and rebuilding the project, select any node in the project in Solution Explorer, click the Show All Files button in the Solution Explorer toolbar, then double click the desired .ppo file node.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">To view a .prg and .ppo file side-by-side to compare them, right click the document tab in either the .prg or .ppo file and click New Vertical Tab Group.</text></para>

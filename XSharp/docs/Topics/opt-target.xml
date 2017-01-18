@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/target</title>
   <keywords>
     <keyword translate="true">/target compiler option</keyword>
@@ -11,23 +11,17 @@
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /target compiler option can be specified in one of four forms:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:appcontainerexe</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create an .exe file for Windows 8.x Store apps.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">/target:appcontainerexe</text><tab /><text styleclass="List" translate="true">To create an .exe file for Windows 8.x Store apps.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:exe</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create an .exe file.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">/target:exe</text><tab /><tab /><tab /><text styleclass="List" translate="true">To create an .exe file.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:library</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create a code library.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">/target:library</text><tab /><tab /><tab /><text styleclass="List" translate="true">To create a code library.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:module</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create a module.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">/target:module</text><tab /><tab /><text styleclass="List" translate="true">To create a module.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:winexe</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create a Windows program.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">/target:winexe</text><tab /><tab /><tab /><text styleclass="List" translate="true">To create a Windows program.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/target:winmdobj</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To create an intermediate .winmdobj file.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">/target:winmdobj</text><tab /><tab /><text styleclass="List" translate="true">To create an intermediate .winmdobj file.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Unless you specify /target:module, /target causes a .NET Framework assembly manifest to be placed in an output file. For more information, see Assemblies in the Common Language Runtime and Common Attributes.</text></para>
     <para styleclass="Normal"></para>

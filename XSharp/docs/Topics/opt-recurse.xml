@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/recurse</title>
   <keywords>
     <keyword translate="true">/recurse compiler option</keyword>
@@ -17,11 +17,9 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Code Example" translate="true">dir </text><text styleclass="Normal" translate="true">(optional)</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The directory in which you want the search to begin. If this is not specified, the search begins in the project directory.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">dir </text><text styleclass="List" translate="true">(optional)The directory in which you want the search to begin. If this is not specified, the search begins in the project directory.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">file</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The file(s) to search for. Wildcard characters are allowed.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">file</text><tab /><text styleclass="List" translate="true">The file(s) to search for. Wildcard characters are allowed.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /recurse option lets you compile source code files in all child directories of either the specified directory (dir) or of the project directory.</text></para>

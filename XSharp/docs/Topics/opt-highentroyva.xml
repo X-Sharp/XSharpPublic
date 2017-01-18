@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/highentroyva</title>
   <keywords>
     <keyword translate="true">/highentroyva compiler option</keyword>
@@ -17,8 +17,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">+ | -</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option specifies that a 64-bit executable or an executable that is marked by the /platform:anycpu compiler option supports a high entropy virtual address space. The option is disabled by default. Use /highentropyva+ or /highentropyva to enable it.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | -</text><tab /><text styleclass="List" translate="true">This option specifies that a 64-bit executable or an executable that is marked by the /platform:anycpu compiler option supports a high entropy virtual address space. The option is disabled by default. Use /highentropyva+ or /highentropyva to enable it.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /highentropyva option enables compatible versions of the Windows kernel to use higher degrees of entropy when randomizing the address space layout of a process as part of ASLR. Using higher degrees of entropy means that a larger number of addresses can be allocated to memory regions such as stacks and heaps. As a result, it is more difficult to guess the location of a particular memory region.</text></para>

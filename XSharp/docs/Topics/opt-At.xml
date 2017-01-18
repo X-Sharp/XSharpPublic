@@ -17,8 +17,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">response_file</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">A file that lists compiler options or source code files to compile.</text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">response_file</text><tab /><text styleclass="List" translate="true">A file that lists compiler options or source code files to compile.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler options and source code files will be processed by the compiler just as if they had been specified on the command line.</text></para>

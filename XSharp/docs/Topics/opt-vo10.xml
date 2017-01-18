@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/vo10</title>
   <keywords>
     <keyword translate="true">/vo10 compiler option</keyword>
@@ -9,24 +9,6 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo10</text><tab /><text styleclass="Heading1" translate="true">Compatible IIF Behavior </text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When an IIF expression contains expressions of a different type then the compiler will issue a warning. The /vo10 compiler option will add a cast to the expression to remove this warning. For example</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">LOCAL x as LOGIC</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">x := TRUE</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">? IIF( x, 1, &quot;Sunday&quot;)</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you use the /vo10 compiler option then the compiler will convert this to:</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">? IIF( x, (USUAL)1, &#160;(USUAL) &quot;Sunday&quot;)</text><tab /><tab /><text styleclass="Normal" translate="true">// for the VO and Vulcan dialect</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">or </text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">? IIF( x, (OBJECT)1, &#160;(OBJECT) &quot;Sunday&quot;)</text><tab /><tab /><text styleclass="Normal" translate="true">// for the code dialect</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo10 option enables the IIF operator to behave in a manner compatible with Visual Objects</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
@@ -34,35 +16,30 @@
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo10[+|-]</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">+ | - </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifying +, or just /vo10, causes the IIF operator to behave as it does in Visual Objects. </text></para>
+    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo10, causes the IIF operator to behave as it does in Visual Objects. </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">If the true and false expressions in an IIF operator are not the same, or one cannot be implicitly converted to the type of the other, the compiler will raise an error.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Visual Objects allows this, and implicitly converts both expressions to USUAL, causing the IIF expression to also return USUAL. This is neither safe or efficient, but code originally written in Visual Objects may depend on this behavior, and if /vo10 is not used, errors may occur at runtime.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Consider the following example:</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">LOCAL x as LOGIC</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">x := TRUE</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">? IIF( x, 1, &quot;Sunday&quot;)</text><br/></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you use the /vo10 compiler option then the compiler will convert this to:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">LOCAL i AS INT</text><br/><text styleclass="Code with box" translate="true">LOCAL f AS FLOAT</text><br/><text styleclass="Code with box" translate="true">LOCAL u AS USUAL</text><br/><text styleclass="Code with box" translate="true">u := IIF( TRUE, i, f )</text><br/><text styleclass="Code with box" translate="true">? UsualType( u ) &#160; &#160; &#160;// prints 3 (FLOAT) in Vulcan.NET, 1 (INT) in Visual Objects </text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">? IIF( x, (USUAL)1, &#160;(USUAL) &quot;Sunday&quot;)</text><tab /><tab /><text styleclass="Code Example" translate="true">// for the VO and Vulcan dialect</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">or </text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In Visual Objects, since the true and false expressions are different, the IIF expression is effectively compiled as:</text></para>
+    <para styleclass="Code Example"><text styleclass="Code Example" translate="true">? IIF( x, (OBJECT)1, &#160;(OBJECT) &quot;Sunday&quot;)</text><tab /><tab /><text styleclass="Code Example" translate="true">// for the Core dialect</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">u := IIF( TRUE, (USUAL) i, (USUAL) f ) </text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">and UsualType() returns 1 because the original data type of i is preserved within the USUAL. However, in Vulcan.NET the IIF expression is effectively compiled as:</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">u := (USUAL) IIF( TRUE, (FLOAT) i, f ) </text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">because an implicit conversion exists from INT to FLOAT (since FLOAT can contain the entire range of values in an INT). The type of the IIF expression is FLOAT, which is more efficient than USUAL, and allows compile-time type checking. However, since the type of the IIF expression is always FLOAT, UsualType() returns 3, instead of 1 as in Visual Objects. This can break existing code.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo10 compiler option resolves this issue. However, it is strongly recommended that your review your IIF statements in code that was originally written in Visual Objects, and determine whether you really intended to return dissimilar data types. &#160;To assist you with this, the compiler will raise warning VN3410 if /vo10 is used and the type of an IIF expression is forced to USUAL because the true and false expression types are different. Please see VN3410 for information on how to resolve this warning.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo10 option is enabled in projects created by the Transporter.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>
-    <list id="0" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page (see How to: Set Build Properties). </text></li>
+    <list id="19" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the Compatible IIF Behavior property. </text></li>
     </list>

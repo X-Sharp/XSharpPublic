@@ -23,8 +23,5 @@ STATIC CLASS Foo
 	STATIC EXTERN METHOD MessageBox1(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
 		AS INT PASCAL
 	
-	[DllImport("user32.dll", CharSet := CharSet.Ansi)];
-	METHOD MessageBox2(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
-		AS INT PASCAL
-	
+
 END CLASS	

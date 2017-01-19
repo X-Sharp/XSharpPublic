@@ -2704,6 +2704,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             context.Data.MustBeVoid = context.T.Token.Type == XP.ASSIGN;
         }
+
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
             var idName = context.Id.Get<SyntaxToken>();
@@ -2785,25 +2786,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     isExtern = hasDllImport(attributes);
                     hasNoBody = hasNoBody || isExtern;
                 }
-                if (isExtern)
+                if (isExtern && !mods.Any(SyntaxKind.ExternKeyword))
                 {
-                    if (mods.Any(SyntaxKind.ExternKeyword) && mods.Any(SyntaxKind.StaticKeyword))
-                    {
-                        ; // both are there, so Ok
-                    }
-                    else
-                    {
-                        // Add extern or static keyword to mods
-                        var m1 = _pool.Allocate();
-                        m1.AddRange(mods);
-                        if (!m1.Any(SyntaxKind.ExternKeyword))
-                            m1.Add(SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword));
-                        if (!m1.Any(SyntaxKind.StaticKeyword))
-                            m1.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-                        mods = m1.ToTokenList();
-                        _pool.Free(m1);
-
-                    }
+                    // Add Extern Keyword to modifiers
+                    var m1 = _pool.Allocate();
+                    m1.AddRange(mods);
+                    if (!m1.Any(SyntaxKind.ExternKeyword))
+                        m1.Add(SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword));
+                    mods = m1.ToTokenList();
+                    _pool.Free(m1);
                 }
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 if (isExtern)

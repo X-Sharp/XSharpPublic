@@ -1095,6 +1095,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 bool tryAgain = false;
                 if (st.IsIntegralType() && st.SizeInBytes() < 4)
                 {
+                    // convert RHS from 8 or 16 bits to 32 bits
                     if (st == SpecialType.System_Byte || st == SpecialType.System_Int16)
                     {
                         right = CreateConversion(right, GetSpecialType(SpecialType.System_Int32, diagnostics, node), diagnostics);
@@ -1104,6 +1105,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         right = CreateConversion(right, GetSpecialType(SpecialType.System_UInt32, diagnostics, node), diagnostics);
                         tryAgain = true;
+                    }
+                }
+                if (! tryAgain && left.Type != null)
+                {
+                    // convert LHS from 8 or 16 bits to 32 bits
+                    st = left.Type.SpecialType;
+                    if (st.IsIntegralType() && st.SizeInBytes() < 4)
+                    {
+                        if (st == SpecialType.System_Byte || st == SpecialType.System_Int16)
+                        {
+                            left = CreateConversion(left, GetSpecialType(SpecialType.System_Int32, diagnostics, node), diagnostics);
+                            tryAgain = true;
+                        }
+                        if (st == SpecialType.System_SByte || st == SpecialType.System_UInt16)
+                        {
+                            left = CreateConversion(left, GetSpecialType(SpecialType.System_UInt32, diagnostics, node), diagnostics);
+                            tryAgain = true;
+                        }
                     }
                 }
                 if (tryAgain)

@@ -15,13 +15,16 @@ _DLL FUNCTION _DLL_MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uTyp
 FUNCTION Start( ) AS VOID
 	_DLL_MessageBox(NULL_PTR , "message box text" , "from _DLL FUNC" , 1)
 	MessageBox(NULL_PTR , "message box text" , "from DllImport" , 1)
-	Foo.MessageBox(NULL_PTR , "message box text" , "Static Method" , 1)
 RETURN
 
 
 STATIC CLASS Foo
 	[DllImport("user32.dll", CharSet := CharSet.Ansi)];
-	STATIC EXTERN METHOD MessageBox(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
+	STATIC EXTERN METHOD MessageBox1(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
+		AS INT PASCAL
+	
+	[DllImport("user32.dll", CharSet := CharSet.Ansi)];
+	METHOD MessageBox2(hwnd AS PTR, lpText AS PSZ, lpCaption AS PSZ, uType AS DWORD);
 		AS INT PASCAL
 	
 END CLASS	

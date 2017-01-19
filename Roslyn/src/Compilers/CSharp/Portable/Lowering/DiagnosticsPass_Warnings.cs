@@ -527,9 +527,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return;
                 }
             }
-
+#if !XSHARP
             // CS0675: Bitwise-or operator used on a sign-extended operand; consider casting to a smaller unsigned type first
             Error(ErrorCode.WRN_BitwiseOrSignExtend, node);
+#endif
         }
 
         private static ConstantValue GetConstantValueForBitwiseOrCheck(BoundExpression operand)

@@ -72,10 +72,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                         // we call the appropriate implicit operator here
                         MethodSymbol m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
                         if (m != null)
-                        { 
+                        {
                             rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                             rewrittenOperand.WasCompilerGenerated = true;
-                            return ConversionKind.PointerToPointer; 
+                            return ConversionKind.PointerToPointer;
                         }
                     }
                     else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
@@ -98,11 +98,17 @@ namespace Microsoft.CodeAnalysis.CSharp
                         rewrittenOperand.WasCompilerGenerated = true;
                         return ConversionKind.Identity;
                     }
+                    m = getImplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
+                    if (m != null)
+                    {
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.PointerToPointer;
+
+                    }
                 }
             }
             return conversionKind;
         }
-
-
     }
 }

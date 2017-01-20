@@ -80,12 +80,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     }
                     else if (rewrittenType.SpecialType == SpecialType.System_DateTime)
                     {
-                        rewrittenOperand = _factory.StaticCall(usualType, "ToObject", rewrittenOperand);
+                        rewrittenOperand = _factory.StaticCall(usualType, VulcanToObject, rewrittenOperand);
                         return ConversionKind.Unboxing;
                     }
                     else // System.Decimals, Objects and reference types, but not String
                     {
-                        rewrittenOperand = _factory.StaticCall(usualType, "ToObject", rewrittenOperand);
+                        rewrittenOperand = _factory.StaticCall(usualType, VulcanToObject, rewrittenOperand);
                         conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
                     }
                 }

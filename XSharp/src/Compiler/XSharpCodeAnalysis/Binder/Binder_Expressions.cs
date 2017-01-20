@@ -275,17 +275,32 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     bool earlyBound = propName == ".ctor";
                     bool isObject = leftType.IsObjectType();
-                    bool isUsual = !isObject && leftType is NamedTypeSymbol
-                        && ((NamedTypeSymbol)leftType).ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                    // Late bound will only work for OBJECT or USUAL
-                    if (isObject || isUsual)
+                    bool isUsual = false;
+                    bool isArray = false;
+                    if (! isObject)
                     {
-                        if (isUsual)
+                        if (leftType is NamedTypeSymbol)
+                        {
+                            var nts = leftType as NamedTypeSymbol;
+                            isUsual = nts.ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                            isArray = nts.ConstructedFrom == Compilation.GetWellKnownType(WellKnownType.Vulcan___Array);
+                        }
+                    }
+                    // Late bound will only work for OBJECT or USUAL
+                    if (isObject || isUsual || isArray)
+                    {
+                        var returnType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                        if (isArray)
+                        {
+                            // No method calls allowed on an array. Always change to Asend
+                            earlyBound = false;
+                        }
+                        else if (isUsual)
                         {
                             earlyBound |= String.Compare(propName, "_NIL", StringComparison.OrdinalIgnoreCase) == 0;
                             //earlyBound |= String.Compare(propName, "Value", StringComparison.OrdinalIgnoreCase) == 0;
                         }
-                        if (isObject)
+                        else if (isObject)
                         {
                             earlyBound |= leftType.GetMembers(propName).Length > 0;
                         }
@@ -298,7 +313,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 name: propName,
                                 invoked: invoked,
                                 indexed: indexed,
-                                type: Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual),
+                                type: returnType,
                                 hasErrors: false);
                         }
                     }

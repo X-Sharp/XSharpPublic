@@ -44,7 +44,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         const string VoPszList = "Xs$PszList";
         const string ClipperArgs = "Xs$Args";
-        const string ClipperPCount = "Xs$PCount";
         const string RecoverVarName = "Xs$Obj";
         const string ExVarName = "Xs$Exception";
         const string ReturnName = "Xs$Return";
@@ -866,48 +865,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return body;
         }
 
-        protected StatementSyntax _cachedIfBlock = null;
-        protected StatementSyntax GetClipperCallingConventionIfStatement()
-        {
-            if (_cachedIfBlock == null)
-            {
-                lock (gate)
-                {
-                    if (_cachedIfBlock == null)
-                    {
-                        ExpressionSyntax assignExpr;
-                        ExpressionSyntax ifExpr;
-                        // This method generates the common block that is used for all Clipper calling convention methods
-                        // to retrieve the PCount
-                        // the pseudo code for that is
-
-                        // IF Xs$Args != NULL
-                        //      Xs$PCount := Xs$Args.Length
-                        // ENDIF
-
-                        InitializeArrayTypes();
-                        var blockstmts = _pool.Allocate<StatementSyntax>();
-                        // Xs$PCount = Xs$Args:Length
-                        assignExpr = MakeSimpleAssignment(
-                                GenerateSimpleName(ClipperPCount),
-                                MakeSimpleMemberAccess(GenerateSimpleName(ClipperArgs), GenerateSimpleName("Length")));
-
-                        blockstmts.Add(GenerateExpressionStatement(assignExpr));
-                        // Xs$Args != NULL
-
-                        ifExpr = _syntaxFactory.BinaryExpression(
-                                SyntaxKind.NotEqualsExpression,
-                                GenerateSimpleName(ClipperArgs),
-                                SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
-                                GenerateLiteralNull());
-                        // if XsArgs != NULL ......
-                        _cachedIfBlock = GenerateIfStatement(ifExpr, MakeBlock(blockstmts));
-                        _pool.Free(blockstmts);
-                    }
-                }
-            }
-            return _cachedIfBlock;
-        }
         static protected ParameterListSyntax _clipperParams = null;
         protected ParameterListSyntax GetClipperParameters()
         {
@@ -954,28 +911,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ExpressionSyntax assignExpr;
                     ExpressionSyntax ifExpr;
                     StatementSyntax exprStmt;
-                    if(context.Data.UsesPCount || parameters.Parameters.Count > 0  || context.Data.UsesGetMParam)
-                    {
-                        // When the PCount function is used then we need to introduce a helper variable
-                        // and also when there are defined parameters
-
-                        // LOCAL Xs$PCount  AS INT
-                        stmts.Add(GenerateLocalDecl(ClipperPCount, _intType));
-                        // Other common statements are cached
-                        stmts.Add(GetClipperCallingConventionIfStatement());
-                    }
 
                     // Assuming the parameters are called oPar1 and oPar2 then the following code is generated
                     // LOCAL oPar1 as USUAL
                     // LOCAL oPar2 as USUAL
-                    // IF Xs$PCount > 0
+                    // IF Xs$Args:Length > 0
                     //   oPar1 := Xs$Args[0]
-                    //   IF Xs$PCount > 1
+                    //   IF Xs$Args:Length > 1
                     //       oPar2 := Xs$Args[1]
                     //    ENDIF
                     // ENDIF
                     var paramNames = new List<String>();
-                    if(parameters.Parameters.Count > 0) {
+                    var clipperArgs = GenerateSimpleName(ClipperArgs);
+                    var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
+                    if (parameters.Parameters.Count > 0) {
                         var nilExpr = GenerateNIL();
                         for(int i = 0; i < parameters.Parameters.Count; i++) {
                             ParameterSyntax parm = parameters.Parameters[i];
@@ -997,7 +946,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             indices.Add(MakeArgument(GenerateLiteral("", i + iAdd)));
                             assignExpr = MakeSimpleAssignment(GenerateSimpleName(name),
                                     _syntaxFactory.ElementAccessExpression(
-                                    GenerateSimpleName(ClipperArgs),
+                                    clipperArgs,
                                     _syntaxFactory.BracketedArgumentList(
                                         SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
                                         indices,
@@ -1006,9 +955,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             exprStmt = GenerateExpressionStatement(assignExpr);
                             ifExpr = _syntaxFactory.BinaryExpression(
                                 SyntaxKind.GreaterThanExpression,
-                                GenerateSimpleName(ClipperPCount),
+                                argLen,
                                 SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
                                 GenerateLiteral(i.ToString(), i));
+                            if (i == 0)
+                            {
+                                // prefix expression with ClipperArgs != null && 
+                                var notNullExpr = _syntaxFactory.BinaryExpression(
+                                    SyntaxKind.NotEqualsExpression,
+                                    clipperArgs,
+                                    SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
+                                    GenerateLiteralNull());
+                                ifExpr = _syntaxFactory.BinaryExpression(
+                                    SyntaxKind.LogicalAndExpression,
+                                    notNullExpr,
+                                    SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken),
+                                    ifExpr);
+                            }
                             StatementSyntax ifBody;
                             if(LastStmt != null) {
                                 var ifbodystmts = _pool.Allocate<StatementSyntax>();
@@ -1351,6 +1314,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         public override void ExitClsctor([NotNull] XP.ClsctorContext context)
         {
             var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
+            if (mods.Any(SyntaxKind.StaticKeyword))
+            {
+                context.Data.HasClipperCallingConvention = false;
+            }
             var ctor = createConstructor(
                 context, mods, context.Attributes, context.ParamList, context.StmtBlk, context, 
                 context.Chain, context.ArgList, context.isInInterface());
@@ -2278,8 +2245,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             argList = EmptyArgumentList();
         }
         if(name == "PCOUNT") {
-            expr = GenerateSimpleName(ClipperPCount);
-            if(argList.Arguments.Count != 0) {
+            expr = MakeSimpleMemberAccess(GenerateSimpleName(ClipperArgs), GenerateSimpleName("Length"));
+            if (argList.Arguments.Count != 0) {
                 expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount,name, argList.Arguments.Count));
             }
             context.Put(expr);

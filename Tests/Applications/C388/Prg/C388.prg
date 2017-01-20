@@ -12,6 +12,10 @@ dw := 0xFFFFFFFF
 ? _And(w,0xFFFFFFFF) // OK
 ? DWORD(_And(w,0xFFFFFFFF)) // Error
 
+IF _And(w,dw) != 1976 .or. DWORD(_And(w,dw)) != 1976 .or. _And(w,0xFFFFFFFF) != 1976 .or. DWORD(_And(w,0xFFFFFFFF)) != 1976
+	THROW Exception{"Incorrect result"}
+END IF
+
 
 // note that the bogus error in the original code accidentally pointed to a problem in the code:
 w := 1976

@@ -103,9 +103,27 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
                         rewrittenOperand.WasCompilerGenerated = true;
-                        return ConversionKind.PointerToPointer;
+                        return ConversionKind.Identity;
 
                     }
+                    // what else, any other numeric type Convert to Double first and then to destination type
+                    m = getImplicitOperator(floatType, _compilation.GetSpecialType(SpecialType.System_Double));
+                    if (m != null)  // this should never happen. This is an implicit converter
+                    {
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        rewrittenOperand = MakeConversion(rewrittenOperand.Syntax,
+                            rewrittenOperand: rewrittenOperand,
+                            rewrittenType: rewrittenType,
+                            conversion: Conversion.ImplicitNumeric,
+                            @checked: true,
+                            explicitCastInCode: false
+                            );
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.Identity;
+
+                    }
+
                 }
             }
             return conversionKind;

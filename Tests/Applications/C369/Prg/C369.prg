@@ -7,6 +7,13 @@ LOCAL val1 := 0 AS DWORD
 ? _Or( (0 + DWORD(_CAST, ch0) ), val1) // 0
 ? sndAlias(1,2) // 513
 
+IF _Or( (0 + DWORD(_CAST, ch0) ), val1) != 0
+	THROW Exception{"Incorrect result"}
+END IF
+IF sndAlias(1,2) != 513
+	THROW Exception{"Incorrect result"}
+END IF
+
 #define SND_ALIAS_START 0
 FUNCTION sndAlias(ch0 AS BYTE, ch1 AS BYTE) AS DWORD
 	LOCAL val1 AS DWORD

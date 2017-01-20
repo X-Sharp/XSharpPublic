@@ -40,12 +40,25 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
+        private MethodSymbol getExplicitOperator(NamedTypeSymbol srcType, NamedTypeSymbol destType)
+        {
+            var members = srcType.GetMembers("op_Explicit");
+            foreach (MethodSymbol m in members)
+            {
+                if (m.ReturnType == destType)
+                {
+                    return m;
+                }
 
+            }
+            return null;
+        }
         private ConversionKind UnBoxVOType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
             if (_compilation.Options.IsDialectVO)
             {
                 var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
+                var floatType = _compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
                 var nts = rewrittenOperand.Type as NamedTypeSymbol;
                 if (nts != null)
                 {
@@ -74,6 +87,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         rewrittenOperand = _factory.StaticCall(usualType, "ToObject", rewrittenOperand);
                         conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
+                    }
+                }
+                else if (nts == floatType && rewrittenType is NamedTypeSymbol)
+                {
+                    MethodSymbol m = getExplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
+                    if (m != null)
+                    {
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.Identity;
                     }
                 }
             }

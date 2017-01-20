@@ -273,23 +273,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // except from NullableTypes and Reference Types
                 if (dstType.IsIntegralType() && ! source.IsNullableType() &&! source.IsReferenceType)
                 {
-                    if (srcType.IsIntegralType() )
+                    if (srcType.IsNumericType())
                     {
-                        if (srcType.SizeInBytes() == dstType.SizeInBytes())
-                        {
-                            return Conversion.Identity;
-                        }
+                        // always implicit numeric conversion
+                        return Conversion.ImplicitNumeric;
                     }
                     if (source.SpecialType == SpecialType.System_Boolean)
                     {
                         return Conversion.Identity;
                     }
 
-                    // source non Integral or a different size
-                    if (srcType.IsNumericType())
-                    {
-                        return Conversion.ImplicitNumeric;
-                    }
                     // Allow PTR -> Integral when size matches
                     if (source.IsVoidPointer())
                     {
@@ -344,13 +337,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                 if (srcType.IsNumericType() && dstType.IsNumericType() &&
                     srcType.IsIntegralType() == dstType.IsIntegralType())
                 {
-                    // when both same # of bits and integral, use Identity conversion
-                    // otherwise implicit numeric conversion
-                    if (srcType.SizeInBytes() == dstType.SizeInBytes() &&
-                        srcType.IsIntegralType() && dstType.IsIntegralType())
-                        return Conversion.Identity;
-                    else
-                        return Conversion.ImplicitNumeric;
+                    // always implicit numeric conversion
+                    return Conversion.ImplicitNumeric;
                 }
             }
             if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))

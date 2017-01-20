@@ -408,13 +408,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     if (un <= long.MaxValue)
                                         n = unchecked((long)un);
                                 }
-                                else {
+                                else
+                                {
                                     n = long.Parse(token.Text, System.Globalization.CultureInfo.InvariantCulture);
                                 }
                                 if (un > long.MaxValue)
                                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, un, SyntaxFactory.WS);
-                                else if (n > int.MaxValue)
+                                else if (n > uint.MaxValue)
                                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, n, SyntaxFactory.WS);
+                                else if (n > int.MaxValue)
+                                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((uint)n), SyntaxFactory.WS);
                                 else
                                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, unchecked((int)n), SyntaxFactory.WS);
                             }

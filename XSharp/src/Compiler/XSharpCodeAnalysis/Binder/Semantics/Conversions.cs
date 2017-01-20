@@ -88,6 +88,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                             && constructedFrom != _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
                     }
                 }
+                else if (nts.ConstructedFrom == _binder.Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                {
+                    if (destination != null && destination.SpecialType.IsNumericType())
+                    {
+                        result = true;
+                    }
+
+                }
             }
 
             return result;

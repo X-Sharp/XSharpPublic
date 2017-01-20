@@ -3145,6 +3145,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
                 var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
                 var body = context.StmtBlk?.Get<BlockSyntax>();
+                var mods = context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility();
                 TypeSyntax returntype = null;
                 ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
                 // no return statement needed  in CONSTRUCTOR
@@ -3154,7 +3155,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     ?? (context.Parent as XP.Interface_Context)?.Id.Get<SyntaxToken>();
                 context.Put(_syntaxFactory.ConstructorDeclaration(
                     attributeLists: attributes,
-                    modifiers: context.Modifiers?.GetList<SyntaxToken>() ?? TokenListWithDefaultVisibility(),
+                    modifiers: mods,
                     identifier: parentId,
                     parameterList: parameters,
                     initializer: context.Chain == null ? null :

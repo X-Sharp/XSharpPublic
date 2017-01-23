@@ -27,7 +27,7 @@ using Microsoft.VisualStudio.Shell.TableManager;
 using System.ComponentModel.Composition;
 
 using XSharpModel;
-
+using System.Linq;
 namespace XSharp.Project
 {
     /// <summary>
@@ -567,6 +567,16 @@ namespace XSharp.Project
                     inSameFolder = false;
                 }
             }
+            else if (key.IndexOf(System.IO.Path.DirectorySeparatorChar) >= 0)
+            {
+                // dependentUpon in main folder, child in subfolder
+                // or both in the subfolder
+                string childPath = Path.Combine(this.ProjectFolder, System.IO.Path.GetDirectoryName(key));
+                // check to see if they are in the same folder or not
+                string dependentFileName = Path.Combine(childPath, dependentOf);
+                inSameFolder = File.Exists(dependentFileName);
+            }
+
             Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
             if (subitems.ContainsKey(dependentOf))
             {
@@ -592,17 +602,28 @@ namespace XSharp.Project
                 this.ParseCanonicalName(path, out parentItemID);
                 if (parentItemID != (uint)VSConstants.VSITEMID.Nil)
                     parent = this.NodeFromItemId(parentItemID);
+                if (parent == null)
+                {
+                    var found = new List<String>();
+                    var filename = Path.GetFileName(dependentOf);
+                    // see if we can find it in our UrlNodes collection
 
+                    foreach (var pair in URLNodes)
+                    {
+                        if (pair.Key.EndsWith(filename, StringComparison.OrdinalIgnoreCase))
+                        {
+                            found.Add(pair.Key);
+                        }
+                    }
+                    if (found.Count == 1)
+                    {
+                        parent = URLNodes[found[0]];
+                    }
+                }
                 //Debug.Assert(parent != null, "File dependent upon a non existing item or circular dependency. Ignoring the DependentUpon metadata");
                 if (parent == null)
                 {
-                    string message = $"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy";
-                    string title = string.Empty;
-                    OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
-                    OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
-                    OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
-
-                    VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
+                    ShowMessageBox($"Cannot set dependency from \"{item.EvaluatedInclude}\" to \"{dependentOf}\"\r\nCannot find \"{dependentOf}\" in the project hierarchy");
                 }
             }
 
@@ -739,26 +760,13 @@ namespace XSharp.Project
             return base.IsItemTypeFileType(type);
         }
 
-
         public override void Load(string filename, string location, string name, uint flags, ref Guid iidProject, out int canceled)
         {
+            // check for incomplete conditions
+            this.FixProjectFile(filename);
             base.Load(filename, location, name, flags, ref iidProject, out canceled);
 
-            // remove Documentationfile properties for now
-            if (this.BuildProject != null)
-            {
-                var props = new List<MSBuild.ProjectProperty>();
-                foreach (var prop in this.BuildProject.Properties)
-                {
-                    if (prop.Name.ToLower() == "documentationfile")
-                        props.Add(prop);
-                }
-                foreach (var prop in props)
-                {
-                    this.BuildProject.RemoveProperty(prop);
-                }
-            }
-
+  
             // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
@@ -977,7 +985,7 @@ namespace XSharp.Project
                     // Set the backlink, so the walker can access the StatusBar
                     projectModel.ProjectNode = this;
                     // Add all references to the Type Controller
-                    foreach( Reference reference in this.VSProject.References)
+                    foreach (Reference reference in this.VSProject.References)
                     {
                         if (reference.Type == prjReferenceType.prjReferenceTypeAssembly)
                         {
@@ -1033,7 +1041,7 @@ namespace XSharp.Project
             return (String.Compare(Path.GetExtension(fullPath), ".xsprj", StringComparison.OrdinalIgnoreCase) == 0);
         }
 
-#region IXSharpProject Interface
+        #region IXSharpProject Interface
         public void SetStatusBarText(string msg)
         {
             var statusBar = Site.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
@@ -1050,7 +1058,7 @@ namespace XSharp.Project
                 return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
             }
         }
-#endregion
+        #endregion
 
 
         protected override void Reload()
@@ -1110,7 +1118,7 @@ namespace XSharp.Project
             }
             return bOk;
         }
-#region IVsSingleFileGeneratorFactory
+        #region IVsSingleFileGeneratorFactory
         IVsSingleFileGeneratorFactory factory = null;
 
         // Note that in stead of using the SingleFileGeneratorFactory we can also do everything here based on
@@ -1156,10 +1164,10 @@ namespace XSharp.Project
             return VSConstants.S_FALSE;
 
         }
-#endregion
+        #endregion
 
 
-#region TableManager
+        #region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ITableManager errorListTableManager;
         ErrorListProvider errorlistProvider;
@@ -1215,8 +1223,107 @@ namespace XSharp.Project
                 XSharpModel.XSolution.Add(model);
             }
         }
+
+        const string config = "$(Configuration)";
+        const string configPlatform = "$(Configuration)|$(Platform)";
+
+        const string import1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
+        const string import2 = @"$(XSharpProjectExtensionsPath)XSharp.props";
+        const string import3 = @"$(XSharpProjectExtensionsPath)XSharp.targets";
+
+        private void FixProjectFile(string filename)
+        {
+            bool changed = false;
+            var xml = BuildProject.Xml;
+            var groups = xml.PropertyGroups.ToArray();
+
+            foreach (var group in xml.PropertyGroups)
+            {
+                if (group.Condition.Length > 0)
+                {
+                    string condition = group.Condition;
+                    if (condition.IndexOf(config, StringComparison.OrdinalIgnoreCase) > -1 &&
+                        condition.IndexOf(configPlatform, StringComparison.OrdinalIgnoreCase) == -1)
+                    {
+                        if (condition.IndexOf("'Debug'", StringComparison.OrdinalIgnoreCase) > 0)
+                        {
+                            condition = "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'";
+                        }
+                        else
+                        {
+                            condition = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
+                        }
+                        group.Condition = condition;
+                        changed = true;
+                    }
+                }
+            }
+            // check for the XSharpProjectExtensionsPath property inside the first propertygroup
+            bool ok = false;
+            foreach (var child in xml.Properties)
+            {
+                if (child.Name == "XSharpProjectExtensionsPath")
+                {
+                    ok = true;
+                    break;
+                }
+            }
+            if (!ok)
+            {
+                var item = groups[0].AddProperty("XSharpProjectExtensionsPath", @"$(MSBuildExtensionsPath)\XSharp\");
+            }
+            var props = new List<MSBuild.ProjectProperty>();
+            foreach (var prop in this.BuildProject.Properties)
+            {
+                if (prop.Name.ToLower() == "documentationfile")
+                    props.Add(prop);
+            }
+            foreach (var prop in props)
+            {
+                this.BuildProject.RemoveProperty(prop);
+            }
+
+            bool hasImport1 = false;
+            bool hasImport2 = false;
+            bool hasImport3 = false;
+            foreach (var import in xml.Imports)
+            {
+                var prj = import.Project;
+                if (String.Equals(prj, import1, StringComparison.OrdinalIgnoreCase))
+                    hasImport1 = true;
+                if (String.Equals(prj, import2, StringComparison.OrdinalIgnoreCase))
+                    hasImport2 = true;
+                if (String.Equals(prj, import3, StringComparison.OrdinalIgnoreCase))
+                    hasImport3 = true;
+            }
+            if (!hasImport1 || !hasImport2)
+            {
+                ShowMessageBox($"Important <Imports> tags are missing in your projectfile: {filename}, your project will most likely not compile.");
+            }
+            if (!hasImport3)
+            {
+                var import = xml.AddImport(import3);
+                changed = true;
+            }
+            if (changed)
+            {
+                BuildProject.Xml.Save(filename);
+                BuildProject.ReevaluateIfNecessary();
+            }
+        }
+
+        void ShowMessageBox(string message)
+        {
+            string title = string.Empty;
+            OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
+            OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
+            OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
+
+            VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
+
+        }
     }
 
-#endregion
+    #endregion
 }
 

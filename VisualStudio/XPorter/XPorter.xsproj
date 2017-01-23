@@ -60,7 +60,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <DocumentationFile>false</DocumentationFile>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <PreBuildEvent />

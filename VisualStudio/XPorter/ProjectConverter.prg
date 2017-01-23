@@ -89,12 +89,20 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 		CASE "none"    
 		CASE "vobinary"
 		CASE "nativeresource"
+			VAR cItem := oElement:GetAttribute("Include")
+			cItem := cPath+cItem
 			VAR oChild1 := oElement:FirstChild
 			IF oChild1 != NULL .and. oChild1:Name:ToLowerInvariant() == "dependentupon"
 				VAR  cInnerText := oChild1:InnerText
 				IF cInnerText:Contains("\")
-					cInnerText := cInnerText:Substring(cInnerText:IndexOf("\")+1)
-					oChild1:InnerText := cInnerText
+					// check to see if parent node is in the same folder as the child node.
+					if System.IO.File.Exists(cItem) .and. System.IO.File.Exists(cPath+cInnerText)
+						if System.IO.Path.GetFullPath(cItem) == System.IO.Path.GetFullPath(cPath+cInnerText)
+							// paths are equal, only write filename
+							cInnerText := System.IO.Path.GetFileName(cInnerText)
+							oChild1:InnerText := cInnerText
+						ENDIF
+					endif
 				ENDIF
 			ENDIF
 

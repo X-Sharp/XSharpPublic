@@ -29,7 +29,10 @@ namespace XSharpModel
         public EntityParser(XFile file)
         {
             this.file = file;
-            this._defaultNS = this.file.Project.ProjectNode.RootNameSpace;
+            if (this.file.Project.Loaded)       // this will fail if the project file is already unloaded
+            {
+                this._defaultNS = this.file.Project.ProjectNode.RootNameSpace;
+            }
             // To store intermediate declarations
             this._localDecls = new Stack<XSharpParser.LocalvarContext>();
             //

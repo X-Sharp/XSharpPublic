@@ -257,10 +257,27 @@ namespace XSharp.Project
             dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 
             // Like the C# project system we do not put a path in front of the parent name, even when we are in a subfolder
+            // but we do put a path before the parent name when the parent is in a different folder
+            // In that case the path is the path from the base project folder
             string parent = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
             parent = Path.GetFileName(parent);
             if (!this.IsNonMemberItem)
-                dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
+            {
+                string parentPath = Path.GetDirectoryName(Path.GetFullPath(this.Url));
+                string childPath = Path.GetDirectoryName(Path.GetFullPath(dependant.Url));
+                if (String.Equals(parentPath, childPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
+                }
+                else
+                {
+                    string projectPath = this.ProjectMgr.ProjectFolder;
+                    Uri projectFolder = new Uri(projectPath);
+                    Uri relative = projectFolder.MakeRelativeUri(new Uri(parentPath));
+                    parentPath = relative.ToString()+Path.DirectorySeparatorChar;
+                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parentPath+parent);
+                }
+            }
             // Make the item a dependent item
             dependant.HasParentNodeNameRelation = true;
             // Insert in the list of children
@@ -391,9 +408,16 @@ namespace XSharp.Project
             }
             set
             {
-                ItemNode.SetMetadata(ProjectFileConstants.SubType, value);
-                // Don't forget to update...
-                UpdateHasDesigner();
+                try
+                {
+                    ItemNode.SetMetadata(ProjectFileConstants.SubType, value);
+                    // Don't forget to update...
+                    UpdateHasDesigner();
+                }
+                catch (Exception)
+                {
+                    // This sometimes failes and causes an exception in VS.
+                }
             }
         }
         public string Generator

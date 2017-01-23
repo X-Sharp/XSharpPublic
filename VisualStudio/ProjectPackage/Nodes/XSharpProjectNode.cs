@@ -540,15 +540,25 @@ namespace XSharp.Project
 
             HierarchyNode newNode;
             HierarchyNode parent = null;
-
+            bool inSameFolder = true;
             string dependentOf = item.GetMetadataValue(ProjectFileConstants.DependentUpon);
             // strip path when it is available
             if (dependentOf.IndexOf(System.IO.Path.DirectorySeparatorChar) >= 0)
             {
-                // strip path out of dependendentUpon property
-                dependentOf = System.IO.Path.GetFileName(dependentOf);
-                item.SetMetadataValue(ProjectFileConstants.DependentUpon, dependentOf);
-                SetProjectFileDirty(true);
+                // if the path in the parent is the same as the path of the item then we delete it
+                // if it is different then the path must be a relative path from the project dir
+                string dependentPath = Path.GetDirectoryName(this.GetRelativePath(dependentOf));
+                string childPath = Path.GetDirectoryName(this.GetRelativePath(key));
+                if (string.Equals(dependentPath, childPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    dependentOf = System.IO.Path.GetFileName(dependentOf);
+                    item.SetMetadataValue(ProjectFileConstants.DependentUpon, dependentOf);
+                    SetProjectFileDirty(true);
+                }
+                else
+                {
+                    inSameFolder = false;
+                }
             }
             Debug.Assert(String.Compare(dependentOf, key, StringComparison.OrdinalIgnoreCase) != 0, "File dependent upon itself is not valid. Ignoring the DependentUpon metadata");
             if (subitems.ContainsKey(dependentOf))
@@ -563,12 +573,19 @@ namespace XSharp.Project
                 // so we take the folder from the child node and find the parentnode in the same folder
                 uint parentItemID;
                 string path = Path.Combine(this.ProjectFolder, item.EvaluatedInclude);
-                path = System.IO.Path.GetDirectoryName(path);
-                path = Path.Combine(path, dependentOf);
-
+                if (inSameFolder)
+                {
+                    path = System.IO.Path.GetDirectoryName(path);
+                    path = Path.Combine(path, dependentOf);
+                }
+                else
+                {
+                    path = Path.Combine(this.ProjectFolder, dependentOf);
+                }
                 this.ParseCanonicalName(path, out parentItemID);
                 if (parentItemID != (uint)VSConstants.VSITEMID.Nil)
                     parent = this.NodeFromItemId(parentItemID);
+
                 //Debug.Assert(parent != null, "File dependent upon a non existing item or circular dependency. Ignoring the DependentUpon metadata");
                 if (parent == null)
                 {

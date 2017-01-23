@@ -55,7 +55,9 @@ namespace Microsoft.CodeAnalysis.CSharp
         public BoundExpression MakeVODynamicInvokeMember(BoundExpression loweredReceiver, string name, ImmutableArray<BoundExpression> args)
         {
             if (loweredReceiver.Type == _compilation.GetWellKnownType(WellKnownType.Vulcan___Array))
+            {
                 return MakeASend(loweredReceiver, name, args);
+            }
             var convArgs = new ArrayBuilder<BoundExpression>();
             var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
             foreach (var a in args)

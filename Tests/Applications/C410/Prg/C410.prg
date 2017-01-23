@@ -22,8 +22,7 @@ FUNCTION Start() AS VOID
 	? ALen(aNew)
 	? aNew[1] := 123
 	? aNew[1]
-	TestClass{}
-	
+	SQLStatement{}
 	xAssert(ALen(aParams) == 0)
 	xAssert(ALen(aNew) == 1)
 	xAssert(aNew[1] == 123)

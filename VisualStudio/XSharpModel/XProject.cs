@@ -11,6 +11,7 @@ namespace XSharpModel
         private List<XFile> xFiles;
         private IXSharpProject _projectNode;
         private XType _globalType;
+        private bool _loaded;
         //
         private SystemTypeController _typeController;
 
@@ -21,6 +22,7 @@ namespace XSharpModel
             this._globalType = XType.CreateGlobalType();
             //
             this._typeController = new SystemTypeController();
+            this._loaded = true;
         }
 
         public String Name
@@ -29,6 +31,12 @@ namespace XSharpModel
             {
                 return System.IO.Path.GetFileNameWithoutExtension(ProjectNode.Url);
             }
+        }
+
+        public bool Loaded
+        {
+            get { return _loaded; }
+            set { _loaded = value; }
         }
 
         public List<XFile> Files

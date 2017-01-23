@@ -239,7 +239,14 @@ namespace XSharp.Project
                 return this.VSProject;
             }
         }
-
+        public override string GetProjectProperty(string propertyName, bool resetCache)
+        {
+            if (BuildProject != null)
+            {
+                return base.GetProjectProperty(propertyName, resetCache);
+            }
+            return null;
+        }
         public override object GetProperty(int propId)
         {
             if (propId == (int)__VSHPROPID.VSHPROPID_DefaultNamespace)

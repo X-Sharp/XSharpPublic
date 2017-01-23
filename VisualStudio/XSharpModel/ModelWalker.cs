@@ -57,7 +57,7 @@ namespace XSharpModel
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Cannot check Backgroung walker Thread : ");
+                    Debug.WriteLine("Cannot check Background walker Thread : ");
                     Debug.WriteLine(e.Message);
                 }
                 return false;
@@ -105,6 +105,10 @@ namespace XSharpModel
 #endif
                 foreach (XFile file in project.Files)
                 {
+                    // Detect project unload
+                    if (!project.Loaded)
+                        break;
+
                     //
                     project.ProjectNode.SetStatusBarText(String.Format("Walking {0} : Processing File {1} ", project.Name, file.Name));
 #if DEBUG                    
@@ -126,6 +130,10 @@ namespace XSharpModel
 
         public void FileWalk(XFile file, string code)
         {
+            // abort when the project is unloaded
+            if (!file.Project.Loaded)
+                return;
+
             var stream = new AntlrInputStream(code.ToString());
             var lexer = new XSharpLexer(stream);
             // if you want VO style lexing uncomment the following lines.

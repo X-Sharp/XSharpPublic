@@ -37,6 +37,10 @@ namespace XSharpModel
             projectName = projectName.ToLower();
             if (xProjects.ContainsKey(projectName))
             {
+                var project = xProjects[projectName];
+                // Flag as unloaded to make sure that a running filewalk 
+                // for the project gets aborted
+                project.Loaded = false;
                 xProjects.Remove(projectName);
                 return true;
             }

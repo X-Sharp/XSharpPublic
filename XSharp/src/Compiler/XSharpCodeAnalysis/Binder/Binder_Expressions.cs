@@ -292,8 +292,9 @@ namespace Microsoft.CodeAnalysis.CSharp
                         var returnType = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                         if (isArray)
                         {
-                            // No method calls allowed on an array. Always change to Asend
-                            earlyBound = false;
+                            // When method does not exist then do a late bound ASend()
+                            var m = Compilation.GetWellKnownType(WellKnownType.Vulcan___Array).GetMembers(propName);
+                            earlyBound = m.Length > 0;
                         }
                         else if (isUsual)
                         {

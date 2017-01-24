@@ -1874,7 +1874,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if (whereText == "Xs$var" && !options.IsAttributeTypeLookup())
+            if (whereText == XSharpSpecialNames.ImpliedTypeName && !options.IsAttributeTypeLookup())
 #else
             if (whereText == "var" && !options.IsAttributeTypeLookup())
 #endif

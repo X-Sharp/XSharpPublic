@@ -15,9 +15,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Emit;
 using Roslyn.Utilities;
-#if XSHARP
-using MCCSI= Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
-#endif
 namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed class MethodCompiler : CSharpSymbolVisitor<TypeCompilationState, object>
@@ -1176,7 +1173,7 @@ namespace Microsoft.CodeAnalysis.CSharp
 #if XSHARP      
                 switch (method.Name)
                 {
-                    case MCCSI.XSharpVOTreeTransformation.AppInit:
+                    case XSharpSpecialNames.AppInit:
                         body = LocalRewriter.RewriteAppInit(
                             method.DeclaringCompilation,
                             method,
@@ -1187,7 +1184,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             diagnostics: diagnostics);
                         body.WasCompilerGenerated = true;
                         break;
-                    case MCCSI.XSharpVOTreeTransformation.AppExit:
+                    case XSharpSpecialNames.AppExit:
                         body = LocalRewriter.RewriteAppExit(
                             method.DeclaringCompilation,
                             method,
@@ -1198,7 +1195,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             diagnostics: diagnostics);
                         body.WasCompilerGenerated = true;
                         break;
-                    case MCCSI.XSharpVOTreeTransformation.ExitProc:
+                    case XSharpSpecialNames.ExitProc:
                         body = LocalRewriter.RewriteExit(
                             method.DeclaringCompilation,
                             method,

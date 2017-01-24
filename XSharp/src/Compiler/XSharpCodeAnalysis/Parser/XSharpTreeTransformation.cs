@@ -19,18 +19,10 @@ limitations under the License.
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using Roslyn.Utilities;
-using InternalSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
@@ -127,18 +119,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        public const string XSharpGlobalClassName = "Functions";
-        protected const string ImpliedTypeName = "Xs$var";                              // Please note that this is also used in the modified Roslyn Code !
-        protected const string StaticLocalFieldNamePrefix = "Xs$StaticLocal$";
-        protected const string StaticLocalInitFieldNameSuffix = "$init";
-        protected const string StaticLocalLockFieldNameSuffix = "$lock";
-        protected const string EventFieldNamePrefix = "Xs$Event$";
-        protected const string CompilerGenerated = "global::System.Runtime.CompilerServices.CompilerGenerated";
-        protected const string CompilerGlobalScope = "global::System.Runtime.CompilerServices.CompilerGlobalScope";
         private static int _unique = 0;
         protected static object gate = new object();
 
-        protected string GlobalClassName = XSharpGlobalClassName;
+        protected string GlobalClassName = XSharpSpecialNames.CoreFunctionsClass;
 
         internal SyntaxListPool _pool;
         protected readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
@@ -172,10 +156,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _parser = parser;
             _options = options;
             GlobalEntities = CreateEntities();
-            _ptrType = GenerateQualifiedName("global::System.IntPtr");
+            _ptrType = GenerateQualifiedName(SystemQualifiedNames.IntPtr);
             _objectType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ObjectKeyword));
             _voidType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.VoidKeyword));
-            _impliedType = GenerateSimpleName(ImpliedTypeName);
+            _impliedType = GenerateSimpleName(XSharpSpecialNames.ImpliedTypeName);
             _fileName = fileName;
         }
 
@@ -751,10 +735,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         protected SyntaxList<AttributeListSyntax> MakeCompilerGeneratedAttribute(bool lWithGlobalScope = false)
         {
             SyntaxListBuilder<AttributeListSyntax> attributeLists = _pool.Allocate<AttributeListSyntax>();
-            GenerateAttributeList(attributeLists, CompilerGenerated);
+            GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGenerated);
             if (lWithGlobalScope)
             {
-                GenerateAttributeList(attributeLists, CompilerGlobalScope);
+                GenerateAttributeList(attributeLists, SystemQualifiedNames.CompilerGlobalScope);
             }
             var compilerGenerated = attributeLists.ToList();
             _pool.Free(attributeLists);
@@ -1599,7 +1583,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         var t = new XSharpTreeTransformation(null, CSharpParseOptions.Default, new SyntaxListPool(), new ContextAwareSyntax(new SyntaxFactoryContext()), "");
 
-                        t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpGlobalClassName, false, true));
+                        t.GlobalEntities.Members.Add(t.GenerateGlobalClass(XSharpSpecialNames.CoreFunctionsClass, false, true));
                         var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                         var tree = CSharpSyntaxTree.Create(
                             (Syntax.CompilationUnitSyntax)t._syntaxFactory.CompilationUnit(
@@ -1708,7 +1692,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             _pool.Free(globalTypes);
             // Add: using static Functions
-            AddUsingWhenMissing(GlobalEntities.Usings, XSharpGlobalClassName, true);
+            AddUsingWhenMissing(GlobalEntities.Usings, XSharpSpecialNames.CoreFunctionsClass, true);
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
@@ -2254,7 +2238,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.ExplicitIface != null)
                 {
-                    string evtFldName = EventFieldNamePrefix + context.Id.Get<SyntaxToken>();
+                    string evtFldName = XSharpSpecialNames.EventFieldNamePrefix + context.Id.Get<SyntaxToken>();
                     ClassEntities.Peek().Members.Add(
                         _syntaxFactory.FieldDeclaration(
                             EmptyList<AttributeListSyntax>(),
@@ -3524,7 +3508,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private AttributeSyntax _dllImportAttribute(XP.VodllContext context, ExpressionSyntax dllExpr, ExpressionSyntax entrypointExpr)
         {
             return _syntaxFactory.Attribute(
-                name: GenerateQualifiedName("global::System.Runtime.InteropServices.DllImport"),
+                name: GenerateQualifiedName(SystemQualifiedNames.DllImport),
                 argumentList: MakeAttributeArgumentList(
                     MakeSeparatedList(
                         _syntaxFactory.AttributeArgument(null, null, dllExpr),
@@ -3532,7 +3516,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         _syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)),
                         _syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)),
                         context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
-                                MakeSimpleMemberAccess(GenerateQualifiedName("global::System.Runtime.InteropServices.CharSet"),
+                                MakeSimpleMemberAccess(GenerateQualifiedName(SystemQualifiedNames.CharSet),
                                      _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))
                             : null,
                         context.CallingConvention?.Get<AttributeArgumentSyntax>()
@@ -3589,16 +3573,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 case XP.CLIPPER:
                 case XP.STRICT:
-                    conv = "global::System.Runtime.InteropServices.CallingConvention.Cdecl";
+                    conv = SystemQualifiedNames.Cdecl;
                     break;
                 case XP.PASCAL:
                     conv = ""; // "global::System.Runtime.InteropServices.CallingConvention.StdCall";
                     break;
                 case XP.THISCALL:
-                    conv = "global::System.Runtime.InteropServices.CallingConvention.ThisCall";
+                    conv = SystemQualifiedNames.ThisCall; ;
                     break;
                 case XP.FASTCALL:
-                    conv = "global::System.Runtime.InteropServices.CallingConvention.Cdecl";
+                    conv = SystemQualifiedNames.Cdecl;
                     break;
             }
             if (!String.IsNullOrEmpty(conv))
@@ -4081,7 +4065,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (isStatic)
             {
-                staticName = StaticLocalFieldNamePrefix + context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
+                staticName = XSharpSpecialNames.StaticLocalFieldNamePrefix + context.Id.Get<SyntaxToken>().Text + UniqueNameSuffix;
                 ClassEntities.Peek().Members.Add(
                     _syntaxFactory.FieldDeclaration(
                         EmptyList<AttributeListSyntax>(),
@@ -4098,7 +4082,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.BoolKeyword)),
                                 MakeSeparatedList(
-                                        GenerateVariable(SyntaxFactory.Identifier(staticName + StaticLocalInitFieldNameSuffix),
+                                        GenerateVariable(SyntaxFactory.Identifier(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
                                         GenerateLiteral(true)))),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                         );
@@ -4107,7 +4091,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             EmptyList<AttributeListSyntax>(),
                             TokenList(SyntaxKind.StaticKeyword, SyntaxKind.InternalKeyword),
                             _syntaxFactory.VariableDeclaration(_objectType,
-                                MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName + StaticLocalLockFieldNameSuffix),
+                                MakeSeparatedList(GenerateVariable(SyntaxFactory.Identifier(staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix),
                                         CreateObject(_objectType, EmptyArgumentList())))),
                             SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken))
                         );
@@ -4140,16 +4124,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (initExpr != null)
                 {
                     decl.Add(GenerateIfStatement(
-                        GenerateSimpleName(staticName + StaticLocalInitFieldNameSuffix),
+                        GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
 
-                        MakeLock(GenerateSimpleName(staticName + StaticLocalLockFieldNameSuffix),
-                            GenerateIfStatement(GenerateSimpleName(staticName + StaticLocalInitFieldNameSuffix),
+                        MakeLock(GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalLockFieldNameSuffix),
+                            GenerateIfStatement(GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
 
                                 MakeBlock(MakeList<StatementSyntax>(
                                         GenerateExpressionStatement(MakeSimpleAssignment(GenerateSimpleName(staticName), initExpr)),
                                         GenerateExpressionStatement(
                                             MakeSimpleAssignment(
-                                                GenerateSimpleName(staticName + StaticLocalInitFieldNameSuffix),
+                                                GenerateSimpleName(staticName + XSharpSpecialNames.StaticLocalInitFieldNameSuffix),
                                                 GenerateLiteral(false)))
                                         ))))));
                 }
@@ -4807,7 +4791,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.Q.Type == XP.QMARK)
                 {
-                    expr = GenerateMethodCall("global::System.Console.WriteLine");
+                    expr = GenerateMethodCall(SystemQualifiedNames.WriteLine);
                     context.Put(GenerateExpressionStatement(expr));
                 }
                 else
@@ -4839,7 +4823,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 MakeSeparatedList<ArgumentSyntax>(args.ToArray()),
                                 SyntaxFactory.MakeToken(SyntaxKind.CloseParenToken));
 
-                expr = GenerateMethodCall("global::System.Console.Write", arglist);
+                expr = GenerateMethodCall(SystemQualifiedNames.Write, arglist);
                 context.Put(GenerateExpressionStatement(expr));
             }
         }
@@ -5014,7 +4998,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             switch (context.Op.Type)
             {
                 case XP.EXP:
-                    context.Put(GenerateMethodCall("global::System.Math.Pow",
+                    context.Put(GenerateMethodCall(SystemQualifiedNames.Pow,
                         _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                             MakeSeparatedList(MakeArgument(context.Left.Get<ExpressionSyntax>()),
                                 MakeArgument(context.Right.Get<ExpressionSyntax>())),
@@ -5046,7 +5030,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XP.ASSIGN_EXP:
                     context.Put(MakeSimpleAssignment(
                         context.Left.Get<ExpressionSyntax>(),
-                        GenerateMethodCall("global::System.Math.Pow",
+                        GenerateMethodCall(SystemQualifiedNames.Pow,
                             _syntaxFactory.ArgumentList(SyntaxFactory.MakeToken(SyntaxKind.OpenParenToken),
                                 MakeSeparatedList(MakeArgument(context.Left.Get<ExpressionSyntax>()),
                                     MakeArgument(context.Right.Get<ExpressionSyntax>())),
@@ -5110,9 +5094,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 argList = EmptyArgumentList();
             }
-            var stmt = GenerateExpressionStatement(GenerateMethodCall("global::System.Diagnostics.Debugger.Break", argList));
+            var stmt = GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.DebuggerBreak, argList));
             var cond = MakeSimpleMemberAccess(
-                        GenerateQualifiedName("global::System.Diagnostics.Debugger"),
+                        GenerateQualifiedName(SystemQualifiedNames.Debugger),
                         GenerateSimpleName("IsAttached"));
             context.Put(GenerateIfStatement(cond, stmt));
             return true;
@@ -5138,7 +5122,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             expr = MakeSimpleMemberAccess(expr, GenerateSimpleName("Module"));
             argList = MakeArgumentList(MakeArgument(expr));
-            expr = GenerateMethodCall("global::System.Runtime.InteropServices.Marshal.GetHINSTANCE", argList);
+            expr = GenerateMethodCall(SystemQualifiedNames.GetHInstance, argList);
             context.Put(expr);
             return true;
         }

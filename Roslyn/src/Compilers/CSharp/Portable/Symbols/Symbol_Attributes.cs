@@ -675,7 +675,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
 #if XSHARP
                 // The ClipperCallingConvention Attribute in VulcanRT has incorrect Targets (Method, but should also be allowed on Constructors)
-                if (node.Name.ToString().ToLower().IndexOf("clippercallingconvention") == -1)
+                if (node.Name.ToString().ToLower().IndexOf(VulcanTypeNames.ClipperCallingConventionAttribute,StringComparison.OrdinalIgnoreCase) == -1)
                 {
 #endif
                 // generate error

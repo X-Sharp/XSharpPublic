@@ -10,7 +10,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
             {
                 var ts = this.Green as InternalSyntax.IdentifierNameSyntax;
 #if XSHARP
-                return ts != null && ts.Identifier.ToString() == "Xs$var";
+                return ts != null && ts.Identifier.ToString() == XSharpSpecialNames.ImpliedTypeName;
 #else
                 return ts != null && ts.Identifier.ToString() == "var";
 #endif

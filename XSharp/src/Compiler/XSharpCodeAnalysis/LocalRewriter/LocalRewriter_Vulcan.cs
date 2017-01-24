@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                  DiagnosticBag diagnostics)
 
         {
-            if (method.Name != XSharpVOTreeTransformation.AppExit)
+            if (method.Name != XSharpSpecialNames.AppExit)
                 return statement;
             var refMan = compilation.GetBoundReferenceManager();
             var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 TypeSymbol type = r.GetTypeByMetadataName(functionsClassName) as TypeSymbol;
                                 // If we can find the $Exit method then call that method
                                 // Otherwise find the public globals and clear them from our code
-                                var members = type.GetMembers(XSharpVOTreeTransformation.ExitProc);
+                                var members = type.GetMembers(XSharpSpecialNames.ExitProc);
                                 if (members.Length > 0)
                                 {
                                     foreach (MethodSymbol sym in members)
@@ -140,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // Now clear the globals in this assembly by calling $Exit
 
-            var symbols = FindMembers(compilation, XSharpVOTreeTransformation.ExitProc);
+            var symbols = FindMembers(compilation, XSharpSpecialNames.ExitProc);
             foreach (MethodSymbol sym in symbols)
             {
                 CreateMethodCall(compilation, statement.Syntax, sym, newstatements);
@@ -161,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             DiagnosticBag diagnostics)
 
         {
-            if (method.Name != XSharpVOTreeTransformation.AppInit)
+            if (method.Name != XSharpSpecialNames.AppInit)
                 return statement;
             var newstatements = new List<BoundStatement>();
             var oldbody = statement as BoundBlock;
@@ -187,20 +187,20 @@ namespace Microsoft.CodeAnalysis.CSharp
                             if (!string.IsNullOrEmpty(functionsClassName))
                             {
                                 var type = r.GetTypeByMetadataName(functionsClassName);
-                                init1.AddRange(type.GetMembers(XSharpVOTreeTransformation.InitProc1));
-                                init2.AddRange(type.GetMembers(XSharpVOTreeTransformation.InitProc2));
-                                init3.AddRange(type.GetMembers(XSharpVOTreeTransformation.InitProc3));
+                                init1.AddRange(type.GetMembers(XSharpSpecialNames.InitProc1));
+                                init2.AddRange(type.GetMembers(XSharpSpecialNames.InitProc2));
+                                init3.AddRange(type.GetMembers(XSharpSpecialNames.InitProc3));
                             }
                         }
                     }
                 }
             }
 
-            var members = FindMembers(compilation, XSharpVOTreeTransformation.InitProc1);
+            var members = FindMembers(compilation, XSharpSpecialNames.InitProc1);
             init1.AddRange(members);
-            members = FindMembers(compilation, XSharpVOTreeTransformation.InitProc2);
+            members = FindMembers(compilation, XSharpSpecialNames.InitProc2);
             init2.AddRange(members);
-            members = FindMembers(compilation, XSharpVOTreeTransformation.InitProc3);
+            members = FindMembers(compilation, XSharpSpecialNames.InitProc3);
             init3.AddRange(members);
             // Now join all 3 lists to one list
             init1.AddRange(init2);

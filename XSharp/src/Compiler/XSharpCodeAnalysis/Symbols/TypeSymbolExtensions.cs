@@ -19,20 +19,22 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using Roslyn.Utilities;
 using Microsoft.CodeAnalysis.Symbols;
+using Microsoft.CodeAnalysis;
 
 namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal static partial class TypeSymbolExtensions
     {
 
-        private static readonly string[] s_VulcanNamespace = { "Vulcan", "" };
+
+        private static readonly string[] s_VulcanNamespace = { VulcanNameSpaces.Vulcan, "" };
 
         public static bool IsVulcanRTAttribute(this NamedTypeSymbol atype, String name)
         {
             if (atype == null)
                 return false;
             return (String.Equals(atype.Name, name, System.StringComparison.OrdinalIgnoreCase)
-                && String.Equals(atype.ContainingAssembly.Name, "VulcanRT", System.StringComparison.OrdinalIgnoreCase));
+                && String.Equals(atype.ContainingAssembly.Name, VulcanAssemblyNames.VulcanRT, System.StringComparison.OrdinalIgnoreCase));
 
         }
         public static bool IsVulcanType(this TypeSymbol _type, string TypeName)
@@ -50,12 +52,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         }
         public static bool IsCodeblock(this TypeSymbol _type)
         {
-            return _type.IsVulcanType("Codeblock");
+            return _type.IsVulcanType(VulcanTypeNames.CodeBlockType);
         }
 
         public static bool IsUsual(this TypeSymbol _type)
         {
-            return _type.IsVulcanType("__Usual");
+            return _type.IsVulcanType(VulcanTypeNames.UsualType);
         }
 
         public static bool IsVoStructOrUnion(this TypeSymbol _type)
@@ -76,7 +78,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var attr in attrs)
                     {
                         var atype = attr.AttributeClass;
-                        if (atype.IsVulcanRTAttribute( "VOStructAttribute"))
+                        if (atype.IsVulcanRTAttribute(VulcanTypeNames.VOStructAttribute))
                             return true;
                     }
                 }
@@ -106,7 +108,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var attr in attrs)
                     {
                         var atype = attr.AttributeClass;
-                        if (atype.IsVulcanRTAttribute("VOStructAttribute"))
+                        if (atype.IsVulcanRTAttribute(VulcanTypeNames.VOStructAttribute))
                         {
                             return attr.ConstructorArguments.FirstOrNullable()?.DecodeValue<int>(SpecialType.System_Int32) ?? 0;
                         }
@@ -138,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     foreach (var attr in attrs)
                     {
                         var atype = attr.AttributeClass;
-                        if (atype.IsVulcanRTAttribute("VOStructAttribute"))
+                        if (atype.IsVulcanRTAttribute(VulcanTypeNames.VOStructAttribute))
                         {
                             return attr.ConstructorArguments.LastOrNullable()?.DecodeValue<int>(SpecialType.System_Int32) ?? 0;
                         }
@@ -166,7 +168,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // TODO (nvk): there must be a better way!
             return
                 (object)_asm != null &&
-                (_asm.Name == "VulcanRTFuncs" || _asm.Name == "VulcanRT");
+                (_asm.Name == VulcanAssemblyNames.VulcanRTFuncs || _asm.Name == VulcanAssemblyNames.VulcanRT);
         }
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)
@@ -177,7 +179,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 foreach (var attr in attrs)
                 {
                     var atype = attr.AttributeClass;
-                    if (atype.IsVulcanRTAttribute("DefaultParameterValueAttribute"))
+                    if (atype.IsVulcanRTAttribute(VulcanTypeNames.DefaultParameterAttribute))
                         return true;
                 }
             }
@@ -192,7 +194,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 foreach (var attr in attrs)
                 {
                     var atype = attr.AttributeClass;
-                    if (atype.IsVulcanRTAttribute("DefaultParameterValueAttribute"))
+                    if (atype.IsVulcanRTAttribute(VulcanTypeNames.DefaultParameterAttribute))
                     {
                         int desc = attr.CommonConstructorArguments[1].DecodeValue<int>(SpecialType.System_Int32);
 
@@ -243,6 +245,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             }
             return ConstantValue.Bad;
         }
+        public static TypeSymbol GetActualType(this ParameterSymbol parameter)
+        {
+            var type = parameter.Type;
+            if (type.SpecialType == SpecialType.System_IntPtr)
+            {
+                var attrs = parameter.GetAttributes();
+                foreach (var attr in attrs)
+                {
+                    var atype = attr.AttributeClass;
+                    if (atype.IsVulcanRTAttribute(VulcanTypeNames.ActualTypeAttribute))
+                    {
+                        object t = attr.CommonConstructorArguments[0].DecodeValue<object>(SpecialType.None);
+                        if (t is TypeSymbol)
+                        {
+                            type = (TypeSymbol)t;
+                        }
+                    }
+                }
+            }
+            return type;
+        }
+
     }
     internal sealed partial class AnonymousTypeManager : CommonAnonymousTypeManager
     {
@@ -266,31 +290,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         public NamedTypeSymbol Vulcan_Usual
         {
             get { return this.Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual); }
-        }
-    }
-
-    internal static partial class ParameterSymbolExtensions
-    {
-        public static TypeSymbol GetActualType(this ParameterSymbol parameter)
-        {
-            var type = parameter.Type;
-            if (type.SpecialType == SpecialType.System_IntPtr)
-            {
-                var attrs = parameter.GetAttributes();
-                foreach (var attr in attrs)
-                {
-                    var atype = attr.AttributeClass;
-                    if (atype.IsVulcanRTAttribute("ActualTypeAttribute"))
-                    {
-                        object t = attr.CommonConstructorArguments[0].DecodeValue<object>(SpecialType.None);
-                        if (t is TypeSymbol)
-                        {
-                            type = (TypeSymbol)t;
-                        }
-                    }
-                }
-            }
-            return type;
         }
     }
 }

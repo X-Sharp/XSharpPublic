@@ -25,17 +25,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 {
     internal sealed partial class LocalRewriter
     {
-        internal const string VulcanToObject = "ToObject";
-        internal const string VulcanIVarGet = "IVarGet";
-        internal const string VulcanIVarPut = "IVarPut";
-        internal const string VulcanSend = "__InternalSend";
-        internal const string VulcanASend = "ASend";
         public BoundExpression MakeVODynamicGetMember(BoundExpression loweredReceiver, string name)
         {
             var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
-                loweredReceiver = _factory.StaticCall(usualType, VulcanToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanIVarGet,
+                loweredReceiver = _factory.StaticCall(usualType, VulcanFunctionNames.VulcanToObject, loweredReceiver);
+            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanFunctionNames.VulcanIVarGet,
                 MakeConversion(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)));
         }
@@ -44,8 +39,8 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
             if (((NamedTypeSymbol)loweredReceiver.Type).ConstructedFrom == usualType)
-                loweredReceiver = _factory.StaticCall(usualType, VulcanToObject, loweredReceiver);
-            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanIVarPut,
+                loweredReceiver = _factory.StaticCall(usualType, VulcanFunctionNames.VulcanToObject, loweredReceiver);
+            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanFunctionNames.VulcanIVarPut,
                 MakeConversion(loweredReceiver, _compilation.GetSpecialType(SpecialType.System_Object), false),
                 new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                 loweredValue.Type == null ? new BoundDefaultOperator(loweredValue.Syntax, usualType)
@@ -68,7 +63,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     convArgs.Add(MakeConversion(a, usualType, false));
             }
             var aArgs = _factory.Array(usualType, convArgs.ToArrayAndFree());
-            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanSend,
+            return _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanFunctionNames.VulcanSend,
                     MakeConversion(loweredReceiver, usualType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);
@@ -87,7 +82,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     convArgs.Add(MakeConversion(a, usualType, false));
             }
             var aArgs = _factory.Array(usualType, convArgs.ToArrayAndFree());
-            var expr = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanASend,
+            var expr = _factory.StaticCall(_compilation.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions), VulcanFunctionNames.VulcanASend,
                     MakeConversion(loweredReceiver, arrayType, false),
                     new BoundLiteral(loweredReceiver.Syntax, ConstantValue.Create(name), _compilation.GetSpecialType(SpecialType.System_String)),
                     aArgs);

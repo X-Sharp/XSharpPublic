@@ -98,18 +98,20 @@ CLASS SolutionConverter
 		FOREACH VAR sFile IN aFiles
 			LOCAL sContents AS STRING
 			LOCAL lChanged := FALSE AS LOGIC
-			sContents := System.IO.File.ReadAllText(sFile)
-			FOREACH VAR sItem IN aGuids
-				IF sContents:Contains(sItem:Key)
-					sContents := sContents:Replace(sItem:Key, sItem:Value)
-					lChanged := TRUE
-				ELSEIF 	sContents:Contains(sItem:Key:ToLower())
-					sContents := sContents:Replace(sItem:Key:ToLower(), sItem:Value)
-					lChanged := TRUE
+			if System.IO.File.Exists(sFile)
+				sContents := System.IO.File.ReadAllText(sFile)
+				FOREACH VAR sItem IN aGuids
+					IF sContents:Contains(sItem:Key)
+						sContents := sContents:Replace(sItem:Key, sItem:Value)
+						lChanged := TRUE
+					ELSEIF 	sContents:Contains(sItem:Key:ToLower())
+						sContents := sContents:Replace(sItem:Key:ToLower(), sItem:Value)
+						lChanged := TRUE
+					ENDIF
+				NEXT                    
+				IF lChanged
+					System.IO.File.WriteAllText(sFile, sContents)
 				ENDIF
-			NEXT                    
-			IF lChanged
-				System.IO.File.WriteAllText(sFile, sContents)
 			ENDIF
 		NEXT
 		

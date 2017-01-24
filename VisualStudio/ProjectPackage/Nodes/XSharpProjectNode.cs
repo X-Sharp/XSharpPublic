@@ -855,7 +855,14 @@ namespace XSharp.Project
                 return _designerContext;
             }
         }
-
+        protected override Microsoft.VisualStudio.Project.BuildResult InvokeMsBuild(string target)
+        {
+            if (String.Equals(target, "Clean", StringComparison.OrdinalIgnoreCase))
+            {
+                logger.Clear();
+            }
+            return base.InvokeMsBuild(target);
+        }
 
         //private XSharpVSMDProvider codeDomProvider;
         ///// Retrieve the CodeDOM provider

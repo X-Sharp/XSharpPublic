@@ -686,7 +686,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     if (isApp && String.IsNullOrEmpty(Options.MainTypeName))
                     {
-                        Options.MainTypeName = InternalSyntax.XSharpTreeTransformation.XSharpGlobalClassName;
+                        Options.MainTypeName = XSharpSpecialNames.CoreFunctionsClass;
                     }
                     def = InternalSyntax.XSharpTreeTransformation.DefaultXSharpSyntaxTree(trees, isApp);
                 }

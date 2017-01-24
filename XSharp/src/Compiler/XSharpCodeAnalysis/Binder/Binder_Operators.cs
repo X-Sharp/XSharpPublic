@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 // VO Style String Comparison
                 type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
-                string methodName = "__StringCompare";
+                string methodName = VulcanFunctionNames.StringCompare;
                 var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
                 if (symbols.Length == 1)
                 {
@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var type = this.GetWellKnownType(WellKnownType.VulcanRTFuncs_Functions, diagnostics, node);
-            var methodName = "__StringEquals";
+            var methodName = VulcanFunctionNames.StringEquals; 
             var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
             {
@@ -192,7 +192,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
-            var methodName = "__InexactEquals";
+            var methodName = VulcanFunctionNames.InExactEquals; ;
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
@@ -236,7 +236,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var usualType = this.GetWellKnownType(WellKnownType.Vulcan___Usual, diagnostics, node);
-            var methodName = "__InexactNotEquals";
+            var methodName = VulcanFunctionNames.InExactNotEquals; ;
             var symbols = Binder.GetCandidateMembers(usualType, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 2)
             {
@@ -279,7 +279,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             MethodSymbol opMeth = null;
             BoundExpression opCall = null;
             var type = this.GetWellKnownType(WellKnownType.Vulcan_Internal_CompilerServices, diagnostics, node);
-            var methodName = "StringSubtract";
+            var methodName = VulcanFunctionNames.StringSubtract;
             var symbols = Binder.GetCandidateMembers(type, methodName, LookupOptions.MustNotBeInstance, this);
             if (symbols.Length == 1)
             {

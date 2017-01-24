@@ -24,6 +24,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal static partial class MemberSymbolExtensions
     {
+        
+
         internal static bool HasClipperCallingConvention(this Symbol method)
         {
             if (method is SourceMethodSymbol)
@@ -46,7 +48,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             foreach (var att in atts)
             {
                 var aclass = att.AttributeClass;
-                if (aclass.IsVulcanRTAttribute("ClipperCallingConventionAttribute"))
+                if (aclass.IsVulcanRTAttribute(VulcanTypeNames.ClipperCallingConventionAttribute))
                     return true;
             }
             return false;

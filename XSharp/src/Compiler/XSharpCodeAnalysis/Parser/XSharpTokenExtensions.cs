@@ -809,7 +809,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     r = SyntaxFactory.MakeToken(SyntaxKind.ArgListKeyword, token.Text);
                     break;
                 case XSharpParser.VAR:
-                    r = SyntaxFactory.Identifier("Xs$var");
+                    r = SyntaxFactory.Identifier(XSharpSpecialNames.ImpliedTypeName);
                     break;
                 case XSharpParser.THROW:
                     r = SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword, token.Text);

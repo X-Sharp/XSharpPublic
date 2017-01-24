@@ -23,8 +23,6 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
         private XSharpSpecificCompilationOptions options;
         // Vulcan Assembly Names
-        private const string VulcanRT = "vulcanrt";
-        private const string VulcanRTFuncs              = "vulcanrtfuncs";
 
         public XSharpSpecificCompilationOptions XSharpSpecificCompilationOptions
         {
@@ -257,10 +255,10 @@ namespace Microsoft.CodeAnalysis.CSharp
         {
             switch (System.IO.Path.GetFileNameWithoutExtension(filename).ToLower())
             {
-                case VulcanRTFuncs:
+                case VulcanAssemblyNames.VulcanRTFuncs:
                     options.VulcanAssemblies |= VulcanAssemblies.VulcanRTFuncs;
                     break;
-                case VulcanRT:
+                case VulcanAssemblyNames.VulcanRT:
                     options.VulcanAssemblies |= VulcanAssemblies.VulcanRT;
                     break;
             }

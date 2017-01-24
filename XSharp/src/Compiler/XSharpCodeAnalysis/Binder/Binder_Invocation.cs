@@ -42,14 +42,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var gns = node.Expression as GenericNameSyntax;
                 var arg = gns.TypeArgumentList.Arguments[0];
                 var method = arg.ToFullString();
-                bool pcall = method.IndexOf("$Pcall$", StringComparison.OrdinalIgnoreCase) >= 0;
-                if (pcall)
+                bool pcallnative = method.IndexOf(XSharpSpecialNames.PCallNativePrefix, StringComparison.OrdinalIgnoreCase) >= 0;
+                if (pcallnative)
                 {
-                    BindPCallAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
+                    BindPCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
                 }
                 else
                 {
-                    BindPCallNativeAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
+                    BindPCallAndDelegate(node, analyzedArguments.Arguments, diagnostics, arg);
                 }
 
             }

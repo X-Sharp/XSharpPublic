@@ -83,7 +83,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string ExVarName = "Xs$Exception";
         internal const string ReturnName = "Xs$Return";
 
-        internal const string CoreFunctionsClass = "Functions";
+        internal const string CoreFunctionsClass = VulcanFunctionNames.FunctionsClass;
         internal const string VOExeFunctionsClass = ".Exe.Functions";
         internal const string VODllFunctionsClass = ".Functions";
 
@@ -102,6 +102,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VulcanSend = "__InternalSend";
         internal const string VulcanASend = "ASend";
         internal const string Eval = "Eval";
+        internal const string FunctionsClass = "Functions";
     }
     internal static class VulcanQualifiedFunctionNames
     {

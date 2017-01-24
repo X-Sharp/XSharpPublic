@@ -14,15 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using static LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser;
+using System;
 
 namespace Microsoft.CodeAnalysis.CSharp
 {
@@ -32,10 +28,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             MemberResolutionResult<TMember> m1,
             MemberResolutionResult<TMember> m2,
             ArrayBuilder<BoundExpression> arguments,
-            out BetterResult result)
+            out BetterResult result,
+            out bool Ambiguous)
             where TMember : Symbol
         {
             result = BetterResult.Neither;
+            Ambiguous = false;
             // Prefer the member not declared in VulcanRT, if applicable
             if (Compilation.Options.IsDialectVO)
             {
@@ -165,6 +163,28 @@ namespace Microsoft.CodeAnalysis.CSharp
 
                         }
 
+                    }
+                }
+                // when both methods are in a functions class from different assemblies
+                // pick the first one in the references list
+                if (asm1 != asm2
+                    && string.Equals(m1.Member.ContainingType.Name, VulcanFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(m2.Member.ContainingType.Name, VulcanFunctionNames.FunctionsClass, StringComparison.OrdinalIgnoreCase) )
+                {
+                    foreach (var reference in Compilation.ReferencedAssemblyNames)
+                    {
+                        if (reference.Name == asm1.Name)
+                        {
+                            result = BetterResult.Left;
+                            Ambiguous = true;
+                            return true;
+                        }
+                        if (reference.Name == asm2.Name)
+                        {
+                            result = BetterResult.Right;
+                            Ambiguous = true;
+                            return true;
+                        }
                     }
                 }
             }

@@ -2908,7 +2908,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var sdt = dt as XP.SimpleDatatypeContext;
                 if (sdt.TypeName.XType != null && sdt.TypeName.XType.Token.Type == XP.PSZ)
                 {
-                    if (IsLiteralString(context.Expr))
+                    if (context.Expr.IsLiteralString())
                     {
                         _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
                         return;
@@ -2919,28 +2919,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        protected bool IsLiteralString(XP.ExpressionContext expr)
-        {
-            var pe = expr as XP.PrimaryExpressionContext;
-            if (pe != null)
-            {
-                if (pe.Expr is XP.LiteralExpressionContext)
-                {
-                    var lit = pe.Expr as XP.LiteralExpressionContext;
-                    var lv = lit.Literal;
-                    switch (lv.Token.Type)
-                    {
-                        case XP.STRING_CONST:
-                        case XP.ESCAPED_STRING_CONST:
-                        case XP.CHAR_CONST:
-                            return true;
-                        default:
-                            break;
-                    }
-                }
-            }
-            return false;
-        }
         public override void ExitVoCastExpression([NotNull] XP.VoCastExpressionContext context)
         {
             // Special case for PSZ(_CAST 
@@ -2950,7 +2928,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var xtype = context.XType as XP.XbaseTypeContext;
                 if (xtype.Token.Type == XP.PSZ)
                 {
-                    if (IsLiteralString(context.Expr))
+                    if (context.Expr.IsLiteralString())
                     {
                         _GenerateString2Psz(context, context.Expr.Get<ExpressionSyntax>());
                     }

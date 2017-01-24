@@ -15,6 +15,8 @@ CLASS ProjectConverter
 	PROTECT cPath	AS STRING   
 	PROTECT oProgress AS IProgress         
 	PROTECT lVulcanRtWritten AS LOGIC
+	PROTECT oProjectNode as XmlElement
+	PROTECT lHasProjectExtensions as LOGIC
 	PROPERTY Guid AS STRING GET cGuid
 	CONSTRUCTOR(oProg AS IProgress)
 		cSchema := "http://schemas.microsoft.com/developer/msbuild/2003"
@@ -30,6 +32,13 @@ METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING) AS LOGIC
 		RETURN FALSE
 	ENDIF                            
 	SELF:WalkNode(oDoc)   
+	if (!lHasProjectExtensions )
+		VAR oExt := oDoc:CreateElement("ProjectExtensions",cSchema)
+		VAR oCap := oDoc:CreateElement("ProjectCapabilities",cSchema)
+		oExt:AppendChild(oCap)
+		oCap:AppendChild(oDoc:CreateElement("ProjectConfigurationsDeclaredAsItems",cSchema))
+		oProjectNode:AppendChild(oExt)
+	ENDIF
 	SELF:SaveFile(cTarget)
 	RETURN TRUE	
 
@@ -171,16 +180,19 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 				ENDIF
 			ENDIF
 		CASE "projectextensions"
-			// Import the schema
-			oChild := oDoc:CreateElement("Import", cSchema)
-			oAttribute := oDoc:CreateAttribute("Project")
-			oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.targets"
-			oChild:Attributes:Append(oAttribute)   
-			oParent:InsertBefore(oChild, oElement)  
 			// add <ProjectCapabilities><ProjectConfigurationsDeclaredAsItems /></ProjectCapabilities>
 			oChild := oDoc:CreateElement("ProjectCapabilities",cSchema)
 			oChild:AppendChild(oDoc:CreateElement("ProjectConfigurationsDeclaredAsItems",cSchema))
 			oElement:AppendChild(oChild)
+			lHasProjectExtensions := TRUE
+		CASE "project"
+			// Import the schema
+			SELF:oProjectNode := oElement
+			oChild := oDoc:CreateElement("Import", cSchema)
+			oAttribute := oDoc:CreateAttribute("Project")
+			oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.targets"
+			oChild:Attributes:Append(oAttribute)   
+			oElement:AppendChild(oChild)  
 		CASE "reference"                               
 			// Add VulcanRT assemblies after 1st reference
 			IF !SELF:lVulcanRtWritten

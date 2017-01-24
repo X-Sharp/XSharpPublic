@@ -106,6 +106,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                         return ConversionKind.Identity;
 
                     }
+                    if (rewrittenType == _compilation.GetSpecialType(SpecialType.System_Object) ||
+                        rewrittenType == _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    {
+                        return ConversionKind.Boxing;
+
+                    }
                     // what else, any other numeric type Convert to Double first and then to destination type
                     m = getImplicitOperator(floatType, _compilation.GetSpecialType(SpecialType.System_Double));
                     if (m != null)  // this should never happen. This is an implicit converter

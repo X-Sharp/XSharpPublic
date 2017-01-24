@@ -5354,13 +5354,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitVoConversionExpression([NotNull] XP.VoConversionExpressionContext context)
         {
+            var expr = MakeChecked(context.Expr.Get<ExpressionSyntax>(), false);
             if (context.Type != null)
             {
-                context.Put(MakeCastTo(context.Type.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()));
+                context.Put(MakeChecked(MakeCastTo(context.Type.Get<TypeSyntax>(), expr),false));
             }
             else if (context.XType != null)
             {
-                context.Put(MakeCastTo(context.XType.Get<TypeSyntax>(), context.Expr.Get<ExpressionSyntax>()));
+                context.Put(MakeChecked(MakeCastTo(context.XType.Get<TypeSyntax>(), expr),false));
             }
         }
 
@@ -5387,16 +5388,63 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 type = context.XType.Get<TypeSyntax>();
             }
-            var expr = MakeChecked(context.Expr.Get<ExpressionSyntax>(), false);
+            var expr = context.Expr.Get<ExpressionSyntax>();
+            // check for cast from a logical literal to a numeric
+            // in that case replace FALSE with 0 and TRUE with 1
+            if (expr.Kind == SyntaxKind.TrueLiteralExpression || expr.Kind == SyntaxKind.FalseLiteralExpression)
+            {
+                bool numeric = false;
+                if (type is PredefinedTypeSyntax)
+                {
+                    var pdt = type as PredefinedTypeSyntax;
+                    switch (pdt.Keyword.Kind)
+                    {
+                        // 4 x unsigned
+                        case SyntaxKind.ByteKeyword:
+                        case SyntaxKind.CharKeyword:
+                        case SyntaxKind.UShortKeyword:
+                        case SyntaxKind.UIntKeyword:
+                        case SyntaxKind.ULongKeyword:
+                        // 4 x signed
+                        case SyntaxKind.SByteKeyword:
+                        case SyntaxKind.ShortKeyword:
+                        case SyntaxKind.IntKeyword:
+                        case SyntaxKind.LongKeyword:
+                        // floating point
+                        case SyntaxKind.FloatKeyword:
+                        case SyntaxKind.DoubleKeyword:
+                        case SyntaxKind.DecimalKeyword:
+                            numeric = true;
+                            break;
+                    }
+                }
+                if (numeric)
+                {
+                    LiteralExpressionSyntax lit = expr as LiteralExpressionSyntax;
+                    if (lit.Kind == SyntaxKind.TrueLiteralExpression)
+                    {
+                        expr = GenerateLiteral(1);
+                    }
+                    else
+                    {
+                        expr = GenerateLiteral(0);
+                    }
+                }
+            }
+            else
+            {
+                expr = MakeChecked(expr, false);
+            }
+
             if (mask != 0)
             {
-                expr = _syntaxFactory.BinaryExpression(
+                expr = MakeChecked(_syntaxFactory.BinaryExpression(
                         SyntaxKind.BitwiseAndExpression,
                         expr,
                         SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken),
-                        GenerateLiteral(mask));
+                        GenerateLiteral(mask)),false);
             }
-            context.Put(MakeChecked(MakeCastTo(type, MakeChecked(expr, false)), false));
+            context.Put(MakeChecked(MakeCastTo(type, expr), false));
             return;
         }
 

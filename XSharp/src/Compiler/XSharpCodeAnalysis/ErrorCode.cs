@@ -1409,5 +1409,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_AccessAssignTypesMutchMatch = 9040,
         ERR_ClipperInParentClass = 9041,
         ERR_ClipperInSubClass = 9042,
+        WRN_VulcanAmbiguous = 9043,
     }
 }

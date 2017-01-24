@@ -1478,6 +1478,28 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 info = new CSDiagnosticInfo(ErrorCode.ERR_AmbiguousAttribute, originalSymbols,
                                     new object[] { where, first, second });
                             }
+#if XSHARP
+                            else if (first.IsFromCompilation(Compilation) && ! second.IsFromCompilation(Compilation))
+                            {
+                                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
+                                    new object[] {
+                                        where,
+                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
+                                diagnostics.Add(info, where.Location);
+                                return first;
+                            }
+                            else if (second.IsFromCompilation(Compilation) && !first.IsFromCompilation(Compilation))
+                            {
+                                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
+                                    new object[] {
+                                        where,
+                                        new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                        new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat) });
+                                diagnostics.Add(info, where.Location);
+                                return second;
+                            }
+#endif
                             else
                             {
                                 // '{0}' is an ambiguous reference between '{1}' and '{2}'

@@ -13411,6 +13411,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function or type &apos;{0}&apos; is ambiguous. Could be &apos;{1}&apos; or &apos;{2}&apos;. The first is used..
+        /// </summary>
+        internal static string WRN_VulcanAmbiguous {
+            get {
+                return ResourceManager.GetString("WRN_VulcanAmbiguous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to #warning: &apos;{0}&apos;.
         /// </summary>
         internal static string WRN_WarningDirective {

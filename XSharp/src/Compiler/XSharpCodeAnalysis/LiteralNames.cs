@@ -101,6 +101,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VulcanIVarPut = "IVarPut";
         internal const string VulcanSend = "__InternalSend";
         internal const string VulcanASend = "ASend";
+        internal const string Eval = "Eval";
     }
     internal static class VulcanQualifiedFunctionNames
     {
@@ -125,7 +126,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string PopWorkarea = "global::VulcanRTFuncs.Functions.__popWorkarea";
         internal const string Evaluate = "global::VulcanRTFuncs.Functions.Evaluate";
         internal const string Default = "global::VulcanRTFuncs.Functions.Default";
-        internal const string Eval = "global::VulcanRTFuncs.Functions.Eval";
         internal const string Accept = "global::VulcanRTFuncs.Functions._accept";
         internal const string Wait = "global::VulcanRTFuncs.Functions._wait";
         internal const string Quit = "global::VulcanRTFuncs.Functions._quit";
@@ -133,8 +133,9 @@ namespace Microsoft.CodeAnalysis.CSharp
 
     internal static class VulcanAssemblyNames
     {
-        internal const string VulcanRT = "VulcanRT";
-        internal const string VulcanRTFuncs = "VulcanRTFuncs";
+        // please note that these MUST be lowercase !
+        internal const string VulcanRT = "vulcanrt";
+        internal const string VulcanRTFuncs = "vulcanrtfuncs";
     }
     internal static class VulcanNameSpaces
     {

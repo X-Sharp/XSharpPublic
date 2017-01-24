@@ -168,7 +168,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
             // TODO (nvk): there must be a better way!
             return
                 (object)_asm != null &&
-                (_asm.Name == VulcanAssemblyNames.VulcanRTFuncs || _asm.Name == VulcanAssemblyNames.VulcanRT);
+                (_asm.Name.ToLower() == VulcanAssemblyNames.VulcanRTFuncs || _asm.Name.ToLower() == VulcanAssemblyNames.VulcanRT);
         }
 
         public static bool HasVODefaultParameter(this ParameterSymbol param)

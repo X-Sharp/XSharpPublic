@@ -126,6 +126,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- This sets the doc file name to the same name as the output filename, regardless what is specified in the xsproj file-->
     <DocFileItem Include="$(IntermediateOutputPath)$(MSBuildProjectName).xml" Condition="'$(DocumentationFile)'!=''"/>
   </ItemGroup>
 
@@ -179,6 +180,12 @@
       <_NonMacroReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) != 'macro'" />
       <_MacroProjectReferencePath Include="@(ReferencePath)" Condition="%(ReferencePath.OutputItemType) == 'macro'" />
     </ItemGroup>
+    
+    <!-- Prefer32Bit was introduced in .NET 4.5. Set it to false if we are targeting 4.0 -->
+    <PropertyGroup Condition="('$(TargetFrameworkVersion)' == 'v4.0')">
+      <Prefer32Bit>false</Prefer32Bit>
+    </PropertyGroup>
+    
     <PropertyGroup Condition="'$(UseSharedCompilation)' == ''">
       <UseSharedCompilation>true</UseSharedCompilation>
     </PropertyGroup>
@@ -187,8 +194,8 @@
     AdditionalLibPaths="$(AdditionalLibPaths)"
     AddModules="@(AddModules)"
     AdditionalFiles="@(AdditionalFiles)"
-    Analyzers="@(Analyzer)"
     AllowUnsafeBlocks="$(Unsafe)"
+    Analyzers="@(Analyzer)"
     ApplicationConfiguration="$(AppConfigForCompiler)"
     BaseAddress="$(BaseAddress)"
     CheckForOverflowUnderflow="$(CheckForOverflowUnderflow)"
@@ -204,7 +211,7 @@
     DisabledWarnings="$(DisabledWarnings)"
     DocumentationFile="@(DocFileItem)"
     EmitDebugInformation="$(EmitDebugInformation)"
-    EnvironmentVariables="$(CscEnvironment)"
+    EnvironmentVariables="$(XscEnvironment)"
     ErrorEndLocation="$(ErrorEndLocation)"
     ErrorLog="$(ErrorLog)"
     ErrorReport="$(ErrorReport)"
@@ -224,7 +231,7 @@
     NoStandardDefs="$(NoStandardDefs)"
     NoStandardLib="$(NoStdLib)"
     NoWin32Manifest="$(NoWin32Manifest)"
-    Optimize="@(Optimize)"
+    Optimize="$(Optimize)"
     OutputAssembly="@(IntermediateAssembly)"
     PathMap="$(PathMap)"
     PdbFile="$(PdbFile)"
@@ -237,8 +244,8 @@
     ResponseFiles="$(CompilerResponseFile)"
     RootNamespace="$(RootNamespace)"
     SkipCompilerExecution="$(SkipCompilerExecution)"
-    SubsystemVersion="$(SubsystemVersion)"
     Sources="@(Compile)"
+    SubsystemVersion="$(SubsystemVersion)"
     TargetType="$(OutputType)"
     ToolExe="$(XscToolExe)"
     ToolPath="$(XscToolPath)"
@@ -246,12 +253,12 @@
     UseSharedCompilation="$(UseSharedCompilation)"
     Utf8Output="$(Utf8Output)"
     VsSessionGuid="$(VsSessionGuid)"
-    WarningsAsErrors="$(WarningsAsErrors)"
     WarningLevel="$(WarningLevel)"
+    WarningsAsErrors="$(WarningsAsErrors)"
     WarningsNotAsErrors="$(WarningsNotAsErrors)"
     Win32Icon="$(ApplicationIcon)"
     Win32Manifest="$(Win32Manifest)"
-    Win32Resource="@(Win32Resource)"
+    Win32Resource="$(Win32Resource)"
     AZ="$(AZ)"
     CS="$(CS)"
     INS="$(INS)"
@@ -279,6 +286,7 @@
     <ItemGroup>
       <_CoreCompileResourceInputs Remove="@(_CoreCompileResourceInputs)" />
     </ItemGroup>
+ 
     <CallTarget Targets="$(TargetsTriggeredByCompilation)" Condition="'$(TargetsTriggeredByCompilation)' != ''"/>
   </Target>
 

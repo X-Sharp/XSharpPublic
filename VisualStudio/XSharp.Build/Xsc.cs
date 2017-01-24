@@ -69,11 +69,6 @@ namespace XSharp.Build
             set { base.Bag[nameof(NoStandardDefs)] = value; }
             get { return base.GetBoolParameterWithDefault(nameof(NoStandardDefs), false); }
         }
-        public new Boolean Optimize  
-        {
-            set { base.Bag[nameof(Optimize)] = value; }
-            get { return base.GetBoolParameterWithDefault(nameof(Optimize), false); }
-        }
         public string RootNameSpace { get; set; }
         public Boolean VO1
         {

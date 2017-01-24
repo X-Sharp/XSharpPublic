@@ -2702,7 +2702,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             ))
                         )
                     ),
-                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VulcanQualifiedFunctionNames.Eval))
+                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VulcanFunctionNames.Eval))
                 ),
             EmptyArgumentList());
     }

@@ -736,6 +736,22 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     currentType.OriginalDefinition.AddUseSiteDiagnostics(ref useSiteDiagnostics);
                 }
+#if XSHARP
+                // When we find a class with a property that has a Getter and Setter then there is no
+                // need to look further. See C412 where the parent class has only a setter or only
+                // a getter and the child class has both of these.
+                // Looking further will then give a property that is incomplete
+                if (result.Symbols.Count == 1 && result.Symbols[0].Kind == SymbolKind.Property)
+                {
+                    var prop = result.Symbols[0] as PropertySymbol;
+                    if (prop.GetMethod != null && prop.SetMethod != null)
+                    {
+                        result.SetFrom(LookupResult.Good(prop));
+                        break;
+
+                    }
+                }
+#endif
             }
 
             visited?.Free();

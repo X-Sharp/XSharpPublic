@@ -93,7 +93,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     trees[i] = null;
                 }
 #if XSHARP
-                else if (parseOptions.PreprocessorOutput && touchedFilesLogger != null)
+                else if (parseOptions.PreprocessorOutput && Arguments.TouchedFilesPath != null)
                 {
                     touchedFilesLogger.AddWritten(FileNameUtilities.ChangeExtension(normalizedFilePath, ".ppo"));
                 }
@@ -116,7 +116,6 @@ namespace Microsoft.CodeAnalysis.CSharp
                 }
             }
 #endif
-
             if (Arguments.TouchedFilesPath != null)
             {
                 foreach (var path in uniqueFilePaths)

@@ -28,23 +28,23 @@ namespace XSharp.Project
     {
         #region Constants
         internal const string LanguageCaption = "Language";
-        internal const string VO1Caption = "Allow Init() and Axit() for Constructor/Destructor";
-        internal const string VO2Caption = "Initialize Strings";
-        internal const string VO3Caption = "All methods virtual";
+        internal const string VO1Caption = "Allow Init() and Axit() as aliases for Constructor/Destructor";
+        internal const string VO2Caption = "Initialize strings";
+        internal const string VO3Caption = "All instance methods virtual";
         internal const string VO4Caption = "Implicit signed/unsigned conversions";
         internal const string VO5Caption = "Implicit CLIPPER calling convention";
         internal const string VO6Caption = "Implicit pointer conversions";
-        internal const string VO7Caption = "Implicit casts and Conversions";
+        internal const string VO7Caption = "Implicit casts and conversions";
         internal const string VO8Caption = "Compatible preprocessor";
-        internal const string VO9Caption = "Allow Missing Return Statements";
+        internal const string VO9Caption = "Allow missing return statements";
         internal const string VO10Caption = "Compatible IIF Behavior";
         internal const string VO11Caption = "Compatible numeric conversions";
-        internal const string VO12Caption = "Compatible integer divisions";
-        internal const string VO13Caption = "Compatible String Comparisons";
-        internal const string VO14Caption = "Use Float Literals";
+        internal const string VO12Caption = "Clipper Compatible integer divisions";
+        internal const string VO13Caption = "Compatible string comparisons";
+        internal const string VO14Caption = "Use FLOAT literals";
         internal const string VO15Caption = "Treat missing types as USUAL";
         internal const string VO16Caption = "Initialize Variables and Fields";
-        internal const string VO1Description = "Allow Init() and Axit() for Constructor/Destructor (/vo1)";
+        internal const string VO1Description = "Allow Init() and Axit() as aliases for Constructor/Destructor (/vo1)";
         internal const string VO2Description = "Initialize strings to empty string (String.Empty) ( /vo2). Please note that in .NET a NULL_STRING is not the same as a string with length 0";
         internal const string VO3Description = "Add the virtual modifier to all methods by default (which is the normal Visual Objects behavior) (/vo3)";
         internal const string VO4Description = "Implicit signed/unsigned integer conversions (/vo4)";

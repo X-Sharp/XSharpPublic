@@ -53,7 +53,7 @@ namespace XSharp.Project
         internal const string descPostBuildEvent = "Post Build Event Command Line (may use macros)";
         internal const string captRunPostBuildEvent = "Run the Post Build Event";
         internal const string descRunPostBuildEvent = "When to run the Post Build Event";
-        internal const string captDisabledWarnings = "Suppress Warnings";
+        internal const string captDisabledWarnings = "Suppress Specific Warnings";
         internal const string descDisabledWarnings = "Specify a list of warnings to suppress (/nowarn)";
         internal const string captWarningLevel = "Warning Level";
         internal const string descWarningLevel = "Set the warning level to a value between 0 and 4 (/warn)";
@@ -69,7 +69,7 @@ namespace XSharp.Project
         internal const string PPOCaption = "Generate preprocessor output";
         internal const string PPODescription = "Save the output from the preprocessor to .ppo files  (/ppo)";
         internal const string NoStdDefCaption = "Suppress standard header file";
-        internal const string NoStdDefDescription = "Suppress inclusion of the standard header file in every file (/nostddef)";
+        internal const string NoStdDefDescription = "Suppress inclusion of the standard header file (XSharpDefs.xh) in every file (/nostddef)";
         internal const string CmdLineCaption = "Extra Command Line Options";
         internal const string CmdLineDescription = "User-Defined Command Line options";
         internal const string DefCaption = "Defines for the preprocessor";

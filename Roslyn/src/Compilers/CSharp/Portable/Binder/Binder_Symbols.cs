@@ -1507,8 +1507,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
                                     new object[] {
                                     where,
-                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
-                                    new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat) });
+                                    new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat) });
                                 diagnostics.Add(info, where.Location);
                                 return first;
                             }

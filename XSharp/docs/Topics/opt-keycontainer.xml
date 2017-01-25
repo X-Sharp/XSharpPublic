@@ -3,7 +3,7 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/keycontainer</title>
   <keywords>
-    <keyword translate="true">/keycontainer compiler option</keyword>
+    <keyword translate="true">/keycontainer</keyword>
   </keywords>
   <body>
     <header>
@@ -16,8 +16,6 @@
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/keycontainer:string </text><text styleclass="Normal" translate="true">&#32;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Code Example" translate="true">string</text><tab /><text styleclass="List" translate="true">The name of the strong name key container.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>

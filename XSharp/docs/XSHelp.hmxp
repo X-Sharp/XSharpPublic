@@ -66,7 +66,7 @@
         <style-set media="screen" type="para">margin-bottom:10px; </style-set>
       </styleclass>
       <styleclass name="List" parentclass="Body Text" shortcut="32882">
-        <style-set media="screen" type="para">text-indent:-96px; margin-left:96px; </style-set>
+        <style-set media="screen" type="para">text-indent:-192px; margin-left:192px; </style-set>
       </styleclass>
       <styleclass name="Callouts" parentclass="Normal" shortcut="0">
         <style-set media="screen" type="para">margin-bottom:5px; </style-set>
@@ -173,6 +173,7 @@
       </config-group>
       <config-value name="make3include">HTML</config-value>
       <config-value name="make3status">*</config-value>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>

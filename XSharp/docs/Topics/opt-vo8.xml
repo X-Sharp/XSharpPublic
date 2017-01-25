@@ -3,14 +3,12 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/vo8</title>
   <keywords>
-    <keyword translate="true">/vo8 compiler option</keyword>
+    <keyword translate="true">/vo8</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo8</text><tab /><tab /><text styleclass="Heading1" translate="true">Compatible preprocessor </text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo8 option enables Visual-Objects compatible preprocessor behavior.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
@@ -21,7 +19,7 @@
     <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo8, changes certain aspects of the preprocessor to behave like Visual Objects. </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Unlike Visual Objects, Vulcan.NET uses a file-based preprocessor which has characteristics of traditional preprocessors in languages such as C, C++ and Clipper. The /vo8 option controls the following behaviors:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Unlike Visual Objects, X# uses a file-based preprocessor which has characteristics of traditional preprocessors in languages such as C, C++ and Clipper. The /vo8 option controls the following behaviors:</text></para>
     <para styleclass="Normal"></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Case Sensitivity</text></li>
@@ -35,11 +33,11 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code is valid in Visual Objects:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Normal" translate="true">&#32;</text><text styleclass="Code with box" translate="true">DEFINE foo := &quot;bar&quot;</text><br/><text styleclass="Code with box" translate="true">? Foo // &quot;bar&quot; </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">but the following code will raise an unknown variable error on ? Foo because the Vulcan.NET preprocessor is case-sensitive by default:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">but the following code will raise an unknown variable error on ? Foo because the X# preprocessor is case-sensitive by default:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">#define foo &quot;bar&quot;</text><br/><text styleclass="Code with box" translate="true">? Foo </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the /vo8 option will allow the above example to compile. An alternative to using /vo8 is to modify the code so that the case of the text you want to replace matches the case used in #define.</text></para>
     <para styleclass="Normal"></para>
@@ -52,28 +50,26 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">In Visual Objects, code within a #ifdef ... #endif (or #else) block is compiled only if the symbol after #ifdef is defined, and it resolves to an expression which resolves to a logical TRUE value. In the example below, The code will print &quot;in #else&quot;:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">DEFINE foo := FALSE</text><br/><br/><text styleclass="Code with box" translate="true">#ifdef foo</text><br/><text styleclass="Code with box" translate="true"> &#160; ? &quot;in #ifdef</text><br/><text styleclass="Code with box" translate="true">#else</text><br/><text styleclass="Code with box" translate="true"> &#160; ? &quot;in #else&quot; // &lt;- this code is compiled in Visual Objects</text><br/><text styleclass="Code with box" translate="true">#endif </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">whereas the equivalent code in Vulcan.NET would print &quot;in #ifdef&quot;:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">whereas the equivalent code in X# would print &quot;in #ifdef&quot;:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">DEFINE foo := FALSE</text><br/><br/><text styleclass="Code with box" translate="true">#ifdef foo</text><br/><text styleclass="Code with box" translate="true"> &#160; ? &quot;in #ifdef &#160;// &lt;- this code is compiled in Vulcan.NET</text><br/><text styleclass="Code with box" translate="true">#else</text><br/><text styleclass="Code with box" translate="true"> &#160; ? &quot;in #else&quot;</text><br/><text styleclass="Code with box" translate="true">#endif </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When /vo8 is used, the Vulcan.NET preprocessor examines the value of the preprocessor symbol to determine if the symbol resolves to a logical TRUE or FALSE value. &#160;However, the Vulcan.NET preprocessor does not evaluate preprocessor expressions, whereas Visual Objects does. Even with /vo8 enabled, the preprocessor symbol must resolve to a single expression containing TRUE or FALSE (case-insensitive) or a numerical value. Numerical values of 0 resolve to FALSE and all non-zero numbers resolve to TRUE. Preprocessor symbols that resolve to expressions are not evaluated and effectively resolve to FALSE.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When /vo8 is used, the X# preprocessor examines the value of the preprocessor symbol to determine if the symbol resolves to a logical TRUE or FALSE value. &#160;However, the X# preprocessor does not evaluate preprocessor expressions, whereas Visual Objects does. Even with /vo8 enabled, the preprocessor symbol must resolve to a single expression containing TRUE or FALSE (case-insensitive) or a numerical value. Numerical values of 0 resolve to FALSE and all non-zero numbers resolve to TRUE. Preprocessor symbols that resolve to expressions are not evaluated and effectively resolve to FALSE.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For example:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Normal" translate="true">&#32;</text><text styleclass="Code with box" translate="true">// For the purposes of #ifdef...</text><br/><br/><text styleclass="Code with box" translate="true">// these resolve to FALSE:</text><br/><text styleclass="Code with box" translate="true">#define foo FALSE</text><br/><text styleclass="Code with box" translate="true">#define foo 0</text><br/><br/><text styleclass="Code with box" translate="true">// these resolve to TRUE:</text><br/><text styleclass="Code with box" translate="true">#define foo True</text><br/><text styleclass="Code with box" translate="true">#define foo 1</text><br/><text styleclass="Code with box" translate="true">#define foo -567</text><br/><br/><text styleclass="Code with box" translate="true">// these are not processed and effectively resolve to FALSE</text><br/><text styleclass="Code with box" translate="true">// and therefore are incompatible with Visual Objects:</text><br/><text styleclass="Code with box" translate="true">#define foo TRUE .AND. TRUE</text><br/><text styleclass="Code with box" translate="true">#define foo TRUE .OR. TRUE</text><br/><text styleclass="Code with box" translate="true">#define foo 1 * 2 </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> Tip: </text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ppo option is useful for debugging the output generated by the preprocessor. </text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo8 option is enabled in projects created by the Transporter.</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>
     <list id="5" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page </text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the Compatible Preprocessor Behavior property. </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the &quot;Compatible preprocessor&quot; property. </text></li>
     </list>
     <para styleclass="Normal"></para>
   </body>

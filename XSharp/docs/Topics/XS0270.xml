@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0270</title>
   <keywords>
     <keyword translate="true">XS0270</keyword>
@@ -16,7 +16,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0270:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0270.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /t:module  </text><br/><br/><text styleclass="Code with box" translate="true">public class Test  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   int[10] a;   // XS0270  </text><br/><text styleclass="Code with box" translate="true">   // To resolve, use the following line instead:  </text><br/><text styleclass="Code with box" translate="true">   // int[] a = new int[10];  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0270.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /t:module &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

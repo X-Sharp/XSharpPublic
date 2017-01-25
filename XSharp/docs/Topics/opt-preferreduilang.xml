@@ -3,7 +3,7 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/preferreduilang</title>
   <keywords>
-    <keyword translate="true">/preferreduilang compiler option</keyword>
+    <keyword translate="true">/preferreduilang</keyword>
   </keywords>
   <body>
     <header>
@@ -20,9 +20,6 @@
     <para styleclass="List"><text styleclass="Code Example" translate="true">language</text><tab /><text styleclass="List" translate="true">The language name of the language to use for compiler output.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can use the</text><text styleclass="Code Example" translate="true"> /preferreduilang</text><text styleclass="Normal" translate="true"> compiler option to specify the language that you want the C# compiler to use for error messages and other command-line output. If the language pack for the language is not installed, the language setting of the operating system is used instead, and no error is reported.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">C#</text><br/><br/><text styleclass="Code with box" translate="true">xsc.exe /preferreduilang:ja-JP &#160;</text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The preferreduilang compiler option is recognized but ignored. The X# compiler only works in the english language (for now ?)</text></para>
   </body>
 </topic>

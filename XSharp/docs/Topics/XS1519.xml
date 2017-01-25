@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1519</title>
   <keywords>
     <keyword translate="true">XS1519</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1519 in five places because tokens are placed in locations where they are not valid:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">X#</text><br/><br/><text styleclass="Code with box" translate="true">// XS1519.prg  </text><br/><text styleclass="Code with box" translate="true">// Generates XS1519 because a class name cannot be a number:  </text><br/><text styleclass="Code with box" translate="true">class Test 42   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">// Generates XS1519 because of &apos;j&apos; following &apos;I&apos;  </text><br/><text styleclass="Code with box" translate="true">// with no comma between them:  </text><br/><text styleclass="Code with box" translate="true">    int i j;   </text><br/><text styleclass="Code with box" translate="true">// Generates XS1519 because of &quot;checked&quot; on void method:  </text><br/><text styleclass="Code with box" translate="true">    checked void f4();     </text><br/><br/><text styleclass="Code with box" translate="true">// Generates XS1519 because of &quot;num&quot;:  </text><br/><text styleclass="Code with box" translate="true">    void f5(int a num){}        </text><br/><br/><text styleclass="Code with box" translate="true">// Generates XS1519 because of namespace inside class:  </text><br/><text styleclass="Code with box" translate="true">    namespace;             </text><br/><br/><text styleclass="Code with box" translate="true">  }  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1519.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// Generates XS1519 because a class name cannot be a number: &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

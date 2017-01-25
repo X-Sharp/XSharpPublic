@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0433</title>
   <keywords>
     <keyword translate="true">XS0433</keyword>
@@ -19,28 +19,28 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This code creates the DLL with the first copy of the ambiguous type.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_1.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">namespace TypeBindConflicts   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public class AggPubImpAggPubImp {}  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_1.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This code creates the DLL with the second copy of the ambiguous type.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_2.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">namespace TypeBindConflicts   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public class AggPubImpAggPubImp {}  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_2.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/><text styleclass="Code with box" translate="true">&#32;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0433.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_3.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:XS0433_1.dll /reference:XS0433_2.dll  </text><br/><text styleclass="Code with box" translate="true">using TypeBindConflicts;  </text><br/><text styleclass="Code with box" translate="true">public class Test   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public static void Main()   </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      AggPubImpAggPubImp n6 = new AggPubImpAggPubImp();   // XS0433  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_3.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:XS0433_1.dll /reference:XS0433_2.dll &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example shows how you can use the alias feature of the /reference compiler option to resolve this XS0433 error.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_4.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:XS0433_1.dll /reference:TypeBindConflicts=XS0433_2.dll  </text><br/><text styleclass="Code with box" translate="true">using TypeBindConflicts;  </text><br/><text styleclass="Code with box" translate="true">public class Test   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public static void Main()   </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      AggPubImpAggPubImp n6 = new AggPubImpAggPubImp();  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0433_4.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:XS0433_1.dll /reference:TypeBindConflicts=XS0433_2.dll &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

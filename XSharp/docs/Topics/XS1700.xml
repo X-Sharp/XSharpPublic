@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1700</title>
   <keywords>
     <keyword translate="true">XS1700</keyword>
@@ -19,6 +19,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1700.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1700.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">using System.Runtime.CompilerServices;  </text><br/><text styleclass="Code with box" translate="true">[assembly:InternalsVisibleTo(&quot;app2, Retargetable=f&quot;)]   // XS1700  </text><br/><text styleclass="Code with box" translate="true">[assembly:InternalsVisibleTo(&quot;app2&quot;)]   // OK  </text><br/></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1700.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0417</title>
   <keywords>
     <keyword translate="true">XS0417</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0417:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">X#</text><br/><br/><text styleclass="Code with box" translate="true">// XS0417 &#160;</text><br/><text styleclass="Code with box" translate="true">class ExampleClass&lt;T&gt; where T : new() &#160;</text><br/><text styleclass="Code with box" translate="true">{ &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// The following line causes XS0417. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;T instance1 = new T(1); &#160; &#160; </text><br/><br/><text styleclass="Code with box" translate="true"> &#160; &#160;// The following line doesn&apos;t cause the error. &#160;</text><br/><text styleclass="Code with box" translate="true"> &#160; &#160;T instance2 = new T(); &#160;</text><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0417 &#160;</text><br/><text styleclass="Code with box" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
     <para styleclass="Normal"></para>
   </body>

@@ -3,12 +3,17 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/ruleset</title>
   <keywords>
-    <keyword translate="true">/ruleset compiler option</keyword>
+    <keyword translate="true">/ruleset</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/ruleset</text></para>
     </header>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">Specify a ruleset file that disables specific diagnostics.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/ruleset:filename &#160;</text></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0134</title>
   <keywords>
     <keyword translate="true">XS0134</keyword>
@@ -19,7 +19,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0134.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0134.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">class MyTest {}   </text><br/><br/><text styleclass="Code with box" translate="true">class MyClass  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   const MyTest test = new MyTest();   // XS0134  </text><br/><br/><text styleclass="Code with box" translate="true">   //OK  </text><br/><text styleclass="Code with box" translate="true">   const MyTest test2 = null;  </text><br/><text styleclass="Code with box" translate="true">   const System.String test3 = &quot;test&quot;;  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0134.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
   </body>
 </topic>

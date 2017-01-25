@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0618</title>
   <keywords>
     <keyword translate="true">XS0618</keyword>
@@ -16,6 +16,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0618:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0618.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /W:2  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><br/><text styleclass="Code with box" translate="true">public class C  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   [Obsolete(&quot;Use newMethod instead&quot;, false)]   // warn if referenced  </text><br/><text styleclass="Code with box" translate="true">   public static void m2()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><br/><text styleclass="Code with box" translate="true">   public static void newMethod()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">class MyClass  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public static void Main()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      C.m2();  // XS0618  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0618.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /W:2 &#160;</text><br/></para>
   </body>
 </topic>

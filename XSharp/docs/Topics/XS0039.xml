@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0039</title>
   <keywords>
     <keyword translate="true">XS0039</keyword>
@@ -18,7 +18,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0039.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0039.prg  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">class A  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><text styleclass="Code with box" translate="true">class B: A  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><text styleclass="Code with box" translate="true">class C: A </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><text styleclass="Code with box" translate="true">class M  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    static void Main()  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        A a = new C();  </text><br/><text styleclass="Code with box" translate="true">        B b = new B();  </text><br/><text styleclass="Code with box" translate="true">        C c;  </text><br/><br/><text styleclass="Code with box" translate="true">        // This is valid; there is a built-in reference  </text><br/><text styleclass="Code with box" translate="true">        // conversion from A to C. </text><br/><text styleclass="Code with box" translate="true">        c = a as C;    </text><br/><br/><text styleclass="Code with box" translate="true">        //The following generates XS0039; there is no  </text><br/><text styleclass="Code with box" translate="true">        // built-in reference conversion from B to C.  </text><br/><text styleclass="Code with box" translate="true">        c = b as C;  // XS0039  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

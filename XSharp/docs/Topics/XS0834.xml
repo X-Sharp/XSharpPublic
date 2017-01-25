@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0834</title>
   <keywords>
     <keyword translate="true">XS0834</keyword>
@@ -15,7 +15,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To correct this error</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="%0:s." format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:'Segoe UI'; font-size:11pt; color:#000000;">
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">Remove the statement from the lambda expression.</text></li>
     </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
@@ -23,7 +23,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0834:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0834.prg  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">using System.Linq;  </text><br/><text styleclass="Code with box" translate="true">using System.Linq.Expressions;  </text><br/><text styleclass="Code with box" translate="true">public class C  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public static int Main()  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        Expression&lt;Func&lt;int, int&gt;&gt; e = x =&gt; { return x; }; // XS0834  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0834.prg &#160;</text><br/></para>
   </body>
 </topic>

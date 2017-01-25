@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1690</title>
   <keywords>
     <keyword translate="true">XS1690</keyword>
@@ -16,7 +16,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1690:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1690.prg  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><br/><text styleclass="Code with box" translate="true">class WarningXS1690: MarshalByRefObject  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   int i = 5;  </text><br/><br/><text styleclass="Code with box" translate="true">   public static void Main()   </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">     WarningXS1690 e = new WarningXS1690();  </text><br/><text styleclass="Code with box" translate="true">     e.i.ToString();   // XS1690  </text><br/><br/><text styleclass="Code with box" translate="true">     // OK  </text><br/><text styleclass="Code with box" translate="true">     int i = e.i;  </text><br/><text styleclass="Code with box" translate="true">     i.ToString();  </text><br/><text styleclass="Code with box" translate="true">     e.i = i;  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1690.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

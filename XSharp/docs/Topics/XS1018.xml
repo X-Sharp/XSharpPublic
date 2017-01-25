@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1018</title>
   <keywords>
     <keyword translate="true">XS1018</keyword>
@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS1018</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Keyword &apos;this&apos; or &apos;base&apos; expected</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Keyword &apos;SELF&apos; or &apos;SUPER&apos; expected</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler encountered an incomplete constructor declaration.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
@@ -17,7 +17,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS1018, and suggests several ways to resolve the error:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1018.prg  </text><br/><text styleclass="Code with box" translate="true">public class C  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">public class a : C  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public a(int i)  </text><br/><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><br/><text styleclass="Code with box" translate="true">    public a () :   // XS1018  </text><br/><text styleclass="Code with box" translate="true">    // possible resolutions:  </text><br/><text styleclass="Code with box" translate="true">    // public a () resolves by removing the colon  </text><br/><text styleclass="Code with box" translate="true">    // public a () : base() calls C&apos;s default constructor  </text><br/><text styleclass="Code with box" translate="true">    // public a () : this(1) calls the assignment constructor of class a  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><br/><text styleclass="Code with box" translate="true">    public static int Main()  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        return 1;  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1018.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

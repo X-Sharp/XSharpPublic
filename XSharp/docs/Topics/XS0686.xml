@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0686</title>
   <keywords>
     <keyword translate="true">XS0686</keyword>
@@ -14,21 +14,21 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Suggested: This error can occur when implementing an interface that contains method names which conflict with the auto-generated methods associated with a property or event. The get/set methods for properties are generated as get_property and set_property, and the add/remove methods for events are generated as add_event and remove_event. If an interface contains either of these methods, a conflict occurs. To avoid this error, implement the methods using an explicit interface implementation. To do this, specify the function as:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Normal" translate="true">  </text><text styleclass="Code with box" translate="true">    Interface.get_property() { /* */ }  </text><br/><text styleclass="Code with box" translate="true">Interface.set_property() { /* */ }  </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0686:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0686.prg  </text><br/><text styleclass="Code with box" translate="true">interface I  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    int get_P();  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">  class C : I  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public int P  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        get { return 1; }  // XS0686  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><text styleclass="Code with box" translate="true">// But the following is valid:  </text><br/><text styleclass="Code with box" translate="true">class D : I  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    int I.get_P() { return 1; }  </text><br/><text styleclass="Code with box" translate="true">    public static void Main() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0686.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This error can also occur when declaring events. The event construct automatically generates the add_``event and remove_``event methods, which could conflict with the methods of the same name in an interface, as in the following sample:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0686b.prg  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><br/><text styleclass="Code with box" translate="true">interface I  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    void add_OnMyEvent(EventHandler e);  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">class C : I  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public event EventHandler OnMyEvent  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        add { }  // XS0686  </text><br/><text styleclass="Code with box" translate="true">        remove { }  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">// Correct (using explicit interface implementation):  </text><br/><text styleclass="Code with box" translate="true">class D : I  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    void I.add_OnMyEvent(EventHandler e) {}  </text><br/><text styleclass="Code with box" translate="true">    public static void Main() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0686b.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

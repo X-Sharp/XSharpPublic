@@ -698,9 +698,6 @@
           <topicref type="topic" id="423893654712185" build="ALL" modified="2016-01-20T09:46:00.043Z" icon="0" href="opt-baseaddress">
             <caption translate="true">/baseaddress</caption>
           </topicref>
-          <topicref type="topic" id="423892275141226" build="ALL" modified="2016-01-20T09:46:01.286Z" icon="0" href="opt-bugreport">
-            <caption translate="true">/bugreport</caption>
-          </topicref>
           <topicref type="topic" id="423891988203537" build="ALL" modified="2016-01-20T09:46:05.831Z" icon="0" href="opt-checked">
             <caption translate="true">/checked</caption>
           </topicref>
@@ -844,9 +841,6 @@
           </topicref>
           <topicref type="topic" id="423894484316881" build="ALL" modified="2016-01-20T09:47:30.260Z" icon="0" href="opt-resource">
             <caption translate="true">/resource</caption>
-          </topicref>
-          <topicref type="topic" id="423893586106333" build="ALL" modified="2016-01-20T09:47:48.688Z" icon="0" href="opt-s">
-            <caption translate="true">/s</caption>
           </topicref>
           <topicref type="topic" id="427117645122713" build="ALL" modified="2016-12-07T13:18:48.745Z" icon="0" href="_showdefs">
             <caption translate="true">/showdefs</caption>
@@ -1412,6 +1406,9 @@
         </topicref>
         <topicref type="topic" id="427446392484318" build="ALL" modified="2017-01-09T16:19:31.605Z" icon="0" href="XS9042">
           <caption translate="true">XS9042</caption>
+        </topicref>
+        <topicref type="topic" id="427608208936060" build="ALL" modified="2017-01-25T17:01:54.650Z" icon="0" href="XS9043">
+          <caption translate="true">XS9043</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="427443697979586" build="ALL" modified="2017-01-09T09:13:33.910Z" icon="0" href="Classes">

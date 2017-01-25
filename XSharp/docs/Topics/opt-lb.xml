@@ -3,26 +3,21 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/lb</title>
   <keywords>
-    <keyword translate="true">/lb compiler option</keyword>
+    <keyword translate="true">/lb</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/lb</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ovf option specifies whether integer operations that result in an overflow will raise a runtime exception.</text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /lb option specifies if the compiler should allow code that uses the Late Binding mechnism to call methods and or get/set properties</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/lb[+|-]</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /lb, directs the compiler to generate a late-bound call to an instance variable or method when compiler cannot generate code for an early bound call. </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Vulcan.NET compiler always attempts to generate early bound calls to all class methods, properties and fields. This is true even for methods referred to as &quot;untyped&quot; in Visual Objects. Strictly speaking, nothing is &quot;untyped&quot;. If an early bound call cannot be generated, a compile-time error is raised.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The X# compiler always attempts to generate early bound calls to all class methods, properties and fields. This is true even for methods referred to as &quot;untyped&quot; in Visual Objects. Strictly speaking, nothing is &quot;untyped&quot;. If an early bound call cannot be generated, a compile-time error is raised.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">In Visual Objects, it is possible to invoke methods and access instance variables on an object without the compiler knowing the exact type of the object. This is done by using a variable of type OBJECT or USUAL to hold the object reference. The &quot;Only Early&quot; option in the VO Application Options dialog must not be checked in order to allow this.</text></para>
     <para styleclass="Normal"></para>
@@ -45,11 +40,11 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that using late-bound calls can affect the performance of an application and raises the possibility of runtime errors that would otherwise be caught by the compiler if early binding was used. Late binding should only be used for compatibility with existing VO code.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">CLASS foo</text><br/><text styleclass="Code with box" translate="true"> &#160; INSTANCE i</text><br/><br/><text styleclass="Code with box" translate="true"> &#160; METHOD bar( x AS INT, y AS INT ) AS INT</text><br/><text styleclass="Code with box" translate="true"> &#160; RETURN x * y</text><br/><br/><text styleclass="Code with box" translate="true">END CLASS</text><br/><br/><text styleclass="Code with box" translate="true">FUNCTION Start() AS VOID</text><br/><text styleclass="Code with box" translate="true"> &#160; LOCAL o AS OBJECT</text><br/><text styleclass="Code with box" translate="true"> &#160; LOCAL u AS USUAL</text><br/><text styleclass="Code with box" translate="true"> &#160; o := foo{}</text><br/><text styleclass="Code with box" translate="true"> &#160; o:i := 1 // error if not compiled with /vo5</text><br/><text styleclass="Code with box" translate="true"> &#160; u := foo{}</text><br/><text styleclass="Code with box" translate="true"> &#160; u:bar( 2, 3 ) // error if not compiled with /vo5</text><br/><text styleclass="Code with box" translate="true"> &#160; RETURN </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">If the /lb option is enabled, then the above example will be compiled as if it was written:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">FUNCTION Start() AS VOID</text><br/><text styleclass="Code with box" translate="true"> &#160; LOCAL o AS OBJECT</text><br/><text styleclass="Code with box" translate="true"> &#160; LOCAL u AS USUAL</text><br/><text styleclass="Code with box" translate="true"> &#160; o := foo{}</text><br/><text styleclass="Code with box" translate="true"> &#160; IVarPut( o, &quot;i&quot;, 1 )</text><br/><text styleclass="Code with box" translate="true"> &#160; u := foo{}</text><br/><text styleclass="Code with box" translate="true"> &#160; Send( u, &quot;bar&quot;, 2, 3 )</text><br/><text styleclass="Code with box" translate="true"> &#160; RETURN </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that while this particular example will compile and execute correctly, if the definition of CLASS foo was changed and INSTANCE i was removed or changed to a method, the example would fail at runtime. Similarly, if METHOD bar was changed or removed, the example may also fail at runtime. For this reason, late-bound programming is strongly discouraged. Consider using subclassing and inheritance instead.</text></para>
     <para styleclass="Normal"></para>

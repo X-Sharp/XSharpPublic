@@ -10,9 +10,8 @@
       <para styleclass="Body Text"><text styleclass="Body Text" translate="true">X# Compiler Options Listed Alphabetically</text></para>
     </header>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The following compiler options are sorted by category. For an alphabetical list, see : </text><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph" styleclass="Body Text" translate="true">X# Compiler Options Listed Alphabetically</link></para>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="86" colcount="2">
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="85" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -83,14 +82,6 @@
         </td>
         <td style="height:18px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Specifies the preferred base address at which to load a DLL.</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-bugreport" styleclass="Normal" translate="true">/bugreport</link></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Creates a file that contains information that makes it easy to report a bug.</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -702,7 +693,5 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
-    <para styleclass="Heading2"></para>
   </body>
 </topic>

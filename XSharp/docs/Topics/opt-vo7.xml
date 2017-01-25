@@ -3,15 +3,13 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/vo7</title>
   <keywords>
-    <keyword translate="true">/vo7 compiler option</keyword>
+    <keyword translate="true">/vo7</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo7</text><tab /><tab /><text styleclass="Heading1" translate="true">Implicit casts and Conversions </text></para>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo7</text><tab /><tab /><text styleclass="Heading1" translate="true">Implicit casts and conversions </text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo7 option directs the compiler to allow implicit casts and conversions that are allowed in Visual Objects but which would normally be illegal or require an explicit cast in Vulcan.NET.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo7 option directs the compiler to allow implicit casts and conversions that are allowed in Visual Objects but which would normally be illegal or require an explicit cast in X#.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
@@ -19,16 +17,16 @@
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo7, directs the compiler to allow certain implicit casts and conversions that are allowed in Visual Objects. </text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo7, directs the compiler to allow certain implicit casts and conversions that are allowed in Visual Objects. </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Visual Objects allows implicit casts between types with different semantics, whereas Vulcan.NET normally requires explicit casts in such cases.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Visual Objects allows implicit casts between types with different semantics, whereas X# normally requires explicit casts in such cases.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For example, Visual Objects allows implicit conversions between integer types and pointer types. While pointers are integers, they have different semantics. Integers are numerical values and pointers are addresses representing memory locations. In addition to the difference in semantics, the size of a pointer is dependent upon the underlying platform whereas the size of an integer does not change from platform to platform (with the exception of System.IntPtr).</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">While is it possible (and often necessary) to cast between types with different semantics, it should always be done via an explicit cast. This not only insures that the correct conversion code is generated (if necessary), it also self-documents the fact that you are casting one type to another type that has a different meaning.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan.NET supports most of the casts that Visual Objects supports, but in cases where the types have different semantics, an explicit cast is usually required. However, this can cause a large number of compiler errors in existing Visual Objects code.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">X# supports most of the casts that Visual Objects supports, but in cases where the types have different semantics, an explicit cast is usually required. However, this can cause a large number of compiler errors in existing Visual Objects code.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Using /vo7 allows the following conversions to be performed implicitly, allowing existing Visual Objects code to compile:</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="3">
@@ -101,23 +99,23 @@
     </table></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code is valid in Visual Objects, but will not compile in Vulcan.NET unless /vo7 is used, because CreateObject() returns OBJECT and there is no implicit conversion from OBJECT to a more derived type (such a conversion cannot be guaranteed to be safe, and implicit conversions are always safe).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following code is valid in Visual Objects, but will not compile in X# unless /vo7 is used, because CreateObject() returns OBJECT and there is no implicit conversion from OBJECT to a more derived type (such a conversion cannot be guaranteed to be safe, and implicit conversions are always safe).</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Normal" translate="true">&#32;</text><text styleclass="Code with box" translate="true">CLASS foo</text><br/><text styleclass="Code with box" translate="true"> &#160; ...</text><br/><text styleclass="Code with box" translate="true">END CLASS</text><br/><br/><text styleclass="Code with box" translate="true">FUNCTION Start() AS VOID</text><br/><text styleclass="Code with box" translate="true"> &#160; LOCAL f AS foo</text><br/><text styleclass="Code with box" translate="true"> &#160; LOCAL s AS SYMBOL</text><br/><text styleclass="Code with box" translate="true"> &#160; s := #foo</text><br/><text styleclass="Code with box" translate="true"> &#160; f := CreateObject( s ) // no implicit conversion from &apos;OBJECT&apos; to &apos;foo&apos;</text><br/><text styleclass="Code with box" translate="true">RETURN </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Using /vo7 has the same effect as if the assignment into f were rewritten as:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">f := (foo) CreateObject( s ) </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">In either case, the resulting code is exactly the same, and the cast to foo may fail at runtime. However, the explicit cast self-documents that you expect the return from CreateObject() to contain an instance of foo.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example is also valid in Visual Objects, but will not compile in Vulcan.NET unless /vo7 is used, because the @ operator returns the address of its operand (a typed pointer) and pointers are not the same as references in Vulcan.NET:</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example is also valid in Visual Objects, but will not compile in X# unless /vo7 is used, because the @ operator returns the address of its operand (a typed pointer) and pointers are not the same as references in X#:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">LOCAL x AS INT</text><br/><text styleclass="Code with box" translate="true">ByRef( @x )</text><br/><br/><text styleclass="Code with box" translate="true">...</text><br/><br/><text styleclass="Code with box" translate="true">FUNCTION ByRef( i REF INT ) AS VOID</text><br/><text styleclass="Code with box" translate="true"> &#160; i := 5</text><br/><text styleclass="Code with box" translate="true"> &#160; RETURN </text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo7 option will automatically convert @x, which resolves to type INT PTR, into REF INT which is compatible with the function parameter. However, it is recommended that you remove the @ operator rather than use /vo7 for this purpose.</text></para>
     <para styleclass="Normal"></para>
@@ -126,7 +124,7 @@
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the Compatible Implicit Casts and Conversions property. </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the Compatible &quot;Implicit casts and conversions&quot; property. </text></li>
     </list>
     <para styleclass="Normal"></para>
   </body>

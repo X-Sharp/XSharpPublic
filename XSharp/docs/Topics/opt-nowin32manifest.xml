@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/nowin32manifest</title>
   <keywords>
-    <keyword translate="true">/nowin32manifest compiler option</keyword>
+    <keyword translate="true">/nowin32manifest</keyword>
   </keywords>
   <body>
     <header>
@@ -19,8 +19,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">When this option is used, the application will be subject to virtualization on Windows Vista unless you provide an application manifest in a Win32 Resource file or during a later build step.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In Visual Studio, set this option in the Application Property page by selecting the Create Application Without a Manifest option in the Manifest drop down list. For more information, see Application Page, Project Designer (C#).</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information about manifest creation, see /win32manifest (C# Compiler Options).</text></para>
   </body>
 </topic>

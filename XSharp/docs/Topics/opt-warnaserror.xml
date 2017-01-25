@@ -3,7 +3,7 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/warnaserror</title>
   <keywords>
-    <keyword translate="true">/warnaserror compiler option</keyword>
+    <keyword translate="true">/warnaserror</keyword>
   </keywords>
   <body>
     <header>
@@ -13,7 +13,7 @@
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/warnaserror[&lt;U&gt;+&lt;/U&gt; | -][:warning-list] &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/warnaserror[+|-][:warning-list] &#160;</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Any messages that would ordinarily be reported as warnings are instead reported as errors, and the build process is halted (no output files are built).</text></para>
@@ -29,7 +29,7 @@
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page.</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Build property page.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Modify the Treat Warnings As Errors property.</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Modify the &quot;Warnings As Errors&quot; property.</text></li>
     </list>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/help, /?</title>
   <keywords>
-    <keyword translate="true">/? compiler option</keyword>
-    <keyword translate="true">/help compiler option</keyword>
+    <keyword translate="true">/?</keyword>
+    <keyword translate="true">/help</keyword>
   </keywords>
   <body>
     <header>

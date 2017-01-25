@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0413</title>
   <keywords>
     <keyword translate="true">XS0413</keyword>
@@ -19,7 +19,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0413.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0413.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">class A {}  </text><br/><text styleclass="Code with box" translate="true">class B : A {}  </text><br/><br/><text styleclass="Code with box" translate="true">class CMain  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   A a = null;  </text><br/><text styleclass="Code with box" translate="true">   public void G&lt;T&gt;()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      a = new A();  </text><br/><text styleclass="Code with box" translate="true">      System.Console.WriteLine (a as T);  // XS0413  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><br/><text styleclass="Code with box" translate="true">   // OK  </text><br/><text styleclass="Code with box" translate="true">   public void H&lt;T&gt;() where T : A  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      a = new A();  </text><br/><text styleclass="Code with box" translate="true">      System.Console.WriteLine (a as T);  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0413.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

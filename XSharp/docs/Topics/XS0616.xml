@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0616</title>
   <keywords>
     <keyword translate="true">XS0616</keyword>
@@ -17,7 +17,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0616.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0616.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">[CMyClass(i = 5)]   // XS0616  </text><br/><text styleclass="Code with box" translate="true">public class CMyClass {}  </text><br/></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0616.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Example</text></para>
@@ -25,7 +25,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample shows how you might define an attribute:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CreateAttrib.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><br/><text styleclass="Code with box" translate="true">[AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface)]  </text><br/><text styleclass="Code with box" translate="true">public class MyAttr : Attribute  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public int Name = 0;  </text><br/><text styleclass="Code with box" translate="true">   public int Count = 0;  </text><br/><br/><text styleclass="Code with box" translate="true">     public MyAttr (int iCount, int sName)  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      Count = iCount;  </text><br/><text styleclass="Code with box" translate="true">      Name = sName;  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">[MyAttr(5, 50)]  </text><br/><text styleclass="Code with box" translate="true">class Class1 {}  </text><br/><br/><text styleclass="Code with box" translate="true">[MyAttr(6, 60)]  </text><br/><text styleclass="Code with box" translate="true">interface Interface1 {}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CreateAttrib.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

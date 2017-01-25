@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1726</title>
   <keywords>
     <keyword translate="true">XS1726</keyword>
@@ -20,8 +20,8 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1726.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">  </text></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// Save this code as XS1726.prg  </text><br/><br/><text styleclass="Code with box" translate="true">// Run the following command to create XS1726.key:  </text><br/><text styleclass="Code with box" translate="true">//      sn -k XS1726.key  </text><br/><br/><text styleclass="Code with box" translate="true">// Then compile by using the following command:   </text><br/><text styleclass="Code with box" translate="true">//      csc /keyfile:XS1726.key /target:library XS1726.prg  </text><br/><br/><text styleclass="Code with box" translate="true">using System.Runtime.CompilerServices;  </text><br/><br/><text styleclass="Code with box" translate="true">// The following line causes compiler error XS1726.  </text><br/><text styleclass="Code with box" translate="true">[assembly: InternalsVisibleTo(&quot;UnsignedAssembly&quot;)]     </text><br/><br/><text styleclass="Code with box" translate="true">// To get rid of the error, try the following line instead.  </text><br/><text styleclass="Code with box" translate="true">//[assembly: InternalsVisibleTo(&quot;SignedAssembly, PublicKey=0024000004800000940000000602000000240000525341310004000001000100031d7b6f3abc16c7de526fd67ec2926fe68ed2f9901afbc5f1b6b428bf6cd9086021a0b38b76bc340dc6ab27b65e4a593fa0e60689ac98dd71a12248ca025751d135df7b98c5f9d09172f7b62dabdd302b2a1ae688731ff3fc7a6ab9e8cf39fb73c60667e1b071ef7da5838dc009ae0119a9cbff2c581fc0f2d966b77114b2c4&quot;)] </text><br/><br/><text styleclass="Code with box" translate="true">class A { }  </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// Save this code as XS1726.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

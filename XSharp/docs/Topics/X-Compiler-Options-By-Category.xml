@@ -11,9 +11,8 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">X# Compiler Options By Category</text></para>
     </header>
     <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The following compiler options are sorted by category. For an alphabetical list, see : </text><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options-Listed-Alph" styleclass="Body Text" translate="true">X# Compiler Options Listed Alphabetically</link></para>
-    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
+    <para styleclass="Body Text"><text styleclass="Body Text" translate="true">The options in </text><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;" translate="true">RED</text><text styleclass="Body Text" translate="true"> are not supported yet.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Dialect support</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="2" colcount="2">
       <thead style="vertical-align:top">
         <td>
@@ -32,9 +31,8 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">VO/Vulcan Compatibility</text></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="33" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="31" colcount="2">
       <thead style="vertical-align:top">
         <td>
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -57,14 +55,6 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Specifies that the compiler should use case-sensitive type names </text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">/cf</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Compile for the Compact Framework</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -137,14 +127,6 @@
         </td>
         <td>
           <para styleclass="Normal"><text styleclass="Normal" style="color:#000000;" translate="true">Writes preprocessor output to file </text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-s" styleclass="Normal" translate="true">/s</link></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" style="color:#ff0000;" translate="true">Performs a syntax check only </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -300,9 +282,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Optimization</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="3" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
@@ -329,10 +309,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Output files</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="10" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
@@ -415,9 +392,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">.NET Assemblies</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="10" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
@@ -500,10 +475,8 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Debugging / Error checking</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Heading2"><table styleclass="Default" rowcount="13" colcount="2">
+    <para styleclass="Heading2"><table styleclass="Default" rowcount="11" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Option</text></para>
@@ -512,14 +485,6 @@
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Purpose</text></para>
         </td>
       </thead>
-      <tr style="vertical-align:top">
-        <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-bugreport" styleclass="Normal" translate="true">/bugreport</link></para>
-        </td>
-        <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Creates a file that contains information that makes it easy to report a bug.</text></para>
-        </td>
-      </tr>
       <tr style="vertical-align:top">
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked" styleclass="Normal" translate="true">/checked</link></para>
@@ -578,13 +543,6 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-w" styleclass="Normal" translate="true">/w</link></para>
-        </td>
-        <td>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warn" styleclass="Normal" translate="true">/warn</link></para>
         </td>
         <td>
@@ -604,12 +562,11 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-wx" styleclass="Normal" translate="true">/wx</link></para>
         </td>
         <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">This is an alias for the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror" styleclass="Normal" translate="true">/warnaserror</link><text styleclass="Normal" translate="true"> option</text></para>
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Preprocessor</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="7" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
@@ -648,7 +605,7 @@
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nostddefs" styleclass="Normal" translate="true">/nostddef</link></para>
         </td>
         <td>
-          <para styleclass="Normal"><text styleclass="Normal" translate="true">Suppresses preprocessor definitions in VulcanStdDefs.vh </text></para>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Suppresses preprocessor definitions in XSharpDefs.xh &#160;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -668,9 +625,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Resources</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="6" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
@@ -721,9 +676,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Miscellaneous</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><table styleclass="Default" rowcount="19" colcount="2">
       <thead style="vertical-align:top">
         <td style="width:33%;">
@@ -878,8 +831,5 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Heading2"></para>
-    <para styleclass="Heading2"></para>
-    <para styleclass="Normal"></para>
   </body>
 </topic>

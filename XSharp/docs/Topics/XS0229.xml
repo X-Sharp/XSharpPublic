@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0229</title>
   <keywords>
     <keyword translate="true">XS0229</keyword>
@@ -12,14 +12,13 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Ambiguity between &apos;member1&apos; and &apos;member2&apos;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Members of different interfaces have the same name. If you want to keep the same names, you must qualify the names. For more information, see Interfaces.</text></para>
-    <para styleclass="Normal"><br/></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true"> Note </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In some cases, this ambiguity can be resolved by providing an explicit prefix to the identifier via a using alias.</text><br/></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Note </text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In some cases, this ambiguity can be resolved by providing an explicit prefix to the identifier via a using alias.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following example generates XS0229:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0229.prg  </text><br/><br/><text styleclass="Code with box" translate="true">interface IList  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    int Count  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        get;  </text><br/><text styleclass="Code with box" translate="true">        set;  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><br/><text styleclass="Code with box" translate="true">    void Counter();  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">interface Icounter  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    double Count  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        get;  </text><br/><text styleclass="Code with box" translate="true">        set;  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">interface IListCounter : IList , Icounter {}  </text><br/><br/><text styleclass="Code with box" translate="true">class MyClass  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    void Test(IListCounter x)  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        x.Count = 1;  // XS0229  </text><br/><text styleclass="Code with box" translate="true">        // Try one of the following lines instead:  </text><br/><text styleclass="Code with box" translate="true">        // ((IList)x).Count = 1;  </text><br/><text styleclass="Code with box" translate="true">        // or  </text><br/><text styleclass="Code with box" translate="true">        // ((Icounter)x).Count = 1;  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><br/><text styleclass="Code with box" translate="true">    public static void Main() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0229.prg &#160;</text><br/></para>
   </body>
 </topic>

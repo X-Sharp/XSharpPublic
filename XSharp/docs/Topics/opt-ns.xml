@@ -3,7 +3,7 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/ns</title>
   <keywords>
-    <keyword translate="true">/ns compiler option</keyword>
+    <keyword translate="true">/ns</keyword>
     <keyword translate="true">BEGIN NAMESPACE</keyword>
     <keyword translate="true">CLASS</keyword>
     <keyword translate="true">DELEGATE</keyword>
@@ -16,8 +16,6 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/ns</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ns option explicitly specifies the default namespace for all types that do not have an explicit namespace in their name.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
@@ -48,7 +46,7 @@
     <para styleclass="Normal"></para>
     <list id="5" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Application tab. </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the General tab. </text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Application section, modify the Default Namespace property. </text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab </text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Namespaces section, modify the Prefix classes with Default Namespace property. </text></li>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1009</title>
   <keywords>
     <keyword translate="true">XS1009</keyword>
@@ -16,17 +16,17 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1009.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">X#</text><br/><br/><text styleclass="Code with box" translate="true">// XS1009-a.prg  </text><br/><text styleclass="Code with box" translate="true">class MyClass  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   static void Main()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      // The following line causes XS1009.  </text><br/><text styleclass="Code with box" translate="true">      string a = &quot;\m&quot;;     </text><br/><text styleclass="Code with box" translate="true">      // Try the following line instead.  </text><br/><text styleclass="Code with box" translate="true">      // string a = &quot;\t&quot;;  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">} </text><text styleclass="Normal" translate="true"> </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1009-a.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">A common cause of this error is using the backslash character in a file name, as the following example shows.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">X#</text><br/><br/><text styleclass="Code with box" translate="true">string filename = &quot;c:\myFolder\myFile.txt&quot;;  </text></para>
+    <para styleclass="Code with box"><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">To resolve this error, use &quot;\\&quot; or the @-quoted string literal, as the following example shows.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">X#</text><br/><br/><text styleclass="Code with box" translate="true">// XS1009-b.prg  </text><br/><text styleclass="Code with box" translate="true">class MyClass  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   static void Main()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      // The following line causes XS1009.  </text><br/><text styleclass="Code with box" translate="true">      string filename = &quot;c:\myFolder\myFile.txt&quot;;     </text><br/><text styleclass="Code with box" translate="true">      // Try one of the following lines instead.  </text><br/><text styleclass="Code with box" translate="true">      // string filename = &quot;c:\\myFolder\\myFile.txt&quot;;  </text><br/><text styleclass="Code with box" translate="true">      // string filename = @&quot;c:\myFolder\myFile.txt&quot;;  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1009-b.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

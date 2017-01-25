@@ -3,7 +3,7 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/win32manifest</title>
   <keywords>
-    <keyword translate="true">/win32manifest compiler option</keyword>
+    <keyword translate="true">/win32manifest</keyword>
   </keywords>
   <body>
     <header>
@@ -23,17 +23,16 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">By default, the X# compiler embeds an application manifest that specifies a requested execution level of &quot;asInvoker.&quot; It creates the manifest in the same folder in which the executable is built, typically the bin\Debug or bin\Release folder when you use Visual Studio. If you want to supply a custom manifest, for example to specify a requested execution level of &quot;highestAvailable&quot; or &quot;requireAdministrator,&quot; use this option to specify the name of the file.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Note </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option and the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res" styleclass="Normal" translate="true">/win32res</link><text styleclass="Normal" translate="true"> (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Compiler-Options" styleclass="Normal" translate="true">X# Compiler Options</link><text styleclass="Normal" translate="true">) option are mutually exclusive. If you try to use both options in the same command line you will get a build error.</text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option and the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-win32res" styleclass="Normal" translate="true">/win32res</link><text styleclass="Normal" translate="true">&#32;</text><text styleclass="Normal" translate="true">option are mutually exclusive. If you try to use both options in the same command line you will get a build error.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">An application that has no application manifest that specifies a requested execution level will be subject to file/registry virtualization under the User Account Control feature in Windows Vista. </text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Your application will be subject to virtualization if either of these conditions is true:</text></para>
     <para styleclass="Normal"></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">You use the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowin32manifest" styleclass="Normal" translate="true">/nowin32manifest </link><text styleclass="Normal" translate="true">option and you do not provide a manifest in a later build step or as part of a Windows Resource (.res) file by using the /win32res option.</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">You provide a custom manifest that does not specify a requested execution level.</text></li>
     </list>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Visual Studio creates a default .manifest file and stores it in the debug and release directories alongside the executable file. You can add a custom manifest by creating one in any text editor and then adding the file to the project. Alternatively, you can right-click the Project icon in Solution Explorer, click Add New Item, and then click Application Manifest File. After you have added your new or existing manifest file, it will appear in the Manifest drop down list. For more information, see Application Page, Project Designer (C#).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Visual Studio creates a default .manifest file and stores it in the debug and release directories alongside the executable file. You can add a custom manifest by creating one in any text editor and then adding the file to the project. Alternatively, you can right-click the Project icon in Solution Explorer, click Add New Item, and then click Application Manifest File. After you have added your new or existing manifest file, it will appear in the Manifest drop down list. </text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">You can provide the application manifest as a custom post-build step or as part of a Win32 resource file by using the /nowin32manifest (C# Compiler Options) option. Use that same option if you want your application to be subject to file or registry virtualization on Windows Vista. This will prevent the compiler from creating and embedding a default manifest in the portable executable (PE) file.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>

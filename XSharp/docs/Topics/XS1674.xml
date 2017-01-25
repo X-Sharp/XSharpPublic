@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1674</title>
   <keywords>
     <keyword translate="true">XS1674</keyword>
@@ -18,21 +18,21 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1674.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674.prg  </text><br/><text styleclass="Code with box" translate="true">class C  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public static void Main()  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      int a = 0;  </text><br/><text styleclass="Code with box" translate="true">      a++;  </text><br/><br/><text styleclass="Code with box" translate="true">      using (a) {}   // XS1674  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1674.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674_b.prg  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">class C {  </text><br/><text styleclass="Code with box" translate="true">   public void Test() {  </text><br/><text styleclass="Code with box" translate="true">      using (C c = new C()) {}   // XS1674  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">// OK  </text><br/><text styleclass="Code with box" translate="true">class D : IDisposable {  </text><br/><text styleclass="Code with box" translate="true">   void IDisposable.Dispose() {}  </text><br/><text styleclass="Code with box" translate="true">   public void Dispose() {}  </text><br/><br/><text styleclass="Code with box" translate="true">   public static void Main() {  </text><br/><text styleclass="Code with box" translate="true">      using (D d = new D()) {}  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674_b.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following case illustrates the need for a class type constraint to guarantee that an unknown type parameter is disposable. The following sample generates XS1674.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674_c.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">public class C&lt;T&gt;  </text><br/><text styleclass="Code with box" translate="true">// Add a class type constraint that specifies a disposable class.  </text><br/><text styleclass="Code with box" translate="true">// Uncomment the following line to resolve.  </text><br/><text styleclass="Code with box" translate="true">// public class C&lt;T&gt; where T : IDisposable  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   public void F(T t)  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">      using (t) {}   // XS1674  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1674_c.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

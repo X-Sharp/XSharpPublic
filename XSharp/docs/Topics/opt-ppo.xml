@@ -3,34 +3,36 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/ppo</title>
   <keywords>
-    <keyword translate="true">/ppo compiler option</keyword>
+    <keyword translate="true">/ppo</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/ppo</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /ppo option directs the compiler to write the output of the preprocessor to a file.</text></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">/ppo[+|-]</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/ppo [+ | -] &#160;</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Arguments</text></para>
-    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /ppo, directs the compiler to write the output of the preprocessor to a file. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /ppo, directs the compiler to write the output of the preprocessor to a file. </text><br/><text styleclass="List" translate="true">When ppo is not enabled then the compiler will delete any existing ppo files that match input file names </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Each source file will be written to a file with the same base name and an extension of .ppo, in the same directory as the source file. If a .ppo file already exists, it will be overwritten without warning.</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true"> Tip: </text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">.ppo files can be viewed within Visual Studio. After enabling the /ppo option and rebuilding the project, select any node in the project in Solution Explorer, click the Show All Files button in the Solution Explorer toolbar, then double click the desired .ppo file node.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">To view a .prg and .ppo file side-by-side to compare them, right click the document tab in either the .prg or .ppo file and click New Vertical Tab Group.</text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page (see How to: Set Build Properties). </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Click the Build tab. </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In the Preprocessor section, modify the Write Preprocessed Output To File property. </text></para>
+    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page (see How to: Set Build Properties). </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Click the Build tab. </text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">In the Preprocessor section, modify the &quot;Generate preprocessor output&quot;property. </text></li>
+    </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
     <para styleclass="Normal"></para>

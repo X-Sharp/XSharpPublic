@@ -3,7 +3,7 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/linkresource</title>
   <keywords>
-    <keyword translate="true">/linkresource compiler option</keyword>
+    <keyword translate="true">/linkresource</keyword>
   </keywords>
   <body>
     <header>
@@ -12,17 +12,14 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Creates a link to a .NET Framework resource in the output file. The resource file is not added to the output file. This differs from the /resource option which does embed a resource file in the output file.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/linkresource:filename[,identifier[,accessibility-modifier]] &#160;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">filename</text><tab /><text styleclass="List" translate="true">The .NET Framework resource file to which you want to link from the assembly.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">identifier</text><text styleclass="List" translate="true"> (optional)</text><tab /><text styleclass="List" translate="true">The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">accessibility-modifier</text><text styleclass="List" translate="true"> (optional)</text><tab /><text styleclass="List" translate="true">The accessibility of the resource: public or private. The default is public.</text></para>
-    <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">filename</text><tab /><text styleclass="List" translate="true">The .NET Framework resource file to which you want to link from the assembly.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">identifier (optional)</text><tab /><text styleclass="List" translate="true">The logical name for the resource; the name that is used to load the resource. The default is the name of the file.</text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">accessibility-modifier </text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">(optional)</text><tab /><text styleclass="List" translate="true">The accessibility of the resource: public or private. The default is public.</text></para>
+    <para styleclass="List"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">By default, linked resources are public in the assembly when they are created with the C# compiler. To make the resources private, specify </text><text styleclass="Code Example" translate="true">private</text><text styleclass="Normal" translate="true"> as the accessibility modifier. No other modifier other than </text><text styleclass="Code Example" translate="true">public</text><text styleclass="Normal" translate="true"> or </text><text styleclass="Code Example" translate="true">private</text><text styleclass="Normal" translate="true"> is allowed.</text></para>
     <para styleclass="Normal"></para>

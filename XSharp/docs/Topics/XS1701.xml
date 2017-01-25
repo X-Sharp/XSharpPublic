@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1701</title>
   <keywords>
     <keyword translate="true">XS1701</keyword>
@@ -17,28 +17,28 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following multifile sample references an assembly using two different external aliases. This first sample builds the older version of the code that creates assembly XS1701_d.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_a.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:XS1701_d.dll /keyfile:mykey.snk  </text><br/><text styleclass="Code with box" translate="true">using System.Reflection;  </text><br/><text styleclass="Code with box" translate="true">[assembly:AssemblyVersion(&quot;1.0&quot;)]  </text><br/><text styleclass="Code with box" translate="true">public class A {  </text><br/><text styleclass="Code with box" translate="true">   public void M1() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">public class C1 {}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_a.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:XS1701_d.dll /keyfile:mykey.snk &#160;</text><br/><text styleclass="Code with box" translate="true">&#32;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This is the code that creates the newer version of assembly XS1701_d. Note that it compiles into a different directory than the older version, necessary since the output files have the same names.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_b.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:c:\\XS1701_d.dll /keyfile:mykey.snk  </text><br/><text styleclass="Code with box" translate="true">using System.Reflection;  </text><br/><text styleclass="Code with box" translate="true">[assembly:AssemblyVersion(&quot;2.0&quot;)]  </text><br/><text styleclass="Code with box" translate="true">public class A {  </text><br/><text styleclass="Code with box" translate="true">   public void M2() {}  </text><br/><text styleclass="Code with box" translate="true">   public void M1() {}  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><br/><text styleclass="Code with box" translate="true">public class C2 {}  </text><br/><text styleclass="Code with box" translate="true">public class C1 {}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_b.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:c:\\XS1701_d.dll /keyfile:mykey.snk &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample sets up the external aliases A1 and A2.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_c.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /reference:A2=c:\\XS1701_d.dll /reference:A1=XS1701_d.dll  </text><br/><br/><text styleclass="Code with box" translate="true">extern alias A1;  </text><br/><text styleclass="Code with box" translate="true">extern alias A2;  </text><br/><text styleclass="Code with box" translate="true">// using System;  </text><br/><text styleclass="Code with box" translate="true">using a1 = A1::A;  </text><br/><text styleclass="Code with box" translate="true">using a2 = A2::A;  </text><br/><br/><text styleclass="Code with box" translate="true">public class Ref {  </text><br/><text styleclass="Code with box" translate="true">   public static a1 A1() { return new a1(); }  </text><br/><text styleclass="Code with box" translate="true">   public static a2 A2() { return new a2(); }  </text><br/><br/><text styleclass="Code with box" translate="true">   public static A1::C1 M1() { return new A1::C1(); }  </text><br/><text styleclass="Code with box" translate="true">   public static A2::C2 M2() { return new A2::C2(); }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_c.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /reference:A2=c:\\XS1701_d.dll /reference:A1=XS1701_d.dll &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample calls methods using two different aliases of A. The following sample generates C1701.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_d.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:c:\\XS1701_d.dll /reference:XS1701_c.dll  </text><br/><text styleclass="Code with box" translate="true">// XS1701 expected  </text><br/><text styleclass="Code with box" translate="true">class Tester {  </text><br/><text styleclass="Code with box" translate="true">   public static void Main() {  </text><br/><text styleclass="Code with box" translate="true">      Ref.A1().M1();  </text><br/><text styleclass="Code with box" translate="true">      Ref.A2().M2();  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1701_d.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:c:\\XS1701_d.dll /reference:XS1701_c.dll &#160;</text><br/><text styleclass="Code with box" translate="true">// XS1701 expected &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

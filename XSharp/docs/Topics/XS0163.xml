@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0163</title>
   <keywords>
     <keyword translate="true">XS0163</keyword>
@@ -13,7 +13,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">When a switch statement contains more than one switch section, you must explicitly terminate each section, including the last one, by using one of the following keywords:</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">return</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">goto</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">break</text></li>
@@ -26,7 +26,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0163.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">X#</text><br/><br/><text styleclass="Code with box" translate="true">// XS0163.prg  </text><br/><text styleclass="Code with box" translate="true">public class MyClass  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public static void Main()  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        int i = 0;  </text><br/><br/><text styleclass="Code with box" translate="true">        switch (i)   // XS0163  </text><br/><text styleclass="Code with box" translate="true">        {  </text><br/><text styleclass="Code with box" translate="true">            // Compiler error XS0163 is reported on the following line.  </text><br/><text styleclass="Code with box" translate="true">            case 1:  </text><br/><text styleclass="Code with box" translate="true">                i++;  </text><br/><text styleclass="Code with box" translate="true">            // To resolve the error, uncomment one of the following example statements.  </text><br/><text styleclass="Code with box" translate="true">            // return;  </text><br/><text styleclass="Code with box" translate="true">            // break;  </text><br/><text styleclass="Code with box" translate="true">            // goto case 3;  </text><br/><br/><text styleclass="Code with box" translate="true">            case 2:  </text><br/><text styleclass="Code with box" translate="true">                i++;  </text><br/><text styleclass="Code with box" translate="true">                return;  </text><br/><br/><text styleclass="Code with box" translate="true">            case 3:  </text><br/><text styleclass="Code with box" translate="true">                i = 0;  </text><br/><text styleclass="Code with box" translate="true">                return;  </text><br/><br/><text styleclass="Code with box" translate="true">            // Compiler error XS0163 is reported on the following line.  </text><br/><text styleclass="Code with box" translate="true">            default:  </text><br/><text styleclass="Code with box" translate="true">                Console.WriteLine(&quot;Default&quot;);  </text><br/><text styleclass="Code with box" translate="true">                // To resolve the error, uncomment the following line:  </text><br/><text styleclass="Code with box" translate="true">            //break;  </text><br/><text styleclass="Code with box" translate="true">        }  </text><br/><text styleclass="Code with box" translate="true">    }  </text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0163.prg &#160;</text><br/></para>
   </body>
 </topic>

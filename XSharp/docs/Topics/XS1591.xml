@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1591</title>
   <keywords>
     <keyword translate="true">XS1591</keyword>
@@ -16,6 +16,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS1591:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Normal" translate="true">/</text><text styleclass="Code with box" translate="true">/ XS1591.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /W:4 /doc:x.xml  </text><br/><br/><text styleclass="Code with box" translate="true">/// text  </text><br/><text styleclass="Code with box" translate="true">public class Test  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">   // /// text  </text><br/><text styleclass="Code with box" translate="true">   public static void Main()   // XS1591, remove &quot;//&quot; from previous line  </text><br/><text styleclass="Code with box" translate="true">   {  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/></para>
+    <para styleclass="Code with box"><text styleclass="Normal" translate="true">/</text><text styleclass="Code with box" translate="true">/ XS1591.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /W:4 /doc:x.xml &#160;</text><br/></para>
   </body>
 </topic>

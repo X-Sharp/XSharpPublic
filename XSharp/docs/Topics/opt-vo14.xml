@@ -3,14 +3,12 @@
 <topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">/vo14</title>
   <keywords>
-    <keyword translate="true">/vo14 compiler option</keyword>
+    <keyword translate="true">/vo14</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/vo14:</text><tab /><text styleclass="Heading1" translate="true">Use Float Literals </text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Vulcan</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /vo14 option enables VO compatible handling of floating point literal numbers</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
@@ -18,25 +16,24 @@
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/vo14[+|-]</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Arguments</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="List"><text styleclass="Code Example" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </text></para>
+    <para styleclass="List"><text styleclass="List" translate="true">+ | - </text><tab /><text styleclass="List" translate="true">Specifying +, or just /vo14, tells the compiler treat floating point literal numbers (for example: 123.456) as FLOAT data type, instead of as REAL8 (System.Double), which is the default. </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">When this option is enabled, floating point literal numbers are treated by the compiler as FLOAT values, for compatibility with existing Visual Objects code. This option is enabled by default in transported projects.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For new code, it is strongly recommended not to enable this compiler option, as it generates less efficient code. For example, for the following code:</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">LOCAL r := 1.0 AS REAL8</text><br/><text styleclass="Code with box" translate="true">r := r * 1.5 + r + 2.5</text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">if /vo14 is enabled, the compiler treats the &quot;1.0&quot;, &quot;1.5&quot; and &quot;2.5&quot; values as numbers of type FLOAT, causing the whole calculation to be made on FLOAT values and the result is at the end converted to REAL8, before it is finally stored to the local variable. FLOAT is a special data type defined in the Vulcan.NET runtime and is significantly slower than the REAL8 (System.Decimal) data type, which maps directly to a (mathematic) processor registry. Disabling /vo14 option, would cause the above code to execute faster by a large factor.</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that by using the &quot;d&quot; or &quot;s&quot; suffix, as in 123.456d and 123.456s, the REAL8 or REAL4 data type is being enforced on a literal number, no matter if /vo14 is enabled or disabled. See Literals for more information.</text></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>
-    <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
+    <list id="2" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Language tab. </text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the Compatible String Comparions property. </text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">In the Visual Objects Compatibility section, modify the &quot;Use FLOAT literals&quot; property. </text></li>
     </list>
     <para styleclass="Normal"></para>
   </body>

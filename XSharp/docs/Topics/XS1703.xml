@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1703</title>
   <keywords>
     <keyword translate="true">XS1703</keyword>
@@ -20,15 +20,11 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Save this example in a file named XS1703a1.prg, and compile it with the following flags: </text><text styleclass="Code Example" translate="true">/t:library /out:.\bin1\XS1703.dll /keyfile:key.snk</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">public class A { }  </text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This code creates a copy of assembly A in the .\bin2 directory.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Save this example in a file named XS1703a2.prg, and compile it with the following flags: </text><text styleclass="Code Example" translate="true">/t:library /out:.\bin2\XS1703.dll /keyfile:key.snk</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">public class A { }  </text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
@@ -36,6 +32,6 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Save this example in a file named XS1703ref.prg, and compile it with the following flags: </text><text styleclass="Code Example" translate="true">/t:library /r:A2=.\bin2\XS1703.dll /r:A1=.\bin1\XS1703.dll</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">extern alias A1;  </text><br/><text styleclass="Code with box" translate="true">extern alias A2;  </text><br/></para>
+    <para styleclass="Code with box"><br/></para>
   </body>
 </topic>

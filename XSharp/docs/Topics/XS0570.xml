@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0570</title>
   <keywords>
     <keyword translate="true">XS0570</keyword>
@@ -17,14 +17,14 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following C++ program uses an attribute, RequiredAttributeAttribute, which may not be consumed by other languages.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CPP0570.cpp  </text><br/><text styleclass="Code with box" translate="true">// compile with: /clr /LD  </text><br/><br/><text styleclass="Code with box" translate="true">using namespace System;  </text><br/><text styleclass="Code with box" translate="true">using namespace System::Runtime::CompilerServices;  </text><br/><br/><text styleclass="Code with box" translate="true">namespace XS0570_Server {  </text><br/><text styleclass="Code with box" translate="true">   [RequiredAttributeAttribute(Int32::typeid)]   </text><br/><text styleclass="Code with box" translate="true">   public ref struct Scenario1 {  </text><br/><text styleclass="Code with box" translate="true">      int intVar;  </text><br/><text styleclass="Code with box" translate="true">   };  </text><br/><br/><text styleclass="Code with box" translate="true">   public ref struct XS0570Class {  </text><br/><text styleclass="Code with box" translate="true">      Scenario1 ^ sc1_field;  </text><br/><br/><text styleclass="Code with box" translate="true">      property virtual Scenario1 ^ sc1_prop {  </text><br/><text styleclass="Code with box" translate="true">         Scenario1 ^ get() { return sc1_field; }  </text><br/><text styleclass="Code with box" translate="true">      }  </text><br/><br/><text styleclass="Code with box" translate="true">      Scenario1 ^ sc1_method() { return sc1_field; }  </text><br/><text styleclass="Code with box" translate="true">   };  </text><br/><text styleclass="Code with box" translate="true">};  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// CPP0570.cpp &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /clr /LD &#160;</text><br/><text styleclass="Code with box" translate="true">&#32;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0570.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0570.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:CPP0570.dll  </text><br/><text styleclass="Code with box" translate="true">using System;  </text><br/><text styleclass="Code with box" translate="true">using XS0570_Server;  </text><br/><br/><text styleclass="Code with box" translate="true">public class C {  </text><br/><text styleclass="Code with box" translate="true">   public static int Main() {  </text><br/><text styleclass="Code with box" translate="true">      XS0570Class r = new XS0570Class();  </text><br/><text styleclass="Code with box" translate="true">      r.sc1_field = null;   // XS0570  </text><br/><text styleclass="Code with box" translate="true">      object o = r.sc1_prop;   // XS0570  </text><br/><text styleclass="Code with box" translate="true">      r.sc1_method();   // XS0570  </text><br/><text styleclass="Code with box" translate="true">   }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0570.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /reference:CPP0570.dll &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

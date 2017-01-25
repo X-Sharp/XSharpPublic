@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS0050</title>
   <keywords>
     <keyword translate="true">XS0050</keyword>
@@ -16,8 +16,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The following sample generates XS0050 because no accessiblity modifier is supplied for MyClass and its accessibility therefore defaults to private.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0050.prg  </text><br/><text styleclass="Code with box" translate="true">class MyClass //accessibility defaults to private  </text><br/><text styleclass="Code with box" translate="true">// try the following line instead  </text><br/><text styleclass="Code with box" translate="true">// public class MyClass   </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">}  </text><br/><text styleclass="Code with box" translate="true">public class MyClass2  </text><br/><text styleclass="Code with box" translate="true">{  </text><br/><text styleclass="Code with box" translate="true">    public static MyClass MyMethod()   // XS0050  </text><br/><text styleclass="Code with box" translate="true">    {  </text><br/><text styleclass="Code with box" translate="true">        return new MyClass();  </text><br/><text styleclass="Code with box" translate="true">    }  </text><br/><br/><text styleclass="Code with box" translate="true">    public static void Main() { }  </text><br/><text styleclass="Code with box" translate="true">}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS0050.prg &#160;</text><br/></para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

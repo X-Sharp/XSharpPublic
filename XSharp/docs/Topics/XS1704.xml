@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS1704</title>
   <keywords>
     <keyword translate="true">XS1704</keyword>
@@ -17,20 +17,20 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample creates an assembly and saves it to the root directory.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1704_a.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:c:\\XS1704.dll  </text><br/><text styleclass="Code with box" translate="true">public class A {}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1704_a.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:c:\\XS1704.dll &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample creates an assembly with the same name as the previous sample, but saves it to a different location.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1704_b.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:XS1704.dll  </text><br/><text styleclass="Code with box" translate="true">public class A {}  </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1704_b.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /out:XS1704.dll &#160;</text><br/></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This sample attempts to reference both assemblies. The following sample generates XS1704.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1704_c.prg  </text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /r:A2=XS1704.dll /r:A1=c:\\XS1704.dll  </text><br/><text styleclass="Code with box" translate="true">// XS1704 expected  </text><br/><text styleclass="Code with box" translate="true">extern alias A1;  </text><br/><text styleclass="Code with box" translate="true">extern alias A2; </text></para>
+    <para styleclass="Code with box"><text styleclass="Code with box" translate="true">// XS1704_c.prg &#160;</text><br/><text styleclass="Code with box" translate="true">// compile with: /target:library /r:A2=XS1704.dll /r:A1=c:\\XS1704.dll &#160;</text><br/><text styleclass="Code with box" translate="true">// XS1704 expected &#160;</text><br/></para>
   </body>
 </topic>

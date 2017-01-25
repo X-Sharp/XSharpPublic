@@ -22,6 +22,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         /// mapped by their name (case-sensitively).
         /// </summary>
         protected Dictionary<string, PENestedNamespaceSymbol> lazyNamespaces;
+#if XSHARP
+        // We keep track of duplicate namespaces and link these namespaces 
+        // so we can find all types and sub namespaces easily
+        // siblings is the list of all namespaces with same name but different casing, including
+        // this namespace.
+        protected IList<PENestedNamespaceSymbol> lazyNamespacesList ;    
+        protected ImmutableArray<PENestedNamespaceSymbol> siblings = ImmutableArray<PENestedNamespaceSymbol>.Empty;
+#endif
 
         /// <summary>
         /// A map of types immediately contained within this namespace 
@@ -54,7 +62,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
             EnsureAllMembersLoaded();
 
             var builder = ArrayBuilder<Symbol>.GetInstance();
+#if XSHARP
+            // call GetTypeMembers() because it includes the types from Siblings
+            builder.AddRange(GetTypeMembers());
+#else
             builder.AddRange(GetMemberTypesPrivate());
+#endif
             builder.AddRange(GetMemberNamespacesPrivate());
             return builder.ToImmutableAndFree();
         }
@@ -73,7 +86,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
         private IEnumerable<PENestedNamespaceSymbol> GetMemberNamespacesPrivate()
         {
+#if XSHARP
+            // the List contains duplicates
+            return lazyNamespacesList;
+#else
             return lazyNamespaces.Values;
+#endif
         }
 
         public sealed override ImmutableArray<Symbol> GetMembers(string name)
@@ -82,6 +100,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
 
             PENestedNamespaceSymbol ns = null;
             ImmutableArray<PENamedTypeSymbol> t;
+#if XSHARP
+            // When we have siblings then collect all members from all siblings
+            if (!siblings.IsEmpty)
+            {
+                var builder = ArrayBuilder<Symbol>.GetInstance();
+                foreach (var sib in siblings)
+                {
+                    sib.EnsureAllMembersLoaded();
+                    if (sib.lazyNamespaces.TryGetValue(name, out ns))
+                    {
+                        builder.AddRange(ns);
+                    }
+                    if (sib.lazyTypes.TryGetValue(name, out t))
+                    {
+                        builder.AddRange(t);
+                    }
+                }
+                return builder.ToImmutableAndFree();
+            }
+#endif
 
             if (lazyNamespaces.TryGetValue(name, out ns))
             {
@@ -106,19 +144,43 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
         public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers()
         {
             EnsureAllMembersLoaded();
-
+#if XSHARP
+            if (!siblings.IsEmpty)
+            {
+                var builder = ArrayBuilder<NamedTypeSymbol>.GetInstance();
+                foreach (var ns in siblings)
+                {
+                    ns.EnsureAllMembersLoaded();
+                    var types = ns.GetMemberTypesPrivate();
+                    builder.AddRange(types);
+                }
+                return builder.ToImmutableAndFree();
+            }
+#endif
             return GetMemberTypesPrivate();
         }
 
         public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name)
         {
             EnsureAllMembersLoaded();
-
             ImmutableArray<PENamedTypeSymbol> t;
-
+#if XSHARP
+            // When we have siblings then collect all types from all siblings
+            if (!siblings.IsEmpty)
+            {
+                var builder = ArrayBuilder<NamedTypeSymbol>.GetInstance();
+                foreach (var ns in siblings)
+                {
+                    if (ns.lazyTypes.TryGetValue(name, out t))
+                        builder.AddRange(t);
+                }
+                return builder.ToImmutableAndFree();
+            }
+#endif
             return lazyTypes.TryGetValue(name, out t)
                 ? StaticCast<NamedTypeSymbol>.From(t)
                 : ImmutableArray<NamedTypeSymbol>.Empty;
+
         }
 
         public sealed override ImmutableArray<NamedTypeSymbol> GetTypeMembers(string name, int arity)
@@ -200,17 +262,55 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols.Metadata.PE
                                select new PENestedNamespaceSymbol(child.Key, this, child.Value);
 
 #if XSHARP
+                // Keep track of namespaces that only differ in casing.
+                // we link these namespaces with eachother so the type 
+                // lookup or member lookup on one returns the elements of all
                 var namespaces = new Dictionary<string, PENestedNamespaceSymbol>(CaseInsensitiveComparison.Comparer);
+                var duplicates  = new Dictionary<string, List<PENestedNamespaceSymbol>>(CaseInsensitiveComparison.Comparer);
+                var list = new List<PENestedNamespaceSymbol>();
 #else
                 var namespaces = new Dictionary<string, PENestedNamespaceSymbol>();
 #endif
 
                 foreach (var c in children)
                 {
+#if XSHARP
+                    if (! namespaces.ContainsKey(c.Name))
+                    {
+                        namespaces.Add(c.Name, c);
+                    }
+                    else
+                    {
+                        List<PENestedNamespaceSymbol> dups;
+                        if (!duplicates.ContainsKey(c.Name))
+                        {
+                            dups = new List<PENestedNamespaceSymbol>() { namespaces[c.Name] };
+                            duplicates.Add(c.Name, dups);
+                        }
+                        else
+                        {
+                            dups = duplicates[c.Name];
+                        }
+                        dups.Add(c);
+                    }
+                    list.Add(c);
+#else
                     namespaces.Add(c.Name, c);
+#endif
                 }
 
                 Interlocked.CompareExchange(ref this.lazyNamespaces, namespaces, null);
+#if XSHARP
+                // link the duplicate children with eachother
+                foreach (var dup in duplicates)
+                {
+                    foreach (var ns in dup.Value)
+                    {
+                        ns.siblings = dup.Value.ToImmutableArray();
+                    }
+                }
+                Interlocked.CompareExchange(ref this.lazyNamespacesList, list, null);
+#endif
             }
         }
 

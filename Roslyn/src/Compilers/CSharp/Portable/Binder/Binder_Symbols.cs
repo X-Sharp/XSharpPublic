@@ -1499,6 +1499,19 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 diagnostics.Add(info, where.Location);
                                 return second;
                             }
+                            else if (first.Kind == second.Kind  && 
+                                ! string.Equals(first.Name, second.Name) && 
+                                string.Equals(first.Name, second.Name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // they only differ in case
+                                info = new CSDiagnosticInfo(ErrorCode.WRN_VulcanAmbiguous, originalSymbols,
+                                    new object[] {
+                                    where,
+                                    new FormattedSymbol(second, SymbolDisplayFormat.CSharpErrorMessageFormat),
+                                    new FormattedSymbol(first, SymbolDisplayFormat.CSharpErrorMessageFormat) });
+                                diagnostics.Add(info, where.Location);
+                                return first;
+                            }
 #endif
                             else
                             {

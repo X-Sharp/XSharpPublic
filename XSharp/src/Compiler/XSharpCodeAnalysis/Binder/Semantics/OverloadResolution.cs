@@ -160,7 +160,21 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 result = BetterResult.Right;
                                 return true;
                             }
-
+                            // VoFloat prefers overload with double over all other conversions
+                            if (argType == Compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat))
+                            {
+                                var doubleType = Compilation.GetSpecialType(SpecialType.System_Double);
+                                if (parLeft.Type == doubleType )
+                                {
+                                    result = BetterResult.Left;
+                                    return true;
+                                }
+                                if (parRight.Type == doubleType)
+                                {
+                                    result = BetterResult.Right;
+                                    return true;
+                                }
+                            }
                         }
 
                     }

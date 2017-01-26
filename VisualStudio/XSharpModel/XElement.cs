@@ -16,7 +16,7 @@ namespace XSharpModel
         private string _Name;
         private TextRange _range;
         private XFile _File;
-        private DTE dte;
+        //private DTE dte;
         private Modifiers _Visibility;
         private TextInterval _interval;
         private XElement _parent;

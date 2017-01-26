@@ -12,7 +12,7 @@ namespace XSharpModel
     {
         // Fields
         /// <summary>
-        /// A Dictionnary of Type : The key is a string with the typeName in LowerCase
+        /// A Dictionary of Type : The key is a string with the typeName in LowerCase
         /// </summary>
         private Dictionary<string, Type> aTypes;
         private List<MethodInfo> aExtensions;
@@ -162,7 +162,7 @@ namespace XSharpModel
             {
             }
             // Has Types ?
-            if (types != null)
+            if (types != null && ! lLoadedTypes)
             {
                 // Mark as Loaded
                 this.lLoadedTypes = true;

@@ -741,7 +741,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // need to look further. See C412 where the parent class has only a setter or only
                 // a getter and the child class has both of these.
                 // Looking further will then give a property that is incomplete
-                if (result.Symbols.Count == 1 && result.Symbols[0].Kind == SymbolKind.Property)
+                // We must exclude MustBeInvocableIfMember because we do not want a method to resolve to a property
+                // (see C415)
+                if (result.Symbols.Count == 1 && result.Symbols[0].Kind == SymbolKind.Property && 
+                    ! options.HasFlag(LookupOptions.MustBeInvocableIfMember))
                 {
                     var prop = result.Symbols[0] as PropertySymbol;
                     if (prop.GetMethod != null && prop.SetMethod != null)

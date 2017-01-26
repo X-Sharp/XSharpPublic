@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS9022</title>
   <keywords>
     <keyword translate="true">XS9022</keyword>
@@ -9,6 +9,6 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS9022</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Conflicting commandline options &apos;{0}&apos; and &apos;{1}&apos; are not allowed (both are internally mapped to /checked)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Conflicting commandline options &apos;/ovf&apos; and &apos;/fovf&apos; are not allowed (both are internally mapped to /checked)</text></para>
   </body>
 </topic>

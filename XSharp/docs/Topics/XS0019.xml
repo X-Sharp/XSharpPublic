@@ -19,7 +19,7 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">In the following example, XS0019 is generated in two places because bool in X# is not convertible to int. XS0019 also is generated when the subtraction operator is applied to a string. The addition operator (+) can be used with string operands because that operator is overloaded by the String class to perform string concatenation.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Code with box"><br/><text styleclass="Code with box" translate="true">} &#160;</text></para>
+    <para styleclass="Code with box"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Example</text></para>
     <para styleclass="Normal"></para>

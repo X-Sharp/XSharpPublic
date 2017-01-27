@@ -4157,7 +4157,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (isConst)
                 context.AddError(new ParseErrorData(ErrorCode.ERR_ImplicitlyTypedVariableCannotBeConst));
             if (isStatic)
-                context.AddError(new ParseErrorData(ErrorCode.ERR_BadVarDecl));
+                context.AddError(new ParseErrorData(ErrorCode.ERR_ImplicitlyTypedVariableCannotBeStatic));
             context.Put(_syntaxFactory.LocalDeclarationStatement(
                 modifiers.ToTokenList(),
                 _syntaxFactory.VariableDeclaration(_impliedType, variables),

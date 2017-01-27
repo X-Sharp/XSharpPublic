@@ -1410,5 +1410,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         ERR_ClipperInParentClass = 9041,
         ERR_ClipperInSubClass = 9042,
         WRN_VulcanAmbiguous = 9043,
+        ERR_ImplicitlyTypedVariableCannotBeStatic = 9044,
     }
 }

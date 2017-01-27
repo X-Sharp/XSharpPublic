@@ -86,6 +86,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string CoreFunctionsClass = VulcanFunctionNames.FunctionsClass;
         internal const string VOExeFunctionsClass = ".Exe.Functions";
         internal const string VODllFunctionsClass = ".Functions";
+        internal const string ModuleName = "<Module>";
 
 
     }
@@ -103,6 +104,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal const string VulcanASend = "ASend";
         internal const string Eval = "Eval";
         internal const string FunctionsClass = "Functions";
+        internal const string RunInitProcs = "RunInitProcs";
     }
     internal static class VulcanQualifiedFunctionNames
     {

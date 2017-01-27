@@ -141,7 +141,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var invoke = GenerateMethodCall(name);
                 stmts.Add(GenerateExpressionStatement(invoke));
             }
-            var mods = TokenList(isApp ? SyntaxKind.PrivateKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
+            var mods = TokenList(isApp ? SyntaxKind.InternalKeyword : SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
             var pars = EmptyParameterList();
             var m = SyntaxFactory.MethodDeclaration(MakeCompilerGeneratedAttribute(), mods,
                 _voidType, /*explicitif*/null,
@@ -204,14 +204,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // Vulcan only does this for DLLs. We do it for EXE too to make things more consistent
             // Methods $Init1() and $Exit() are always created.
             var members = CreateInitMembers(initprocs, isApp, hasPCall);
+            var modulemembers = new List<MemberDeclarationSyntax>();
             if (isApp)
             {
-                members.Add(CreateAppInit());   // This will call $Init() procedures
-                members.Add(CreateAppExit());   // This will call $Exit() procedures
+                modulemembers.Add(CreateAppInit());
+                modulemembers.Add(CreateAppExit());
+            }
+            else
+            {
+                modulemembers.Add(CreateRunInitProcs());
             }
             GlobalEntities.Members.Add(GenerateGlobalClass(GlobalClassName, false, true, members.ToArray()));
             // Add global attributes
-
+            GlobalEntities.Members.Add(GenerateGlobalClass(XSharpSpecialNames.ModuleName, true, false, modulemembers.ToArray()));
             var arguments = _pool.AllocateSeparated<AttributeArgumentSyntax>();
             var attributes = _pool.AllocateSeparated<AttributeSyntax>();
             // VulcanClassLibrary
@@ -236,7 +241,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             GlobalEntities.Attributes.Add(attrlist);
             _pool.Free(arguments);
             _pool.Free(attributes);
-
             var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
             return CSharpSyntaxTree.Create(
                 (Syntax.CompilationUnitSyntax)_syntaxFactory.CompilationUnit(
@@ -415,7 +419,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stmts = _pool.Allocate<StatementSyntax>();
             var body = MakeBlock(stmts);
             var appId = SyntaxFactory.Identifier(XSharpSpecialNames.AppExit);
-            var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
+            var modifiers = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
 
             var appExit = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
@@ -424,6 +428,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             _pool.Free(stmts);
             appExit.XNode = CurrentEntity;
             return appExit;
+        }
+
+        private MethodDeclarationSyntax CreateRunInitProcs()
+        {
+            var stmts = _pool.Allocate<StatementSyntax>();
+            var body = MakeBlock(stmts);
+            var appId = SyntaxFactory.Identifier(VulcanFunctionNames.RunInitProcs);
+            var modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword);
+            var initProcs = _syntaxFactory.MethodDeclaration(
+                MakeCompilerGeneratedAttribute(), modifiers,
+                _voidType, null, appId, null, EmptyParameterList(),
+                null, body, null, SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+            _pool.Free(stmts);
+            return initProcs;
+
         }
         private MethodDeclarationSyntax CreateAppInit()
         {
@@ -492,7 +511,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             stmts.Add(tryStmt);
             body = MakeBlock(stmts);
             // Body is ready now. Now create the method as a private method
-            var modifiers = TokenList(SyntaxKind.PrivateKeyword, SyntaxKind.StaticKeyword);
+            var modifiers = TokenList(SyntaxKind.InternalKeyword, SyntaxKind.StaticKeyword);
 
             var appInit = _syntaxFactory.MethodDeclaration(
                 MakeCompilerGeneratedAttribute(), modifiers,
@@ -534,7 +553,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else
             {
-                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.AppInit)));
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName+"." + XSharpSpecialNames.AppInit)));
             }
             if (context.Type.GetText().ToLower() != "void")
             {
@@ -633,7 +652,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.AppInit)));
                 newbody.Add(trystmt);
             }
-            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.AppExit)));
+            newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName+"." + XSharpSpecialNames.AppExit)));
             newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcCollect)));
             newbody.Add(GenerateExpressionStatement(GenerateMethodCall(SystemQualifiedNames.GcWait)));
             if (needsExtraReturn)

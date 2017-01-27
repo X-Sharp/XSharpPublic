@@ -178,10 +178,34 @@ namespace Microsoft.CodeAnalysis.Emit
                 Debug.Assert(names != null);
                 this.Dispatch(noPiaIndexer);
             }
+#if XSHARP
+            // Replace generation of the _rootModule with the generated
+            // <Module> class when available
+            Cci.INamespaceTypeDefinition topType = null;
+            foreach (var type in this.GetTopLevelTypesCore(context))
+            {
+                if (String.Equals(type.Name, _rootModuleType.Name))
+                {
+                    topType = type;
+                    AddTopLevelType(names, type);
+                    VisitTopLevelType(noPiaIndexer, type);
+                    yield return type;
+                }
 
+            }
+            if (topType == null)
+            {
+                AddTopLevelType(names, _rootModuleType);
+                VisitTopLevelType(noPiaIndexer, _rootModuleType);
+                yield return _rootModuleType;
+            }
+
+#else
             AddTopLevelType(names, _rootModuleType);
             VisitTopLevelType(noPiaIndexer, _rootModuleType);
             yield return _rootModuleType;
+
+#endif
 
             foreach (var type in this.GetAnonymousTypes())
             {
@@ -192,9 +216,19 @@ namespace Microsoft.CodeAnalysis.Emit
 
             foreach (var type in this.GetTopLevelTypesCore(context))
             {
+#if XSHARP
+                // Skip when class has been included as top level
+                if (type != topType)
+                {
+                    AddTopLevelType(names, type);
+                    VisitTopLevelType(noPiaIndexer, type);
+                    yield return type;
+                }
+#else
                 AddTopLevelType(names, type);
                 VisitTopLevelType(noPiaIndexer, type);
                 yield return type;
+#endif
             }
 
             var privateImpl = this.PrivateImplClass;

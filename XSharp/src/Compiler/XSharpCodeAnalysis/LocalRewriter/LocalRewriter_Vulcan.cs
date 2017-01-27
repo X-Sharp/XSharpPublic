@@ -90,19 +90,15 @@ namespace Microsoft.CodeAnalysis.CSharp
 
 
         public static BoundStatement RewriteAppExit(
-                 CSharpCompilation compilation,
                  MethodSymbol method,
-                 int methodOrdinal,
-                 NamedTypeSymbol containingType,
                  BoundStatement statement,
-                 TypeCompilationState compilationState,
                  DiagnosticBag diagnostics)
 
         {
             if (method.Name != XSharpSpecialNames.AppExit)
                 return statement;
-            var refMan = compilation.GetBoundReferenceManager();
-            var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
+            var refMan = method.DeclaringCompilation.GetBoundReferenceManager();
+            var vcla = method.DeclaringCompilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
             var newstatements = new List<BoundStatement>();
 
             foreach (var r in refMan.ReferencedAssemblies)
@@ -125,12 +121,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                                 {
                                     foreach (MethodSymbol sym in members)
                                     {
-                                        CreateMethodCall(compilation, statement.Syntax, sym, newstatements);
+                                        CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
                                     }
                                 }
                                 else
                                 {
-                                    ClearGlobals(compilation, statement.Syntax, type, newstatements);
+                                    ClearGlobals(method.DeclaringCompilation, statement.Syntax, type, newstatements);
                                 }
 
                             }
@@ -140,10 +136,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             // Now clear the globals in this assembly by calling $Exit
 
-            var symbols = FindMembers(compilation, XSharpSpecialNames.ExitProc);
+            var symbols = FindMembers(method.DeclaringCompilation, XSharpSpecialNames.ExitProc);
             foreach (MethodSymbol sym in symbols)
             {
-                CreateMethodCall(compilation, statement.Syntax, sym, newstatements);
+                CreateMethodCall(method.DeclaringCompilation, statement.Syntax, sym, newstatements);
             }
             newstatements.Add(new BoundReturnStatement(statement.Syntax, null));
             var oldbody = statement as BoundBlock;
@@ -152,16 +148,12 @@ namespace Microsoft.CodeAnalysis.CSharp
             return newbody;
         }
         public static BoundStatement RewriteAppInit(
-            CSharpCompilation compilation,
             MethodSymbol method,
-            int methodOrdinal,
-            NamedTypeSymbol containingType,
             BoundStatement statement,
-            TypeCompilationState compilationState,
             DiagnosticBag diagnostics)
 
         {
-            if (method.Name != XSharpSpecialNames.AppInit)
+            if (method.Name != XSharpSpecialNames.AppInit )
                 return statement;
             var newstatements = new List<BoundStatement>();
             var oldbody = statement as BoundBlock;
@@ -169,27 +161,53 @@ namespace Microsoft.CodeAnalysis.CSharp
             var tryblock = trystmt.TryBlock;
             foreach (var stmt in tryblock.Statements)
                 newstatements.Add(stmt);
+            var initstmts = GetInitStatements(method.DeclaringCompilation, statement,false);
+            newstatements.AddRange(initstmts);
+            tryblock = tryblock.Update(tryblock.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            tryblock.WasCompilerGenerated = true;
+            trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.PreferFaultHandler);
+            trystmt.WasCompilerGenerated = true;
+            newstatements.Clear();
+            newstatements.Add(trystmt);
+            int i = 0;
+            foreach (var stmt in oldbody.Statements)
+            {
+                if (i > 0)
+                    newstatements.Add(stmt);
+                ++i;
+            }
+            oldbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
+            oldbody.WasCompilerGenerated = true;
+            return oldbody;
+        }
+
+        static List<BoundStatement> GetInitStatements(CSharpCompilation compilation, BoundStatement statement, bool localOnly)
+        {
+            var newstatements = new List<BoundStatement>();
             var vcla = compilation.GetWellKnownType(WellKnownType.Vulcan_Internal_VulcanClassLibraryAttribute);
             var refMan = compilation.GetBoundReferenceManager();
             var init1 = new List<ISymbol>();
             var init2 = new List<ISymbol>();
             var init3 = new List<ISymbol>();
-            foreach (var r in refMan.ReferencedAssemblies)
+            if (! localOnly)
             {
-                foreach (var attr in r.GetAttributes())
+                foreach (var r in refMan.ReferencedAssemblies)
                 {
-                    if (attr.AttributeClass.ConstructedFrom == vcla)
+                    foreach (var attr in r.GetAttributes())
                     {
-                        var attargs = attr.CommonConstructorArguments;
-                        if (attargs.Length == 2)
+                        if (attr.AttributeClass.ConstructedFrom == vcla)
                         {
-                            var functionsClassName = attargs[0].Value.ToString();
-                            if (!string.IsNullOrEmpty(functionsClassName))
+                            var attargs = attr.CommonConstructorArguments;
+                            if (attargs.Length == 2)
                             {
-                                var type = r.GetTypeByMetadataName(functionsClassName);
-                                init1.AddRange(type.GetMembers(XSharpSpecialNames.InitProc1));
-                                init2.AddRange(type.GetMembers(XSharpSpecialNames.InitProc2));
-                                init3.AddRange(type.GetMembers(XSharpSpecialNames.InitProc3));
+                                var functionsClassName = attargs[0].Value.ToString();
+                                if (!string.IsNullOrEmpty(functionsClassName))
+                                {
+                                    var type = r.GetTypeByMetadataName(functionsClassName);
+                                    init1.AddRange(type.GetMembers(XSharpSpecialNames.InitProc1));
+                                    init2.AddRange(type.GetMembers(XSharpSpecialNames.InitProc2));
+                                    init3.AddRange(type.GetMembers(XSharpSpecialNames.InitProc3));
+                                }
                             }
                         }
                     }
@@ -210,32 +228,31 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 CreateMethodCall(compilation, statement.Syntax, sym, newstatements);
             }
-            tryblock = tryblock.Update(tryblock.Locals, newstatements.ToImmutableArray<BoundStatement>());
-            tryblock.WasCompilerGenerated = true;
-            trystmt = trystmt.Update(tryblock, trystmt.CatchBlocks, trystmt.FinallyBlockOpt, trystmt.PreferFaultHandler);
-            trystmt.WasCompilerGenerated = true;
-            newstatements.Clear();
-            newstatements.Add(trystmt);
-            int i = 0;
-            foreach (var stmt in oldbody.Statements)
-            {
-                if (i > 0)
-                    newstatements.Add(stmt);
-                ++i;
-            }
+            return newstatements;
+        }
+        public static BoundStatement RewriteRunInitProc(
+            MethodSymbol method,
+            BoundStatement statement,
+            DiagnosticBag diagnostics)
+
+        {
+            if ( method.Name != VulcanFunctionNames.RunInitProcs)
+                return statement;
+            var oldbody = statement as BoundBlock;
+            var newstatements = new List<BoundStatement>();
+            var initstmts = GetInitStatements(method.DeclaringCompilation, statement,true);
+            newstatements.AddRange(initstmts);
+            newstatements.Add(new BoundReturnStatement(statement.Syntax, null) { WasCompilerGenerated = true } );
             oldbody = oldbody.Update(oldbody.Locals, newstatements.ToImmutableArray<BoundStatement>());
             oldbody.WasCompilerGenerated = true;
             return oldbody;
         }
 
 
+
         public static BoundStatement RewriteExit(
-                 CSharpCompilation compilation,
                  MethodSymbol method,
-                 int methodOrdinal,
-                 NamedTypeSymbol containingType,
                  BoundStatement statement,
-                 TypeCompilationState compilationState,
                  DiagnosticBag diagnostics)
 
         {

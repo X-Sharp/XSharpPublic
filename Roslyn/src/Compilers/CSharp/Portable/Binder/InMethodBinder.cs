@@ -217,9 +217,9 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
 
 #if XSHARP
-            if ((options & LookupOptions.MustBeInvocableIfMember) == 0)
+            foreach (var parameterSymbol in _parameterMap[name])
             {
-                foreach (var parameterSymbol in _parameterMap[name])
+                if ((options & LookupOptions.MustBeInvocableIfMember) == 0 || parameterSymbol.Type.TypeKind == TypeKind.Delegate)
                 {
                     result.MergeEqual(originalBinder.CheckViability(parameterSymbol, arity, options, null, diagnose, ref useSiteDiagnostics));
                 }

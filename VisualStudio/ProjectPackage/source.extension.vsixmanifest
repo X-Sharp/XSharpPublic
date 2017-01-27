@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="XSharp.ProjectSystem" Version="0.2.8.2" Language="en-US" Publisher="XSharp BV" />
-    <DisplayName>XSharp Visual Studio Project System  </DisplayName>
+    <Identity Id="XSharp.ProjectSystem" Version="0.2.9.0" Language="en-US" Publisher="XSharp BV" />
+    <DisplayName>XSharp Visual Studio Project System </DisplayName>
     <Description xml:space="preserve">XSharp Visual Studio Project Integration</Description>
     <MoreInfo>http://www.xsharp.info</MoreInfo>
     <License>License.txt</License>
@@ -30,7 +30,4 @@
     <ProjectTemplate>ProjectTemplates</ProjectTemplate>
     <ItemTemplate>ItemTemplates</ItemTemplate>
   </Content>
-  <Prerequisites>
-    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0.26004.1,16.0)" DisplayName="Visual Studio core editor" />
-  </Prerequisites>
-  </PackageManifest>
+</PackageManifest>

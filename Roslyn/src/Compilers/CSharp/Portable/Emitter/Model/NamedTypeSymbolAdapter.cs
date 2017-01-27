@@ -276,7 +276,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 Debug.Assert((object)baseType == null);
                 baseType = this.ContainingAssembly.GetSpecialType(Microsoft.CodeAnalysis.SpecialType.System_Object);
             }
-
+#if XSHARP
+            // The <Module> type has no base class
+            if (this.Name == XSharpSpecialNames.ModuleName)
+                return null;
+#endif
             return ((object)baseType != null) ? moduleBeingBuilt.Translate(baseType,
                                                                    syntaxNodeOpt: (CSharpSyntaxNode)context.SyntaxNodeOpt,
                                                                    diagnostics: context.Diagnostics) : null;

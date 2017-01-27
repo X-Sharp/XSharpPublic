@@ -17,7 +17,11 @@ using Microsoft.CodeAnalysis.Emit;
 using Roslyn.Utilities;
 namespace Microsoft.CodeAnalysis.CSharp
 {
+#if XSHARP
+    internal sealed partial class MethodCompiler : CSharpSymbolVisitor<TypeCompilationState, object>
+#else
     internal sealed class MethodCompiler : CSharpSymbolVisitor<TypeCompilationState, object>
+#endif
     {
         private readonly CSharpCompilation _compilation;
         private readonly bool _emittingPdb;
@@ -1170,43 +1174,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 bool sawLambdas;
                 bool sawAwaitInExceptionHandler;
-#if XSHARP      
-                switch (method.Name)
-                {
-                    case XSharpSpecialNames.AppInit:
-                        body = LocalRewriter.RewriteAppInit(
-                            method.DeclaringCompilation,
-                            method,
-                            methodOrdinal,
-                            method.ContainingType,
-                            body,
-                            compilationState,
-                            diagnostics: diagnostics);
-                        body.WasCompilerGenerated = true;
-                        break;
-                    case XSharpSpecialNames.AppExit:
-                        body = LocalRewriter.RewriteAppExit(
-                            method.DeclaringCompilation,
-                            method,
-                            methodOrdinal,
-                            method.ContainingType,
-                            body,
-                            compilationState,
-                            diagnostics: diagnostics);
-                        body.WasCompilerGenerated = true;
-                        break;
-                    case XSharpSpecialNames.ExitProc:
-                        body = LocalRewriter.RewriteExit(
-                            method.DeclaringCompilation,
-                            method,
-                            methodOrdinal,
-                            method.ContainingType,
-                            body,
-                            compilationState,
-                            diagnostics: diagnostics);
-                        body.WasCompilerGenerated = true;
-                        break;
-                }
+#if XSHARP
+                body = RewriteXSharpMethod(method, body,methodOrdinal, compilationState, diagnostics);
 #endif
                 var loweredBody = LocalRewriter.Rewrite(
                     method.DeclaringCompilation,

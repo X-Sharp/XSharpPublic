@@ -1,7 +1,7 @@
 ; Please note that the "deregistering" of the XSharp association is done in a script step at the end of this file
 
-;#define Compression     "lzma2/ultra64"
-#define Compression     "none"
+#define Compression     "lzma2/ultra64"
+;#define Compression     "none"
 
 #define FOX
 #ifdef FOX

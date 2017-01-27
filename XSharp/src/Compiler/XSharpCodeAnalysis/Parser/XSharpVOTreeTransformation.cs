@@ -649,7 +649,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 trystmt = trystmt.Update(trystmt.TryKeyword, MakeBlock(newbody), trystmt.Catches, trystmt.Finally);
                 newbody.Clear();
                 newbody.Add(pszdecl);
-                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.AppInit)));
+                newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName + "." + XSharpSpecialNames.AppInit)));
                 newbody.Add(trystmt);
             }
             newbody.Add(GenerateExpressionStatement(GenerateMethodCall(XSharpSpecialNames.ModuleName+"." + XSharpSpecialNames.AppExit)));

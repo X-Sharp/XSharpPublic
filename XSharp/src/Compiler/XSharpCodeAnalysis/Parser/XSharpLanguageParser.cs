@@ -26,6 +26,7 @@ using Roslyn.Utilities;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
+using Antlr4.Runtime.Misc;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
@@ -179,10 +180,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parser.AllowXBaseVariables = false;
                 parser.AllowNamedArgs = true;
             }
-//#if DEBUG
-                var errorListener = new XSharpErrorListener(_fileName, parseErrors);
-                parser.AddErrorListener(errorListener);
-            //#endif
 #if DEBUG && DUMP_TIMES
            pp_tokens.Fill();
            {
@@ -192,22 +189,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             _lexerTokenStream = pp_tokens;
-            parser.ErrorHandler = new XSharpErrorStrategy();
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
+            // When parsing in Sll mode we do not record any parser errors.
+            // When this fails, then we try again with LL mode and then we record errors
+            parser.RemoveErrorListeners();
+            parser.ErrorHandler = new BailErrorStrategy();
             try
             {
                 tree = parser.source();
             }
-            catch (Exception)
+            catch (ParseCanceledException e)
             {
+                var errorListener = new XSharpErrorListener(_fileName, parseErrors);
+                parser.AddErrorListener(errorListener);
+                parser.ErrorHandler = new XSharpErrorStrategy();
+                parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 if (_options.Verbose)
                 {
-                    _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed. Trying again in LL mode.");
+                    _options.ConsoleOutput.WriteLine("Antlr: SLL parsing failed with failure: "+e.Message+". Trying again in LL mode.");
                 }
 
                 pp_tokens.Reset();
                 parser.Reset();
-                parser.Interpreter.PredictionMode = PredictionMode.Ll;
                 tree = parser.source();
             }
 #if DEBUG && DUMP_TIMES

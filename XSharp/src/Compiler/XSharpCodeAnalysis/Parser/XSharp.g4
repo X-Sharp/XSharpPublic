@@ -183,7 +183,7 @@ vounion				: (Modifiers=votypeModifiers)?
                       (Members+=vostructmember)+
                     ;
 
-votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE) )+
+votypeModifiers		: ( Tokens+=(INTERNAL | PUBLIC | EXPORT | UNSAFE | STATIC ) )+
                     ;
 
 
@@ -563,11 +563,15 @@ variableDeclarator	: Id=identifier ASSIGN_OP Expr=expression
 // When the type is missing and the following element has a type
 // then the type of the following element propagates forward until for all elements without type
 
-localdecl          : (Static=STATIC LOCAL? | LOCAL)
-                     LocalVars+=localvar (COMMA LocalVars+=localvar)*						end=EOS #commonLocalDecl	// STATIC LOCAL or LOCAL
-                   | (Static=STATIC LOCAL? IMPLIED | LOCAL IMPLIED | Static=STATIC? VAR)								// LOCAL IMPLIED
-                     ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*               end=EOS #varLocalDecl		// VAR special for Robert !
-
+localdecl          : LOCAL						  LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=EOS #commonLocalDecl	
+				   | Static=STATIC LOCAL		  LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=EOS #commonLocalDecl	
+				   | {!XSharpLexer.IsKeyword(InputStream.La(2))}?   // STATIC Identifier , but not STATIC <Keyword>
+				     Static=STATIC				  LocalVars+=localvar (COMMA LocalVars+=localvar)*			end=EOS #commonLocalDecl	
+				   // The following rules allow STATIC in the parser, 
+				   // but the treetransformation will produce an error 9044 for STATIC implied
+                   | Static=STATIC? VAR			  ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*	end=EOS #varLocalDecl		// VAR special for Robert !
+                   | Static=STATIC? LOCAL IMPLIED ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*	end=EOS #varLocalDecl		
+                   | Static=STATIC  IMPLIED		  ImpliedVars+=impliedvar (COMMA ImpliedVars+=impliedvar)*	end=EOS #varLocalDecl		
                    ;
 
 localvar           : (Const=CONST)? ( Dim=DIM )? Id=identifier (LBRKT ArraySub=arraysub RBRKT)?
@@ -934,17 +938,20 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CALL
                     | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
                     | HIDDEN | IF | IIF | IN | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
                     | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
-                    | THISCALL | TO | TYPEOF | UNION | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
-                    // Entity Keywords are added to the keywordvo list, although not strictly VO keyword.
-                    // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
-                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | EVENT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
+                    | THISCALL | TO | TYPEOF | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
 					// Until cannot be in the keywordVN list because it will match an expression
 					| REPEAT | UNTIL 
 					)
                     ;
 
+
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
-                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  )
+                    | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
+                    // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
+                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
+					// The following are often used as methods or variables
+					| EVENT | UNION
+   					)
                     ;
 
 keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM |

@@ -4787,6 +4787,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implicitly-typed variables cannot be STATIC..
+        /// </summary>
+        internal static string ERR_ImplicitlyTypedVariableCannotBeStatic {
+            get {
+                return ResourceManager.GetString("ERR_ImplicitlyTypedVariableCannotBeStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implicitly-typed variables cannot have multiple declarators.
         /// </summary>
         internal static string ERR_ImplicitlyTypedVariableMultipleDeclarator {

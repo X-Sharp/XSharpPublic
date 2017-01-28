@@ -28,7 +28,7 @@
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">The existing assembly has granted friend assembly access to the assembly into which the .netmodule will be built.</text></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information on building a .netmodule, see /target:module (C# Compiler Options).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information on building a .netmodule, see </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-target" styleclass="Normal" translate="true">/target:module</link><text styleclass="Normal" translate="true">.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information on friend assemblies, see Friend Assemblies.</text></para>
     <para styleclass="Normal"></para>

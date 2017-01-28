@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/errorreport</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option provides a convenient way to report a C# internal compiler error to Microsoft.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This compiler option provides a convenient way to report a X# internal compiler error</text></para>
     <para styleclass="Normal"><br/><text styleclass="Normal" translate="true"> Note </text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">On Windows Vista and Windows Server 2008, the error reporting settings that you make for Visual Studio do not override the settings made through Windows Error Reporting (WER). WER settings always take precedence over Visual Studio error reporting settings.</text><br/></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
@@ -26,26 +26,20 @@
     <para styleclass="Normal"></para>
     <para styleclass="List"><text styleclass="List" translate="true">send</text><tab /><text styleclass="List" translate="true">Automatically sends reports of internal compiler errors to Microsoft. To enable this option, you must first agree to the Microsoft data collection policy. The first time that you specify /errorreport:send on a computer, a compiler message will refer you to a Web site that contains the Microsoft data collection policy.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option depends on registry settings. For information about how to set the appropriate values in the registry, see How to Turn on Automatic Error Reporting in Visual Studio 2008 Command-line Tools on the MSDN Web site.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">An internal compiler error (ICE) results when the compiler cannot process a source code file. When an ICE occurs, the compiler does not produce an output file or any useful diagnostic that you can use to fix your code.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">In previous releases, when you received an ICE, you were encouraged to contact Microsoft Product Support Services to report the problem. By using /errorreport, you can provide ICE information to the Visual C# team. Your error reports can help improve future compiler releases.</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">A user&apos;s ability to send reports depends on computer and user policy permissions.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">For more information about error debugger, see Description of the Dr. Watson for Windows (Drwtsn32.exe) Tool.</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
     <para styleclass="Normal"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:&apos;Segoe UI&apos;; font-size:11pt; color:#000000;">
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page. For more information, see Build Page, Project Designer (C#).</text></li>
+      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Open the project&apos;s Properties page. </text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Build property page.</text></li>
       <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Click the Advanced button.</text></li>
-      <li styleclass="Normal" style="margin-left:13px;"><text styleclass="Normal" translate="true">Modify the Internal Compiler Error Reporting property.</text></li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">For information about how to set this compiler option programmatically, see ErrorReport.</text></para>
   </body>
 </topic>

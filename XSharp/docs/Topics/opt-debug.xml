@@ -31,7 +31,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><br/><text styleclass="Normal" translate="true">For more information on how to configure the debug performance of an application, see Making an Image Easier to Debug.</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">To change the location of the .pdb file, see /pdb (C# Compiler Options).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To change the location of the .pdb file, see </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-pdb" styleclass="Normal" translate="true">/pdb</link></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment</text></para>
     <para styleclass="Normal"></para>

@@ -941,14 +941,15 @@ keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CALL
                     | THISCALL | TO | TYPEOF | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
 					// Until cannot be in the keywordVN list because it will match an expression
 					| REPEAT | UNTIL 
+					// CONSTRUCTOR and DESTRUCTOR one one line will otherwise be seen as an expression statement
+                    | CONSTRUCTOR | DESTRUCTOR 
 					)
                     ;
 
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
                     | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
-                    // But this prevents STATIC <Keyword> from being seen as a STATIC LOCAL declaration
-                    | CONSTRUCTOR | DELEGATE | DESTRUCTOR | ENUM | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
+                    | DELEGATE | ENUM | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
 					// The following are often used as methods or variables
 					| EVENT | UNION
    					)

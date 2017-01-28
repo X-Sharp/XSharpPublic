@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/lib</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /lib option specifies the location of assemblies referenced by means of the /reference (C# Compiler Options) option.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /lib option specifies the location of assemblies referenced by means of the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-reference" styleclass="Normal" translate="true">/reference</link><text styleclass="Normal" translate="true"> option.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

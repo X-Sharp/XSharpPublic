@@ -42,8 +42,8 @@
 #define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "\Xsharp\Dev\XSharp\Binaries\Help\"
 #define XIDEFolder      "\Xsharp\Dev\XSharp\Xide\"
-#define XIDESetup       "XIDE_Set_up_1.07.exe"
-#define XIDEVersion     "1.07"
+#define XIDESetup       "XIDE_Set_up_1.08.exe"
+#define XIDEVersion     "1.08"
 #define StdFlags        "ignoreversion overwritereadonly sortfilesbyextension sortfilesbyname touch uninsremovereadonly"
 #define GACInstall      "gacinstall sharedfile uninsnosharedfileprompt uninsrestartdelete"
 #define ProviderVersion "XSharp.CodeDom.XSharpCodeDomProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31c59c566fa38f21"
@@ -171,6 +171,7 @@ Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin";
 Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}  ; Components: main
 Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 
 
@@ -182,6 +183,7 @@ Source: "{#BinRFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\R
 Source: "{#BinRFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}xsc.pdb";                            DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
 Source: "{#BinRFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
+Source: "{#BinRFolder}xsc.exe.config";                     DestDir: "{app}\bin\Release"; Flags: {#StdFlags}  ; Components: main
 Source: "{#BinRFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Release"; Flags: {#StdFlags}; Components: main
 ; Debug Folder
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags} signonce; Components: main
@@ -190,6 +192,7 @@ Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin\D
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}  ; Components: main
 Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin\Debug"; Flags: {#StdFlags}; Components: main
 #else
 Source: "{#BinDFolder}xsc.exe";                            DestDir: "{app}\bin"; Flags: {#StdFlags} signonce; Components: main
@@ -199,6 +202,7 @@ Source: "{#BinDFolder}XSharp.CodeAnalysis.dll";            DestDir: "{app}\bin";
 Source: "{#BinDFolder}XSharp.CodeAnalysis.pdb";            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}xsc.pdb";                            DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 Source: "{#BinDFolder}XSCompiler.pdb";                     DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
+Source: "{#BinDFolder}xsc.exe.config";                     DestDir: "{app}\bin"; Flags: {#StdFlags}  ; Components: main
 Source: "{#BinDFolder}XSCompiler.exe.config ";             DestDir: "{app}\bin"; Flags: {#StdFlags}; Components: main
 
 #endif

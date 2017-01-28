@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/preferreduilang</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">By using the /preferreduilang compiler option, you can specify the language in which the C# compiler displays output, such as error messages.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">By using the /preferreduilang compiler option, you can specify the language in which the X# compiler displays output, such as error messages.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>

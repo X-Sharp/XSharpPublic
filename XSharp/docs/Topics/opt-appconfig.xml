@@ -9,7 +9,7 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/appconfig</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /appconfig compiler option enables a C# application to specify the location of an assembly&apos;s application configuration (app.config) file to the common language runtime (CLR) at assembly binding time.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The /appconfig compiler option enables a X# application to specify the location of an assembly&apos;s application configuration (app.config) file to the common language runtime (CLR) at assembly binding time.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/appconfig:file &#160;</text></para>

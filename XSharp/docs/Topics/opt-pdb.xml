@@ -20,7 +20,7 @@
     <para styleclass="List"><text styleclass="Code Example" translate="true">filename</text><tab /><text styleclass="List" translate="true">The name and location of the debug symbols file.</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you specify /debug (C# Compiler Options), the compiler will create a .pdb file in the same directory where the compiler will create the output file (.exe or .dll) with a file name that is the same as the name of the output file.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">When you specify </text><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-debug" styleclass="Normal" translate="true">/debug</link><text styleclass="Normal" translate="true"> , the compiler will create a .pdb file in the same directory where the compiler will create the output file (.exe or .dll) with a file name that is the same as the name of the output file.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">/pdb allows you to specify a non-default file name and location for the .pdb file.</text></para>
     <para styleclass="Normal"></para>

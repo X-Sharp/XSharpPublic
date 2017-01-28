@@ -859,7 +859,10 @@ namespace XSharp.Project
         {
             if (String.Equals(target, "Clean", StringComparison.OrdinalIgnoreCase))
             {
-                logger.Clear();
+                if (logger != null)
+                {
+                    logger.Clear();
+                }
             }
             return base.InvokeMsBuild(target);
         }

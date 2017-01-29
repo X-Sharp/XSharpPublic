@@ -1,11 +1,9 @@
-; Please note that the "deregistering" of the XSharp association is done in a script step at the end of this file
-
 #define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
 
 #define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup029Fox"
+#define SetupExeName    "XSharpSetup029Foxb"
 #else
 #define SetupExeName    "XSharpSetup029Public"
 #endif
@@ -18,10 +16,10 @@
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
 #define CopyRight       "Copyright © 2015-2018 XSharp B.V."
-#define VIVersion       "0.2.9.2901"
-#define VITextVersion   "0.2.9.2901 (Beta 9)"
-#define TouchDate       "2017-01-27"
-#define TouchTime       "02:09:01"
+#define VIVersion       "0.2.9.2902"
+#define VITextVersion   "0.2.9.2902 (Beta 9)"                                                                                            
+#define TouchDate       "2017-01-29"
+#define TouchTime       "02:09:02"
 #define InstallPath     "XSharpPath"
 
 
@@ -37,7 +35,6 @@
 #define BinPFolder      "\Xsharp\DevPublic\Binaries\Debug\"
 #define CommonFolder    "\Xsharp\Dev\XSharp\src\Common\"
 #define ToolsFolder     "\Xsharp\Dev\XSharp\src\Tools\"
-#define VSProjectFolder "\Xsharp\Dev\XSharp\src\VisualStudio\XSharp.ProjectType\"
 #define ExamplesFolder  "\Xsharp\DevPublic\Samples\"
 #define OutPutFolder    "\XSharp\Dev\XSharp\Binaries\Setup"
 #define DocFolder       "\Xsharp\Dev\XSharp\Binaries\Help\"
@@ -293,7 +290,6 @@ Source: "{#BinPFolder}Designers.pkgdef";                  DestDir: "{code:GetVs2
 
 Source: "{#BinPFolder}XSharp.ico ";                        DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";        Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpVSIXLogo.png ";                DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2015
-;Source: "{#VsProjectFolder}Images\XSharpImages.imagemanifest";  DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\Images";  Flags: {#StdFlags}; Components: vs2015
 
 Source: "{#BinPFolder}SetupCheck2017.exe";                 DestDir: "{tmp}";      Flags: signonce {#StdFlags};
 

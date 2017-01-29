@@ -74,7 +74,7 @@ entity              : namespace_
                     ;
 
 function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
-                        FUNCTION Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
+                        (FUNCTION|FUNC) Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)?
                        (AS Type=datatype)?
                        (ConstraintsClauses+=typeparameterconstraintsclause)*
                        (CallingConvention=callingconvention)?
@@ -84,7 +84,7 @@ function            : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
                     ;
 
 procedure           : (Attributes=attributes)? (Modifiers=funcprocModifiers)?
-						PROCEDURE Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
+						(PROCEDURE|PROC) Id=identifier TypeParameters=typeparameters? (ParamList=parameterList)? (AS VOID)? // As Void is allowed but ignored
 						(ConstraintsClauses+=typeparameterconstraintsclause)*
 						(CallingConvention=callingconvention)? Init=(INIT1|INIT2|INIT3|EXIT)?
    						(EXPORT LOCAL)?							// Export Local exists in VO but is ignored in X#
@@ -109,8 +109,8 @@ callingconvention	: Convention=(CLIPPER | STRICT | PASCAL | ASPEN | WINCALL | CA
 
 vodll				: (Attributes=attributes)? 
 					  (Modifiers=funcprocModifiers)? DLL
-                      ( T=FUNCTION Id=identifier ParamList=parameterList (AS Type=datatype)?
-                      | T=PROCEDURE Id=identifier ParamList=parameterList )
+                      ( T=(FUNCTION|FUNC) Id=identifier ParamList=parameterList (AS Type=datatype)?
+                      | T=(PROCEDURE|PROC) Id=identifier ParamList=parameterList )
                       (CallingConvention=dllcallconv) COLON
                       Dll=identifierString (DOT Extension=identifierString)?
                         ( DOT Entrypoint=identifierString (NEQ2 INT_CONST)?
@@ -237,7 +237,7 @@ structure_			: (Attributes=attributes)? (Modifiers=structureModifiers)?
                       STRUCTURE (Namespace=nameDot)? Id=identifier TypeParameters=typeparameters?
                       (IMPLEMENTS Implements+=datatype (COMMA Implements+=datatype)*)?
                       (ConstraintsClauses+=typeparameterconstraintsclause)* EOS
-                      (Members+=classmember)+
+                      (Members+=classmember)*
                       END STRUCTURE EOS
 					  ;
 
@@ -934,31 +934,32 @@ literalValue		: Token=
 
 keyword             : (KwVo=keywordvo | KwVn=keywordvn | KwXs=keywordxs) ;
 
-keywordvo           : Token=(ACCESS | ALIGN | AS | ASSIGN | BEGIN | BREAK | CALLBACK | CASE | CAST | CLASS | CLIPPER | DECLARE | DEFINE | DIM | DLL | DO | DOWNTO
-                    | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FASTCALL | FIELD | FOR | FUNCTION | GLOBAL
-                    | HIDDEN | IF | IIF | IN | INHERIT | INSTANCE |  IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
-                    | PASCAL | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SEQUENCE | SIZEOF | STEP | STRICT | SUPER
-                    | THISCALL | TO | TYPEOF | UPTO | USING | WHILE | CATCH | FINALLY | TRY |VO_AND| VO_NOT| VO_OR| VO_XOR
-					// Until cannot be in the keywordVN list because it will match an expression
-					| REPEAT | UNTIL 
-					// CONSTRUCTOR and DESTRUCTOR one one line will otherwise be seen as an expression statement
-                    | CONSTRUCTOR | DESTRUCTOR 
+keywordvo           : Token=(ACCESS | AS | ASSIGN | BEGIN | BREAK | CASE | CAST | CLASS | DLL | DO 
+                    | ELSE | ELSEIF | END | ENDCASE | ENDDO | ENDIF | EXIT | EXPORT | FOR | FUNCTION 
+                    | HIDDEN | IF | IIF | IS | LOCAL | LOOP | MEMBER | METHOD | NEXT | OTHERWISE
+                    | PRIVATE | PROCEDURE | PROTECTED | PTR | PUBLIC | RECOVER | RETURN | SELF| SIZEOF | SUPER
+                    | TO | TYPEOF | WHILE | TRY | VO_AND | VO_NOT | VO_OR | VO_XOR
+					// The following new keywords cannot be in the keywordVN list because it will match an expression when used on their own
+					| REPEAT | CONSTRUCTOR | CATCH | DESTRUCTOR | FINALLY 
 					)
                     ;
 
 
 keywordvn           : Token=(ABSTRACT | ANSI | AUTO | CHAR | CONST |  DEFAULT | EXPLICIT | FOREACH | GET | IMPLEMENTS | IMPLICIT | IMPLIED | INITONLY | INTERNAL
                     | LOCK | NAMESPACE | NEW | OUT | PARTIAL | SCOPE | SEALED | SET |  TRY | UNICODE |  VALUE | VIRTUAL  
-                    | DELEGATE | ENUM | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
-					// The following are often used as methods or variables
-					| EVENT | UNION
    					)
                     ;
 
-keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM |
-                              GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE |
-                              SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR |
-                              MEMVAR | PARAMETERS| // Added as XS keywords to allow them to be treated as IDs
-							  WAIT | ACCEPT | CANCEL | QUIT // UDCs 
-                            )
+keywordxs           : Token=( ADD | ARGLIST | ASCENDING | ASSEMBLY | ASYNC | AWAIT | BY | CHECKED | DESCENDING | DYNAMIC | EQUALS | EXTERN | FIELD_ | FIXED | FROM 
+                    | GROUP | INTO | JOIN | LET | MODULE | NAMEOF | NOP | ON | ORDERBY | OVERRIDE |PARAMS | REMOVE 
+                    | SELECT | SWITCH | UNCHECKED | UNSAFE | VAR | VOLATILE | WHERE | YIELD | CHAR 
+                    | MEMVAR | PARAMETERS  // Added as XS keywords to allow them to be treated as IDs
+                    // the following entity keywords will be never used 'alone' and can therefore be safely defined as identifiers
+					| DEFINE| DELEGATE | ENUM | GLOBAL | INHERIT | INTERFACE | OPERATOR	| PROPERTY | STRUCTURE | VOSTRUCT   
+					// The following are never used 'alone' and are harmless as identifiers
+					| ALIGN | CALLBACK | CLIPPER  | DECLARE | DIM | DOWNTO | DLLEXPORT | EVENT 
+					| FASTCALL | FIELD | FUNC | IN | INSTANCE | PASCAL | PROC | SEQUENCE 
+					| STEP | STRICT | THISCALL | UNION | UNTIL | UPTO | USING | WINCALL 
+					| WAIT | ACCEPT | CANCEL | QUIT // UDCs 
+					)
                     ;

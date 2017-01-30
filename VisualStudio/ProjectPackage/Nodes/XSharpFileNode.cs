@@ -111,7 +111,7 @@ namespace XSharp.Project
             // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
             // We should do this with proper parsing. For now we simply test the first word after the INHERIT keyword
             // and then parse and bind to see if we can find the first type in the file.
-            if (this.FileType == XSharpFileType.SourceCode)
+            if (this.FileType == XSharpFileType.SourceCode && this.Url.IndexOf(".designer.",StringComparison.OrdinalIgnoreCase) == -1)
             {
                 string SubType = "";
                 string token = "INHERIT";
@@ -119,7 +119,7 @@ namespace XSharp.Project
                 int pos = source.IndexOf(token, StringComparison.OrdinalIgnoreCase);
                 if (pos > 0)
                 {
-                    source = source.Substring(pos + token.Length, 250);
+                    source = source.Substring(pos + token.Length);
                     var words = source.Split(";\t \r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     if (words.Length > 0)
                     {

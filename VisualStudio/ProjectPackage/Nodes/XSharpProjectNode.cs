@@ -644,9 +644,12 @@ namespace XSharp.Project
             Utilities.ArgumentNotNull("parentNode", parentNode);
             // Check if we can find the Parent
             // to do we take the name until the first DOT (form.designer.prg belongs to form.prg, and form.voform.vnfrm belongs to form.prg)
+            // but remove the path first because there may also be a dot in the path
+            var path = System.IO.Path.GetDirectoryName(fileName);
+            fileName = System.IO.Path.GetFileName(fileName);
             int dotPos = fileName.IndexOf(".");
-            string parentFile = fileName.Substring(0, dotPos);
-            string extension = fileName.Substring(dotPos).ToLower();
+            string parentFile = Path.Combine(path,fileName.Substring(0, dotPos));
+            string extension = fileName.Substring(dotPos);
             //
             if (dependencies.ContainsKey(extension))
             {

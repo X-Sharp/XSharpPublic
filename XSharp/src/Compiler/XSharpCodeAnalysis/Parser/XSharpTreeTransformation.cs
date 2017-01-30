@@ -2726,7 +2726,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 context.StmtBlk = null;
             }
-            bool actualDeclaration = true;
             if (context.T.Token.Type != XP.METHOD)
             {
                 var vomods = _pool.Allocate();
@@ -2735,8 +2734,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
                 if (mods.Any(SyntaxKind.UnsafeKeyword))
                     vomods.Add(SyntaxFactory.MakeToken(SyntaxKind.UnsafeKeyword));
-                if (hasNoBody)
-                    actualDeclaration = false;
                 mods = vomods.ToTokenList();
                 _pool.Free(vomods);
             }
@@ -2744,154 +2741,153 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (context.ParamList?._Params.Count > 0 && context.ParamList?._Params[0].Self != null && !mods.Any(SyntaxKind.StaticKeyword))
                 {
-                    var m = _pool.Allocate();
-                    m.AddRange(mods);
-                    m.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
-                    mods = m.ToTokenList();
-                    _pool.Free(m);
+                    var mTemp = _pool.Allocate();
+                    mTemp.AddRange(mods);
+                    mTemp.Add(SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword));
+                    mods = mTemp.ToTokenList();
+                    _pool.Free(mTemp);
                 }
             }
             if (context.ExplicitIface != null)
             {
-                var m = _pool.Allocate();
+                var mTemp = _pool.Allocate();
                 foreach (var mod in mods)
                 {
-                    if (mod.Kind != SyntaxKind.VirtualKeyword && mod.Kind != SyntaxKind.OverrideKeyword && mod.Kind != SyntaxKind.PublicKeyword)
-                        m.Add(mod);
+                    if (mod.Kind != SyntaxKind.VirtualKeyword && 
+                        mod.Kind != SyntaxKind.OverrideKeyword && 
+                        mod.Kind != SyntaxKind.PublicKeyword)
+                        mTemp.Add(mod);
                 }
-                mods = m.ToTokenList();
-                _pool.Free(m);
+                mods = mTemp.ToTokenList();
+                _pool.Free(mTemp);
             }
-            if (actualDeclaration)
+            var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
+            if (!isExtern)
             {
-                var attributes = context.Attributes?.GetList<AttributeListSyntax>() ?? EmptyList<AttributeListSyntax>();
-                if (!isExtern)
-                {
-                    isExtern = hasDllImport(attributes);
-                    hasNoBody = hasNoBody || isExtern;
-                }
-                if (isExtern && !mods.Any(SyntaxKind.ExternKeyword))
-                {
-                    // Add Extern Keyword to modifiers
-                    var m1 = _pool.Allocate();
-                    m1.AddRange(mods);
-                    if (!m1.Any(SyntaxKind.ExternKeyword))
-                        m1.Add(SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword));
-                    mods = m1.ToTokenList();
-                    _pool.Free(m1);
-                }
-                var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
-                if (isExtern)
-                {
-                    parameters = UpdateVODLLParameters(parameters);
-                }
-                var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
-                var returntype = context.Type?.Get<TypeSyntax>();
-                if (returntype == null)
-                {
-                    if (context.T.Token.Type == XP.ASSIGN)
-                    {
-                        returntype = VoidType();
-                    }
-                    else  // method and access
-                    {
-                        returntype = _getMissingType();
-                    }
-                }
-                else
-                {
-                    returntype.XVoDecl = true;
-                }
-                var oldbody = body;
-                ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
-                if (body != oldbody)
-                {
-                    context.StmtBlk.Put(body);
-                }
+                isExtern = hasDllImport(attributes);
+                hasNoBody = hasNoBody || isExtern;
+            }
+            if (isExtern && !mods.Any(SyntaxKind.ExternKeyword))
+            {
+                // Add Extern Keyword to modifiers
+                var m1 = _pool.Allocate();
+                m1.AddRange(mods);
+                if (!m1.Any(SyntaxKind.ExternKeyword))
+                    m1.Add(SyntaxFactory.MakeToken(SyntaxKind.ExternKeyword));
+                mods = m1.ToTokenList();
+                _pool.Free(m1);
+            }
+            var parameters = context.ParamList?.Get<ParameterListSyntax>() ?? EmptyParameterList();
+            if (isExtern)
+            {
+                parameters = UpdateVODLLParameters(parameters);
+            }
+            var body = hasNoBody ? null : context.StmtBlk.Get<BlockSyntax>();
+            var returntype = context.Type?.Get<TypeSyntax>();
+            if (returntype == null)
+            {
                 if (context.T.Token.Type == XP.ASSIGN)
                 {
-                    // Assign does not need a return. 
-                    // So do not add missing returns
                     returntype = VoidType();
                 }
-                else if (context.StmtBlk != null && !hasNoBody)
+                else  // method and access
                 {
-                    body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+                    returntype = _getMissingType();
                 }
-                MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
-                    attributeLists: attributes,
-                    modifiers: mods,
-                    returnType: returntype,
-                    explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
-                        name: context.ExplicitIface.Get<NameSyntax>(),
-                        dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
-                    identifier: idName,
-                    typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
-                    parameterList: parameters,
-                    constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
-                    body: body,
-                    expressionBody: null, // TODO: (grammar) expressionBody methods
-                    semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
-
-                if (context.ClassId != null)
-                {
-                    bool GenClass = true;
-                    if (context.isInClass())
-                    {
-                        string parentName;
-                        XP.Class_Context parent = null;
-                        if (context.Parent is XP.Class_Context)
-                        {
-                            parent = context.Parent as XP.Class_Context;
-                        }
-                        else if (context.Parent.Parent is XP.Class_Context)
-                        {
-                            parent = context.Parent.Parent as XP.Class_Context;
-                        }
-                        if (parent != null)
-                        {
-                            parentName = parent.Id.GetText();
-                            if (parent.Namespace != null)
-                                parentName = parent.Namespace.GetText() + parentName;
-                            string className;
-                            className = context.ClassId.GetText();
-                            if (context.Namespace != null)
-                                className = context.Namespace.GetText() + className;
-                            if (String.Compare(parentName, className, StringComparison.OrdinalIgnoreCase) != 0)
-                            {
-                                m = m.WithAdditionalDiagnostics(
-                                new SyntaxDiagnosticInfo(
-                                        ErrorCode.ERR_NestedMethodMustHaveSameNameAsParentClass, className, parentName));
-                            }
-                            else
-                                GenClass = false;
-
-
-                        }
-                    }
-
-                    if (!m.ContainsDiagnostics && GenClass)
-                    {
-                        m = _syntaxFactory.ClassDeclaration(
-                            attributeLists: EmptyList<AttributeListSyntax>(),
-                            modifiers: TokenList(SyntaxKind.PartialKeyword),
-                            keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
-                            identifier: context.ClassId.Get<SyntaxToken>(),
-                            typeParameterList: default(TypeParameterListSyntax),
-                            baseList: default(BaseListSyntax),
-                            constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
-                            openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
-                            members: MakeList<MemberDeclarationSyntax>(m),
-                            closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
-                            semicolonToken: null);
-                    }
-                    if (context.Namespace != null)
-                    {
-                        m = AddNameSpaceToMember(context.Namespace, m);
-                    }
-                }
-                context.Put(m);
             }
+            else
+            {
+                returntype.XVoDecl = true;
+            }
+            var oldbody = body;
+            ImplementClipperAndPSZ(context, ref attributes, ref parameters, ref body, ref returntype);
+            if (body != oldbody)
+            {
+                context.StmtBlk.Put(body);
+            }
+            if (context.T.Token.Type == XP.ASSIGN)
+            {
+                // Assign does not need a return. 
+                // So do not add missing returns
+                returntype = VoidType();
+            }
+            else if (context.StmtBlk != null && !hasNoBody)
+            {
+                body = AddMissingReturnStatement(body, context.StmtBlk, returntype);
+            }
+            MemberDeclarationSyntax m = _syntaxFactory.MethodDeclaration(
+                attributeLists: attributes,
+                modifiers: mods,
+                returnType: returntype,
+                explicitInterfaceSpecifier: context.ExplicitIface == null ? null : _syntaxFactory.ExplicitInterfaceSpecifier(
+                    name: context.ExplicitIface.Get<NameSyntax>(),
+                    dotToken: SyntaxFactory.MakeToken(SyntaxKind.DotToken)),
+                identifier: idName,
+                typeParameterList: context.TypeParameters?.Get<TypeParameterListSyntax>(),
+                parameterList: parameters,
+                constraintClauses: MakeList<TypeParameterConstraintClauseSyntax>(context._ConstraintsClauses),
+                body: body,
+                expressionBody: null, // TODO: (grammar) expressionBody methods
+                semicolonToken: (!hasNoBody && context.StmtBlk != null) ? null : SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken));
+
+            if (context.ClassId != null)
+            {
+                bool GenClass = true;
+                if (context.isInClass())
+                {
+                    string parentName;
+                    XP.Class_Context parent = null;
+                    if (context.Parent is XP.Class_Context)
+                    {
+                        parent = context.Parent as XP.Class_Context;
+                    }
+                    else if (context.Parent.Parent is XP.Class_Context)
+                    {
+                        parent = context.Parent.Parent as XP.Class_Context;
+                    }
+                    if (parent != null)
+                    {
+                        parentName = parent.Id.GetText();
+                        if (parent.Namespace != null)
+                            parentName = parent.Namespace.GetText() + parentName;
+                        string className;
+                        className = context.ClassId.GetText();
+                        if (context.Namespace != null)
+                            className = context.Namespace.GetText() + className;
+                        if (String.Compare(parentName, className, StringComparison.OrdinalIgnoreCase) != 0)
+                        {
+                            m = m.WithAdditionalDiagnostics(
+                            new SyntaxDiagnosticInfo(
+                                    ErrorCode.ERR_NestedMethodMustHaveSameNameAsParentClass, className, parentName));
+                        }
+                        else
+                            GenClass = false;
+
+
+                    }
+                }
+
+                if (!m.ContainsDiagnostics && GenClass)
+                {
+                    m = _syntaxFactory.ClassDeclaration(
+                        attributeLists: EmptyList<AttributeListSyntax>(),
+                        modifiers: TokenList(SyntaxKind.PartialKeyword),
+                        keyword: SyntaxFactory.MakeToken(SyntaxKind.ClassKeyword),
+                        identifier: context.ClassId.Get<SyntaxToken>(),
+                        typeParameterList: default(TypeParameterListSyntax),
+                        baseList: default(BaseListSyntax),
+                        constraintClauses: default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                        openBraceToken: SyntaxFactory.MakeToken(SyntaxKind.OpenBraceToken),
+                        members: MakeList<MemberDeclarationSyntax>(m),
+                        closeBraceToken: SyntaxFactory.MakeToken(SyntaxKind.CloseBraceToken),
+                        semicolonToken: null);
+                }
+                if (context.Namespace != null)
+                {
+                    m = AddNameSpaceToMember(context.Namespace, m);
+                }
+            }
+            context.Put(m);
             if (context.T.Token.Type != XP.METHOD)
             {
                 ClassEntities.Peek().AddVoPropertyAccessor(context);

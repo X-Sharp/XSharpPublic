@@ -888,11 +888,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 parameters = parameters.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_TypedParametersWithClipperCallingConvention));
                 return;
             }
-            if (body != null && (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ ))
+            if (context.Data.HasClipperCallingConvention || context.Data.UsesPSZ )
             {
                 var stmts = _pool.Allocate<StatementSyntax>();
 
-                if(context.Data.HasClipperCallingConvention)
+                if(context.Data.HasClipperCallingConvention )
                 {
                     ExpressionSyntax assignExpr;
                     ExpressionSyntax ifExpr;
@@ -908,69 +908,85 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     //    ENDIF
                     // ENDIF
                     var paramNames = new List<String>();
-                    var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
-                    var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
-                    if (parameters.Parameters.Count > 0) {
-                        var nilExpr = GenerateNIL();
-                        for(int i = 0; i < parameters.Parameters.Count; i++) {
+                    if (parameters.Parameters.Count > 0)
+                    {
+                        for (int i = 0; i < parameters.Parameters.Count; i++)
+                        {
                             ParameterSyntax parm = parameters.Parameters[i];
                             string name = parm.Identifier.Text;
                             paramNames.Add(name);
-                            var decl = GenerateLocalDecl(name, _usualType, null);
-                            decl.XGenerated = true;
-                            var variable = decl.Declaration.Variables[0];
-                            variable.XGenerated = true;
-                            stmts.Add(decl);
                         }
-                        int iAdd = 1;
-                        if(_options.ArrayZero)
-                            iAdd = 0;
-                        StatementSyntax LastStmt = null;
-                        for(int i = paramNames.Count - 1; i >= 0; i--) {
-                            var name = paramNames[i];
-                            var indices = _pool.AllocateSeparated<ArgumentSyntax>();
-                            indices.Add(MakeArgument(GenerateLiteral("", i + iAdd)));
-                            assignExpr = MakeSimpleAssignment(GenerateSimpleName(name),
-                                    _syntaxFactory.ElementAccessExpression(
-                                    clipperArgs,
-                                    _syntaxFactory.BracketedArgumentList(
-                                        SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                                        indices,
-                                        SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))));
-                            _pool.Free(indices);
-                            exprStmt = GenerateExpressionStatement(assignExpr);
-                            ifExpr = _syntaxFactory.BinaryExpression(
-                                SyntaxKind.GreaterThanExpression,
-                                argLen,
-                                SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
-                                GenerateLiteral(i.ToString(), i));
-                            if (i == 0)
+                    }
+                    if (body != null)
+                    {
+                        var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
+                        var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
+                        if (parameters.Parameters.Count > 0)
+                        {
+                            var nilExpr = GenerateNIL();
+                            for (int i = 0; i < paramNames.Count; i++)
                             {
-                                // prefix expression with ClipperArgs != null && 
-                                var notNullExpr = _syntaxFactory.BinaryExpression(
-                                    SyntaxKind.NotEqualsExpression,
-                                    clipperArgs,
-                                    SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
-                                    GenerateLiteralNull());
+                                string name = paramNames[i];
+                                var decl = GenerateLocalDecl(name, _usualType, null);
+                                decl.XGenerated = true;
+                                var variable = decl.Declaration.Variables[0];
+                                variable.XGenerated = true;
+                                stmts.Add(decl);
+                            }
+                            int iAdd = 1;
+                            if (_options.ArrayZero)
+                                iAdd = 0;
+                            StatementSyntax LastStmt = null;
+                            for (int i = paramNames.Count - 1; i >= 0; i--)
+                            {
+                                var name = paramNames[i];
+                                var indices = _pool.AllocateSeparated<ArgumentSyntax>();
+                                indices.Add(MakeArgument(GenerateLiteral("", i + iAdd)));
+                                assignExpr = MakeSimpleAssignment(GenerateSimpleName(name),
+                                        _syntaxFactory.ElementAccessExpression(
+                                        clipperArgs,
+                                        _syntaxFactory.BracketedArgumentList(
+                                            SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                                            indices,
+                                            SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken))));
+                                _pool.Free(indices);
+                                exprStmt = GenerateExpressionStatement(assignExpr);
                                 ifExpr = _syntaxFactory.BinaryExpression(
-                                    SyntaxKind.LogicalAndExpression,
-                                    notNullExpr,
-                                    SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken),
-                                    ifExpr);
+                                    SyntaxKind.GreaterThanExpression,
+                                    argLen,
+                                    SyntaxFactory.MakeToken(SyntaxKind.GreaterThanToken),
+                                    GenerateLiteral(i.ToString(), i));
+                                if (i == 0)
+                                {
+                                    // prefix expression with ClipperArgs != null && 
+                                    var notNullExpr = _syntaxFactory.BinaryExpression(
+                                        SyntaxKind.NotEqualsExpression,
+                                        clipperArgs,
+                                        SyntaxFactory.MakeToken(SyntaxKind.ExclamationEqualsToken),
+                                        GenerateLiteralNull());
+                                    ifExpr = _syntaxFactory.BinaryExpression(
+                                        SyntaxKind.LogicalAndExpression,
+                                        notNullExpr,
+                                        SyntaxFactory.MakeToken(SyntaxKind.AmpersandAmpersandToken),
+                                        ifExpr);
+                                }
+                                StatementSyntax ifBody;
+                                if (LastStmt != null)
+                                {
+                                    var ifbodystmts = _pool.Allocate<StatementSyntax>();
+                                    ifbodystmts.Add(exprStmt);
+                                    ifbodystmts.Add(LastStmt);
+                                    ifBody = MakeBlock(ifbodystmts);
+                                    _pool.Free(ifbodystmts);
+                                }
+                                else
+                                {
+                                    ifBody = exprStmt;
+                                }
+                                LastStmt = GenerateIfStatement(ifExpr, ifBody);
                             }
-                            StatementSyntax ifBody;
-                            if(LastStmt != null) {
-                                var ifbodystmts = _pool.Allocate<StatementSyntax>();
-                                ifbodystmts.Add(exprStmt);
-                                ifbodystmts.Add(LastStmt);
-                                ifBody = MakeBlock(ifbodystmts);
-                                _pool.Free(ifbodystmts);
-                            } else {
-                                ifBody = exprStmt;
-                            }
-                            LastStmt = GenerateIfStatement(ifExpr, ifBody);
+                            stmts.Add(LastStmt);
                         }
-                        stmts.Add(LastStmt);
                     }
                     // Now Change argument to X$Args PARAMS USUAL[]
                     parameters = GetClipperParameters();
@@ -1004,37 +1020,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     attributes = attrs;
                     _pool.Free(attrs);
                 }
-                FinallyClauseSyntax finallyClause = null;
-                if (context.Data.UsesPSZ)
+                if (body != null)
                 {
-                    // VAR Xs$PszList := List<IntPtr>{}
-                    var listOfIntPtr = _syntaxFactory.QualifiedName(GenerateQualifiedName(SystemQualifiedNames.CollectionsGeneric),
-                        SyntaxFactory.MakeToken(SyntaxKind.DotToken),
-                        MakeGenericName("List",_ptrType));
-                    var expr = CreateObject(listOfIntPtr, EmptyArgumentList());
-                    stmts.Add(GenerateLocalDecl(XSharpSpecialNames.VoPszList, _impliedType, expr));
-                    finallyClause = _syntaxFactory.FinallyClause(
-                        SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                        MakeBlock(MakeList<StatementSyntax>(
-                            GenerateExpressionStatement(
-                                GenerateMethodCall(VulcanQualifiedFunctionNames.PszRelease,
-                                    MakeArgumentList(MakeArgument(GenerateSimpleName(XSharpSpecialNames.VoPszList))))))));
-                }
-                // TRY
-                //    original body
-                // FINALLY                                             < == Always
-                //    CompilerServices.String2PszRelease(Xs$PszList)   < == only for HasPsz(), otherwise empty
-                //    And assign Byref params back to Xs$Args
-                // END TRY
+                    FinallyClauseSyntax finallyClause = null;
+                    if (context.Data.UsesPSZ)
+                    {
+                        // VAR Xs$PszList := List<IntPtr>{}
+                        var listOfIntPtr = _syntaxFactory.QualifiedName(GenerateQualifiedName(SystemQualifiedNames.CollectionsGeneric),
+                            SyntaxFactory.MakeToken(SyntaxKind.DotToken),
+                            MakeGenericName("List", _ptrType));
+                        var expr = CreateObject(listOfIntPtr, EmptyArgumentList());
+                        stmts.Add(GenerateLocalDecl(XSharpSpecialNames.VoPszList, _impliedType, expr));
+                        finallyClause = _syntaxFactory.FinallyClause(
+                            SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                            MakeBlock(MakeList<StatementSyntax>(
+                                GenerateExpressionStatement(
+                                    GenerateMethodCall(VulcanQualifiedFunctionNames.PszRelease,
+                                        MakeArgumentList(MakeArgument(GenerateSimpleName(XSharpSpecialNames.VoPszList))))))));
+                    }
+                    // TRY
+                    //    original body
+                    // FINALLY                                             < == Always
+                    //    CompilerServices.String2PszRelease(Xs$PszList)   < == only for HasPsz(), otherwise empty
+                    //    And assign Byref params back to Xs$Args
+                    // END TRY
 
-                var tryStmt = finallyClause == null ? (StatementSyntax)body : // nvk: It doesn't hurt to optimize the tree (and avoid unnecessary diagnostics...)
-                    _syntaxFactory.TryStatement(
-                    SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
-                    body,
-                    null,
-                    finallyClause);
-                stmts.Add(tryStmt);
-                body = MakeBlock(stmts);
+                    var tryStmt = finallyClause == null ? (StatementSyntax)body : // nvk: It doesn't hurt to optimize the tree (and avoid unnecessary diagnostics...)
+                        _syntaxFactory.TryStatement(
+                        SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                        body,
+                        null,
+                        finallyClause);
+                    stmts.Add(tryStmt);
+                    body = MakeBlock(stmts);
+                }
                 _pool.Free(stmts);
             }
             // Add missing return type when needed. OBJECT or USUAL depending on the dialect.

@@ -645,6 +645,7 @@ namespace XSharp.Project
             // Check if we can find the Parent
             // to do we take the name until the first DOT (form.designer.prg belongs to form.prg, and form.voform.vnfrm belongs to form.prg)
             // but remove the path first because there may also be a dot in the path
+            var originalfileName = fileName;
             var path = System.IO.Path.GetDirectoryName(fileName);
             fileName = System.IO.Path.GetFileName(fileName);
             int dotPos = fileName.IndexOf(".");
@@ -686,7 +687,7 @@ namespace XSharp.Project
                     }
                     break;
             }
-            var newNode = base.AddNewFileNodeToHierarchyCore(parentNode, fileName, linkPath);
+            var newNode = base.AddNewFileNodeToHierarchyCore(parentNode, originalfileName, linkPath);
             if (newNode is XSharpFileNode)
             {
                 var xNode = newNode as XSharpFileNode;

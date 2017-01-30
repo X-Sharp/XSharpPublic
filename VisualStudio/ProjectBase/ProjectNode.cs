@@ -3881,7 +3881,7 @@ namespace Microsoft.VisualStudio.Project
 
             // In the case of subitem, we want to create dependent file node
             // and set the DependentUpon property
-            if (this.canFileNodesHaveChilds && (parentNode is FileNode && ((FileNode)parentNode).IsDependent))
+            if (this.canFileNodesHaveChilds && parentNode is FileNode )
             {
                 child = this.CreateDependentFileNode(fileName);
                 string parent = parentNode.ItemNode.GetMetadata(ProjectFileConstants.Include);

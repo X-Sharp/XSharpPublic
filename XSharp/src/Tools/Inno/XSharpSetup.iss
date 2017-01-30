@@ -1,7 +1,7 @@
 #define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
 
-#define FOX
+;#define FOX
 #ifdef FOX
 #define SetupExeName    "XSharpSetup029Foxb"
 #else
@@ -18,7 +18,7 @@
 #define CopyRight       "Copyright © 2015-2018 XSharp B.V."
 #define VIVersion       "0.2.9.2902"
 #define VITextVersion   "0.2.9.2902 (Beta 9)"                                                                                            
-#define TouchDate       "2017-01-29"
+#define TouchDate       "2017-01-30"
 #define TouchTime       "02:09:02"
 #define InstallPath     "XSharpPath"
 

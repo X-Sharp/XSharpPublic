@@ -952,6 +952,15 @@ namespace Microsoft.VisualStudio.Project
         }
 
         [Browsable(false)]
+        public IReferenceContainer DesignTimeReferences
+        {
+            get
+            {
+                return this.Node.ProjectMgr.GetReferenceContainer();
+            }
+        }
+
+        [Browsable(false)]
         public string FullPath
         {
             get
@@ -1055,6 +1064,20 @@ namespace Microsoft.VisualStudio.Project
                 this.Node.SetEditLabel(value);
             }
         }
+        [Browsable(false)]
+        [AutomationBrowsable(true)]
+        public string DefaultNamespace
+        {
+            get
+            {
+                var project = this.Node.ProjectMgr as XSharp.Project.XSharpProjectNode;
+                string parentName = (string)project.GetProperty((int)__VSHPROPID.VSHPROPID_DefaultNamespace);
+                string relativePath = project.GetRelativePath(this.Node.Url);
+                if (relativePath.EndsWith("\\"))
+                    relativePath = relativePath.Substring(0, relativePath.Length - 1);
+                return "global::"+parentName + "." + relativePath.Replace('\\', '.'); ;
+            }
+        }
 
         [Browsable(false)]
         [AutomationBrowsable(true)]
@@ -1106,6 +1129,14 @@ namespace Microsoft.VisualStudio.Project
             get
             {
                 return this.Node.Caption;
+            }
+        }
+        [Browsable(false)]
+        public string DefaultNamespace
+        {
+            get
+            {
+                return (string)this.Node.ProjectMgr.GetProperty((int)__VSHPROPID.VSHPROPID_DefaultNamespace);
             }
         }
 

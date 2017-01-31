@@ -262,6 +262,12 @@ namespace XSharp.Build
             get { return base.GetBoolParameterWithDefault(nameof(ReportAnalyzer), false); }
         }
 
+        public bool VulcanCompatibleResources
+        {
+            set { base.Bag[nameof(VulcanCompatibleResources)] = value; }
+            get { return (bool)base.Bag[nameof(VulcanCompatibleResources)]; }
+
+        }
         public String VsSessionGuid
         {
             set { base.Bag[nameof(VsSessionGuid)] = value; }
@@ -409,6 +415,7 @@ namespace XSharp.Build
             //System.Diagnostics.Debugger.Launch();
             errorCount = 0;
             hasShownMaxErrorMsg = false;
+            VulcanCompatibleResources = false;
         }
 
         protected override string ToolName
@@ -908,7 +915,11 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/subsystemversion:", SubsystemVersion);
             commandLine.AppendWhenTrue("/reportanalyzer", base.Bag, nameof(ReportAnalyzer));
             // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
-            commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
+            if (VulcanCompatibleResources)
+                commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { });
+            else
+                commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
+
             commandLine.AppendSwitchIfNotNull("/target:", TargetType);
             commandLine.AppendPlusOrMinusSwitch("/warnaserror", base.Bag, nameof(TreatWarningsAsErrors));
             commandLine.AppendWhenTrue("/utf8output", base.Bag, nameof(Utf8Output));

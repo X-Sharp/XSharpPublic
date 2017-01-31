@@ -1141,6 +1141,24 @@ namespace XSharp.CodeDom
                 var par = ctx as XSharpParser.ParenExpressionContext;
                 expr = BuildExpression(par.Expr,true);
             }
+            else if (ctx is XSharpParser.TypeExpressionContext)
+            {
+                var typ = ctx as XSharpParser.TypeExpressionContext;
+                var name = typ.Type; 
+                // NativeType, xBaseType, Name
+                if (name.Name is XSharpParser.QualifiedNameContext)
+                {
+                    var qnc = name.Name as XSharpParser.QualifiedNameContext;
+                    var left = qnc.Left;
+                    var right = qnc.Right;
+                    var tr = new CodeTypeReferenceExpression(left.GetText());
+                    expr = new CodePropertyReferenceExpression(tr, right.GetText());
+                }
+                else 
+                {
+                    expr = new CodeSnippetExpression(ctx.GetText());
+                }
+            }
             else
             {
                 expr = new CodeSnippetExpression(ctx.GetText());
@@ -1326,6 +1344,10 @@ namespace XSharp.CodeDom
             //
             return expr;
         }
+        private CodeTypeReference BuildName(XSharpParser.TypeNameContext context)
+        {
+            return BuildName(context.Name);
+        }
 
         private CodeTypeReference BuildName(XSharpParser.NameContext context)
         {
@@ -1339,23 +1361,25 @@ namespace XSharp.CodeDom
             }
             else if (context is XSharpParser.SimpleOrAliasedNameContext)
             {
-                XSharpParser.SimpleOrAliasedNameContext alias = (XSharpParser.SimpleOrAliasedNameContext)context;
+                var alias = context as XSharpParser.SimpleOrAliasedNameContext;
+                var name = alias.Name as XSharpParser.AliasedNameContext;
+
                 //
-                if (alias.Name is XSharpParser.AliasQualifiedNameContext)
+                if (name is XSharpParser.AliasQualifiedNameContext)
                 {
-                    XSharpParser.AliasQualifiedNameContext al = (XSharpParser.AliasQualifiedNameContext)alias.Name;
+                    XSharpParser.AliasQualifiedNameContext al = (XSharpParser.AliasQualifiedNameContext)name;
                     expr = BuildSimpleName(al.Right);
                     expr = new CodeTypeReference(al.Alias.GetText() + "::" + expr.BaseType);
                 }
-                else if (alias.Name is XSharpParser.GlobalQualifiedNameContext)
+                else if (name is XSharpParser.GlobalQualifiedNameContext)
                 {
-                    XSharpParser.GlobalQualifiedNameContext gbl = (XSharpParser.GlobalQualifiedNameContext)alias.Name;
-                    expr = BuildSimpleName(gbl.Right);
-                    expr = new CodeTypeReference("GLOBAL::" + expr.BaseType);
+                    var gqn = name as XSharpParser.GlobalQualifiedNameContext;
+                    expr = BuildSimpleName(gqn.Right); 
+                    expr = new CodeTypeReference("global::" + expr.BaseType);
                 }
-                else if (alias.Name is XSharpParser.IdentifierOrGenericNameContext)
+                else if (name is XSharpParser.IdentifierOrGenericNameContext)
                 {
-                    XSharpParser.IdentifierOrGenericNameContext id = (XSharpParser.IdentifierOrGenericNameContext)alias.Name;
+                    var id = name as XSharpParser.IdentifierOrGenericNameContext;
                     expr = BuildSimpleName(id.Name);
                 }
             }

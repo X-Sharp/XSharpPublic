@@ -186,13 +186,16 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 			oElement:AppendChild(oChild)
 			lHasProjectExtensions := TRUE
 		CASE "project"
-			// Import the schema
-			SELF:oProjectNode := oElement
-			oChild := oDoc:CreateElement("Import", cSchema)
-			oAttribute := oDoc:CreateAttribute("Project")
-			oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.targets"
-			oChild:Attributes:Append(oAttribute)   
-			oElement:AppendChild(oChild)  
+			// Only for main project node, not for project node inside projectreference
+			if (oParent is XMLDocument)
+				// Import the schema
+				SELF:oProjectNode := oElement
+				oChild := oDoc:CreateElement("Import", cSchema)
+				oAttribute := oDoc:CreateAttribute("Project")
+				oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.targets"
+				oChild:Attributes:Append(oAttribute)   
+				oElement:AppendChild(oChild)  
+			ENDIF
 		CASE "reference"                               
 			// Add VulcanRT assemblies after 1st reference
 			IF !SELF:lVulcanRtWritten

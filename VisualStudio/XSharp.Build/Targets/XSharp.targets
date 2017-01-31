@@ -251,6 +251,7 @@
     TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
     UseSharedCompilation="$(UseSharedCompilation)"
     Utf8Output="$(Utf8Output)"
+    VulcanCompatibleResources="$(VulcanCompatibleResources)"
     VsSessionGuid="$(VsSessionGuid)"
     WarningLevel="$(WarningLevel)"
     WarningsAsErrors="$(WarningsAsErrors)"

@@ -34,10 +34,17 @@ namespace XSharp.Project
         private FrameworkName targetFrameworkMoniker;
         private Dialect dialect;
         private Platform platformtarget;
+        private bool prefer32bit;
+        private bool vulcanCompatibleResources;
+        #endregion Fields
+
+        #region Constants
         internal const string captPrefer32Bit = "Prefer 32 Bit";
         internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
-        private bool prefer32bit;
-        #endregion Fields
+        internal const string captVulcanCompatibleResouces = "Vulcan Compatible Managed Resources";
+        internal const string descVulcanCompatibleResouces = "Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#))";
+
+        #endregion
 
         #region Constructors
         /// <summary>
@@ -112,9 +119,17 @@ namespace XSharp.Project
             set { this.prefer32bit = value;  this.IsDirty = true; }
         }
 
+        [ResourcesCategory(Resources.Application)]
+        [DisplayName(captVulcanCompatibleResouces)]
+        [Description(descVulcanCompatibleResouces)]
+        public bool VulcanCompatibleResources
+        {
+            get { return this.vulcanCompatibleResources; }
+            set { this.vulcanCompatibleResources = value; this.IsDirty = true; }
+        }
 
 
-            [ResourcesCategory(Resources.Application)]
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.DefaultNamespace)]
         [ResourcesDescription(Resources.DefaultNamespaceDescription)]
         /// <summary>
@@ -244,6 +259,7 @@ namespace XSharp.Project
             this.rootNamespace = this.ProjectMgr.GetProjectProperty(nameof(RootNamespace), false);
             this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
             this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
+            this.vulcanCompatibleResources = getCfgLogic(nameof(VulcanCompatibleResources), false);
             this.prefer32bit = getCfgLogic(nameof(Prefer32Bit), true);
             if (outputType != null && outputType.Length > 0)
             {
@@ -316,7 +332,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(PlatformTarget), this.platformtarget.ToString());
             this.ProjectMgr.SetProjectProperty(nameof(Prefer32Bit), this.prefer32bit.ToString());
-
+            this.ProjectMgr.SetProjectProperty(nameof(VulcanCompatibleResources), this.vulcanCompatibleResources.ToString());
             if (reloadRequired)
             {
                 if (MessageBox.Show(SR.GetString(SR.ReloadPromptOnTargetFxChanged), SR.GetString(SR.ReloadPromptOnTargetFxChangedCaption), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)

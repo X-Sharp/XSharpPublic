@@ -3503,21 +3503,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         private AttributeSyntax _dllImportAttribute(XP.VodllContext context, ExpressionSyntax dllExpr, ExpressionSyntax entrypointExpr)
         {
+            AttributeArgumentSyntax charset;
+            SyntaxToken id;
+            if (context.CharSet != null)
+            {
+                id = SyntaxFactory.Identifier(context.CharSet.Text);
+            }
+            else
+            {
+                id = SyntaxFactory.Identifier("Auto");
+            }
+            charset = _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
+                             MakeSimpleMemberAccess(GenerateQualifiedName(SystemQualifiedNames.CharSet),
+                                  _syntaxFactory.IdentifierName(id)));
+            var attribs = new List<AttributeArgumentSyntax>();
+            attribs.Add(_syntaxFactory.AttributeArgument(null, null, dllExpr));
+            attribs.Add(charset);
+            if (entrypointExpr != null)
+                attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, entrypointExpr));
+            attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)));
+            attribs.Add(_syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)));
+            if (context.CallingConvention != null)
+                attribs.Add(context.CallingConvention.Get<AttributeArgumentSyntax>());
             return _syntaxFactory.Attribute(
                 name: GenerateQualifiedName(SystemQualifiedNames.DllImport),
-                argumentList: MakeAttributeArgumentList(
-                    MakeSeparatedList(
-                        _syntaxFactory.AttributeArgument(null, null, dllExpr),
-                        _syntaxFactory.AttributeArgument(GenerateNameEquals("EntryPoint"), null, entrypointExpr),
-                        _syntaxFactory.AttributeArgument(GenerateNameEquals("SetLastError"), null, GenerateLiteral(true)),
-                        _syntaxFactory.AttributeArgument(GenerateNameEquals("ExactSpelling"), null, GenerateLiteral(true)),
-                        context.CharSet != null ? _syntaxFactory.AttributeArgument(GenerateNameEquals("Charset"), null,
-                                MakeSimpleMemberAccess(GenerateQualifiedName(SystemQualifiedNames.CharSet),
-                                     _syntaxFactory.IdentifierName(context.CharSet.SyntaxIdentifier())))
-                            : null,
-                        context.CallingConvention?.Get<AttributeArgumentSyntax>()
-                    ))
-                );
+                argumentList: MakeAttributeArgumentList(MakeSeparatedList(attribs.ToArray())));
 
         }
         public override void ExitVodll([NotNull] XP.VodllContext context)

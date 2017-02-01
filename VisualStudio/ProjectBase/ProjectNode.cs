@@ -4129,6 +4129,7 @@ namespace Microsoft.VisualStudio.Project
             // as we are receiving a "collection was modified enumeration operation may not execute" exception
             // So, let's store the items in a List<> and do the job after.
             var prjItems = new List<MSBuild.ProjectItem>();
+            var duplicates = new List<MSBuild.ProjectItem>();
 #endif
 
             // Process Files
@@ -4156,7 +4157,10 @@ namespace Microsoft.VisualStudio.Project
                 // If the item is already contained do nothing.
                 // TODO: possibly report in the error list that the the item is already contained in the project file similar to Language projects.
                 if (items.ContainsKey(item.EvaluatedInclude.ToUpperInvariant()))
+                {
+                    duplicates.Add(item);
                     continue;
+                }
 
                 // Make sure that we do not want to add the item, dependent, or independent twice to the ui hierarchy
                 items.Add(item.EvaluatedInclude.ToUpperInvariant(), item);
@@ -4182,6 +4186,20 @@ namespace Microsoft.VisualStudio.Project
             }
 
 #if XSHARP
+            // Remove the duplicates
+            if (duplicates.Count > 0)
+            {
+                string bakfile = buildProject.FullPath + ".backup";
+                System.IO.File.Delete(bakfile);
+                StreamWriter backup = new StreamWriter(bakfile);
+                buildProject.Save(backup);
+
+                foreach (var item in duplicates)
+                {
+                    this.buildProject.RemoveItem(item);
+                }
+                this.buildProject.Save();
+            }
             // Ok... Let's do it !
             foreach (var item in prjItems)
             {

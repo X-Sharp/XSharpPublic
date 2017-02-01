@@ -618,7 +618,9 @@ using System.Collections.Generic;
 		}
 		if (!_inId) {
 			if (_isKw(t) && InputStream.La(1) == (int)'.') {
-				t.Type = ID;
+				if (t.Type != SELF && t.Type != SUPER) {
+					t.Type = ID;
+				}
 				_inId = true;
 			}
 			else if (type == ID || type == KWID)

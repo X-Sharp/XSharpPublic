@@ -1511,7 +1511,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return 0;
         }
 
-        public static bool IsLiteralString(this IParseTree expr)
+
+        public static IToken GetLiteralToken(this IParseTree expr)
         {
             var pe = expr as XSharpParser.PrimaryExpressionContext;
             if (pe != null)
@@ -1520,15 +1521,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 {
                     var lit = pe.Expr as XSharpParser.LiteralExpressionContext;
                     var lv = lit.Literal;
-                    switch (lv.Token.Type)
-                    {
-                        case XSharpParser.STRING_CONST:
-                        case XSharpParser.ESCAPED_STRING_CONST:
-                        case XSharpParser.CHAR_CONST:
-                            return true;
-                        default:
-                            break;
-                    }
+                    return lv.Token;
+                }
+            }
+            return null;
+        }
+
+         public static bool IsLiteralString(this IParseTree expr)
+        {
+            var token = expr.GetLiteralToken();
+            if (token != null)
+            { 
+                switch (token.Type)
+                {
+                    case XSharpParser.STRING_CONST:
+                    case XSharpParser.ESCAPED_STRING_CONST:
+                    case XSharpParser.CHAR_CONST:
+                        return true;
+                    default:
+                        break;
                 }
             }
             return false;

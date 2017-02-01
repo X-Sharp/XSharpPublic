@@ -35,7 +35,7 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject
+    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, IVsDesignTimeAssemblyResolution
     {
 
         static Dictionary<string, string> dependencies;
@@ -1179,7 +1179,50 @@ namespace XSharp.Project
         }
         #endregion
 
+        #region IVsDesignTimeAssemblyResolution
 
+        private DesignTimeAssemblyResolution designTimeAssemblyResolution;
+
+        protected internal override void SetConfiguration(ConfigCanonicalName config)
+        {
+            base.SetConfiguration(config);
+            if (this.designTimeAssemblyResolution == null)
+            {
+                this.designTimeAssemblyResolution = new DesignTimeAssemblyResolution();
+            }
+            this.designTimeAssemblyResolution.Initialize(this);
+
+        }
+        public int GetTargetFramework(out string ppTargetFramework)
+        {
+            ppTargetFramework = this.ProjectMgr.TargetFrameworkMoniker.FullName;
+            return VSConstants.S_OK;
+        }
+
+        public int ResolveAssemblyPathInTargetFx(string[] prgAssemblySpecs, uint cAssembliesToResolve, VsResolvedAssemblyPath[] prgResolvedAssemblyPaths, out uint pcResolvedAssemblyPaths)
+        {
+            if (prgAssemblySpecs == null || cAssembliesToResolve == 0 || prgResolvedAssemblyPaths == null)
+            {
+                throw new ArgumentException("One or more of the arguments are invalid.");
+            }
+
+            pcResolvedAssemblyPaths = 0;
+
+            try
+            {
+                var results = designTimeAssemblyResolution.Resolve(prgAssemblySpecs.Take((int)cAssembliesToResolve));
+                results.CopyTo(prgResolvedAssemblyPaths, 0);
+                pcResolvedAssemblyPaths = (uint)results.Length;
+            }
+            catch (Exception ex)
+            {
+                return Marshal.GetHRForException(ex);
+            }
+
+            return VSConstants.S_OK;
+        }
+
+        #endregion
         #region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
         ITableManager errorListTableManager;

@@ -767,7 +767,6 @@ namespace XSharp.Project
         public override void Load(string filename, string location, string name, uint flags, ref Guid iidProject, out int canceled)
         {
             // check for incomplete conditions
-            this.FixProjectFile(filename);
             base.Load(filename, location, name, flags, ref iidProject, out canceled);
 
   
@@ -886,8 +885,8 @@ namespace XSharp.Project
 
         protected override NodeProperties CreatePropertiesObject()
         {
-            //return new XSharpProjectNodeProperties( this );
-            return new ProjectNodeProperties(this);
+            return new XSharpProjectNodeProperties( this );
+            //return new ProjectNodeProperties(this);
         }
         /*
                /// <summary>
@@ -1245,6 +1244,44 @@ namespace XSharp.Project
         const string import2 = @"$(XSharpProjectExtensionsPath)XSharp.props";
         const string import3 = @"$(XSharpProjectExtensionsPath)XSharp.targets";
 
+        public override int UpgradeProject(uint grfUpgradeFlags)
+        {
+            bool silent;
+            int result;
+            silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
+            StringWriter backup = new StringWriter();
+            BuildProject.Save(backup);
+            var str = backup.ToString();
+            // check to see required elements
+            bool ok = true;
+            if (ok && str.IndexOf("'Debug|AnyCPU'",StringComparison.OrdinalIgnoreCase) == -1)
+                ok = false;
+            if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
+                ok = false;
+            if (ok && str.IndexOf("XSharpProjectExtensionsPath", StringComparison.OrdinalIgnoreCase) == -1)
+                ok = false;
+            if (ok && str.IndexOf("<DocumentationFile>false", StringComparison.OrdinalIgnoreCase) != -1)
+                ok = false;
+            if (ok && str.IndexOf("<DocumentationFile>true", StringComparison.OrdinalIgnoreCase) != -1)
+                ok = false;
+            if (ok && str.IndexOf(import1, StringComparison.OrdinalIgnoreCase) == -1)
+                ok = false;
+            if (ok && str.IndexOf(import2, StringComparison.OrdinalIgnoreCase) == -1)
+                ok = false;
+            if (ok && str.IndexOf(import3, StringComparison.OrdinalIgnoreCase) == -1)
+                ok = false;
+            if (!ok)
+            {
+                FixProjectFile(BuildProject.FullPath);
+                base.UpgradeProject(grfUpgradeFlags);
+                result = VSConstants.S_OK;
+            }
+            else
+            {
+                result = base.UpgradeProject(grfUpgradeFlags);
+            }
+            return result;
+        }
         private void FixProjectFile(string filename)
         {
             bool changed = false;
@@ -1326,14 +1363,14 @@ namespace XSharp.Project
             }
         }
 
-        void ShowMessageBox(string message)
+        internal int ShowMessageBox(string message)
         {
             string title = string.Empty;
             OLEMSGICON icon = OLEMSGICON.OLEMSGICON_CRITICAL;
             OLEMSGBUTTON buttons = OLEMSGBUTTON.OLEMSGBUTTON_OK;
             OLEMSGDEFBUTTON defaultButton = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST;
 
-            VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
+            return VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
 
         }
     }

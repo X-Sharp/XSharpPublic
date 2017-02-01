@@ -7118,7 +7118,7 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public int UpgradeProject(uint grfUpgradeFlags)
+        public virtual int UpgradeProject(uint grfUpgradeFlags)
         {
             int hr = VSConstants.S_OK;
 

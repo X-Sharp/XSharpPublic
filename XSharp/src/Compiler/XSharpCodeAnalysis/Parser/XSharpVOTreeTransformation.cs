@@ -2535,6 +2535,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         string[] args;
 
         // Map some literals to static member access or static method calls
+        // Or add a cast to help overload resolution
         ArgumentSyntax arg0, arg1, arg2;
         ExpressionSyntax expr = null;
         switch (context.Token.Type)
@@ -2547,15 +2548,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 break;
             case XP.NULL_PSZ:
                 expr = CreateObject(_pszType, MakeArgumentList(MakeArgument(GenerateLiteral(0))));
-                //expr = GenerateLiteralNull();
+                break;
+            case XP.NULL_ARRAY:
+                expr = MakeCastTo(_arrayType, GenerateLiteralNull());
+                break;
+            case XP.NULL_CODEBLOCK:
+                expr = MakeCastTo(_codeblockType, GenerateLiteralNull());
                 break;
             case XP.NULL_DATE:
-                expr = GenerateMethodCall(VulcanQualifiedFunctionNames.NullDate,EmptyArgumentList());
+                expr = GenerateMethodCall(VulcanQualifiedFunctionNames.NullDate, EmptyArgumentList());
                 break;
             case XP.NULL_SYMBOL:
                 arg0 = MakeArgument(GenerateLiteral(""));
                 expr = CreateObject(_symbolType, MakeArgumentList(arg0));
-                //expr = GenerateLiteralNull();
                 break;
             case XP.DATE_CONST:
                 int[] elements = DecodeDateConst(context.Token.Text);

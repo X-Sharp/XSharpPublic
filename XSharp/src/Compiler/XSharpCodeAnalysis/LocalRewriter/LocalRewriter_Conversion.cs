@@ -27,7 +27,7 @@ namespace Microsoft.CodeAnalysis.CSharp
     {
 
         // Cache the Usual2Ptr conversion since it may be used quite often and there are 43 overloads for op_Implicit.
-        private MethodSymbol getImplicitOperator(NamedTypeSymbol srcType, NamedTypeSymbol destType)
+        private MethodSymbol getImplicitOperator(TypeSymbol srcType, TypeSymbol destType)
         {
             var members = srcType.GetMembers("op_Implicit");
             foreach (MethodSymbol m in members)
@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
-        private MethodSymbol getExplicitOperator(NamedTypeSymbol srcType, NamedTypeSymbol destType)
+        private MethodSymbol getExplicitOperator(TypeSymbol srcType, TypeSymbol destType)
         {
             var members = srcType.GetMembers("op_Explicit");
             foreach (MethodSymbol m in members)
@@ -70,7 +70,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     {
                         // Pointer types are not really boxed
                         // we call the appropriate implicit operator here
-                        MethodSymbol m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                        MethodSymbol m = null;
+                        m = getImplicitOperator(usualType, rewrittenType);
+                        if (m == null)
+                        {
+                            m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_IntPtr));
+                        }
                         if (m != null)
                         {
                             rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);

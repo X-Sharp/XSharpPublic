@@ -41761,7 +41761,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C418_helper
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C419 - Problem resolving overload with NULL_ARRAY, NULL_DATE etc arguments *************
 Application = C419 - Problem resolving overload with NULL_ARRAY, NULL_DATE etc arguments
 IDEVersion = 1.06
@@ -41860,7 +41860,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C419 - Problem resolving overload with NULL_ARRAY, NULL_DATE etc arguments
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C420 - LoadLibraryW() returns NULL_PTR at runtime *************
 Application = C420 - LoadLibraryW() returns NULL_PTR at runtime
 IDEVersion = 1.06
@@ -41959,7 +41959,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C420 - LoadLibraryW() returns NULL_PTR at runtime
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C421 - RETURN inside body ignored in Start() function *************
 Application = C421 - RETURN inside body ignored in Start() function
 IDEVersion = 1.06
@@ -42058,7 +42058,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C421 - RETURN inside body ignored in Start() function
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C422 - Runtime problem converting (INT in) USUAL to PTR *************
 Application = C422 - Runtime problem converting (INT in) USUAL to PTR
 IDEVersion = 1.06
@@ -42157,7 +42157,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C422 - Runtime problem converting (INT in) USUAL to PTR
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 601137E1-03A5-45B4-994E-BFD3410FDE72
 ; ************** APPLICATION C423 - Runtime problem comparing (NIL in) USUAL to SYMBOL *************
 Application = C423 - Runtime problem comparing (NIL in) USUAL to SYMBOL
 IDEVersion = 1.06
@@ -42256,7 +42256,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C423 - Runtime problem comparing (NIL in) USUAL to SYMBOL
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C424 - Cannot compare PTR to INT/DWORD *************
 Application = C424 - Cannot compare PTR to INT/DWORD
 IDEVersion = 1.06

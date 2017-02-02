@@ -563,7 +563,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             foreach (var stmt in body.Statements)
             {
-                if (stmt is ReturnStatementSyntax)
+                if (stmt is ReturnStatementSyntax && stmt == body.Statements[body.Statements.Count - 1])
                 {
                     needsExtraReturn = true;
                     var retStmt = stmt as ReturnStatementSyntax;

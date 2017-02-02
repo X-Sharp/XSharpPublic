@@ -35,7 +35,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             SubtractString,
             UsualDate,
             Shift,
-            PSZCompare
+            PSZCompare,
+            SymbolCompare
         }
         private BoundExpression BindVOCompareString(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
             BoundExpression left, BoundExpression right, ref int compoundStringLength)
@@ -184,6 +185,20 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
+        private BoundExpression BindVOSymbolCompare(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
+                ref BoundExpression left, ref BoundExpression right)
+        {
+            var symType = this.GetWellKnownType(WellKnownType.Vulcan___Symbol, diagnostics, node);
+            if (right.Type != symType)
+            {
+                right = CreateConversion(right, symType, diagnostics);
+            }
+            if (left.Type != symType)
+            {
+                left = CreateConversion(left, symType, diagnostics);
+            }
+            return null;
+        }
 
 
         private BoundExpression BindVOSingleEqualsUsual(BinaryExpressionSyntax node, DiagnosticBag diagnostics,
@@ -321,6 +336,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return BindVOUsualDate(node, diagnostics, left, right);
                 case VOOperatorType.PSZCompare:
                     return BindVOPszCompare(node, diagnostics, ref left, ref right);
+                case VOOperatorType.SymbolCompare:
+                    return BindVOSymbolCompare(node, diagnostics, ref left, ref right);
             }
             return null;
         }
@@ -344,6 +361,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                 var typePSZ = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
+                var typeSym = Compilation.GetWellKnownType(WellKnownType.Vulcan___Symbol);
                 NamedTypeSymbol typeDate;
                 TypeSymbol leftType = left.Type;
                 TypeSymbol rightType = right.Type;
@@ -363,11 +381,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                         {
                             opType = VOOperatorType.PSZCompare;
                         }
+                        if (leftType == typeUsual || rightType == typeUsual)
+                        {
+                            if (leftType == typeSym || rightType == typeSym)
+                            {
+                                opType = VOOperatorType.SymbolCompare;
+                            }
+                        }
                         break;
                     case XSharpParser.EEQ:
                         if (leftType == typePSZ || rightType == typePSZ)
                         {
                             opType = VOOperatorType.PSZCompare;
+                        }
+                        if (leftType == typeUsual || rightType == typeUsual)
+                        {
+                            if (leftType == typeSym || rightType == typeSym)
+                            {
+                                opType = VOOperatorType.SymbolCompare;
+                            }
                         }
                         break;
                     case XSharpParser.NEQ:

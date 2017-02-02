@@ -339,6 +339,16 @@ namespace Microsoft.CodeAnalysis.CSharp
                         }
                         #endregion
                     }
+
+                    if ( (left.Type.IsIntegralType() && right.Type.IsPointerType()) 
+                        || left.Type.IsPointerType() && right.Type.IsIntegralType())
+                    {
+                        if (op1.LeftType.IsVoidPointer() && op1.RightType.IsVoidPointer())
+                            return BetterResult.Left;
+                        if (op2.LeftType.IsVoidPointer() && op2.RightType.IsVoidPointer())
+                            return BetterResult.Right;
+                    }
+
                 }
 
             }

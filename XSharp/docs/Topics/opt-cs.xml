@@ -10,6 +10,8 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">/cs</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The /cs option directs the compiler to treat all identifiers and type names as case-sensitive.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold; color:#ff0000;" translate="true">This option is not supported yet in the current version of the compiler</text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Syntax</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box"><text styleclass="Code with box" translate="true">/cs[+|-]</text></para>
@@ -18,11 +20,11 @@
     <para styleclass="List"><text styleclass="List" translate="true">+|-</text><tab /><text styleclass="List" translate="true">Specifying +, or just /cs, directs the compiler to treat all type names as case-sensitive. </text></para>
     <para styleclass="Heading2"><text styleclass="Heading2" translate="true">Remarks</text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option is for those users who prefer a case-sensitive language. Note that this option only affects type and member names, Locals and parameters are currently case-insensitive regardless of whether /cs is enabled or not.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option is for those users who prefer a case-sensitive language. </text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">This option does not affect preprocessor symbols. The /vo8 compiler option controls case-sensitivitiy in the preprocessor. </text></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option also does not affect keywords. Keywords in Vulcan.NET are always case-insensitive.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This option also does not affect keywords. Keywords in X# are always case-insensitive.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">To set this compiler option in the Visual Studio development environment:</text></para>
     <para styleclass="Normal"></para>

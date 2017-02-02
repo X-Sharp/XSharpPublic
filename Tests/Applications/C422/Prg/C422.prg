@@ -39,8 +39,8 @@ FUNCTION Start( ) AS VOID
 	LOCAL dPtr AS DWORD
 	dPtr := DWORD(_CAST,pPtr)
 	uPtr := dPtr
-	#warning "following requires /vo7+, vulcan doesn't"
-//	p1 := dPtr // requires /vo7+
+//	#warning "following requires /vo7+, vulcan doesn't"
+	p1 := dPtr // requires /vo7+ // Not any more :-)
 	p2 := PTR(dPtr)
 	p3 := PTR(_CAST,dPtr)
 	? p1,p2,p3
@@ -95,7 +95,6 @@ VOSTRUCT _winDRAWITEMSTRUCT
 
 FUNCTION FTest() AS VOID
 	LOCAL p AS PTR
-	LOCAL u AS USUAL
 	p := PTR(_CAST,GetPtr())
 	? p
 	IF INT(_CAST,p) != 1024

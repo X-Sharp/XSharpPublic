@@ -153,6 +153,11 @@ Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";                              C
 Name: "{userdocs}\Visual Studio 2015\Code Snippets\XSharp\My Code Snippets";   Components: vs2015; 
 Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";                              Components: vs2017; 
 Name: "{userdocs}\Visual Studio 2017\Code Snippets\XSharp\My Code Snippets";     Components: vs2017; 
+; user template folders
+Name: "{userdocs}\Visual Studio 2015\Templates\ProjectTemplates\XSharp";   Components: vs2015; 
+Name: "{userdocs}\Visual Studio 2015\Templates\ItemTemplates\XSharp";   Components: vs2015; 
+Name: "{userdocs}\Visual Studio 2017\Templates\ProjectTemplates\XSharp";   Components: vs2017; 
+Name: "{userdocs}\Visual Studio 2017\Templates\ItemTemplates\XSharp";   Components: vs2017; 
 
 
 [Languages]

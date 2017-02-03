@@ -5079,7 +5079,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitPrimaryExpression([NotNull] XP.PrimaryExpressionContext context)
         {
-            context.Put(context.Expr.Get<ExpressionSyntax>());
+            context.Put(context.Expr.Get<CSharpSyntaxNode>());
         }
 
         public override void ExitCheckedExpression([NotNull] XP.CheckedExpressionContext context)

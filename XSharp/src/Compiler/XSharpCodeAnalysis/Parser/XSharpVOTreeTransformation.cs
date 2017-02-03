@@ -2691,26 +2691,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     }
 
 
-    public ExpressionSyntax GenerateAliasedExpression( ExpressionSyntax wa, ExpressionSyntax expr)
+    public CSharpSyntaxNode GenerateAliasedExpression(
+        [NotNull] XP.AliasedExprContext context,
+        ExpressionSyntax wa, ExpressionSyntax expr)
     {
-            // CUSTOMER->(<Expression>)
-            //
-            // translate to :
-            //
-            // {||
-            //   __pushWorkarea(CUSTOMER)
-            //   try
-            //     return expr2
-            //   finally
-            //     __popWorkarea()
-            //   end
-            // }:Eval()
-            // If the expression is a assignment expression 
-            // then convert to FieldSet
-            // If it is an identifiername then convert
-            // to FieldGet
+            // Adjust the expression that is evaluated in the other workarea
             if (expr is AssignmentExpressionSyntax)
             {
+                // If the expression is a assignment expression 
+                // then convert to FieldSet
                 var ass = expr as AssignmentExpressionSyntax;
                 var lhs = ass.Left;
                 var rhs = ass.Right;
@@ -2718,37 +2707,71 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             else if (expr is IdentifierNameSyntax)
             {
+                // If it is an identifier name then convert
+                // to FieldGet
                 var ins = expr as IdentifierNameSyntax;
                 expr = GenerateFieldGet(null, ins.Identifier.XNode.GetText());
             }
+            else
+            {
+                ; // leave unchanged
+            }
+            var push = GenerateMethodCall(VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)));
+            var pop = GenerateMethodCall(VulcanQualifiedFunctionNames.PopWorkarea, EmptyArgumentList());
+            var pushStmt = GenerateExpressionStatement(push);
+            var popStmt = GenerateExpressionStatement(pop);
 
-            return _syntaxFactory.InvocationExpression(
-            MakeSimpleMemberAccess(
-                MakeCastTo(_codeblockType,
-                    _syntaxFactory.ParenthesizedLambdaExpression(
-                        asyncKeyword: null,
-                        parameterList: EmptyParameterList(),
-                        arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
-                        body: MakeBlock(MakeList<StatementSyntax>(
-                            GenerateExpressionStatement(GenerateMethodCall(VulcanQualifiedFunctionNames.PushWorkarea, MakeArgumentList(MakeArgument(wa)))),
-                            _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
-                                MakeBlock(MakeList<StatementSyntax>(
-                                    GenerateReturn(expr)
-                                    )),
-                                EmptyList<CatchClauseSyntax>(),
-                                _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
-                                    MakeBlock(MakeList<StatementSyntax>(
-                                        GenerateExpressionStatement(GenerateMethodCall(VulcanQualifiedFunctionNames.PopWorkarea, EmptyArgumentList()))
-                                        ))
+            if (context.Parent.Parent is XP.ExpressionStmtContext)
+            {
+                // context.Parent is always a primaryexpression
+                // if context.Parent.Parent is a Expressionstatement then we do not have 
+                // save the return value of the expression
+                var list = new List<StatementSyntax>() { pushStmt, GenerateExpressionStatement(expr), popStmt};
+                return MakeBlock(list);
+            }
+            else
+            {
+                // when not an expression statement, then we must save the result of expr
+                // of the expression.
+                // we do this by converting the expression to a anonymous method and returning the value from this expression
+                // CUSTOMER->(<Expression>)
+                //
+                // translate to :
+                //
+                // GeneratedFunctionCall(CUSTOMER, expr)
+                //   __pushWorkarea(CUSTOMER)
+                //   try
+                //     return expr
+                //   finally
+                //     __popWorkarea()
+                //   end
+                // }:Eval()
+                return _syntaxFactory.InvocationExpression(
+                MakeSimpleMemberAccess(
+                    MakeCastTo(_codeblockType,
+                        _syntaxFactory.ParenthesizedLambdaExpression(
+                            asyncKeyword: null,
+                            parameterList: EmptyParameterList(),
+                            arrowToken: SyntaxFactory.MakeToken(SyntaxKind.EqualsGreaterThanToken),
+                            body: MakeBlock(MakeList<StatementSyntax>(
+                                pushStmt,
+                                _syntaxFactory.TryStatement(SyntaxFactory.MakeToken(SyntaxKind.TryKeyword),
+                                    MakeBlock(MakeList<StatementSyntax>(GenerateReturn(expr))),
+                                    EmptyList<CatchClauseSyntax>(),
+                                    _syntaxFactory.FinallyClause(SyntaxFactory.MakeToken(SyntaxKind.FinallyKeyword),
+                                        MakeBlock(MakeList<StatementSyntax>(popStmt))
+                                        )
                                     )
-                                )
-                            ))
-                        )
+                                ))
+                            )
+                        ),
+                    _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VulcanFunctionNames.Eval))
                     ),
-                _syntaxFactory.IdentifierName(SyntaxFactory.MakeIdentifier(VulcanFunctionNames.Eval))
-                ),
-            EmptyArgumentList());
-    }
+                EmptyArgumentList());
+
+            }
+
+        }
 
         public override void ExitAliasedField([NotNull] XP.AliasedFieldContext context)
         {
@@ -2781,10 +2804,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 alias = GenerateLiteral(context.Id.GetText());
             }
-            ExpressionSyntax expr =
+            var expr =
                 GenerateAliasedExpression(
+                        context,
                         alias,     // workarea
-                        context.Expr.Get<ExpressionSyntax>()        // expression
+                        context.Expr.Get<ExpressionSyntax>() // expression
                     );
             context.Put(expr);
         }

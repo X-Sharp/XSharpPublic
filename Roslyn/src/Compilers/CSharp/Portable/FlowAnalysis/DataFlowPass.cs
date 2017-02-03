@@ -329,7 +329,13 @@ namespace Microsoft.CodeAnalysis.CSharp
         protected void Analyze(ref bool badRegion, DiagnosticBag diagnostics)
         {
             ImmutableArray<PendingBranch> returns = Analyze(ref badRegion);
+#if XSHARP
+            // Suppress error message when compiling in VO & Vulcan dialect
+            // to avoid warning when a local has been "abused" and used in a aliased expression (C397)
+            if (diagnostics != null && !compilation.Options.IsDialectVO)
+#else
             if (diagnostics != null)
+#endif
             {
                 foreach (Symbol captured in _capturedVariables)
                 {
@@ -396,7 +402,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return _unsafeAddressTakenVariables.Keys.ToArray();
         }
 
-        #region Tracking reads/writes of variables for warnings
+#region Tracking reads/writes of variables for warnings
 
         protected virtual void NoteRead(Symbol variable, ParameterSymbol rangeVariableUnderlyingParameter = null)
         {
@@ -637,7 +643,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
         }
 
-        #endregion Tracking reads/writes of variables for warnings
+#endregion Tracking reads/writes of variables for warnings
 
         /// <summary>
         /// Locals are given slots when their declarations are encountered.  We only need give slots
@@ -1297,7 +1303,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return result;
         }
 
-        #region Visitors
+#region Visitors
 
         public override BoundNode VisitBlock(BoundBlock node)
         {

@@ -5346,11 +5346,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitTypeCheckExpression([NotNull] XP.TypeCheckExpressionContext context)
         {
-            context.Put(_syntaxFactory.BinaryExpression(
-                SyntaxKind.IsExpression,
-                context.Expr.Get<ExpressionSyntax>(),
-                SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
-                context.Type.Get<ExpressionSyntax>()));
+            if (context.Op.Type == XP.IS)
+            {
+                context.Put(_syntaxFactory.BinaryExpression(
+                    SyntaxKind.IsExpression,
+                    context.Expr.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
+                    context.Type.Get<ExpressionSyntax>()));
+            }
+            else if (context.Op.Type == XP.AS)
+            {
+                context.Put(_syntaxFactory.BinaryExpression(
+                    SyntaxKind.AsExpression,
+                    context.Expr.Get<ExpressionSyntax>(),
+                    SyntaxFactory.MakeToken(SyntaxKind.AsKeyword),
+                    context.Type.Get<ExpressionSyntax>()));
+            }
+
         }
 
         public override void ExitTypeCast([NotNull] XP.TypeCastContext context)

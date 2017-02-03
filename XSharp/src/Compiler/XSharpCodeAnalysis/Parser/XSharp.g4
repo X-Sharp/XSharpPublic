@@ -619,7 +619,8 @@ expression			: Expr=expression Op=(DOT | COLON) Name=simpleName			#accessMember	
                     | Op=AWAIT Expr=expression									#awaitExpression		// AWAIT expr
                     | Op=(PLUS | MINUS | TILDE| ADDROF | INC | DEC)
                       Expr=expression											#prefixExpression		// +/-/~/&/++/-- expr
-                    | Expr=expression IS Type=datatype							#typeCheckExpression	// expr IS typeORid
+                    | Expr=expression Op=IS Type=datatype						#typeCheckExpression	// expr IS typeORid
+                    | Expr=expression Op=AS TYPE Type=datatype					#typeCheckExpression	// expr AS TYPE typeORid
                     | Left=expression Op=EXP Right=expression					#binaryExpression		// expr ^ expr
                     | Left=expression Op=(MULT | DIV | MOD) Right=expression	#binaryExpression		// expr * expr
                     | Left=expression Op=(PLUS | MINUS) Right=expression		#binaryExpression		// expr +/- expr

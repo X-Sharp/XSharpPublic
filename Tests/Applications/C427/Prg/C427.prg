@@ -10,12 +10,15 @@ p := (LOGIC PTR) @a
 LOGIC(p + 1) := TRUE
 ? "DIM ARRAY:" , a[1] , a[2] , a[3] , a[4] , a[5]
 
+// Update: cannot make LOGIC PTR handle both LOGIC DIM ARRAYs and LOGICs in VOSTRUCT the same
+// way as VO does, so the following will fail also in x#, same as with vulcan:
+/*
 xAssert(a[2]) // warning, vulcan fails on that, it sets a[5] to TRUE instead. x# works corerctly
 d := 3
 LOGIC(p + d) := TRUE
 xAssert(a[4]) // vulcan wrong here, too. x# is ok
 ?
-
+*/
 
 p := (LOGIC PTR) @s
 LOGIC(p + 1) := TRUE

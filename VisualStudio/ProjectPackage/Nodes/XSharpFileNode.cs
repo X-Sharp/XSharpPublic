@@ -214,7 +214,7 @@ namespace XSharp.Project
                     }
                     else if (path.EndsWith(".xaml.prg"))
                     {
-                        path = path.Substring(0, relationIndex) + ".prg";
+                        path = path.Substring(0, relationIndex) + ".xaml";
                         if (project.FindURL(folder + path) == null)
                             path = null;
                     }

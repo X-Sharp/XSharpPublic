@@ -124,6 +124,12 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 		CASE "projectguid"   
 			// new guid
 			oElement:InnerText := cGuid
+		CASE "projecttypeguids"   
+			// WPF project
+			// our WPF ProjectFactory
+			// Generic WPF project 
+			// Our project factory
+			oElement:InnerText := "{5ADB76EC-7017-476A-A8E0-25D4202FFCF0};{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}" 
 		CASE "projectreference"
 			// update extension in project references 
 			oAttribute := (XmlAttribute) oElement:Attributes:GetNamedItem("Include")

@@ -390,7 +390,8 @@ namespace XSharp.Project
             Guid[] result = new Guid[]
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
-                typeof(XSharpLanguagePropertyPage).GUID
+                typeof(XSharpLanguagePropertyPage).GUID,
+                typeof(XSharpBuildEventsPropertyPage).GUID,
                 };
             return result;
         }
@@ -404,7 +405,6 @@ namespace XSharp.Project
             Guid[] result = new Guid[]
             {
                 typeof(XSharpBuildPropertyPage).GUID,
-                typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID,
             };
             return result;

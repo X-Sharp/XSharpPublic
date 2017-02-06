@@ -339,6 +339,18 @@ namespace XSharp.Project
 
             return false; // not handled.
         }
+        /// <summary>
+        /// Gets the current project configuration.
+        /// </summary> 
+        public XProjectConfig CurrentConfig
+        {
+            get
+            {
+                EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
+                var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), Utilities.GetActivePlatformName(automationObject));
+                return new XProjectConfig(this,name );
+            }
+        }
 
         /// <summary>
         /// Handles command execution.

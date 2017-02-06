@@ -131,6 +131,7 @@ namespace XSharp.Project
 
             //// We could also provide CATIDs for references and the references container node, if we wanted to.
             AddCATIDMapping(typeof(XSharpBuildPropertyPage), typeof(XSharpBuildPropertyPage).GUID);
+            AddCATIDMapping(typeof(XSharpBuildEventsPropertyPage), typeof(XSharpBuildEventsPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpLanguagePropertyPage), typeof(XSharpLanguagePropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpDebugPropertyPage), typeof(XSharpDebugPropertyPage).GUID);
         }
@@ -374,6 +375,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
                 };
             return result;
@@ -402,6 +404,7 @@ namespace XSharp.Project
             Guid[] result = new Guid[]
             {
                 typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID,
             };
             return result;
@@ -1295,8 +1298,15 @@ namespace XSharp.Project
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
-            // check to see required elements
+            var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             bool ok = true;
+            if (str2 != str)
+            {
+                ok = false;
+                str = str2;
+            }
+            // check to see required elements
+            
             if (ok && str.IndexOf("'Debug|AnyCPU'",StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
@@ -1347,9 +1357,10 @@ namespace XSharp.Project
                         {
                             condition = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
                         }
-                        group.Condition = condition;
-                        changed = true;
                     }
+                    condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    group.Condition = condition;
+                    changed = true;
                 }
             }
             // check for the XSharpProjectExtensionsPath property inside the first propertygroup

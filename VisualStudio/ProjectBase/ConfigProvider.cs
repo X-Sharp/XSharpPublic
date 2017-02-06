@@ -92,7 +92,7 @@ namespace Microsoft.VisualStudio.Project
 
         #region methods
         /// <summary>
-        /// Creates new Project Configuartion objects based on the configuration name.
+        /// Creates new Project Configuration objects based on the configuration name.
         /// </summary>
         /// <param name="configName">The name of the configuration</param>
         /// <returns>An instance of a ProjectConfig object.</returns>

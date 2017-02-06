@@ -31,8 +31,7 @@ namespace XSharp.Project
         internal const string catSigning = "Code Signing";
         internal const string catMisc = "Miscellaneous";
         internal const string catWarnings = "Warnings";
-        internal const string catOutput = "Output";
-        internal const string catAdvanced = "Advanced";
+        internal const string catOutput = "\tOutput";
         internal const string CatPreprocessor = "Preprocessor";
         internal const string catXML = "XML Output";
         internal const string captOutputPath = "Output Path";
@@ -102,10 +101,16 @@ namespace XSharp.Project
         private string defines;
         private bool nostandarddefs;
         private string commandlineoption;
+        private Platform platformtarget;
+        private bool prefer32bit;
 
         #endregion Fields
 
+        #region Constants
+        internal const string captPrefer32Bit = "\tPrefer 32 Bit";
+        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
 
+        #endregion
         #region Validation
         private int ValidateWarningLevel (int level)
         {
@@ -129,7 +134,34 @@ namespace XSharp.Project
         #endregion
 
 
-        [Category(catAdvanced), DisplayName(CmdLineCaption), Description(CmdLineDescription)]
+        [RefreshProperties(System.ComponentModel.RefreshProperties.All)]
+        [Category(catOutput)]
+        [LocDisplayName("\t\tPlatform Target")]
+        [Description("Select the platform target when compiling this project. This should be AnyCPU, X86, x64,Arm or Itanium")]
+        public Platform PlatformTarget
+        {
+            get { return this.platformtarget; }
+            set
+            {
+                this.platformtarget = value;
+                this.IsDirty = true;
+                // now enable/disable the readonly flag on Prefer32bit
+                EnableDisablePrefer32Bit();
+            }
+        }
+
+        [Category(catOutput)]
+        [DisplayName(captPrefer32Bit)]
+        [Description(descPrefer32Bit)]
+        [ReadOnly(true)]
+        public bool Prefer32Bit
+        {
+            get { return this.prefer32bit; }
+            set { this.prefer32bit = value; this.IsDirty = true; }
+        }
+
+
+        [Category(catMisc), DisplayName(CmdLineCaption), Description(CmdLineDescription)]
         public string CommandLineOption
         {
             get { return this.commandlineoption; }
@@ -370,6 +402,19 @@ namespace XSharp.Project
             nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  false);
             includepaths = getCfgString(nameof(IncludePaths),  "");
             defines = getCfgString(nameof(DefineConstants), "");
+
+            this.prefer32bit = getCfgLogic(nameof(Prefer32Bit), true);
+            string platform = getCfgString(nameof(PlatformTarget), "");
+            try
+            {
+                this.platformtarget = (Platform)Enum.Parse(typeof(Platform), platform);
+            }
+            catch (ArgumentException)
+            {
+                this.platformtarget = Platform.AnyCPU;
+            }
+            EnableDisablePrefer32Bit();
+
         }
 
         /// <summary>
@@ -410,6 +455,8 @@ namespace XSharp.Project
             this.SetConfigProperty(nameof(NoStandardDefs), this.nostandarddefs.ToString().ToLower());
             this.SetConfigProperty(nameof(IncludePaths), this.includepaths?.ToString());
             this.SetConfigProperty(nameof(DefineConstants), this.defines?.ToString());
+            this.SetConfigProperty(nameof(PlatformTarget), this.platformtarget.ToString());
+            this.SetConfigProperty(nameof(Prefer32Bit), this.prefer32bit.ToString());
 
             this.IsDirty = false;
 
@@ -432,6 +479,11 @@ namespace XSharp.Project
         }
 
         #endregion
+        private void EnableDisablePrefer32Bit()
+        {
+            SetFieldReadOnly("Prefer32Bit", platformtarget != Platform.AnyCPU);
+        }
+
     }
 }
 

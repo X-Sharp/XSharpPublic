@@ -179,6 +179,7 @@
     <Compile Include="ErrorList\OutputErrorsFactory.cs" />
     <Compile Include="ErrorList\OutputErrorsSnapshot.cs" />
     <Compile Include="LanguageService\XSharpTypeAndMemberDropDownBars.cs" />
+    <Compile Include="PropertyPages\XSharpBuildEventsPropertyPage.cs" />
     <Compile Include="Wix\IProjectSourceNode.cs" />
     <Compile Include="Wix\XBuildMacroCollection.cs" />
     <Compile Include="Wix\XDesignPropertyDescriptor.cs" />

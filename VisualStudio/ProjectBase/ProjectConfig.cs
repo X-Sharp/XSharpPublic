@@ -23,12 +23,12 @@ using MSBuild = Microsoft.Build.Evaluation;
 using MSBuildExecution = Microsoft.Build.Execution;
 using MSBuildConstruction = Microsoft.Build.Construction;
 using System.Diagnostics.CodeAnalysis;
-
+using XSharp.Project;
 namespace Microsoft.VisualStudio.Project
 {
 	public struct ConfigCanonicalName
 	{
-		private static readonly StringComparer CMP = StringComparer.Ordinal;
+		private static readonly StringComparer CMP = StringComparer.OrdinalIgnoreCase;
 		private readonly string myConfigName;
 		private readonly string myPlatform;
 
@@ -462,9 +462,7 @@ namespace Microsoft.VisualStudio.Project
                 throw Marshal.GetExceptionForHR(VSConstants.OLE_E_PROMPTSAVECANCELLED);
             }
 
-            string condition = String.Format(CultureInfo.InvariantCulture, ConfigProvider.configString, this.ConfigName);
-
-            SetPropertyUnderCondition(propertyName, propertyValue, condition);
+            SetPropertyUnderCondition(propertyName, propertyValue, Condition);
 
 			// property cache will need to be updated
 			this.evaluatedProject = null;
@@ -483,6 +481,7 @@ namespace Microsoft.VisualStudio.Project
         /// Emulates the behavior of SetProperty(name, value, condition) on the old MSBuild object model.
         /// This finds a property group with the specified condition (or creates one if necessary) then sets the property in there.
         /// </summary>
+        private string[] BuildEventProperties = new string[] { "PreBuildEvent", "PostBuildEvent", "RunPostBuildEvent" };
         private void SetPropertyUnderCondition(string propertyName, string propertyValue, string condition)
         {
 			this.EnsureCache();
@@ -497,38 +496,84 @@ namespace Microsoft.VisualStudio.Project
 
             // New OM doesn't have a convenient equivalent for setting a property with a particular property group condition.
             // So do it ourselves.
-            MSBuildConstruction.ProjectPropertyGroupElement newGroup = null;
+            var groups = new List<MSBuildConstruction.ProjectPropertyGroupElement>();
 
 			foreach (MSBuildConstruction.ProjectPropertyGroupElement group in this.evaluatedProject.Xml.PropertyGroups)
             {
                 if (String.Equals(group.Condition.Trim(), conditionTrimmed, StringComparison.OrdinalIgnoreCase))
                 {
-                    newGroup = group;
-                    break;
+                    groups.Add(group);
+                }
+            }
+            bool IsBuildEvent = false;
+            foreach (string s in BuildEventProperties)
+            {
+                if (string.Compare(propertyName, s, true) == 0)
+                {
+                    IsBuildEvent = true;
                 }
             }
 
-            if (newGroup == null)
+            MSBuildConstruction.ProjectPropertyGroupElement selectedGroup = null;
+            if (groups.Count == 1 && ! IsBuildEvent)
             {
-				newGroup = this.evaluatedProject.Xml.AddPropertyGroup(); // Adds after last existing PG, else at start of project
-                newGroup.Condition = condition;
+                var props = new List<MSBuildConstruction.ProjectPropertyElement>();
+                selectedGroup = groups[0];
+                foreach (MSBuildConstruction.ProjectPropertyElement property in selectedGroup.PropertiesReversed) // If there's dupes, pick the last one so we win
+                {
+                    if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
+                    {
+                        props.Add(property);
+                    }
+                }
+                if (props.Count > 0)
+                {
+                    // remove duplicates
+                    for (int i = 0; i < props.Count - 1; i++)
+                    {
+                        selectedGroup.RemoveChild(props[0]);
+                    }
+                    selectedGroup.SetProperty(propertyName, propertyValue);
+                    return;
+                }
             }
-
-			MSBuildConstruction.ProjectPropertyElement last = null; // If there's dupes, pick the last one so we win
-			foreach (MSBuildConstruction.ProjectPropertyElement property in newGroup.PropertiesReversed) // If there's dupes, pick the last one so we win
-			{
-				if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
-				{
-					last = property;
-				}
-			}
-			if (last != null)
-			{
-				last.Value = propertyValue;
-				return;
-			}
-
-            newGroup.AddProperty(propertyName, propertyValue);
+            else if (groups.Count > 1)
+            {
+                bool written = false;
+                foreach (var group in groups)
+                {
+                    var props = new List<MSBuildConstruction.ProjectPropertyElement>();
+                    foreach (MSBuildConstruction.ProjectPropertyElement property in group.PropertiesReversed)
+                    {
+                        if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
+                        {
+                            props.Add(property);
+                        }
+                    }
+                    if (props.Count > 0)
+                    {
+                        // remove duplicates
+                        for (int i = 0; i < props.Count - 1; i++)
+                        {
+                            group.RemoveChild(props[0]);
+                        }
+                        group.SetProperty(propertyName, propertyValue);
+                        written = true;
+                    }
+                }
+                if (written)
+                    return;
+                if (IsBuildEvent)
+                    selectedGroup = groups[groups.Count - 1];
+                else
+                    selectedGroup = groups[0];
+            }
+            else
+            {
+                selectedGroup = this.evaluatedProject.Xml.AddPropertyGroup(); // Adds after last existing PG, else at start of project
+                selectedGroup.Condition = condition;
+            }
+            selectedGroup.AddProperty(propertyName, propertyValue);
         }
 
         /// <summary>
@@ -957,7 +1002,7 @@ namespace Microsoft.VisualStudio.Project
 	[CLSCompliant(false)]
 	[ComVisible(true)]
 	public class DebuggableProjectConfig :
-		ProjectConfig,
+		XProjectConfig,
 		IVsDebuggableProjectCfg,
 		IVsQueryDebuggableProjectCfg
 	{

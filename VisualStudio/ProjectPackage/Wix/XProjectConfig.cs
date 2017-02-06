@@ -34,10 +34,9 @@ namespace XSharp.Project
         /// Creates a new project config instance.
         /// </summary>
         /// <param name="project">Parent project node.</param>
-        /// <param name="configName">Configuration name such as "Debug".</param>
-        /// <param name="platformName">Platform name such as "x86".</param>
-        public XProjectConfig(XProjectNode project, string configName, string platformName)
-            : base(project, new ConfigCanonicalName(configName, platformName))
+        /// <param name="name">Canonical Name</param>
+        public XProjectConfig(ProjectNode project, ConfigCanonicalName name)
+            : base(project, name)
         {
         }
 
@@ -51,43 +50,17 @@ namespace XSharp.Project
                 return String.Format(CultureInfo.InvariantCulture, XProjectConfig.ConfigAndPlatformConditionString, this.ConfigCanonicalName.ConfigName, this.ConfigCanonicalName.MSBuildPlatform);
             }
         }
+    }
 
-       private void RemovePropertyUnderCondition(string propertyName, string condition)
-       {
-            string conditionTrimmed = (condition == null) ? String.Empty : condition.Trim();
-            var evaluatedProject = this.ProjectMgr.BuildProject;
-
-            if (conditionTrimmed.Length == 0)
-            {
-                var prop = evaluatedProject.GetProperty(propertyName) ;
-                if (prop != null)
-                    evaluatedProject.RemoveProperty(prop);
-                return;
-            }
-
-            // New OM doesn't have a convenient equivalent for setting a property with a particular property group condition.
-            // So do it ourselves.
-            MSBuildConstruction.ProjectPropertyGroupElement newGroup = null;
-
-            foreach (MSBuildConstruction.ProjectPropertyGroupElement group in evaluatedProject.Xml.PropertyGroups)
-            {
-                if (String.Equals(group.Condition.Trim(), conditionTrimmed, StringComparison.OrdinalIgnoreCase))
-                {
-                    newGroup = group;
-                    break;
-                }
-            }
-
-            foreach (MSBuildConstruction.ProjectPropertyElement property in newGroup.PropertiesReversed) // If there's dupes, pick the last one so we win
-            {
-                if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
-                {
-                    var prop = evaluatedProject.GetProperty(property.Name);
-                    if (prop != null)
-                        evaluatedProject.RemoveProperty(prop);
-                    return;
-                }
-            }
+    internal class XConfigProvider: ConfigProvider
+    {
+        internal XConfigProvider(ProjectNode manager) : base(manager)
+        {
         }
+        protected override  ProjectConfig CreateProjectConfiguration(ConfigCanonicalName canonicalName)
+        {
+            return new XProjectConfig(this.ProjectMgr, canonicalName);
+        }
+
     }
 }

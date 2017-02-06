@@ -502,6 +502,16 @@ namespace XSharp.Project
         #endregion
 
         #region support Methods
+
+        /// <summary>
+        /// Factory method for configuration provider
+        /// </summary>
+        /// <returns>Configuration provider created</returns>
+        protected override ConfigProvider CreateConfigProvider()
+        {
+            return new XConfigProvider(this);
+        }
+
         /// <summary>
         /// Creates and returns the ProjectElement for a file item.
         /// </summary>

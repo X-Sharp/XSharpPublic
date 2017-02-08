@@ -17,7 +17,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
     internal class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
 #endif
     {
+#if XSHARP
+        private DeclarationModifiers _modifiers;
+#else
         private readonly DeclarationModifiers _modifiers;
+#endif
         private readonly bool _hasInitializer;
 
         private TypeSymbol _lazyType;
@@ -219,11 +223,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 if (!ContainingType.IsScriptClass)
                 {
 #if XSHARP
-                   type = GetVOGlobalType(compilation, binder);
-                   if (type == null)
-                   {
+                    type = GetVOGlobalType(compilation, typeSyntax, binder, fieldsBeingBound);
+                    if (type == null)
+                    {
                         type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
-                   }
+                    }
 #else
                    type = binder.BindType(typeSyntax, diagnosticsForFirstDeclarator);
 #endif

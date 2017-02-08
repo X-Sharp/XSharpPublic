@@ -1834,16 +1834,223 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
+        protected TypeSyntax GetExpressionType(XP.ExpressionContext expr, ref bool isConst)
+        {
+
+            TypeSyntax type = null;
+            var token = expr.GetLiteralToken();
+            isConst = false;
+            if (token != null)
+            {
+                // Try to imply the type from the expression
+                string text = token.Text;
+                switch (token.Type)
+                {
+                    case XP.NIL:
+                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
+                        break;
+                    case XP.INT_CONST:
+                    case XP.HEX_CONST:
+                        if (text.EndsWith("U", StringComparison.OrdinalIgnoreCase))
+                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
+                        else
+                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+                        isConst = true;
+                        break;
+                    case XP.REAL_CONST:
+                        isConst = true;
+                        if (_options.VOFloatConstants)
+                        {
+                            type = GenerateQualifiedName(VulcanQualifiedTypeNames.Float);
+                            isConst = false;
+                        }
+                        else if (text.EndsWith("S", StringComparison.OrdinalIgnoreCase))
+                        {
+                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
+                        }
+                        else if (text.EndsWith("M", StringComparison.OrdinalIgnoreCase))
+                        {
+                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
+                        }
+                        else
+                        {
+                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
+                        }
+                        break;
+                    case XP.NULL_ARRAY:
+                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
+                        break;
+                    case XP.NULL_DATE:
+                    case XP.DATE_CONST:
+                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Date);
+                        isConst = false;
+                        break;
+                    case XP.NULL_SYMBOL:
+                    case XP.SYMBOL_CONST:
+                        type = GenerateQualifiedName(VulcanQualifiedTypeNames.Symbol);
+                        isConst = false;
+                        break;
+                    case XP.STRING_CONST:
+                    case XP.ESCAPED_STRING_CONST:
+                        type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+                        isConst = true;
+                        break;
+                }
+            }
+            else if (expr is XP.PrimaryExpressionContext)
+            {
+                var prim = expr as XP.PrimaryExpressionContext;
+                if (prim.Expr is XP.VoCastExpressionContext)
+                {
+                    var e = prim.Expr as XP.VoCastExpressionContext;
+                    if (e.Type != null)
+                    {
+                        type = e.Type.Get<TypeSyntax>();
+                    }
+                    else if (e.XType != null)
+                    {
+                        type = e.XType.Get<TypeSyntax>();
+                    }
+                    isConst = e.Expr.GetLiteralToken() != null;
+                }
+                else if (prim.Expr is XP.VoCastPtrExpressionContext)
+                {
+                    var e = prim.Expr as XP.VoCastPtrExpressionContext;
+                    var e2 = prim.Expr.Get<CastExpressionSyntax>();
+                    type = e2.Type;
+                    isConst = e.Expr.GetLiteralToken() != null;
+                }
+                else if (prim.Expr is XP.VoConversionExpressionContext)
+                {
+                    var e = prim.Expr as XP.VoConversionExpressionContext;
+                    if (e.Type != null)
+                    {
+                        type = e.Type.Get<TypeSyntax>();
+                    }
+                    else if (e.XType != null)
+                    {
+                        type = e.XType.Get<TypeSyntax>();
+                    }
+                    isConst = e.Expr.GetLiteralToken() != null;
+                }
+                else if (prim.Expr is XP.DefaultExpressionContext)
+                {
+                    var e = prim.Expr as XP.DefaultExpressionContext;
+                    type = e.Type.Get<TypeSyntax>();
+                }
+                else if (prim.Expr is XP.CtorCallContext)
+                {
+                    var e = prim.Expr as XP.CtorCallContext;
+                    type = e.Type.Get<TypeSyntax>();
+                }
+                else if (prim.Expr is XP.CodeblockExpressionContext)
+                {
+                    type = GenerateQualifiedName(VulcanQualifiedTypeNames.Codeblock);
+                }
+                else if (prim.Expr is XP.LiteralArrayExpressionContext)
+                {
+                    type = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
+                }
+                else if (prim.Expr is XP.VoTypeNameExpressionContext)
+                {
+                    type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+                    isConst = true;
+                }
+                else if (prim.Expr is XP.TypeExpressionContext)
+                {
+                    var e = prim.Expr as XP.TypeExpressionContext;
+                    type = e.Type.Get<TypeSyntax>();
+                }
+                else if (prim.Expr is XP.ParenExpressionContext)
+                {
+                    var e = prim.Expr as XP.ParenExpressionContext;
+                    type = GetExpressionType(e.Expr, ref isConst);
+                    isConst = e.Expr.GetLiteralToken() != null;
+                }
+                else if (prim.Expr is XP.IifExpressionContext)
+                {
+                    var e = prim.Expr as XP.IifExpressionContext;
+                    var i = e.Expr;
+                    type = GetExpressionType(i.TrueExpr, ref isConst);
+                }
+            }
+            else if (expr is XP.TypeCastContext)
+            {
+                var e = expr as XP.TypeCastContext;
+                type = e.Type.Get<TypeSyntax>();
+                isConst = e.Expr.GetLiteralToken() != null;
+
+            }
+            else if (expr is XP.TypeCheckExpressionContext)
+            {
+                var e = expr as XP.TypeCheckExpressionContext;
+                if (e.Op.Type == XP.ASTYPE)
+                {
+                    type = e.Type.Get<TypeSyntax>();
+                    isConst = e.Expr.GetLiteralToken() != null;
+                }
+            }
+            else if (expr is XP.BinaryExpressionContext)
+            {
+                var e = expr as XP.BinaryExpressionContext;
+                bool leftIsConst = false;
+                bool rightIsConst = false;
+                type = GetExpressionType(e.Left, ref leftIsConst);
+                var type2 = GetExpressionType(e.Right, ref rightIsConst);
+                isConst = leftIsConst && rightIsConst;
+                if (type.ToFullString() != type2.ToFullString())
+                {
+                    type = null;
+                    isConst = false;
+                }
+            }
+            else if (expr is XP.AssignmentExpressionContext)
+            {
+                var e = expr as XP.AssignmentExpressionContext;
+                bool leftIsConst = false;
+                bool rightIsConst = false;
+                type = GetExpressionType(e.Left, ref leftIsConst);
+                var type2 = GetExpressionType(e.Right, ref rightIsConst);
+                isConst = leftIsConst && rightIsConst;
+                if (type.ToFullString() != type2.ToFullString())
+                {
+                    type = null;
+                    isConst = false;
+                }
+            }
+            else if (expr is XP.PrefixExpressionContext)
+            {
+                var e = expr as XP.PrefixExpressionContext;
+                type = GetExpressionType(e.Expr, ref isConst);
+                if (e.Op.Type == XP.ADDROF)
+                    type = _syntaxFactory.PointerType(_voidType, SyntaxFactory.MakeToken(SyntaxKind.AmpersandToken));
+                else
+                    type = GetExpressionType(e.Expr, ref isConst);
+            }
+            if (type == null)
+            {
+                type = _objectType;
+                isConst = false;
+            }
+            else if (type is PointerTypeSyntax)
+            {
+                isConst = false;
+            }
+            return type;
+        }
+
         public override void ExitVodefine([NotNull] XP.VodefineContext context)
         {
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             variables.Add(GenerateVariable(context.Id.Get<SyntaxToken>(),
                 context.Expr.Get<ExpressionSyntax>()));
-            // RvdH May need to change to PUBLIC STATIC later.
-            // Const does not support unsafe types such as Ptr, but has the advantage
-            // that it is in-lined when used
-            // We can probably inspect the type and depending on the type switch between
-            // public Const and public Static
+            var isConst = false; 
+            // always process the expression to determine if it is a const
+            var type = GetExpressionType(context.Expr, ref isConst);
+            if (context.DataType != null)
+            {
+                type = context.DataType?.Get<TypeSyntax>();
+            }
             var list = _pool.Allocate();
             SyntaxList<SyntaxToken> modifiers = null;
             if (context.Modifiers != null)
@@ -1859,28 +2066,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else if (m.ContainsDiagnostics)
                         diags = m.GetDiagnostics();
                 }
-                // Static define becomes an Internal define
-                if (context.Modifiers.IsStaticVisible)
-                    list.Add(SyntaxFactory.MakeToken(SyntaxKind.InternalKeyword));
-                var constToken = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword);
-                if (diags != null)
-                    constToken = constToken.WithAdditionalDiagnostics(diags);
-                list.Add(constToken);
+                if (isConst)
+                {
+                    var token = SyntaxFactory.MakeToken(SyntaxKind.ConstKeyword);
+                    if (diags != null)
+                        token = token.WithAdditionalDiagnostics(diags);
+                    list.Add(token);
+                }
+                else
+                {
+                    var token = SyntaxFactory.MakeToken(SyntaxKind.ReadOnlyKeyword);
+                    if (diags != null)
+                        token = token.WithAdditionalDiagnostics(diags);
+                    list.Add(token);
+                    token = SyntaxFactory.MakeToken(SyntaxKind.StaticKeyword);
+                    list.Add(token);
+                }
                 modifiers = list.ToTokenList();
                 _pool.Free(list);
             }
             else
             {
-                // No modifiers, so a regular DEFINE Foo := "abc" AS STRING
                 // Will be a public const
-                modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ConstKeyword);
+                if (isConst)
+                {
+                    modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ConstKeyword);
+                }
+                else
+                {
+                    // public readonly static.
+                    // if we are lucky we may change this to a const inside SourceMemberSymbol.cs later if the 
+                    // initializer expression gets folded to a const
+                    // such as in
+                    // DEFINE Foo := 0
+                    // DEFINE Bar := Foo +1
+                    modifiers = TokenList(SyntaxKind.PublicKeyword, SyntaxKind.ReadOnlyKeyword, SyntaxKind.StaticKeyword);
+                }
             }
-
-
             context.Put(_syntaxFactory.FieldDeclaration(
                 EmptyList<AttributeListSyntax>(),
                 modifiers,
-                _syntaxFactory.VariableDeclaration(context.DataType?.Get<TypeSyntax>() ?? _getMissingType(), variables),
+                _syntaxFactory.VariableDeclaration(type, variables),
                 SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
             _pool.Free(variables);
         }

@@ -1,6 +1,21 @@
 // C366. DEFINEs need type specified
-DEFINE ccOptimistic := 1
-DEFINE ccNone := 0
+DEFINE ccNone 			:= -1
+DEFINE ccOptimistic 	:= ccNone+1
+DEFINE ccPesstimistic 	:= ccOptimistic+1
+DEFINE dToday := Today()
+DEFINE dBirthday := 1959.06.08   
+DEFINE dBirthday2 := SToD("20030219")
+DEFINE pSomething := PTR(_CAST, 0x12345678)
+DEFINE pSomething2 := (PTR) 0x12345678
+DEFINE Name := "Robert"
+DEFINE Name2 := e"Robert\tvan\tder\tHulst"
+DEFINE Sym  := #SomeSymbol
+DEFINE Pi   := 3.14
+DEFINE NOTHING := {}
+DEFINE NOTS := NIL                   
+STATIC DEFINE istrue := TRUE
+DEFINE foo  :=  Left(name,1) AS STRING
+DEFINE bar  :=  iif( !istrue, foo,  "L")
 
 FUNCTION Start() AS VOID
 IntTest(ccOptimistic)

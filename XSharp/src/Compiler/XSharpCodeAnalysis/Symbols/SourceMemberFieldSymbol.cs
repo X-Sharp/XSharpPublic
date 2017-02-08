@@ -28,11 +28,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 {
     internal partial class SourceMemberFieldSymbol : SourceFieldSymbolWithSyntaxReference
     {
-        internal TypeSymbol GetVOGlobalType(CSharpCompilation compilation, Binder binder)
+        internal TypeSymbol GetVOGlobalType(CSharpCompilation compilation, TypeSyntax typeSyntax, Binder binder, ConsList<FieldSymbol> fieldsBeingBound)
         {
+            var xNode = this.SyntaxNode.XNode;
             if (compilation.Options.VOResolveTypedFunctionPointersToPtr)
             {
-                var xNode = this.SyntaxNode.XNode;
                 if (xNode is XP.ClassvarContext &&
                     xNode.Parent is XP.ClassVarListContext)
                 {
@@ -52,6 +52,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
                     }
                 }
+            }
+            TypeSymbol type = null;
+            if (xNode is XP.VodefineContext)
+            {
+                DiagnosticBag diagnostics  = DiagnosticBag.GetInstance();
+                type = binder.BindType(typeSyntax, diagnostics);
+                // no datatype specified and parser could not determine the type
+                var vodef = xNode as XP.VodefineContext;
+                if (type.SpecialType == SpecialType.System_Object && vodef.DataType == null)
+                {
+                    fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
+                    var declarator = VariableDeclaratorNode;
+                    var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
+                    var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, declarator.Initializer, declarator);
+                    if (initializerOpt != null)
+                    {
+                        if ((object)initializerOpt.Type != null && !initializerOpt.Type.IsErrorType())
+                        {
+                            type = initializerOpt.Type;
+                            if (initializerOpt.ConstantValue != null && !this.IsConst)
+                            {
+                                this._modifiers |= DeclarationModifiers.Const;
+                                this._modifiers |= DeclarationModifiers.Static;
+                                this._modifiers &= ~DeclarationModifiers.ReadOnly;
+                            }
+                        }
+                    }
+                }
+                return type;
             }
             return null;
         }

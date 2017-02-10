@@ -10,7 +10,6 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">If you own a license of Vulcan, you can copy the DLLs that you find in the &lt;Vulcan.NET BaseFolder&gt;\Redist\4.0 folder to a folder that is inside your solution.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Then add references to the DLLs that you need in your project.</text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">DLLs you </text><text styleclass="Heading3" style="color:#ff0000;" translate="true">MUST</text><text styleclass="Heading3" translate="true"> add if you compile for the VO/Vulcan dialect:</text></para>
     <para styleclass="Normal"></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

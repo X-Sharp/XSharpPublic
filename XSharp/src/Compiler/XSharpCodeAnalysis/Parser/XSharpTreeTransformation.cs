@@ -5580,7 +5580,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     SyntaxFactory.MakeToken(SyntaxKind.IsKeyword),
                     context.Type.Get<ExpressionSyntax>()));
             }
-            else if (context.Op.Type == XP.AS)
+            else if (context.Op.Type == XP.ASTYPE)
             {
                 context.Put(_syntaxFactory.BinaryExpression(
                     SyntaxKind.AsExpression,

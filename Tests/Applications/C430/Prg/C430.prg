@@ -4,6 +4,10 @@ LOCAL o AS OBJECT
 LOCAL t AS TestClass
 o := TestClass{}
 t := o ASTYPE TestClass 
+? t
+o := Error{}
+t := o ASTYPE TestClass
+? t
 RETURN
 
 CLASS TestClass

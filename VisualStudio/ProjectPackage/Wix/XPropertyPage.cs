@@ -708,7 +708,7 @@ namespace XSharp.Project
         }
 
         /// <summary>
-        /// Handles the help event by displaying the property pages help from WiX.chm.
+        /// Handles the help event by displaying the property pages 
         /// </summary>
         /// <param name="sender">The control sending the event.</param>
         /// <param name="hlpevent">Event parameters.</param>

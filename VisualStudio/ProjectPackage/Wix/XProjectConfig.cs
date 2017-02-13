@@ -13,7 +13,7 @@ namespace XSharp.Project
 {
 
     /// <summary>
-    /// Allows getting and setting configuration-dependent properties for a WiX project.
+    /// Allows getting and setting configuration-dependent properties for a project.
     /// </summary>
     [CLSCompliant(false)]
     public class XProjectConfig : ProjectConfig

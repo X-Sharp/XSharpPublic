@@ -481,7 +481,6 @@ namespace Microsoft.VisualStudio.Project
         /// Emulates the behavior of SetProperty(name, value, condition) on the old MSBuild object model.
         /// This finds a property group with the specified condition (or creates one if necessary) then sets the property in there.
         /// </summary>
-        private string[] BuildEventProperties = new string[] { "PreBuildEvent", "PostBuildEvent", "RunPostBuildEvent" };
         private void SetPropertyUnderCondition(string propertyName, string propertyValue, string condition)
         {
 			this.EnsureCache();
@@ -496,29 +495,21 @@ namespace Microsoft.VisualStudio.Project
 
             // New OM doesn't have a convenient equivalent for setting a property with a particular property group condition.
             // So do it ourselves.
-            var groups = new List<MSBuildConstruction.ProjectPropertyGroupElement>();
+            var matchingGroups = new List<MSBuildConstruction.ProjectPropertyGroupElement>();
 
 			foreach (MSBuildConstruction.ProjectPropertyGroupElement group in this.evaluatedProject.Xml.PropertyGroups)
             {
                 if (String.Equals(group.Condition.Trim(), conditionTrimmed, StringComparison.OrdinalIgnoreCase))
                 {
-                    groups.Add(group);
-                }
-            }
-            bool IsBuildEvent = false;
-            foreach (string s in BuildEventProperties)
-            {
-                if (string.Compare(propertyName, s, true) == 0)
-                {
-                    IsBuildEvent = true;
+                    matchingGroups.Add(group);
                 }
             }
 
             MSBuildConstruction.ProjectPropertyGroupElement selectedGroup = null;
-            if (groups.Count == 1 && ! IsBuildEvent)
+            if (matchingGroups.Count == 1 )
             {
                 var props = new List<MSBuildConstruction.ProjectPropertyElement>();
-                selectedGroup = groups[0];
+                selectedGroup = matchingGroups[0];
                 foreach (MSBuildConstruction.ProjectPropertyElement property in selectedGroup.PropertiesReversed) // If there's dupes, pick the last one so we win
                 {
                     if (String.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase) && property.Condition.Length == 0)
@@ -537,10 +528,10 @@ namespace Microsoft.VisualStudio.Project
                     return;
                 }
             }
-            else if (groups.Count > 1)
+            else if (matchingGroups.Count > 1)
             {
                 bool written = false;
-                foreach (var group in groups)
+                foreach (var group in matchingGroups)
                 {
                     var props = new List<MSBuildConstruction.ProjectPropertyElement>();
                     foreach (MSBuildConstruction.ProjectPropertyElement property in group.PropertiesReversed)
@@ -563,10 +554,7 @@ namespace Microsoft.VisualStudio.Project
                 }
                 if (written)
                     return;
-                if (IsBuildEvent)
-                    selectedGroup = groups[groups.Count - 1];
-                else
-                    selectedGroup = groups[0];
+                selectedGroup = matchingGroups[0];
             }
             else
             {

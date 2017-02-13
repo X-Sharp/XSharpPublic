@@ -16,7 +16,7 @@ namespace XSharp.Project
     using Microsoft.VisualStudio.Package;
     
     /// <summary>
-    /// Describes attributes of WiX project properties and allows getting/setting in context of those attributes.
+    /// Describes attributes of project properties and allows getting/setting in context of those attributes.
     /// </summary>
     internal class ProjectProperty
     {

@@ -35,7 +35,8 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, IVsDesignTimeAssemblyResolution
+    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, 
+        IVsDesignTimeAssemblyResolution, IVsProject5
     {
 
         static Dictionary<string, string> dependencies;
@@ -248,26 +249,52 @@ namespace XSharp.Project
             }
             return null;
         }
+        public __VSPROJOUTPUTTYPE GetOutPutType()
+        {
+            string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
+            OutputType outputType = (OutputType)Enum.Parse(typeof(OutputType), outputTypeAsString);
+            switch (outputType)
+            {
+                case OutputType.WinExe:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINEXE;
+                case OutputType.Library:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY;
+                case OutputType.Exe:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_EXE;
+                case OutputType.WinMDObj:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINMDOBJ;
+                case OutputType.AppContainerExe:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_APPCONTAINEREXE;
+            }
+            return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_NONE;
+        }
         public override object GetProperty(int propId)
         {
-            if (propId == (int)__VSHPROPID.VSHPROPID_DefaultNamespace)
+            switch (propId)
             {
-                return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
-            }
-
-            if (propId == (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration)
-            {
-                return __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_Declarations | __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_InitMethods;
-            }
-            switch ((__VSHPROPID3)propId)
-            {
-                case __VSHPROPID3.VSHPROPID_WebReferenceSupported:
-                case __VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
-                case __VSHPROPID3.VSHPROPID_SupportsHierarchicalUpdate:
-                case __VSHPROPID3.VSHPROPID_SupportsLinqOverDataSet:
-                case __VSHPROPID3.VSHPROPID_SupportsNTierDesigner:
+                case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
+                    return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+                case (int)__VSHPROPID5.VSHPROPID_OutputType:
+                    return GetOutPutType();
+                case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
+                case (int)__VSHPROPID3.VSHPROPID_WebReferenceSupported:
+                case (int)__VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
+                case (int)__VSHPROPID3.VSHPROPID_SupportsHierarchicalUpdate:
+                case (int)__VSHPROPID3.VSHPROPID_SupportsLinqOverDataSet:
+                case (int)__VSHPROPID3.VSHPROPID_SupportsNTierDesigner:
+                case (int)__VSHPROPID6.VSHPROPID_ShowAllProjectFilesInProjectView:
                     return true;
-
+                case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
+                    return "XSharp.ProjectSystem";
+                case (int)__VSHPROPID6.VSHPROPID_Subcaption:
+                case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
+                    return "X#";
+                case (int)__VSHPROPID7.VSHPROPID_CanBuildQuickCheck:
+                case (int)__VSHPROPID7.VSHPROPID_CanDebugLaunchQuickCheck:
+                    return _VSQuickCheckAnswer.QCA_Always;
+                // Added for NuGet Support
+                case (int)__VSHPROPID8.VSHPROPID_ProjectCapabilitiesChecker:
+                    return new XSharpProjectCapabilitiesPresenceChecker();
             }
             return base.GetProperty(propId);
         }
@@ -1427,8 +1454,70 @@ namespace XSharp.Project
             return VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
 
         }
+
+        #region IVsProject5
+        public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
+        {
+            var node = this.FindURL(pszMkDocument);
+            if (node != null)
+            {
+                pfFound = 1;
+                pitemid = node.ID;
+                if (node is XSharpFileNode)
+                {
+                    var FNode = node as XSharpFileNode;
+                    if (FNode.IsNonMemberItem)
+                    {
+                        pdwPriority2 = (int)__VSDOCUMENTPRIORITY2.DP2_NonMember;
+                    }
+                    else
+                    {
+                        pdwPriority2 = (int)__VSDOCUMENTPRIORITY2.DP2_Standard;
+                    }
+
+                }
+                else
+                {
+                    pdwPriority2 = (int)__VSDOCUMENTPRIORITY2.DP2_Standard;
+                }
+            }
+            else
+            {
+                pfFound = 0;
+                pdwPriority2 = 0;
+                pitemid = 0;
+            }
+            return VSConstants.S_OK;
+        }
+
+        #endregion
     }
 
     #endregion
+
+    class XSharpProjectCapabilitiesPresenceChecker : IVsBooleanSymbolPresenceChecker
+    {
+
+        public bool HasChangedSince(ref object versionObject)
+        {
+            // If your project capabilities do not change over time while the project is open,
+            // you may simply `return false;` from your `HasChangedSince` method.
+            return false;
+        }
+
+        public bool IsSymbolPresent(string symbol)
+        {
+            switch (symbol.ToLower())
+            { 
+                case "assemblyreferences":
+                case "declaredsourceitems":
+                case "usersourceitems":
+                case "windowsxaml":
+                case "csharp":
+                    return true;
+            }
+            return false;
+        }
+    }
 }
 

@@ -18,20 +18,13 @@ namespace XSharp.Project
     /// </summary>
     internal static class PropertyValidator
     {
-        // =========================================================================================
-        // Member Variables
-        // =========================================================================================
-
-        private static readonly RegexOptions regexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Singleline;
-        private static readonly Regex icesValidationRegex = new Regex(@"^([\w\-.]+;)*[\w\-.]+;?$", regexOptions);
-        private static readonly Regex warningsValidationRegex = new Regex(@"^([0-9]+;)*([0-9]+);?$", regexOptions);
 
         // =========================================================================================
         // Methods
         // =========================================================================================
 
         /// <summary>
-        /// Entry point for all property validation in WiX projects.
+        /// Entry point for all property validation in  projects.
         /// </summary>
         /// <param name="propertyName">Name of the property being validated. (The name in the project file, not the localized name.)</param>
         /// <param name="value">Property value to be validated.</param>

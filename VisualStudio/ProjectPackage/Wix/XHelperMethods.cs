@@ -158,16 +158,6 @@ internal static class XHelperMethods
             return null;
         }
 
-      /// <summary>
-      /// Returns a value indicating whether we can recover from the specified exception. If we can't recover,
-      /// then it's expected that the caller will immediately call <see cref="Shutdown"/>.
-      /// </summary>
-      /// <param name="e">The <see cref="Exception"/> to test.</param>
-      /// <returns>true if we cannot recover from the exception; otherwise, false.</returns>
-      public static bool IsExceptionUnrecoverable( Exception e )
-      {
-         return ( e is StackOverflowException );
-      }
 
       /// <summary>
       /// Combines two registry paths.
@@ -207,59 +197,6 @@ internal static class XHelperMethods
          }
 
          return formattedString;
-      }
-
-  	    /// <summary>
-        /// Performs a ship assertion, which raises an assertion dialog. TODO: Generate a call stack and email it to some alias.
-        /// </summary>
-        /// <param name="condition">The condition to assert.</param>
-        /// <param name="message">The message to show in the assertion.</param>
-        /// <param name="args">An array of arguments for the formatted message.</param>
-        [SuppressMessage( "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes" )]
-      public static void ShipAssert( bool condition, string message, params object[] args )
-      {
-         if ( !condition )
-         {
-            VerifyStringArgument( message, "message" );
-
-            try
-            {
-               // get the stack trace (not including this method)
-               StackTrace stack = new StackTrace( 1, true );
-               string stackTrace = stack.ToString();
-
-               // create a StringBuilder to do our string concatenations
-               StringBuilder formattedMessage = new StringBuilder( message.Length + stackTrace.Length );
-
-               // append the message to the string
-               formattedMessage.Append( SafeStringFormat( CultureInfo.CurrentUICulture, message, args ) );
-
-               // append the stack trace
-               formattedMessage.Append( Environment.NewLine );
-               formattedMessage.Append( stackTrace );
-
-               // trace the message and show an assertion dialog
-               TraceFail( formattedMessage.ToString() );
-            }
-            catch ( Exception e )
-            {
-               if ( IsExceptionUnrecoverable( e ) )
-               {
-                  Shutdown();
-               }
-
-               TraceFail( "There was an exception while trying to perform a ShipAssert: {0}", e );
-            }
-         }
-      }
-
-      /// <summary>
-      /// Shuts down the process by calling <see cref="Environment.FailFast"/>, which will write an event log
-      /// entry and create a managed Watson dump.
-      /// </summary>
-      public static void Shutdown()
-      {
-         Environment.FailFast(Resources.GetString(Resources.CatastrophicError ) );
       }
 
       /// <summary>
@@ -345,7 +282,7 @@ internal static class XHelperMethods
       }
 
       /// <summary>
-      /// Finds child nodes uner the parent node and places them in the currentList.
+      /// Finds child nodes under the parent node and places them in the currentList.
       /// </summary>
       /// <param name="currentList">List to be populated with the nodes.</param>
       /// <param name="parent">Parent node under which the nodes should be searched.</param>

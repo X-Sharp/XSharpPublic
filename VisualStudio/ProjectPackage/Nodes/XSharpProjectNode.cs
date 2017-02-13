@@ -173,7 +173,7 @@ namespace XSharp.Project
             {
                 if (vsProject == null)
                 {
-                    vsProject = new OAVSProject(this);
+                    vsProject = new OAXSharpVSProject(this);
                 }
 
                 return vsProject;

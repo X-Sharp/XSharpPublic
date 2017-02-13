@@ -41,7 +41,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         internal static IList<IToken> Clone(this IList<IToken> tokens)
         {
-            var clone = new IToken[tokens.Count];
+            var clone =  new IToken[tokens.Count];
             int i = 0;
             foreach (var t in tokens)
             {
@@ -814,6 +814,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 stream.name = nfp;
                 tokens.Fill();
                 InsertStream(nfp, tokens);
+                foreach (var e in lexer.LexErrors)
+                {
+                    _parseErrors.Add(e);
+                }
                 AddIncludeFile(nfp, tokens.GetTokens(), text);
             }
             else

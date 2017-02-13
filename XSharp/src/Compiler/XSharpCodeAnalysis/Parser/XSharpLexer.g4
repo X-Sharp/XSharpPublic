@@ -22,6 +22,7 @@ lexer grammar XSharpLexer;
 {
 using System.Collections.Immutable;
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp;
 }
 
 
@@ -72,6 +73,9 @@ using System.Collections.Generic;
 			return fc == '_' || (fc >= 'A' && fc <= 'Z')|| (fc >= 'a' && fc <= 'z');
         }
 	}
+	IList<Antlr4.Runtime.Tree.ParseErrorData> _lexErrors = new List<Antlr4.Runtime.Tree.ParseErrorData>();
+	internal IList<Antlr4.Runtime.Tree.ParseErrorData> LexErrors { get { return _lexErrors;} }
+
 	int _lastToken = NL;
     System.Text.StringBuilder _textSb = new System.Text.StringBuilder();
 	public override IToken NextToken()
@@ -399,6 +403,11 @@ using System.Collections.Generic;
 						_textSb.Append((char)c);
 						InputStream.Consume();
 					}
+					else if (c == '>') {
+						_type = MACROSEP;
+						_textSb.Append((char)c);
+						InputStream.Consume();
+					}
 					break;
 				case '$':
 					_type = SUBSTR;
@@ -596,7 +605,18 @@ using System.Collections.Generic;
                 Emit(t);
             }
             else
+			{
 			    t = base.NextToken() as CommonToken;
+				if (t.Type == ML_COMMENT)
+				{
+					if (!t.Text.EndsWith("*/"))
+					{
+							_lexErrors.Add(new Antlr4.Runtime.Tree.ParseErrorData(
+                                new Antlr4.Runtime.Tree.ErrorNodeImpl(t), ErrorCode.ERR_OpenEndedComment)
+                                );
+					}
+				}
+			}
         }
 		//System.Diagnostics.Debug.WriteLine("T[{0},{1}]:{2}",t.Line,t.Column,t.Text);
 		var type = t.Type;
@@ -1159,7 +1179,8 @@ PP_COMMAND,PP_DEFINE,PP_ELSE,PP_ENDIF,PP_ENDREGION,PP_ERROR,PP_IFDEF,PP_IFNDEF,P
 PP_LAST,
 
 // PP constant
-MACRO,
+MACRO,	  // __term__
+MACROSEP, // =>
 
 // Ids
 ID,KWID,
@@ -1184,18 +1205,18 @@ UNRECOGNIZED
  */
 
 // Numeric & date constants
-HEX_CONST	: '0' X ( HEX_DIGIT )+ ( U | L )?;
-BIN_CONST	: '0' B ( [0-1] )+ ( U )?;
-INT_CONST	:  ( DIGIT )+ ( U | L )? ;
-DATE_CONST	: ( DIGIT ( DIGIT ( DIGIT ( DIGIT )? )? )? )? '.' DIGIT ( DIGIT )? '.' DIGIT ( DIGIT )?;			// 2015.07.15
-REAL_CONST	: ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) ( E ( '+' | '-' )? ( DIGIT )+ )? ( S | D )? // normal, exponential with optional Single or Double specifier
-            | ( ( DIGIT )+ ( '.' ( DIGIT )* )? | '.' ( DIGIT )+ ) M // decimals cannot have exponential notation
+HEX_CONST	: '0' X HEX_DIGIT+ ( U | L )?;
+BIN_CONST	: '0' B BIN_DIGIT+ ( U )?;
+INT_CONST	:  DIGIT+ ( U | L )? ;
+DATE_CONST	:  DIGIT DIGIT? DIGIT? DIGIT? '.' DIGIT DIGIT? '.' DIGIT  DIGIT?;			// 2015.07.15
+REAL_CONST	: ( DIGIT+ ( '.' DIGIT* )? | '.' DIGIT+ ) ( E ( '+' | '-' )? DIGIT+ )? ( S | D )? // normal, exponential with optional Single or Double specifier
+            | ( DIGIT+ ( '.' DIGIT* )? | '.' DIGIT+ ) M // decimals cannot have exponential notation
             ;
 
 USING			 : NUMSIGN U S I N G
 				 ;
 
-PRAGMA			 : {LastToken == NL }? NUMSIGN P R A G M A ((' '|'\t')  (~(  '\n' | '\r' ) )*)?	-> channel(PRAGMACHANNEL)
+PRAGMA			 : {LastToken == NL }? NUMSIGN P R A G M A WHITESPACE  NOT_NEW_LINE	-> channel(PRAGMACHANNEL)
 				 ;
 
 SYMBOL_CONST     : NUMSIGN IDStartChar (IDChar)*;
@@ -1211,19 +1232,21 @@ STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
 			;
 
 
-INTERPOLATED_STRING_CONST: I E? '"' ( ~( '"' | '\n' | '\r' ) )* '"'		// i "..." or ie"..."
-			| E I '"' ( ~( '"' | '\n' | '\r' ) )* '"'					// ei"...."
+INTERPOLATED_STRING_CONST: 
+			  I   '"' ( ~( '"' | '\n' | '\r' ) )* '"'		// i "..." 
+			| I E '"' ESCAPED_STRING_CHARACTER* '"'			// ie"...."
+			| E I '"' ESCAPED_STRING_CHARACTER* '"'			// ei"...."
             ;
 
 ESCAPED_STRING_CONST
-			: E '"' (ESCAPED_STRING_CHARACTER )* '"'			// Escaped double quoted string
+			: E '"' ESCAPED_STRING_CHARACTER* '"'			// Escaped double quoted string
 			;
 
 // When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character
-LINE_CONT   :   SEMI (' ' |  '\t')* ( '/' '/' '/'? ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')             ->channel(HIDDEN)
+LINE_CONT   :   SEMI WHITESPACE  '/' '/' '/'? NOT_NEW_LINE  NEW_LINE             ->channel(HIDDEN)
             ;
 
-LINE_CONT_OLD: {_OldComment}? SEMI (' ' |  '\t')* ( '&' '&' ( ~(  '\n' | '\r' ) )* )?  ('\r' '\n'? | '\n')     ->channel(HIDDEN)
+LINE_CONT_OLD: {_OldComment}? SEMI WHITESPACE  '&' '&' NOT_NEW_LINE  NEW_LINE     ->channel(HIDDEN)
             ;
 
 SEMI		: SEMICOLON
@@ -1242,7 +1265,7 @@ SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
 
 
 ML_COMMENT  : ('/' '*' .*? '*' '/'
-			| '/' '*' .*? EOF		// TODO: Generate an error 'missing End of Comment'
+			| '/' '*' .*? EOF		// 'missing End of Comment' is generated in the NextToken() method above
 			)	-> channel(HIDDEN)
 			;
 
@@ -1262,17 +1285,36 @@ UNRECOGNIZED			: . ;
 // Lexer fragments
 
 fragment
-ESCAPED_CHARACTER       : ~( '\'' | '\\' | '\r' | '\n' )		// this differs from the ESCAPED_STRING_CHARACTER rule because this has a single quote and not a double quote
+ESCAPED_CHARACTER       : NOT_ESCAPE_SINGLE		
 						| SIMPLE_ESCAPE_SEQUENCE
 						| HEX_ESCAPE_SEQUENCE
 						| UNICODE_ESCAPE_SEQUENCE
 						;
 
 fragment
-ESCAPED_STRING_CHARACTER: ~( '\"' | '\\' | '\r' | '\n' )		// this differs from the ESCAPED_CHARACTER rule because this has a double quote and not a single quote
+ESCAPED_STRING_CHARACTER: NOT_ESCAPE_DOUBLE		
 						| SIMPLE_ESCAPE_SEQUENCE
 						| HEX_ESCAPE_SEQUENCE
 						| UNICODE_ESCAPE_SEQUENCE
+						;
+
+fragment
+NOT_ESCAPE_SINGLE		: ~( '\'' | '\\' | '\r' | '\n' ) 
+						;
+
+NOT_ESCAPE_DOUBLE		: ~( '\"' | '\\' | '\r' | '\n' )
+						;
+
+fragment
+NEW_LINE				: ('\r' '\n'? | '\n')
+						;
+
+fragment
+NOT_NEW_LINE			: ( ~(  '\n' | '\r' ) )* 
+						;
+
+fragment 
+WHITESPACE				: (' ' |  '\t')*
 						;
 
 fragment
@@ -1300,6 +1342,7 @@ UNICODE_ESCAPE_SEQUENCE : '\\' U HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT (HEX_DI
 
 
 fragment DIGIT			: [0-9];
+fragment BIN_DIGIT		: [0-1];
 fragment HEX_DIGIT		: [0-9a-fA-F];
 fragment ID_PART		: IDStartChar IDChar*
 						;

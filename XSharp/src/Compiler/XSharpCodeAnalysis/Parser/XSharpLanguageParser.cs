@@ -223,7 +223,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             var walker = new ParseTreeWalker();
 
-//#if DEBUG
+            foreach (var e in lexer.LexErrors)
+            {
+                parseErrors.Add(e);
+            }
+
+            //#if DEBUG
+
             /* Temporary solution to prevent crashes with invalid syntax */
             if (parser.NumberOfSyntaxErrors != 0 || (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
             {

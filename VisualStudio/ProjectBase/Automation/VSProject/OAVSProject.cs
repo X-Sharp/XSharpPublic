@@ -10,6 +10,8 @@
  * ***************************************************************************/
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -28,12 +30,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         #region fields
         private ProjectNode project;
         private OAVSProjectEvents events;
+        private OAVSProjectImports imports;
         #endregion
 
         #region ctors
         internal OAVSProject(ProjectNode project)
         {
             this.project = project;
+            this.imports = new OAVSProjectImports(this.Project);
         }
         #endregion
 
@@ -98,15 +102,14 @@ namespace Microsoft.VisualStudio.Project.Automation
         public virtual string GetUniqueFilename(object pDispatch, string bstrRoot, string bstrDesiredExt)
         {
 			Debug.Fail("VSProject.GetUniqueFilename not implemented");
-            throw new NotImplementedException(); 
+            throw new NotImplementedException();
         }
 
         public virtual Imports Imports
         {
             get
             {
-				Debug.Fail("VSProject.Imports not implemented");
-                throw new NotImplementedException(); 
+                return imports;
             }
         }
 
@@ -183,12 +186,14 @@ namespace Microsoft.VisualStudio.Project.Automation
     {
         #region fields
         private OAVSProject vsProject;
+        private VSLangProj.ImportsEvents importsEvents;
         #endregion
 
         #region ctors
         public OAVSProjectEvents(OAVSProject vsProject)
         {
             this.vsProject = vsProject;
+            this.importsEvents = new VSLangProj.ImportsEventsClass();
         }
         #endregion
 
@@ -207,8 +212,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-				Debug.Fail("VSProjectEvents.ImportsEvents not implemented");
-                throw new NotImplementedException();
+                return importsEvents;
             }
         }
 
@@ -223,4 +227,85 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
     }
 
+    public class OAVSProjectImports : VSLangProj.Imports
+    {
+        EnvDTE.Project project;
+        List<string> imports;
+
+        internal OAVSProjectImports( EnvDTE.Project prj)
+        {
+            project = prj;
+            imports = new List<string>();
+        }
+
+        public EnvDTE.Project ContainingProject
+        {
+            get
+            {
+                return project;
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return imports.Count;
+            }
+        }
+
+        public DTE DTE
+        {
+            get
+            {
+                return project.DTE;
+            }
+        }
+
+        public object Parent
+        {
+            get
+            {
+                return project;
+            }
+        }
+
+        public void Add(string bstrImport)
+        {
+            imports.Add(bstrImport);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return imports.GetEnumerator();
+        }
+
+        public string Item(int lIndex)
+        {
+            if (lIndex >= 0 && lIndex < imports.Count)
+                return imports[lIndex];
+            return null;
+        }
+
+        public void Remove(object index)
+        {
+            if (index is Int32)
+            {
+                int iIndex = (Int32)index;
+                if (iIndex > 0 && iIndex <= imports.Count)
+                    imports.Remove(imports[iIndex - 1]);
+            }
+            else if (index is String)
+            {
+                string sIndex = index as String;
+                if (imports.Contains(sIndex))
+                {
+                    imports.Remove(sIndex);
+                }
+            }
+        }
+    }
+
+
 }
+

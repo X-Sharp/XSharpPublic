@@ -61,42 +61,6 @@ namespace XSharp.Project.Wix {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot get the service of type &apos;{0}&apos; from the environment. Please log this as a bug..
-        /// </summary>
-        internal static string CannotGetService {
-            get {
-                return ResourceManager.GetString("CannotGetService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A catastrophic error has occurred and the process was terminated..
-        /// </summary>
-        internal static string CatastrophicError {
-            get {
-                return ResourceManager.GetString("CatastrophicError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project file successfully checked out..
-        /// </summary>
-        internal static string CheckoutSuccess {
-            get {
-                return ResourceManager.GetString("CheckoutSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cultures.
-        /// </summary>
-        internal static string Cultures {
-            get {
-                return ResourceManager.GetString("Cultures", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Delete {
@@ -113,33 +77,6 @@ namespace XSharp.Project.Wix {
             get {
                 object obj = ResourceManager.GetObject("DownArrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upgrade failed - could not checkout file {0}..
-        /// </summary>
-        internal static string FailedToCheckoutFile {
-            get {
-                return ResourceManager.GetString("FailedToCheckoutFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to checkout project..
-        /// </summary>
-        internal static string FailedToCheckoutProject {
-            get {
-                return ResourceManager.GetString("FailedToCheckoutProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Include Path.
-        /// </summary>
-        internal static string IncludePath {
-            get {
-                return ResourceManager.GetString("IncludePath", resourceCulture);
             }
         }
         
@@ -180,166 +117,12 @@ namespace XSharp.Project.Wix {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}: The {0} you entered is not in a valid format. The format must follow this pattern: &lt;name&gt;=&lt;value&gt;;&lt;name&gt;.
-        /// </summary>
-        internal static string InvalidPreprocessorVariable {
-            get {
-                return ResourceManager.GetString("InvalidPreprocessorVariable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0}: The {0} you entered is not in a valid format. The format must follow this pattern: &lt;number&gt;;&lt;number&gt;.
-        /// </summary>
-        internal static string InvalidWarnings {
-            get {
-                return ResourceManager.GetString("InvalidWarnings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Librarian:.
-        /// </summary>
-        internal static string Librarian {
-            get {
-                return ResourceManager.GetString("Librarian", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &amp;Linker:.
-        /// </summary>
-        internal static string Linker {
-            get {
-                return ResourceManager.GetString("Linker", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [AssemblyProduct].
-        /// </summary>
-        internal static string OfficialName {
-            get {
-                return ResourceManager.GetString("OfficialName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output name.
-        /// </summary>
-        internal static string OutputName {
-            get {
-                return ResourceManager.GetString("OutputName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output path.
-        /// </summary>
-        internal static string OutputPath {
-            get {
-                return ResourceManager.GetString("OutputPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preprocessor variables.
-        /// </summary>
-        internal static string PreprocessorVariables {
-            get {
-                return ResourceManager.GetString("PreprocessorVariables", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [AssemblyProduct] version [FileVersion]
-        ///[AssemblyCopyright].
-        /// </summary>
-        internal static string ProductDetails {
-            get {
-                return ResourceManager.GetString("ProductDetails", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [FileVersion].
-        /// </summary>
-        internal static string ProductId {
-            get {
-                return ResourceManager.GetString("ProductId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} &amp;Properties....
-        /// </summary>
-        internal static string ProjectPropertiesCommand {
-            get {
-                return ResourceManager.GetString("ProjectPropertiesCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project file is read-only, attempting to check-out if under source control.
-        /// </summary>
-        internal static string ReadOnlyFile {
-            get {
-                return ResourceManager.GetString("ReadOnlyFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reference Path.
-        /// </summary>
-        internal static string ReferencePath {
-            get {
-                return ResourceManager.GetString("ReferencePath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap UpArrow {
             get {
                 object obj = ResourceManager.GetObject("UpArrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project file was checked out and is already upgraded..
-        /// </summary>
-        internal static string UpgradeNoNeedToUpgradeAfterCheckout {
-            get {
-                return ResourceManager.GetString("UpgradeNoNeedToUpgradeAfterCheckout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Suppressed warnings.
-        /// </summary>
-        internal static string Warnings {
-            get {
-                return ResourceManager.GetString("Warnings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Build Events.
-        /// </summary>
-        internal static string XBuildEventsPropertyPageName {
-            get {
-                return ResourceManager.GetString("XBuildEventsPropertyPageName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Build.
-        /// </summary>
-        internal static string XSettingsPropertyPageName {
-            get {
-                return ResourceManager.GetString("XSettingsPropertyPageName", resourceCulture);
             }
         }
     }

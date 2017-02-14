@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Init Procedure</Title>
+      <Shortcut>initproc</Shortcut>
+      <Description>Code snippet for an INIT Procedure</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>name</ID>
+          <ToolTip>Name of procedure</ToolTip>
+          <Default>MyInitProc</Default>
+        </Literal>
+        <Literal>
+          <ID>inittype</ID>
+          <Function>InitProcType($inittype$)</Function>
+          <Default>_INIT3</Default>
+          <ToolTip>The init group that this procedure will run in</ToolTip>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+PROCEDURE $name$() AS VOID $inittype$
+   $end$
+RETURN
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

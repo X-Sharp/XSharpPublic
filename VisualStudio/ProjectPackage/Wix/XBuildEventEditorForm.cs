@@ -32,7 +32,7 @@ namespace XSharp.Project
 
             this.Font = XHelperMethods.GetDialogFont();
 
-            this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONFACE);
+            //this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONFACE);
             XHelperMethods.SetControlTreeColors(this);
         }
 

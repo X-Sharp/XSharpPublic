@@ -172,6 +172,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CodeDomProvider\XSharpCodeDomHelper.cs" />
+    <Compile Include="LanguageService\ExpansionFunctions.cs" />
+    <Compile Include="LanguageService\XSharpViewFilter.cs" />
     <Compile Include="PropertyPages\XBuildEventsPropertyPage.cs" />
     <Compile Include="Wix\FolderBrowserTextBox.cs">
       <SubType>UserControl</SubType>

@@ -66,21 +66,36 @@ namespace XSharp.Project
     [ProvideLanguageService(typeof(XSharpLanguageService),
                          "XSharp",
                          1,                            // resource ID of localized language name
+                         AutoOutlining =true,
                          CodeSense = true,             // Supports IntelliSense
-                         RequestStockColors = false,   // Supplies custom colors
-                         EnableCommenting = true,      // Supports commenting out code
+                         CodeSenseDelay = 1000,        // Delay to wait
+                         DefaultToInsertSpaces = true,
+                         DefaultToNonHotURLs = true,
+                         EnableAdvancedMembersOption =true,
                          EnableAsyncCompletion = true, // Supports background parsing
-                         ShowDropDownOptions = true    // Supports NavigationBar 
-                         )]
+                         EnableCommenting = true,      // Supports commenting out code
+                         EnableFormatSelection = true,
+                         EnableLineNumbers =true,
+                         MatchBraces =true,
+                         MatchBracesAtCaret =true,
+                         MaxErrorMessages =10,
+                         QuickInfo = true,
+                         RequestStockColors = false,   // Supplies custom colors
+                         ShowCompletion =true,
+                         ShowDropDownOptions = true,    // Supports NavigationBar 
+                         ShowMatchingBrace =true,
+                         ShowSmartIndent = false,
+                         SingleCodeWindowOnly = false,
+                         SupportCopyPasteOfHTML = false
+                 )]
     [ProvideLanguageCodeExpansionAttribute(
          typeof(XSharpLanguageService),
          "XSharp",  // Name of language used as registry key.
          1,         // Resource ID of localized name of language service.
          "XSharp",  // language key used in snippet templates.
-         @"%InstallRoot%\XSharp Language\SnippetsIndex.xml",  // Path to snippets index
-         SearchPaths = @"%InstallRoot%\XSharp Language\Snippets\%LCID%\Snippets\;" +
-                       @"%TestDocs%\Code Snippets\XSharp Language\XSharp Code Snippets"
-
+         @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\SnippetsIndex.xml",  // Path to snippets index
+         SearchPaths = @"%InstallRoot%\Common7\IDE\Extensions\XSharp\Snippets\%LCID%\Snippets;" +
+                  @"\%MyDocs%\Code Snippets\XSharp\My Code Snippets"
          )]
 
     /*

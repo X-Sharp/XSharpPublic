@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>VO STRUCTURE</Title>
+      <Shortcut>VOSTRUCT</Shortcut>
+      <Description>Code snippet for VO-Compatible STRUCTURE</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>name</ID>
+          <ToolTip>Structure name</ToolTip>
+          <Default>MyStructure</Default>
+        </Literal>
+        <Literal>
+          <ID>membername</ID>
+          <ToolTip>Member name</ToolTip>
+          <Default>M1</Default>
+        </Literal>
+        <Literal>
+          <ID>membertype</ID>
+          <ToolTip>Member Type</ToolTip>
+          <Default>INT</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+VOSTRUCT $name$
+   MEMBER $membername$ AS $membertype$ 
+   $end$
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

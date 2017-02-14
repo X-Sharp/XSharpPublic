@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>TRY CATCH</Title>
+      <Shortcut>TRY</Shortcut>
+      <Description>Code snippet for TRY CATCH</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>e</ID>
+          <Default>e</Default>
+          <ToolTip>Local variable that gets the exception value</ToolTip>
+        </Literal>
+        <Literal>
+          <ID>exception</ID>
+          <Default>System.Exception</Default>
+          <ToolTip>Type of the exception</ToolTip>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+TRY
+   $selected$ $end$
+CATCH $e$ as $exception$
+
+END TRY
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

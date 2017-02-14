@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Property</Title>
+      <Shortcut>prop</Shortcut>
+      <Description>Code snippet for adding a class property</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>propname</ID>
+          <ToolTip>Property name</ToolTip>
+          <Default>MyProperty</Default>
+        </Literal>
+        <Literal>
+          <ID>returntype</ID>
+          <ToolTip>Property type</ToolTip>
+		  <Default>OBJECT</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+PROPERTY $propname$ AS $returntype$
+    GET
+		RETURN $end$
+    END GET
+    SET
+		// Use Value for the new value
+	RETURN
+	END SET
+END PROPERTY	
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

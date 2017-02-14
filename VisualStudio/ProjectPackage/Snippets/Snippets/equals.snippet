@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Equals</Title>
+      <Shortcut>equals</Shortcut>
+      <Description>Code snippet for implementing Equals() according to guidelines</Description>
+      <Author>Microsoft Corporation</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+ 
+      <Code Language="XSharp"><![CDATA[
+// override Object:Equals()
+METHOD Equals( obj AS OBJECT ) 
+   //
+   // See the full list of guidelines at
+   //   http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconequals.asp
+   // and also the guidance for operator== at
+   //   http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconimplementingequalsoperator.asp
+   //
+
+   IF obj == NULL || GetType() != obj:GetType()
+      RETURN false
+        
+   // TODO: write your implementation of Equals() here.
+   $end$
+   BREAK System.Exception{ "The method or operation is not implemented." }
+   RETURN SUPER:Equals( obj )
+    
+// override Object:GetHashCode()
+METHOD GetHashCode() AS INT 
+   // TODO: write your implementation of GetHashCode() here.
+   BREAK System.Exception{ "The method or operation is not implemented." }
+   RETURN SUPER:GetHashCode()
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

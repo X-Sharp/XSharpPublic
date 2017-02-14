@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>ForEach</Title>
+      <Shortcut>FOREACH</Shortcut>
+      <Description>Code snippet for 'FOREACH' loop</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>item</ID>
+          <Default>item</Default>
+          <ToolTip>Enumerator item</ToolTip>
+        </Literal>
+        <Literal>
+          <ID>collection</ID>
+          <Default>Collection</Default>
+          <ToolTip>Collection Variable</ToolTip>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp">
+        <![CDATA[
+FOREACH VAR $item$ IN $collection$
+   $selected$ $end$
+NEXT
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

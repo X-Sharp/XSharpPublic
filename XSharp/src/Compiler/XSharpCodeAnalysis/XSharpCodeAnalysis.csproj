@@ -7,6 +7,9 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
+    <RoslynBin>..\Roslyn\Binaries</RoslynBin>
+    <XSharpBuild>..\..\..\..\XSharp\build</XSharpBuild>
     <ProjectGuid>{A472BFB0-1BC4-4F9A-B610-9E83F6292D57}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>LanguageService.CodeAnalysis</RootNamespace>
@@ -16,9 +19,9 @@
     <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <OutDir>$(BaseOutputPath)\$(Configuration)\clr-core\</OutDir>
-    <CSharpSyntaxGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpSyntaxGenerator.exe</CSharpSyntaxGeneratorToolPath>
-    <BoundTreeGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\BoundTreeGenerator.exe</BoundTreeGeneratorToolPath>
-    <CSharpErrorFactsGeneratorToolPath>$(SolutionDir)..\Roslyn\Binaries\$(Configuration)\CSharpErrorFactsGenerator.exe</CSharpErrorFactsGeneratorToolPath>
+    <CSharpSyntaxGeneratorToolPath>$(SolutionDir)$(RoslynBin)\$(Configuration)\CSharpSyntaxGenerator.exe</CSharpSyntaxGeneratorToolPath>
+    <BoundTreeGeneratorToolPath>$(SolutionDir)$(RoslynBin)\$(Configuration)\BoundTreeGenerator.exe</BoundTreeGeneratorToolPath>
+    <CSharpErrorFactsGeneratorToolPath>$(SolutionDir)$(RoslynBin)\$(Configuration)\CSharpErrorFactsGenerator.exe</CSharpErrorFactsGeneratorToolPath>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
     <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
@@ -27,17 +30,17 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <ItemGroup Label="Project References">
-    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
+    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2D}</Project>
       <Name>CSharpSyntaxGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\BoundTreeGenerator\CompilersBoundTreeGenerator.csproj">
+    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\BoundTreeGenerator\CompilersBoundTreeGenerator.csproj">
       <Project>{02459936-CD2C-4F61-B671-5C518F2A3DDC}</Project>
       <Name>CompilersBoundTreeGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj">
+    <ProjectReference Include="$(RoslynSrc)\Tools\Source\CompilerGeneratorTools\Source\CSharpErrorFactsGenerator\CSharpErrorFactsGenerator.csproj">
       <Project>{288089C5-8721-458E-BE3E-78990DAB5E2E}</Project>
       <Name>CSharpErrorFactsGenerator</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -50,13 +53,13 @@
   </ItemGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;</DefineConstants>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS;UDCSUPPORT;</DefineConstants>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <DefineConstants>COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
     <NoWarn>1591,CS0649,CS8032,CS3021,RS0008,CS1574,CS0419</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -70,7 +73,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>TRACE;DEBUG;COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -81,7 +84,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>$(RoslynSrc)\Compilers\CSharp\CSharpCodeAnalysisRules.ruleset</CodeAnalysisRuleSet>
     <DefineConstants>COMPILERCORE;XSHARP;PORTABLE;NET45;NET45PLUS;NET40PLUS;NET35PLUS;NET30PLUS;NET20PLUS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
@@ -307,8 +310,11 @@
     <Compile Include="Parser\XSharpParseErrorAnalysis.cs" />
     <Compile Include="Parser\XSharpLanguageParser.cs" />
     <Compile Include="CommandLine\XSharpParseOptions.cs" />
-    <Compile Include="Parser\XSharpPreprocessor.cs" />
-    <Compile Include="Parser\XSharpPreprocessorRule.cs" />
+    <Compile Include="Preprocessor\XSharpPPHelpers.cs" />
+    <Compile Include="Preprocessor\XSharpPPRuleTokens.cs" />
+    <Compile Include="Preprocessor\XSharpPPTokenExtensions.cs" />
+    <Compile Include="Preprocessor\XSharpPreprocessor.cs" />
+    <Compile Include="Preprocessor\XSharpPPRule.cs" />
     <Compile Include="Parser\XSharpSyntaxTree.cs" />
     <Compile Include="Parser\XSharpTokenExtensions.cs" />
     <Compile Include="Parser\XSharpVOTreeTransformation.cs" />
@@ -331,7 +337,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <BoundTreeDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
+    <BoundTreeDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\BoundTree\BoundNodes.xml">
       <SubType>Designer</SubType>
     </BoundTreeDefinition>
     <Compile Include="$(IntermediateOutputPath)BoundNodes.xml.Generated.cs" />
@@ -339,7 +345,7 @@
     <Compile Include="$(IntermediateOutputPath)Syntax.xml.Generated.cs" />
     <Compile Include="ErrorCode.cs" />
     <ErrorCode Include="ErrorCode.cs" />
-    <SyntaxDefinition Include="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\Syntax\Syntax.xml">
+    <SyntaxDefinition Include="$(RoslynSrc)\Compilers\CSharp\Portable\Syntax\Syntax.xml">
       <SubType>Designer</SubType>
     </SyntaxDefinition>
     <EmbeddedResource Include="XSharpResources.resx">
@@ -352,7 +358,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>CodeAnalysisResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\Roslyn\src\Compilers\Core\Portable\Resources\default.win32manifest" />
+    <EmbeddedResource Include="$(RoslynSrc)\Compilers\Core\Portable\Resources\default.win32manifest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr4.Runtime\Tree\Xpath\XPathLexer.g4" />
@@ -375,21 +381,25 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\Core\SharedCollections\SharedCollections.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems" Label="Shared" />
-  <Import Project="..\..\..\..\Roslyn\src\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
+  <ItemGroup>
+    <Content Include="Preprocessor\harbourppdoc.txt" />
+    <Content Include="Preprocessor\preprocessor.txt" />
+  </ItemGroup>
+  <Import Project="$(RoslynSrc)\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\Core\Portable\CodeAnalysisShared.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\Core\SharedCollections\SharedCollections.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Dependencies\Microsoft.DiaSymReader\Microsoft.DiaSymReader.projitems" Label="Shared" />
+  <Import Project="$(RoslynSrc)\Compilers\CSharp\Portable\CSharpCodeAnalysisShared.projitems" Label="Shared" />
   <ImportGroup Label="Targets">
-    <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Imports.targets" />
+    <Import Project="$(XsharpBuild)\Targets\VSL.Imports.targets" />
   </ImportGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>$(SolutionDir)\build\StrongNameKeys\XSharpKey.Private.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>java -jar $(SolutionDir).\build\antlr-4.5.3-complete.jar -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharpLexer.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated
-java -jar $(SolutionDir).\build\antlr-4.5.3-complete.jar -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated
+    <PreBuildEvent>java -jar $(SolutionDir).\build\antlr-4.5.1-complete.jar -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharpLexer.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated
+java -jar $(SolutionDir).\build\antlr-4.5.1-complete.jar -package LanguageService.CodeAnalysis.XSharp.SyntaxParser -long-messages  -message-format vs2005  -listener $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Parser\XSharp.g4 -o $(SolutionDir)\src\Compiler\XSharpCodeAnalysis\Generated
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>

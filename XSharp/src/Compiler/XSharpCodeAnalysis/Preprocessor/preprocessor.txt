@@ -86,11 +86,8 @@ will become
 of course the /* .. */ in the output for the parameters that are not matched is just here 
 for documentation purposes, but could also be generated if we wanted
 
-
-
 When scanning the list of tokens for the LIST it will continue until one of the tokens in the UDC is 
 found or until the end of the statement
-
 
 In the example above the [ALL] token is allowed but not included in the output
 

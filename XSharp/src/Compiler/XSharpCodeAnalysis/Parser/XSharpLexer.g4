@@ -404,7 +404,7 @@ using Microsoft.CodeAnalysis.CSharp;
 						InputStream.Consume();
 					}
 					else if (c == '>') {
-						_type = MACROSEP;
+						_type = UDCSEP;
 						_textSb.Append((char)c);
 						InputStream.Consume();
 					}
@@ -1070,11 +1070,11 @@ options	{
 
 
 channels {
-XMLDOC,
-DEFOUT,
-PREPROCESSOR,
-PRAGMACHANNEL
-}
+			XMLDOC,
+			DEFOUT,
+			PREPROCESSOR,
+			PRAGMACHANNEL
+		}
 
 tokens {
 
@@ -1175,12 +1175,13 @@ LAST_CONSTANT,
 
 // Pre processor symbols
 PP_FIRST,
-PP_COMMAND,PP_DEFINE,PP_ELSE,PP_ENDIF,PP_ENDREGION,PP_ERROR,PP_IFDEF,PP_IFNDEF,PP_INCLUDE,PP_LINE,PP_REGION,PP_TRANSLATE,PP_UNDEF,PP_WARNING,
+PP_COMMAND,PP_DEFINE,PP_ELSE,PP_ENDIF,PP_ENDREGION,PP_ERROR,PP_IFDEF,PP_IFNDEF,PP_INCLUDE,PP_LINE,PP_REGION,PP_TRANSLATE,
+PP_UNDEF,PP_WARNING,
 PP_LAST,
 
 // PP constant
 MACRO,	  // __term__
-MACROSEP, // =>
+UDCSEP, // =>
 
 // Ids
 ID,KWID,
@@ -1205,82 +1206,78 @@ UNRECOGNIZED
  */
 
 // Numeric & date constants
-HEX_CONST	: '0' X HEX_DIGIT+ ( U | L )?;
-BIN_CONST	: '0' B BIN_DIGIT+ ( U )?;
-INT_CONST	:  DIGIT+ ( U | L )? ;
-DATE_CONST	:  DIGIT DIGIT? DIGIT? DIGIT? '.' DIGIT DIGIT? '.' DIGIT  DIGIT?;			// 2015.07.15
-REAL_CONST	: ( DIGIT+ ( '.' DIGIT* )? | '.' DIGIT+ ) ( E ( '+' | '-' )? DIGIT+ )? ( S | D )? // normal, exponential with optional Single or Double specifier
-            | ( DIGIT+ ( '.' DIGIT* )? | '.' DIGIT+ ) M // decimals cannot have exponential notation
-            ;
+HEX_CONST		: '0' X HEX_DIGIT+ ( U | L )?;
 
-USING			 : NUMSIGN U S I N G
-				 ;
+BIN_CONST		: '0' B BIN_DIGIT+ ( U )?;
 
-PRAGMA			 : {LastToken == NL }? NUMSIGN P R A G M A WHITESPACE  NOT_NEW_LINE	-> channel(PRAGMACHANNEL)
-				 ;
+INT_CONST		:  DIGIT+ ( U | L )? ;
 
-SYMBOL_CONST     : NUMSIGN IDStartChar (IDChar)*;
+DATE_CONST		:  DIGIT DIGIT? DIGIT? DIGIT? '.' DIGIT DIGIT? '.' DIGIT  DIGIT?;			// 2015.07.15
 
-NEQ2			 : NUMSIGN			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
-				 ;
+REAL_CONST		: ( DIGIT+ ( '.' DIGIT* )? | '.' DIGIT+ ) ( E ( '+' | '-' )? DIGIT+ )? ( S | D )? // normal, exponential with optional Single or Double specifier
+				| ( DIGIT+ ( '.' DIGIT* )? | '.' DIGIT+ ) M // decimals cannot have exponential notation
+				;
+
+USING			: NUMSIGN U S I N G ;
+
+PRAGMA			: {LastToken == NL }? NUMSIGN P R A G M A WHITESPACE  NOT_NEW_LINE	-> channel(PRAGMACHANNEL)
+				;
+
+SYMBOL_CONST    : NUMSIGN IDStartChar (IDChar)* ;
+
+NEQ2			: NUMSIGN ;			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
 
 
-CHAR_CONST  : '\'' ESCAPED_CHARACTER '\'';
+CHAR_CONST		: '\'' ESCAPED_CHARACTER '\'';
 
-STRING_CONST: '"' ( ~( '"' | '\n' | '\r' ) )* '"'			// Double quoted string
-			| '\'' ( ~( '\'' | '\n' | '\r' ) )* '\''		// Single quoted string
-			;
+STRING_CONST	: '"'  NOT_DOUBLE '"'			// Double quoted string
+				| '\'' NOT_SINGLE '\''		// Single quoted string
+				;
 
 
 INTERPOLATED_STRING_CONST: 
-			  I   '"' ( ~( '"' | '\n' | '\r' ) )* '"'		// i "..." 
-			| I E '"' ESCAPED_STRING_CHARACTER* '"'			// ie"...."
-			| E I '"' ESCAPED_STRING_CHARACTER* '"'			// ei"...."
-            ;
+				  I   '"' NOT_DOUBLE			    '"'			// i "..." 
+				| I E '"' ESCAPED_STRING_CHARACTER* '"'			// ie"...."
+				| E I '"' ESCAPED_STRING_CHARACTER* '"'			// ei"...."
+				;
 
 ESCAPED_STRING_CONST
-			: E '"' ESCAPED_STRING_CHARACTER* '"'			// Escaped double quoted string
-			;
+				: E '"' ESCAPED_STRING_CHARACTER* '"'			// Escaped double quoted string
+				;
 
 // When a semi colon is followed by optional whitespace and optional two or three slash comments then skip the line including the end of line character
-LINE_CONT   :   SEMI WHITESPACE  '/' '/' '/'? NOT_NEW_LINE  NEW_LINE             ->channel(HIDDEN)
-            ;
+LINE_CONT		:   SEMI WHITESPACE  ('/' '/' '/'?  NOT_NEW_LINE)?			NEW_LINE     ->channel(HIDDEN)
+				;
 
-LINE_CONT_OLD: {_OldComment}? SEMI WHITESPACE  '&' '&' NOT_NEW_LINE  NEW_LINE     ->channel(HIDDEN)
-            ;
+LINE_CONT_OLD	: {_OldComment}? SEMI WHITESPACE  ('&' '&' NOT_NEW_LINE)?  NEW_LINE     ->channel(HIDDEN)
+				;
 
-SEMI		: SEMICOLON
-			;
+SEMI			: SEMICOLON ;
 
 // Old Dbase Style Comments &&  and * at begin of line can be enabled with
 // the Lexer Property AllowOldStyleComments
 
-DOC_COMMENT :  '/' '/' '/' ( ~(  '\n' | '\r' ) )*	-> channel(XMLDOC)
-			;
+DOC_COMMENT		:  '/' '/' '/'					NOT_NEW_LINE	-> channel(XMLDOC)
+				;
 
-SL_COMMENT	:( '/' '/' ( ~(  '\n' | '\r' ) )*
-			| {_OldComment}? '&' '&' ( ~(  '\n' | '\r' ) )*
-			| {LastToken == NL }? '*' ( ~(  '\n' | '\r' ) )*)	-> channel(HIDDEN)
-			;
-
-
-ML_COMMENT  : ('/' '*' .*? '*' '/'
-			| '/' '*' .*? EOF		// 'missing End of Comment' is generated in the NextToken() method above
-			)	-> channel(HIDDEN)
-			;
+SL_COMMENT		:( '/' '/'						NOT_NEW_LINE
+				| {_OldComment}?		'&' '&' NOT_NEW_LINE
+				| {LastToken == NL }?	'*'		NOT_NEW_LINE)	-> channel(HIDDEN)
+				;
 
 
+ML_COMMENT		: ('/' '*' .*? '*' '/'
+				| '/' '*' .*? EOF		// 'missing End of Comment' is generated in the NextToken() method above
+				)	-> channel(HIDDEN)
+				;
 
 // The ID rule must be last to make sure that it does not 'eat' the keywords
 
-ID						: ID_PART
-						;
+ID				: ID_PART ;
 
-KWID					: '@' '@' ID_PART // {Text = Text.Substring(2, Text.Length-2);}
-						;
+KWID			: '@' '@' ID_PART  ; // {Text = Text.Substring(2, Text.Length-2);}
 
-
-UNRECOGNIZED			: . ;
+UNRECOGNIZED	: . ;
 
 // Lexer fragments
 
@@ -1298,26 +1295,20 @@ ESCAPED_STRING_CHARACTER: NOT_ESCAPE_DOUBLE
 						| UNICODE_ESCAPE_SEQUENCE
 						;
 
-fragment
-NOT_ESCAPE_SINGLE		: ~( '\'' | '\\' | '\r' | '\n' ) 
-						;
-
-NOT_ESCAPE_DOUBLE		: ~( '\"' | '\\' | '\r' | '\n' )
-						;
-
-fragment
-NEW_LINE				: ('\r' '\n'? | '\n')
-						;
-
-fragment
-NOT_NEW_LINE			: ( ~(  '\n' | '\r' ) )* 
-						;
+fragment 
+NOT_ESCAPE_SINGLE		: ~( '\'' | '\\' | '\r' | '\n' )  ;
 
 fragment 
-WHITESPACE				: (' ' |  '\t')*
-						;
+NOT_ESCAPE_DOUBLE		: ~( '\"' | '\\' | '\r' | '\n' ) ;
 
-fragment
+fragment NOT_DOUBLE		: ( ~( '"' | '\n' | '\r' ) )* ;
+fragment NOT_SINGLE		: ( ~( '\'' | '\n' | '\r' ) )* ;
+fragment NOT_NEW_LINE	: ( ~(  '\n' | '\r' ) )* ;
+fragment CR_OR_LF		: ( '\n' | '\r' )  ;
+fragment NEW_LINE		: ('\r' '\n'? | '\n') ;
+fragment WHITESPACE		: (' ' |  '\t')* ;
+
+fragment 
 SIMPLE_ESCAPE_SEQUENCE	: '\\\''	// Single quote
 						| '\\"'		// Double quote
 						| '\\\\'	// \\
@@ -1338,9 +1329,6 @@ HEX_ESCAPE_SEQUENCE		: '\\' X  HEX_DIGIT (HEX_DIGIT (HEX_DIGIT (HEX_DIGIT)?)?)?	
 fragment
 UNICODE_ESCAPE_SEQUENCE : '\\' U HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT (HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT)?	// \u 4 hex or \u 8 hex
 						;
-
-
-
 fragment DIGIT			: [0-9];
 fragment BIN_DIGIT		: [0-1];
 fragment HEX_DIGIT		: [0-9a-fA-F];

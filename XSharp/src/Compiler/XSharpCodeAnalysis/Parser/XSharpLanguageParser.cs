@@ -148,11 +148,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 lexer.AllowOldStyleComments = false;
             }
 
-            var tokens = new CommonTokenStream(lexer);
+            var tokenstream = new CommonTokenStream(lexer);
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
-            tokens.Fill(); // Required due to the preprocessor
+            tokenstream.Fill(); // Required due to the preprocessor
 #if DEBUG && DUMP_TIMES
             {
                 var ts = DateTime.Now - t;
@@ -161,7 +161,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 #endif
             var parseErrors = ParseErrorData.NewBag();
-            var pp = new XSharpPreprocessor(tokens, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
+            var pp = new XSharpPreprocessor(lexer, tokenstream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
             var parser = new XSharpParser(pp_tokens);
             parser.AllowFunctionInsideClass = false;     // 
@@ -249,7 +249,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     failedTreeTransform.GlobalEntities.Members,
                     eof);
                 result.XNode = (XSharpParser.SourceContext)tree;
-                result.XTokens = tokens;
+                result.XTokens = tokenstream;
                 result.IncludedFiles = pp.IncludedFiles;
                 return result;
             }
@@ -285,7 +285,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     treeTransform.GlobalEntities.Attributes, treeTransform.GlobalEntities.Members, eof);
                 // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = (XSharpParser.SourceContext)tree;
-                result.XTokens = tokens;
+                result.XTokens = tokenstream;
                 result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                 result.Globals = treeTransform.GlobalEntities.Globals;
                 result.IncludedFiles = pp.IncludedFiles;

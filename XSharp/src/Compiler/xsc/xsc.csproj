@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c)  Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information. -->
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="Settings">
     <Import Project="..\..\..\..\XSharp\build\Targets\VSL.Settings.targets" />
   </ImportGroup>
   <PropertyGroup>
+    <RoslynSrc>..\..\..\..\Roslyn\src</RoslynSrc>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AEBEBC71-1FDE-4901-91E0-5667F9BB211A}</ProjectGuid>
@@ -56,28 +56,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\MSBuildTask\BuildClient.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Core\MSBuildTask\BuildClient.cs">
       <Link>BuildClient.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\MSBuildTask\NativeMethods.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Core\MSBuildTask\NativeMethods.cs">
       <Link>NativeMethods.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\VBCSCompiler\BuildProtocol.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Core\VBCSCompiler\BuildProtocol.cs">
       <Link>BuildProtocol.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Core\VBCSCompiler\CompilerServerLogger.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Core\VBCSCompiler\CompilerServerLogger.cs">
       <Link>CompilerServerLogger.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AbstractAnalyzerAssemblyLoader.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Helpers\AbstractAnalyzerAssemblyLoader.cs">
       <Link>AbstractAnalyzerAssemblyLoader.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\AnalyzerAssemblyLoadUtils.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Helpers\AnalyzerAssemblyLoadUtils.cs">
       <Link>AnalyzerAssemblyLoadUtils.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\ConsoleUtil.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Helpers\ConsoleUtil.cs">
       <Link>ConsoleUtil.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Roslyn\src\Compilers\Helpers\SimpleAnalyzerAssemblyLoader.cs">
+    <Compile Include="$(RoslynSrc)\Compilers\Helpers\SimpleAnalyzerAssemblyLoader.cs">
       <Link>SimpleAnalyzerAssemblyLoader.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\CommonAssemblyInfo.cs">

@@ -45,7 +45,7 @@ namespace XSharp.Project
             this.InitializeComponent();
 
             this.Font = XHelperMethods.GetDialogFont();
-            this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONFACE);
+            //this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONFACE);
             this.ForeColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONTEXT);
         }
 

@@ -54,7 +54,7 @@ namespace XSharp.Project
             base.OnSystemColorsChanged(e);
 
             // This sets the background control for all this control and all of its children
-            this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONFACE);
+            //this.BackColor = XHelperMethods.GetVsColor(XHelperMethods.Vs2010Color.VSCOLOR_BUTTONFACE);
 
             // The forecolor has to be set explicitly for each control
             XHelperMethods.SetControlTreeColors(this);

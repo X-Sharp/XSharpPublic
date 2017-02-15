@@ -67,7 +67,6 @@
     <Compile Include="XSharpTreeDiscover.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>

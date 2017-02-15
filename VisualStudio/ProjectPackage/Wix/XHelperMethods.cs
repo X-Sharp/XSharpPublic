@@ -51,7 +51,7 @@ internal static class XHelperMethods
             /// <summary>
             /// VSCOLOR_BUTTONFACE
             /// </summary>
-            VSCOLOR_BUTTONFACE = -196,
+            //VSCOLOR_BUTTONFACE = -196,
 
             /// <summary>
             /// VSCOLOR_BUTTONTEXT
@@ -638,8 +638,8 @@ internal static class XHelperMethods
             // to keep the forms/property pages editable in the designers
             switch (visualStudioColor)
             {
-                case Vs2010Color.VSCOLOR_BUTTONFACE:
-                    return SystemColors.ButtonFace;
+                //case Vs2010Color.VSCOLOR_BUTTONFACE:
+                //    return SystemColors.ButtonFace;
 
                 case Vs2010Color.VSCOLOR_BUTTONTEXT:
                     return SystemColors.ControlText;

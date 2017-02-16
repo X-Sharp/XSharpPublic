@@ -598,6 +598,7 @@ namespace XSharp.CodeDom
                 pm.Direction = FieldDirection.In;
                 if (param.Modifiers != null)
                 {
+                    
                     if (param.Modifiers.REF() != null)
                     {
                         pm.Direction = FieldDirection.Ref;
@@ -657,9 +658,10 @@ namespace XSharp.CodeDom
         private object GetNumericValue(XSharpParser.LiteralValueContext context)
         {
             Object ret = null;
-            String value = context.GetText();
+            String value = context.Token.Text;
+            var type = context.Token.Type;
             //
-            if (context.BIN_CONST() != null || context.INT_CONST() != null || context.HEX_CONST() != null)
+            if (type == XSharpParser.BIN_CONST || type == XSharpParser.INT_CONST || type == XSharpParser.HEX_CONST )
             {
                 bool isUnsigned = (value.Substring(0, 1).ToLower().CompareTo("u") == 0);
                 // -1 for Unsigned; -2 for 0x or 0b
@@ -697,7 +699,7 @@ namespace XSharp.CodeDom
                         }
                     }
                 }
-                else if (context.HEX_CONST() != null)
+                else if (type == XSharpParser.HEX_CONST)
                 {
                     if (len > 16)
                     {
@@ -965,7 +967,7 @@ namespace XSharp.CodeDom
                 //    Self  -> check if Right is in the member of CurrentClass --> FieldReference
                 // else --> always Property
                 bool isMember = false;
-                CodeExpression left = BuildExpression(member.Expr,false);
+                CodeExpression left = BuildExpression(member.Expr, false);
                 if (left is CodeThisReferenceExpression)
                 {
                     string fieldCandidate = member.Name.GetText();
@@ -984,7 +986,7 @@ namespace XSharp.CodeDom
                 // It seems to be a member...
                 if (isMember)
                 {
-                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr,false), member.Name.GetText());
+                    expr = new CodeFieldReferenceExpression(BuildExpression(member.Expr, false), member.Name.GetText());
                 }
                 else
                 {
@@ -997,11 +999,13 @@ namespace XSharp.CodeDom
                     {
                         // We are processing the Right member of an Assignment...
                         // Most likely Enum Value, which is a typereference expression followed by a DOT and a field
-                        if (member.DOT() != null) {
+                        if (member.DOT() != null)
+                        {
                             var typeexpr = new CodeTypeReferenceExpression(member.Expr.GetText());
                             expr = new CodeFieldReferenceExpression(typeexpr, member.Name.GetText());
                         }
-                        else {
+                        else
+                        {
                             expr = new CodeSnippetExpression(member.GetText());
                         }
                     }
@@ -1010,13 +1014,13 @@ namespace XSharp.CodeDom
             else if (expression is XSharpParser.MethodCallContext)
             {
                 XSharpParser.MethodCallContext meth = (XSharpParser.MethodCallContext)expression;
-                CodeExpression target = BuildExpression(meth.Expr,false);
+                CodeExpression target = BuildExpression(meth.Expr, false);
                 List<CodeExpression> exprlist = new List<CodeExpression>();
                 if (meth.ArgList != null)
                 {
                     foreach (var arg in meth.ArgList._Args)
                     {
-                        exprlist.Add(BuildExpression(arg.Expr,false));
+                        exprlist.Add(BuildExpression(arg.Expr, false));
                     }
                 }
                 if (target is CodeFieldReferenceExpression)
@@ -1031,6 +1035,14 @@ namespace XSharp.CodeDom
                 }
                 else
                     expr = new CodeMethodInvokeExpression(null, meth.Expr.GetText(), exprlist.ToArray());
+            }
+            else if (expression is XSharpParser.TypeCastContext)
+            {
+                var tc = expression as XSharpParser.TypeCastContext;
+                var name = tc.Type.GetText();
+                var typeref = new CodeTypeReference(name);
+                expr = BuildExpression(tc.Expr,true);
+                expr = new CodeCastExpression(typeref, expr);
             }
             else
             {
@@ -1124,6 +1136,29 @@ namespace XSharp.CodeDom
                     expr = new CodeVariableReferenceExpression(name);
                 }
             }
+            else if (ctx is XSharpParser.ParenExpressionContext)
+            {
+                var par = ctx as XSharpParser.ParenExpressionContext;
+                expr = BuildExpression(par.Expr,true);
+            }
+            else if (ctx is XSharpParser.TypeExpressionContext)
+            {
+                var typ = ctx as XSharpParser.TypeExpressionContext;
+                var name = typ.Type; 
+                // NativeType, xBaseType, Name
+                if (name.Name is XSharpParser.QualifiedNameContext)
+                {
+                    var qnc = name.Name as XSharpParser.QualifiedNameContext;
+                    var left = qnc.Left;
+                    var right = qnc.Right;
+                    var tr = new CodeTypeReferenceExpression(left.GetText());
+                    expr = new CodePropertyReferenceExpression(tr, right.GetText());
+                }
+                else 
+                {
+                    expr = new CodeSnippetExpression(ctx.GetText());
+                }
+            }
             else
             {
                 expr = new CodeSnippetExpression(ctx.GetText());
@@ -1135,96 +1170,63 @@ namespace XSharp.CodeDom
         {
             CodeTypeReference expr = null;
             //
-            if ((nativeType.BYTE() != null) ||
-                (nativeType.CHAR() != null) ||
-                (nativeType.DWORD() != null) ||
-                (nativeType.DYNAMIC() != null) ||
-                (nativeType.INT() != null) ||
-                (nativeType.INT64() != null) ||
-                (nativeType.LOGIC() != null) ||
-                (nativeType.LONGINT() != null) ||
-                (nativeType.OBJECT() != null) ||
-                (nativeType.PTR() != null) ||
-                (nativeType.REAL4() != null) ||
-                (nativeType.REAL8() != null) ||
-                (nativeType.SHORTINT() != null) ||
-                (nativeType.STRING() != null) ||
-                (nativeType.UINT64() != null) ||
-                (nativeType.VOID() != null) ||
-                (nativeType.WORD() != null))
+            string strType;
+            switch (nativeType.Token.Type)
             {
-                expr = BuildNativeType(nativeType.GetText());
-            }
-            //
-            return expr;
-        }
-
-        private CodeTypeReference BuildNativeType(String nativeType)
-        {
-            CodeTypeReference expr = null;
-            //
-            switch (nativeType.ToLower())
-            {
-                case "byte":
-                    nativeType = "System.Byte";
+                case XSharpParser.BYTE:
+                    strType = "System.Byte";
                     break;
-                case "dword":
-                    nativeType = "System.UInt32";
+                case XSharpParser.DWORD:
+                    strType = "System.UInt32";
                     break;
-                case "shortint":
-                    nativeType = "System.Int16";
+                case XSharpParser.SHORTINT:
+                    strType = "System.Int16";
                     break;
-                case "int":
-                    nativeType = "System.Int32";
+                case XSharpParser.INT:
+                case XSharpParser.LONGINT:
+                    strType = "System.Int32";
                     break;
-                case "int64":
-                    nativeType = "System.Int64";
+                case XSharpParser.INT64:
+                    strType = "System.Int64";
                     break;
-                case "uint64":
-                    nativeType = "System.UInt64";
+                case XSharpParser.UINT64:
+                    strType = "System.UInt64";
                     break;
-                case "logic":
-                    nativeType = "System.Boolean";
+                case XSharpParser.LOGIC:
+                    strType = "System.Boolean";
                     break;
-                case "object":
-                    nativeType = "System.Object";
+                case XSharpParser.OBJECT:
+                    strType = "System.Object";
                     break;
-                case "real4":
-                    nativeType = "System.Single";
+                case XSharpParser.REAL4:
+                    strType = "System.Single";
                     break;
-                case "real8":
-                    nativeType = "System.Double";
+                case XSharpParser.REAL8:
+                    strType = "System.Double";
                     break;
-                case "string":
-                    nativeType = "System.String";
+                case XSharpParser.STRING:
+                    strType = "System.String";
                     break;
-                case "word":
-                    nativeType = "System.UInt16";
+                case XSharpParser.WORD:
+                    strType = "System.UInt16";
                     break;
-                case "void":
-                    nativeType = "System.Void";
+                case XSharpParser.VOID:
+                    strType = "System.Void";
+                    break;
+                case XSharpParser.DYNAMIC:
+                    strType = "System.Dynamic";
+                    break;
+                default:
+                    strType = nativeType.Token.Text;
                     break;
             }
-            expr = new CodeTypeReference(nativeType);
+            expr = new CodeTypeReference(strType);
             return expr;
         }
 
         private CodeTypeReference BuildXBaseType(XSharpParser.XbaseTypeContext xbaseType)
         {
-            CodeTypeReference expr = null;
-            //
-            if ((xbaseType.ARRAY() != null) ||
-                (xbaseType.CODEBLOCK() != null) ||
-                (xbaseType.DATE() != null) ||
-                (xbaseType.FLOAT() != null) ||
-                (xbaseType.PSZ() != null) ||
-                (xbaseType.SYMBOL() != null) ||
-                (xbaseType.USUAL() != null))
-            {
-                expr = new CodeTypeReference(xbaseType.GetText());
-            }
-            //
-            return expr;
+            return new CodeTypeReference(xbaseType.Token.Text);
         }
 
         private CodeTypeReference BuildSimpleName(XSharpParser.SimpleNameContext simpleName)
@@ -1256,147 +1258,53 @@ namespace XSharp.CodeDom
         private CodeExpression BuildLiteralValue(XSharpParser.LiteralValueContext context)
         {
             CodeExpression expr = null;
-            ITerminalNode node;
+            String value;
             //
-            node = context.BIN_CONST();
-            if (node != null)
+            switch (context.Token.Type)
             {
-                expr = new CodePrimitiveExpression(GetNumericValue(context));
-            }
-            node = context.INT_CONST();
-            if (node != null)
-            {
-                expr = new CodePrimitiveExpression(GetNumericValue(context));
-            }
-            //
-            node = context.HEX_CONST();
-            if (node != null)
-            {
-                expr = new CodePrimitiveExpression(GetNumericValue(context));
-            }
-            //
-            node = context.REAL_CONST();
-            if (node != null)
-            {
-                expr = new CodePrimitiveExpression(GetNumericValue(context));
-            }
-            //
-            node = context.TRUE_CONST();
-            if (node != null)
-            {
-                expr = new CodePrimitiveExpression(true);
-            }
-            //
-            node = context.FALSE_CONST();
-            if (node != null)
-            {
-                expr = new CodePrimitiveExpression(false);
-            }
-            //
-            node = context.STRING_CONST();
-            if (node != null)
-            {
-                // Remove the quotes
-                String value = context.GetText();
-                value = value.Substring(1, value.Length - 2);
-                expr = new CodePrimitiveExpression(value);
-            }
-            //
-            node = context.ESCAPED_STRING_CONST();
-            if (node != null)
-            {
-                // Remove the e in front of quotes, AND the Quotes
-                String value = context.GetText();
-                value = value.Substring(1);
-                value = value.Substring(1, value.Length - 2);
-                expr = new CodePrimitiveExpression(BuildUnEscapedString(value));
-            }
-            //
-            node = context.CHAR_CONST();
-            if (node != null)
-            {
-                // Remove the quotes
-                String value = context.GetText();
-                value = value.Substring(1, value.Length - 2);
-                if (value.Length >= 1)
-                    expr = new CodePrimitiveExpression(value[0]);
-            }
-            //
-            node = context.NIL();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NIL");
-            }
-            //
-            node = context.NULL();
-            if (node != null)
-            {
-                expr = new CodePrimitiveExpression(null);
-            }
-            //
-            node = context.NULL_ARRAY();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_ARRAY");
-            }
-            //
-            node = context.NULL_CODEBLOCK();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_CODEBLOCK");
-            }
-            //
-            node = context.NULL_DATE();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_DATE");
-            }
-            //
-            node = context.NULL_OBJECT();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_OBJECT");
-            }
-            //            
-            node = context.NULL_PSZ();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_PSZ");
-            }
-            //            
-            node = context.NULL_PTR();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_PTR");
-            }
-            //            
-            node = context.NULL_STRING();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_STRING");
-            }
-            //            
-            node = context.NULL_SYMBOL();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression("NULL_SYMBOL");
-            }
-            //
-            node = context.SYMBOL_CONST();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression(context.GetText().ToUpper());
-            }
-            //
-            node = context.DATE_CONST();
-            if (node != null)
-            {
-                expr = new CodeSnippetExpression(context.GetText());
-            }
-            //
-            if ( expr == null )
-            {
-                expr = new CodeSnippetExpression(context.GetText());
+                case XSharpParser.BIN_CONST:
+                case XSharpParser.INT_CONST:
+                case XSharpParser.HEX_CONST:
+                case XSharpParser.REAL_CONST:
+                    expr = new CodePrimitiveExpression(GetNumericValue(context));
+                    break;
+                case XSharpParser.TRUE_CONST:
+                    expr = new CodePrimitiveExpression(true);
+                    break;
+                case XSharpParser.FALSE_CONST:
+                    expr = new CodePrimitiveExpression(true);
+                    break;
+                case XSharpParser.STRING_CONST:
+                case XSharpParser.ESCAPED_STRING_CONST:
+                    value = context.GetText();
+                    value = value.Substring(1, value.Length - 2);
+                    if (context.Token.Type == XSharpParser.ESCAPED_STRING_CONST)
+                        value = BuildUnEscapedString(value);
+                    expr = new CodePrimitiveExpression(value);
+                    break;
+                case XSharpParser.CHAR_CONST:
+                    value = context.GetText();
+                    value = value.Substring(1, value.Length - 2);
+                    if (value.Length >= 1)
+                        expr = new CodePrimitiveExpression(value[0]);
+                    break;
+                case XSharpParser.NULL:
+                    expr = new CodePrimitiveExpression(null);
+                    break;
+                case XSharpParser.NIL:
+                case XSharpParser.NULL_ARRAY:
+                case XSharpParser.NULL_CODEBLOCK:
+                case XSharpParser.NULL_DATE:
+                case XSharpParser.NULL_OBJECT:
+                case XSharpParser.NULL_PSZ:
+                case XSharpParser.NULL_PTR:
+                case XSharpParser.NULL_STRING:
+                case XSharpParser.NULL_SYMBOL:
+                case XSharpParser.SYMBOL_CONST:
+                case XSharpParser.DATE_CONST:
+                default:
+                    expr = new CodeSnippetExpression(context.Token.Text);
+                    break;
             }
             return expr;
         }
@@ -1424,8 +1332,10 @@ namespace XSharp.CodeDom
                 XSharpParser.SimpleDatatypeContext sdt = (XSharpParser.SimpleDatatypeContext)context;
                 if (sdt.TypeName.Name != null)
                     expr = BuildName(sdt.TypeName.Name);
-                else
-                    expr = BuildNativeType(sdt.TypeName.GetText());
+                else if (sdt.TypeName.NativeType != null)
+                    expr = BuildNativeType(sdt.TypeName.NativeType);
+                else if (sdt.TypeName.XType != null)
+                    expr = BuildXBaseType(sdt.TypeName.XType);
             }
             else if (context is XSharpParser.NullableDatatypeContext)
             {
@@ -1433,6 +1343,10 @@ namespace XSharp.CodeDom
             }
             //
             return expr;
+        }
+        private CodeTypeReference BuildName(XSharpParser.TypeNameContext context)
+        {
+            return BuildName(context.Name);
         }
 
         private CodeTypeReference BuildName(XSharpParser.NameContext context)
@@ -1447,23 +1361,25 @@ namespace XSharp.CodeDom
             }
             else if (context is XSharpParser.SimpleOrAliasedNameContext)
             {
-                XSharpParser.SimpleOrAliasedNameContext alias = (XSharpParser.SimpleOrAliasedNameContext)context;
+                var alias = context as XSharpParser.SimpleOrAliasedNameContext;
+                var name = alias.Name as XSharpParser.AliasedNameContext;
+
                 //
-                if (alias.Name is XSharpParser.AliasQualifiedNameContext)
+                if (name is XSharpParser.AliasQualifiedNameContext)
                 {
-                    XSharpParser.AliasQualifiedNameContext al = (XSharpParser.AliasQualifiedNameContext)alias.Name;
+                    XSharpParser.AliasQualifiedNameContext al = (XSharpParser.AliasQualifiedNameContext)name;
                     expr = BuildSimpleName(al.Right);
                     expr = new CodeTypeReference(al.Alias.GetText() + "::" + expr.BaseType);
                 }
-                else if (alias.Name is XSharpParser.GlobalQualifiedNameContext)
+                else if (name is XSharpParser.GlobalQualifiedNameContext)
                 {
-                    XSharpParser.GlobalQualifiedNameContext gbl = (XSharpParser.GlobalQualifiedNameContext)alias.Name;
-                    expr = BuildSimpleName(gbl.Right);
-                    expr = new CodeTypeReference("GLOBAL::" + expr.BaseType);
+                    var gqn = name as XSharpParser.GlobalQualifiedNameContext;
+                    expr = BuildSimpleName(gqn.Right); 
+                    expr = new CodeTypeReference("global::" + expr.BaseType);
                 }
-                else if (alias.Name is XSharpParser.IdentifierOrGenericNameContext)
+                else if (name is XSharpParser.IdentifierOrGenericNameContext)
                 {
-                    XSharpParser.IdentifierOrGenericNameContext id = (XSharpParser.IdentifierOrGenericNameContext)alias.Name;
+                    var id = name as XSharpParser.IdentifierOrGenericNameContext;
                     expr = BuildSimpleName(id.Name);
                 }
             }
@@ -1472,7 +1388,6 @@ namespace XSharp.CodeDom
         }
 
         #endregion
-
       
     }
     static class ParseHelpers
@@ -1541,3 +1456,4 @@ namespace XSharp.CodeDom
         }
     }
 }
+

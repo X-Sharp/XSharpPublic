@@ -3,13 +3,20 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
-using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.TextManager.Interop;
 using System;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Package;
+using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.Language.Intellisense;
+
 namespace XSharp.Project
 {
     // This code is used to determine if a file is opened inside a Vulcan project
@@ -27,6 +34,12 @@ namespace XSharp.Project
 
     internal class VsTextViewCreationListener : IVsTextViewCreationListener
     {
+        [Import]
+        IVsEditorAdaptersFactoryService AdaptersFactory = null;
+
+        [Import]
+        ICompletionBroker CompletionBroker = null;
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             IVsTextLines textlines;
@@ -45,6 +58,15 @@ namespace XSharp.Project
                     }
                 }
             }
+            //
+            IWpfTextView view = AdaptersFactory.GetWpfTextView(textViewAdapter);
+            Debug.Assert(view != null);
+
+            CommandFilter filter = new CommandFilter(view, CompletionBroker);
+
+            IOleCommandTarget next;
+            textViewAdapter.AddCommandFilter(filter, out next);
+            filter.Next = next;
         }
     }
     internal static class EditorHelpers
@@ -67,5 +89,6 @@ namespace XSharp.Project
             return projectitem;
         }
     }
+
 
 }

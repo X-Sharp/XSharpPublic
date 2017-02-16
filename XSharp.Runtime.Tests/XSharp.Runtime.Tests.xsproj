@@ -58,11 +58,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>$(Solutiondir)\Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <DocumentationFile>false</DocumentationFile>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
     <PreBuildEvent />
@@ -79,7 +78,7 @@
     <IncludePaths />
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>bin\Release\</OutputPath>
     <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>

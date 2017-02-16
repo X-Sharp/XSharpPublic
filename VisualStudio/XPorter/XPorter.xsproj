@@ -35,6 +35,9 @@
     <VO13>false</VO13>
     <VO14>false</VO14>
     <VO15>false</VO15>
+    <StartupObject />
+    <ApplicationIcon />
+    <Prefer32Bit>True</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -60,7 +63,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>$(SolutionDir)Binaries\obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
-    <DocumentationFile>false</DocumentationFile>
     <Optimize>false</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
     <PreBuildEvent />

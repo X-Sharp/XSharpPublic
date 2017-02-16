@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Exception Class</Title>
+      <Shortcut>Exception</Shortcut>
+      <Description>Code snippet for an exception class</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>newException</ID>
+          <ToolTip>Name of your exception</ToolTip>
+          <Default>My</Default>
+        </Literal>
+        <Literal>
+          <ID>baseException</ID>
+          <ToolTip>Base type</ToolTip>
+          <Function>SimpleTypeName(global::System.Exception)</Function>
+        </Literal>
+        <Literal Editable="false">
+          <ID>SystemException</ID>
+          <Function>SimpleTypeName(global::System.Exception)</Function>
+        </Literal>
+        <Literal Editable="false">
+          <ID>SystemSerializable</ID>
+          <Function>SimpleTypeName(global::System.Serializable)</Function>
+        </Literal>
+        <Literal Editable="false">
+          <ID>SystemRuntimeSerializationSerializationInfo</ID>
+          <Function>SimpleTypeName(global::System.Runtime.Serialization.SerializationInfo)</Function>
+        </Literal>
+        <Literal Editable="false">
+          <ID>SystemRuntimeSerializationStreamingContext</ID>
+          <Function>SimpleTypeName(global::System.Runtime.Serialization.StreamingContext)</Function>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+[$SystemSerializable$] ;
+CLASS $newException$Exception INHERIT $baseException$
+//
+// For guidelines regarding the creation of new exception types, see
+//    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
+// and
+//    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
+//
+
+CONSTRUCTOR() CLASS $newException$Exception()
+   RETURN
+
+CONSTRUCTOR( message AS STRING ) CLASS $newException$Exception
+   SUPER( message )
+   RETURN
+
+CONSTRUCTOR( message AS STRING, inner AS $SystemException$ ) CLASS $newException$Exception
+   SUPER( message, inner )
+   RETURN
+
+PROTECTED CONSTRUCTOR( info AS $SystemRuntimeSerializationSerializationInfo$, context AS $SystemRuntimeSerializationStreamingContext$ ) CLASS $newException$Exception
+   SUPER( info, context )
+   RETURN
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

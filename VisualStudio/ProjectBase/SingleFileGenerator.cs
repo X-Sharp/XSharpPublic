@@ -303,6 +303,7 @@ namespace Microsoft.VisualStudio.Project
                 using(FileStream generatedFileStream = File.Open(filePath, FileMode.OpenOrCreate))
                 {
                     generatedFileStream.Write(data, 0, size);
+                    generatedFileStream.SetLength(size);
                 }
 
                 EnvDTE.ProjectItem projectItem = fileNode.GetAutomationObject() as EnvDTE.ProjectItem;

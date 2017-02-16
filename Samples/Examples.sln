@@ -25,6 +25,8 @@ Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Switch", "Switch\Switch.xsp
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Expressions", "Expressions\Expressions.xsproj", "{6012A5F9-A7DF-4200-A9DC-F6D7009F86BE}"
 EndProject
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "Initializers", "Initiliazers\Initializers.xsproj", "{000F1273-B916-4EB5-8B20-C554487E42D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{6012A5F9-A7DF-4200-A9DC-F6D7009F86BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6012A5F9-A7DF-4200-A9DC-F6D7009F86BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6012A5F9-A7DF-4200-A9DC-F6D7009F86BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{000F1273-B916-4EB5-8B20-C554487E42D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{000F1273-B916-4EB5-8B20-C554487E42D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{000F1273-B916-4EB5-8B20-C554487E42D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{000F1273-B916-4EB5-8B20-C554487E42D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

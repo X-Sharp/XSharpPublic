@@ -1784,6 +1784,7 @@ namespace Microsoft.VisualStudio.Project
                     case VsCommands.Exit:
                     case VsCommands.ProjectSettings:
                     case VsCommands.BuildSln:
+                    case VsCommands.BuildCtx:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
 
@@ -1812,6 +1813,7 @@ namespace Microsoft.VisualStudio.Project
                     case VsCommands.SetStartupProject:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
+
                 }
             }
             else if (cmdGroup == VsMenus.guidStandardCommandSet2K)
@@ -1830,6 +1832,7 @@ namespace Microsoft.VisualStudio.Project
                     case (VsCommands2K) XVsConstants.CommandExploreFolderInWindows:
                         result |= QueryStatusResult.SUPPORTED | QueryStatusResult.ENABLED;
                         return VSConstants.S_OK;
+
                 }
             }
             else
@@ -3878,7 +3881,7 @@ namespace Microsoft.VisualStudio.Project
 
             // In the case of subitem, we want to create dependent file node
             // and set the DependentUpon property
-            if (this.canFileNodesHaveChilds && (parentNode is FileNode && ((FileNode)parentNode).IsDependent))
+            if (this.canFileNodesHaveChilds && parentNode is FileNode )
             {
                 child = this.CreateDependentFileNode(fileName);
                 string parent = parentNode.ItemNode.GetMetadata(ProjectFileConstants.Include);
@@ -4126,6 +4129,7 @@ namespace Microsoft.VisualStudio.Project
             // as we are receiving a "collection was modified enumeration operation may not execute" exception
             // So, let's store the items in a List<> and do the job after.
             var prjItems = new List<MSBuild.ProjectItem>();
+            var duplicates = new List<MSBuild.ProjectItem>();
 #endif
 
             // Process Files
@@ -4153,7 +4157,10 @@ namespace Microsoft.VisualStudio.Project
                 // If the item is already contained do nothing.
                 // TODO: possibly report in the error list that the the item is already contained in the project file similar to Language projects.
                 if (items.ContainsKey(item.EvaluatedInclude.ToUpperInvariant()))
+                {
+                    duplicates.Add(item);
                     continue;
+                }
 
                 // Make sure that we do not want to add the item, dependent, or independent twice to the ui hierarchy
                 items.Add(item.EvaluatedInclude.ToUpperInvariant(), item);
@@ -4179,6 +4186,20 @@ namespace Microsoft.VisualStudio.Project
             }
 
 #if XSHARP
+            // Remove the duplicates
+            if (duplicates.Count > 0)
+            {
+                string bakfile = buildProject.FullPath + ".backup";
+                System.IO.File.Delete(bakfile);
+                StreamWriter backup = new StreamWriter(bakfile);
+                buildProject.Save(backup);
+
+                foreach (var item in duplicates)
+                {
+                    this.buildProject.RemoveItem(item);
+                }
+                this.buildProject.Save();
+            }
             // Ok... Let's do it !
             foreach (var item in prjItems)
             {
@@ -7115,7 +7136,7 @@ namespace Microsoft.VisualStudio.Project
             return VSConstants.S_OK;
         }
 
-        public int UpgradeProject(uint grfUpgradeFlags)
+        public virtual int UpgradeProject(uint grfUpgradeFlags)
         {
             int hr = VSConstants.S_OK;
 

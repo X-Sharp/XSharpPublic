@@ -62,31 +62,45 @@ namespace XSharp.LanguageService
         public override AuthoringScope ParseSource(ParseRequest req)
         {
             XSharpAuthoringScope scope = new XSharpAuthoringScope();
-            if (req.Reason == ParseReason.Check ||
-                req.Reason == ParseReason.None)
+
+            switch (req.Reason)
             {
-                // Parse the entire source as given in req.Text. Store results in the XSharpAuthoringScope object.
+                case Microsoft.VisualStudio.Package.ParseReason.None:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.MemberSelect:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.HighlightBraces:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.MemberSelectAndHighlightBraces:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.MatchBraces:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.Check:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.CompleteWord:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.DisplayMemberList:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.QuickInfo:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.MethodTip:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.Autos:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.CodeSpan:
+                    break;
+                case Microsoft.VisualStudio.Package.ParseReason.Goto:
+                    break;
+                default:
+                    break;
+
             }
-            else if (req.Reason == ParseReason.DisplayMemberList)
-            {
-                // Parse the line specified in req.Line for the two tokens just before req.Col to get the identifier and the member connector symbol.
-                // Find members of the identifer in the parse tree and store the list of members in the Declarations class.
-            }
-            else if (req.Reason == ParseReason.MethodTip)
-            {
-                // Parse the line specified in req.Line for the token just before req.Col to obtain the name of the method.
-                // Find all method signatures with the same name in the existing parse tree and store the list of signatures in the Methods class.
-            }
-            // continue for the rest of the supported ParseReason values.
             return scope;
         }
-        /*
-        public override Microsoft.VisualStudio.Package.TypeAndMemberDropdownBars CreateDropDownHelper(Microsoft.VisualStudio.TextManager.Interop.IVsTextView forView)
+        public override ViewFilter CreateViewFilter(CodeWindowManager mgr, IVsTextView newView)
         {
-            var members = new XSharpTypeAndMemberDropDownBars(this);
-            return members;
+            return new XSharpViewFilter(mgr, newView);
         }
-        */
         public int UpdateLanguageContext(uint dwHint, Microsoft.VisualStudio.TextManager.Interop.IVsTextLines pBuffer, Microsoft.VisualStudio.TextManager.Interop.TextSpan[] ptsSelection, object pUC)
         {
             // This called for the online help
@@ -103,12 +117,47 @@ namespace XSharp.LanguageService
                 pdwExtnIndex = 1;
             return VSConstants.S_OK;
         }
+        public override ExpansionProvider CreateExpansionProvider(Source src)
+        {
+            return base.CreateExpansionProvider(src);
+        }
 
+        int classcounter = 0;
+        public override ExpansionFunction CreateExpansionFunction(ExpansionProvider provider, string functionName)
+        {
+            ExpansionFunction  function = null;
+
+            if (functionName == "ClassName")
+            {
+                function = new ClassNameExpansionFunction(provider, ++classcounter);
+            }
+            else if (functionName == "GenerateSwitchCases")
+            {
+                function = new GenerateSwitchCasesExpansionFunction(provider);
+            }
+            else if (functionName == "SimpleTypeName")
+            {
+                function = new SimpleTypeNameExpansionFunction(provider);
+            }
+            else if (functionName == "InitProcType")
+            {
+                function = new InitProcTypeExpansionFunction(provider);
+            }
+
+            return function;
+        }
+
+    
         public int QueryInvalidEncoding(uint Format, out string pbstrMessage)
         {
             // may be called when the source is saved under a different codepage
             pbstrMessage = String.Empty;
             return VSConstants.S_OK;
+        }
+
+        public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView)
+        {
+            return new XSharpTypeAndMemberDropDownBars( this, forView );
         }
     }
 }

@@ -7,14 +7,6 @@ using Vulcan
 
 begin namespace XSharp.Runtime
 	#region functions
-	/// <summary>
-	/// Returns a string representing the morning extension for time strings in 12-hour format.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION GetAMExt() AS STRING
-		/// THROW NotImplementedException{}
-	RETURN String.Empty   
 
 	/// <summary>
 	/// Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
@@ -64,14 +56,6 @@ begin namespace XSharp.Runtime
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero   
 
-	/// <summary>
-	/// Return the current __VODate format.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION GetDateFormat() AS STRING
-		/// THROW NotImplementedException{}
-	RETURN String.Empty   
 
 	/// <summary>
 	/// Return the <%APP%> default drive and directory.
@@ -148,14 +132,6 @@ begin namespace XSharp.Runtime
 		/// THROW NotImplementedException{}
 	RETURN String.Empty   
 
-	/// <summary>
-	/// Returns a string representing the evening extension for time strings in 12-hour format.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION GetPMExt() AS STRING
-		/// THROW NotImplementedException{}
-	RETURN String.Empty   
 
 	/// <summary>
 	/// </summary>

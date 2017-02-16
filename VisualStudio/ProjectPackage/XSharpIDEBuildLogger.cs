@@ -46,23 +46,43 @@ namespace XSharp.Project
             if (outputErrors != null)
                 outputErrors.ClearErrors();
         }
+        protected int errors;
+        protected int warnings;
+        protected bool didCompile = false;
+
+        protected override void BuildStartedHandler(object sender, BuildStartedEventArgs buildEvent)
+        {
+            base.BuildStartedHandler(sender, buildEvent);
+            errorItems = new List<IErrorListItem>();
+            errors = warnings = 0;
+            didCompile = false;
+        }
+        protected override void BuildFinishedHandler(object sender, BuildFinishedEventArgs buildEvent)
+        {
+            if (didCompile)
+            {
+                QueueOutputText(MessageImportance.High, $"{warnings} Warning(s), {errors} Error(s)\n");
+            }
+            base.BuildFinishedHandler(sender, buildEvent);
+        }
         protected override void ProjectStartedHandler(object sender, ProjectStartedEventArgs buildEvent)
         {
             base.ProjectStartedHandler(sender, buildEvent);
-            if (String.IsNullOrEmpty(buildEvent.TargetNames))
-            {
-                errorItems = new List<IErrorListItem>();
-                mustLog = true;
-            }
-            else
-            {
-                mustLog = false;
-            }
+            mustLog = true;
+            //if (String.IsNullOrEmpty(buildEvent.TargetNames))
+            //{
+            
+            //    mustLog = true;
+            //}
+            //else
+            //{
+            //    mustLog = false;
+            //}
         }
         protected override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs buildEvent)
         {
             base.ProjectFinishedHandler(sender, buildEvent);
-            if (mustLog)
+            if (didCompile)
             {
                 outputErrors.ClearErrors();
                 outputErrors.AddErrorItems(errorItems);
@@ -74,13 +94,30 @@ namespace XSharp.Project
             if (mustLog)
             {
                 if (errorEvent is BuildErrorEventArgs)
+                {
                     ReportError((BuildErrorEventArgs)errorEvent);
+                    errors += 1;
+                }
                 else
+                {
                     ReportWarning((BuildWarningEventArgs)errorEvent);
+                    warnings += 1;
+                }
             }
 
         }
-
+        protected override void MessageHandler(object sender, BuildMessageEventArgs messageEvent)
+        {
+            base.MessageHandler(sender, messageEvent);
+            if (messageEvent is TaskCommandLineEventArgs)
+            {
+                var taskEvent = messageEvent as TaskCommandLineEventArgs;
+                if (taskEvent.CommandLine.ToLower().Contains("xsc.exe"))
+                {
+                    didCompile = true;
+                }
+            }
+        }
         protected void ReportError(BuildErrorEventArgs args)
         {
             var error = new ErrorListItem()

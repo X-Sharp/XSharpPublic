@@ -1,0 +1,29 @@
+[$RootKey$]
+[$RootKey$\Generators]
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}]
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\PublicResXFileCodeGenerator]
+"CLSID"="{69b6a86d-ef43-4d9e-a758-8a18b38a7384}"
+"GeneratesDesignTimeSource"=dword:00000001
+@="Microsoft ResX File Code Generator (public class)"
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\PublicVbMyResourcesResXFileCodeGenerator]
+"CLSID"="{74d398e9-7cc3-4ff2-9a4d-acd177f40b58}"
+"GeneratesDesignTimeSource"=dword:00000001
+@="Microsoft Visual Basic Primary My.Resources ResX File Code Generator (public cass)"
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\ResXFileCodeGenerator]
+"CLSID"="{c77981ec-ba19-3348-878f-6f88745a251e}"
+"GeneratesDesignTimeSource"=dword:00000001
+@="Microsoft ResX File Code Generator"
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\VbMyResourcesResXFileCodeGenerator]
+"CLSID"="{aa6c8d78-22ff-423a-9c7c-5f2393824e04}"
+"GeneratesDesignTimeSource"=dword:00000001
+@="Microsoft Visual Basic Primary My.Resources ResX File Code Generator"
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\SettingsSingleFileGenerator]
+"CLSID"="{3B4C204A-88A2-3AF8-BCFD-CFCB16399541}"
+"GeneratesDesignTimeSource"=dword:00000000
+"GeneratesSharedDesignTimeSource"=dword:00000001
+@="Generator for strongly typed settings class"
+[$RootKey$\Generators\{AA6C8D78-22FF-423A-9C7C-5F2393824E04}\PublicSettingsSingleFileGenerator]
+"CLSID"="{940f36b5-a42e-435e-8ef4-20b9d4801d22}"
+"GeneratesDesignTimeSource"=dword:00000000
+"GeneratesSharedDesignTimeSource"=dword:00000001
+@="Generator for strongly typed settings class (public class)"

@@ -178,7 +178,7 @@
     <value>Startup Object</value>
   </data>
   <data name="StartupObjectDescription" xml:space="preserve">
-    <value>The name of the class that contains the static Main method that you want called when you launch your application.</value>
+    <value>The name of the class that contains the static Start method that you want called when you launch your application. The default for X# applications is the Start function inside the compiler generated Functions class. You can override this setting by specifying another classname here.</value>
   </data>
   <data name="TargetFrameworkMoniker" xml:space="preserve">
     <value>Target Framework Moniker</value>

@@ -58,17 +58,17 @@ CLASS SolutionConverter
 					aElements := cLine:Split(e"\"":ToCharArray(), StringSplitOptions.None)
 					IF aElements:Length == 9
 						LOCAL cNewFile AS STRING
-						LOCAL oConverter AS ProjectConverter
-						oConverter := ProjectConverter{oProgress}
+						LOCAL oPrjConverter AS ProjectConverter
+						oPrjConverter := ProjectConverter{oProgress}
 						aElements[2] := "{AA6C8D78-22FF-423A-9C7C-5F2393824E04}"	// XS Guid
 						cNewFile := System.IO.Path.ChangeExtension(aElements[6], "."+EXTENSION)
-						oConverter:ConvertProjectFile(cPath+aElements[6], cPath+cNewFile)     
+						oPrjConverter:ConvertProjectFile(cPath+aElements[6], cPath+cNewFile)     
 						aFiles:Add(cPath+cNewFile)
 						aElements[6] := cNewFile      
 						IF ! aGuids:ContainsKey(aElements[8])
-							aGuids:Add(aElements[8], oConverter:Guid)
+							aGuids:Add(aElements[8], oPrjConverter:Guid)
 						ENDIF
-						aElements[8] := oConverter:Guid    
+						aElements[8] := oPrjConverter:Guid    
 						
 						cLine := ""
 						FOREACH VAR cElement IN aElements
@@ -87,6 +87,8 @@ CLASS SolutionConverter
 				FOREACH VAR item IN aGuids
 					IF cLine:Contains(item:Key)
 						cLine := cLine:Replace(item:Key, item:Value)
+					ELSEIF cLine:Contains(item:Key:ToLower())
+						cLine := cLine:Replace(item:Key:ToLower(), item:Value)
 					ENDIF
 				NEXT				
 			ENDIF
@@ -98,18 +100,20 @@ CLASS SolutionConverter
 		FOREACH VAR sFile IN aFiles
 			LOCAL sContents AS STRING
 			LOCAL lChanged := FALSE AS LOGIC
-			sContents := System.IO.File.ReadAllText(sFile)
-			FOREACH VAR sItem IN aGuids
-				IF sContents:Contains(sItem:Key)
-					sContents := sContents:Replace(sItem:Key, sItem:Value)
-					lChanged := TRUE
-				ELSEIF 	sContents:Contains(sItem:Key:ToLower())
-					sContents := sContents:Replace(sItem:Key:ToLower(), sItem:Value)
-					lChanged := TRUE
+			if System.IO.File.Exists(sFile)
+				sContents := System.IO.File.ReadAllText(sFile)
+				FOREACH VAR sItem IN aGuids
+					IF sContents:Contains(sItem:Key)
+						sContents := sContents:Replace(sItem:Key, sItem:Value)
+						lChanged := TRUE
+					ELSEIF sContents:Contains(sItem:Key:ToLower())
+						sContents := sContents:Replace(sItem:Key:ToLower(), sItem:Value)
+						lChanged := TRUE
+					ENDIF
+				NEXT                    
+				IF lChanged
+					System.IO.File.WriteAllText(sFile, sContents)
 				ENDIF
-			NEXT                    
-			IF lChanged
-				System.IO.File.WriteAllText(sFile, sContents)
 			ENDIF
 		NEXT
 		

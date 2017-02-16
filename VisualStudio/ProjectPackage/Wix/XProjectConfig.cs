@@ -7,12 +7,13 @@
 using System;
 using System.Globalization;
 using Microsoft.VisualStudio.Project;
+using MSBuildConstruction = Microsoft.Build.Construction;
 
 namespace XSharp.Project
 {
 
     /// <summary>
-    /// Allows getting and setting configuration-dependent properties for a WiX project.
+    /// Allows getting and setting configuration-dependent properties for a project.
     /// </summary>
     [CLSCompliant(false)]
     public class XProjectConfig : ProjectConfig
@@ -33,10 +34,9 @@ namespace XSharp.Project
         /// Creates a new project config instance.
         /// </summary>
         /// <param name="project">Parent project node.</param>
-        /// <param name="configName">Configuration name such as "Debug".</param>
-        /// <param name="platformName">Platform name such as "x86".</param>
-        public XProjectConfig(XProjectNode project, string configName, string platformName)
-            : base(project, new ConfigCanonicalName(configName, platformName))
+        /// <param name="name">Canonical Name</param>
+        public XProjectConfig(ProjectNode project, ConfigCanonicalName name)
+            : base(project, name)
         {
         }
 
@@ -50,5 +50,17 @@ namespace XSharp.Project
                 return String.Format(CultureInfo.InvariantCulture, XProjectConfig.ConfigAndPlatformConditionString, this.ConfigCanonicalName.ConfigName, this.ConfigCanonicalName.MSBuildPlatform);
             }
         }
+    }
+
+    internal class XConfigProvider: ConfigProvider
+    {
+        internal XConfigProvider(ProjectNode manager) : base(manager)
+        {
+        }
+        protected override  ProjectConfig CreateProjectConfiguration(ConfigCanonicalName canonicalName)
+        {
+            return new XProjectConfig(this.ProjectMgr, canonicalName);
+        }
+
     }
 }

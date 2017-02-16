@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>BEGIN SEQUENCE</Title>
+      <Shortcut>BEGIN</Shortcut>
+      <Description>Code snippet for BEGIN SEQUENCE</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>var</ID>
+          <Default>oError</Default>
+          <ToolTip>Local variable that receives the exception object</ToolTip>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+BEGIN SEQUENCE
+   $selected$ $end$
+RECOVER USING $var$
+
+END SEQUENCE
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

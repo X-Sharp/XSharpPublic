@@ -31,15 +31,17 @@ namespace XSharp.Project
         internal const string catSigning = "Code Signing";
         internal const string catMisc = "Miscellaneous";
         internal const string catWarnings = "Warnings";
-        internal const string catOutput = "Output";
-        internal const string catAdvanced = "Advanced";
+        internal const string catOutput = "\tOutput";
         internal const string CatPreprocessor = "Preprocessor";
+        internal const string catXML = "XML Output";
         internal const string captOutputPath = "Output Path";
         internal const string descOutputPath = "Output Path (macros are allowed)";
         internal const string captIntermediateOutputPath = "Intermediate Output Path";
         internal const string descIntermediateOutputPath = "Intermediate Output Path  (macros are allowed)";
         internal const string captDocumentationFile = "Generate XML doc comments file";
         internal const string descDocumentationFile = "Generate XML doc comments file";
+        internal const string captDocumentationFile1 = "XML doc comments file name";
+        internal const string descDocumentationFile1 = "XML doc comments file name";
         internal const string captOptimize = "Optimize";
         internal const string descOptimize = "Should compiler optimize output?";
         internal const string captUseSharedCompilation = "Use Shared Compiler";
@@ -50,7 +52,7 @@ namespace XSharp.Project
         internal const string descPostBuildEvent = "Post Build Event Command Line (may use macros)";
         internal const string captRunPostBuildEvent = "Run the Post Build Event";
         internal const string descRunPostBuildEvent = "When to run the Post Build Event";
-        internal const string captDisabledWarnings = "Suppress Warnings";
+        internal const string captDisabledWarnings = "Suppress Specific Warnings";
         internal const string descDisabledWarnings = "Specify a list of warnings to suppress (/nowarn)";
         internal const string captWarningLevel = "Warning Level";
         internal const string descWarningLevel = "Set the warning level to a value between 0 and 4 (/warn)";
@@ -66,7 +68,7 @@ namespace XSharp.Project
         internal const string PPOCaption = "Generate preprocessor output";
         internal const string PPODescription = "Save the output from the preprocessor to .ppo files  (/ppo)";
         internal const string NoStdDefCaption = "Suppress standard header file";
-        internal const string NoStdDefDescription = "Suppress inclusion of the standard header file in every file (/nostddef)";
+        internal const string NoStdDefDescription = "Suppress inclusion of the standard header file (XSharpDefs.xh) in every file (/nostddef)";
         internal const string CmdLineCaption = "Extra Command Line Options";
         internal const string CmdLineDescription = "User-Defined Command Line options";
         internal const string DefCaption = "Defines for the preprocessor";
@@ -89,19 +91,26 @@ namespace XSharp.Project
         private string prebuildevent;
         private string postbuildevent;
         private RunPostBuildEvent runpostbuildevent;
-        private bool documentationfile;
+        private bool docfile;
+        private string documentationFile;
         private string outputpath;
         private string intermediateoutputpath;
         private bool usesharedcompilation;
         private bool ppo;
         private string includepaths;
         private string defines;
-        private bool nostddef;
+        private bool nostandarddefs;
         private string commandlineoption;
+        private Platform platformtarget;
+        private bool prefer32bit;
 
         #endregion Fields
 
+        #region Constants
+        internal const string captPrefer32Bit = "\tPrefer 32 Bit";
+        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
 
+        #endregion
         #region Validation
         private int ValidateWarningLevel (int level)
         {
@@ -125,7 +134,34 @@ namespace XSharp.Project
         #endregion
 
 
-        [Category(catAdvanced), DisplayName(CmdLineCaption), Description(CmdLineDescription)]
+        [RefreshProperties(System.ComponentModel.RefreshProperties.All)]
+        [Category(catOutput)]
+        [LocDisplayName("\t\tPlatform Target")]
+        [Description("Select the platform target when compiling this project. This should be AnyCPU, X86, x64,Arm or Itanium")]
+        public Platform PlatformTarget
+        {
+            get { return this.platformtarget; }
+            set
+            {
+                this.platformtarget = value;
+                this.IsDirty = true;
+                // now enable/disable the readonly flag on Prefer32bit
+                EnableDisablePrefer32Bit();
+            }
+        }
+
+        [Category(catOutput)]
+        [DisplayName(captPrefer32Bit)]
+        [Description(descPrefer32Bit)]
+        [ReadOnly(true)]
+        public bool Prefer32Bit
+        {
+            get { return this.prefer32bit; }
+            set { this.prefer32bit = value; this.IsDirty = true; }
+        }
+
+
+        [Category(catMisc), DisplayName(CmdLineCaption), Description(CmdLineDescription)]
         public string CommandLineOption
         {
             get { return this.commandlineoption; }
@@ -133,9 +169,7 @@ namespace XSharp.Project
         }
 
 
-        [Category(catOutput)]
-        [DisplayName(captOutputPath)]
-        [Description(descOutputPath)]
+        [Category(catOutput),DisplayName(captOutputPath),Description(descOutputPath)]
         [Editor(typeof(XSharpSLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public string OutputPath
         {
@@ -149,9 +183,7 @@ namespace XSharp.Project
                 this.outputpath = AddSlash(value);
                 this.IsDirty = true;}
         }
-        [Category(catOutput)]
-        [DisplayName(captIntermediateOutputPath)]
-        [Description(descIntermediateOutputPath)]
+        [Category(catOutput),DisplayName(captIntermediateOutputPath),Description(descIntermediateOutputPath)]
         [Editor(typeof(XSharpSLEPropertyEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public string IntermediateOutputPath
         {
@@ -167,13 +199,25 @@ namespace XSharp.Project
                 this.IsDirty = true; }
         }
 
-        [Category(catOutput)]
+        [Category(catXML)]
         [DisplayName(captDocumentationFile)]
         [Description(descDocumentationFile)]
-        public bool DocumentationFile
+        public bool DocFile
         {
-            get { return this.documentationfile; }
-            //set { this.documentationfile = value; this.IsDirty = true; }
+            get { return this.docfile; }
+            //set { this.docfile = value;
+            //    this.IsDirty = true;
+            //    // now set the XML Documentation Filename
+            //    SetDocumentationFile();
+            //}
+        }
+
+        [Category(catXML)]
+        [DisplayName(captDocumentationFile1)]
+        [Description(descDocumentationFile1)]
+        public string DocumentationFile
+        {
+            get { return this.documentationFile; }
         }
 
         [Category(catMisc)]
@@ -284,7 +328,7 @@ namespace XSharp.Project
         public bool PPO
         {
             get { return this.ppo; }
-            //set { this.ppo = value; this.IsDirty = true; }
+            set { this.ppo = value; this.IsDirty = true; }
         }
 
         [Category(CatPreprocessor), DisplayName(DefCaption), Description(DefDescription)]
@@ -303,10 +347,10 @@ namespace XSharp.Project
         }
 
         [Category(CatPreprocessor), DisplayName(NoStdDefCaption), Description(NoStdDefDescription)]
-        public bool NoStdDef
+        public bool NoStandardDefs
         {
-            get { return this.nostddef; }
-            set { this.nostddef = value; this.IsDirty = true; }
+            get { return this.nostandarddefs; }
+            set { this.nostandarddefs = value; this.IsDirty = true; }
         }
 
 
@@ -333,7 +377,6 @@ namespace XSharp.Project
             outputpath = AddSlash(outputpath);
             intermediateoutputpath = getCfgString(nameof(IntermediateOutputPath),  defaultIntermediatePath);
             intermediateoutputpath = AddSlash(intermediateoutputpath);
-            documentationfile= getCfgLogic(nameof(DocumentationFile), false);
             optimize = getCfgLogic(nameof(Optimize),  false);
             usesharedcompilation = getCfgLogic(nameof(UseSharedCompilation),  true);
             prebuildevent = getCfgString(nameof(PreBuildEvent),"");
@@ -341,6 +384,11 @@ namespace XSharp.Project
             string temp= "";
             temp = getCfgString(nameof(RunPostBuildEvent),  "Always");
             runpostbuildevent = (RunPostBuildEvent) new RunPostBuildEventConverter().ConvertFromString(temp);
+
+            temp = getCfgString(nameof(DocumentationFile), "");
+            docfile = !string.IsNullOrEmpty(temp);
+            documentationFile = temp;
+
             disabledwarnings = getCfgString(nameof(DisabledWarnings),  "");
             warningLevel= getCfgInteger(nameof(WarningLevel), 4);
             warningLevel = ValidateWarningLevel(warningLevel);
@@ -351,9 +399,22 @@ namespace XSharp.Project
 
             commandlineoption= getCfgString(nameof(CommandLineOption),  "");
             ppo = getCfgLogic(nameof(PPO),  false);
-            nostddef = getCfgLogic(nameof(NoStdDef),  false);
+            nostandarddefs = getCfgLogic(nameof(NoStandardDefs),  false);
             includepaths = getCfgString(nameof(IncludePaths),  "");
             defines = getCfgString(nameof(DefineConstants), "");
+
+            this.prefer32bit = getCfgLogic(nameof(Prefer32Bit), true);
+            string platform = getCfgString(nameof(PlatformTarget), "");
+            try
+            {
+                this.platformtarget = (Platform)Enum.Parse(typeof(Platform), platform);
+            }
+            catch (ArgumentException)
+            {
+                this.platformtarget = Platform.AnyCPU;
+            }
+            EnableDisablePrefer32Bit();
+
         }
 
         /// <summary>
@@ -366,11 +427,17 @@ namespace XSharp.Project
             {
                 return VSConstants.E_INVALIDARG;
             }
-
             this.SetConfigProperty(nameof(TreatWarningsAsErrors), this.warningAsErrors.ToString().ToLower());
             this.SetConfigProperty(nameof(OutputPath), this.outputpath?.ToString());
             this.SetConfigProperty(nameof(IntermediateOutputPath), this.intermediateoutputpath?.ToString());
-            this.SetConfigProperty(nameof(DocumentationFile), this.documentationfile.ToString().ToLower());
+            if (!docfile)
+            {
+                this.RemovePrjProperty(nameof(DocumentationFile));
+            }
+            else
+            {
+                this.SetConfigProperty(nameof(DocumentationFile), documentationFile);
+            }
             this.SetConfigProperty(nameof(Optimize), this.optimize.ToString().ToLower());
             this.SetConfigProperty(nameof(UseSharedCompilation), this.usesharedcompilation.ToString().ToLower());
             this.SetConfigProperty(nameof(PreBuildEvent), this.prebuildevent?.ToString());
@@ -385,16 +452,38 @@ namespace XSharp.Project
 
             this.SetConfigProperty(nameof(CommandLineOption), this.commandlineoption?.ToString().ToLower());
             this.SetConfigProperty(nameof(PPO), this.ppo.ToString().ToLower());
-            this.SetConfigProperty(nameof(NoStdDef), this.nostddef.ToString().ToLower());
+            this.SetConfigProperty(nameof(NoStandardDefs), this.nostandarddefs.ToString().ToLower());
             this.SetConfigProperty(nameof(IncludePaths), this.includepaths?.ToString());
             this.SetConfigProperty(nameof(DefineConstants), this.defines?.ToString());
+            this.SetConfigProperty(nameof(PlatformTarget), this.platformtarget.ToString());
+            this.SetConfigProperty(nameof(Prefer32Bit), this.prefer32bit.ToString());
 
             this.IsDirty = false;
 
             return VSConstants.S_OK;
         }
+        private void SetDocumentationFile()
+        {
+            if (docfile)
+            {
+                if (String.IsNullOrEmpty(DocumentationFile))
+                {
+                    var asmName = this.ProjectMgr.GetProjectProperty("AssemblyName", true);
+                    documentationFile = System.IO.Path.ChangeExtension(asmName, ".Xml");
+                }
+            }
+            else
+            {
+                documentationFile = "";
+            }
+        }
 
         #endregion
+        private void EnableDisablePrefer32Bit()
+        {
+            SetFieldReadOnly("Prefer32Bit", platformtarget != Platform.AnyCPU);
+        }
+
     }
 }
 

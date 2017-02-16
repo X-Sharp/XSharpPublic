@@ -33,11 +33,14 @@ namespace XSharp.Project
         private string applicationIcon;
         private FrameworkName targetFrameworkMoniker;
         private Dialect dialect;
-        private Platform platformtarget;
-        internal const string captPrefer32Bit = "Prefer 32 Bit";
-        internal const string descPrefer32Bit = "Prefer 32 bit when AnyCpu platform is selected.";
-        private bool prefer32bit;
+        private bool vulcanCompatibleResources;
         #endregion Fields
+
+        #region Constants
+        internal const string captVulcanCompatibleResouces = "Vulcan Compatible Managed Resources";
+        internal const string descVulcanCompatibleResouces = "Use Vulcan Compatible Managed Resources (when 'True' then resources files are included in the assembly without namespace prefix. When 'False' then the resource files are prefixed with the namespace of the app, just like in other .Net languages, such as C#))";
+
+        #endregion
 
         #region Constructors
         /// <summary>
@@ -86,35 +89,18 @@ namespace XSharp.Project
             set { this.dialect = value; this.IsDirty = true; }
         }
 
-        [RefreshProperties(System.ComponentModel.RefreshProperties.All)]
-        [ResourcesCategory(Resources.Application)]
-        [LocDisplayName("Platform Target")]
-        [ResourcesDescription("Select the platform target when compiling this project")]
-        public Platform PlatformTarget
-        {
-            get { return this.platformtarget; }
-            set
-            {
-                this.platformtarget = value;
-                this.IsDirty = true;
-                // now enable/disable the readonly flag on Prefer32bit
-                EnableDisablePrefer32Bit();
-            }
-        }
 
         [ResourcesCategory(Resources.Application)]
-        [DisplayName(captPrefer32Bit)]
-        [Description(descPrefer32Bit)]
-        [ReadOnly(true)]
-        public bool Prefer32Bit
+        [DisplayName(captVulcanCompatibleResouces)]
+        [Description(descVulcanCompatibleResouces)]
+        public bool VulcanCompatibleResources
         {
-            get { return this.prefer32bit; }
-            set { this.prefer32bit = value;  this.IsDirty = true; }
+            get { return this.vulcanCompatibleResources; }
+            set { this.vulcanCompatibleResources = value; this.IsDirty = true; }
         }
 
 
-
-            [ResourcesCategory(Resources.Application)]
+        [ResourcesCategory(Resources.Application)]
         [LocDisplayName(Resources.DefaultNamespace)]
         [ResourcesDescription(Resources.DefaultNamespaceDescription)]
         /// <summary>
@@ -244,7 +230,7 @@ namespace XSharp.Project
             this.rootNamespace = this.ProjectMgr.GetProjectProperty(nameof(RootNamespace), false);
             this.startupObject = this.ProjectMgr.GetProjectProperty(nameof(StartupObject), false);
             this.applicationIcon = this.ProjectMgr.GetProjectProperty(nameof(ApplicationIcon), false);
-            this.prefer32bit = getCfgLogic(nameof(Prefer32Bit), true);
+            this.vulcanCompatibleResources = getCfgLogic(nameof(VulcanCompatibleResources), false);
             if (outputType != null && outputType.Length > 0)
             {
                 try
@@ -258,15 +244,6 @@ namespace XSharp.Project
             }
 
 
-            string platform = this.ProjectMgr.GetProjectProperty(nameof(PlatformTarget), false);
-            try
-            {
-                this.platformtarget = (Platform)Enum.Parse(typeof(Platform), platform);
-            }
-            catch (ArgumentException)
-            {
-                this.platformtarget = Platform.AnyCPU;
-            }
 
             try
             {
@@ -290,7 +267,6 @@ namespace XSharp.Project
             {
                 this.dialect = Dialect.Core;
             }
-            EnableDisablePrefer32Bit();
 
         }
 
@@ -314,9 +290,7 @@ namespace XSharp.Project
             this.ProjectMgr.SetProjectProperty(nameof(StartupObject), this.startupObject);
             this.ProjectMgr.SetProjectProperty(nameof(ApplicationIcon), this.applicationIcon);
             this.ProjectMgr.SetProjectProperty(nameof(Dialect), this.dialect.ToString());
-            this.ProjectMgr.SetProjectProperty(nameof(PlatformTarget), this.platformtarget.ToString());
-            this.ProjectMgr.SetProjectProperty(nameof(Prefer32Bit), this.prefer32bit.ToString());
-
+            this.ProjectMgr.SetProjectProperty(nameof(VulcanCompatibleResources), this.vulcanCompatibleResources.ToString());
             if (reloadRequired)
             {
                 if (MessageBox.Show(SR.GetString(SR.ReloadPromptOnTargetFxChanged), SR.GetString(SR.ReloadPromptOnTargetFxChangedCaption), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -339,10 +313,6 @@ namespace XSharp.Project
 
         #endregion
 
-        private void EnableDisablePrefer32Bit()
-        {
-            SetFieldReadOnly("Prefer32Bit", platformtarget != Platform.AnyCPU);
-        }
 
     }
 }

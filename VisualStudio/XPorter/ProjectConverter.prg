@@ -15,6 +15,8 @@ CLASS ProjectConverter
 	PROTECT cPath	AS STRING   
 	PROTECT oProgress AS IProgress         
 	PROTECT lVulcanRtWritten AS LOGIC
+	PROTECT oProjectNode as XmlElement
+	PROTECT lHasProjectExtensions as LOGIC
 	PROPERTY Guid AS STRING GET cGuid
 	CONSTRUCTOR(oProg AS IProgress)
 		cSchema := "http://schemas.microsoft.com/developer/msbuild/2003"
@@ -30,6 +32,13 @@ METHOD ConvertProjectFile(cSource AS STRING, cTarget AS STRING) AS LOGIC
 		RETURN FALSE
 	ENDIF                            
 	SELF:WalkNode(oDoc)   
+	if (!lHasProjectExtensions )
+		VAR oExt := oDoc:CreateElement("ProjectExtensions",cSchema)
+		VAR oCap := oDoc:CreateElement("ProjectCapabilities",cSchema)
+		oExt:AppendChild(oCap)
+		oCap:AppendChild(oDoc:CreateElement("ProjectConfigurationsDeclaredAsItems",cSchema))
+		oProjectNode:AppendChild(oExt)
+	ENDIF
 	SELF:SaveFile(cTarget)
 	RETURN TRUE	
 
@@ -87,19 +96,22 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 		SWITCH oElement:Name:ToLower()
 		CASE "compile"    
 		CASE "none"    
-			VAR oLink := oElement:FirstChild
-			IF oLink != NULL .and. oLink:Name:ToLowerInvariant() == "link"
-				LOCAL cChild AS STRING
-				LOCAL cNew   AS STRING
-				cChild := oElement:GetAttribute("Include")
-				cNew   := System.IO.Path.GetFileName(cChild)
-				cChild := System.IO.Path.Combine(cPath, cChild)
-				cNew   := System.IO.Path.Combine(cPath, cNew)
-				IF System.IO.File.Exists(cChild)                         
-					// create a normal file that includes the original file
-					System.IO.File.WriteAllText(cNew, e"#include \"" + oElement:GetAttribute("Include") + e"\"\r\n")
-					oElement:SetAttribute("Include", System.IO.Path.GetFileName(cChild))
-					oElement:RemoveChild(oLink)
+		CASE "vobinary"
+		CASE "nativeresource"
+			VAR cItem := oElement:GetAttribute("Include")
+			cItem := cPath+cItem
+			VAR oChild1 := oElement:FirstChild
+			IF oChild1 != NULL .and. oChild1:Name:ToLowerInvariant() == "dependentupon"
+				VAR  cInnerText := oChild1:InnerText
+				IF cInnerText:Contains("\")
+					// check to see if parent node is in the same folder as the child node.
+					if System.IO.File.Exists(cItem) .and. System.IO.File.Exists(cPath+cInnerText)
+						if System.IO.Path.GetFullPath(cItem) == System.IO.Path.GetFullPath(cPath+cInnerText)
+							// paths are equal, only write filename
+							cInnerText := System.IO.Path.GetFileName(cInnerText)
+							oChild1:InnerText := cInnerText
+						ENDIF
+					endif
 				ENDIF
 			ENDIF
 
@@ -112,6 +124,12 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 		CASE "projectguid"   
 			// new guid
 			oElement:InnerText := cGuid
+		CASE "projecttypeguids"   
+			// WPF project
+			// our WPF ProjectFactory
+			// Generic WPF project 
+			// Our project factory
+			oElement:InnerText := "{5ADB76EC-7017-476A-A8E0-25D4202FFCF0};{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548};{AA6C8D78-22FF-423A-9C7C-5F2393824E04}" 
 		CASE "projectreference"
 			// update extension in project references 
 			oAttribute := (XmlAttribute) oElement:Attributes:GetNamedItem("Include")
@@ -151,18 +169,39 @@ METHOD UpdateNode(oParent AS XmlNode, oElement AS XmlElement) AS VOID
 					oChild:InnerText := "AnyCPU"
 					oElement:PrependChild(oChild)
 				ENDIF
+			ELSE
+				// ALl other project groups.
+				// Adjust the condition when needed
+				VAR oCondition := (XMLAttribute) oElement:Attributes:GetNamedItem("Condition") 
+				// <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" Label="Configuration">
+				IF oCondition != NULL
+					VAR  cInnerText := oCondition:InnerText
+					if ! cInnerText:ToLower():Contains("platform")
+						if cInnerText:ToLower():Contains("release")
+							oCondition:InnerText := "'$(Configuration)|$(Platform)'=='Release|AnyCPU'"
+						else
+							oCondition:InnerText := "'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"
+						endif
+					ENDIF
+				ENDIF
 			ENDIF
 		CASE "projectextensions"
-			// Import the schema
-			oChild := oDoc:CreateElement("Import", cSchema)
-			oAttribute := oDoc:CreateAttribute("Project")
-			oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.targets"
-			oChild:Attributes:Append(oAttribute)   
-			oParent:InsertBefore(oChild, oElement)  
 			// add <ProjectCapabilities><ProjectConfigurationsDeclaredAsItems /></ProjectCapabilities>
 			oChild := oDoc:CreateElement("ProjectCapabilities",cSchema)
 			oChild:AppendChild(oDoc:CreateElement("ProjectConfigurationsDeclaredAsItems",cSchema))
 			oElement:AppendChild(oChild)
+			lHasProjectExtensions := TRUE
+		CASE "project"
+			// Only for main project node, not for project node inside projectreference
+			if (oParent is XMLDocument)
+				// Import the schema
+				SELF:oProjectNode := oElement
+				oChild := oDoc:CreateElement("Import", cSchema)
+				oAttribute := oDoc:CreateAttribute("Project")
+				oAttribute:Value := "$(XSharpProjectExtensionsPath)XSharp.targets"
+				oChild:Attributes:Append(oAttribute)   
+				oElement:AppendChild(oChild)  
+			ENDIF
 		CASE "reference"                               
 			// Add VulcanRT assemblies after 1st reference
 			IF !SELF:lVulcanRtWritten
@@ -303,5 +342,6 @@ STATIC METHOD Convert(cFile AS STRING, oProgress AS IProgress) AS VOID
 	
         
 END CLASS        
+
 
 

@@ -262,6 +262,12 @@ namespace XSharp.Build
             get { return base.GetBoolParameterWithDefault(nameof(ReportAnalyzer), false); }
         }
 
+        public bool VulcanCompatibleResources
+        {
+            set { base.Bag[nameof(VulcanCompatibleResources)] = value; }
+            get { return (bool)base.Bag[nameof(VulcanCompatibleResources)]; }
+
+        }
         public String VsSessionGuid
         {
             set { base.Bag[nameof(VsSessionGuid)] = value; }
@@ -409,6 +415,7 @@ namespace XSharp.Build
             //System.Diagnostics.Debugger.Launch();
             errorCount = 0;
             hasShownMaxErrorMsg = false;
+            VulcanCompatibleResources = false;
         }
 
         protected override string ToolName
@@ -618,14 +625,14 @@ namespace XSharp.Build
             commandline.AppendPlusOrMinusSwitch("/ins", base.Bag, nameof(INS));
             commandline.AppendPlusOrMinusSwitch("/lb", base.Bag, nameof(LB));
             commandline.AppendPlusOrMinusSwitch("/ovf", base.Bag, nameof(OVF));
-            //commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
-            //commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
+            commandline.AppendPlusOrMinusSwitch("/ppo", base.Bag, nameof(PPO));
+            commandline.AppendPlusOrMinusSwitch("/vo1", base.Bag, nameof(VO1));
             commandline.AppendPlusOrMinusSwitch("/vo2", base.Bag, nameof(VO2));
             commandline.AppendPlusOrMinusSwitch("/vo3", base.Bag, nameof(VO3));
             commandline.AppendPlusOrMinusSwitch("/vo4", base.Bag, nameof(VO4));
             commandline.AppendPlusOrMinusSwitch("/vo5", base.Bag, nameof(VO5));
-            //commandline.AppendPlusOrMinusSwitch("/vo6", base.Bag, nameof(VO6));
-            //commandline.AppendPlusOrMinusSwitch("/vo7", base.Bag, nameof(VO7));
+            commandline.AppendPlusOrMinusSwitch("/vo6", base.Bag, nameof(VO6));
+            commandline.AppendPlusOrMinusSwitch("/vo7", base.Bag, nameof(VO7));
             commandline.AppendPlusOrMinusSwitch("/vo8", base.Bag, nameof(VO8));
             commandline.AppendPlusOrMinusSwitch("/vo9", base.Bag, nameof(VO9));
             commandline.AppendPlusOrMinusSwitch("/vo10", base.Bag, nameof(VO10));
@@ -650,7 +657,9 @@ namespace XSharp.Build
                         sb.Append(';');
                     sb.Append(s);
                 }
-                commandline.AppendTextUnquoted("/i:\"" + sb.ToString() + "\"");
+                string path = sb.ToString();
+                path = path.Replace(@"\\", @"\");
+                commandline.AppendTextUnquoted("/i:\"" + path + "\"");
             }
         }
         internal string PlatformWith32BitPreference
@@ -682,6 +691,7 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/moduleassemblyname:", ModuleAssemblyName);
             commandLine.AppendSwitchIfNotNull("/pdb:", PdbFile);
             commandLine.AppendPlusOrMinusSwitch("/nostdlib", base.Bag, nameof(NoStandardLib));
+            commandLine.AppendPlusOrMinusSwitch("/nostddefs", base.Bag, nameof(NoStandardDefs));
             commandLine.AppendSwitchIfNotNull("/platform:", PlatformWith32BitPreference);
             commandLine.AppendSwitchIfNotNull("/errorreport:", ErrorReport);
             commandLine.AppendSwitchWithInteger("/warn:", base.Bag, nameof(WarningLevel));
@@ -878,7 +888,6 @@ namespace XSharp.Build
             }
             commandLine.AppendSwitchIfNotNull("/addmodule:", AddModules, ",");
             commandLine.AppendSwitchWithInteger("/codepage:", base.Bag, nameof(CodePage));
-
             ConfigureDebugProperties();
 
             // The "DebugType" parameter should be processed after the "EmitDebugInformation" parameter
@@ -906,7 +915,11 @@ namespace XSharp.Build
             commandLine.AppendSwitchIfNotNull("/subsystemversion:", SubsystemVersion);
             commandLine.AppendWhenTrue("/reportanalyzer", base.Bag, nameof(ReportAnalyzer));
             // If the strings "LogicalName" or "Access" ever change, make sure to search/replace everywhere in vsproject.
-            commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
+            if (VulcanCompatibleResources)
+                commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { });
+            else
+                commandLine.AppendSwitchIfNotNull("/resource:", Resources, new string[] { "LogicalName", "Access" });
+
             commandLine.AppendSwitchIfNotNull("/target:", TargetType);
             commandLine.AppendPlusOrMinusSwitch("/warnaserror", base.Bag, nameof(TreatWarningsAsErrors));
             commandLine.AppendWhenTrue("/utf8output", base.Bag, nameof(Utf8Output));

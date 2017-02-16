@@ -38,21 +38,30 @@ namespace XSharp.Build
                 this.AppendNewLine();
             }
         }
-
         public new void AppendSwitchIfNotNull(string switchName, string parameter)
+        {
+            AppendSwitchIfNotNull(switchName, parameter, true);
+        }
+        public void AppendSwitchIfNotNull(string switchName, string parameter, bool newline = true)
         {
             if (parameter != null && switchName != null)
             {
                 base.AppendSwitchIfNotNull(switchName, parameter);
-                this.AppendNewLine();
+                if (newline)
+                    this.AppendNewLine();
             }
         }
         public new void AppendSwitchIfNotNull(string switchName, ITaskItem parameter)
         {
+            AppendSwitchIfNotNull(switchName, parameter, true);
+        }
+        public void AppendSwitchIfNotNull(string switchName, ITaskItem parameter, bool newline = true)
+        {
             if (parameter != null && switchName != null)
             {
                 base.AppendSwitchIfNotNull(switchName, parameter);
-                this.AppendNewLine();
+                if (newline)
+                    this.AppendNewLine();
             }
         }
 
@@ -221,7 +230,7 @@ namespace XSharp.Build
             {
                 foreach (ITaskItem parameter in parameters)
                 {
-                    this.AppendSwitchIfNotNull(switchName, parameter.ItemSpec);
+                    this.AppendSwitchIfNotNull(switchName, parameter.ItemSpec,false); 
 
                     if (metadataNames != null)
                     {
@@ -270,6 +279,7 @@ namespace XSharp.Build
                                 }
                             }
                         }
+                        this.AppendNewLine(); 
                     }
                 }
             }

@@ -31,11 +31,15 @@ namespace XSharpColorizer
         private IClassificationType xsharpIdentifierType;
         private IClassificationType xsharpCommentType;
         private IClassificationType xsharpOperatorType;
-        private IClassificationType xsharpConstantType;
+        private IClassificationType xsharpPunctuationType;
+        private IClassificationType xsharpStringType;
+        private IClassificationType xsharpNumberType;
+        private IClassificationType xsharpPPType;
         private IClassificationType xsharpBraceOpenType;
         private IClassificationType xsharpBraceCloseType;
         private IClassificationType xsharpRegionStart;
         private IClassificationType xsharpRegionStop;
+        private IClassificationType xsharpInactiveType;
         private XSharpTagger xsTagger;
         private List<ClassificationSpan> tags;
         private ITextDocumentFactoryService txtdocfactory;
@@ -55,13 +59,17 @@ namespace XSharpColorizer
             xsTagger = new XSharpTagger(registry);
             tags = new List<ClassificationSpan>();
             //
-            xsharpKeywordType = registry.GetClassificationType(ColorizerConstants.XSharpKeywordFormat);
-            xsharpIdentifierType = registry.GetClassificationType(ColorizerConstants.XSharpIdentifierFormat);
-            xsharpCommentType = registry.GetClassificationType(ColorizerConstants.XSharpCommentFormat);
-            xsharpOperatorType = registry.GetClassificationType(ColorizerConstants.XSharpOperatorFormat);
-            xsharpConstantType = registry.GetClassificationType(ColorizerConstants.XSharpConstantFormat);
-            xsharpBraceOpenType = registry.GetClassificationType(ColorizerConstants.XSharpBraceOpenFormat);
-            xsharpBraceCloseType = registry.GetClassificationType(ColorizerConstants.XSharpBraceCloseFormat);
+            xsharpKeywordType = registry.GetClassificationType("keyword"); 
+            xsharpIdentifierType = registry.GetClassificationType("identifier"); 
+            xsharpCommentType = registry.GetClassificationType("comment");
+            xsharpOperatorType = registry.GetClassificationType("operator");
+            xsharpPunctuationType = registry.GetClassificationType("punctuation");
+            xsharpPPType = registry.GetClassificationType("preprocessor keyword"); 
+            xsharpNumberType = registry.GetClassificationType("number");
+            xsharpStringType = registry.GetClassificationType("string");
+            xsharpInactiveType = registry.GetClassificationType("excluded code"); 
+            xsharpBraceOpenType = registry.GetClassificationType("punctuation");
+            xsharpBraceCloseType = registry.GetClassificationType("punctuation");
             xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
             xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
             //
@@ -69,7 +77,7 @@ namespace XSharpColorizer
             isBusy = false;
         }
 
-        private void Parse( ITextSnapshot snapshot)
+        private void Parse(ITextSnapshot snapshot)
         {
             Snapshot = snapshot;
             ITokenStream TokenStream = null;
@@ -99,44 +107,65 @@ namespace XSharpColorizer
                     TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
                     if (token.Channel != 0)
                     {
-                        if (token.Channel == XSharpLexer.PREPROCESSOR)
+                        switch (token.Channel)
                         {
-                            newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
-                        }
-                        else
-                        {
-                            switch (tokenType)
-                            {
-                                case XSharpLexer.WS:
-                                    break;
-                                case XSharpLexer.LINE_CONT:
-                                case XSharpLexer.LINE_CONT_OLD:
+                            case XSharpLexer.PREPROCESSOR:          // #define, #ifdef etc
+                            case XSharpLexer.PRAGMACHANNEL:         // #pragma
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
+                                break;
+                            case XSharpLexer.DEFOUT:                // code in an inactive #ifdef
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpInactiveType));
+                                break;
+                            case XSharpLexer.XMLDOC:
+                            case XSharpLexer.Hidden:
+                                if (XSharpLexer.IsComment(token.Type))
+                                {
+                                    newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
+                                }
+                                else if (token.Type == XSharpLexer.LINE_CONT ||
+                                        token.Type == XSharpLexer.LINE_CONT_OLD)
+                                {
+                                    // Semi colon followed by optional comment and whitespace
+                                    // if there is an embedded comment then mark that as comment
                                     if (token.Text.Trim().Length > 1)
                                     {
                                         // Contains embedded comment
                                         tokenSpan = new TextSpan(token.StartIndex + 1, token.StopIndex - token.StartIndex);
                                         newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
-
+                                        // The semi colon
                                         tokenSpan = new TextSpan(token.StartIndex, 1);
-                                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
+                                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPunctuationType));
+                                        continue;
                                     }
-                                    break;
-                                case XSharpLexer.SL_COMMENT:
-                                case XSharpLexer.ML_COMMENT:
-                                case XSharpLexer.DOC_COMMENT:
-                                    newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
-                                    break;
-                            }
+
+                                }
+                                break;
                         }
+                        continue;
+                    }
+                    else if (XSharpLexer.IsIdentifier(tokenType))
+                    {
+                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
+                    }
+                    else if (XSharpLexer.IsConstant(tokenType))
+                    {
+                        switch (tokenType)
+                        {
+                            case XSharpLexer.STRING_CONST:
+                            case XSharpLexer.CHAR_CONST:            
+                            case XSharpLexer.ESCAPED_STRING_CONST:
+                            case XSharpLexer.INTERPOLATED_STRING_CONST:
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpStringType));
+                                break;
+                            default:
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpNumberType));
+                                break;
+                        }
+                        
                     }
                     else if (XSharpLexer.IsKeyword(tokenType))
                     {
                         newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpKeywordType));
-                    }
-                    else if (XSharpLexer.IsConstant(tokenType))
-                    {
-                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpConstantType));
-
                     }
                     else if (XSharpLexer.IsOperator(tokenType))
                     {
@@ -157,10 +186,6 @@ namespace XSharpColorizer
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpOperatorType));
                                 break;
                         }
-                    }
-                    else if (XSharpLexer.IsIdentifier(tokenType))
-                    {
-                        newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpIdentifierType));
                     }
                 }
                 foreach (var tag in xsTagger.Tags)

@@ -8,17 +8,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		VisualStudio\README.md = VisualStudio\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Package 2015", "VisualStudio\ProjectPackage\Project Package 2015.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Package", "VisualStudio\ProjectPackage\Project Package.csproj", "{F4ADEBDB-CD20-4532-B4E3-FE7424F5369C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpCodeDomProvider", "VisualStudio\XSharpCodeDomProvider\XSharpCodeDomProvider.csproj", "{F9C94F84-D196-4BE7-AD67-0C9DBFC912B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharp.Build", "VisualStudio\XSharp.Build\XSharp.Build.csproj", "{CD315B80-8E6F-4EF3-AE9B-ED39795EDF9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpColorizer2015", "VisualStudio\XSharpColorizer\XSharpColorizer2015.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
-EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XSharpVODesigners", "VisualStudio\VODesigners\XSharpVODesigners.xsprj", "{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpColorizer", "VisualStudio\XSharpColorizer\XSharpColorizer.csproj", "{FFA0338A-27ED-42BA-B801-EC5AD32A7395}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XPorter", "VisualStudio\XPorter\XPorter.xsproj", "{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XSharpModel", "VisualStudio\XSharpModel\XSharpModel.csproj", "{2C3B9217-E012-4681-97CE-F0A658C40336}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupCheck2017", "VisualStudio\SetupCheck\SetupCheck2017.csproj", "{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,14 +62,6 @@ Global
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.ActiveCfg = Release|Any CPU
 		{FFA0338A-27ED-42BA-B801-EC5AD32A7395}.Release|x86.Build.0 = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Debug|x86.Build.0 = Debug|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|x86.ActiveCfg = Release|Any CPU
-		{4A9A5F83-C9C7-41CB-9E16-68497277E0A8}.Release|x86.Build.0 = Release|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -76,6 +70,22 @@ Global
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Release|x86.ActiveCfg = Release|Any CPU
 		{8A49A47C-ADE7-416C-8B28-CD3B401CBC25}.Release|x86.Build.0 = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Debug|x86.Build.0 = Debug|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C3B9217-E012-4681-97CE-F0A658C40336}.Release|x86.Build.0 = Release|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Debug|x86.Build.0 = Debug|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Release|x86.ActiveCfg = Release|Any CPU
+		{B9AA5DD9-28D1-445D-8FDD-6195DC479BCC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

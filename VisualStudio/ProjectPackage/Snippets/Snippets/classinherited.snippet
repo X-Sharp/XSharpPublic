@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>CLASS, INHERITED</Title>
+      <Shortcut>classing</Shortcut>
+      <Description>Code snippet for inherited CLASS declaration</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>name</ID>
+          <ToolTip>Class name</ToolTip>
+          <Default>MyClass</Default>
+        </Literal>
+        <Literal>
+          <ID>parent</ID>
+          <ToolTip>Parent class name</ToolTip>
+          <Default>ParentClass</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+CLASS $name$ INHERIT $parent$
+   $end$
+
+   CONSTRUCTOR()
+      SUPER()
+      RETURN
+
+END CLASS
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

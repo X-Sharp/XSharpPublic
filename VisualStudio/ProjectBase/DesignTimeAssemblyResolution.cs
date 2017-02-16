@@ -1,4 +1,3 @@
-#if NOTDEFINED
 /* ****************************************************************************
  *
  * Copyright (c) Microsoft Corporation.
@@ -42,11 +41,6 @@ namespace Microsoft.VisualStudio.Project
             if (projectNode == null)
             {
                 throw new ArgumentNullException("projectNode");
-            }
-
-            if (projectNode.CallMSBuild("GetFrameworkPaths") != MSBuildResult.Successful)
-            {
-                throw new InvalidOperationException("Build of GetFrameworkPaths failed.");
             }
 
             this.rarInputs = new RarInputs(projectNode.ProjectInstance);
@@ -607,4 +601,3 @@ namespace Microsoft.VisualStudio.Project
         }
     }
 }
-#endif

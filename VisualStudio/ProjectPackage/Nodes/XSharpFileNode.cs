@@ -111,7 +111,7 @@ namespace XSharp.Project
             // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
             // We should do this with proper parsing. For now we simply test the first word after the INHERIT keyword
             // and then parse and bind to see if we can find the first type in the file.
-            if (this.FileType == XSharpFileType.SourceCode)
+            if (this.FileType == XSharpFileType.SourceCode && this.Url.IndexOf(".designer.",StringComparison.OrdinalIgnoreCase) == -1)
             {
                 string SubType = "";
                 string token = "INHERIT";
@@ -119,7 +119,7 @@ namespace XSharp.Project
                 int pos = source.IndexOf(token, StringComparison.OrdinalIgnoreCase);
                 if (pos > 0)
                 {
-                    source = source.Substring(pos + token.Length, 250);
+                    source = source.Substring(pos + token.Length);
                     var words = source.Split(";\t \r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     if (words.Length > 0)
                     {
@@ -167,12 +167,16 @@ namespace XSharp.Project
             // we can hard code a similar table or read it from the registry like C# does.
             // CS also defines a 'relationtype'. See the CS Project System source code.
             String path = Path.GetFileName(this.Url).ToLowerInvariant();
+            String folder = Path.GetDirectoryName(this.Url)+"\\";
+            XSharpProjectNode project = this.ProjectMgr as XSharpProjectNode;
             int relationIndex = path.IndexOf(".");
             switch (this.FileType)
             {
                 case XSharpFileType.Header:
                 case XSharpFileType.ManagedResource:
                     path = Path.ChangeExtension(path, ".prg");
+                    if (project.FindURL(folder + path) == null)
+                        path = null;
                     break;
                 case XSharpFileType.VODBServer:
                 case XSharpFileType.VOFieldSpec:
@@ -181,19 +185,38 @@ namespace XSharp.Project
                 case XSharpFileType.VOMenu:
                 case XSharpFileType.VOOrder:
                 case XSharpFileType.NativeResource:
-
-                    if (relationIndex < 0)
-                        return string.Empty;
-                    path = path.Substring(0, relationIndex) + ".prg";
+                    if (relationIndex >= 0)
+                    {
+                        path = path.Substring(0, relationIndex) + ".prg";
+                        if (project.FindURL(folder + path) == null)
+                            path = null;
+                    }
+                    else
+                        path = null;
                     break;
                 default:
                     if (path.EndsWith(".designer.prg"))
                     {
-                        path = path.Substring(0, relationIndex) + ".prg";
+                        // could be Form.Prg
+                        // Resources.resx
+                        // Settings.Settings
+                        path = path.Substring(0, relationIndex);
+                        string parent = folder+path+ ".prg";
+                        if (project.FindURL(parent) != null)
+                            return parent;
+                        parent = folder + path + ".resx";
+                        if (project.FindURL(parent) != null)
+                            return parent;
+                        parent = folder + path + ".settings";
+                        if (project.FindURL(parent) != null)
+                            return parent;
+                        return "";
                     }
                     else if (path.EndsWith(".xaml.prg"))
                     {
-                        path = path.Substring(0, relationIndex) + ".prg";
+                        path = path.Substring(0, relationIndex) + ".xaml";
+                        if (project.FindURL(folder + path) == null)
+                            path = null;
                     }
                     else
                     {
@@ -234,10 +257,27 @@ namespace XSharp.Project
             dependant = (XSharpFileNode)ProjectMgr.CreateDependentFileNode(fileName);
 
             // Like the C# project system we do not put a path in front of the parent name, even when we are in a subfolder
+            // but we do put a path before the parent name when the parent is in a different folder
+            // In that case the path is the path from the base project folder
             string parent = this.ItemNode.GetMetadata(ProjectFileConstants.Include);
             parent = Path.GetFileName(parent);
             if (!this.IsNonMemberItem)
-                dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
+            {
+                string parentPath = Path.GetDirectoryName(Path.GetFullPath(this.Url));
+                string childPath = Path.GetDirectoryName(Path.GetFullPath(dependant.Url));
+                if (String.Equals(parentPath, childPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parent);
+                }
+                else
+                {
+                    string projectPath = this.ProjectMgr.ProjectFolder;
+                    Uri projectFolder = new Uri(projectPath);
+                    Uri relative = projectFolder.MakeRelativeUri(new Uri(parentPath));
+                    parentPath = relative.ToString()+Path.DirectorySeparatorChar;
+                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parentPath+parent);
+                }
+            }
             // Make the item a dependent item
             dependant.HasParentNodeNameRelation = true;
             // Insert in the list of children
@@ -368,9 +408,16 @@ namespace XSharp.Project
             }
             set
             {
-                ItemNode.SetMetadata(ProjectFileConstants.SubType, value);
-                // Don't forget to update...
-                UpdateHasDesigner();
+                try
+                {
+                    ItemNode.SetMetadata(ProjectFileConstants.SubType, value);
+                    // Don't forget to update...
+                    UpdateHasDesigner();
+                }
+                catch (Exception)
+                {
+                    // This sometimes failes and causes an exception in VS.
+                }
             }
         }
         public string Generator

@@ -3,9 +3,7 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using Vulcan
-begin namespace XSharp.Runtime
-	#region functions
+
 	/// <summary>
 	/// Remove leading and trailing spaces — including double-byte spaces — from a string.
 	/// </summary>
@@ -237,5 +235,3 @@ begin namespace XSharp.Runtime
 		/// THROW NotImplementedException{}
 	RETURN String.Empty   
 
-	#endregion
-end namespace

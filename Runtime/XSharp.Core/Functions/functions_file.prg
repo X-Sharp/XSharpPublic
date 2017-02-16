@@ -8,7 +8,6 @@ using System.Collections
 using System.IO
 using System.Linq
 using System.Runtime.InteropServices
-using Vulcan
 using System.Security
 using Microsoft.Win32.SafeHandles
 using System.Runtime

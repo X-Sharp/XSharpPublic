@@ -3,10 +3,6 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using Vulcan
-
-begin namespace XSharp.Runtime
-	#region functions
 
 	/// <summary>
 	/// Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
@@ -202,5 +198,3 @@ begin namespace XSharp.Runtime
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
-	#endregion
-end namespace

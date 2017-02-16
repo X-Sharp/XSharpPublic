@@ -8,13 +8,13 @@ using XSharp.Rdd
 using XSharp
 
 
-	/// <summary>
-	/// Return the number of fields in the current database file.
-	/// </summary>
-	/// <returns>
-	/// </returns>
-	FUNCTION FCount() AS DWORD
-		RETURN 0
+/// <summary>
+/// Return the number of fields in the current database file.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION FCount() AS DWORD
+	RETURN 0
 
 
 /// <summary>

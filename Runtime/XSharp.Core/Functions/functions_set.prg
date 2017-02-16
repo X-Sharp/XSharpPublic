@@ -57,7 +57,6 @@
 	FUNCTION GetAmPm() AS LOGIC
 		RETURN XSharp.Runtime.State.GetInstance():GetValue<LOGIC>( Set.AmPm )
 
-
 	/// <summary>
 	/// Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
 	/// </summary>
@@ -307,11 +306,7 @@
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
-	/// <summary>
-	/// </summary>
-	/// <param name="dwBytes"></param>
-	/// <returns>
-	/// </returns>
+	[Obsolete];
 	FUNCTION SetKidStackSize(dwBytes AS DWORD) AS DWORD
 		/// THROW NotImplementedException{}
 	RETURN 0   
@@ -326,44 +321,7 @@
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
-	/// <summary>
-	/// Set the maximum amount of dynamic memory for the main thread.
-	/// </summary>
-	/// <param name="dwBytes"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION SetMaxDynSize(dwBytes AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
 
-	/// <summary>
-	/// </summary>
-	/// <param name="dwCount"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION SetMaxRegisteredAxitMethods(dwCount AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Set the maximum number of KID's that can be registered.
-	/// </summary>
-	/// <param name="dwCount"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION SetMaxRegisteredKids(dwCount AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// Set the maximum amount of dynamic memory for the new thread.
-	/// </summary>
-	/// <param name="dwBytes"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION SetMaxThreadDynSize(dwBytes AS DWORD) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
 
 	/// <summary>
 	/// Change the setting that determines the <%APP%> search path for opening files.
@@ -500,15 +458,6 @@
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
 
-	/// <summary>
-	/// Set the value of WipeDynSpace.
-	/// </summary>
-	/// <param name="lWipe"></param>
-	/// <returns>
-	/// </returns>
-	FUNCTION SetWipeDynSpace(lWipe AS LOGIC) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
 
 	/// <summary>
 	/// </summary>

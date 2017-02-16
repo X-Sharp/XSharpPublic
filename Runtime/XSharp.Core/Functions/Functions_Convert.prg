@@ -69,7 +69,7 @@ FUNCTION Bin2W(c AS STRING) AS WORD
 RETURN 0   
 
 
-	/// <summary>
+/// <summary>
 /// </summary>
 /// <param name="c"></param>
 /// <returns>
@@ -77,8 +77,6 @@ RETURN 0
 FUNCTION C2Hex(c AS STRING) AS STRING
 	/// THROW NotImplementedException{}
 RETURN String.Empty   
-
-
 
 /// <summary>
 /// Return the high-order (leftmost) byte in a number.

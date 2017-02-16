@@ -27,6 +27,7 @@
     <StartupObject />
     <ApplicationIcon />
     <Prefer32Bit>False</Prefer32Bit>
+    <VO15>false</VO15>
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>
@@ -103,6 +104,26 @@
     <IncludePaths>$(Solutiondir)Common</IncludePaths>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>$(Solutiondir)\Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <Optimize>false</Optimize>
+    <UseSharedCompilation>true</UseSharedCompilation>
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <DisabledWarnings>168;</DisabledWarnings>
+    <WarningLevel>4</WarningLevel>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile />
+    <CommandLineOption>/creatingruntime</CommandLineOption>
+    <PPO>false</PPO>
+    <NoStandardDefs>false</NoStandardDefs>
+    <IncludePaths>$(Solutiondir)Common</IncludePaths>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
   <Import Project="$(XSharpProjectExtensionsPath)XSharp.props" />
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -116,7 +137,6 @@
   <ItemGroup>
     <Folder Include="Functions" />
     <Folder Include="Internal" />
-    <Folder Include="Structures" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +164,8 @@
     <Compile Include="Internal\CompilerSupport.prg" />
     <Compile Include="Internal\RuntimeState.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
+    <Compile Include="Set-Defines.prg" />
+    <Compile Include="State.prg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">

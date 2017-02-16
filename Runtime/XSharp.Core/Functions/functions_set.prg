@@ -5,17 +5,54 @@
 //
 // Most of these settings will Get and Set properties of the Runtime.State class
 
-begin namespace XSharp.Runtime 
-	#region functions
+#command GETSTATE <type> <set>	      =>				 ;
+		RETURN XSharp.Runtime.State.GetInstance():GetValue\< <type> \>( <set> )
+
+#command SETSTATE <type> <set>	<value> =>				 ;
+		LOCAL oldValue as <type>						 ;;
+		VAR oState := XSharp.Runtime.State.GetInstance() ;;
+		BEGIN LOCK oState								 ;;
+			oldValue := oState:GetValue\<<type>\>(<set>) ;;
+			oState:SetValue(<set> , <value> )			 ;;
+		END LOCK										 ;;
+		RETURN oldValue
+
+	/// <summary>
+	/// Returns a string representing the morning extension for time strings in 12-hour format.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+	FUNCTION GetAMExt() AS STRING
+		RETURN XSharp.Runtime.State.GetInstance():GetValue<STRING>( Set.AmExt )
+	
 	/// <summary>
 	/// Set the morning extension for time strings in 12-hour format.
 	/// </summary>
 	/// <param name="cExt"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetAMExt(cExt AS STRING) AS VOID
-		/// THROW NotImplementedException{}
-	RETURN
+
+	FUNCTION SetAMExt() AS STRING
+		RETURN GetAmExt()
+
+	FUNCTION SetAMExt(cExt AS STRING) AS STRING
+		LOCAL oldValue as STRING						 
+		VAR oState := XSharp.Runtime.State.GetInstance() 
+		BEGIN LOCK oState								 
+			oldValue := oState:GetValue<STRING>(Set.AmExt) 
+			oState:SetValue(Set.AmExt , cExt )			 
+		END LOCK										 
+		RETURN oldValue
+		
+
+	/// <summary>
+	/// Returns the setting that determines whether time strings are in 12-hour or 24-hour format.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+	FUNCTION GetAmPm() AS LOGIC
+		RETURN XSharp.Runtime.State.GetInstance():GetValue<LOGIC>( Set.AmPm )
+
 
 	/// <summary>
 	/// Return and optionally change the setting that determines whether time strings are in 12-hour or 24-hour format.
@@ -23,9 +60,14 @@ begin namespace XSharp.Runtime
 	/// <param name="lSet"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetAmPm(lSet AS OBJECT) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	FUNCTION SetAmPm(lSet AS LOGIC) AS LOGIC
+		LOCAL oldValue as LOGIC
+		VAR oState := XSharp.Runtime.State.GetInstance()
+		BEGIN LOCK oState
+			oldValue := oState:GetValue<LOGIC>(Set.AmPm)	
+			oState:SetValue(Set.AmPm, lSet)
+		END LOCK
+		RETURN oldValue
 
 	/// <summary>
 	/// Return and optionally change the setting that determines whether database files are created using ANSI or OEM format and whether certain text file operations convert between the two character sets.
@@ -96,15 +138,29 @@ begin namespace XSharp.Runtime
 		/// THROW NotImplementedException{}
 	RETURN 0   
 
+
+	/// <summary>
+	/// Return the current __VODate format.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+	FUNCTION GetDateFormat() AS STRING
+		RETURN XSharp.Runtime.State.GetInstance():GetValue<STRING>(Set.DateFormat)
+
 	/// <summary>
 	/// Change the setting that determines the <%APP%> date format.
 	/// </summary>
 	/// <param name="cDateFormat"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDateFormat(cDateFormat AS STRING) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
+	FUNCTION SetDateFormat(cDateFormat AS STRING) AS STRING
+		LOCAL oldValue as STRING
+		VAR oState := XSharp.Runtime.State.GetInstance()
+		BEGIN LOCK oState
+			oldValue := oState:GetValue<STRING>(Set.DateFormat)	
+			oState:SetValue(Set.DateFormat, cDateFormat)
+		END LOCK
+	RETURN oldValue
 
 	/// <summary>
 	/// Return and optionally change the setting that determines the number of decimal places used to display numbers.
@@ -112,9 +168,8 @@ begin namespace XSharp.Runtime
 	/// <param name="nDec"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetDecimal(nDec AS OBJECT) AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	FUNCTION SetDecimal(nDec AS DWORD) AS DWORD
+		RETURN XSharp.Runtime.State.GetInstance():GetValue<DWORD>(Set.Decimals)
 
 	/// <summary>
 	/// Return and optionally change the setting that determines the decimal separation character to be used in numeric-to-string conversion functions.
@@ -316,15 +371,33 @@ begin namespace XSharp.Runtime
 		/// THROW NotImplementedException{}
 	RETURN
 
+
+	/// <summary>
+	/// Returns a string representing the evening extension for time strings in 12-hour format.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+	FUNCTION GetPMExt() AS STRING
+		RETURN XSharp.Runtime.State.GetInstance():GetValue<STRING>( Set.PmExt )
+
+
 	/// <summary>
 	/// Set the evening extension for time strings in 12-hour format.
 	/// </summary>
 	/// <param name="cExt"></param>
 	/// <returns>
 	/// </returns>
-	FUNCTION SetPMExt(cExt AS STRING) AS VOID
-		/// THROW NotImplementedException{}
-	RETURN 
+	FUNCTION SetPMExt() AS STRING
+		RETURN GetPmExt()
+
+	FUNCTION SetPMExt(cExt AS STRING) AS STRING
+		LOCAL oldValue as STRING						 
+		VAR oState := XSharp.Runtime.State.GetInstance() 
+		BEGIN LOCK oState								 
+			oldValue := oState:GetValue<STRING>(Set.PmExt) 
+			oState:SetValue(Set.PmExt , cExt )			 
+		END LOCK										 
+		RETURN oldValue
 
 	/// <summary>
 	/// Save a numeric value to the Registry.
@@ -437,5 +510,3 @@ begin namespace XSharp.Runtime
 		/// THROW NotImplementedException{}
 	RETURN FALSE   
 
-	#endregion
-end namespace

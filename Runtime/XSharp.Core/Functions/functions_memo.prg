@@ -3,9 +3,6 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using Vulcan
-
-begin namespace XSharp.Runtime
 	#region functions
 	/// <summary>
 	/// Extract a line of text from a string.
@@ -75,4 +72,3 @@ begin namespace XSharp.Runtime
 	RETURN 0   
 
 	#endregion
-end namespace

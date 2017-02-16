@@ -3,9 +3,6 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-using Vulcan
-
-begin namespace XSharp.IO
 	#region functions
 	/// <summary>
 	/// Create a new thread.
@@ -58,100 +55,6 @@ begin namespace XSharp.IO
 	unsafe FUNCTION Item__ArrayPut(px AS PTR,dw AS DWORD,pa AS PTR) AS PTR
 		/// THROW NotImplementedException{}
 	RETURN IntPtr.Zero
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemGetDL(ptrAny AS PTR) AS LONG
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemGetL(ptrAny AS PTR) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemGetND(ptrAny AS PTR) AS REAL8
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemGetNL(ptrAny AS PTR) AS LONG
-		/// THROW NotImplementedException{}
-	RETURN 0   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <param name="lDate"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemPutDL(ptrAny AS PTR,lDate AS LONG) AS PTR
-		/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <param name="fVal"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemPutL(ptrAny AS PTR,fVal AS LOGIC) AS PTR
-		/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <param name="r8"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemPutND(ptrAny AS PTR,r8 AS REAL8) AS PTR
-		/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <param name="lNum"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemPutNL(ptrAny AS PTR,lNum AS LONG) AS PTR
-		/// THROW NotImplementedException{}
-	RETURN IntPtr.Zero
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemRegister(ptrAny AS PTR) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
-
-	/// <summary>
-	/// </summary>
-	/// <param name="ptrAny"></param>
-	/// <returns>
-	/// </returns>
-	unsafe FUNCTION ItemRelease(ptrAny AS PTR) AS LOGIC
-		/// THROW NotImplementedException{}
-	RETURN FALSE   
 
 
 	/// <summary>
@@ -548,4 +451,3 @@ begin namespace XSharp.IO
 	RETURN 0   
 
 	#endregion
-end namespace

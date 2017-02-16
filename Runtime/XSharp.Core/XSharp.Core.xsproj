@@ -136,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Functions" />
-    <Folder Include="Internal" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -156,13 +155,11 @@
     <Compile Include="Functions\functions_mb.prg" />
     <Compile Include="Functions\functions_memo.prg" />
     <Compile Include="Functions\functions_numeric.prg" />
-    <Compile Include="Functions\functions_ord.prg" />
     <Compile Include="Functions\functions_set.prg" />
     <Compile Include="Functions\functions_string.prg" />
     <Compile Include="Functions\functions_unsafe.prg" />
     <Compile Include="Functions\functions_vodb.prg" />
-    <Compile Include="Internal\CompilerSupport.prg" />
-    <Compile Include="Internal\RuntimeState.prg" />
+    <Compile Include="Functions\Obsolete.prg" />
     <Compile Include="Properties\AssemblyInfo.prg" />
     <Compile Include="Set-Defines.prg" />
     <Compile Include="State.prg" />

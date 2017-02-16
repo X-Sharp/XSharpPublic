@@ -286,9 +286,9 @@ namespace XSharp.Project
                     return true;
                 case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
                     return "XSharp.ProjectSystem";
-                case (int)__VSHPROPID6.VSHPROPID_Subcaption:
-                case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
-                    return "X#";
+                //case (int)__VSHPROPID6.VSHPROPID_Subcaption:
+                //case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
+                //    return "X#";
                 case (int)__VSHPROPID7.VSHPROPID_CanBuildQuickCheck:
                 case (int)__VSHPROPID7.VSHPROPID_CanDebugLaunchQuickCheck:
                     return _VSQuickCheckAnswer.QCA_Always;
@@ -1313,7 +1313,8 @@ namespace XSharp.Project
         const string config = "$(Configuration)";
         const string configPlatform = "$(Configuration)|$(Platform)";
 
-        const string import1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
+        const string import1a = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
+        const string import1b = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
         const string import2 = @"$(XSharpProjectExtensionsPath)XSharp.props";
         const string import3 = @"$(XSharpProjectExtensionsPath)XSharp.targets";
 
@@ -1344,7 +1345,8 @@ namespace XSharp.Project
                 ok = false;
             if (ok && str.IndexOf("<DocumentationFile>true", StringComparison.OrdinalIgnoreCase) != -1)
                 ok = false;
-            if (ok && str.IndexOf(import1, StringComparison.OrdinalIgnoreCase) == -1)
+            if (ok && str.IndexOf(import1a, StringComparison.OrdinalIgnoreCase) == -1 &&
+                str.IndexOf(import1b, StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf(import2, StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
@@ -1421,7 +1423,9 @@ namespace XSharp.Project
             foreach (var import in xml.Imports)
             {
                 var prj = import.Project;
-                if (String.Equals(prj, import1, StringComparison.OrdinalIgnoreCase))
+                if (String.Equals(prj, import1a, StringComparison.OrdinalIgnoreCase))
+                    hasImport1 = true;
+                if (String.Equals(prj, import1b, StringComparison.OrdinalIgnoreCase))
                     hasImport1 = true;
                 if (String.Equals(prj, import2, StringComparison.OrdinalIgnoreCase))
                     hasImport2 = true;

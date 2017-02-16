@@ -24,17 +24,21 @@
 	/// </returns>
 	FUNCTION GetAMExt() AS STRING
 		RETURN XSharp.Runtime.State.GetInstance():GetValue<STRING>( Set.AmExt )
-	
+
+	/// <summary>
+	/// Returns a string representing the morning extension for time strings in 12-hour format.
+	/// </summary>
+	/// <returns>
+	/// </returns>
+	FUNCTION SetAMExt() AS STRING
+		RETURN GetAmExt()
+
 	/// <summary>
 	/// Set the morning extension for time strings in 12-hour format.
 	/// </summary>
 	/// <param name="cExt"></param>
 	/// <returns>
 	/// </returns>
-
-	FUNCTION SetAMExt() AS STRING
-		RETURN GetAmExt()
-
 	FUNCTION SetAMExt(cExt AS STRING) AS STRING
 		LOCAL oldValue as STRING						 
 		VAR oState := XSharp.Runtime.State.GetInstance() 
@@ -382,14 +386,19 @@
 
 
 	/// <summary>
-	/// Set the evening extension for time strings in 12-hour format.
+	/// Returns a string representing the evening extension for time strings in 12-hour format.
 	/// </summary>
-	/// <param name="cExt"></param>
 	/// <returns>
 	/// </returns>
 	FUNCTION SetPMExt() AS STRING
 		RETURN GetPmExt()
 
+	/// <summary>
+	/// Set the evening extension for time strings in 12-hour format.
+	/// </summary>
+	/// <param name="cExt"></param>
+	/// <returns>
+	/// </returns>
 	FUNCTION SetPMExt(cExt AS STRING) AS STRING
 		LOCAL oldValue as STRING						 
 		VAR oState := XSharp.Runtime.State.GetInstance() 

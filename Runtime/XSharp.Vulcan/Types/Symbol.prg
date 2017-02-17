@@ -17,8 +17,8 @@ USING System
 
 PUBLIC STRUCTURE __Symbol IMPLEMENTS System.Collections.Generic.IEqualityComparer<__Symbol>, System.IEquatable<__Symbol>
     #region fields
-    PRIVATE index		AS Long
-    PRIVATE stringValue AS string
+    PRIVATE index		AS LONG
+    PRIVATE stringValue AS STRING
 	#endregion
 
     #region constrúctors
@@ -35,6 +35,7 @@ PUBLIC STRUCTURE __Symbol IMPLEMENTS System.Collections.Generic.IEqualityCompare
         index := SymbolDictionary.Add(SELF)
 	return
     #endregion
+
 	#region methods
     VIRTUAL METHOD Equals(obj AS Object) AS Logic
         LOCAL other AS __Symbol
@@ -89,6 +90,7 @@ PUBLIC STRUCTURE __Symbol IMPLEMENTS System.Collections.Generic.IEqualityCompare
 		endif
 	return self:stringValue
 	#endregion
+
 	#region internal types
     INTERNAL STATIC  CLASS SymbolDictionary
         #region fields
@@ -97,6 +99,7 @@ PUBLIC STRUCTURE __Symbol IMPLEMENTS System.Collections.Generic.IEqualityCompare
         STATIC PRIVATE sync AS Object
         STATIC INITONLY PRIVATE NON_EXISTING_SYMBOL := __Symbol{"", FALSE} AS __Symbol
 		#endregion
+
         #region constructors
         STATIC  CONSTRUCTOR()
             LOCAL dictionary AS System.Collections.Generic.Dictionary<string,Long>
@@ -105,6 +108,7 @@ PUBLIC STRUCTURE __Symbol IMPLEMENTS System.Collections.Generic.IEqualityCompare
             SymbolDictionary.symbolLookup := dictionary
             SymbolDictionary.sync := Object{}
 		#endregion
+
 		#region methods
         INTERNAL STATIC METHOD Add(newSymbol AS __Symbol) AS Int
             LOCAL syncObj AS Object

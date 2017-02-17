@@ -50,7 +50,7 @@ FUNCTION Fact(n AS DWORD) AS __VOFloat
 			result := result * i
 		next
 	endif
-RETURN (__VOFloat)result    
+RETURN __VOFloat{result}
 
 
 /// <summary>
@@ -59,8 +59,7 @@ RETURN (__VOFloat)result
 /// <returns>
 /// </returns>
 FUNCTION FClone(o AS __VOFloat) AS __VOFloat
-	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN __VoFloat{o:Value, o:Digits, o:Decimals}
 
 
 
@@ -74,7 +73,7 @@ RETURN 0
 /// </returns>
 FUNCTION __VOFloatFormat(f AS __VOFloat,nLen AS INT,nDec AS INT) AS __VOFloat
 	/// THROW NotImplementedException{}
-RETURN 0   
+	RETURN __VoFloat{f:Value, nLen, nDec}  
 
 /// <summary>
 /// </summary>

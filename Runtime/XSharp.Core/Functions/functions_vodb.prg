@@ -9,6 +9,16 @@ using XSharp
 
 
 /// <summary>
+/// Return the name of the alias.
+/// </summary>
+/// <returns>
+/// </returns>
+FUNCTION DBF() AS STRING
+	/// THROW NotImplementedException{}
+RETURN string.Empty   
+
+
+/// <summary>
 /// Return the number of fields in the current database file.
 /// </summary>
 /// <returns>

@@ -5,7 +5,7 @@ USING System.Text
 using Microsoft.VisualStudio.TestTools.UnitTesting
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
 using XSharp.Runtime
-using Vulcan
+
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 

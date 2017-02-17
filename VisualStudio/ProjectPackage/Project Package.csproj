@@ -42,7 +42,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>

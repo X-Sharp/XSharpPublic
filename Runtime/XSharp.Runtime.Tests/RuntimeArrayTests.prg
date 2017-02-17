@@ -5,7 +5,7 @@ USING System.Text
 using Microsoft.VisualStudio.TestTools.UnitTesting
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
 using XSharp.Runtime
-using Vulcan
+
 /*
 // Array tests are not working correctly yet with the current build
 BEGIN NAMESPACE XSharp.Runtime.Tests

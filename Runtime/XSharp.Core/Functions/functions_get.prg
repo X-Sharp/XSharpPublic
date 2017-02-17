@@ -3,7 +3,8 @@
 // Licensed under the Apache License, Version 2.0.  
 // See License.txt in the project root for license information.
 //
-
+#include "GetSet.xh"
+using XSharp
 	/// <summary>
 	/// Gets the locale ID that the runtime uses for comparing strings when running in Windows collation mode (SetCollation(#Windows)).
 	/// </summary>
@@ -187,14 +188,13 @@
 	/// <returns>
 	/// </returns>
 	FUNCTION GetTimeSep() AS DWORD
-		/// THROW NotImplementedException{}
-	RETURN 0   
+		GETSTATE DWORD Set.TimeSep
 
 	/// <summary>
+	/// Returns TimeZone difference for current timezone in Hours
 	/// </summary>
 	/// <returns>
 	/// </returns>
 	FUNCTION GetTimeZoneDiff() AS INT
-		/// THROW NotImplementedException{}
-	RETURN 0   
+	RETURN TimeZoneInfo.Local.BaseUtcOffSet:Hours
 

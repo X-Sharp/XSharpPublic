@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <ProjectGuid>214b74ac-5fc9-4256-9e10-6bdfe5b12ce0</ProjectGuid>
     <OutputType>Library</OutputType>

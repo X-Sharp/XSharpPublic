@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting
 using static Microsoft.VisualStudio.TestTools.UnitTesting.Assert
 using XSharp.Runtime
 using System.Diagnostics
-using Vulcan
+
 
 BEGIN NAMESPACE XSharp.Runtime.Tests
 	//[TestClass];

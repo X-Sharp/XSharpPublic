@@ -1,4 +1,10 @@
-﻿/// <summary>
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+/// <summary>
 /// Convert a string containing a 32-bit unsigned integer to a double word.
 /// </summary>
 /// <param name="c"></param>
@@ -106,8 +112,8 @@ RETURN (WORD) upper
 /// <returns>
 /// </returns>
 FUNCTION I2Bin(n AS SHORT) AS STRING
-	local byte__Array := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byte__Array)  
+	local byteArray := BitConverter.GetBytes( n ) as byte[]
+RETURN System.Text.Encoding.ASCII:GetString(byteArray)  
 
 
 
@@ -118,8 +124,8 @@ RETURN System.Text.Encoding.ASCII:GetString(byte__Array)
 /// <returns>
 /// </returns>
 FUNCTION L2Bin(n AS LONG) AS STRING
-	local byte__Array := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byte__Array)     
+	local byteArray := BitConverter.GetBytes( n ) as byte[]
+RETURN System.Text.Encoding.ASCII:GetString(byteArray)     
 
 
 
@@ -162,8 +168,8 @@ RETURN String.Empty
 /// <returns>
 /// </returns>
 FUNCTION Real42Bin(n AS REAL4) AS STRING
-	local byte__Array := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byte__Array)        
+	local byteArray := BitConverter.GetBytes( n ) as byte[]
+RETURN System.Text.Encoding.ASCII:GetString(byteArray)        
 
 /// <summary>
 /// Convert a Real8 value to a string containing an 8-byte __VOFloating point number.
@@ -172,8 +178,8 @@ RETURN System.Text.Encoding.ASCII:GetString(byte__Array)
 /// <returns>
 /// </returns>
 FUNCTION Real82Bin(n AS REAL8) AS STRING
-	local byte__Array := BitConverter.GetBytes( n ) as byte[]
-RETURN System.Text.Encoding.ASCII:GetString(byte__Array)   
+	local byteArray := BitConverter.GetBytes( n ) as byte[]
+RETURN System.Text.Encoding.ASCII:GetString(byteArray)   
 
 
 

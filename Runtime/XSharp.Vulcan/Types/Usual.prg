@@ -89,7 +89,7 @@ begin namespace XSharp
 					typeCode := System.Type.GetTypeCode(vartype)
 					switch typeCode
 					case  System.TypeCode.DBNull
-						self:_usualType := UsualDataType.NIL
+						self:_usualType := UsualDataType.Void
 						self:refData	:= null
 					case System.TypeCode.Boolean
 						self:_usualType := UsualDataType.LOGIC
@@ -172,18 +172,18 @@ begin namespace XSharp
 		#endregion
 
 		#region properties
-		private  property _usualType as UsualDataType get flags:usualType set flags:usualType := value
-		private  property width     as Byte GET flags:width SET flags:width := value
-		private  property decimals  as Byte GET flags:decimals SET flags:decimals := value
-		public   Property UsualType as UsualDataType GET  _usualType
-		internal property Is__Array   as Logic GET self:usualType == UsualDataType.Array
-		internal property IsByRef   as Logic GET self:flags:IsByRef
-		internal property IsDate	as Logic GET self:usualType == UsualDataType.Date
-		internal property IsPtr		as Logic GET self:usualType == UsualDataType.PTR
-		internal property IsString	as Logic GET self:usualType == UsualDataType.STRING
-		internal property IsLong	as Logic GET self:usualType == UsualDataType.INT64
-		internal property Is__VOFloat   as Logic GET self:usualType == UsualDataType.Float
-		internal property IsValueType as LOGIC GET ! SELF:IsReferenceType
+		private  property _usualType	as UsualDataType get flags:usualType set flags:usualType := value
+		private  property width			as Byte GET flags:width SET flags:width := value
+		private  property decimals		as Byte GET flags:decimals SET flags:decimals := value
+		public   Property UsualType		as UsualDataType GET  _usualType
+		internal property IsArray		as Logic GET self:usualType == UsualDataType.Array
+		internal property IsByRef		as Logic GET self:flags:IsByRef
+		internal property IsDate		as Logic GET self:usualType == UsualDataType.Date
+		internal property IsPtr			as Logic GET self:usualType == UsualDataType.PTR
+		internal property IsString		as Logic GET self:usualType == UsualDataType.STRING
+		internal property IsLong		as Logic GET self:usualType == UsualDataType.INT64
+		internal property IsFloat		as Logic GET self:usualType == UsualDataType.Float
+		internal property IsValueType	as LOGIC GET ! SELF:IsReferenceType
 
 		internal property IsReferenceType as LOGIC
 			GET
@@ -202,7 +202,7 @@ begin namespace XSharp
 
 		internal property IsNil as Logic
 			Get
-				return self:usualType == UsualDataType.NIL .or. ;
+				return self:usualType == UsualDataType.Void .or. ;
 				(self:IsReferenceType .and. self:refData  == null)
 
 			End Get
@@ -225,25 +225,25 @@ begin namespace XSharp
 			THROW NotImplementedException{}
 
 		public method ToDecimal(provider as System.IFormatProvider) as Decimal
-		THROW NotImplementedException{}
+			THROW NotImplementedException{}
 
 		public method ToDouble(provider as System.IFormatProvider) as real8
-		THROW NotImplementedException{}
+			THROW NotImplementedException{}
 
 		public method ToInt16(provider as System.IFormatProvider) as Short
-		THROW NotImplementedException{}
+			THROW NotImplementedException{}
 
 		public method ToInt32(provider as System.IFormatProvider) as Long
-		return 0
+			return 0
 
 		public method ToInt64(provider as System.IFormatProvider) as Int64
-		return 0
+			return 0
 
 		static method ToObject(u as __Usual) as Object
-		return NULL
+			return NULL
 
 		public method ToSByte(provider as System.IFormatProvider) as SByte
-		return 0
+			return 0
 
 		public method ToSingle(provider as System.IFormatProvider) as real4
 		return 0
@@ -287,7 +287,7 @@ begin namespace XSharp
 			case UsualDataType.Symbol
 				strResult := self:valueData:s:ToString()
 
-			case UsualDataType.NIL
+			case UsualDataType.Void
 				strResult := "NIL"
 			otherwise
 				strResult := ""
@@ -397,37 +397,37 @@ begin namespace XSharp
 			return __Usual{a}
 
 		static operator implicit(dt as System.DateTime) as __Usual
-		return __Usual{dt}
+			return __Usual{dt}
 
 		static operator implicit(v as real8) as __Usual
-		return __Usual{v}
+			return __Usual{v}
 
 		static operator implicit(i as Short) as __Usual
-		return __Usual{(int)i}
+			return __Usual{(int)i}
 
 		static operator implicit(i as Long) as __Usual
-		return __Usual{i}
+			return __Usual{i}
 
 		static operator implicit(i64 as Int64) as __Usual
-		return __Usual{i64}
+			return __Usual{i64}
 
 		static operator implicit(i as System.IntPtr) as __Usual
-		return __Usual{i}
+			return __Usual{i}
 
 		static operator implicit(i as SByte) as __Usual
-		return __Usual{(int)i}
+			return __Usual{(int)i}
 
 		static operator implicit(v as real4) as __Usual
-		return __Usual{(real8)v }
+			return __Usual{(real8)v }
 
 		static operator implicit(s as string) as __Usual
-		return __Usual{s}
+			return __Usual{s}
 
 		static operator implicit(i as Word) as __Usual
-		return __Usual{(int)i}
+			return __Usual{(int)i}
 
 		static operator implicit(v as DWord) as __Usual
-		return IIF((v > 0x7fffffff),__Usual{(Long)v },__Usual{(Long)v })
+			return IIF((v > 0x7fffffff),__Usual{(Long)v },__Usual{(__VoFloat)v })
 
 		static operator ++(u as __Usual) as __Usual
 			THROW NotImplementedException{}
@@ -491,24 +491,41 @@ begin namespace XSharp
 	end structure
 
 
-	public enum UsualDataType as Long
-		member @@Array:=5
-		member @@CODEBLOCK:=9
-		member @@Date:=2
-		member @@Float:=3
-		member @@INT:=1
-		member @@INT64:=0x16
-		member @@LOGIC:=8
-		member @@NIL:=0
-		member @@OBJECT:=6
-		member @@Psz:=0x11
-		member @@PTR:=0x12
-		member @@STRING:=7
-		member @@Symbol:=10
+	public enum UsualDataType as Byte
+		// These numbers must match with the types defined in the compiler
+		// They also match with the USUAL types in VO (BaseType.h)
+		member @@Void		:=0
+		member @@Int		:=1
+		member @@LongInt	:=1	// Synonym to Int
+		member @@Date		:=2
+		member @@Float		:=3
+		// Note # 4 (FIXED) was defined but never used in VO
+		member @@Array		:=5
+		member @@Object		:=6
+		member @@String		:=7
+		member @@Logic		:=8
+		member @@CodeBlock	:=9
+		member @@Symbol		:=10
+		// see below for missing values
+		member @@Psz		:=17
+		member @@PTR		:=18
+		member @@Usual		:=19	// USUAL by Ref, not implemented in Vulcan
+		member @@Int64		:=22
+		// The follow numbers are defined but never stored inside a USUAL in VO and Vulcan
+		member @@Byte		:=11
+		member @@ShortInt	:=12
+		member @@Word		:=13
+		member @@DWord		:=14
+		member @@Real4		:=15
+		member @@Real8		:=16
+		member @@Uint64     :=23
+		member @@Memo		:=32	// Used in RDD system in VO
+		member @@Invalid    :=99
 	end enum
 
 	[StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit)];
 	internal structure UsualFlags
+
 		[FieldOffset(0)];
 		export usualType as UsualDataType
 		[FieldOffset(1)];
@@ -517,6 +534,7 @@ begin namespace XSharp
 		export decimals as byte
 		[FieldOffset(3)];
 		export isByRef as logic
+
 		CONSTRUCTOR(type as UsualDataType)
 			usualType := type
 			width	  := 0

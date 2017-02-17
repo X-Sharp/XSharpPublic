@@ -32,7 +32,7 @@ begin namespace XSharp
 		constructor(ticks as Int64)
 			try
 				_value := System.DateTime{ticks}
-			catch ex as Exception
+			catch 
 				_value := System.DateTime.MinValue
 			end try
 		return
@@ -52,7 +52,7 @@ begin namespace XSharp
 			endif
 			try
 				_value := System.DateTime{year , month , day }
-			catch ex as Exception
+			catch 
 				_value := System.DateTime.MinValue
 			end try
 		return
@@ -69,7 +69,7 @@ begin namespace XSharp
 			endif
 			try
 				_value := System.DateTime{(Long)year , (Long)month , (Long)day }
-			catch ex as Exception
+			catch 
 				_value := System.DateTime.MinValue
 			end try
 		return

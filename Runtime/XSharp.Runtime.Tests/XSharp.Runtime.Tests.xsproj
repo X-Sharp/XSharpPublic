@@ -63,8 +63,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>$(Solutiondir)\Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
     <PreBuildEvent />
@@ -84,7 +84,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <OutputPath>bin\Release\</OutputPath>
-    <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <DocumentationFile>false</DocumentationFile>
     <Optimize>true</Optimize>
     <UseSharedCompilation>true</UseSharedCompilation>
@@ -104,8 +104,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>$(Solutiondir)\Binaries\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>$(Solutiondir)\Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
+    <OutputPath>$(SolutionDir)Binaries\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)Binaries\Obj\$(Configuration)\$(ProjectName)\</IntermediateOutputPath>
     <Optimize>false</Optimize>
     <UseSharedCompilation>false</UseSharedCompilation>
     <PreBuildEvent />

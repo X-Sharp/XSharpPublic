@@ -42994,7 +42994,7 @@ ReferenceGAC = CLR4,System,1,0,4.0.0.0
 [C431 - Some problems with #command Native Resources]
 [C431 - Some problems with #command License files]
 [C431 - Some problems with #command General Options]
-Switches=
+Switches=/ppo /showdefs
 ZeroArrays=0
 CaseSensitive=0
 ImplicitNamespace=0

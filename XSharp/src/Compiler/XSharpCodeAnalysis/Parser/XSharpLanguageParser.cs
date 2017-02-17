@@ -211,6 +211,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
 
                 pp_tokens.Reset();
+                pp.Close();
                 parser.Reset();
                 tree = parser.source();
             }

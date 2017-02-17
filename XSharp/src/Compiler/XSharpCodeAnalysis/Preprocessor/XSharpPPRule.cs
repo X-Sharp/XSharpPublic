@@ -589,7 +589,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             }
                         }
                     }
-                    matchInfo[iRule] = PPMatchRange.Token();
+                    matchInfo[iRule] = PPMatchRange.Token(iSource);
                     iSource += 1;
                     iRule += 1;
                     break;

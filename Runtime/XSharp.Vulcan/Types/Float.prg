@@ -14,6 +14,8 @@ begin namespace XSharp
 		PRIVATE _length as ShortInt
 		[FieldOffset(10)];
 		PRIVATE _decimals as ShortInt
+
+
 		CONSTRUCTOR (r8 as Real8)
 			self:_value    := r8
 			self:_length   := 0
@@ -31,6 +33,9 @@ begin namespace XSharp
 
 		OPERATOR IMPLICIT( i as INT) AS __VOFloat
 			RETURN __VOFloat{i}
+
+		OPERATOR IMPLICIT( d as DWORD) AS __VOFloat
+			RETURN __VOFloat{(real8) d}
 
 		PROPERTY Value    AS REAL8	GET _value		SET _value		:= Value
 		PROPERTY Digits   AS INT	GET _length		SET _length		:= (ShortInt) Value

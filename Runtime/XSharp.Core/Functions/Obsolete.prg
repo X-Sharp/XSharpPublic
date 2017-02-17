@@ -5,6 +5,13 @@
 //
 // VO Runtime functions thate have no meaning in .Net
 
+
+[Obsolete];
+FUNCTION SetKidStackSize(dwBytes AS DWORD) AS DWORD
+	/// THROW NotImplementedException{}
+RETURN 0   
+
+
 [Obsolete];
 FUNCTION SetMaxDynSize(dwBytes AS DWORD) AS DWORD
 	/// THROW NotImplementedException{}

@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props" />
   <PropertyGroup>
     <XSharpProjectExtensionsPath>$(MSBuildExtensionsPath)\XSharp\</XSharpProjectExtensionsPath>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <ProjectGuid>4e1bc90b-3696-4715-b7a4-17521172979c</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -79,7 +79,6 @@
     <Compile Include="Functions\functions_array.prg" />
     <Compile Include="Functions\Functions_Codeblock.prg" />
     <Compile Include="Functions\functions_date.prg" />
-    <Compile Include="Functions\functions_db.prg" />
     <Compile Include="Functions\functions_internal.prg" />
     <Compile Include="Functions\Functions_Macro.prg" />
     <Compile Include="Functions\Functions_Memo.prg" />

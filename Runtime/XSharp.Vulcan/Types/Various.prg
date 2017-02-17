@@ -4,23 +4,23 @@
 // See License.txt in the project root for license information.
 //
 
-	STRUCTURE _GCDUMP
-		PRIVATE Value as LONG
-		CONSTRUCTOR(l as long) STRICT
-			Value := l
-		PROPERTY __Value as LONG GET Value
-	END STRUCTURE
-
-	STRUCTURE _WINRTL_CRITICAL_SECTION
-		PRIVATE Value as LONG
-		CONSTRUCTOR(l as long) 
+STRUCTURE _GCDUMP
+	PRIVATE Value as LONG
+	CONSTRUCTOR(l as long) STRICT
 		Value := l
-		PROPERTY __Value as LONG GET Value
-	END STRUCTURE
+	PROPERTY __Value as LONG GET Value
+END STRUCTURE
 
-	STRUCTURE _JMP_BUF
-		PRIVATE Value as LONG
-		CONSTRUCTOR(l as long) 
-		Value := l
-		PROPERTY __Value as LONG GET Value
-	END STRUCTURE
+STRUCTURE _WINRTL_CRITICAL_SECTION
+	PRIVATE Value as LONG
+	CONSTRUCTOR(l as long) 
+	Value := l
+	PROPERTY __Value as LONG GET Value
+END STRUCTURE
+
+STRUCTURE _JMP_BUF
+	PRIVATE Value as LONG
+	CONSTRUCTOR(l as long) 
+	Value := l
+	PROPERTY __Value as LONG GET Value
+END STRUCTURE

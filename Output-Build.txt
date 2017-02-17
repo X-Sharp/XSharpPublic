@@ -1,0 +1,9 @@
+﻿------ Build started: Project: XSharp.Base, Configuration: Debug Any CPU ------
+	XSharp.Base -> C:\XSharp\DevPublic\Binaries\Debug\XSharp.Base.dll
+------ Build started: Project: XSharp.RDD, Configuration: Debug Any CPU ------
+	XSharp.RDD -> C:\XSharp\DevPublic\Binaries\Debug\XSharp.Rdd.dll
+------ Build started: Project: XSharp.Core, Configuration: Debug Any CPU ------
+	XSharp Compilation time: 00:00:00.4553498
+	XSharp.Core -> C:\XSharp\DevPublic\Binaries\Debug\XSharp.Core.dll
+0 Warning(s), 0 Error(s)
+========== Build: 3 succeeded or up-to-date, 0 failed, 0 skipped ==========

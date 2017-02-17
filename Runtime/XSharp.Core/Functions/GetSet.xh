@@ -1,0 +1,18 @@
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.  
+// Licensed under the Apache License, Version 2.0.  
+// See License.txt in the project root for license information.
+//
+
+#command GETSTATE <type> <set>	      =>				 ;
+		RETURN XSharp.Runtime.State.GetInstance():GetValue\< <type> \>( <set> )
+
+#command SETSTATE <type> <set>	<value> =>				 ;
+		LOCAL oldValue as <type>						 ;;
+		VAR oState := XSharp.Runtime.State.GetInstance() ;;
+		BEGIN LOCK oState								 ;;
+			oldValue := oState:GetValue\< <type> \>(<set>) ;;
+			oState:SetValue(<set> , <value> )			 ;;
+		END LOCK										 ;;
+		RETURN oldValue
+

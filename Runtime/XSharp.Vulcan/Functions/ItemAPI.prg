@@ -1,14 +1,5 @@
 ﻿using XSharp
 
-/// <summary>
-/// </summary>
-/// <param name="dwSize"></param>
-/// <returns>
-/// </returns>
-FUNCTION ItemArrayNew(dwSize AS DWORD) AS __Usual
-	/// THROW NotImplementedException{}
-RETURN __Usual._NIL   
-
 
 /// <summary>
 /// </summary>
@@ -19,6 +10,27 @@ RETURN __Usual._NIL
 unsafe FUNCTION ItemArrayGet(ptrAny AS PTR,dwElem AS DWORD) AS __Usual
 	/// THROW NotImplementedException{}
 RETURN __Usual._NIL   
+
+/// <summary>
+/// </summary>
+/// <param name="dwSize"></param>
+/// <returns>
+/// </returns>
+FUNCTION ItemArrayNew(dwSize AS DWORD) AS __Usual
+	/// THROW NotImplementedException{}
+RETURN __Usual._NIL   
+
+/// <summary>
+/// </summary>
+/// <param name="px"></param>
+/// <param name="dw"></param>
+/// <param name="pa"></param>
+/// <returns>
+/// </returns>
+unsafe FUNCTION ItemArrayPut(px AS PTR,dw AS DWORD,pa AS PTR) AS PTR
+	/// THROW NotImplementedException{}
+RETURN IntPtr.Zero
+
 
 /// <summary>
 /// </summary>

@@ -52,3 +52,23 @@ STATIC CLASS XSharp.Internal.CompilerServices
 	//	STATIC METHOD EnterBeginSequence
 	//	STATIC METHOD ExitBeginSequence
 END CLASS
+
+
+/// <summary>
+/// </summary>
+/// <param name="pszSource"></param>
+/// <returns>
+/// </returns>
+FUNCTION DbcsNext(pszSource AS __Psz) AS __Psz
+	/// THROW NotImplementedException{}
+RETURN IntPtr.Zero
+
+/// <summary>
+/// </summary>
+/// <param name="pszSource"></param>
+/// <param name="pszCurr"></param>
+/// <returns>
+/// </returns>
+FUNCTION DbcsPrev(pszSource AS __Psz,pszCurr AS __Psz) AS __Psz
+	/// THROW NotImplementedException{}
+RETURN IntPtr.Zero

@@ -25,26 +25,36 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class PPTokenExtensions
     {
+        internal static string TrailingWs(this IToken token)
+        {
+            var source = token.TokenSource.InputStream as ICharStream;
+            var index = token.StopIndex+1;
+            var result = "";
+            while (index < source.Size)
+            {
+                var interval = new Interval(index, index);
+                var follow = source.GetText(interval);
+                if (follow[0] == ' ' || follow[0] == '\t')
+                {
+                    result += follow;
+                }
+                else
+                {
+                    break;
+                }
+                index += 1;
+            }
+            return result;
+        }
+
         internal static string AsString(this IList<PPToken> tokens)
         {
             string result = "";
             if (tokens != null)
             {
-                int start = -1;
-                int end = -1;
-                IToken token = null;
                 foreach (var t in tokens)
                 {
-                    if (start == -1)
-                        start = t.StartIndex;
-                    end = t.StopIndex;
-                    token = t;
-                }
-                if (token != null)
-                {
-                    var interval = new Interval(start, end);
-                    if (token?.TokenSource?.InputStream != null)
-                        result = token.TokenSource.InputStream.GetText(interval);
+                    result = result + t.Text + t.TrailingWs();
                 }
 
             }

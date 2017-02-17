@@ -764,7 +764,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (_hasEos)
                 {
-                    t.Channel = TokenConstants.HiddenChannel;
+                    if (type == SEMI )
+                    {
+                        if (_lastToken != SEMI)
+                            t.Channel = TokenConstants.HiddenChannel;
+                    }
+                    else
+                        t.Channel = TokenConstants.HiddenChannel;
                 }
                 else
                 {

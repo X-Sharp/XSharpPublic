@@ -598,7 +598,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         tokens.Add(new PPToken(input.Get(i)));
                     }
-                    DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens => {2}", symbol.Text, input.Size-1, tokens.AsString());
+                    string text = tokens.AsString();
+                    if (text.Length > 20)
+                        text = text.Substring(0, 20) + "...";
+                    DebugOutput("Input stack: Insert value of token Symbol {0}, {1} tokens => {2}", symbol.Text, input.Size-1, text);
                 }
                 else
                     DebugOutput("Input stack: Insert Stream {0}, # of tokens {1}", filename, input.Size-1);
@@ -1250,12 +1253,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         line = ReadLine();
                                         // insert whitespace from start of line into result
                                         var ws = new List<IToken>();
+                                        PPToken first = null;
                                         for (int i = 0; i < line.Count; i++)
                                         {
                                             if (line[i].Type == XSharpLexer.WS)
                                                 ws.Add(line[i]);
                                             else
+                                            {
+                                                first = line[i];
                                                 break;
+                                            }
                                         }
                                         // insert in reverse order
                                         for (int i = ws.Count -1; i >= 0; i--)
@@ -1266,7 +1273,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         }
                                         var ts = new CommonTokenStream(new ListTokenSource( result.ToIListIToken()));
                                         ts.Fill();
-                                        InsertStream("UDC "+rule.Key, ts,line[0]);
+                                        InsertStream("UDC "+rule.Key, ts,first);
                                         done = true;
                                     }
                                 }

@@ -18,7 +18,6 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">These 2 files are NEVER added to your Vulcan projects, Vulcan adds a reference to these DLLs automatically. XSharp does not do that, so you should add them yourself. </text></para>
-    <para styleclass="Normal"></para>
     <para styleclass="Heading3"><text styleclass="Heading3" translate="true">DLLs that you </text><text styleclass="Heading3" style="color:#ff0000;" translate="true">MAY</text><text styleclass="Heading3" translate="true"> want to add, depending on what you are using in your application:</text></para>
     <para styleclass="Normal"></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">

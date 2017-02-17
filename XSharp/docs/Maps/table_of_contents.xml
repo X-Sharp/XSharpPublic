@@ -27,6 +27,9 @@
         <topicref type="topic" id="425338296933191" build="ALL" modified="2016-06-12T16:17:47.965Z" icon="0" href="Anonymous-Classes">
           <caption translate="true">Anonymous Types</caption>
         </topicref>
+        <topicref type="topic" id="427816560780984" build="ALL" modified="2017-02-15T19:12:05.823Z" icon="0" href="ASTYPE">
+          <caption translate="true">ASTYPE</caption>
+        </topicref>
         <topicref type="topic" id="423997260438779" build="ALL" modified="2016-01-30T21:22:44.821Z" icon="0" href="ASYNC---AWAIT">
           <caption translate="true">ASYNC - AWAIT</caption>
         </topicref>
@@ -66,6 +69,9 @@
         <topicref type="topic" id="423999835390226" build="ALL" modified="2016-01-30T21:26:07.826Z" icon="0" href="FUNCTION-inside-CLASS">
           <caption translate="true">FUNCTION inside CLASS</caption>
         </topicref>
+        <topicref type="topic" id="426888066632269" build="ALL" modified="2016-11-14T20:15:03.627Z" icon="0" href="Initializers">
+          <caption translate="true">Initializers</caption>
+        </topicref>
         <topicref type="topic" id="426356253849712" build="ALL" modified="2016-09-22T11:36:55.248Z" icon="0" href="Interpolated-Strings">
           <caption translate="true">Interpolated Strings</caption>
         </topicref>
@@ -92,9 +98,6 @@
         </topicref>
         <topicref type="topic" id="424000672684667" build="ALL" modified="2016-11-03T15:16:02.923Z" icon="0" href="YIELD-RETURN-EXAMPLE">
           <caption translate="true">YIELD </caption>
-        </topicref>
-        <topicref type="topic" id="426888066632269" build="ALL" modified="2016-11-14T20:15:03.627Z" icon="0" href="Initializers">
-          <caption translate="true">Initializers</caption>
         </topicref>
       </topicref>
       <topicref type="topic" id="426353111383136" build="ALL" modified="2016-09-22T12:29:00.560Z" icon="0" href="Calling-Vulcan-Init-Procedures">

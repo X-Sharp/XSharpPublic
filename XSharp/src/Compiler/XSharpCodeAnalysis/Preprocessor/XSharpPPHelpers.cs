@@ -70,14 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
 
     }
-    internal class PPToken : CommonToken
-    {
-        internal PPToken(IToken t, int type, string text) : base(t)
-        {
-            Type = type;
-            Text = text;
-        }
-    }
+  
     internal class PPErrorMessage
     {
         IToken _token;          // location to link error to
@@ -143,7 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
-        internal PPRule FindMatchingRule(IList<IToken> tokens, out PPMatchRange[] matchInfo)
+        internal PPRule FindMatchingRule(IList<PPToken> tokens, out PPMatchRange[] matchInfo)
         {
             PPRule result = null;
             matchInfo = null;
@@ -212,6 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         }
     }
+
 
 }
 

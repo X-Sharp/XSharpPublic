@@ -29,14 +29,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         PPUDCType _type;
         PPMatchToken[] _matchtokens;                    
         PPResultToken[] _resulttokens;
-        // The next field links match tokens with result tokens
-        // Key = token names
-        // Values are matching result tokens
-        Dictionary<String, PPMatchToken> _matchdict;
-        Dictionary<String, List<int>> _matchlist;
         PPErrorMessages _errorMessages;
         internal PPUDCType Type { get { return _type; } }
-        internal PPRule(IToken udc, IList<IToken> tokens, out PPErrorMessages errorMessages)
+        internal PPRule(PPToken udc, IList<PPToken> tokens, out PPErrorMessages errorMessages)
         {
             switch (udc.Type)
             {
@@ -56,10 +51,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     _type = PPUDCType.Define;
                     break;
             }
-            var ltokens = new IToken[tokens.Count];
+            var ltokens = new PPToken[tokens.Count];
             tokens.CopyTo(ltokens, 0);
-            _matchdict = new Dictionary<string, PPMatchToken>(StringComparer.OrdinalIgnoreCase);
-            _matchlist = new Dictionary<string, List<int>>(StringComparer.OrdinalIgnoreCase);
             _errorMessages = new PPErrorMessages();
             errorMessages = null;
             if (!parseRuleTokens(udc, ltokens))
@@ -69,9 +62,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
         }
-        bool parseRuleTokens(IToken udc, IToken[] _tokens)
+        bool parseRuleTokens(PPToken udc, PPToken[] _tokens)
         {
             int iSeperatorPos = -1;
+            var markers = new Dictionary<string, PPMatchToken>(StringComparer.OrdinalIgnoreCase);
+
             if (_tokens?.Length == 0)
             {
                 addErrorMessage(udc, "UDC is empty");
@@ -91,13 +86,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 addErrorMessage(udc, "token '=>' not found in UDC ");
                 return false;
             }
-            IToken[] _left = new IToken[iSeperatorPos];
-            IToken[] _right = new IToken[_tokens.Length - iSeperatorPos - 1];
+            PPToken[] _left = new PPToken[iSeperatorPos];
+            PPToken[] _right = new PPToken[_tokens.Length - iSeperatorPos - 1];
             Array.Copy(_tokens, _left, iSeperatorPos);
             Array.Copy(_tokens, iSeperatorPos + 1, _right, 0, _right.Length);
-            _matchtokens = analyzeMatchTokens(_left);
+            _matchtokens = analyzeMatchTokens(_left, markers);
             _resulttokens = analyzeResultTokens(_right,0);
-            if (!checkMatchingTokens(_resulttokens))
+            if (!checkMatchingTokens(_resulttokens, markers))
             {
                 // Check to see if all result tokens have been matched
                 // Unmatched Match tokens is fine (they may be deleted from the output)
@@ -122,43 +117,47 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return result;
         }
-        void addErrorMessage(IToken token, string message)
+        void addErrorMessage(PPToken token, string message)
         {
             _errorMessages.Add(new PPErrorMessage( token, message));
         }
-        bool  checkMatchingTokens(PPResultToken[] results)
+        bool  checkMatchingTokens(PPResultToken[] results, Dictionary<string, PPMatchToken> markers)
         {
-            bool allMatched = true; 
+            bool allOk = true;
+            // Set all marker indices
+            for (int m = 0; m < _matchtokens.Length; m++)
+            {
+                _matchtokens[m].Index = m;
+            }
             for (int r = 0; r < results.Length; r++)
             {
-                if (results[r].IsMarker && ! results[r].Matched)
+                var restoken = results[r];
+                if (restoken.IsMarker )
                 {
-                    var token = results[r].Token;
-                    var name = results[r].Key;
-                    if (_matchdict.ContainsKey(name))
+                    var token = restoken.Token;
+                    var name = restoken.Key;
+                    if (markers.ContainsKey(name))
                     {
-                        results[r].Matched = true;
-                        _matchlist[name].Add(r);
-                        _matchdict[name].Matched = true;
+                        restoken.MatchMarker = markers[name];
+                        restoken.Matched = true;
                     }
                     else
                     {
-                        allMatched = false;
+                        allOk = false;
                     }
                 }
             }
-            return allMatched;
+            // we do not need the dictionary anymore. The rule has been analyzed
+            return allOk;
         }
-        void addToDict(PPMatchToken element, int iPos)
+        void addToDict(Dictionary<string, PPMatchToken> markers , PPMatchToken element)
         {
-            // iPos is the 0 based offset of the element in the UDC
-            if (element.Token.IsNameToken())
+            if (element.Token.IsName())
             {
                 string name = element.Key;
-                if (!_matchdict.ContainsKey(name))
+                if (!markers.ContainsKey(name))
                 {
-                    _matchdict.Add(name, element);
-                    _matchlist.Add(name, new List<int>());
+                    markers.Add(name, element);
                 }
                 else
                 {
@@ -167,60 +166,60 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
         }
-        PPMatchToken[] analyzeMatchTokens(IToken[] matchTokens, int offset = 0, int nestLevel = 0)
+        PPMatchToken[] analyzeMatchTokens(PPToken[] matchTokens, Dictionary<string, PPMatchToken> markers, int offset = 0, int nestLevel = 0)
         {
             var result = new List<PPMatchToken>();
             var max = matchTokens.Length;
-            List<IToken> more;
-            IToken name;
+            List<PPToken> more;
+            PPToken name;
             PPMatchToken element;
             for (int i = 0; i < max; i++)
             {
-                CommonToken token = (CommonToken) matchTokens[i];
+                var token = matchTokens[i];
                 switch (token.Type)
                 {
 
                     case XSharpLexer.LT:
                         if (i < max - 2
-                            && matchTokens[i + 1].IsNameToken()
+                            && matchTokens[i + 1].IsName()
                             && matchTokens[i + 2].Type == XSharpLexer.GT)
                         {
                             // <idMarker>
                             name = matchTokens[i + 1];
                             element = new PPMatchToken(name, PPTokenType.MatchRegular);
                             result.Add(element);
-                            addToDict(element, offset+ result.Count-1);
+                            addToDict(markers, element);
                             i += 2;
                         }
                         else if (i < max - 4
                             // <*idMarker*>
                             && matchTokens[i + 1].Type == XSharpLexer.MULT
-                            && matchTokens[i + 2].IsNameToken()
+                            && matchTokens[i + 2].IsName()
                             && matchTokens[i + 3].Type == XSharpLexer.MULT
                             && matchTokens[i + 4].Type == XSharpLexer.GT)
                         {
                             name = matchTokens[i + 2];
                             element = new PPMatchToken(name, PPTokenType.MatchWild);
                             result.Add(element);
-                            addToDict(element, offset + result.Count - 1);
+                            addToDict(markers, element);
 
                             i += 4;
                         }
                         else if (i < max - 4
                             // <(idMarker)>
                             && matchTokens[i + 1].Type == XSharpLexer.LPAREN
-                            && matchTokens[i + 2].IsNameToken()
+                            && matchTokens[i + 2].IsName()
                             && matchTokens[i + 3].Type == XSharpLexer.RPAREN
                             && matchTokens[i + 4].Type == XSharpLexer.GT)
                         {
                             name = matchTokens[i + 2];
                             element = new PPMatchToken(name, PPTokenType.MatchExtended);
                             result.Add(element);
-                            addToDict(element, offset + result.Count - 1);
+                            addToDict(markers, element);
                             i += 4;
                         }
                         else if (i < max - 6
-                              && matchTokens[i + 1].IsNameToken()
+                              && matchTokens[i + 1].IsName()
                               && matchTokens[i + 2].Type == XSharpLexer.COMMA
                               && matchTokens[i + 3].Type == XSharpLexer.DOT
                               && matchTokens[i + 4].Type == XSharpLexer.DOT
@@ -231,28 +230,28 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             name = matchTokens[i + 1];
                             element = new PPMatchToken(name, PPTokenType.MatchList);
                             result.Add(element);
-                            addToDict(element, offset + result.Count - 1);
+                            addToDict(markers, element);
                             i += 6;
                         }
                         else if (i < max - 3
-                              && matchTokens[i + 1].IsNameToken()
+                              && matchTokens[i + 1].IsName()
                               && matchTokens[i + 2].Type == XSharpLexer.COLON)
                         {
                             // <idMarker:word list>
                             name = matchTokens[i + 1];
                             i += 3;
-                            more = new List<IToken>();
+                            more = new List<PPToken>();
                             while (i <max && matchTokens[i].Type != XSharpLexer.GT)
                             {
-                                token = (CommonToken)matchTokens[i];
+                                token = matchTokens[i];
                                 if (token.Type != XSharpLexer.COMMA)
                                     more.Add(token);
                                 i++;
                             }
                             element = new PPMatchToken(name, PPTokenType.MatchRestricted);
                             result.Add(element);
-                            addToDict(element, offset + result.Count - 1);
-                            var tokens = new IToken[more.Count];
+                            addToDict(markers, element);
+                            var tokens = new PPToken[more.Count];
                             more.CopyTo(tokens, 0);
                             element.Children = tokens;
                         }
@@ -266,7 +265,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (more != null)
                         {
                             i = i + more.Count+1;
-                            var nested = analyzeMatchTokens(more.ToArray(), result.Count, nestLevel+1);
+                            var nested = analyzeMatchTokens(more.ToArray(), markers, result.Count, nestLevel+1);
                             if (nested.Length > 0)
                             {
                                 foreach (var el in nested)
@@ -274,7 +273,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     el.RuleTokenType |= PPTokenType.Optional;
                                 }
                                 result.AddRange(nested);
-                                //addToDict(element, result.Count - 1);
                             }
                         }
 
@@ -283,7 +281,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (i < max)
                         {
                             i++;
-                            token = (CommonToken)matchTokens[i];
+                            token = matchTokens[i];
                             result.Add(new PPMatchToken(token, PPTokenType.Token));
                         }
                         break;
@@ -298,19 +296,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return matchtokens;
         }
 
-        List<IToken> getNestedTokens(int start, int max, IToken[] tokens)
+        List<PPToken> getNestedTokens(int start, int max, PPToken[] tokens)
         {
-            IToken token = tokens[start];
-            List<IToken> result = null;
+            PPToken token = tokens[start];
+            List<PPToken> result = null;
             var lbrkt = token;
             if (start < max - 1)   // must have at least [ name ]
             {
-                result = new List<IToken>();
+                result = new List<PPToken>();
                 start++;
                 var nestlevel = 1;
                 while (start < max)
                 {
-                    token = (CommonToken)tokens[start];
+                    token = tokens[start];
                     if (token.Type == XSharpLexer.LBRKT)
                         ++nestlevel;
                     if (token.Type == XSharpLexer.RBRKT)
@@ -341,7 +339,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (start == max - 1)
                 {
-                    token = (CommonToken)tokens[max];
+                    token = tokens[max];
                     if (token.Type == XSharpLexer.RBRKT)
                         addErrorMessage(lbrkt, "Empty Optional Token found");
                     else
@@ -355,12 +353,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return result;
         }
-        PPResultToken[] analyzeResultTokens(IToken[] resultTokens, int nestLevel)
+        PPResultToken[] analyzeResultTokens(PPToken[] resultTokens, int nestLevel)
         {
             var result = new List<PPResultToken>();
             var max = resultTokens.Length;
-            List<IToken> more;
-            IToken name;
+            List<PPToken> more;
+            PPToken name;
             int lastTokenIndex = -1;
             ITokenSource lastTokenSource = null;
             for (int i = 0; i < resultTokens.Length; i++)
@@ -383,7 +381,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         */
                         if (i < resultTokens.Length - 3
                             && resultTokens[i + 1].Type == XSharpLexer.LT
-                            && resultTokens[i + 2].IsNameToken()
+                            && resultTokens[i + 2].IsName()
                             && resultTokens[i + 3].Type == XSharpLexer.GT)
                         {
                             name = resultTokens[i + 2];
@@ -397,7 +395,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XSharpLexer.LT:
                         if (i < resultTokens.Length - 2
-                            && resultTokens[i + 1].IsNameToken()
+                            && resultTokens[i + 1].IsName()
                             && resultTokens[i + 2].Type == XSharpLexer.GT)
                         {
                             // <idMarker>
@@ -417,7 +415,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (i < resultTokens.Length - 4
                             && resultTokens[i + 1].Type == XSharpLexer.LPAREN
-                            && resultTokens[i + 2].IsNameToken()
+                            && resultTokens[i + 2].IsName()
                             && resultTokens[i + 3].Type == XSharpLexer.RPAREN
                             && resultTokens[i + 4].Type == XSharpLexer.GT)
                         {
@@ -428,7 +426,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (i < resultTokens.Length - 4
                             && resultTokens[i + 1].Type == XSharpLexer.LCURLY
-                            && resultTokens[i + 2].IsNameToken()
+                            && resultTokens[i + 2].IsName()
                             && resultTokens[i + 3].Type == XSharpLexer.RCURLY
                             && resultTokens[i + 4].Type == XSharpLexer.GT)
                         {
@@ -439,7 +437,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         if (i < resultTokens.Length - 4
                             && resultTokens[i + 1].Type == XSharpLexer.DOT
-                            && resultTokens[i + 2].IsNameToken()
+                            && resultTokens[i + 2].IsName()
                             && resultTokens[i + 3].Type == XSharpLexer.DOT
                             && resultTokens[i + 4].Type == XSharpLexer.GT)
                         {
@@ -475,7 +473,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         if (i < max)
                         {
                             i++;
-                            token = (CommonToken)resultTokens[i];
+                            token = resultTokens[i];
                             result.Add(new PPResultToken(token, PPTokenType.Token, nestLevel > 0));
                         }
                         break;
@@ -498,7 +496,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (_matchtokens.Length > 0)
                 {
                     var token = _matchtokens[0].Token;
-                    if (token.IsNameToken())
+                    if (token.IsName())
                         return token.Text.ToUpperInvariant();
                     else
                         return token.Text;
@@ -530,7 +528,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             return this.Name;
         }
-        bool tokenEquals(IToken lhs, IToken rhs)
+        bool tokenEquals(PPToken lhs, PPToken rhs)
         {
             if (lhs != null && rhs != null)
                 return stringEquals(lhs.Text, rhs.Text);
@@ -552,10 +550,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        internal bool matchToken(PPMatchToken matchToken, ref int iRule, int iLastRule,  ref int iSource, IList<IToken> tokens, PPMatchRange[] matchInfo)
+        internal bool matchToken(PPMatchToken matchToken, ref int iRule, int iLastRule,  ref int iSource, IList<PPToken> tokens, PPMatchRange[] matchInfo)
         {
-            IToken sourceToken = tokens[iSource];
-            IToken ruleToken = matchToken.Token;
+            PPToken sourceToken = tokens[iSource];
+            PPToken ruleToken = matchToken.Token;
             int iEnd;
             switch (matchToken.RuleTokenType)
             {
@@ -615,7 +613,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // the token in the rule is the match marker
                     // the words to be checked are the MoreTokens
                     bool found = false;
-                    IToken lastToken = null;
+                    PPToken lastToken = null;
                     foreach (var child in matchToken.Children)
                     {
                         lastToken = child;
@@ -651,7 +649,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     {
                         if (iSource > tokens.Count - 2)
                             return false;
-                        if (tokens[iSource + 1].IsNameToken() &&
+                        if (tokens[iSource + 1].IsName() &&
                             tokens[iSource + 2].Type == XSharpLexer.RPAREN)
                         {
                             // Ok
@@ -671,15 +669,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return true;
         }
-        internal bool Matches(IList<IToken> tokens, out PPMatchRange[] matchInfo)
+        internal bool Matches(IList<PPToken> tokens, out PPMatchRange[] matchInfo)
         {
             int iRule = 0;
             int iSource = 0;
             matchInfo = new PPMatchRange[_matchtokens.Length];
             while (iRule < _matchtokens.Length && iSource < tokens.Count)
             {
-                var token = _matchtokens[iRule];
-                if (!matchToken(token, ref iRule, _matchtokens.Length,  ref iSource, tokens, matchInfo))
+                var mtoken = _matchtokens[iRule];
+                if (!matchToken(mtoken, ref iRule, _matchtokens.Length,  ref iSource, tokens, matchInfo))
                 {
                     return false;
                 }
@@ -698,113 +696,115 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
 
         }
-        internal IList<IToken> Replace(IList<IToken> tokens, PPMatchRange[] matchInfo)
+        internal IList<PPToken> Replace(IList<PPToken> tokens, PPMatchRange[] matchInfo)
         {
             Debug.Assert(matchInfo.Length == _matchtokens.Length);
-            IList<IToken> result = new List<IToken>();
-            foreach (var rule in _resulttokens)
+            IList<PPToken> result = new List<PPToken>();
+            foreach (var resultToken in _resulttokens)
             {
-                switch (rule.RuleTokenType)
+                switch (resultToken.RuleTokenType)
                 {
                     case PPTokenType.Token:
-                        result.Add(rule.Token);
+                        result.Add(resultToken.Token);
                         break;
                     case PPTokenType.ResultLogify:
                         // check to see if the token was matched.
-                        lLogifyResult(rule, tokens, matchInfo, result);
+                        lLogifyResult(resultToken, tokens, matchInfo, result);
                         break;
                     case PPTokenType.ResultBlockify:
-                        blockifyResult(rule, tokens, matchInfo, result);
+                        blockifyResult(resultToken, tokens, matchInfo, result);
                         break;
                     case PPTokenType.ResultRegular:
-                        regularResult(rule, tokens, matchInfo, result);
+                        regularResult(resultToken, tokens, matchInfo, result);
                         break;
                     case PPTokenType.ResultSmartStringify:
                     case PPTokenType.ResultNormalStringify:
                     case PPTokenType.ResultDumbStringify:
-                        stringifyResult(rule, tokens, matchInfo, result);
+                        stringifyResult(resultToken, tokens, matchInfo, result);
                         break;
                 }
             }
+            // we need to determine the tokens at the end of the tokens list that are not matched 
+            // in the results and then copy these to the result as well
+            int last = -1;
+            foreach (var m in matchInfo)
+            {
+                if (m.End > last)
+                    last = m.End;
+            }
+            for (int i = last + 1; i < tokens.Count; i++)
+            {
+                result.Add(tokens[i]);                
+            }
             return result;
         }
-        void regularResult(PPResultToken rule, IList<IToken> tokens, PPMatchRange[] matchInfo, IList<IToken> result)
+        void regularResult(PPResultToken rule, IList<PPToken> tokens, PPMatchRange[] matchInfo, IList<PPToken> result)
         {
             // write input text to the result text without no changes
             // for example:
-            // #command SET CENTURY (<x>)              => __SetCentury( <x> )
+            // #command SET CENTURY (<x>) => __SetCentury( <x> )
             // the output written is the literal text for x, so the token(s) x
-            var matches = _matchlist[rule.Key];
-            foreach (var iMatch in matches)
+            var range = matchInfo[rule.MatchMarker.Index];
+            if (!range.Empty())
             {
-                var range = matchInfo[iMatch];
-                if (!range.Empty())
+                for (int i = range.Start; i <= range.End; i++)
                 {
-                    for (int i = range.Start; i <= range.End; i++)
-                    {
-                        var token = tokens[i];
-                        result.Add(token);
-                    }
+                    var token = tokens[i];
+                    result.Add(token);
                 }
             }
-            return ;
+            return;
         }
-        void blockifyResult(PPResultToken rule, IList<IToken> tokens, PPMatchRange[] matchInfo, IList<IToken> result)
+        void blockifyResult(PPResultToken rule, IList<PPToken> tokens, PPMatchRange[] matchInfo, IList<PPToken> result)
         {
             // write output text as codeblock
             // so prefixes with "{||"and suffixes with "}
             // if the input is already a code block then nothing is changed
             // when the input is a list then each element in the list will be
             // converted to a code block
-            var matches = _matchlist[rule.Key];
-            foreach (var iMatch in matches)
+            var range = matchInfo[rule.MatchMarker.Index];
+            if (!range.Empty())
             {
-                var range = matchInfo[iMatch];
-                if (!range.Empty())
+                bool addBlockMarker = true;
+                int start, end;
+                start = range.Start;
+                end = range.End; ;
+                if (end - start > 4)
                 {
-                    bool addBlockMarker = true;
-                    int start, end;
-                    start = range.Start;
-                    end = range.End; ;
-                    if (end - start > 4)
-                    {
-                        if (tokens[start].Type == XSharpLexer.LCURLY &&
-                            tokens[start + 1].Type == XSharpLexer.PIPE &&
-                            tokens[start + 2].Type == XSharpLexer.PIPE &&
-                            tokens[end].Type == XSharpLexer.RCURLY)
-                            addBlockMarker = false;
+                    if (tokens[start].Type == XSharpLexer.LCURLY &&
+                        tokens[start + 1].Type == XSharpLexer.PIPE &&
+                        tokens[start + 2].Type == XSharpLexer.PIPE &&
+                        tokens[end].Type == XSharpLexer.RCURLY)
+                        addBlockMarker = false;
 
-                    }
-                    if (addBlockMarker)
-                    {
-                        var t = tokens[start];
-                        var nt = new PPToken(t,XSharpLexer.LCURLY, "{");
-                        result.Add(nt);
-                        nt = new PPToken(t, XSharpLexer.PIPE, "|");
-                        result.Add(nt);
-                        result.Add(nt);
-                    }
-                    for (int i = range.Start; i <= range.End; i++)
-                    {
-                        var token = tokens[i];
-                        result.Add(token);
-                    }
-                    if (addBlockMarker)
-                    {
-                        var t = tokens[end];
-                        var nt = new PPToken(t, XSharpLexer.RCURLY, "}");
-                        result.Add(nt);
-                    }
+                }
+                if (addBlockMarker)
+                {
+                    var t = tokens[start];
+                    var nt = new PPToken(t, XSharpLexer.LCURLY, "{");
+                    result.Add(nt);
+                    nt = new PPToken(t, XSharpLexer.PIPE, "|");
+                    result.Add(nt);
+                    result.Add(nt);
+                }
+                for (int i = range.Start; i <= range.End; i++)
+                {
+                    var token = tokens[i];
+                    result.Add(token);
+                }
+                if (addBlockMarker)
+                {
+                    var t = tokens[end];
+                    var nt = new PPToken(t, XSharpLexer.RCURLY, "}");
+                    result.Add(nt);
                 }
             }
-
-            return ;
+            return;
         }
-        void stringifyResult(PPResultToken rule, IList<IToken> tokens, PPMatchRange[] matchInfo, IList<IToken> result)
+        void stringifyResult(PPResultToken rule, IList<PPToken> tokens, PPMatchRange[] matchInfo, IList<PPToken> result)
         {
-            var matches = _matchlist[rule.Key];
-            CommonToken newToken;
-
+            var range = matchInfo[rule.MatchMarker.Index];
+            PPToken newToken;
             switch (rule.RuleTokenType)
             {
                 // Handle 3 kind of stringifies:
@@ -815,43 +815,35 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // SET COLOR TO r/w into SetColor("r/w")
                     // Note that this match rule uses a wild match marker: this matches everything until end of statement
                     // change type of token to STRING_CONST;
-                    foreach (var iMatch in matches)
+                    if (!range.Empty())
                     {
-                        var range = matchInfo[iMatch];
-                        if (!range.Empty())
-                        {
-                            var start = range.Start;
-                            var end = range.End;
-                            var startindex = tokens[start].StartIndex;
-                            var endindex = tokens[end].StopIndex;
-                            var interval = new Interval(startindex, endindex);
-                            string allText = tokens[start].TokenSource.InputStream.GetText(interval);
-                            allText = "\"" + allText + "\"";
-                            result.Add(new PPToken(tokens[start], XSharpLexer.STRING_CONST, allText));
-                        }
-                        else
-                        {
-                            // no match, then dumb stringify write an empty string
-                            result.Add(new PPToken(tokens[0], XSharpLexer.NULL_STRING, "NULL_STRING"));
-                        }
+                        var start = range.Start;
+                        var end = range.End;
+                        var startindex = tokens[start].StartIndex;
+                        var endindex = tokens[end].StopIndex;
+                        var interval = new Interval(startindex, endindex);
+                        string allText = tokens[start].TokenSource.InputStream.GetText(interval);
+                        allText = "\"" + allText + "\"";
+                        result.Add(new PPToken(tokens[start], XSharpLexer.STRING_CONST, allText));
+                    }
+                    else
+                    {
+                        // no match, then dumb stringify write an empty string
+                        result.Add(new PPToken(tokens[0], XSharpLexer.NULL_STRING, "NULL_STRING"));
                     }
                     break;
                 case PPTokenType.ResultNormalStringify:
                     // Delimit the input with string delimiters
-                    foreach (var iMatch in matches)
+                    if (!range.Empty())
                     {
-                        var range = matchInfo[iMatch];
-                        if (!range.Empty())
-                        {
-                            var start = range.Start;
-                            var end = range.End;
-                            var startindex = tokens[start].StartIndex;
-                            var endindex = tokens[end].StopIndex;
-                            var interval = new Interval(startindex, endindex); 
-                            string allText = tokens[start].TokenSource.InputStream.GetText(interval);
-                            allText = "\"" + allText + "\"";
-                            result.Add(new PPToken(tokens[start], XSharpLexer.STRING_CONST, allText));
-                        }
+                        var start = range.Start;
+                        var end = range.End;
+                        var startindex = tokens[start].StartIndex;
+                        var endindex = tokens[end].StopIndex;
+                        var interval = new Interval(startindex, endindex);
+                        string allText = tokens[start].TokenSource.InputStream.GetText(interval);
+                        allText = "\"" + allText + "\"";
+                        result.Add(new PPToken(tokens[start], XSharpLexer.STRING_CONST, allText));
                     }
                     break;
 
@@ -862,48 +854,44 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // for example: 
                     // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> )
                     // the contents of x must be converted to a string
-                   
-                    foreach (var iMatch in matches)
+
+                    bool addStringDelimiters = true;
+                    if (!range.Empty())
                     {
-                        bool addStringDelimiters = true;
-                        var range = matchInfo[iMatch];
-                        if (!range.Empty())
+                        for (int i = range.Start; i <= range.End; i++)
                         {
-                            for (int i = range.Start; i <= range.End; i++)
+                            var token = tokens[i];
+                            switch (token.Type)
                             {
-                                var token = tokens[i];
-                                switch (token.Type)
-                                {
-                                    case XSharpLexer.STRING_CONST:
-                                    case XSharpLexer.CHAR_CONST:
-                                    case XSharpLexer.ESCAPED_STRING_CONST:
-                                    case XSharpLexer.INTERPOLATED_STRING_CONST:
-                                        result.Add(token);
-                                        break;
-                                    case XSharpLexer.AMP:
-                                        addStringDelimiters = false;
-                                        break;
-                                    default:
-                                        if (addStringDelimiters)
-                                        {
-                                            newToken = new PPToken(token, XSharpLexer.STRING_CONST, token.Text);
-                                            newToken.Text = "\"" + token.Text + "\"";
-                                        }
-                                        else
-                                        {
-                                            newToken = new PPToken(token, XSharpLexer.ID, token.Text);
-                                        }
-                                        result.Add(newToken);
-                                        break;
-                                }
+                                case XSharpLexer.STRING_CONST:
+                                case XSharpLexer.CHAR_CONST:
+                                case XSharpLexer.ESCAPED_STRING_CONST:
+                                case XSharpLexer.INTERPOLATED_STRING_CONST:
+                                    result.Add(token);
+                                    break;
+                                case XSharpLexer.AMP:
+                                    addStringDelimiters = false;
+                                    break;
+                                default:
+                                    if (addStringDelimiters)
+                                    {
+                                        newToken = new PPToken(token, XSharpLexer.STRING_CONST, token.Text);
+                                        newToken.Text = "\"" + token.Text + "\"";
+                                    }
+                                    else
+                                    {
+                                        newToken = new PPToken(token, XSharpLexer.ID, token.Text);
+                                    }
+                                    result.Add(newToken);
+                                    break;
                             }
                         }
                     }
                     break;
             }
-            return ;
+            return;
         }
-        void lLogifyResult(PPResultToken rule, IList<IToken> tokens, PPMatchRange[] matchInfo, IList<IToken> result )
+        void lLogifyResult(PPResultToken rule, IList<PPToken> tokens, PPMatchRange[] matchInfo, IList<PPToken> result )
         {
             // when input is empty then return a literal token FALSE
             // else return a literal token TRUE
@@ -919,40 +907,34 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // When the Unique keyword is found in the input then the <.u.> marker is replaced with TRUE
             // else with .F.
             // In this case no .F. is written, to make sure that the global SetUnique() setting is used
-            var matches = _matchlist[rule.Key];
             // Check all the matching tokens (it can be more than 1
             bool matched = false;
-            int iTokenPos = -1;
-            foreach (var iMatch in matches)
+            int tokenPos = -1;
+            var range = matchInfo[rule.MatchMarker.Index];
+            if (!range.Empty())
             {
-                var range = matchInfo[iMatch];
-                if (! range.Empty())
+                tokenPos = range.Start;
+                PPToken t;
+                if (tokenPos != 0)
                 {
-                    matched = true;
-                    iTokenPos = range.Start;
-                    break;
+                    IToken st = tokens[tokenPos];
+                    if (matched)
+                    {
+                        t = new PPToken(st, XSharpLexer.TRUE_CONST, ".T.");
+                    }
+                    else
+                    {
+                        t = new PPToken(st, XSharpLexer.FALSE_CONST, ".F.");
+                    }
+                    result.Add(t);
                 }
-            }
-            CommonToken t;
-            if (iTokenPos != 0)
-            {
-                IToken st = tokens[iTokenPos];
-                if (matched)
-                {
-                    t = new PPToken(st, XSharpLexer.TRUE_CONST, ".T.");
-                }
-                else
-                {
-                    t = new PPToken(st, XSharpLexer.FALSE_CONST, ".F.");
-                }
-                result.Add(t);
             }
             return;
         }
 
-        bool tokenCanStartExpression(int pos, IList<IToken> tokens)
+        bool tokenCanStartExpression(int pos, IList<PPToken> tokens)
         {
-            IToken token;
+            PPToken token;
             token = tokens[pos];
             if (! token.NeedsLeft() && ! token.IsEndOfCommand())
             {
@@ -960,7 +942,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        int matchExpression(int start, IList<IToken> tokens, IToken stopToken)
+        int matchExpression(int start, IList<PPToken> tokens, PPToken stopToken)
         {
             if (!tokenCanStartExpression(start, tokens))
                 return start;
@@ -969,8 +951,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int count = tokens.Count;
             int openBrace = 0;
             int closeBrace = 0;
-            IToken token;
-            IToken lastToken = null; 
+            PPToken token;
+            PPToken lastToken = null; 
             while (current < count)
             {
                 // Check to see if there is a codeblock. 
@@ -1021,7 +1003,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
 
 
-        bool isStartOfCodeBlock(int start, IList<IToken> tokens, ref int startOfBody)
+        bool isStartOfCodeBlock(int start, IList<PPToken> tokens, ref int startOfBody)
         {
             int count = tokens.Count;
             startOfBody = start;
@@ -1036,7 +1018,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             while (start < count)
             {
                 var token = tokens[start];
-                if (lasttype == XSharpLexer.COMMA && token.IsNameToken())
+                if (lasttype == XSharpLexer.COMMA && token.IsName())
                 {
                     start = start + 1;
                     lasttype = XSharpLexer.ID;
@@ -1057,14 +1039,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 startOfBody = start + 1;
             return Ok;
         }
-        bool findEndOfCodeBlock(int start, IList<IToken> tokens, ref int endOfBlock)
+        bool findEndOfCodeBlock(int start, IList<PPToken> tokens, ref int endOfBlock)
         {
             int count = tokens.Count;
             int nested = 0;
             int closeType = 0;
             while (start < count)
             {
-                IToken token = tokens[start];
+                PPToken token = tokens[start];
                 if (token.IsOpen( ref closeType))
                 {
                     nested += 1;
@@ -1082,7 +1064,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return false;
         }
-        int matchCodeBlock(int start, IList<IToken> tokens)
+        int matchCodeBlock(int start, IList<PPToken> tokens)
         {
             int body = start;
             int count = tokens.Count;

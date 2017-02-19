@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace XSharpModel
 {
+    /*
     class EntityParser : XSharpBaseListener
     {
         //public List<XSharpParser.IEntityContext> entities = new List<XSharpParser.IEntityContext>();
@@ -60,32 +61,7 @@ namespace XSharpModel
 
         public override void EnterEveryRule([NotNull] ParserRuleContext context)
         {
-            /*
-              // The following types implement IEntityContext
-              // in short: every element in the language that can have a "method body", calling convention etc.
-              // Please note that Namespace is not in here and ClassVars are also not in here
-              // Also note that Method includes Access & Assign
-              // The only  property inside IEntityContext is the Data property (type EntityData), a flags enum.
-              // that stores info such as ClipperCallingConvention, UsesPSZ etc.
-              // This is used for VO/Vulcan compatible code generation
-              // For names, type etc you need to cast to the proper type
-              //
-              public partial class ProcedureContext : ParserRuleContext, IEntityContext {
-              public partial class FunctionContext : ParserRuleContext, IEntityContext {
-              public partial class MethodContext : ParserRuleContext, IEntityContext {
-              public partial class PropertyContext : ParserRuleContext, IEntityContext {
-              public partial class PropertyAccessorContext : ParserRuleContext, IEntityContext
-              public partial class ClsctorContext : ClassmemberContext, IEntityContext {
-              public partial class ClsdtorContext : ClassmemberContext, IEntityContext {
-              public partial class Event_Context : ParserRuleContext, IEntityContext {
-              public partial class EventAccessorContext : ParserRuleContext, IEntityContext
-              public partial class Operator_Context : ParserRuleContext, IEntityContext {
-              public partial class Delegate_Context : ParserRuleContext, IEntityContext {
-              public partial class Class_Context : ParserRuleContext, IEntityContext {
-              public partial class Structure_Context : ParserRuleContext, IEntityContext {
-              public partial class VodllContext : ParserRuleContext, IEntityContext {
-              public partial class VoglobalContext : ParserRuleContext, IEntityContext
-             */
+
             if (context is XSharpParser.IEntityContext)
             {
                 if (context is XSharpParser.Class_Context)
@@ -93,7 +69,7 @@ namespace XSharpModel
                     XType newClass = this.FromClass((XSharpParser.Class_Context)context);
                     newClass.File = this.file;
                     //
-                    this.file.TypeList.Add(newClass);
+                    newClass = this.file.TypeList.AddUnique(newClass.Name, newClass);
                     // Set as Current working Class
                     this._currentTypes.Push(newClass);
                 }
@@ -102,7 +78,7 @@ namespace XSharpModel
                     XType newClass = this.FromStructure((XSharpParser.Structure_Context)context);
                     newClass.File = this.file;
                     //
-                    this.file.TypeList.Add(newClass);
+                    newClass = this.file.TypeList.AddUnique(newClass.Name, newClass);
                     // Set as Current working Class
                     this._currentTypes.Push(newClass);
                 }
@@ -111,7 +87,7 @@ namespace XSharpModel
                     XType newIf = this.FromInterface((XSharpParser.Interface_Context)context);
                     newIf.File = this.file;
                     //
-                    this.file.TypeList.Add(newIf);
+                    newIf = this.file.TypeList.AddUnique(newIf.Name, newIf);
                     // Set as Current working Interface
                     this._currentTypes.Push(newIf);
                 }
@@ -199,7 +175,7 @@ namespace XSharpModel
             else if (context is XSharpParser.Using_Context)
             {
                 XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
-                this.file.Usings.Add(use.Name.GetText());
+                this.file.Usings.AddUnique(use.Name.GetText());
             }
             else if (context is XSharpParser.Namespace_Context)
             {
@@ -336,8 +312,9 @@ namespace XSharpModel
             {
                 if (this._currentNSpaces.Count > 0)
                 {
+                    XType cNS = this._currentNSpaces.Peek();
                     // Is it necessary to Add the NameSpace in the TypeList ??
-                    this.file.TypeList.Add(this._currentNSpaces.Peek());
+                    this.file.TypeList.AddUnique( cNS.Name, cNS );
                     // Pop to support nested NameSpaces
                     this._currentNSpaces.Pop();
                 }
@@ -617,4 +594,5 @@ namespace XSharpModel
         }
 
     }
+    */
 }

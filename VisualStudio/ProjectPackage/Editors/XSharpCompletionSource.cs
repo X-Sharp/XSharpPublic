@@ -95,7 +95,8 @@ namespace XSharpLanguage
             {
 
             }
-            //
+            // Reset the StopToken
+            this._stopToken = null;
             // What is the character were it starts ?
             var line = triggerPoint.GetContainingLine();
             SnapshotPoint start = triggerPoint;
@@ -167,7 +168,7 @@ namespace XSharpLanguage
             // Check if we can get the member where we are
             XTypeMember member = this.FindMember(triggerPoint.Position);
             XType currentNamespace = this.FindNamespace(triggerPoint.Position);
-            List<String> Usings = new List<String>(file.Usings);
+            HashSet<String> Usings = new HashSet<String>(file.Usings);
             if (currentNamespace != null)
             {
                 Usings.Add(currentNamespace.Name);
@@ -221,11 +222,25 @@ namespace XSharpLanguage
                                 // it can be a static Method/Property/Enum
                                 if (cType != null)
                                 {
+                                    // First we need to remove the trailing dot
+                                    filterText = filterText.Substring(0, filterText.Length - 1);
                                     BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
                                 }
                                 break;
 
                         }
+                    }
+                    else
+                    {
+                        // it can be a static Method/Property/Enum
+                        if (cType != null)
+                        {
+                            // First we need to keep only the text AFTER the last dot
+                            int dotPos = filterText.LastIndexOf('.');
+                            filterText = filterText.Substring(dotPos+1, filterText.Length - dotPos-1);
+                            BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
+                        }
+                        break;
                     }
                     break;
                 case ':':
@@ -282,7 +297,7 @@ namespace XSharpLanguage
             completionSets.Add(new CompletionSet("All", "All", applicableTo, compList, Enumerable.Empty<Completion>()));
         }
 
-        private void AddTypeNames(CompletionList compList, XProject project, string startWith, List<String> usings)
+        private void AddTypeNames(CompletionList compList, XProject project, string startWith, HashSet<String> usings)
         {
             AddTypeNames(compList, project, startWith);
             foreach (String nspace in usings)
@@ -329,7 +344,7 @@ namespace XSharpLanguage
             // And our own Types
             foreach (XFile file in project.Files)
             {
-                foreach (XType typeInfo in file.TypeList)
+                foreach (XType typeInfo in file.TypeList.Values)
                 {
                     if (typeInfo.FullName.StartsWith(startWith, this._settingIgnoreCase, System.Globalization.CultureInfo.InvariantCulture))
                     {
@@ -1160,7 +1175,7 @@ namespace XSharpLanguage
             // but we might be after the code of the last Function in the file, so the parser don't know where we are
             // Keep it in lastElt, and check Members
             XTypeMember lastElt2 = null;
-            foreach (XType eltType in file.TypeList)
+            foreach (XType eltType in file.TypeList.Values)
             {
                 if (eltType.Interval.ContainsInclusive(position))
                 {
@@ -1204,7 +1219,7 @@ namespace XSharpLanguage
                 return null;
             }
             //
-            foreach (XType eltType in file.TypeList)
+            foreach (XType eltType in file.TypeList.Values)
             {
                 if ((eltType.Kind == Kind.Namespace) && (eltType.Interval.ContainsInclusive(position)))
                 {
@@ -1297,7 +1312,7 @@ namespace XSharpLanguage
                         token = "{}";
                         break;
                     case XSharpLexer.ASSIGN_OP:
-                    case XSharpLexer.COLON:
+                    case XSharpLexer.COMMA:
                     case XSharpLexer.USING:
                     case XSharpLexer.LPAREN:
                     case XSharpLexer.LCURLY:
@@ -1747,6 +1762,9 @@ namespace XSharpLanguage
                         break;
                     case Kind.Enum:
                         imgG = StandardGlyphGroup.GlyphGroupEnumMember;
+                        break;
+                    case Kind.ClassVar:
+                        imgG = StandardGlyphGroup.GlyphGroupField;
                         break;
                 }
                 return imgG;

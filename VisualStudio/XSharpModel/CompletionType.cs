@@ -75,18 +75,23 @@ namespace XSharpModel
             XType xType = xFile.Project.Lookup( typeName, true);
             if (xType == null)
             {
-                // Search using the USING statements in the File that contains the var
-                foreach (string usingStatement in xFile.Usings)
-                {
-                    String fqn = usingStatement + "." + typeName;
-                    xType = xFile.Project.Lookup(fqn, true);
-                    if (xType != null)
-                        break;
-                }
+                // ?? Fullname maybe ?
+                xType = xFile.Project.LookupFullName(typeName, true);
                 if (xType == null)
                 {
-                    // Ok, none of our own Type; can be a System/Referenced Type
-                    CheckSystemType(typeName, xFile.Usings);
+                    // Search using the USING statements in the File that contains the var
+                    foreach (string usingStatement in xFile.Usings)
+                    {
+                        String fqn = usingStatement + "." + typeName;
+                        xType = xFile.Project.LookupFullName(fqn, true);
+                        if (xType != null)
+                            break;
+                    }
+                    if (xType == null)
+                    {
+                        // Ok, none of our own Type; can be a System/Referenced Type
+                        CheckSystemType(typeName, xFile.Usings);
+                    }
                 }
             }
             if (xType != null)

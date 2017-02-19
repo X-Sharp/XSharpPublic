@@ -98,17 +98,18 @@ namespace XSharpModel
             {
                 xFiles.Add(xFile);
                 xFile.Project = this;
+                
                 return true;
             }
             return false;
         }
 
-        internal XFile Find(string fileName)
+        public XFile Find(string fileName)
         {
             return xFiles.Find(f => f.Name.ToLower() == fileName.ToLower());
         }
 
-        internal XFile FindFullPath(string fullPath)
+        public XFile FindFullPath(string fullPath)
         {
             return xFiles.Find(f => f.FullPath.ToLower() == fullPath.ToLower());
         }
@@ -146,11 +147,63 @@ namespace XSharpModel
                 //
                 if (caseInvariant)
                 {
-                    xTemp = file.TypeList.Find(x => x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant());
+                    file.TypeList.TryGetValue(typeName.ToLowerInvariant(), out xTemp);
+                        //file.TypeList.Find(x => x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant());
                 }
                 else
                 {
-                    xTemp = file.TypeList.Find(x => x.FullName.ToLower() == typeName.ToLower());
+                    file.TypeList.TryGetValue(typeName.ToLower(), out xTemp);
+                }
+                if (xTemp != null)
+                {
+                    if (xTemp.IsPartial)
+                    {
+                        // Do we have the other parts ?
+                        if (xType != null)
+                        {
+                            xType.Merge(xTemp);
+                        }
+                        else
+                        {
+                            // We need to Copy the type, unless we will modify the original one !
+                            xType = xTemp.Duplicate();
+                        }
+                    }
+                    else
+                    {
+                        xType = xTemp;
+                        break;
+                    }
+                }
+            }
+            return xType;
+        }
+
+        public XType LookupFullName(string typeName, bool caseInvariant)
+        {
+            XType xType = null;
+            XType xTemp = null;
+            foreach (XFile file in this.Files)
+            {
+                //
+                foreach (XType x in file.TypeList.Values)
+                {
+                    if (caseInvariant)
+                    {
+                        if ( x.FullName.ToLowerInvariant() == typeName.ToLowerInvariant() )
+                        {
+                            xTemp = x;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (x.FullName.ToLower() == typeName.ToLower())
+                        {
+                            xTemp = x;
+                            break;
+                        }
+                    }
                 }
                 if (xTemp != null)
                 {
@@ -185,7 +238,7 @@ namespace XSharpModel
                 //
                 foreach (XFile file in this.Files)
                 {
-                    foreach (XType elmt in file.TypeList)
+                    foreach (XType elmt in file.TypeList.Values)
                     {
                         if (elmt.Kind == Kind.Namespace)
                         {

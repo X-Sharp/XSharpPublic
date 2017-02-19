@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XSharpColorizerOrg
+namespace XSharpModel
 {
     public static class ColorizerConstants
     {

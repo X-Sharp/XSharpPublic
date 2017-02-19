@@ -116,8 +116,9 @@ namespace XSharpModel
                     stopWatch.Start();
 #endif
                     //file.Name
-                    var code = System.IO.File.ReadAllText(file.FullPath);
-                    FileWalk(file, code);
+                    //var code = System.IO.File.ReadAllText(file.FullPath);
+                    //FileWalk(file, code);
+                    FileWalk(file);
                     //
 #if DEBUG             
                     stopWatch.Stop();
@@ -128,7 +129,8 @@ namespace XSharpModel
             } while (true);
         }
 
-        public void FileWalk(XFile file, string code)
+        /*
+        public void FileWalk_org(XFile file, string code)
         {
             // abort when the project is unloaded
             if (!file.Project.Loaded)
@@ -145,7 +147,7 @@ namespace XSharpModel
             var tree = parser.source();
             var walker = new ParseTreeWalker();
             var entityparser = new EntityParser(file);
-            file.Parsing = true;
+            file.Parsed = false;
             try
             {
                 walker.Walk(entityparser, tree);
@@ -158,7 +160,32 @@ namespace XSharpModel
             finally
             {
                 // And don't forget to release the Mutex
-                file.Parsing = false;
+                file.Parsed = true;
+            }
+        }
+        */
+
+        internal void FileWalk( XFile file )
+        {
+            SourceWalker sw = new SourceWalker(null);
+            //
+            file.Parsed = false;
+            sw.File = file;
+            try
+            {
+                sw.InitParse();
+                sw.BuildModelOnly();
+                //
+            }
+            catch (Exception ex)
+            {
+                // Push Exception away...
+                throw ex;
+            }
+            finally
+            {
+                // And don't forget to mark the file as parsed
+                file.Parsed = true;
             }
         }
 

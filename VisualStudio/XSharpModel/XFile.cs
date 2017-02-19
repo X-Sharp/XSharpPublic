@@ -13,24 +13,31 @@ namespace XSharpModel
     {
         private List<String> _usings;
         private string filePath;
-        private List<XType> _typeList;
+        private Dictionary<string, XType> _typeList;
         private XType _globalType;
-        private Mutex _lock;
         // 
-        //private bool _parsed;
-        private ManualResetEvent _parsedEvent;
 
-        public XFile( string fullPath )
+        //private ManualResetEvent _parsedEvent;
+        //private Mutex _lock;
+        private object _lock;
+        private bool _parsed;
+
+
+        public XFile(string fullPath)
         {
-            _typeList = new List<XType>();
+            // TODO: Change to support Case Sensitive types
+            _typeList = new Dictionary<string, XType>( StringComparer.InvariantCultureIgnoreCase);
             _usings = new List<string>();
             this.filePath = fullPath;
             _globalType = XType.CreateGlobalType();
-            _typeList.Add(_globalType);
+            _typeList.Add( _globalType.Name, _globalType);
             //
-            _lock = new Mutex();
+            //_lock = new Mutex();
             //_parsed = false;
-            _parsedEvent = new ManualResetEvent(false);
+            //_parsedEvent = new ManualResetEvent(false);
+            _lock = new object();
+            _parsed = false;
+
         }
 
         public XProject Project { get; internal set; }
@@ -58,6 +65,7 @@ namespace XSharpModel
             }
         }
 
+        // 
         public List<string> Usings
         {
             get
@@ -67,46 +75,46 @@ namespace XSharpModel
 
         }
 
-        public List<XType> TypeList
+        public Dictionary<string, XType> TypeList
         {
             get
             {
-                List<XType> retValue;
-                _lock.WaitOne();
-                retValue = _typeList;
-                _lock.ReleaseMutex();
+                Dictionary<string, XType> retValue;
+                lock (_lock)
+                {
+                    retValue = _typeList;
+                }
                 return retValue;
             }
 
             set
             {
-                _lock.WaitOne();
-                _typeList = value;
-                _lock.ReleaseMutex();
+                lock (_lock)
+                {
+                    _typeList = value;
+                }
             }
         }
 
-        /// <summary>
-        /// Set the XFile in parsing state : 
-        /// It means that the access to the TypeList is locked by a Mutex.
-        /// The Thread who set set the value is the Owner of the Mutex.
-        /// </summary>
-        public bool Parsing
-        {
-            set
-            {
-                if ( value == true )
-                {
-                    _lock.WaitOne();
-                    _parsedEvent.Reset();
-                }
-                else
-                {
-                    _lock.ReleaseMutex();
-                    _parsedEvent.Set();
-                }
-            }
-        }
+        ///// <summary>
+        ///// Set the XFile in parsing state : 
+        ///// </summary>
+        //public bool Parsing
+        //{
+        //    set
+        //    {
+        //        if (value == true)
+        //        {
+        //            _lock.WaitOne();
+        //            _parsedEvent.Reset();
+        //        }
+        //        else
+        //        {
+        //            _lock.ReleaseMutex();
+        //            _parsedEvent.Set();
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Flag indicating if File has been parsed at least once
@@ -115,7 +123,20 @@ namespace XSharpModel
         {
             get
             {
-                return _parsedEvent.WaitOne(0);
+                bool retValue;
+                lock (_lock)
+                {
+                    retValue = _parsed;
+                }
+                return retValue;
+            }
+
+            set
+            {
+                lock (_lock)
+                {
+                    _parsed = value;
+                }
             }
         }
 
@@ -125,6 +146,27 @@ namespace XSharpModel
         public void WaitParsing()
         {
             //_parsedEvent.WaitOne();
+            lock ( _lock )
+            {
+                if ( !_parsed )
+                {
+                    //
+                    SourceWalker sw = new SourceWalker(null);
+                    //
+                    sw.File = this;
+                    try
+                    {
+                        sw.InitParse();
+                        sw.BuildModelOnly();
+                        //
+                        this.Parsed = true;
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine(e.Message);
+                    }
+                }
+            }
         }
 
     }

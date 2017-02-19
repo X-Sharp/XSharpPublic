@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

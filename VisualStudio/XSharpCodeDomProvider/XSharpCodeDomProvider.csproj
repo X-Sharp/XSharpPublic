@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <BaseOutputPath>$(SolutionDir)\Binaries</BaseOutputPath>
+    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
     <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -67,7 +67,6 @@
     <Compile Include="XSharpTreeDiscover.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>

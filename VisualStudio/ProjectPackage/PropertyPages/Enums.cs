@@ -202,6 +202,8 @@ namespace XSharp.Project
         x86,
         AnyCPU,
         x64,
+        Arm,
+        Itanium
     }
 
     public class PlatformConverter : EnumConverter
@@ -228,6 +230,8 @@ namespace XSharp.Project
                 if (String.Compare(str, "x86", true) == 0) return Platform.x86;
                 if (String.Compare(str, "anycpu", true) == 0) return Platform.AnyCPU;
                 if (String.Compare(str, "x64", true) == 0) return Platform.x64;
+                if (String.Compare(str, "arm", true) == 0) return Platform.Arm;
+                if (String.Compare(str, "itanium", true) == 0) return Platform.Itanium;
 
             }
             return Platform.AnyCPU;
@@ -262,7 +266,7 @@ namespace XSharp.Project
 
         public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new Platform[] { Platform.AnyCPU, Platform.x86, Platform.x64 });
+            return new StandardValuesCollection(new Platform[] { Platform.AnyCPU, Platform.x86, Platform.x64, Platform.Arm, Platform.Itanium });
         }
     }
     [Microsoft.VisualStudio.Project.PropertyPageTypeConverter(typeof(DebugTypeConverter))]

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>NUnit Test Class</Title>
+      <Shortcut>nunit</Shortcut>
+      <Description>Code snippet for a NUnit unit test class</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>category</ID>
+          <ToolTip>Test category name</ToolTip>
+          <Default>TestCategory</Default>
+        </Literal>
+        <Literal>
+          <ID>name</ID>
+          <ToolTip>Test class name</ToolTip>
+          <ID>name</ID>
+          <ToolTip>Class name</ToolTip>
+          <Default>TestClass</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp"><![CDATA[
+[TestFixture, Category( "$category$" ) ];
+CLASS $name$
+
+   [Test];
+   METHOD Test1() AS VOID
+      $end$
+      RETURN
+
+END CLASS
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

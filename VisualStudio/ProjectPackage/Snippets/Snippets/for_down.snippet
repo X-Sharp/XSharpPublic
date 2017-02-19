@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>For (Down)</Title>
+      <Shortcut>FOR_DOWN</Shortcut>
+      <Description>Code snippet for 'FOR DOWNTO' loop</Description>
+      <Author>XSharp B.V.</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>index</ID>
+          <Default>i</Default>
+          <ToolTip>Counter variable</ToolTip>
+        </Literal>
+        <Literal>
+          <ID>start</ID>
+          <Default>start</Default>
+          <ToolTip>Starting value</ToolTip>
+        </Literal>
+        <Literal>
+          <ID>max</ID>
+          <Default>end</Default>
+          <ToolTip>Ending value</ToolTip>
+        </Literal>
+        <Literal>
+          <ID>step</ID>
+          <Default>incr</Default>
+          <ToolTip>Step value</ToolTip>
+        </Literal>
+      </Declarations>
+      <Code Language="XSharp">
+        <![CDATA[
+FOR $index$ := $start$ DOWNTO $max$ STEP $step$
+   $selected$ $end$
+NEXT
+]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

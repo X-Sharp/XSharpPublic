@@ -804,10 +804,13 @@ namespace Microsoft.VisualStudio.Project
                 case __VSHPROPID.VSHPROPID_OverlayIconIndex:
                     if (this.ItemNode != null)
                     {
-                        string link = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
-                        if (!String.IsNullOrEmpty(link))
+                        if (this is FileNode )
                         {
-                            return VSOVERLAYICON.OVERLAYICON_SHORTCUT;
+                            string link = this.ItemNode.GetMetadata(ProjectFileConstants.Link);
+                            if (!String.IsNullOrEmpty(link) && System.IO.File.Exists(this.Url))
+                            {
+                                return VSOVERLAYICON.OVERLAYICON_SHORTCUT;
+                            }
                         }
                     }
                     break;
@@ -1019,7 +1022,6 @@ namespace Microsoft.VisualStudio.Project
             }
 
             HierarchyNode thisParentNode = this.parentNode;
-
             // the project node has no parentNode
             if (thisParentNode != null)
             {
@@ -1054,11 +1056,15 @@ namespace Microsoft.VisualStudio.Project
 	            }
 
 	            // Notify hierarchy event listeners that items have been invalidated
-                OnInvalidateItems(thisParentNode);
-	         }
+                if (!(this.Parent is ReferenceContainerNode))
+                {
+                    OnInvalidateItems(thisParentNode);
+                }
+            }
 
             // Dispose the node now that is deleted.
             this.Dispose(true);
+            
         }
 
         /// <summary>

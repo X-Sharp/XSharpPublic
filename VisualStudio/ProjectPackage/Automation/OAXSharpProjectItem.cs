@@ -7,6 +7,11 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Project.Automation;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using EnvDTE;
+using Microsoft.VisualStudio.Project;
+using VSLangProj;
 
 namespace XSharp.Project
 {
@@ -55,4 +60,125 @@ namespace XSharp.Project
             }
         }
     }
+    /// <summary>
+    /// Represents an automation friendly version of a language-specific project.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
+    [ComVisible(true), CLSCompliant(false)]
+    public class OAXSharpVSProject : OAVSProject
+    {
+        private OAVSProjectImports imports;
+        internal OAXSharpVSProject(ProjectNode project) : base(project)
+        {
+            this.imports = new OAVSProjectImports(this.Project);
+        }
+        public override Imports Imports
+        {
+            get
+            {
+                return imports;
+            }
+        }
+
+    }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
+    [ComVisible(true), CLSCompliant(false)]
+    public class OAVSProjectImports : VSLangProj.Imports
+    {
+        EnvDTE.Project project;
+        List<string> imports;
+
+        internal OAVSProjectImports(EnvDTE.Project prj)
+        {
+            project = prj;
+            imports = new List<string>();
+        }
+
+        public EnvDTE.Project ContainingProject
+        {
+            get
+            {
+                return project;
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return imports.Count;
+            }
+        }
+
+        public DTE DTE
+        {
+            get
+            {
+                return project.DTE;
+            }
+        }
+
+        public object Parent
+        {
+            get
+            {
+                return project;
+            }
+        }
+
+        public void Add(string bstrImport)
+        {
+            imports.Add(bstrImport);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return imports.GetEnumerator();
+        }
+
+        public string Item(int lIndex)
+        {
+            if (lIndex >= 0 && lIndex < imports.Count)
+                return imports[lIndex];
+            return null;
+        }
+
+        public void Remove(object index)
+        {
+            if (index is Int32)
+            {
+                int iIndex = (Int32)index;
+                if (iIndex > 0 && iIndex <= imports.Count)
+                    imports.Remove(imports[iIndex - 1]);
+            }
+            else if (index is String)
+            {
+                string sIndex = index as String;
+                if (imports.Contains(sIndex))
+                {
+                    imports.Remove(sIndex);
+                }
+            }
+        }
+    }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1409:ComVisibleTypesShouldBeCreatable")]
+    [ComVisible(true), CLSCompliant(false)]
+    public class OAXSharpVSProjectEvents : OAVSProjectEvents
+    {
+        private VSLangProj.ImportsEvents importsEvents;
+
+        public OAXSharpVSProjectEvents(OAVSProject vsProject) : base(vsProject)
+        {
+            this.importsEvents = new VSLangProj.ImportsEventsClass();
+        }
+
+        public override ImportsEvents ImportsEvents
+        {
+            get
+            {
+                return importsEvents;
+            }
+        }
+    }
+
 }

@@ -9,13 +9,12 @@ BEGIN NAMESPACE XSharp
    
         internal const Company := "XSharpBV"													AS string 			
         internal const Product := "XSharp"														AS string 
-        internal const Version := "0.2.5.0"														AS string 
-        internal const Copyright := "Copyright © XSharp BV 2015-2016"							AS string 
+        internal const Version := "0.2.9.0"														AS string 
+        internal const Copyright := "Copyright © XSharp BV 2015-2017"							AS string 
 
         internal const RegistryKey := "Software\" + Company + "\" + Product						AS string 
         internal const RegistryKey64 := "Software\WOW6432Node\" + Company + "\" + Product		AS string 
         internal const RegistryValue := "XSharpPath"											AS string 
-        internal const ProjectDll := "XSharp.ProjectSystem"										AS string 
     END CLASS
 
 END NAMESPACE

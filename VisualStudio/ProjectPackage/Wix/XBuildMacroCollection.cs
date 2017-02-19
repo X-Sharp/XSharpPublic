@@ -49,8 +49,6 @@ namespace XSharp.Project
                 "TargetFileName",
                 "TargetName",
                 "TargetPath",
-                "TargetPdbName",
-                "TargetPdbPath",
             };
 
         private SortedList<string, string> list = new SortedList<string, string>(macroNames.Length, StringComparer.OrdinalIgnoreCase);

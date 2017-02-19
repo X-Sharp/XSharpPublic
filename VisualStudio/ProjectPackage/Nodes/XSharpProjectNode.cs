@@ -35,7 +35,8 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, IVsDesignTimeAssemblyResolution
+    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, 
+        IVsDesignTimeAssemblyResolution, IVsProject5
     {
 
         static Dictionary<string, string> dependencies;
@@ -131,6 +132,7 @@ namespace XSharp.Project
 
             //// We could also provide CATIDs for references and the references container node, if we wanted to.
             AddCATIDMapping(typeof(XSharpBuildPropertyPage), typeof(XSharpBuildPropertyPage).GUID);
+            AddCATIDMapping(typeof(XSharpBuildEventsPropertyPage), typeof(XSharpBuildEventsPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpLanguagePropertyPage), typeof(XSharpLanguagePropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpDebugPropertyPage), typeof(XSharpDebugPropertyPage).GUID);
         }
@@ -171,7 +173,7 @@ namespace XSharp.Project
             {
                 if (vsProject == null)
                 {
-                    vsProject = new OAVSProject(this);
+                    vsProject = new OAXSharpVSProject(this);
                 }
 
                 return vsProject;
@@ -247,26 +249,52 @@ namespace XSharp.Project
             }
             return null;
         }
+        public __VSPROJOUTPUTTYPE GetOutPutType()
+        {
+            string outputTypeAsString = this.ProjectMgr.GetProjectProperty("OutputType", false);
+            OutputType outputType = (OutputType)Enum.Parse(typeof(OutputType), outputTypeAsString);
+            switch (outputType)
+            {
+                case OutputType.WinExe:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINEXE;
+                case OutputType.Library:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_LIBRARY;
+                case OutputType.Exe:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_EXE;
+                case OutputType.WinMDObj:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_WINMDOBJ;
+                case OutputType.AppContainerExe:
+                    return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_APPCONTAINEREXE;
+            }
+            return __VSPROJOUTPUTTYPE.VSPROJ_OUTPUTTYPE_NONE;
+        }
         public override object GetProperty(int propId)
         {
-            if (propId == (int)__VSHPROPID.VSHPROPID_DefaultNamespace)
+            switch (propId)
             {
-                return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
-            }
-
-            if (propId == (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration)
-            {
-                return __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_Declarations | __VSDESIGNER_HIDDENCODEGENERATION.VSDHCG_InitMethods;
-            }
-            switch ((__VSHPROPID3)propId)
-            {
-                case __VSHPROPID3.VSHPROPID_WebReferenceSupported:
-                case __VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
-                case __VSHPROPID3.VSHPROPID_SupportsHierarchicalUpdate:
-                case __VSHPROPID3.VSHPROPID_SupportsLinqOverDataSet:
-                case __VSHPROPID3.VSHPROPID_SupportsNTierDesigner:
+                case (int)__VSHPROPID.VSHPROPID_DefaultNamespace:
+                    return GetProjectProperty(ProjectFileConstants.RootNamespace, true);
+                case (int)__VSHPROPID5.VSHPROPID_OutputType:
+                    return GetOutPutType();
+                case (int)__VSHPROPID2.VSHPROPID_DesignerHiddenCodeGeneration:
+                case (int)__VSHPROPID3.VSHPROPID_WebReferenceSupported:
+                case (int)__VSHPROPID3.VSHPROPID_ServiceReferenceSupported:
+                case (int)__VSHPROPID3.VSHPROPID_SupportsHierarchicalUpdate:
+                case (int)__VSHPROPID3.VSHPROPID_SupportsLinqOverDataSet:
+                case (int)__VSHPROPID3.VSHPROPID_SupportsNTierDesigner:
+                case (int)__VSHPROPID6.VSHPROPID_ShowAllProjectFilesInProjectView:
                     return true;
-
+                case (int)__VSHPROPID6.VSHPROPID_NuGetPackageProjectTypeContext:
+                    return "XSharp.ProjectSystem";
+                //case (int)__VSHPROPID6.VSHPROPID_Subcaption:
+                //case (int)__VSHPROPID7.VSHPROPID_ShortSubcaption:
+                //    return "X#";
+                case (int)__VSHPROPID7.VSHPROPID_CanBuildQuickCheck:
+                case (int)__VSHPROPID7.VSHPROPID_CanDebugLaunchQuickCheck:
+                    return _VSQuickCheckAnswer.QCA_Always;
+                // Added for NuGet Support
+                case (int)__VSHPROPID8.VSHPROPID_ProjectCapabilitiesChecker:
+                    return new XSharpProjectCapabilitiesPresenceChecker();
             }
             return base.GetProperty(propId);
         }
@@ -374,6 +402,7 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpBuildPropertyPage).GUID,
+                typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
                 };
             return result;
@@ -388,7 +417,8 @@ namespace XSharp.Project
             Guid[] result = new Guid[]
                 {
                 typeof(XSharpGeneralPropertyPage).GUID,
-                typeof(XSharpLanguagePropertyPage).GUID
+                typeof(XSharpLanguagePropertyPage).GUID,
+                typeof(XSharpBuildEventsPropertyPage).GUID,
                 };
             return result;
         }
@@ -1283,7 +1313,8 @@ namespace XSharp.Project
         const string config = "$(Configuration)";
         const string configPlatform = "$(Configuration)|$(Platform)";
 
-        const string import1 = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
+        const string import1a = @"$(MSBuildExtensionsPath)\XSharp\XSharp.Default.props";
+        const string import1b = @"$(XSharpProjectExtensionsPath)XSharp.Default.props";
         const string import2 = @"$(XSharpProjectExtensionsPath)XSharp.props";
         const string import3 = @"$(XSharpProjectExtensionsPath)XSharp.targets";
 
@@ -1295,8 +1326,15 @@ namespace XSharp.Project
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
             var str = backup.ToString();
-            // check to see required elements
+            var str2 = System.Text.RegularExpressions.Regex.Replace(str, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             bool ok = true;
+            if (str2 != str)
+            {
+                ok = false;
+                str = str2;
+            }
+            // check to see required elements
+            
             if (ok && str.IndexOf("'Debug|AnyCPU'",StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
@@ -1307,7 +1345,8 @@ namespace XSharp.Project
                 ok = false;
             if (ok && str.IndexOf("<DocumentationFile>true", StringComparison.OrdinalIgnoreCase) != -1)
                 ok = false;
-            if (ok && str.IndexOf(import1, StringComparison.OrdinalIgnoreCase) == -1)
+            if (ok && str.IndexOf(import1a, StringComparison.OrdinalIgnoreCase) == -1 &&
+                str.IndexOf(import1b, StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf(import2, StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
@@ -1347,9 +1386,10 @@ namespace XSharp.Project
                         {
                             condition = "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'";
                         }
-                        group.Condition = condition;
-                        changed = true;
                     }
+                    condition = System.Text.RegularExpressions.Regex.Replace(condition, "anycpu", "AnyCPU", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    group.Condition = condition;
+                    changed = true;
                 }
             }
             // check for the XSharpProjectExtensionsPath property inside the first propertygroup
@@ -1383,7 +1423,9 @@ namespace XSharp.Project
             foreach (var import in xml.Imports)
             {
                 var prj = import.Project;
-                if (String.Equals(prj, import1, StringComparison.OrdinalIgnoreCase))
+                if (String.Equals(prj, import1a, StringComparison.OrdinalIgnoreCase))
+                    hasImport1 = true;
+                if (String.Equals(prj, import1b, StringComparison.OrdinalIgnoreCase))
                     hasImport1 = true;
                 if (String.Equals(prj, import2, StringComparison.OrdinalIgnoreCase))
                     hasImport2 = true;
@@ -1416,8 +1458,70 @@ namespace XSharp.Project
             return VsShellUtilities.ShowMessageBox(this.Site, message, title, icon, buttons, defaultButton);
 
         }
+
+        #region IVsProject5
+        public int IsDocumentInProject2(string pszMkDocument, out int pfFound, out int pdwPriority2, out uint pitemid)
+        {
+            var node = this.FindURL(pszMkDocument);
+            if (node != null)
+            {
+                pfFound = 1;
+                pitemid = node.ID;
+                if (node is XSharpFileNode)
+                {
+                    var FNode = node as XSharpFileNode;
+                    if (FNode.IsNonMemberItem)
+                    {
+                        pdwPriority2 = (int)__VSDOCUMENTPRIORITY2.DP2_NonMember;
+                    }
+                    else
+                    {
+                        pdwPriority2 = (int)__VSDOCUMENTPRIORITY2.DP2_Standard;
+                    }
+
+                }
+                else
+                {
+                    pdwPriority2 = (int)__VSDOCUMENTPRIORITY2.DP2_Standard;
+                }
+            }
+            else
+            {
+                pfFound = 0;
+                pdwPriority2 = 0;
+                pitemid = 0;
+            }
+            return VSConstants.S_OK;
+        }
+
+        #endregion
     }
 
     #endregion
+
+    class XSharpProjectCapabilitiesPresenceChecker : IVsBooleanSymbolPresenceChecker
+    {
+
+        public bool HasChangedSince(ref object versionObject)
+        {
+            // If your project capabilities do not change over time while the project is open,
+            // you may simply `return false;` from your `HasChangedSince` method.
+            return false;
+        }
+
+        public bool IsSymbolPresent(string symbol)
+        {
+            switch (symbol.ToLower())
+            { 
+                case "assemblyreferences":
+                case "declaredsourceitems":
+                case "usersourceitems":
+                case "windowsxaml":
+                case "csharp":
+                    return true;
+            }
+            return false;
+        }
+    }
 }
 

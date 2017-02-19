@@ -171,6 +171,7 @@
                 @(CustomAdditionalCompileInputs)"
           Outputs="@(DocFileItem);
                  @(IntermediateAssembly);
+                 $(NonExistentFile);
                  @(_DebugSymbolsIntermediatePath);
                  @(CustomAdditionalCompileOutputs)"
           DependsOnTargets="$(CoreCompileDependsOn)"

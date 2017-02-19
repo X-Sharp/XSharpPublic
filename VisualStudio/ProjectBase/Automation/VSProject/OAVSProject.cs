@@ -10,6 +10,8 @@
  * ***************************************************************************/
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -98,15 +100,15 @@ namespace Microsoft.VisualStudio.Project.Automation
         public virtual string GetUniqueFilename(object pDispatch, string bstrRoot, string bstrDesiredExt)
         {
 			Debug.Fail("VSProject.GetUniqueFilename not implemented");
-            throw new NotImplementedException(); 
+            throw new NotImplementedException();
         }
 
         public virtual Imports Imports
         {
             get
             {
-				Debug.Fail("VSProject.Imports not implemented");
-                throw new NotImplementedException(); 
+                Debug.Fail("VSProject.Imports not implemented");
+                throw new NotImplementedException();
             }
         }
 
@@ -207,7 +209,7 @@ namespace Microsoft.VisualStudio.Project.Automation
         {
             get
             {
-				Debug.Fail("VSProjectEvents.ImportsEvents not implemented");
+                Debug.Fail("VSProjectEvents.ImportsEvents not implemented");
                 throw new NotImplementedException();
             }
         }
@@ -223,4 +225,6 @@ namespace Microsoft.VisualStudio.Project.Automation
         #endregion
     }
 
+
 }
+

@@ -178,6 +178,13 @@ namespace XSharp.Project
         /// <param name="size">size of the data</param>
         /// <param name="fileName">Name of the file to update or create</param>
         /// <returns>full path of the file</returns>
+        protected override string UpdateGeneratedCodeFile(FileNode fileNode, byte[] data, int size, string fileName)
+        {
+            var path = System.IO.Path.GetDirectoryName(fileNode.Url);
+            var depfile = Path.Combine(path, fileName);
+            var depedentNode = ((XSharpProjectNode)this.ProjectMgr).FindURL(depfile);
+            return UpdateGeneratedCodeFile(fileNode, data, size, fileName, depedentNode);
+        }
         protected virtual string UpdateGeneratedCodeFile(FileNode fileNode, byte[] data, int size, string fileName, HierarchyNode dependentNode)
         {
             string filePath = Path.Combine(Path.GetDirectoryName(fileNode.GetMkDocument()), fileName);
@@ -389,7 +396,7 @@ namespace XSharp.Project
                         }
                     }
 
-                    if (runEvenIfNotDirty || outputOutOfDate)
+                    //if (runEvenIfNotDirty || outputOutOfDate)
                     {
                         //Get the buffer contents for the current node
                         string moniker = fileNode.GetMkDocument();

@@ -69,8 +69,6 @@
     <Compile Include="XSharpClassifier.cs" />
     <Compile Include="XSharpClassifierProvider.cs" />
     <Compile Include="XSharpOutlining.cs" />
-    <Compile Include="XSharpTagger.cs" />
-    <Compile Include="XSharpTreeDiscover.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -122,6 +120,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharpModel\XSharpModel.csproj">
+      <Project>{2c3b9217-e012-4681-97ce-f0a658c40336}</Project>
+      <Name>XSharpModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

@@ -97,7 +97,7 @@ namespace XSharp.Project
 
         #endregion
 
-  
+
         protected override int IncludeInProject()
         {
             int result = base.IncludeInProject();
@@ -107,11 +107,18 @@ namespace XSharp.Project
 
         internal void DetermineSubType()
         {
+
             // Parse the contents of the file and see if we have a windows form or a windows control
+            XSharpProjectNode projectNode = ProjectMgr as XSharpProjectNode;
+            XSharpModel.XFile xfile = projectNode.ProjectModel.FindFullPath(this.Url);
+            if (xfile != null)
+            {
+                xfile.WaitParsing();
+            }
             // (something that inherits from system.windows.forms.form or system.windows.forms.usercontrol
             // We should do this with proper parsing. For now we simply test the first word after the INHERIT keyword
             // and then parse and bind to see if we can find the first type in the file.
-            if (this.FileType == XSharpFileType.SourceCode && this.Url.IndexOf(".designer.",StringComparison.OrdinalIgnoreCase) == -1)
+            if (this.FileType == XSharpFileType.SourceCode && this.Url.IndexOf(".designer.", StringComparison.OrdinalIgnoreCase) == -1)
             {
                 string SubType = "";
                 string token = "INHERIT";
@@ -151,9 +158,9 @@ namespace XSharp.Project
         public void UpdateHasDesigner()
         {
             HasDesigner = XFileType.HasDesigner(this.Url, SubType);
-		}
+        }
 
-#region Dependent Items
+        #region Dependent Items
         internal String GetParentName()
         {
             // There needs to be a better way to handle this
@@ -167,7 +174,7 @@ namespace XSharp.Project
             // we can hard code a similar table or read it from the registry like C# does.
             // CS also defines a 'relationtype'. See the CS Project System source code.
             String path = Path.GetFileName(this.Url).ToLowerInvariant();
-            String folder = Path.GetDirectoryName(this.Url)+"\\";
+            String folder = Path.GetDirectoryName(this.Url) + "\\";
             XSharpProjectNode project = this.ProjectMgr as XSharpProjectNode;
             int relationIndex = path.IndexOf(".");
             switch (this.FileType)
@@ -201,7 +208,7 @@ namespace XSharp.Project
                         // Resources.resx
                         // Settings.Settings
                         path = path.Substring(0, relationIndex);
-                        string parent = folder+path+ ".prg";
+                        string parent = folder + path + ".prg";
                         if (project.FindURL(parent) != null)
                             return parent;
                         parent = folder + path + ".resx";
@@ -274,8 +281,8 @@ namespace XSharp.Project
                     string projectPath = this.ProjectMgr.ProjectFolder;
                     Uri projectFolder = new Uri(projectPath);
                     Uri relative = projectFolder.MakeRelativeUri(new Uri(parentPath));
-                    parentPath = relative.ToString()+Path.DirectorySeparatorChar;
-                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parentPath+parent);
+                    parentPath = relative.ToString() + Path.DirectorySeparatorChar;
+                    dependant.ItemNode.SetMetadata(ProjectFileConstants.DependentUpon, parentPath + parent);
                 }
             }
             // Make the item a dependent item
@@ -304,7 +311,7 @@ namespace XSharp.Project
             {
                 case XSharpFileType.ManagedResource:
                     this.SubType = ProjectFileAttributeValue.Designer;
-                    this.Generator =  "ResXFileCodeGenerator";
+                    this.Generator = "ResXFileCodeGenerator";
                     break;
                 case XSharpFileType.Settings:
                     this.Generator = "SettingsSingleFileGenerator";
@@ -316,7 +323,7 @@ namespace XSharp.Project
         private bool hasSubType(string value)
         {
             string result = SubType;
-            return !String.IsNullOrEmpty(result) && String.Equals(result, value, StringComparison.OrdinalIgnoreCase) ;
+            return !String.IsNullOrEmpty(result) && String.Equals(result, value, StringComparison.OrdinalIgnoreCase);
 
         }
         public bool IsXAML
@@ -353,7 +360,7 @@ namespace XSharp.Project
         {
             get
             {
-               return XFileType.GetFileType(this.Url);
+                return XFileType.GetFileType(this.Url);
             }
         }
 
@@ -362,39 +369,39 @@ namespace XSharp.Project
             string itemType = this.ItemNode.ItemName;
             switch (this.FileType)
             {
-            case XSharpFileType.XAML:
-                // do not change the type when not needed
-                if (String.Equals(itemType, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase))
-                {
+                case XSharpFileType.XAML:
+                    // do not change the type when not needed
+                    if (String.Equals(itemType, ProjectFileConstants.Page, StringComparison.OrdinalIgnoreCase))
+                    {
+                        break;
+                    }
+                    else if (String.Equals(itemType, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase))
+                    {
+                        break;
+                    }
+                    else if (String.Equals(itemType, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase))
+                    {
+                        break;
+                    }
+                    this.ItemNode.ItemName = ProjectFileConstants.Page;
                     break;
-                }
-                else if (String.Equals(itemType, ProjectFileConstants.ApplicationDefinition, StringComparison.OrdinalIgnoreCase))
-                {
+                case XSharpFileType.SourceCode:
+                    if (String.IsNullOrEmpty(itemType))
+                    {
+                        this.ItemNode.ItemName = SR.Compile;
+                    }
                     break;
-                }
-                else if (String.Equals(itemType, ProjectFileConstants.Resource, StringComparison.OrdinalIgnoreCase))
-                {
+                case XSharpFileType.ManagedResource:
+                    if (!String.Equals(itemType, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase))
+                    {
+                        this.ItemNode.ItemName = ProjectFileConstants.EmbeddedResource;
+                    }
                     break;
-                }
-                this.ItemNode.ItemName = ProjectFileConstants.Page;
-                break;
-            case XSharpFileType.SourceCode:
-                if (String.IsNullOrEmpty(itemType))
-                {
-                    this.ItemNode.ItemName = SR.Compile;
-                }
-                break;
-            case XSharpFileType.ManagedResource:
-                if (!String.Equals(itemType, ProjectFileConstants.EmbeddedResource, StringComparison.OrdinalIgnoreCase))
-                {
-                    this.ItemNode.ItemName = ProjectFileConstants.EmbeddedResource;
-                }
-                break;
-            //case XSharpFileType.Settings:
-            //    this.ItemNode.ItemName = ProjectFileConstants.None;
-            //    break;
-            default:
-                break;
+                //case XSharpFileType.Settings:
+                //    this.ItemNode.ItemName = ProjectFileConstants.None;
+                //    break;
+                default:
+                    break;
             }
         }
         /// <summary>
@@ -458,20 +465,20 @@ namespace XSharp.Project
                         LanguageService.XSharpLanguageService lngServ = (LanguageService.XSharpLanguageService)ProjectMgr.GetService(typeof(LanguageService.XSharpLanguageService));
                         Microsoft.VisualStudio.Package.LanguagePreferences pref = lngServ.GetLanguagePreferences();
                         tabSize = pref.TabSize;
-/*
-                        EnvDTE.DTE dte = (EnvDTE.DTE)ProjectMgr.GetService(typeof(EnvDTE.DTE));
-                        EnvDTE.Properties props;
-                        props = dte.Properties[ "Text Editor" , "XSharp"];
-                        foreach (EnvDTE.Property temp in props)
-                        {
-                            if (temp.Name.ToLower() == "tabsize")
-                            {
-                                tabSize = (int)temp.Value;
-                            }
-                        }
-*/
+                        /*
+                                                EnvDTE.DTE dte = (EnvDTE.DTE)ProjectMgr.GetService(typeof(EnvDTE.DTE));
+                                                EnvDTE.Properties props;
+                                                props = dte.Properties[ "Text Editor" , "XSharp"];
+                                                foreach (EnvDTE.Property temp in props)
+                                                {
+                                                    if (temp.Name.ToLower() == "tabsize")
+                                                    {
+                                                        tabSize = (int)temp.Value;
+                                                    }
+                                                }
+                        */
                     }
-                    catch (Exception ex )
+                    catch (Exception ex)
                     {
                         string msg = ex.Message;
                     }
@@ -506,7 +513,7 @@ namespace XSharp.Project
         #endregion
 
         #region Overriden implementation
-        
+
         /// <summary>
         /// Creates an object derived from <see cref="NodeProperties"/> that will be used to expose
         /// properties specific for this object to the property browser.
@@ -538,7 +545,7 @@ namespace XSharp.Project
         }
 
 
-         /// <summary>
+        /// <summary>
         /// Gets the automation object for the file node.
         /// </summary>
         /// <returns></returns>

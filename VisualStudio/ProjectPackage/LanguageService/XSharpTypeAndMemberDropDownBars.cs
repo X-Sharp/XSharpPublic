@@ -63,7 +63,7 @@ namespace XSharp.LanguageService
             //
             if (file.TypeList.Count > 0)
                 nSelType = 0;
-            foreach (XType eltType in file.TypeList)
+            foreach (XType eltType in file.TypeList.Values)
             {
                 //
                 if (eltType.Kind != Kind.Class)

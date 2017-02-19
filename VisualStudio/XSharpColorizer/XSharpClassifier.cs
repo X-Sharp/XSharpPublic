@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using XSharpModel;
 
 namespace XSharpColorizer
 {
@@ -40,8 +41,10 @@ namespace XSharpColorizer
         private IClassificationType xsharpRegionStart;
         private IClassificationType xsharpRegionStop;
         private IClassificationType xsharpInactiveType;
-        private XSharpTagger xsTagger;
+        //private XSharpTagger xsTagger;
+        private SourceWalker xsWalker;
         private List<ClassificationSpan> tags;
+        internal List<ClassificationSpan> tagsRegion;
         private ITextDocumentFactoryService txtdocfactory;
         private int versionNumber = 0;
         private bool isBusy = false;
@@ -56,7 +59,8 @@ namespace XSharpColorizer
             this.buffer = buffer;
             
             txtdocfactory = factory;
-            xsTagger = new XSharpTagger(registry);
+            //xsTagger = new XSharpTagger(registry);
+            xsWalker = new SourceWalker(registry);
             tags = new List<ClassificationSpan>();
             //
             xsharpKeywordType = registry.GetClassificationType("keyword"); 
@@ -70,6 +74,7 @@ namespace XSharpColorizer
             xsharpInactiveType = registry.GetClassificationType("excluded code"); 
             xsharpBraceOpenType = registry.GetClassificationType("punctuation");
             xsharpBraceCloseType = registry.GetClassificationType("punctuation");
+
             xsharpRegionStart = registry.GetClassificationType(ColorizerConstants.XSharpRegionStartFormat);
             xsharpRegionStop = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
             //
@@ -96,7 +101,13 @@ namespace XSharpColorizer
             }
             // Parse the source and get the (Lexer) Tokenstream to locate comments, keywords and other tokens.
             // The parser will identify (positional) keywords that are used as identifier
-            xsTagger.Parse(snapshot, out TokenStream, path);
+            //xsTagger.Parse(snapshot, out TokenStream, path);
+            xsWalker.FullPath = path;
+            xsWalker.Snapshot = snapshot;
+            xsWalker.InitParse();
+            xsWalker.BuildModelAndRegionTags();
+            this.tagsRegion = xsWalker.Tags;
+            TokenStream = xsWalker.TokenStream;
             if (TokenStream != null)
             {
                 List<ClassificationSpan> newtags = new List<ClassificationSpan>();
@@ -188,7 +199,7 @@ namespace XSharpColorizer
                         }
                     }
                 }
-                foreach (var tag in xsTagger.Tags)
+                foreach (var tag in xsWalker.Tags)
                 {
                     newtags.Add(tag);
                 }
@@ -276,6 +287,16 @@ namespace XSharpColorizer
             var colorizer = new XSharpClassifier(buffer, registry, factory);
             hashtable.Add(buffer, colorizer);
             return colorizer;
+        }
+
+        static internal XSharpClassifier GetColorizer(ITextBuffer buffer )
+        {
+            if (hashtable != null)
+            {
+                if (hashtable.ContainsKey(buffer))
+                    return hashtable[buffer];
+            }
+            return null;
         }
 
         #region IDisposable Support

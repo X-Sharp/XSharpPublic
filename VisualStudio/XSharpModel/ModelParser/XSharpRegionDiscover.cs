@@ -17,27 +17,23 @@ using System.Threading.Tasks;
 using LanguageService.SyntaxTree.Tree;
 using Microsoft.VisualStudio.Text;
 
-namespace XSharpColorizer
+namespace XSharpModel
 {
-    class XSharpTreeDiscover : XSharpBaseListener
+    partial class XSharpModelRegionDiscover : XSharpBaseListener
     {
-        internal List<ClassificationSpan> tags;
+        internal List<ClassificationSpan> tags = new List<ClassificationSpan>();
         public ITextSnapshot Snapshot { get; set; }
+        public bool BuildRegionTags { get; internal set; }
+        public bool BuildModel { get; internal set; }
+
         internal IClassificationType xsharpIdentifierType;
         internal IClassificationType xsharpBraceOpenType;
         internal IClassificationType xsharpBraceCloseType;
         internal IClassificationType xsharpRegionStartType;
         internal IClassificationType xsharpRegionStopType;
 
-        public XSharpTreeDiscover()
+        public void RegionExitEveryRule([NotNull] ParserRuleContext context)
         {
-            tags = new List<ClassificationSpan>();
-        }
-
-
-        public override void ExitEveryRule([NotNull] ParserRuleContext context)
-        {
-            base.ExitEveryRule(context);
             if ((context is XSharpParser.Namespace_Context) ||
                 (context is XSharpParser.Class_Context) ||
                 (context is XSharpParser.PropertyContext) ||
@@ -46,7 +42,7 @@ namespace XSharpColorizer
                 // already done
                 // BEGIN         NAMESPACE .... END NAMESPACE 
                 //
-                TagRegion(context, context.ChildCount - 2 );
+                TagRegion(context, context.ChildCount - 2);
             }
             else if ((context is XSharpParser.FunctionContext) ||
                     (context is XSharpParser.ProcedureContext) ||
@@ -57,9 +53,9 @@ namespace XSharpColorizer
                 // Put a region up to the end of the Entity
                 TagRegion(context, context.ChildCount - 1);
             }
-			else if (context is XSharpParser.IdentifierContext)
-			{
-				LanguageService.SyntaxTree.IToken sym = context.Start;
+            else if (context is XSharpParser.IdentifierContext)
+            {
+                LanguageService.SyntaxTree.IToken sym = context.Start;
                 // Add tag for Keyword that is used as Identifier
                 if (XSharpLexer.IsKeyword(sym.Type))
                 {
@@ -78,7 +74,7 @@ namespace XSharpColorizer
                 LanguageService.SyntaxTree.IToken sym = ((LanguageService.SyntaxTree.Tree.TerminalNodeImpl)endToken).Symbol;
                 var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
-                tokenSpan = new TextSpan( sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
             }
             else if (endToken is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext)

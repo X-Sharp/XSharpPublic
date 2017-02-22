@@ -29,23 +29,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal abstract class PPRuleToken
     {
+        #region Fields
         protected PPToken _token;
         protected PPTokenType _type;
-        internal string Key { get { return _token.Text; } }
+        protected string _key;
+        #endregion
+        #region Properties
+        internal string Key { get { return _key; } }
         internal PPToken Token { get { return _token; } }
         internal int Index { get; set; }
-
-        internal bool IsOptional()
-        {
-            return _type.IsOptional();
-        }
-        internal bool Matched { get { return _type.IsMatched(); } set { _type |= PPTokenType.Matched; } }
-        internal bool IsMarker { get { return (_type & PPTokenType.TypeMask) != PPTokenType.Token; } }
+        internal bool IsMarker { get { return (PPTokenType)((int)_type & 0x0F) != PPTokenType.Token; } }
+        internal bool IsOptional { get { return _type.IsOptional(); } }
+        internal bool IsRepeat { get; set; }
         internal PPTokenType RuleTokenType { get { return _type.GetTokenType(); } set { _type = value; } }
-        internal string GetDebuggerDisplay()
-        {
-            return _type.GetTokenType().ToString() + " " + SyntaxText;
-        }
 
         internal string SyntaxText
         {
@@ -84,11 +80,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
+
+        #endregion
+        internal string GetDebuggerDisplay()
+        {
+            return _type.GetTokenType().ToString() + " " + SyntaxText;
+        }
+
         internal PPRuleToken(PPToken token, PPTokenType type)
         {
             _token = token;
+            _key = token.Text;
             _type = type;
             Index = -1;
+            IsRepeat = false;
         }
     }
 
@@ -100,19 +105,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
     internal class PPMatchToken : PPRuleToken
     {
-        internal bool HasChildren { get { return _children?.Length > 0; } }
-        protected PPToken[] _children = null;
-        // Restricted and Optional Markers may have more than one token
+        #region Properties
+       // Restricted and Optional Markers may have more than one token
         // For restricted tokens this contains the list of possible match values
-        internal PPToken[] Children { get { return _children; } set { _children = value; } }
+        // For List and Repeated match markers the Tokens list contains the list of 
+        // tokens that may the end of the list
+        internal PPToken[] Tokens { get; set; }
         // For optional tokens this contains the list of tokens inside the option block
-        internal PPMatchToken[] _elements = null;
-        internal PPMatchToken[] Elements { get { return _elements; } set { _elements = value; } }
+        internal PPMatchToken[] Children { get; set; }
+       #endregion
         internal PPMatchToken(PPToken token, PPTokenType type) : base(token, type)
         {
-
+            Children = null;
         }
-
+        internal PPMatchToken(PPToken token, PPTokenType type, string key) : this(token, type)
+        {
+            _key = key;
+        }
     }
 
     /// <summary>
@@ -123,15 +132,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     /// </summary>
     internal class PPResultToken : PPRuleToken
     {
-        internal PPMatchToken MatchMarker;
-        internal PPResultToken(PPToken token, PPTokenType type, bool nested) : base(token, type)
+        #region Properties
+        internal PPMatchToken MatchMarker { get; set; }
+        internal PPResultToken[] OptionalElements { get; set; }
+        #endregion
+        internal PPResultToken(PPToken token, PPTokenType type) : base(token, type)
         {
-            if (nested)
-            {
-                type |= PPTokenType.Nested;
-            }
             MatchMarker = null;
         }
+        internal PPResultToken(PPToken token, PPTokenType type, string key) : this(token, type)
+        {
+            _key = key;
+        }
+
     }
 
 }

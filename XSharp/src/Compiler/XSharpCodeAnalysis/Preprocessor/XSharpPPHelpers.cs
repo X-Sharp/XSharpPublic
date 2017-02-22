@@ -32,7 +32,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XCommand = 4,                // #xcommand
         XTranslate = 5,              // #xtranslate
     }
-    [Flags]
     enum PPTokenType : byte
     {
         None = 0,                          //                      0000 0000
@@ -43,28 +42,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         MatchRestricted = 4,               // <idMarker:word list> 0000 0100
         MatchWild = 5,                     // <*idMarker*>         0000 0101
         MatchExtended = 6,                 // <(idMarker)>         0000 0110
-        // unused 7                                                0000 0111
+        MatchOptional = 7,                 // [......]             0000 0111
 
-        //ResultMask = 8,                                          0000 1000    
         ResultRegular = 9,                 // <idMarker>           0000 1001
         ResultDumbStringify = 10,          // #<idMarker>          0000 1010
         ResultNormalStringify = 11,        // <"idMarker">         0000 1011
         ResultSmartStringify = 12,         // <(idMarker)>         0000 1100
         ResultBlockify = 13,               // <{idMarker}>         0000 1101
         ResultLogify = 14,                 // <.idMarker.>         0000 1110
-        // TypeMask = 0x0F,                //                      0000 1111
-        
-        //
-        //Overlay flags
-        // 
-        Repeated = 16,                      // 0001 0000
-        Optional = 32,                      // 0010 0000
-        Nested = 64,                        // 0100 0000
-        Matched = 128,                      // 1000 0000    used for result tokens to mark that they have a match
-        // Masks to filter out the bits
-        ResultMask = 8,                      // 0000 1000    // Result markers have bit 4 set
-        TypeMask = 0x0F,                     // 0000 1111
-        OverlayMask = 0xF0,                  // 1111 0000
+        ResultOptional = 15,               // [....]               0000 1111
+
     }
     internal class PPErrorMessages : List<PPErrorMessage>
     {
@@ -168,14 +155,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     /// _start = 0 : Empty
     /// _start = -1: Missing optional token
     /// _start = -2: Token
+    /// It may also hold a list of MatchRanges, which is the case for List markers
+    /// or Repeated markers
     /// </summary>
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal struct PPMatchRange
     {
+        #region Fields
         private int _length;
         private int _start;
         private bool token;
+        private IList<PPMatchRange> _children ;
+        #endregion
+        #region Properties
+        internal bool IsList { get { return _children != null; } }
         internal int Start { get { return _start; } }
+        internal int Length { get { return _length; } }
         internal int End
         {
             get
@@ -183,26 +178,52 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return _start + _length - 1;
             }
         }
+        internal IList<PPMatchRange> Children { get { return _children; } }
+
+        internal bool Empty
+        {
+            get { return !token  && _length == 0; }
+        }
+        internal bool IsToken
+        {
+            get { return token; }
+        }
+
+
+        #endregion
+        #region Constructors
         internal static PPMatchRange Create( int start, int end)
         {
-            return new PPMatchRange() { _start = start, _length = end - start +1};
+            return new PPMatchRange() { _start = start, _length = end - start +1, _children = null};
         }
-        internal bool Empty()
+        internal static PPMatchRange Create(IList<PPMatchRange> children)
         {
-            return ! token && _start == 0 && _length == 0 ;
-        }
-        internal bool IsToken()
-        {
-            return token;
+            int count = 0;
+            if (children != null)
+            {
+                count = children.Count;
+            }
+            switch (count)
+            {
+                case 0:
+                    return new PPMatchRange();
+                case 1:
+                    return Create(children[0].Start, children[0].End);
+                    
+            }
+            int start = children[0].Start;
+            int end = children[count - 1].End;
+            return new PPMatchRange() { _start = start, _length = end - start + 1, _children = children, token = false };
         }
         internal static PPMatchRange Optional()
         {
-            return new PPMatchRange() { _start = -1, _length = 0};
+            return new PPMatchRange() { _start = -1, _length = 0, token = false, _children = null };
         }
         internal static PPMatchRange Token(int pos)
         {
-            return new PPMatchRange() { _start = pos, _length = 1, token = true };
+            return new PPMatchRange() { _start = pos, _length = 1, token = true, _children = null };
         }
+        #endregion
         internal string GetDebuggerDisplay()
         {
             if (token)
@@ -211,9 +232,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 return "Empty";
             if (_start == -1 && _length == 0 )
                 return "Skipped Optional marker";
+            if (_children != null)
+                return $"List ({Children.Count}) {Start},{End}";
             else
-                return _start.ToString() + "," + End.ToString();
-
+                return $"{Start},{End}"; 
         }
     }
 

@@ -95,30 +95,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal static bool IsOptional(this PPTokenType type)
         {
-            return type.HasFlag(PPTokenType.Optional);
-        }
-        internal static bool IsNested(this PPTokenType type)
-        {
-            return type.HasFlag(PPTokenType.Nested);
-        }
-
-        internal static bool IsMatched(this PPTokenType type)
-        {
-            return type.HasFlag(PPTokenType.Matched);
-        }
-        internal static bool IsResultMarker(this PPTokenType type)
-        {
-            return type.HasFlag(PPTokenType.ResultMask);
-        }
-        internal static bool IsMatchMarker(this PPTokenType type)
-        {
-            type = type.GetTokenType();
-            return type != PPTokenType.Token && !type.HasFlag(PPTokenType.ResultMask); 
+            return type == PPTokenType.MatchOptional || type == PPTokenType.ResultOptional;
         }
 
         internal static PPTokenType GetTokenType(this PPTokenType type)
         {
-            return (PPTokenType)( type & PPTokenType.TypeMask);
+            return (PPTokenType)( (int) type & 0x0F);
         }
 
         internal static bool CanStartExpression(this IToken token)
@@ -211,6 +193,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     return true;
                 case XSharpLexer.COLON:
                 case XSharpLexer.DOT:
+                case XSharpLexer.ALIAS:
                     return true;
             }
             return false;

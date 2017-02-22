@@ -715,8 +715,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal bool matchListToken(PPMatchToken mToken, IList<PPToken> tokens, ref int iSource, PPMatchRange[] matchInfo )
         {
-            // This should match a comma separated list of expressions
+            // This should match a list of expressions
             // until one of the tokens in mToken.Tokens is found
+            // comma's are NOT required
+            // See for example Std.ch from Clipper:
+            /*
+             * #command @ <row>, <col> SAY <sayxpr>                                    ;
+                        [<sayClauses,...>]                              ;
+                        GET <var>                                       ;
+                        [<getClauses,...>]                              ;
+                      => @ <row>, <col> SAY <sayxpr> [<sayClauses>]                     ;
+                       ; @ Row(), Col()+1 GET <var> [<getClauses>]
+
+
+             */
             if (mToken.RuleTokenType != PPTokenType.MatchList)
                 return false;
             var stopTokens = mToken.Tokens;
@@ -736,20 +748,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 // after matchExpresssion iSource points to the next token after the expression
                 int iEnd = matchExpression(iSource, tokens, null);
-                matches.Add(PPMatchRange.Create(iSource, iEnd-1));
-                iSource = iEnd;
-                if (iSource < tokens.Count)
+                if (iEnd != iSource)
                 {
-                    var next = tokens[iSource];
-                    if (next.Type == XSharpLexer.COMMA)
-                    {
-                        iSource++;
-                        // and continue to scan further
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    matches.Add(PPMatchRange.Create(iSource, iEnd - 1));
+                    iSource = iEnd;
+                }
+                // IsOperator included comma, ellipses etc.
+                else if (XSharpLexer.IsOperator(token.Type))    
+                {
+                    matches.Add(PPMatchRange.Create(iSource, iSource));
+                    iSource += 1;
+                }
+                else
+                {
+                    return false;
                 }
             }
             matchInfo[mToken.Index] = PPMatchRange.Create(matches);
@@ -1002,14 +1014,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return;
         }
 
-        void regularSingleResult(PPResultToken rule, IList<PPToken> tokens, PPMatchRange range, IList<PPToken> result)
-        {
-            for (int i = range.Start; i <= range.End; i++)
-            {
-                var token = tokens[i];
-                result.Add(token);
-            }
-        }
 
         void regularResult(PPResultToken rule, IList<PPToken> tokens, PPMatchRange[] matchInfo, IList<PPToken> result)
         {
@@ -1020,21 +1024,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var range = matchInfo[rule.MatchMarker.Index];
             if (!range.Empty )
             {
-                if (rule.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
+                // No special handling for List markers. Everything is copied including commas etc.
+                for (int i = range.Start; i <= range.End; i++)
                 {
-                    bool first = true;
-                    foreach (var element in range.Children)
-                    {
-                        if (!first)
-                            result.Add(new PPToken(XSharpLexer.COMMA, ","));
-                        regularSingleResult(rule, tokens, element, result);
-                        first = false;
-
-                    }
-                }
-                else
-                {
-                    regularSingleResult(rule, tokens, range, result);
+                    var token = tokens[i];
+                    result.Add(token);
                 }
             }
             return;
@@ -1047,6 +1041,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             bool addBlockMarker = true;
             PPToken nt;
             PPToken t;
+            if (range.Length == 1)
+            {
+                // for comma's and other separators
+                if (XSharpLexer.IsOperator(tokens[start].Type))
+                {
+                    result.Add(tokens[start]);
+                    return;
+                }
+            }
             if (range.Length> 4)
             {
                 if (tokens[start].Type == XSharpLexer.LCURLY &&
@@ -1090,14 +1093,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (rule.MatchMarker.RuleTokenType == PPTokenType.MatchList && range.IsList)
                 {
-                    bool first = true;
                     foreach (var element in range.Children)
                     {
-                        if (!first)
-                            result.Add(new PPToken(XSharpLexer.COMMA, ","));
                         blockifySingleResult(rule, tokens, element, result);
-                        first = false;
-                        
                     }
                 }
                 else
@@ -1111,6 +1109,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         void stringifySingleResult(PPResultToken rule, IList<PPToken> tokens, PPMatchRange range, IList<PPToken> result)
         {
             PPToken newToken;
+            var start = range.Start;
+            var end = range.End;
+            if (range.Length == 1)
+            {
+                // for comma's and other separators
+                if (XSharpLexer.IsOperator(tokens[start].Type))
+                {
+                    result.Add(tokens[start]);
+                    return;
+                }
+            }
             switch (rule.RuleTokenType)
             {
                 // Handle 3 kind of stringifies:
@@ -1123,8 +1132,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // change type of token to STRING_CONST;
                     if (!range.Empty )
                     {
-                        var start = range.Start;
-                        var end = range.End;
                         var startindex = tokens[start].StartIndex;
                         var endindex = tokens[end].StopIndex;
                         var interval = new Interval(startindex, endindex);
@@ -1142,8 +1149,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Delimit the input with string delimiters
                     if (!range.Empty )
                     {
-                        var start = range.Start;
-                        var end = range.End;
                         var startindex = tokens[start].StartIndex;
                         var endindex = tokens[end].StopIndex;
                         var interval = new Interval(startindex, endindex);
@@ -1164,7 +1169,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     bool addStringDelimiters = true;
                     if (!range.Empty )
                     {
-                        for (int i = range.Start; i <= range.End; i++)
+                        for (int i = start; i <= end; i++)
                         {
                             var token = tokens[i];
                             switch (token.Type)

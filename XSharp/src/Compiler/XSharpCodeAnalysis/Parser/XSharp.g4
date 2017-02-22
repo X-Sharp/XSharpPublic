@@ -22,34 +22,10 @@ grammar XSharp;
 // Known issues:
 // - preprocessor , #region, #using etc
 
-@parser::members
-{
-    bool _ClsFunc = true;
-    public bool AllowFunctionInsideClass
-    {
-        get {return _ClsFunc;}
-        set {_ClsFunc = value;}
-    }
-    bool _xBaseVars = false;
-    public bool AllowXBaseVariables
-    {
-        get {return _xBaseVars;}
-        set {_xBaseVars = value;}
-    }
-    bool _namedArgs = false;
-	public bool AllowNamedArgs
-    {
-        get {return _namedArgs;}
-        set {_namedArgs = value;}
-    }
-}
-
-
 options	{
         language=CSharp;
         tokenVocab=XSharpLexer;
         }
-
 
 source				: (Entities+=entity)* EOF
                     ;

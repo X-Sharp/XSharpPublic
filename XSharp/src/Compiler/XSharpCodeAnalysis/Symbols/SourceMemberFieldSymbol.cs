@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 type = binder.BindType(typeSyntax, diagnostics);
                 // no datatype specified and parser could not determine the type
                 var vodef = xNode as XP.VodefineContext;
-                if (type.SpecialType == SpecialType.System_Object && vodef.DataType == null)
+                //if (type.SpecialType == SpecialType.System_Object && vodef.DataType == null)
                 {
                     fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
                     var declarator = VariableDeclaratorNode;
@@ -76,6 +76,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                                 this._modifiers |= DeclarationModifiers.Const;
                                 this._modifiers |= DeclarationModifiers.Static;
                                 this._modifiers &= ~DeclarationModifiers.ReadOnly;
+                            }
+                            if (type.IsEnumType())
+                            {
+                                type = type.GetEnumUnderlyingType();
                             }
                         }
                     }

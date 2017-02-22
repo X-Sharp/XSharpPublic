@@ -70,14 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
 
     }
-    internal class PPToken : CommonToken
-    {
-        internal PPToken(IToken t, int type, string text) : base(t)
-        {
-            Type = type;
-            Text = text;
-        }
-    }
+  
     internal class PPErrorMessage
     {
         IToken _token;          // location to link error to
@@ -143,7 +136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
-        internal PPRule FindMatchingRule(IList<IToken> tokens, out PPMatchRange[] matchInfo)
+        internal PPRule FindMatchingRule(IList<PPToken> tokens, out PPMatchRange[] matchInfo)
         {
             PPRule result = null;
             matchInfo = null;
@@ -181,37 +174,49 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         private int _length;
         private int _start;
+        private bool token;
         internal int Start { get { return _start; } }
-        internal int End { get { return _start + _length -1; } }
+        internal int End
+        {
+            get
+            {
+                return _start + _length - 1;
+            }
+        }
         internal static PPMatchRange Create( int start, int end)
         {
             return new PPMatchRange() { _start = start, _length = end - start +1};
         }
         internal bool Empty()
         {
-            return _start == 0 && _length == 0;
+            return ! token && _start == 0 && _length == 0 ;
+        }
+        internal bool IsToken()
+        {
+            return token;
         }
         internal static PPMatchRange Optional()
         {
             return new PPMatchRange() { _start = -1, _length = 0};
         }
-        internal static PPMatchRange Token()
+        internal static PPMatchRange Token(int pos)
         {
-            return new PPMatchRange() { _start = -2, _length = 0 };
+            return new PPMatchRange() { _start = pos, _length = 1, token = true };
         }
         internal string GetDebuggerDisplay()
         {
+            if (token)
+                return $"Token ({Start})";
             if (_start == 0 && _length == 0)
                 return "Empty";
-            if (_start == -1 )
+            if (_start == -1 && _length == 0 )
                 return "Skipped Optional marker";
-            if (_start == -2 )
-                return "Token";
             else
                 return _start.ToString() + "," + End.ToString();
 
         }
     }
+
 
 }
 

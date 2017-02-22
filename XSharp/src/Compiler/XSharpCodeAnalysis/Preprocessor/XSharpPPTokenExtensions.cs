@@ -25,44 +25,59 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal static class PPTokenExtensions
     {
-        internal static string AsString(this IList<IToken> tokens)
+        internal static string TrailingWs(this IToken token)
+        {
+            var source = token.TokenSource.InputStream as ICharStream;
+            var index = token.StopIndex+1;
+            var result = "";
+            while (index < source.Size)
+            {
+                var interval = new Interval(index, index);
+                var follow = source.GetText(interval);
+                if (follow[0] == ' ' || follow[0] == '\t')
+                {
+                    result += follow;
+                }
+                else
+                {
+                    break;
+                }
+                index += 1;
+            }
+            return result;
+        }
+
+        internal static string AsString(this IList<PPToken> tokens)
         {
             string result = "";
             if (tokens != null)
             {
-                int start = -1;
-                int end = -1;
-                IToken token = null;
                 foreach (var t in tokens)
                 {
-                    if (start == -1)
-                        start = t.StartIndex;
-                    end = t.StopIndex;
-                    token = t;
-                }
-                if (token != null)
-                {
-                    var interval = new Interval(start, end);
-                    if (token?.TokenSource?.InputStream != null)
-                        result = token.TokenSource.InputStream.GetText(interval);
+                    result = result + t.Text + t.TrailingWs();
                 }
 
             }
             return result;
         }
-        internal static IList<IToken> Clone(this IList<IToken> tokens)
+        internal static IList<IToken> ToIListIToken(this IList<PPToken> tokens)
         {
             var clone = new IToken[tokens.Count];
             int i = 0;
             foreach (var t in tokens)
             {
-                clone[i] = new CommonToken(t);
+                clone[i] = new PPToken(t);
                 i++;
             }
             return clone;
         }
-
-        internal static bool IsNameToken(this IToken token)
+        internal static PPToken[] ToArrayPPToken(this IList<IToken> tokens)
+        {
+            var clone = new PPToken[tokens.Count];
+            tokens.CopyTo(clone, 0);
+            return clone;
+        }
+        internal static bool IsName(this IToken token)
         {
             return token != null && (token.Type == XSharpLexer.ID || XSharpLexer.IsKeyword(token.Type));
         }
@@ -120,7 +135,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (token == null)
                 return false;
-            if (token.IsNameToken())
+            if (token.IsName())
                 return true;
             if (token.IsLiteral())
                 return true;
@@ -149,6 +164,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.ASSIGN_XOR:
                     return true;
                 case XSharpLexer.COLON:
+                case XSharpLexer.DOT:
                     return true;
             }
             if (token.IsPrefix())
@@ -192,6 +208,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpLexer.LOGIC_XOR:
                 case XSharpLexer.LOGIC_OR:
                 case XSharpLexer.OR:
+                    return true;
+                case XSharpLexer.COLON:
+                case XSharpLexer.DOT:
                     return true;
             }
             return false;
@@ -263,7 +282,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal static bool IsPrimary(this IToken token)
         {
-            if (token.IsNameToken())
+            if (token.IsName())
                 return true;
             if (token.IsLiteral())
                 return true;
@@ -273,7 +292,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (token == null )
             {
-                return nextToken.IsNameToken() || nextToken.IsLiteral() || nextToken.IsPrefix() ;
+                return nextToken.IsName() || nextToken.IsLiteral() || nextToken.IsPrefix() ;
             }
             if (token.IsPrefix() || token.IsBinary())
                 return (nextToken.IsPrimary());

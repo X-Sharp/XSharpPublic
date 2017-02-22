@@ -29,10 +29,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
     internal abstract class PPRuleToken
     {
-        protected IToken _token;
+        protected PPToken _token;
         protected PPTokenType _type;
         internal string Key { get { return _token.Text; } }
-        internal IToken Token { get { return _token; } }
+        internal PPToken Token { get { return _token; } }
+        internal int Index { get; set; }
 
         internal bool IsOptional()
         {
@@ -43,7 +44,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal PPTokenType RuleTokenType { get { return _type.GetTokenType(); } set { _type = value; } }
         internal string GetDebuggerDisplay()
         {
-            return _type.GetTokenType().ToString() + " " + SyntaxText ;
+            return _type.GetTokenType().ToString() + " " + SyntaxText;
         }
 
         internal string SyntaxText
@@ -83,10 +84,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
         }
 
-        internal PPRuleToken(IToken token, PPTokenType type)
+        internal PPRuleToken(PPToken token, PPTokenType type)
         {
             _token = token;
             _type = type;
+            Index = -1;
         }
     }
 
@@ -99,14 +101,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal class PPMatchToken : PPRuleToken
     {
         internal bool HasChildren { get { return _children?.Length > 0; } }
-        protected IToken[] _children = null;
+        protected PPToken[] _children = null;
         // Restricted and Optional Markers may have more than one token
         // For restricted tokens this contains the list of possible match values
-        internal IToken[] Children { get { return _children; } set { _children = value; } }
+        internal PPToken[] Children { get { return _children; } set { _children = value; } }
         // For optional tokens this contains the list of tokens inside the option block
         internal PPMatchToken[] _elements = null;
         internal PPMatchToken[] Elements { get { return _elements; } set { _elements = value; } }
-        internal PPMatchToken(IToken token, PPTokenType type) : base(token, type)
+        internal PPMatchToken(PPToken token, PPTokenType type) : base(token, type)
         {
 
         }
@@ -121,15 +123,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     /// </summary>
     internal class PPResultToken : PPRuleToken
     {
-        internal PPMatchToken MatchToken;
-        internal PPResultToken(IToken token, PPTokenType type, bool nested) : base(token, type)
+        internal PPMatchToken MatchMarker;
+        internal PPResultToken(PPToken token, PPTokenType type, bool nested) : base(token, type)
         {
             if (nested)
             {
                 type |= PPTokenType.Nested;
             }
+            MatchMarker = null;
         }
-
     }
 
 }

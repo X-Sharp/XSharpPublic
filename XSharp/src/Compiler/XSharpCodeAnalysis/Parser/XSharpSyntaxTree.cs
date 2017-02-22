@@ -31,7 +31,7 @@ using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
-
+using Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax;
 namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 {
     public partial class XSharpParser
@@ -60,7 +60,11 @@ namespace Antlr4.Runtime {
             }
             internal ParseErrorData(IToken token, ErrorCode code, params object[] args) {
                 if (token == null)
-                    token = new CommonToken(0, "");
+                    token = new PPToken(0, "");
+                else if (!(token is PPToken))
+                {
+                    token = new PPToken(token);
+                }
                 this.Node = new TerminalNodeImpl(token);
                 this.Code = code;
                 this.Args = args;
@@ -93,7 +97,7 @@ namespace Antlr4.Runtime {
             {
                 get
                 {
-                    var ct = (Symbol as CommonToken);
+                    var ct = (Symbol as PPToken);
                     if (ct != null)
                     {
                         if (ct.TokenSource != null && !String.IsNullOrEmpty(ct.TokenSource.SourceName))
@@ -103,18 +107,14 @@ namespace Antlr4.Runtime {
                     return "<unknown>";
                 }
             }
-            public string MappedFileName { get { return (Symbol as CommonToken).MappedFileName; } }
-            public int MappedLine { get { return (Symbol as CommonToken).MappedLine; } }
-            public IToken SourceSymbol { get { return (Symbol as CommonToken).SourceSymbol; } }
+            public string MappedFileName { get { return ((PPToken)Symbol).MappedFileName; } }
+            public int MappedLine { get { return ((PPToken)Symbol).MappedLine; } }
+            public IToken SourceSymbol { get { return ((PPToken)Symbol).SourceSymbol; } }
             public override string ToString() { return this.GetText(); }
         }
     }
 
-    public partial class Lexer {
-        protected Tuple<ITokenSource, ICharStream> TokenFactorySourcePair { get { return _tokenFactorySourcePair; } }
-    }
-
-    public partial class RuleContext {
+     public partial class RuleContext {
         public object CsNode { get; set; }
         public virtual int Position { get; }
         public virtual bool IsHidden { get { return false; } }
@@ -176,10 +176,10 @@ namespace Antlr4.Runtime {
 
             }
         }
-        public override string SourceFileName { get { return (Start as CommonToken).SourceFileName; } }
-        public override string MappedFileName { get { return (Start as CommonToken).MappedFileName; } }
-        public override int MappedLine { get { return (Start as CommonToken).MappedLine; } }
-        public override IToken SourceSymbol { get { return (Start as CommonToken).SourceSymbol; } }
+        public override string SourceFileName { get { return (Start as PPToken).SourceFileName; } }
+        public override string MappedFileName { get { return (Start as PPToken).MappedFileName; } }
+        public override int MappedLine { get { return (Start as PPToken).MappedLine; } }
+        public override IToken SourceSymbol { get { return (Start as PPToken).SourceSymbol; } }
         public override string ToString() {
             /*return this.GetText();*/
             var s = this.GetType().ToString();
@@ -244,13 +244,6 @@ namespace Antlr4.Runtime {
                 return name;
             }
         }
-    }
-
-    public partial class CommonToken : Microsoft.CodeAnalysis.IMessageSerializable {
-        internal string SourceFileName;
-        internal string MappedFileName;
-        internal int MappedLine = -1;
-        internal IToken SourceSymbol;
     }
 
     internal static class RuleExtensions {

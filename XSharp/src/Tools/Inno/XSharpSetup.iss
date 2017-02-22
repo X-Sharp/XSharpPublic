@@ -1,25 +1,25 @@
 #define Compression     "lzma2/ultra64"
 ;#define Compression     "none"
 
-;#define FOX
+#define FOX
 #ifdef FOX
-#define SetupExeName    "XSharpSetup029Foxb"
+#define SetupExeName    "XSharpSetup0210Fox"
 #else
-#define SetupExeName    "XSharpSetup029Public"
+#define SetupExeName    "XSharpSetup0210Public"
 #endif
 
 
 #define Product         "XSharp"
-#define ProdVer         "XSharp 0.2.9.0"
-#define ProdBuild       "XSharp Beta 9"
+#define ProdVer         "XSharp 0.2.10.0"
+#define ProdBuild       "XSharp Beta 10"
 #define Company         "XSharp BV"
 #define RegCompany      "XSharpBV"
 #define XSharpURL       "http://www.xsharp.info"
-#define CopyRight       "Copyright © 2015-2018 XSharp B.V."
-#define VIVersion       "0.2.9.2902"
-#define VITextVersion   "0.2.9.2902 (Beta 9)"                                                                                            
-#define TouchDate       "2017-01-30"
-#define TouchTime       "02:09:02"
+#define CopyRight       "Copyright © 2015-2017 XSharp B.V."
+#define VIVersion       "0.2.10.2100"
+#define VITextVersion   "0.2.10.2100 (Beta 10)"                                                                                            
+#define TouchDate       "2017-02-14"
+#define TouchTime       "02:10:01"
 #define InstallPath     "XSharpPath"
 
 
@@ -51,6 +51,8 @@
 #define VS15RegPath      "Software\Microsoft\VisualStudio\15.0"
 #define VS14LocalDir     "{localappdata}\Microsoft\VisualStudio\14.0"
 #define VS15LocalDir     "{localappdata}\Microsoft\VisualStudio\15.0"
+#define SnippetsPath     "\Snippets\1033"
+#define SnippetsSource   "\XSharp\DevPublic\VisualStudio\ProjectPackage\Snippets"
 
 #define HelpInstall1  "/operation install /catalogname "
 #define HelpInstall2  "/locale en-us /sourceuri """"{app}\help\XSharp.msha"""" /wait 0"
@@ -150,9 +152,11 @@ Name: "{app}\Tools";
 Name: "{app}\Uninst";
 Name: "{app}\Xide";
 Name: "{code:GetVs2015IdeDir}\Extensions\XSharp";                              Components: vs2015; 
+Name: "{code:GetVs2015IdeDir}\Extensions\XSharp\{# SnippetsPath}";             Components: vs2015; 
 Name: "{userdocs}\Visual Studio 2015\Code Snippets\XSharp\My Code Snippets";   Components: vs2015; 
 Name: "{code:Getvs2017IdeDir}\Extensions\XSharp";                              Components: vs2017; 
-Name: "{userdocs}\Visual Studio 2017\Code Snippets\XSharp\My Code Snippets";     Components: vs2017; 
+Name: "{code:GetVs2017IdeDir}\Extensions\XSharp\{# SnippetsPath}";             Components: vs2017; 
+Name: "{userdocs}\Visual Studio 2017\Code Snippets\XSharp\My Code Snippets";   Components: vs2017; 
 ; user template folders
 Name: "{userdocs}\Visual Studio 2015\Templates\ProjectTemplates\XSharp";   Components: vs2015; 
 Name: "{userdocs}\Visual Studio 2015\Templates\ItemTemplates\XSharp";   Components: vs2015; 
@@ -285,6 +289,9 @@ Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:GetVs2
 Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ItemTemplates\Resources";     Flags: recursesubdirs {#StdFlags}; Components: vs2015
 
 Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
+; Snippets
+Source: "{#SnippetsSource}\*.*";                          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp\{# SnippetsPath}";  Flags: recursesubdirs {#StdFlags}; Components: vs2015
+
 
 Source: "{#BinPFolder}XSharpProject.dll";                 DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
 Source: "{#BinPFolder}XSharpProject.dll.config";          DestDir: "{code:GetVs2015IdeDir}\Extensions\XSharp"; Flags: {#StdFlags}; Components: vs2015
@@ -330,6 +337,9 @@ Source: "{#BinPFolder}Itemtemplates\T*.Zip";              DestDir: "{code:Getvs2
 Source: "{#BinPFolder}Itemtemplates\R*.Zip";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ItemTemplates\Resources";     Flags: recursesubdirs {#StdFlags}; Components: vs2017
 
 Source: "{#BinPFolder}ProjectTemplates\*.*";              DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp\ProjectTemplates";  Flags: recursesubdirs {#StdFlags}; Components: vs2017
+
+; Snippets
+Source: "{#SnippetsSource}\*.*";                          DestDir: "{code:GetVs2017IdeDir}\Extensions\XSharp\{# SnippetsPath}";  Flags: recursesubdirs {#StdFlags}; Components: vs2017
 
 Source: "{#BinPFolder}XSharpProject.dll";             DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2017
 Source: "{#BinPFolder}XSharpProject.dll.config";      DestDir: "{code:Getvs2017IdeDir}\Extensions\XSharp";  Flags: {#StdFlags}; Components: vs2017

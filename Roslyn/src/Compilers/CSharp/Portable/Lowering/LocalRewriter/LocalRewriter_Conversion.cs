@@ -171,7 +171,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case ConversionKind.Boxing:
 
 #if XSHARP
-                    conversionKind = UnBoxVOType(ref rewrittenOperand, conversionKind, rewrittenType);
+                    conversionKind = UnBoxXSharpType(ref rewrittenOperand, conversionKind, rewrittenType);
 #endif
                     if (!_inExpressionLambda)
                     {

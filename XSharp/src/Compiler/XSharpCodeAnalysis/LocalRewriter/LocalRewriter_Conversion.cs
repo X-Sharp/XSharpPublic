@@ -53,34 +53,37 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             return null;
         }
-        private ConversionKind UnBoxVOType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
+        private ConversionKind UnBoxXSharpType(ref BoundExpression rewrittenOperand, ConversionKind conversionKind, TypeSymbol rewrittenType)
         {
+            var nts = rewrittenOperand?.Type as NamedTypeSymbol;
+            if (nts == _compilation.GetSpecialType(SpecialType.System_String) &&
+                rewrittenType == _compilation.GetSpecialType(SpecialType.System_Char))
+            {
+                // Literal Char_consts are no longer there
+                // Convert literal string with length 1 to char_const when needed
+                if (rewrittenOperand is BoundLiteral)
+                {
+                    var bl = rewrittenOperand as BoundLiteral;
+                    if (bl.ConstantValue.StringValue.Length == 1)
+                    {
+                        var ch = bl.ConstantValue.StringValue[0];
+                        var constantvalue = ConstantValue.Create(ch);
+                        bl = new BoundLiteral(bl.Syntax, constantvalue, rewrittenType);
+                        rewrittenOperand = bl;
+                        return ConversionKind.Identity;
+                    }
+                }
+            }
+
             if (_compilation.Options.IsDialectVO)
             {
                 var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                 var floatType = _compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
-                var nts = rewrittenOperand.Type as NamedTypeSymbol;
                 if (nts != null)
                 {
                     nts = nts.ConstructedFrom;
                 }
                 // Convert single character literal strings to a character constant
-                if (nts == _compilation.GetSpecialType(SpecialType.System_String) &&
-                    rewrittenType == _compilation.GetSpecialType(SpecialType.System_Char))
-                {
-                    if (rewrittenOperand is BoundLiteral)
-                    {
-                        var bl = rewrittenOperand as BoundLiteral;
-                        if (bl.ConstantValue.StringValue.Length == 1)
-                        { 
-                            var ch = bl.ConstantValue.StringValue[0];
-                            var constantvalue = ConstantValue.Create(ch);
-                            bl = new BoundLiteral(bl.Syntax, constantvalue, rewrittenType);
-                            rewrittenOperand = bl;
-                            return ConversionKind.Identity;
-                        }
-                    }
-                }
                 if (nts == usualType)
                 {
                     if (rewrittenType.IsPointerType())

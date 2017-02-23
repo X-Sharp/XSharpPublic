@@ -4834,6 +4834,9 @@ To remove the warning, you can use /reference instead (set the Embed Interop Typ
   <data name="ERR_ImplicitlyTypedVariableCannotBeStatic" xml:space="preserve">
     <value>Implicitly-typed variables cannot be STATIC.</value>
   </data>
+  <data name="ERR_StaticLocalInCodeBlock" xml:space="preserve">
+    <value>Cannot use static local '{0}' in a codeblock.</value>
+  </data>
   
 
 </root>

@@ -8108,6 +8108,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot use static local &apos;{0}&apos; in a codeblock..
+        /// </summary>
+        internal static string ERR_StaticLocalInCodeBlock {
+            get {
+                return ResourceManager.GetString("ERR_StaticLocalInCodeBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Static field or property &apos;{0}&apos; cannot be assigned in an object initializer.
         /// </summary>
         internal static string ERR_StaticMemberInObjectInitializer {

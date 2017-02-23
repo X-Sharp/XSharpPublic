@@ -431,7 +431,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             String ShortName { get; }
         }
         [FlagsAttribute]
-        enum MethodFlags: byte {
+        enum MethodFlags: short {
             None = 0,
             ClipperCallingConvention = 1 << 0,
             MissingReturnType = 1 << 1,
@@ -440,7 +440,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             HasTypedParameter = 1 << 4,
             UsesPCount = 1 << 5,
             UsesGetMParam = 1 << 6,
-            MustBeVoid = 1 << 7
+            MustBeVoid = 1 << 7,
+            IsInitAxit = 1 << 8
         }
 
         public class EntityData {
@@ -482,6 +483,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             {
                 get { return flags.HasFlag(MethodFlags.MustBeVoid); }
                 set { if (value) flags |= MethodFlags.MustBeVoid; else flags &= ~MethodFlags.MustBeVoid; }
+            }
+            public bool IsInitAxit            // init or axit with /vo1
+            {
+                get { return flags.HasFlag(MethodFlags.IsInitAxit); }
+                set { if (value) flags |= MethodFlags.IsInitAxit; else flags &= ~MethodFlags.IsInitAxit; }
             }
 
             private List<MemVarFieldInfo> Fields;

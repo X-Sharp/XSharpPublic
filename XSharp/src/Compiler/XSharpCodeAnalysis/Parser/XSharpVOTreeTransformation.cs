@@ -1390,7 +1390,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 context.Data.HasTypedParameter = true;          // this will set all missing types to USUAL
             }
             else
+            {
                 Check4ClipperCC(context, context.ParamList, context.CallingConvention?.Convention, context.Type);
+                if (_options.VoInitAxitMethods && !context.isInInterface())
+                {
+                    var idName = context.Id.GetText();
+                    if (String.Equals(idName, "init", StringComparison.OrdinalIgnoreCase)
+                        || String.Equals(idName, "axit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        context.Data.MustBeVoid = true;
+                        context.Data.IsInitAxit = true;
+                    }
+                }
+
+            }
         }
 
 
@@ -1702,27 +1715,41 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 // We change that to
                 // VAR Xs$Return := SELF:Field
                 // RETURN
-                expr = expr.WithAdditionalDiagnostics(
-                                    new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
-                bool literal = false;
-                if (context.Expr is XP.PrimaryExpressionContext)
+                
+                if (ent.Data.IsInitAxit && context.Expr is XP.PrimaryExpressionContext && 
+                    ((XP.PrimaryExpressionContext) context.Expr).Expr is XP.SelfExpressionContext)
                 {
-                    var p = context.Expr as XP.PrimaryExpressionContext;
-                    if (p.Expr is XP.LiteralExpressionContext)
-                    {
-                        literal = true;
-                    }
-                }
-                if (! literal)
-                {
-                    var declstmt = GenerateLocalDecl(XSharpSpecialNames.ReturnName, _impliedType, expr);
-                    var retstmt = GenerateReturn(null);
-                    var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
-                    context.Put(block);
+                    // allow return SELF and ignore SELF
+                    expr = null;
+                    context.Put(GenerateReturn(null));
                 }
                 else
                 {
-                    context.Put(GenerateReturn(null));
+                    expr = expr.WithAdditionalDiagnostics(
+                                        new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
+                    bool literal = false;
+                    if (context.Expr is XP.PrimaryExpressionContext)
+                    {
+                        var p = context.Expr as XP.PrimaryExpressionContext;
+                        if (p.Expr is XP.LiteralExpressionContext)
+                        {
+                            literal = true;
+                        }
+                    }
+                    if (!literal)
+                    {
+                        var declstmt = GenerateLocalDecl(XSharpSpecialNames.ReturnName, _impliedType, expr);
+                        var retstmt = GenerateReturn(null);
+                        var block = MakeBlock(MakeList<StatementSyntax>(declstmt, retstmt));
+                        context.Put(block);
+                    }
+                    else
+                    {
+                        var stmt = GenerateReturn(null);
+                        stmt = stmt.WithAdditionalDiagnostics(
+                                       new SyntaxDiagnosticInfo(ErrorCode.WRN_NoReturnValueAllowed));
+                        context.Put(stmt);
+                    }
                 }
             }
             else
@@ -2241,48 +2268,58 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
-    private bool GenerateClipCallFunc(XP.MethodCallContext context, string name) {
-        ArgumentListSyntax argList;
-        ExpressionSyntax expr;
-        if(context.ArgList != null) {
-            argList = context.ArgList.Get<ArgumentListSyntax>();
-        } else {
-            argList = EmptyArgumentList();
-        }
-        if(name == "PCOUNT") {
-            expr = MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.ClipperArgs), GenerateSimpleName("Length"));
-            if (argList.Arguments.Count != 0) {
-                expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount,name, argList.Arguments.Count));
+        private bool GenerateClipCallFunc(XP.MethodCallContext context, string name)
+        {
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
             }
-            context.Put(expr);
-            CurrentEntity.Data.UsesPCount = true;
-            return true;
-        } else {
-            if(argList.Arguments.Count != 1) {
-                expr = GenerateNIL().WithAdditionalDiagnostics(
-                    new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+            else
+            {
+                argList = EmptyArgumentList();
+            }
+            if (name == "PCOUNT")
+            {
+                expr = MakeSimpleMemberAccess(GenerateSimpleName(XSharpSpecialNames.ClipperArgs), GenerateSimpleName("Length"));
+                if (argList.Arguments.Count != 0)
+                {
+                    expr = expr.WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+                }
+                context.Put(expr);
+                CurrentEntity.Data.UsesPCount = true;
+                return true;
+            }
+            else
+            {
+                if (argList.Arguments.Count != 1)
+                {
+                    expr = GenerateNIL().WithAdditionalDiagnostics(
+                        new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, argList.Arguments.Count));
+                    context.Put(expr);
+                    return true;
+                }
+
+                // _GETMPARAM or _GETFPARAM
+                CurrentEntity.Data.UsesGetMParam = true;
+                var indices = _pool.AllocateSeparated<ArgumentSyntax>();
+                indices.Add(MakeArgument(argList.Arguments[0].Expression));
+
+                expr = _syntaxFactory.ElementAccessExpression(
+                GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
+                _syntaxFactory.BracketedArgumentList(
+                    SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
+                    indices,
+                    SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
                 context.Put(expr);
                 return true;
             }
-
-            // _GETMPARAM or _GETFPARAM
-            CurrentEntity.Data.UsesGetMParam = true;
-            var indices = _pool.AllocateSeparated<ArgumentSyntax>();
-            indices.Add(MakeArgument(argList.Arguments[0].Expression));
-
-            expr = _syntaxFactory.ElementAccessExpression(
-            GenerateSimpleName(XSharpSpecialNames.ClipperArgs),
-            _syntaxFactory.BracketedArgumentList(
-                SyntaxFactory.MakeToken(SyntaxKind.OpenBracketToken),
-                indices,
-                SyntaxFactory.MakeToken(SyntaxKind.CloseBracketToken)));
-            context.Put(expr);
-            return true;
         }
-    }
+
         public override void ExitMethod([NotNull] XP.MethodContext context)
         {
-            if (_options.VoInitAxitMethods && !context.isInInterface())
+            if (context.Data.IsInitAxit)
             {
                 var idName = context.Id.GetText();
                 if (String.Equals(idName, "init", StringComparison.OrdinalIgnoreCase))

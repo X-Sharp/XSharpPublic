@@ -405,6 +405,6 @@ java -jar $(SolutionDir).\build\antlr-4.5.1-complete.jar -package LanguageServic
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).* d:\Xsharp\DevPublic\External\*.* /y</PostBuildEvent>
+    <PostBuildEvent>XCopy $(TargetDir)$(TargetName).* \Xsharp\DevPublic\External\$(Configuration)\*.* /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

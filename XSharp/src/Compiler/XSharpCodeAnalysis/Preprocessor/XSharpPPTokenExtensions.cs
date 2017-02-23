@@ -60,7 +60,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return result;
         }
-        internal static IList<IToken> ToIListIToken(this IList<PPToken> tokens)
+        internal static IList<IToken> ToIListIToken(this IList<PPToken> tokens) 
         {
             var clone = new IToken[tokens.Count];
             int i = 0;

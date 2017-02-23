@@ -367,6 +367,18 @@ namespace Microsoft.CodeAnalysis.CSharp
                     return Conversion.Boxing;
                 }
             }
+            if (source == Compilation.GetSpecialType(SpecialType.System_String))
+            {
+                if (destination == Compilation.GetSpecialType(SpecialType.System_Char))
+                {
+                    if (sourceExpression.ConstantValue != null && 
+                        sourceExpression.ConstantValue.StringValue.Length == 1)
+                    {
+                        // Not really boxed, but we handle this in LocalRewriter.UnBoxVOType
+                        return Conversion.Boxing;
+                    }
+                }
+            }
 
             if (Compilation.Options.LateBinding ||                 // lb
                 Compilation.Options.VOImplicitCastsAndConversions) // vo7

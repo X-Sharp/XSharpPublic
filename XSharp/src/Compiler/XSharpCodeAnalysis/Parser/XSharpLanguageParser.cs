@@ -170,16 +170,19 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 parser.AllowXBaseVariables = true;
                 parser.AllowNamedArgs = false;
+                parser.AllowGarbageAfterEnd = true;
             }
             else if (_options.Dialect == XSharpDialect.Vulcan)
             {
                 parser.AllowXBaseVariables = false;
                 parser.AllowNamedArgs = false;
+                parser.AllowGarbageAfterEnd = true;
             }
             else
             {                                      // memvar and private statements are not recognized in Vulcan
                 parser.AllowXBaseVariables = false;
                 parser.AllowNamedArgs = true;
+                parser.AllowGarbageAfterEnd = false;
             }
 #if DEBUG && DUMP_TIMES
            pp_tokens.Fill();

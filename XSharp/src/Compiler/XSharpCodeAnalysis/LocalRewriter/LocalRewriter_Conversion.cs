@@ -64,6 +64,23 @@ namespace Microsoft.CodeAnalysis.CSharp
                 {
                     nts = nts.ConstructedFrom;
                 }
+                // Convert single character literal strings to a character constant
+                if (nts == _compilation.GetSpecialType(SpecialType.System_String) &&
+                    rewrittenType == _compilation.GetSpecialType(SpecialType.System_Char))
+                {
+                    if (rewrittenOperand is BoundLiteral)
+                    {
+                        var bl = rewrittenOperand as BoundLiteral;
+                        if (bl.ConstantValue.StringValue.Length == 1)
+                        { 
+                            var ch = bl.ConstantValue.StringValue[0];
+                            var constantvalue = ConstantValue.Create(ch);
+                            bl = new BoundLiteral(bl.Syntax, constantvalue, rewrittenType);
+                            rewrittenOperand = bl;
+                            return ConversionKind.Identity;
+                        }
+                    }
+                }
                 if (nts == usualType)
                 {
                     if (rewrittenType.IsPointerType())

@@ -12,6 +12,7 @@ FUNCTION Start() AS VOID
     ? s:mlogic
 	xAssert(! s:mlogic)
 
+#error InvalidCastException here
 	s:mlogic := u // InvalidCastException here
     ? s:mlogic
 	xAssert(s:mlogic)

@@ -36205,7 +36205,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C367 - Cannot parse identifier#identifier (!=)
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C368 - cannot define DEFINE AS OBJECT/USUAL etc *************
 Application = C368 - cannot define DEFINE AS OBJECT/USUAL etc
 IDEVersion = 1.06
@@ -39281,7 +39281,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C396 - Problem with PSZ(ptr)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C397 - Strange issue with pointers and alias expressions *************
 Application = C397 - Strange issue with pointers and alias expressions
 IDEVersion = 1.06
@@ -42653,7 +42653,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C427 - Runtime problem accessing VOSTRUT LOGIC members with LOGIC PTR
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C428 - Problem declaring local/member AS Type *************
 Application = C428 - Problem declaring local/member AS Type
 IDEVersion = 1.06
@@ -42851,7 +42851,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C429 - compiler crash with STATIC LOCAL in CODEBLOCK
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C430 - Compiler crash with ASTYPE (is this the correct syntax?) *************
 Application = C430 - Compiler crash with ASTYPE (is this the correct syntax?)
 IDEVersion = 1.06
@@ -42950,7 +42950,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C430 - Compiler crash with ASTYPE (is this the correct syntax?)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C431 - Some problems with #command *************
 Application = C431 - Some problems with #command
 IDEVersion = 1.06
@@ -43047,7 +43047,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C431 - Some problems with #command
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C432 - END WHILE and NEXT x not allowed *************
 Application = C432 - END WHILE and NEXT x not allowed
 IDEVersion = 1.06
@@ -43146,9 +43146,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C432 - END WHILE and NEXT x not allowed
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C433 - Problem with Method Init() in conjenction with /vo9 *************
-Application = C433 - Problem with Method Init() in conjenction with /vo9
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
+; ************** APPLICATION C433 - Problem with Method Init() in conjunction with /vo9 *************
+Application = C433 - Problem with Method Init() in conjunction with /vo9
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -43179,19 +43179,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C433 - Problem with Method Init() in conjenction with /vo9 FileGroups]
-[C433 - Problem with Method Init() in conjenction with /vo9 Files]
+[C433 - Problem with Method Init() in conjunction with /vo9 FileGroups]
+[C433 - Problem with Method Init() in conjunction with /vo9 Files]
 File = %AppPath%\Prg\C433.prg
 FileGUID = 03633747-8CDE-4CF2-9531-EB0DBB3300AD
 FileType = Code
-[C433 - Problem with Method Init() in conjenction with /vo9 References]
+[C433 - Problem with Method Init() in conjunction with /vo9 References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C433 - Problem with Method Init() in conjenction with /vo9 Resources]
-[C433 - Problem with Method Init() in conjenction with /vo9 Native Resources]
-[C433 - Problem with Method Init() in conjenction with /vo9 License files]
-[C433 - Problem with Method Init() in conjenction with /vo9 General Options]
+[C433 - Problem with Method Init() in conjunction with /vo9 Resources]
+[C433 - Problem with Method Init() in conjunction with /vo9 Native Resources]
+[C433 - Problem with Method Init() in conjunction with /vo9 License files]
+[C433 - Problem with Method Init() in conjunction with /vo9 General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -43216,7 +43216,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C433 - Problem with Method Init() in conjenction with /vo9 Configurations]
+[C433 - Problem with Method Init() in conjunction with /vo9 Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -43243,9 +43243,9 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C433 - Problem with Method Init() in conjenction with /vo9
+ENDApplication = C433 - Problem with Method Init() in conjunction with /vo9
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C434 - RETURN SELF not allowed in METHOD Init() *************
 Application = C434 - RETURN SELF not allowed in METHOD Init()
 IDEVersion = 1.06
@@ -43344,7 +43344,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C434 - RETURN SELF not allowed in METHOD Init()
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C435 - Problem with 1 char long literral strings delimited with single quotes *************
 Application = C435 - Problem with 1 char long literral strings delimited with single quotes
 IDEVersion = 1.06

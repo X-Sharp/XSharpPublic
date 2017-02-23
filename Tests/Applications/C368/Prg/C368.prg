@@ -13,3 +13,14 @@ FUNCTION Start() AS VOID
 ? asint
 ? asusual
 ? asptr
+xAssert(asptr == NULL_PTR)
+xAssert(aspsz == NULL_PSZ)
+xAssert(asdate == NULL_DATE)
+xAssert(asarray == NULL_ARRAY)
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+

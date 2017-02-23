@@ -24,6 +24,7 @@ p := (LOGIC PTR) @s
 LOGIC(p + 1) := TRUE
 ? "VOSTRUCT: " ,  s:m1 , s:m2 , s:m3 , s:m4 , s:m5
 
+#error exception here
 xAssert(s:m2)
 d := 3
 LOGIC(p + d) := TRUE

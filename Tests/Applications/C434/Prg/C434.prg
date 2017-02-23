@@ -14,7 +14,5 @@ CLASS TestClass
 	METHOD Init()
 		SELF:n := 1
 	RETURN SELF
-	METHOD Axit()
-	RETURN SELF
 END CLASS
 

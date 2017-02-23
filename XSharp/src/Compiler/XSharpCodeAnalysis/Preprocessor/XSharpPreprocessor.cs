@@ -1301,7 +1301,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         }
                                         else
                                         {
-                                            var ts = new CommonTokenStream(new ListTokenSource((IList < IToken >) tl));
+                                            var ts = new CommonTokenStream(new ListTokenSource(tl.ToIListIToken()));
                                             ts.Fill();
                                             FixToken(p);
                                             InsertStream(null, ts, p);

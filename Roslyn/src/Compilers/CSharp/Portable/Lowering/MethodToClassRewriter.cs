@@ -357,9 +357,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
 
             BoundExpression originalRight = node.Right;
 
+#if XSHARP
             if (leftLocal.LocalSymbol.RefKind != RefKind.None &&
                 node.RefKind != RefKind.None &&
                 NeedsProxy(leftLocal.LocalSymbol))
+            {
+                var info = new CSDiagnosticInfo(ErrorCode.ERR_StaticLocalInCodeBlock, leftLocal.LocalSymbol.Name);
+                this.Diagnostics.Add(info, node.Syntax.Location);
+                return node;
+            }
+
+#endif
+
+            if (leftLocal.LocalSymbol.RefKind != RefKind.None &&
+            node.RefKind != RefKind.None &&
+            NeedsProxy(leftLocal.LocalSymbol))
             {
                 Debug.Assert(!proxies.ContainsKey(leftLocal.LocalSymbol));
                 Debug.Assert(!IsStackAlloc(originalRight));

@@ -119,7 +119,9 @@ namespace XSharpLanguage
             CompletionType cType = null;
             // Start of Process
             // Build a list with the tokens we have from the TriggerPoint to the start of the line
-            List<String> tokenList = this.GetTokenList(triggerPoint);
+            //List<String> tokenList = this.GetTokenList(triggerPoint);
+            //LanguageService.SyntaxTree.ITokenStream tokenStream;
+            List<String> tokenList = XSharpTokenTools.GetTokenList(triggerPoint.Position, triggerPoint.GetContainingLine().LineNumber, _buffer.CurrentSnapshot.GetText(), out _stopToken, false);
             // and make it a string
             //String tokenLine = TokenListAsString(tokenList, 0);
             String filterText = "";
@@ -166,8 +168,8 @@ namespace XSharpLanguage
                 }
             }
             // Check if we can get the member where we are
-            XTypeMember member = this.FindMember(triggerPoint.Position);
-            XType currentNamespace = this.FindNamespace(triggerPoint.Position);
+            XTypeMember member = XSharpTokenTools.FindMember(triggerPoint.Position, this._fileName);
+            XType currentNamespace = XSharpTokenTools.FindNamespace(triggerPoint.Position, this._fileName);
             HashSet<String> Usings = new HashSet<String>(file.Usings);
             if (currentNamespace != null)
             {
@@ -176,7 +178,8 @@ namespace XSharpLanguage
             // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
 
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            cType = this.RetrieveType(tokenList, member);
+            XElement dummy;
+            cType = XSharpTokenTools.RetrieveType(tokenList, member, out dummy);
             switch (typedChar)
             {
                 case '.':
@@ -237,7 +240,7 @@ namespace XSharpLanguage
                         {
                             // First we need to keep only the text AFTER the last dot
                             int dotPos = filterText.LastIndexOf('.');
-                            filterText = filterText.Substring(dotPos+1, filterText.Length - dotPos-1);
+                            filterText = filterText.Substring(dotPos + 1, filterText.Length - dotPos - 1);
                             BuildCompletionList(compList, cType, Modifiers.Public, true, filterText);
                         }
                         break;
@@ -275,18 +278,44 @@ namespace XSharpLanguage
                     }
                     else
                     {
-                        if (member != null) // Fill with the context ( Parameters and Locals )
+                        switch (this._stopToken.Type)
                         {
-                            BuildCompletionList(compList, member, filterText);
+                            case XSharpLexer.USING:
+                                // It can be a namespace 
+                                AddNamespaces(compList, file.Project, filterText);
+                                break;
+                            case XSharpLexer.AS:
+                            case XSharpLexer.IS:
+                            case XSharpLexer.REF:
+                            case XSharpLexer.INHERIT:
+                                // It can be a namespace 
+                                AddNamespaces(compList, file.Project, filterText);
+                                // It can be Type, FullyQualified
+                                // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                                AddTypeNames(compList, file.Project, filterText, Usings);
+                                //
+                                AddXSharpTypeNames(compList, filterText);
+                                break;
+                            case XSharpLexer.IMPLEMENTS:
+                                // It can be a namespace 
+                                AddNamespaces(compList, file.Project, filterText);
+                                // TODO: add Interfaces only
+                                break;
+                            default:
+                                if (member != null) // Fill with the context ( Parameters and Locals )
+                                {
+                                    BuildCompletionList(compList, member, filterText);
+                                }
+                                // Now Add Functions and Procedures
+                                BuildCompletionList(compList, file.Project.LookupFullName(XType.GlobalName, true), Modifiers.Public, false, filterText);
+                                // and Add NameSpaces
+                                AddNamespaces(compList, file.Project, filterText);
+                                // and Types
+                                AddTypeNames(compList, file.Project, filterText, Usings);
+                                //
+                                AddXSharpTypeNames(compList, filterText);
+                                break;
                         }
-                        // Now Add Functions and Procedures
-                        BuildCompletionList(compList, file.Project.GlobalType, Modifiers.Public, false, filterText);
-                        // and Add NameSpaces
-                        AddNamespaces(compList, file.Project, filterText);
-                        // and Types
-                        AddTypeNames(compList, file.Project, filterText, Usings);
-                        //
-                        AddXSharpTypeNames(compList, filterText);
                     }
                     break;
             }
@@ -444,6 +473,7 @@ namespace XSharpLanguage
 
         }
 
+        [ObsoleteAttribute("This method is obsolete. Call XSharpTokenTools instead.", true)]
         private CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember)
         {
             if (currentMember == null)
@@ -738,111 +768,6 @@ namespace XSharpLanguage
             // Sorry, not found
             return new CompletionType();
         }
-
-        /*
-                 private CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember)
-        {
-            if (currentMember == null)
-            {
-                System.Diagnostics.Debug.WriteLine(String.Format("Retrieve current Type for {0} : Cannot find Member.", this._fileName));
-                return null;
-            }
-            // we have to walk the tokenList, searching for the current Type
-            // As we have separators every even token, we will walk by step 2
-            int currentPos = 0;
-            String currentToken = "";
-            XElement element = null;
-            CompletionType cType = null;
-            if (tokenList.Count == 0)
-                return null;
-            //
-            cType = new CompletionType(currentMember.Parent);
-            //
-            while (currentPos < tokenList.Count)
-            {
-                currentToken = tokenList[currentPos];
-                //
-                if (currentToken.EndsWith("{}"))
-                {
-                    // this a Constructor call
-                    currentToken = currentToken.Substring(0, currentToken.Length - 2);
-                    cType = new CompletionType(currentToken, currentMember.File);
-
-                }
-                else if (currentToken.EndsWith("()"))
-                {
-                    // this a Method call
-                    currentToken = currentToken.Substring(0, currentToken.Length - 2);
-                    // Do we already know in which Type we are ?
-                    if (cType == null)
-                    {
-                        // No ? Ok, let's fill the information
-                        cType = new CompletionType(currentMember.Parent);
-                    }
-                    // Now, search for a Method
-                    cType = SearchMethodTypeIn(cType, currentToken);
-                    if ((cType != null) && (!cType.IsInitialized))
-                    {
-                        cType = null;
-                    }
-                }
-                else
-                {
-                    // Search in Parameters
-                    element = currentMember.Parameters.Find(x => x.Name.ToLower() == currentToken.ToLower());
-                    if (element == null)
-                    {
-                        // then Locals
-                        element = currentMember.Locals.Find(x => x.Name.ToLower() == currentToken.ToLower());
-                        if (element == null)
-                        {
-                            // then Properties
-                            // The XTypeMember has a Parent, which has members (at least the currentMemeber !)
-                            if (currentMember.Parent is XType)
-                            {
-                                XType prt = currentMember.Parent as XType;
-                                element = prt.Members.Find(x =>
-                                {
-                                    if ((x.Kind == Kind.Property) || (x.Kind == Kind.Access) || (x.Kind == Kind.Assign))
-                                    {
-                                        return (x.Name.ToLower() == currentToken.ToLower());
-                                    }
-                                    return false;
-                                });
-                                //
-                                if (element != null)
-                                {
-                                    cType = new CompletionType((XTypeMember)element);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            cType = new CompletionType((XVariable)element);
-                        }
-                    }
-                    else
-                    {
-                        cType = new CompletionType(element);
-                    }
-                }
-                //
-                if ((cType != null) && (!cType.IsInitialized))
-                {
-                    cType = null;
-                }
-                // Next Token
-                currentPos += 2;
-                if (currentPos >= tokenList.Count)
-                {
-                    break;
-                }
-                //
-            }
-            return cType;
-        }
-
-        */
 
         /// <summary>
         /// Search for a Method, in a CompletionType, based on the Visibility.
@@ -1238,6 +1163,7 @@ namespace XSharpLanguage
         /// </summary>
         /// <param name="triggerPoint"></param>
         /// <returns></returns>
+        [ObsoleteAttribute("This method is obsolete. Call XSharpTokenTools instead.", true)]
         private List<String> GetTokenList(SnapshotPoint triggerPoint)
         {
             List<String> tokenList = new List<string>();
@@ -2156,6 +2082,739 @@ namespace XSharpLanguage
             {
                 base.Description = value;
             }
+        }
+
+    }
+
+    public static class XSharpTokenTools
+    {
+        public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber, string bufferText, out IToken stopToken, bool fromGotoDefn) // out LanguageService.SyntaxTree.ITokenStream tokenStream)
+        {
+            List<String> tokenList = new List<string>();
+            String token;
+            //
+            stopToken = null;
+            //tokenStream = null;
+            // lex the entire document
+            var stream = new AntlrInputStream(bufferText);
+            var lexer = new XSharpLexer(stream);
+            var tokens = new CommonTokenStream(lexer);
+            tokens.Fill();
+            //
+            //tokenStream = tokens;
+
+            // locate the last token before the trigger point
+            IToken nextToken;
+            while (true)
+            {
+                nextToken = tokens.Lt(1);
+                if (nextToken.Type == XSharpLexer.Eof) // End Of File
+                    break;
+                // Move after the TriggerPoint
+                if (nextToken.StartIndex > triggerPointPosition)
+                    break;
+
+                tokens.Consume();
+            }
+            if (!fromGotoDefn)
+                nextToken = tokens.Lt(-1);
+            if (nextToken == null)
+            {
+                return tokenList;
+            }
+            // We are looking at line
+            int lineTP = triggerPointLineNumber + 1;
+            // And we are on line
+            int lineNT = nextToken.Line;
+            //
+            if (lineTP != lineNT)
+            {
+                // ???
+                return tokenList;
+            }
+            // Now, let's build the Token chain, so we can guess what to add in the CompletionList
+            IToken triggerToken = null;
+            if (!fromGotoDefn)
+                triggerToken = GetPreviousToken(tokens, nextToken);
+            else
+                triggerToken = nextToken;
+            //
+            while (triggerToken != null)
+            {
+                token = triggerToken.Text;
+                switch (triggerToken.Type)
+                {
+                    // For ) ] }, we will search the counter part, and remove all stuff in between
+                    case XSharpLexer.RPAREN:
+                        // Search for the Left Parenthesis
+                        triggerToken = ProcessBounds(tokens, triggerToken, XSharpLexer.LPAREN, XSharpLexer.RPAREN);
+                        // we had a trouble in the previous process ?
+                        if (triggerToken == null)
+                            break;
+                        // ...
+                        token = "()";
+                        break;
+                    case XSharpLexer.RBRKT:
+                        // Search for the Left Bracket
+                        triggerToken = ProcessBounds(tokens, triggerToken, XSharpLexer.LBRKT, XSharpLexer.RBRKT);
+                        // we had a trouble in the previous process ?
+                        if (triggerToken == null)
+                            break;
+                        // ...
+                        token = "[]";
+                        break;
+                    case XSharpLexer.RCURLY:
+                        // Search for the Left Curly
+                        triggerToken = ProcessBounds(tokens, triggerToken, XSharpLexer.LCURLY, XSharpLexer.RCURLY);
+                        // we had a trouble in the previous process ?
+                        if (triggerToken == null)
+                            break;
+                        // ...
+                        token = "{}";
+                        break;
+                    case XSharpLexer.ASSIGN_OP:
+                    case XSharpLexer.COMMA:
+                    case XSharpLexer.USING:
+                    case XSharpLexer.AS:
+                    case XSharpLexer.IS:
+                    case XSharpLexer.REF:
+                    case XSharpLexer.IMPLEMENTS:
+                    case XSharpLexer.INHERIT:
+                    case XSharpLexer.LPAREN:
+                    case XSharpLexer.LCURLY:
+                    case XSharpLexer.LBRKT:
+                        // Stop here
+                        stopToken = triggerToken;
+                        token = null;
+                        if (fromGotoDefn)
+                        {
+                            switch (triggerToken.Type)
+                            {
+                                case XSharpLexer.LPAREN:
+                                    token = "()";
+                                    break;
+                                case XSharpLexer.LCURLY:
+                                    token = "{}";
+                                    break;
+                                case XSharpLexer.LBRKT:
+                                    token = "[]";
+                                    break;
+                                default:
+                                    token = null;
+                                    triggerToken = null;
+                                    break;
+                            }
+                            // One shot
+                            fromGotoDefn = false;
+                        }
+                        else
+                            triggerToken = null;
+                        break;
+                }
+                //
+                if (token != null)
+                    tokenList.Add(token);
+                //
+                if (triggerToken != null)
+                    triggerToken = GetPreviousToken(tokens, triggerToken);
+            }
+            // 
+            tokenList.Reverse();
+            // Now, we may have some post-treatment
+            List<String> returnList = new List<string>();
+            int i = 0;
+            bool prevWasDot = false;
+            while (i < tokenList.Count)
+            {
+                token = tokenList[i];
+                if ((token.CompareTo("()") == 0) || (token.CompareTo("{}") == 0) || (token.CompareTo("[]") == 0))
+                {
+                    if (returnList.Count > 0)
+                    {
+                        String prevToken = returnList[returnList.Count - 1];
+                        prevToken = prevToken + token;
+                        returnList[returnList.Count - 1] = prevToken;
+                    }
+                }
+                else if (token.CompareTo(".") == 0)
+                {
+                    if (returnList.Count > 0)
+                    {
+                        String prevToken = returnList[returnList.Count - 1];
+                        prevToken = prevToken + token;
+                        returnList[returnList.Count - 1] = prevToken;
+                        prevWasDot = true;
+                    }
+                }
+                else
+                {
+                    if (prevWasDot)
+                    {
+                        String prevToken = returnList[returnList.Count - 1];
+                        prevToken = prevToken + token;
+                        returnList[returnList.Count - 1] = prevToken;
+                        prevWasDot = false;
+                    }
+                    else
+                        returnList.Add(token);
+                }
+                i++;
+            }
+            //
+            return returnList;
+        }
+
+        public static XType FindNamespace(int position, String fileName)
+        {
+            XFile file = XSharpModel.XSolution.FindFullPath(fileName);
+            if (file == null)
+            {
+                // Uhh !??, Something went wrong
+                System.Diagnostics.Debug.WriteLine(String.Format("Cannot find file {0} .", fileName));
+                return null;
+            }
+            //
+            foreach (XType eltType in file.TypeList.Values)
+            {
+                if ((eltType.Kind == Kind.Namespace) && (eltType.Interval.ContainsInclusive(position)))
+                {
+                    return eltType;
+                }
+            }
+            //
+            System.Diagnostics.Debug.WriteLine(String.Format("Cannot find member as position {0} in file {0} .", position, fileName));
+            return null;
+        }
+
+        public static XTypeMember FindMember(int position, String fileName)
+        {
+            XFile file = XSharpModel.XSolution.FindFullPath(fileName);
+            if (file == null)
+            {
+                // Uhh !??, Something went wrong
+                System.Diagnostics.Debug.WriteLine(String.Format("Cannot find file {0} .", fileName));
+                return null;
+            }
+            // First, Check for Function/Procedure
+            XType gbl = file.GlobalType;
+            int maxPosition = 0;
+            XTypeMember lastElt = null;
+            //
+            foreach (XTypeMember elt in gbl.Members)
+            {
+                if (elt.Interval.Stop > maxPosition)
+                {
+                    // Keep track of the last position, in the corresponding XType
+                    maxPosition = elt.Interval.Stop;
+                    lastElt = elt;
+                }
+                if (elt.Interval.ContainsInclusive(position))
+                {
+                    return elt;
+                }
+            }
+            // If we are here, we found nothing
+            // but we might be after the code of the last Function in the file, so the parser don't know where we are
+            // Keep it in lastElt, and check Members
+            XTypeMember lastElt2 = null;
+            foreach (XType eltType in file.TypeList.Values)
+            {
+                if (eltType.Interval.ContainsInclusive(position))
+                {
+                    //
+                    foreach (XTypeMember elt in eltType.Members)
+                    {
+                        if (elt.Interval.Stop > maxPosition)
+                        {
+                            // Keep track of the last position, in the corresponding XType
+                            maxPosition = elt.Interval.Stop;
+                            lastElt2 = elt;
+                        }
+                        if (elt.Interval.ContainsInclusive(position))
+                        {
+                            return elt;
+                        }
+                    }
+                    // We are in the right Type, but found no Member ?
+                    // So it must the Last Member, before the Closing-Keyword
+                    if ((lastElt != null) && (lastElt2 == null))
+                        return lastElt;
+                    //
+                    return lastElt2;
+                }
+            }
+            //
+            if (lastElt != null)
+                return lastElt;
+            //
+            System.Diagnostics.Debug.WriteLine(String.Format("Cannot find member as position {0} in file {0} .", position, fileName));
+            return null;
+        }
+
+        public static CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember, out XElement foundElement)
+        {
+            foundElement = null;
+            if (currentMember == null)
+            {
+                System.Diagnostics.Debug.WriteLine(String.Format("Retrieve current Type : Member cannot be null."));
+                return null;
+            }
+            // we have to walk the tokenList, searching for the current Type
+            // As we have separators every even token, we will walk by step 2
+            int currentPos = 0;
+            String currentToken = "";
+            XElement element = null;
+            CompletionType cType = null;
+            if (tokenList.Count == 0)
+                return null;
+            // Context Type....
+            cType = new CompletionType(currentMember.Parent.Clone);
+            Modifiers visibility = Modifiers.Private;
+            //
+            while (currentPos < tokenList.Count)
+            {
+                currentToken = tokenList[currentPos];
+                //
+                int dotPos = currentToken.LastIndexOf(".");
+                if (dotPos > -1)
+                {
+                    String startToken = currentToken.Substring(0, dotPos);
+                    cType = new CompletionType(startToken, currentMember.File);
+                    currentToken = currentToken.Substring(dotPos + 1);
+                    currentPos++;
+                    if (String.IsNullOrEmpty(currentToken))
+                    {
+                        continue;
+                    }
+                }
+                //
+                if (currentToken.EndsWith("{}"))
+                {
+                    // this a Constructor call
+                    currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                    cType = new CompletionType(currentToken, currentMember.File);
+                    if ((cType != null) && (cType.IsInitialized) && (cType.XType != null))
+                    {
+                        foundElement = cType.XType;
+                    }
+                }
+                else if (currentToken.EndsWith("()"))
+                {
+                    // this a Method call
+                    currentToken = currentToken.Substring(0, currentToken.Length - 2);
+                    // Do we already know in which Type we are ?
+                    if (cType != null)
+                    {
+                        // Now, search for a Method
+                        cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement);
+                    }
+                    if ((cType != null) && (!cType.IsInitialized))
+                    {
+                        cType = null;
+                    }
+                }
+                else
+                {
+                    // First token, so it could be a parameter or a local var
+                    if (currentPos == 0)
+                    {
+                        // Search in Parameters
+                        element = currentMember.Parameters.Find(x => x.Name.ToLower() == currentToken.ToLower());
+                        if (element == null)
+                        {
+                            // then Locals
+                            element = currentMember.Locals.Find(x => x.Name.ToLower() == currentToken.ToLower());
+                            if (element == null)
+                            {
+                                // We can have a Property/Field of the current CompletionType
+                                if (cType != null)
+                                {
+                                    cType = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
+                                    if ((cType != null) && (!cType.IsInitialized))
+                                    {
+                                        cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
+                                    }
+                                }
+                            }
+                        }
+                        if (element != null)
+                        {
+                            cType = new CompletionType((XVariable)element);
+                            foundElement = element;
+                        }
+                    }
+                    else
+                    {
+                        // We can have a Property/Field of the current CompletionType
+                        if (cType != null)
+                        {
+                            cType = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
+                            if ((cType != null) && (!cType.IsInitialized))
+                            {
+                                cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
+                            }
+                        }
+                    }
+                }
+                //
+                if ((cType != null) && (!cType.IsInitialized))
+                {
+                    cType = null;
+                }
+                // Next Token
+                currentPos += 2;
+                if (currentPos >= tokenList.Count)
+                {
+                    break;
+                }
+                //
+                visibility = Modifiers.Public;
+            }
+            return cType;
+        }
+
+
+
+        /// <summary>
+        /// Search for a Property, in a CompletionType, based on the Visibility.
+        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
+        /// </summary>
+        /// <param name="cType">The CompletionType to look into</param>
+        /// <param name="currentToken">The Property we are searching</param>
+        /// <param name="minVisibility"></param>
+        /// <returns>The CompletionType of the Property (If found).
+        /// If not found, the CompletionType.IsInitialized is false
+        /// </returns>
+        private static CompletionType SearchPropertyTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        {
+            foundElement = null;
+            if (cType.XType != null)
+            {
+                XTypeMember element = cType.XType.Members.Find(x =>
+                {
+                    if ((x.Kind == Kind.Property) || (x.Kind == Kind.Access) || (x.Kind == Kind.Assign))
+                    {
+                        return (x.Name.ToLower() == currentToken.ToLower());
+                    }
+                    return false;
+                });
+                //
+                if ((element != null) && (element.Visibility < minVisibility))
+                {
+                    element = null;
+                }
+                //
+                if (element == null)
+                {
+                    // Hummm, we should look inside the Owner
+                    if (cType.XType.Parent != null)
+                    {
+                        // Parent is a XElement, so one of our Types
+                        return SearchPropertyTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
+                    }
+                    else if (cType.XType.ParentName != null)
+                    {
+                        // Parent has just a Name, so one of the System Types
+                        return SearchPropertyTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.File.Usings), currentToken, Modifiers.Public, out foundElement);
+                    }
+                }
+                else
+                {
+                    cType = new CompletionType((XTypeMember)element);
+                    foundElement = element;
+                }
+            }
+            else if (cType.SType != null)
+            {
+                MemberInfo[] members;
+                //
+                if (minVisibility < Modifiers.Public)
+                {
+                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                }
+                else
+                {
+                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                }
+                //
+                Type declType = null;
+                foreach (var member in members)
+                {
+                    if (member.Name.ToLower() == currentToken.ToLower())
+                    {
+                        PropertyInfo prop = member as PropertyInfo;
+                        declType = prop.PropertyType;
+                        break;
+                    }
+                }
+                if (declType == null)
+                {
+                    // In the parent ?
+                    if (cType.SType.BaseType != null)
+                    {
+                        return SearchPropertyTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
+                    }
+                }
+                else
+                {
+                    return new CompletionType(declType);
+                }
+            }
+            // Sorry, not found
+            return new CompletionType();
+        }
+
+        /// <summary>
+        /// Search for a Field, in a CompletionType, based on the Visibility.
+        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
+        /// </summary>
+        /// <param name="cType">The CompletionType to look into</param>
+        /// <param name="currentToken">The Field we are searching</param>
+        /// <param name="minVisibility"></param>
+        /// <returns>The CompletionType of the Field (If found).
+        /// If not found, the CompletionType.IsInitialized is false
+        /// </returns>
+        private static CompletionType SearchFieldTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        {
+            foundElement = null;
+            if (cType.XType != null)
+            {
+                XTypeMember element = cType.XType.Members.Find(x =>
+                {
+                    if ((x.Kind == Kind.ClassVar))
+                    {
+                        return (x.Name.ToLower() == currentToken.ToLower());
+                    }
+                    return false;
+                });
+                //
+                if ((element != null) && (element.Visibility < minVisibility))
+                {
+                    element = null;
+                }
+                //
+                if (element == null)
+                {
+                    // Hummm, we should look inside the Owner
+                    if (cType.XType.Parent != null)
+                    {
+                        // Parent is a XElement, so one of our Types
+                        return SearchFieldTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
+                    }
+                    else if (cType.XType.ParentName != null)
+                    {
+                        // Parent has just a Name, so one of the System Types
+                        return SearchFieldTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.File.Usings), currentToken, Modifiers.Public, out foundElement);
+                    }
+                }
+                else
+                {
+                    cType = new CompletionType((XTypeMember)element);
+                    foundElement = element;
+                }
+            }
+            else if (cType.SType != null)
+            {
+                MemberInfo[] members;
+                //
+                if (minVisibility < Modifiers.Public)
+                {
+                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                }
+                else
+                {
+                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                }
+                //
+                Type declType = null;
+                foreach (var member in members)
+                {
+                    if (member.Name.ToLower() == currentToken.ToLower())
+                    {
+                        FieldInfo field = member as FieldInfo;
+                        declType = field.FieldType;
+                        break;
+                    }
+                }
+                if (declType == null)
+                {
+                    // In the parent ?
+                    if (cType.SType.BaseType != null)
+                    {
+                        return SearchFieldTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
+                    }
+                }
+                else
+                {
+                    return new CompletionType(declType);
+                }
+            }
+            // Sorry, not found
+            return new CompletionType();
+        }
+
+        /// <summary>
+        /// Search for a Method, in a CompletionType, based on the Visibility.
+        /// A Completion can have a XType (XSharp parsed type) or a SType (A System type or a Type found inside a library Reference)
+        /// </summary>
+        /// <param name="cType">The CompletionType to look into</param>
+        /// <param name="currentToken">The Method we are searching</param>
+        /// <param name="minVisibility"></param>
+        /// <returns>The CompletionType that the Method will return (If found).
+        /// If not found, the CompletionType.IsInitialized is false
+        /// </returns>
+        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        {
+            foundElement = null;
+            if (cType.XType != null)
+            {
+                // 
+                XTypeMember xMethod = cType.XType.Members.Find(x =>
+                {
+                    if ((x.Kind == Kind.Method))
+                    {
+                        return (x.Name.ToLower() == currentToken.ToLower());
+                    }
+                    return false;
+                });
+                //if (elt.IsStatic)
+                //    continue;
+                if ((xMethod != null) && (xMethod.Visibility < minVisibility))
+                {
+                    xMethod = null;
+                }
+                //
+                if (xMethod == null)
+                {
+                    // Hummm, we should look inside the Owner
+                    if (cType.XType.Parent != null)
+                    {
+                        // Parent is a XElement, so one of our Types
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
+                    }
+                    else if (cType.XType.ParentName != null)
+                    {
+                        // Parent has just a Name, so one of the System Types
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.File.Usings), currentToken, Modifiers.Public, out foundElement);
+                    }
+                }
+                else
+                {
+                    foundElement = xMethod;
+                    if (xMethod.Parent != null)
+                    {
+                        // Parent is a XElement, so one of our Types
+                        return new CompletionType(xMethod.Parent.Clone);
+                    }
+                    else if (xMethod.ParentName != null)
+                    {
+                        // Parent has just a Name, so one of the System Types
+                        return new CompletionType(xMethod.ParentName, xMethod.File.Usings);
+                    }
+                }
+            }
+            else if (cType.SType != null)
+            {
+                MemberInfo[] members;
+                //
+                if (minVisibility < Modifiers.Public)
+                {
+                    // Get Public, Internal, Protected & Private Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                }
+                else
+                {
+                    //  Get Public Members, we also get Instance vars, Static members...all that WITHOUT inheritance
+                    members = cType.SType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+                }
+                //
+                Type declType = null;
+                foreach (var member in members)
+                {
+                    if (member.MemberType == MemberTypes.Method)
+                    {
+                        if (member.Name.ToLower() == currentToken.ToLower())
+                        {
+                            MethodInfo method = member as MethodInfo;
+                            declType = method.ReturnType;
+                            break;
+                        }
+                    }
+                }
+                if (declType == null)
+                {
+                    // In the parent ?
+                    if (cType.SType.BaseType != null)
+                    {
+                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
+                    }
+                }
+                else
+                {
+                    return new CompletionType(declType);
+                }
+            }
+            // Sorry, not found
+            return new CompletionType();
+        }
+
+
+        private static IToken ProcessBounds(CommonTokenStream tokens, IToken currentToken, int LeftElement, int RightElement)
+        {
+            // Count the elements
+            int rightElt = 1;
+            while ((currentToken != null) && (rightElt != 0))
+            {
+                //currentToken = tokens.Lt(-1);
+                currentToken = GetPreviousToken(tokens, currentToken);
+                if (currentToken != null)
+                {
+                    // Bump the Left ?
+                    if (currentToken.Column == 0)
+                    {
+                        if (rightElt != 0)
+                        {
+                            // If the counter is not null, we have a open element
+                            currentToken = null;
+                        }
+                    }
+                    // A Left Element ?
+                    else if (currentToken.Type == LeftElement)
+                    {
+                        rightElt--;
+                    }
+                    // Another Right Parenthesis
+                    else if (currentToken.Type == RightElement)
+                    {
+                        rightElt++;
+                    }
+                }
+            }
+            //
+            return currentToken;
+        }
+
+        private static IToken GetPreviousToken(CommonTokenStream tokens, IToken currentToken)
+        {
+            IToken prev = null;
+            if (currentToken != null)
+            {
+                prev = currentToken;
+                int Line = prev.Line;
+                do
+                {
+                    prev = tokens.Get(prev.TokenIndex - 1);
+                    if (prev.Line != Line)
+                    {
+                        prev = null;
+                    }
+                } while ((prev != null) && (prev.Type == XSharpLexer.WS));
+            }
+            return prev;
         }
 
     }

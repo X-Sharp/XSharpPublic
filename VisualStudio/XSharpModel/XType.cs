@@ -16,7 +16,7 @@ namespace XSharpModel
     [DebuggerDisplay("{FullName,nq}")]
     public class XType : XElement
     {
-        private List<XTypeMember> _members;
+        private XTypeMemberList _members;
         private string _nameSpace;
         private bool _isPartial;
         private bool _isStatic;
@@ -25,7 +25,7 @@ namespace XSharpModel
         public XType(string name, Kind kind, Modifiers modifiers, Modifiers visibility, TextRange span, TextInterval position)
             : base(name, kind, modifiers, visibility, span, position)
         {
-            _members = new List<XTypeMember>();
+            _members = new XTypeMemberList();
             _nameSpace = "";
             if (modifiers.HasFlag(Modifiers.Static))
             {
@@ -37,7 +37,7 @@ namespace XSharpModel
             }
         }
 
-        public List<XTypeMember> Members
+        public XTypeMemberList Members
         {
             get
             {
@@ -75,8 +75,6 @@ namespace XSharpModel
             }
         }
 
-
-
         public bool IsPartial
         {
             get
@@ -103,7 +101,6 @@ namespace XSharpModel
             }
         }
 
-
         /// <summary>
         /// Duplicate the current Object, so we have the same properties in another object
         /// </summary>
@@ -113,7 +110,7 @@ namespace XSharpModel
             XType temp = new XType(this.Name, this.Kind, this.Modifiers, this.Visibility, this.Range, this.Interval);
             temp.IsPartial = this.IsPartial;
             temp.IsStatic = this.IsStatic;
-            temp.File = new XFile(this.File.FullPath);
+            temp.File = this.File;
             foreach (XTypeMember mbr in this.Members)
             {
                 temp.Members.Add(mbr);
@@ -122,6 +119,20 @@ namespace XSharpModel
             return temp;
         }
 
+        /// <summary>
+        /// If this XType is a Partial type, return a Copy of it, merged with all other informations
+        /// coming from other files.
+        /// </summary>
+        public XType Clone
+        {
+            get
+            {
+                if (this.IsPartial)
+                    return this.File.Project.LookupFullName(this.FullName, true);
+                else
+                    return this;
+            }
+        }
 
         /// <summary>
         /// Merge two XType Objects : Used to create the resulting  XType from partial classes
@@ -197,9 +208,15 @@ namespace XSharpModel
             }
         }
 
-        public static XType CreateGlobalType()
+        public static XType CreateGlobalType( XFile file )
         {
-            return new XType("(Global Scope)", Kind.Class, Modifiers.Partial|Modifiers.Static, Modifiers.Public, new TextRange(1,1,1,1), new TextInterval());
+            XType globalType = new XType( XType.GlobalName, Kind.Class, Modifiers.None, Modifiers.Public, new TextRange(1,1,1,1), new TextInterval());
+            globalType.IsPartial = true;
+            globalType.IsStatic = true;
+            globalType.File = file;
+            return globalType;
         }
+
+        public const String GlobalName = "(Global Scope)";
     }
 }

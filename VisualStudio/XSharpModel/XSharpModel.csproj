@@ -91,6 +91,7 @@
     <Compile Include="ModelWalker.cs" />
     <Compile Include="SystemTypeController.cs" />
     <Compile Include="TextRange.cs" />
+    <Compile Include="XCollections.cs" />
     <Compile Include="XProject.cs" />
     <Compile Include="XSolution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

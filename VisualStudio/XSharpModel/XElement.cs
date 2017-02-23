@@ -61,6 +61,9 @@ namespace XSharpModel
         {
             get
             {
+                // Handle "(Global Scope"
+                //if ( this._Name == XType.GlobalName )
+
                 return this._Name;
             }
 
@@ -126,6 +129,17 @@ namespace XSharpModel
             set
             {
                 _File = value;
+            }
+        }
+
+        public void OpenEditor()
+        {
+            if ( ( this._File != null ) && (this._File.Project != null ))
+            {
+                if ( this._File.Project.ProjectNode != null )
+                {
+                    this._File.Project.ProjectNode.OpenElement(this._File.FullPath, this.Range.StartLine, this.Range.StartColumn);
+                }
             }
         }
 

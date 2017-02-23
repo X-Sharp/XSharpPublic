@@ -16,7 +16,9 @@ using Microsoft.VisualStudio.Package;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
-
+using LanguageService.SyntaxTree;
+using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
+using System.Collections.Generic;
 
 namespace XSharp.Project
 {
@@ -78,7 +80,7 @@ namespace XSharp.Project
                                 case ':':
                                 case '.':
                                     Complete(true);
-                                    completeAndStart = true;                                    
+                                    completeAndStart = true;
                                     break;
                                 case '=':
                                     Cancel();
@@ -92,7 +94,16 @@ namespace XSharp.Project
                         break;
                 }
             }
-            
+            else if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97)
+            {
+                switch ((VSConstants.VSStd97CmdID)nCmdID)
+                {
+                    case VSConstants.VSStd97CmdID.GotoDefn:
+                        GotoDefn();
+                        return VSConstants.S_OK;
+                }
+            }
+
 
             if (!handled)
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
@@ -133,6 +144,46 @@ namespace XSharp.Project
             }
 
             return hresult;
+        }
+
+        private void GotoDefn()
+        {
+            // First, where are we ?
+            int caretPos = this.TextView.Caret.Position.BufferPosition.Position;
+            int lineNumber = this.TextView.Caret.Position.BufferPosition.GetContainingLine().LineNumber;
+            String currentText = this.TextView.TextBuffer.CurrentSnapshot.GetText();
+            string fileName = this.GetDocumentFileName( this.TextView.TextBuffer );
+            if (String.IsNullOrEmpty(fileName))
+                return;
+            // Then, the corresponding Type/Element if possible
+            IToken dummy;
+            //ITokenStream tokenStream;
+            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out dummy, true );
+            // Check if we can get the member where we are
+            XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
+            XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
+            // LookUp for the BaseType, reading the TokenList (From left to right)
+            XSharpModel.XElement gotoElement;
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, out gotoElement);
+            //
+            if (gotoElement != null )
+            {
+                // Ok, find it ! Let's go ;)
+                gotoElement.OpenEditor();
+            }
+            //
+        }
+
+        private String GetDocumentFileName( ITextBuffer TextBuffer)
+        {
+            String fileName = "";
+            ITextDocument textDoc;
+            var rc = TextBuffer.Properties.TryGetProperty<ITextDocument>( typeof(ITextDocument), out textDoc);
+            if (rc == true)
+            {
+                fileName = textDoc.FilePath;
+            }
+            return fileName;
         }
 
         private void Filter()

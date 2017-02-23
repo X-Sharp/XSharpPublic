@@ -26,6 +26,7 @@ namespace XSharpModel
         private Modifiers _currentVarVisibility;
         private string _defaultNS;
 
+
         //private XType _currentNSpace;
 
         public XSharpModelRegionDiscover()
@@ -76,185 +77,197 @@ namespace XSharpModel
 
         public override void EnterEveryRule([NotNull] ParserRuleContext context)
         {
-            if (this.BuildModel)
+            try
             {
-                /*
-                  // The following types implement IEntityContext
-                  // in short: every element in the language that can have a "method body", calling convention etc.
-                  // Please note that Namespace is not in here and ClassVars are also not in here
-                  // Also note that Method includes Access & Assign
-                  // The only  property inside IEntityContext is the Data property (type EntityData), a flags enum.
-                  // that stores info such as ClipperCallingConvention, UsesPSZ etc.
-                  // This is used for VO/Vulcan compatible code generation
-                  // For names, type etc you need to cast to the proper type
-                  //
-                  public partial class ProcedureContext : ParserRuleContext, IEntityContext {
-                  public partial class FunctionContext : ParserRuleContext, IEntityContext {
-                  public partial class MethodContext : ParserRuleContext, IEntityContext {
-                  public partial class PropertyContext : ParserRuleContext, IEntityContext {
-                  public partial class PropertyAccessorContext : ParserRuleContext, IEntityContext
-                  public partial class ClsctorContext : ClassmemberContext, IEntityContext {
-                  public partial class ClsdtorContext : ClassmemberContext, IEntityContext {
-                  public partial class Event_Context : ParserRuleContext, IEntityContext {
-                  public partial class EventAccessorContext : ParserRuleContext, IEntityContext
-                  public partial class Operator_Context : ParserRuleContext, IEntityContext {
-                  public partial class Delegate_Context : ParserRuleContext, IEntityContext {
-                  public partial class Class_Context : ParserRuleContext, IEntityContext {
-                  public partial class Structure_Context : ParserRuleContext, IEntityContext {
-                  public partial class VodllContext : ParserRuleContext, IEntityContext {
-                  public partial class VoglobalContext : ParserRuleContext, IEntityContext
-                 */
-                if (context is XSharpParser.IEntityContext)
+                if (this.BuildModel)
                 {
-                    if (context is XSharpParser.Class_Context)
+                    if (_reInitModel)
                     {
-                        XType newClass = this.FromClass((XSharpParser.Class_Context)context);
-                        newClass.File = this._file;
-                        //
-                        newClass = this._file.TypeList.AddUnique(newClass.Name, newClass);
-                        // Set as Current working Class
-                        this._currentTypes.Push(newClass);
+                        // Reset TypeList for this file
+                        this.File.InitTypeList();
+                        _reInitModel = false;
                     }
-                    else if (context is XSharpParser.Structure_Context)
+                    /*
+                      // The following types implement IEntityContext
+                      // in short: every element in the language that can have a "method body", calling convention etc.
+                      // Please note that Namespace is not in here and ClassVars are also not in here
+                      // Also note that Method includes Access & Assign
+                      // The only  property inside IEntityContext is the Data property (type EntityData), a flags enum.
+                      // that stores info such as ClipperCallingConvention, UsesPSZ etc.
+                      // This is used for VO/Vulcan compatible code generation
+                      // For names, type etc you need to cast to the proper type
+                      //
+                      public partial class ProcedureContext : ParserRuleContext, IEntityContext {
+                      public partial class FunctionContext : ParserRuleContext, IEntityContext {
+                      public partial class MethodContext : ParserRuleContext, IEntityContext {
+                      public partial class PropertyContext : ParserRuleContext, IEntityContext {
+                      public partial class PropertyAccessorContext : ParserRuleContext, IEntityContext
+                      public partial class ClsctorContext : ClassmemberContext, IEntityContext {
+                      public partial class ClsdtorContext : ClassmemberContext, IEntityContext {
+                      public partial class Event_Context : ParserRuleContext, IEntityContext {
+                      public partial class EventAccessorContext : ParserRuleContext, IEntityContext
+                      public partial class Operator_Context : ParserRuleContext, IEntityContext {
+                      public partial class Delegate_Context : ParserRuleContext, IEntityContext {
+                      public partial class Class_Context : ParserRuleContext, IEntityContext {
+                      public partial class Structure_Context : ParserRuleContext, IEntityContext {
+                      public partial class VodllContext : ParserRuleContext, IEntityContext {
+                      public partial class VoglobalContext : ParserRuleContext, IEntityContext
+                     */
+                    if (context is XSharpParser.IEntityContext)
                     {
-                        XType newClass = this.FromStructure((XSharpParser.Structure_Context)context);
-                        newClass.File = this._file;
-                        //
-                        newClass = this._file.TypeList.AddUnique(newClass.Name, newClass);
-                        // Set as Current working Class
-                        this._currentTypes.Push(newClass);
-                    }
-                    else if (context is XSharpParser.Interface_Context)
-                    {
-                        XType newIf = this.FromInterface((XSharpParser.Interface_Context)context);
-                        newIf.File = this._file;
-                        //
-                        newIf = this._file.TypeList.AddUnique(newIf.Name, newIf);
-                        // Set as Current working Interface
-                        this._currentTypes.Push(newIf);
-                    }
-                    else if (context is XSharpParser.ClsctorContext)
-                    {
-                        XSharpParser.ClsctorContext current = (XSharpParser.ClsctorContext)context;
-                        XTypeMember newMethod = this.FromCtor((XSharpParser.ClsctorContext)context);
-                        newMethod.File = this._file;
-                        if (this._currentTypes.Count > 0)
+                        if (context is XSharpParser.Class_Context)
                         {
-                            newMethod.Parent = this._currentTypes.Peek();
-                            this._currentTypes.Peek().Members.Add(newMethod);
-                        }
-                        else
-                        {
-                            if (System.Diagnostics.Debugger.IsAttached)
-                                System.Diagnostics.Debugger.Break();
-                        }
-                        this._currentMethod = newMethod;
-                    }
-                    // clsdtor
-                    else if (context is XSharpParser.MethodContext)
-                    {
-                        XSharpParser.MethodContext current = (XSharpParser.MethodContext)context;
-                        XTypeMember newMethod = this.FromMethod((XSharpParser.MethodContext)context);
-                        newMethod.File = this._file;
-                        if (this._currentTypes.Count > 0)
-                        {
-                            newMethod.Parent = this._currentTypes.Peek();
-                            this._currentTypes.Peek().Members.Add(newMethod);
-                        }
-                        //else
-                        //{
-                        //    if (System.Diagnostics.Debugger.IsAttached)
-                        //        System.Diagnostics.Debugger.Break();
-                        //}
-                        this._currentMethod = newMethod;
-                    }
-                    else if (context is XSharpParser.PropertyContext)
-                    {
-                        XSharpParser.PropertyContext current = (XSharpParser.PropertyContext)context;
-                        XTypeMember newMethod = this.FromProperty((XSharpParser.PropertyContext)context);
-                        newMethod.File = this._file;
-                        if (this._currentTypes.Count > 0)
-                        {
-                            newMethod.Parent = this._currentTypes.Peek();
-                            this._currentTypes.Peek().Members.Add(newMethod);
-                        }
-                        //else
-                        //{
-                        //    if (System.Diagnostics.Debugger.IsAttached)
-                        //        System.Diagnostics.Debugger.Break();
-                        //}
-                        this._currentMethod = newMethod;
-                    }
-                    // propertyaccessor
-                    else if (context is XSharpParser.FunctionContext)
-                    {
-                        XSharpParser.FunctionContext current = (XSharpParser.FunctionContext)context;
-                        XTypeMember newMethod = this.FromFunction((XSharpParser.FunctionContext)context);
-                        newMethod.File = this._file;
-                        this._file.GlobalType.Members.Add(newMethod);
-                        newMethod.Parent = _file.Project.GlobalType;
-                        _file.Project.GlobalType.Members.Add(newMethod);
-                        this._currentMethod = newMethod;
-                    }
-                    else if (context is XSharpParser.ProcedureContext)
-                    {
-                        XSharpParser.ProcedureContext current = (XSharpParser.ProcedureContext)context;
-                        XTypeMember newMethod = this.FromProcedure((XSharpParser.ProcedureContext)context);
-                        newMethod.File = this._file;
-                        this._file.GlobalType.Members.Add(newMethod);
-                        newMethod.Parent = _file.Project.GlobalType;
-                        _file.Project.GlobalType.Members.Add(newMethod);
-                        this._currentMethod = newMethod;
-                    }
-                    // event
-                    // eventaccessor
-                    // vodll
-                    // voglobal
-                    // delegate
-                    // operator
-                    //entities.Add((XSharpParser.IEntityContext)context);
-                }
-                else if (context is XSharpParser.Using_Context)
-                {
-                    XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
-                    this._file.Usings.AddUnique(use.Name.GetText());
-                }
-                else if (context is XSharpParser.Namespace_Context)
-                {
-                    XSharpParser.Namespace_Context current = (XSharpParser.Namespace_Context)context;
-                    //
-                    XType nSpace = new XType(current.Name.GetText(), Kind.Namespace, Modifiers.None,
-                        Modifiers.Public, new TextRange(context), new TextInterval(context));
-                    this._currentNSpaces.Push(nSpace);
-                }
-                else if (context is XSharpParser.ClassvarModifiersContext)
-                {
-                    XSharpParser.ClassvarModifiersContext current = (XSharpParser.ClassvarModifiersContext)context;
-                    this._currentVarVisibility = decodeVisibility(current?._Tokens);
-                }
-                else if (context is XSharpParser.ClassVarListContext)
-                {
-                    XSharpParser.ClassVarListContext current = (XSharpParser.ClassVarListContext)context;
-                    if (current.DataType != null)
-                    {
-                        //
-                        foreach (var varContext in current._Var)
-                        {
+                            XType newClass = this.FromClass((XSharpParser.Class_Context)context);
+                            newClass.File = this._file;
                             //
-                            Kind kind = Kind.ClassVar;
+                            newClass = this._file.TypeList.AddUnique(newClass.FullName, newClass);
+                            // Set as Current working Class
+                            this._currentTypes.Push(newClass);
+                        }
+                        else if (context is XSharpParser.Structure_Context)
+                        {
+                            XType newClass = this.FromStructure((XSharpParser.Structure_Context)context);
+                            newClass.File = this._file;
                             //
-                            XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
-                                kind, Modifiers.None, this._currentVarVisibility,
-                                new TextRange(varContext), new TextInterval(varContext), current.DataType.GetText());
+                            newClass = this._file.TypeList.AddUnique(newClass.FullName, newClass);
+                            // Set as Current working Class
+                            this._currentTypes.Push(newClass);
+                        }
+                        else if (context is XSharpParser.Interface_Context)
+                        {
+                            XType newIf = this.FromInterface((XSharpParser.Interface_Context)context);
+                            newIf.File = this._file;
                             //
-                            if (this._currentTypes != null && _currentTypes.Count > 0)
+                            newIf = this._file.TypeList.AddUnique(newIf.FullName, newIf);
+                            // Set as Current working Interface
+                            this._currentTypes.Push(newIf);
+                        }
+                        else if (context is XSharpParser.ClsctorContext)
+                        {
+                            XSharpParser.ClsctorContext current = (XSharpParser.ClsctorContext)context;
+                            XTypeMember newMethod = this.FromCtor((XSharpParser.ClsctorContext)context);
+                            newMethod.File = this._file;
+                            if (this._currentTypes.Count > 0)
                             {
-                                newClassVar.Parent = this._currentTypes.Peek();
-                                this._currentTypes.Peek().Members.Add(newClassVar);
+                                newMethod.Parent = this._currentTypes.Peek();
+                                this._currentTypes.Peek().Members.Add(newMethod);
+                            }
+                            else
+                            {
+                                if (System.Diagnostics.Debugger.IsAttached)
+                                    System.Diagnostics.Debugger.Break();
+                            }
+                            this._currentMethod = newMethod;
+                        }
+                        // clsdtor
+                        else if (context is XSharpParser.MethodContext)
+                        {
+                            XSharpParser.MethodContext current = (XSharpParser.MethodContext)context;
+                            XTypeMember newMethod = this.FromMethod((XSharpParser.MethodContext)context);
+                            newMethod.File = this._file;
+                            if (this._currentTypes.Count > 0)
+                            {
+                                newMethod.Parent = this._currentTypes.Peek();
+                                this._currentTypes.Peek().Members.Add(newMethod);
+                            }
+                            //else
+                            //{
+                            //    if (System.Diagnostics.Debugger.IsAttached)
+                            //        System.Diagnostics.Debugger.Break();
+                            //}
+                            this._currentMethod = newMethod;
+                        }
+                        else if (context is XSharpParser.PropertyContext)
+                        {
+                            XSharpParser.PropertyContext current = (XSharpParser.PropertyContext)context;
+                            XTypeMember newMethod = this.FromProperty((XSharpParser.PropertyContext)context);
+                            newMethod.File = this._file;
+                            if (this._currentTypes.Count > 0)
+                            {
+                                newMethod.Parent = this._currentTypes.Peek();
+                                this._currentTypes.Peek().Members.Add(newMethod);
+                            }
+                            //else
+                            //{
+                            //    if (System.Diagnostics.Debugger.IsAttached)
+                            //        System.Diagnostics.Debugger.Break();
+                            //}
+                            this._currentMethod = newMethod;
+                        }
+                        // propertyaccessor
+                        else if (context is XSharpParser.FunctionContext)
+                        {
+                            XSharpParser.FunctionContext current = (XSharpParser.FunctionContext)context;
+                            XTypeMember newMethod = this.FromFunction((XSharpParser.FunctionContext)context);
+                            newMethod.File = this._file;
+                            newMethod.Parent = _file.GlobalType;
+                            this._file.GlobalType.Members.Add(newMethod);
+                            this._currentMethod = newMethod;
+                        }
+                        else if (context is XSharpParser.ProcedureContext)
+                        {
+                            XSharpParser.ProcedureContext current = (XSharpParser.ProcedureContext)context;
+                            XTypeMember newMethod = this.FromProcedure((XSharpParser.ProcedureContext)context);
+                            newMethod.File = this._file;
+                            newMethod.Parent = _file.GlobalType;
+                            this._file.GlobalType.Members.Add(newMethod);
+                            this._currentMethod = newMethod;
+                        }
+                        // event
+                        // eventaccessor
+                        // vodll
+                        // voglobal
+                        // delegate
+                        // operator
+                        //entities.Add((XSharpParser.IEntityContext)context);
+                    }
+                    else if (context is XSharpParser.Using_Context)
+                    {
+                        XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
+                        //if (use.Name != null)
+                            this._file.Usings.AddUnique(use.Name.GetText());
+                    }
+                    else if (context is XSharpParser.Namespace_Context)
+                    {
+                        XSharpParser.Namespace_Context current = (XSharpParser.Namespace_Context)context;
+                        //
+                        XType nSpace = new XType(current.Name.GetText(), Kind.Namespace, Modifiers.None,
+                            Modifiers.Public, new TextRange(context), new TextInterval(context));
+                        this._currentNSpaces.Push(nSpace);
+                    }
+                    else if (context is XSharpParser.ClassvarModifiersContext)
+                    {
+                        XSharpParser.ClassvarModifiersContext current = (XSharpParser.ClassvarModifiersContext)context;
+                        this._currentVarVisibility = decodeVisibility(current?._Tokens);
+                    }
+                    else if (context is XSharpParser.ClassVarListContext)
+                    {
+                        XSharpParser.ClassVarListContext current = (XSharpParser.ClassVarListContext)context;
+                        if (current.DataType != null)
+                        {
+                            //
+                            foreach (var varContext in current._Var)
+                            {
+                                //
+                                Kind kind = Kind.ClassVar;
+                                //
+                                XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
+                                    kind, Modifiers.None, this._currentVarVisibility,
+                                    new TextRange(varContext), new TextInterval(varContext), current.DataType.GetText());
+                                //
+                                if (this._currentTypes != null && _currentTypes.Count > 0)
+                                {
+                                    newClassVar.Parent = this._currentTypes.Peek();
+                                    this._currentTypes.Peek().Members.Add(newClassVar);
+                                }
                             }
                         }
                     }
                 }
+            }
+            catch ( Exception ex )
+            {
+                System.Diagnostics.Debug.WriteLine( "Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
             }
         }
 

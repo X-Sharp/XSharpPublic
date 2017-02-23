@@ -10,7 +10,7 @@ namespace XSharpModel
     {
         private List<XFile> xFiles;
         private IXSharpProject _projectNode;
-        private XType _globalType;
+        //private XType _globalType;
         private bool _loaded;
         //
         private SystemTypeController _typeController;
@@ -19,7 +19,7 @@ namespace XSharpModel
         {
             _projectNode = project;
             xFiles = new List<XFile>();
-            this._globalType = XType.CreateGlobalType();
+            //this._globalType = XType.CreateGlobalType();
             //
             this._typeController = new SystemTypeController();
             this._loaded = true;
@@ -60,18 +60,18 @@ namespace XSharpModel
             }
         }
 
-        public XType GlobalType
-        {
-            get
-            {
-                return _globalType;
-            }
+        //public XType GlobalType
+        //{
+        //    get
+        //    {
+        //        return _globalType;
+        //    }
 
-            set
-            {
-                _globalType = value;
-            }
-        }
+        //    //set
+        //    //{
+        //    //    _globalType = value;
+        //    //}
+        //}
 
         public SystemTypeController TypeController
         {
@@ -140,6 +140,7 @@ namespace XSharpModel
         /// <returns></returns>
         public XType Lookup(string typeName, bool caseInvariant)
         {
+            //
             XType xType = null;
             XType xTemp = null;
             foreach (XFile file in this.Files)
@@ -181,6 +182,7 @@ namespace XSharpModel
 
         public XType LookupFullName(string typeName, bool caseInvariant)
         {
+            //
             XType xType = null;
             XType xTemp = null;
             foreach (XFile file in this.Files)

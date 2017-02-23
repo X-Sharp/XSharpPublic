@@ -16,28 +16,33 @@ namespace XSharpModel
         private Dictionary<string, XType> _typeList;
         private XType _globalType;
         // 
-
-        //private ManualResetEvent _parsedEvent;
-        //private Mutex _lock;
         private object _lock;
+        private int _hashCode;
         private bool _parsed;
 
 
         public XFile(string fullPath)
         {
             // TODO: Change to support Case Sensitive types
-            _typeList = new Dictionary<string, XType>( StringComparer.InvariantCultureIgnoreCase);
             _usings = new List<string>();
             this.filePath = fullPath;
-            _globalType = XType.CreateGlobalType();
-            _typeList.Add( _globalType.Name, _globalType);
             //
-            //_lock = new Mutex();
-            //_parsed = false;
-            //_parsedEvent = new ManualResetEvent(false);
-            _lock = new object();
+            InitTypeList();
+            //
             _parsed = false;
+            _lock = new object();
+            _hashCode = 0;
 
+        }
+
+        /// <summary>
+        /// Reset the TypeList associated with the File, reCreating the GlobalType
+        /// </summary>
+        public void InitTypeList()
+        {
+            this._typeList = new Dictionary<string, XType>(StringComparer.InvariantCultureIgnoreCase);
+            this._globalType = XType.CreateGlobalType(this);
+            this._typeList.Add(_globalType.Name, _globalType);
         }
 
         public XProject Project { get; internal set; }
@@ -131,12 +136,20 @@ namespace XSharpModel
                 return retValue;
             }
 
+        }
+
+        public int HashCode
+        {
+            get
+            {
+                return _hashCode;
+            }
+
             set
             {
-                lock (_lock)
-                {
-                    _parsed = value;
-                }
+                if (_hashCode != value)
+                    _parsed = false;
+                _hashCode = value;
             }
         }
 
@@ -146,9 +159,9 @@ namespace XSharpModel
         public void WaitParsing()
         {
             //_parsedEvent.WaitOne();
-            lock ( _lock )
+            lock (_lock)
             {
-                if ( !_parsed )
+                if ( !Parsed )
                 {
                     //
                     SourceWalker sw = new SourceWalker(null);
@@ -159,7 +172,6 @@ namespace XSharpModel
                         sw.InitParse();
                         sw.BuildModelOnly();
                         //
-                        this.Parsed = true;
                     }
                     catch (Exception e)
                     {
@@ -169,5 +181,23 @@ namespace XSharpModel
             }
         }
 
+        public void Parse( string contentText )
+        {
+            XSharpModel.SourceWalker sw = new XSharpModel.SourceWalker();
+            //
+            sw.Source = contentText;
+            sw.File = this;
+            try
+            {
+                sw.InitParse();
+                sw.BuildModelOnly();
+                //
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
     }
+
 }

@@ -57,7 +57,8 @@ namespace XSharpColorizer
         internal XSharpClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, ITextDocumentFactoryService factory)
         {
             this.buffer = buffer;
-            
+            this.buffer.Changed += Buffer_Changed;
+
             txtdocfactory = factory;
             //xsTagger = new XSharpTagger(registry);
             xsWalker = new SourceWalker(registry);
@@ -80,6 +81,20 @@ namespace XSharpColorizer
             //
             Parse(buffer.CurrentSnapshot);
             isBusy = false;
+        }
+
+        private void Buffer_Changed(object sender, TextContentChangedEventArgs e)
+        {
+            var snapshot = e.After;
+            if (snapshot.Version.VersionNumber != this.versionNumber && !isBusy)
+            {
+                isBusy = true;
+                this.versionNumber = snapshot.Version.VersionNumber;
+                var bw = new BackgroundWorker();
+                bw.DoWork += Bw_DoWork;
+                bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
+                bw.RunWorkerAsync(snapshot);
+            }
         }
 
         private void Parse(ITextSnapshot snapshot)
@@ -116,6 +131,7 @@ namespace XSharpColorizer
                     var token = TokenStream.Get(iToken);
                     var tokenType = token.Type;
                     TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
+                    //
                     if (token.Channel != 0)
                     {
                         switch (token.Channel)
@@ -199,6 +215,7 @@ namespace XSharpColorizer
                         }
                     }
                 }
+                // Add Region Tags
                 foreach (var tag in xsWalker.Tags)
                 {
                     newtags.Add(tag);
@@ -211,18 +228,19 @@ namespace XSharpColorizer
                 }
             }
         }
+
         #region IClassifier
 
 #pragma warning disable 67
 
-        /// <summary>
-        /// An event that occurs when the classification of a span of text has changed.
-        /// </summary>
-        /// <remarks>
-        /// This event gets raised if a non-text change would affect the classification in some way,
-        /// for example typing /* would cause the classification to change in C# without directly
-        /// affecting the span.
-        /// </remarks>
+            /// <summary>
+            /// An event that occurs when the classification of a span of text has changed.
+            /// </summary>
+            /// <remarks>
+            /// This event gets raised if a non-text change would affect the classification in some way,
+            /// for example typing /* would cause the classification to change in C# without directly
+            /// affecting the span.
+            /// </remarks>
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
 
 #pragma warning restore 67
@@ -238,16 +256,7 @@ namespace XSharpColorizer
         /// <returns>A list of ClassificationSpans that represent spans identified to be of this classification.</returns>
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
-            var snapshot = buffer.CurrentSnapshot;
-            if (snapshot.Version.VersionNumber != this.versionNumber  && ! isBusy )
-            {
-                isBusy = true;
-                this.versionNumber = snapshot.Version.VersionNumber;
-                var bw = new BackgroundWorker();
-                bw.DoWork += Bw_DoWork;
-                bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
-                bw.RunWorkerAsync(span.Snapshot);
-            }
+
             var result = new List<ClassificationSpan>();
             var originaltags = tags;        // create copy in case the tags property gets changed in the background
             foreach (var tag in originaltags)
@@ -267,6 +276,9 @@ namespace XSharpColorizer
         private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             isBusy = false;
+            if (this.ClassificationChanged != null)
+                this.ClassificationChanged( this, new ClassificationChangedEventArgs(
+                    new SnapshotSpan(this.buffer.CurrentSnapshot, Span.FromBounds(0, this.buffer.CurrentSnapshot.Length))));
         }
 
         private void Bw_DoWork(object sender, DoWorkEventArgs e)

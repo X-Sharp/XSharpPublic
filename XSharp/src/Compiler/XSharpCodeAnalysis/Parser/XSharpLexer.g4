@@ -124,7 +124,7 @@ LAST_OPERATOR,
 
 FIRST_CONSTANT,
 // Consts
-HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,STRING_CONST,ESCAPED_STRING_CONST,INTERPOLATED_STRING_CONST,
+HEX_CONST,BIN_CONST,INT_CONST,DATE_CONST,REAL_CONST,SYMBOL_CONST,CHAR_CONST,ESCAPED_STRING_CONST,INTERPOLATED_STRING_CONST,
 
 LAST_CONSTANT,
 
@@ -183,8 +183,8 @@ SYMBOL_CONST    : NUMSIGN IDStartChar (IDChar)* ;
 NEQ2			: NUMSIGN ;			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
 
 
-// Char_const rule has been removed. All single quoted literals are now string. We handle the conversion in the backend
-//CHAR_CONST		: '\'' ESCAPED_CHARACTER '\'';
+// Char_Const is lexer and parsed as char but then converted to string later
+CHAR_CONST		: '\'' ESCAPED_CHARACTER '\'';
 
 STRING_CONST	: '"'  NOT_DOUBLE '"'			// Double quoted string
 				| '\'' NOT_SINGLE '\''			// Single quoted string

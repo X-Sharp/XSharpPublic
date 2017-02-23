@@ -890,6 +890,7 @@ voTypeName			: Token=
 literalValue		: Token=
                     ( TRUE_CONST
                     | FALSE_CONST
+					| CHAR_CONST
                     | STRING_CONST
                     | ESCAPED_STRING_CONST
                     | INTERPOLATED_STRING_CONST

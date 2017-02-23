@@ -1174,6 +1174,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             var token = tokens[i];
                             switch (token.Type)
                             {
+                                case XSharpLexer.CHAR_CONST:
                                 case XSharpLexer.STRING_CONST:
                                 case XSharpLexer.ESCAPED_STRING_CONST:
                                 case XSharpLexer.INTERPOLATED_STRING_CONST:

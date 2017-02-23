@@ -167,9 +167,8 @@ namespace XSharpModel
 
         internal void FileWalk( XFile file )
         {
-            SourceWalker sw = new SourceWalker(null);
+            SourceWalker sw = new SourceWalker();
             //
-            file.Parsed = false;
             sw.File = file;
             try
             {
@@ -177,15 +176,10 @@ namespace XSharpModel
                 sw.BuildModelOnly();
                 //
             }
-            catch (Exception ex)
+            catch
             {
                 // Push Exception away...
-                throw ex;
-            }
-            finally
-            {
-                // And don't forget to mark the file as parsed
-                file.Parsed = true;
+                throw;
             }
         }
 

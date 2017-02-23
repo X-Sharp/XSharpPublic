@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace XSharpModel
     /// Placeholder to store a type used in CompletionSet build.
     /// It can be one of our type, or one of the System type
     /// </summary>
+    [DebuggerDisplay("{FullName,nq}")]
     public class CompletionType
     {
         private Type _stype = null;

@@ -46,8 +46,10 @@ namespace XSharp.LanguageService
                 // Uhh !??, Something went wrong
                 return false;
             }
+            // TODO: We SHOULD use the source text instead of the File
             // we may have to wait for the file to be parsed at least once...
-            file.WaitParsing();
+            // is it really necessary to parse ????
+            //file.Parse(src.GetText() );
             List<XType> typeAtPos = new List<XType>();
             //
             dropDownTypes.Clear();

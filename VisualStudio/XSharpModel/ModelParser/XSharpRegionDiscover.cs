@@ -24,13 +24,29 @@ namespace XSharpModel
         internal List<ClassificationSpan> tags = new List<ClassificationSpan>();
         public ITextSnapshot Snapshot { get; set; }
         public bool BuildRegionTags { get; internal set; }
-        public bool BuildModel { get; internal set; }
+
+        private bool _reInitModel;
+        private bool _buildModel;
+        public bool BuildModel
+        {
+            get
+            {
+                return _buildModel;
+            }
+
+            internal set
+            {
+                _buildModel = value;
+                _reInitModel = value;
+            }
+        }
 
         internal IClassificationType xsharpIdentifierType;
         internal IClassificationType xsharpBraceOpenType;
         internal IClassificationType xsharpBraceCloseType;
         internal IClassificationType xsharpRegionStartType;
         internal IClassificationType xsharpRegionStopType;
+
 
         public void RegionExitEveryRule([NotNull] ParserRuleContext context)
         {

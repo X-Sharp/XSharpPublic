@@ -28,9 +28,12 @@ namespace XSharpModel
         {
             // Check if it already exist
             if (!dict.ContainsKey(key))
+            {
                 dict.Add(key, value);
+                return value;
+            }
             //
-            return value;
+            return dict[key];
         }
     }
 }

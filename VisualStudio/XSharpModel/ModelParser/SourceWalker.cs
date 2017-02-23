@@ -153,7 +153,26 @@ namespace XSharpModel
 
         }
 
-        public SourceWalker(IClassificationTypeRegistryService registry)
+        public string Source
+        {
+            get
+            {
+                return _source;
+            }
+
+            set
+            {
+                _source = value;
+            }
+        }
+
+        public SourceWalker()
+        {
+            //
+            _tags = new List<ClassificationSpan>();
+        }
+
+        public SourceWalker(IClassificationTypeRegistryService registry):this()
         {
             if (registry != null)
             {
@@ -164,7 +183,6 @@ namespace XSharpModel
                 _xsharpRegionStopType = registry.GetClassificationType(ColorizerConstants.XSharpRegionStopFormat);
             }
             //
-            _tags = new List<ClassificationSpan>();
         }
 
         public void InitParse()
@@ -177,6 +195,11 @@ namespace XSharpModel
                 // so we can process Vulcan and XSharp include files           
 
                 LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, xsparseoptions, _fullPath);
+                if ( this.File != null )
+                {
+                    // Put a Hash Tag on the File
+                    this.File.HashCode = _source.GetHashCode();
+                }
                 var syntaxRoot = tree.GetRoot();
                 // To list errors: But how to add to errorlist from here ?
                 // if (syntaxRoot.ContainsDiagnostics)
@@ -232,11 +255,19 @@ namespace XSharpModel
             // abort when the project is unloaded
             if (!_file.Project.Loaded)
                 return;
+
             //
             var discover = new XSharpModelRegionDiscover();
             discover.File = this._file;
             discover.BuildRegionTags = false;
             discover.BuildModel = true;
+            if (_file != null)
+            {
+                if (_file.Project.Loaded)
+                {
+                    discover.BuildModel = !_file.Parsed;
+                }
+            }
             //
             if (_treeInit )
             {

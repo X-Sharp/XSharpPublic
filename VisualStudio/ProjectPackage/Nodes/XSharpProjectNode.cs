@@ -28,6 +28,8 @@ using System.ComponentModel.Composition;
 
 using XSharpModel;
 using System.Linq;
+using Microsoft.VisualStudio.TextManager.Interop;
+
 namespace XSharp.Project
 {
     /// <summary>
@@ -35,7 +37,7 @@ namespace XSharp.Project
     /// within the hierarchy.
     /// </summary>
     [Guid("F1A46976-964A-4A1E-955D-E05F5DB8651F")]
-    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject, 
+    public class XSharpProjectNode : XProjectNode, IVsSingleFileGeneratorFactory, IXSharpProject,
         IVsDesignTimeAssemblyResolution, IVsProject5
     {
 
@@ -679,7 +681,7 @@ namespace XSharp.Project
             var path = System.IO.Path.GetDirectoryName(fileName);
             fileName = System.IO.Path.GetFileName(fileName);
             int dotPos = fileName.IndexOf(".");
-            string parentFile = Path.Combine(path,fileName.Substring(0, dotPos));
+            string parentFile = Path.Combine(path, fileName.Substring(0, dotPos));
             string extension = fileName.Substring(dotPos);
             //
             if (dependencies.ContainsKey(extension))
@@ -799,7 +801,7 @@ namespace XSharp.Project
             // check for incomplete conditions
             base.Load(filename, location, name, flags, ref iidProject, out canceled);
 
-  
+
             // WAP ask the designer service for the CodeDomProvider corresponding to the project node.
             this.OleServiceProvider.AddService(typeof(SVSMDCodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
             this.OleServiceProvider.AddService(typeof(System.CodeDom.Compiler.CodeDomProvider), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
@@ -915,7 +917,7 @@ namespace XSharp.Project
 
         protected override NodeProperties CreatePropertiesObject()
         {
-            return new XSharpProjectNodeProperties( this );
+            return new XSharpProjectNodeProperties(this);
             //return new ProjectNodeProperties(this);
         }
         /*
@@ -1091,6 +1093,30 @@ namespace XSharp.Project
             if (statusBar != null)
             {
                 statusBar.SetText(msg);
+            }
+        }
+
+        public void OpenElement(string file, int line, int column)
+        {
+            IVsWindowFrame window;
+            IVsTextView textView;
+            IVsUIHierarchy dummy1;
+            uint dummy2;
+
+            VsShellUtilities.OpenDocument(this.Site, file, VSConstants.LOGVIEWID_Code, out dummy1, out dummy2, out window, out textView);
+            if ((window != null) && (textView != null))
+            {
+                window.Show();
+                //
+                TextSpan span = new TextSpan();
+                span.iStartLine = line - 1;
+                span.iStartIndex = column - 1;
+                span.iEndLine = line - 1;
+                span.iEndIndex = column - 1;
+                //
+                textView.SetCaretPos(span.iStartLine, span.iStartIndex);
+                textView.EnsureSpanVisible(span);
+                textView.SetTopLine(span.iStartLine);
             }
         }
 
@@ -1334,8 +1360,8 @@ namespace XSharp.Project
                 str = str2;
             }
             // check to see required elements
-            
-            if (ok && str.IndexOf("'Debug|AnyCPU'",StringComparison.OrdinalIgnoreCase) == -1)
+
+            if (ok && str.IndexOf("'Debug|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
             if (ok && str.IndexOf("'Release|AnyCPU'", StringComparison.OrdinalIgnoreCase) == -1)
                 ok = false;
@@ -1494,6 +1520,8 @@ namespace XSharp.Project
             return VSConstants.S_OK;
         }
 
+
+
         #endregion
     }
 
@@ -1512,7 +1540,7 @@ namespace XSharp.Project
         public bool IsSymbolPresent(string symbol)
         {
             switch (symbol.ToLower())
-            { 
+            {
                 case "assemblyreferences":
                 case "declaredsourceitems":
                 case "usersourceitems":

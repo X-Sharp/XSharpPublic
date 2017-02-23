@@ -27,7 +27,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         internal static string TrailingWs(this IToken token)
         {
+            if (token == null || token.TokenSource == null)
+                return "";
             var source = token.TokenSource.InputStream as ICharStream;
+            if (source == null)
+                return "";
             var index = token.StopIndex+1;
             var result = "";
             while (index < source.Size)

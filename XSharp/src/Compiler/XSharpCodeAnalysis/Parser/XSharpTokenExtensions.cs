@@ -259,6 +259,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxFactory.MakeToken(SyntaxKind.FalseKeyword);
                     break;
+                case XSharpParser.CHAR_CONST:
+                    var c = CharValue(token.Text);
+                    r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, new String(c, 1), SyntaxFactory.WS);
+                    break;
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
                     r = SyntaxFactory.Literal(SyntaxFactory.WS, token.Text, StringValue(token.Text), SyntaxFactory.WS);
@@ -985,6 +989,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             switch (token.Type)
             {
+                case XSharpParser.CHAR_CONST:
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.ESCAPED_STRING_CONST:
                 case XSharpParser.INTERPOLATED_STRING_CONST:
@@ -1133,6 +1138,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 case XSharpParser.FALSE_CONST:
                     r = SyntaxKind.FalseLiteralExpression;
                     break;
+                case XSharpParser.CHAR_CONST:
                 case XSharpParser.STRING_CONST:
                 case XSharpParser.ESCAPED_STRING_CONST:
                     r = SyntaxKind.StringLiteralExpression;
@@ -1528,8 +1534,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             { 
                 switch (token.Type)
                 {
+                    case XSharpParser.CHAR_CONST:
                     case XSharpParser.STRING_CONST:
                     case XSharpParser.ESCAPED_STRING_CONST:
+                    case XSharpParser.INTERPOLATED_STRING_CONST:
                         return true;
                     default:
                         break;

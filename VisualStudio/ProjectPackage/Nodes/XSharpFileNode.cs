@@ -102,8 +102,26 @@ namespace XSharp.Project
         {
             int result = base.IncludeInProject();
             DetermineSubType();
+            if (this.FileType == XSharpFileType.SourceCode)
+            {
+                var prjNode = this.ProjectMgr as XSharpProjectNode;
+                prjNode.ProjectModel.AddFile(this.Url);
+            }
             return result;
         }
+
+        protected override int ExcludeFromProject()
+        {
+            if (this.FileType == XSharpFileType.SourceCode)
+            {
+                var prjNode = this.ProjectMgr as XSharpProjectNode;
+                prjNode.ProjectModel.RemoveFile(this.Url);
+                prjNode.ClearIntellisenseErrors(this.Url);
+                prjNode.ShowIntellisenseErrors();
+            }
+            return base.ExcludeFromProject();
+        }
+
 
         internal void DetermineSubType()
         {

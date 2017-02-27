@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell.TableManager;
+using System;
 using XSharp.Project;
 
 namespace XSharp.Project
@@ -38,16 +39,58 @@ namespace XSharp.Project
         /// <summary>
         /// Error source
         /// </summary>
-        object ErrorSource { get; set; }
+        ErrorSource ErrorSource { get; set; }
 
         /// <summary>
         /// Error code for the error item
         /// </summary>
-        object ErrorCode { get; set; }
+        string ErrorCode { get; set; }
 
         /// <summary>
         /// Category of the error
         /// </summary>
         string ErrorCategory { get; set; }
+
+        /// <summary>
+        /// BuildTool
+        /// </summary>
+        string BuildTool { get; set; }
+
+        string Key { get; }
     }
+    internal class ErrorListItem : IErrorListItem
+    {
+
+        internal ErrorListItem()
+        {
+            ErrorCategory = "Compiler";
+
+        }
+        public int Column { get; set; }
+
+        public string ErrorCode { get; set; }
+
+
+        public ErrorSource ErrorSource { get; set; }
+
+        public string Filename { get; set; }
+        public int Line { get; set; }
+
+        public string Message { get; set; }
+
+        public string ProjectName { get; set; }
+
+        public MessageSeverity Severity { get; set; }
+        public string ErrorCategory { get; set; }
+        public string BuildTool { get; set; }
+
+        public string Key
+        {
+            get
+            {
+                return Filename + Line.ToString() + Column.ToString()+ErrorCode;
+            }
+        }
+    }
+
 }

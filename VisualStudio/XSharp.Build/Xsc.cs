@@ -409,12 +409,12 @@ namespace XSharp.Build
 
 
         private int errorCount;
-        private bool hasShownMaxErrorMsg;
+        //private bool hasShownMaxErrorMsg;
         public Xsc() : base()
         {
             //System.Diagnostics.Debugger.Launch();
             errorCount = 0;
-            hasShownMaxErrorMsg = false;
+            //hasShownMaxErrorMsg = false;
             VulcanCompatibleResources = false;
         }
 
@@ -960,18 +960,18 @@ namespace XSharp.Build
         {
             try
             {
-                if (errorCount < 500)
-                {
-                    base.LogEventsFromTextOutput(singleLine, messageImportance);
-                }
-                else if (! hasShownMaxErrorMsg)
-                {
-                    hasShownMaxErrorMsg = true;
-                    // the line is in the format c:\....\file.prg (n,n,n,n): error/warning XSnnnn:
-                    string line = singleLine.Substring(0, singleLine.IndexOf(')')+2);
-                    line += " error XB9001:" + $"Truncating error list after at {errorCount} errors ";
-                    base.LogEventsFromTextOutput(line, MessageImportance.High);
-                }
+                //if (errorCount < 500)
+                //{
+                base.LogEventsFromTextOutput(singleLine, messageImportance);
+                //}
+                //else if (! hasShownMaxErrorMsg)
+                //{
+                //    //hasShownMaxErrorMsg = true;
+                //    // the line is in the format c:\....\file.prg (n,n,n,n): error/warning XSnnnn:
+                //    string line = singleLine.Substring(0, singleLine.IndexOf(')')+2);
+                //    line += " error XB9001:" + $"Truncating error list after at {errorCount} errors ";
+                //    base.LogEventsFromTextOutput(line, MessageImportance.High);
+                //}
                 errorCount++;
             }
             catch (Exception e)

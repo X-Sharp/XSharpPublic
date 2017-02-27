@@ -7,11 +7,11 @@ using Microsoft.VisualStudio.Shell.TableManager;
 namespace XSharp.Project
 {
     [Export(typeof(IErrorListProvider))]
-    internal sealed class ErrorListProvider : IErrorListProvider, ITableDataSource, IDisposable
+    internal class ErrorListProvider : IErrorListProvider, ITableDataSource, IDisposable
     {
-        internal ITableManager ErrorTableManager;
-        private readonly string DataSourceIdentifierString = Constants.Product;
-        private readonly string DataSourceDisplayName = Constants.Product;
+        internal ITableManager tableManager;
+        private readonly string dataSourceIdentifierString = Constants.Product;
+        private readonly string dataSourceDisplayName = Constants.Product;
 
         // The list sinks. Probably only one but there could be more. Needs to be thread safe so is
         // also used as a lock
@@ -21,13 +21,21 @@ namespace XSharp.Project
         [ImportingConstructor]
         internal ErrorListProvider(ITableManager manager)
         {
-            ErrorTableManager = manager;
-            ErrorTableManager.AddSource(this, StandardTableColumnDefinitions.DetailsExpander, StandardTableColumnDefinitions.ProjectName,
+            tableManager = manager;
+            this.AddSource();
+        }
+
+        internal virtual void AddSource()
+        {
+            tableManager.AddSource(this, StandardTableColumnDefinitions.DetailsExpander, StandardTableColumnDefinitions.ProjectName,
                                                 StandardTableColumnDefinitions.ErrorSeverity, StandardTableColumnDefinitions.ErrorCode,
                                                 StandardTableColumnDefinitions.ErrorSource, StandardTableColumnDefinitions.ErrorCategory,
                                                 StandardTableColumnDefinitions.Text, StandardTableColumnDefinitions.DocumentName,
-                                                StandardTableColumnDefinitions.Line, StandardTableColumnDefinitions.Column);
+                                                StandardTableColumnDefinitions.Line, StandardTableColumnDefinitions.Column,
+                                                StandardTableColumnDefinitions.BuildTool);
+
         }
+
         public string DisplayName
         {
             get
@@ -35,7 +43,7 @@ namespace XSharp.Project
                 // This string should, in general, be localized since it is what would be displayed in any UI that lets the end user pick
                 // which ITableDataSources should be subscribed to by an instance of the table control. It really isn't needed for the error
                 // list however because it auto subscribes to all the ITableDataSources.
-                return DataSourceDisplayName;
+                return dataSourceDisplayName;
             }
         }
 
@@ -46,7 +54,7 @@ namespace XSharp.Project
         {
             get
             {
-                return DataSourceIdentifierString;
+                return dataSourceIdentifierString;
             }
         }
 
@@ -141,13 +149,14 @@ namespace XSharp.Project
         }
         internal void Clear()
         {
-            ErrorTableManager.RemoveSource(this);
-            ErrorTableManager = null;
+            tableManager.RemoveSource(this);
+            tableManager = null;
         }
         void IDisposable.Dispose()
         {
-            ErrorTableManager.RemoveSource(this);
-            ErrorTableManager = null;
+            tableManager.RemoveSource(this);
+            tableManager = null;
         }
     }
+
 }

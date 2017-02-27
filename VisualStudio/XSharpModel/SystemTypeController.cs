@@ -37,7 +37,24 @@ namespace XSharpModel
                     //MessageBox.Show("Intellisense error 9");
                 }
                 input.Close();
+
+                // if the PDB file exists then this might put a lock on the pdb file.
+                // so we rename the pdb temporarily to prevent the lock
+                var cPdb = Path.ChangeExtension(cFile, ".pdb");
+                var cTmp = Path.ChangeExtension(cFile, ".p$$");
+                bool renamed = false;
+                if (File.Exists(cPdb))
+                {
+                    renamed = true;
+                    if (File.Exists(cTmp))
+                        File.Delete(cTmp);
+                    File.Move(cPdb, cTmp);
+                }
                 assembly = Assembly.Load(rawAssembly);
+                if (renamed && File.Exists(cTmp))
+                {
+                    File.Move(cTmp, cPdb);
+                }
                 input.Dispose();
                 rawAssembly = null;
             }

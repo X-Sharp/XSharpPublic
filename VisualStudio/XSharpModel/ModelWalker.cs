@@ -176,10 +176,10 @@ namespace XSharpModel
                 sw.BuildModelOnly();
                 //
             }
-            catch
+            catch (Exception)
             {
                 // Push Exception away...
-                throw;
+                //throw;
             }
         }
 

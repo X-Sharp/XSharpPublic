@@ -42,32 +42,16 @@ namespace Microsoft.CodeAnalysis.CSharp
             switch (method.Name)
             {
                 case XSharpSpecialNames.AppInit:
-                    body = LocalRewriter.RewriteAppInit(
-                        method,
-                        body,
-                        diagnostics: diagnostics);
-                    body.WasCompilerGenerated = true;
+                    body = LocalRewriter.RewriteAppInit(method, body, diagnostics);
                     break;
                 case XSharpSpecialNames.AppExit:
-                    body = LocalRewriter.RewriteAppExit(
-                        method,
-                        body,
-                        diagnostics: diagnostics);
-                    body.WasCompilerGenerated = true;
+                    body = LocalRewriter.RewriteAppExit(method, body, diagnostics);
                     break;
                 case XSharpSpecialNames.ExitProc:
-                    body = LocalRewriter.RewriteExit(
-                        method,
-                        body,
-                        diagnostics: diagnostics);
-                    body.WasCompilerGenerated = true;
+                    body = LocalRewriter.RewriteExit(method, body, diagnostics);
                     break;
                 case VulcanFunctionNames.RunInitProcs:
-                    body = LocalRewriter.RewriteRunInitProc(
-                        method,
-                        body,
-                        diagnostics: diagnostics);
-                    body.WasCompilerGenerated = true;
+                    body = LocalRewriter.RewriteRunInitProc(method,body,diagnostics);
                     break;
             }
             return body;

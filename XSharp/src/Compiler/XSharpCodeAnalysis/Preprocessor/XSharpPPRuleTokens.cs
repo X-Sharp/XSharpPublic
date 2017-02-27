@@ -30,13 +30,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     internal abstract class PPRuleToken
     {
         #region Fields
-        protected PPToken _token;
+        protected XSharpToken _token;
         protected PPTokenType _type;
         protected string _key;
         #endregion
         #region Properties
         internal string Key { get { return _key; } }
-        internal PPToken Token { get { return _token; } }
+        internal XSharpToken Token { get { return _token; } }
         internal int Index { get; set; }
         internal bool IsMarker { get { return (PPTokenType)((int)_type & 0x0F) != PPTokenType.Token; } }
         internal bool IsOptional { get { return _type.IsOptional(); } }
@@ -87,7 +87,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return _type.GetTokenType().ToString() + " " + SyntaxText;
         }
 
-        internal PPRuleToken(PPToken token, PPTokenType type)
+        internal PPRuleToken(XSharpToken token, PPTokenType type)
         {
             _token = token;
             _key = token.Text;
@@ -110,15 +110,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         // For restricted tokens this contains the list of possible match values
         // For List and Repeated match markers the Tokens list contains the list of 
         // tokens that may the end of the list
-        internal PPToken[] Tokens { get; set; }
+        internal XSharpToken[] Tokens { get; set; }
         // For optional tokens this contains the list of tokens inside the option block
         internal PPMatchToken[] Children { get; set; }
        #endregion
-        internal PPMatchToken(PPToken token, PPTokenType type) : base(token, type)
+        internal PPMatchToken(XSharpToken token, PPTokenType type) : base(token, type)
         {
             Children = null;
         }
-        internal PPMatchToken(PPToken token, PPTokenType type, string key) : this(token, type)
+        internal PPMatchToken(XSharpToken token, PPTokenType type, string key) : this(token, type)
         {
             _key = key;
         }
@@ -136,11 +136,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal PPMatchToken MatchMarker { get; set; }
         internal PPResultToken[] OptionalElements { get; set; }
         #endregion
-        internal PPResultToken(PPToken token, PPTokenType type) : base(token, type)
+        internal PPResultToken(XSharpToken token, PPTokenType type) : base(token, type)
         {
             MatchMarker = null;
         }
-        internal PPResultToken(PPToken token, PPTokenType type, string key) : this(token, type)
+        internal PPResultToken(XSharpToken token, PPTokenType type, string key) : this(token, type)
         {
             _key = key;
         }

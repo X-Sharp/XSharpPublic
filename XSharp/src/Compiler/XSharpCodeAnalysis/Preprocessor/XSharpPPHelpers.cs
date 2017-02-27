@@ -123,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return list;
         }
 
-        internal PPRule FindMatchingRule(IList<PPToken> tokens, out PPMatchRange[] matchInfo)
+        internal PPRule FindMatchingRule(IList<XSharpToken> tokens, out PPMatchRange[] matchInfo)
         {
             PPRule result = null;
             matchInfo = null;
@@ -188,7 +188,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             get { return token; }
         }
-
+        internal bool IsSkipped
+        {
+            get { return  _start == -1 && _length == 0; }
+        }
 
         #endregion
         #region Constructors

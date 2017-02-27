@@ -91,7 +91,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     file = node.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(file))
                     {
-                        file = (node.XNode.SourceSymbol as InternalSyntax.PPToken).SourceFileName;
+                        file = (node.XNode.SourceSymbol as InternalSyntax.XSharpToken).SourceFileName;
                     }
                 }
                 SourceText ntext;
@@ -170,7 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     length = snode.XNode.SourceSymbol.StopIndex - start + 1;
                     fn = snode.XNode.SourceFileName;
                     if (string.IsNullOrEmpty(fn))
-                        fn = (snode.XNode.SourceSymbol as InternalSyntax.PPToken).SourceFileName;
+                        fn = (snode.XNode.SourceSymbol as InternalSyntax.XSharpToken).SourceFileName;
 
                 }
                 if (length < 0)

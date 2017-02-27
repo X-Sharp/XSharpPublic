@@ -60,10 +60,10 @@ namespace Antlr4.Runtime {
             }
             internal ParseErrorData(IToken token, ErrorCode code, params object[] args) {
                 if (token == null)
-                    token = new PPToken(0, "");
-                else if (!(token is PPToken))
+                    token = new XSharpToken(0, "");
+                else if (!(token is XSharpToken))
                 {
-                    token = new PPToken(token);
+                    token = new XSharpToken(token);
                 }
                 this.Node = new TerminalNodeImpl(token);
                 this.Code = code;
@@ -97,7 +97,7 @@ namespace Antlr4.Runtime {
             {
                 get
                 {
-                    var ct = (Symbol as PPToken);
+                    var ct = (Symbol as XSharpToken);
                     if (ct != null)
                     {
                         if (ct.TokenSource != null && !String.IsNullOrEmpty(ct.TokenSource.SourceName))
@@ -107,9 +107,9 @@ namespace Antlr4.Runtime {
                     return "<unknown>";
                 }
             }
-            public string MappedFileName { get { return ((PPToken)Symbol).MappedFileName; } }
-            public int MappedLine { get { return ((PPToken)Symbol).MappedLine; } }
-            public IToken SourceSymbol { get { return ((PPToken)Symbol).SourceSymbol; } }
+            public string MappedFileName { get { return ((XSharpToken)Symbol).MappedFileName; } }
+            public int MappedLine { get { return ((XSharpToken)Symbol).MappedLine; } }
+            public IToken SourceSymbol { get { return ((XSharpToken)Symbol).SourceSymbol; } }
             public override string ToString() { return this.GetText(); }
         }
     }
@@ -176,10 +176,10 @@ namespace Antlr4.Runtime {
 
             }
         }
-        public override string SourceFileName { get { return (Start as PPToken).SourceFileName; } }
-        public override string MappedFileName { get { return (Start as PPToken).MappedFileName; } }
-        public override int MappedLine { get { return (Start as PPToken).MappedLine; } }
-        public override IToken SourceSymbol { get { return (Start as PPToken).SourceSymbol; } }
+        public override string SourceFileName { get { return (Start as XSharpToken).SourceFileName; } }
+        public override string MappedFileName { get { return (Start as XSharpToken).MappedFileName; } }
+        public override int MappedLine { get { return (Start as XSharpToken).MappedLine; } }
+        public override IToken SourceSymbol { get { return (Start as XSharpToken).SourceSymbol; } }
         public override string ToString() {
             /*return this.GetText();*/
             var s = this.GetType().ToString();
@@ -328,6 +328,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         XVoIsDecl = 1 << 1,
         XPCall = 1 << 2,
         XGenerated =1 << 3,
+        XVoIsDim = 1 << 4,
     }
 
     internal abstract partial class CSharpSyntaxNode
@@ -355,6 +356,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             get { return xflags.HasFlag(XNodeFlags.XGenerated); }
             set { if (value) xflags |= XNodeFlags.XGenerated; else xflags &= ~XNodeFlags.XGenerated; }
         }
+        public bool XVoIsDim
+        {
+            get { return xflags.HasFlag(XNodeFlags.XVoIsDim); }
+            set { if (value) xflags |= XNodeFlags.XVoIsDim; else xflags &= ~XNodeFlags.XVoIsDim; }
+        }
     }
 
     internal sealed partial class CompilationUnitSyntax
@@ -378,6 +384,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         internal bool XVoIsDecl { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDecl; } }
         internal bool XPCall { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XPCall; } }
         internal bool XGenerated { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XGenerated; } }
+        internal bool XVoIsDim { get { return ((InternalSyntax.CSharpSyntaxNode)(Green)).XVoIsDim; } }
         internal bool XIsMissingArgument {
             get
             {
@@ -441,7 +448,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             UsesPCount = 1 << 5,
             UsesGetMParam = 1 << 6,
             MustBeVoid = 1 << 7,
-            IsInitAxit = 1 << 8
+            IsInitAxit = 1 << 8,
+            HasDim = 1 << 9,
         }
 
         public class EntityData {
@@ -488,6 +496,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             {
                 get { return flags.HasFlag(MethodFlags.IsInitAxit); }
                 set { if (value) flags |= MethodFlags.IsInitAxit; else flags &= ~MethodFlags.IsInitAxit; }
+            }
+
+            public bool HasDim
+            {
+                get { return flags.HasFlag(MethodFlags.HasDim); }
+                set { if (value) flags |= MethodFlags.HasDim; else flags &= ~MethodFlags.HasDim; }
             }
 
             private List<MemVarFieldInfo> Fields;

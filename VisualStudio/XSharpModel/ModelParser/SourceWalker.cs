@@ -201,18 +201,12 @@ namespace XSharpModel
                     this.File.HashCode = _source.GetHashCode();
                 }
                 var syntaxRoot = tree.GetRoot();
-                // To list errors: But how to add to errorlist from here ?
-                // if (syntaxRoot.ContainsDiagnostics)
-                // {
-                //    var diags = syntaxRoot.GetDiagnostics();
-                //    foreach (var diag in diags)
-                //    {
-                //        var loc = diag.Location;
-                //        var msg = diag.GetMessage();
 
-                //    }
-                // }
-                // Get the antlr4 parse tree root
+                var prjNode = File.Project.ProjectNode;
+
+                ShowErrorsAsync(syntaxRoot);
+
+                 // Get the antlr4 parse tree root
                 _xTree = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XSource;
                 _TokenStream = ((LanguageService.CodeAnalysis.XSharp.Syntax.CompilationUnitSyntax)syntaxRoot).XTokenStream;
                 //
@@ -222,9 +216,46 @@ namespace XSharpModel
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
-
-
         }
+
+        IEnumerable<LanguageService.CodeAnalysis.Diagnostic> errors = null;
+        object _gate = new object();
+        void ShowErrorsAsync(LanguageService.CodeAnalysis.SyntaxNode syntaxRoot)
+        {
+            // To list errors: But how to add to errorlist from here ?
+            
+            var prjNode = File.Project.ProjectNode;
+            lock (_gate)
+            {
+                errors = syntaxRoot.GetDiagnostics();
+            }
+            if (errors == null)
+                return;
+            var thread = new System.Threading.Thread(delegate ()
+            {
+                // wait 2 seconds to allow continuous typing. The error may have disappeared in 2 seconds
+                System.Threading.Thread.Sleep(2000);
+                IEnumerable<LanguageService.CodeAnalysis.Diagnostic> current;
+                lock (_gate)
+                {
+
+                    current = errors;
+                    string path = File.FullPath;
+                    prjNode.ClearIntellisenseErrors(path);
+                    if (current != null && prjNode.IsDocumentOpen(path))
+                    {
+                        foreach (var diag in current)
+                        {
+                            var loc = diag.Location.GetLineSpan().StartLinePosition;
+                            prjNode.AddIntellisenseError(path, loc.Line + 1, loc.Character + 1, diag.Id, diag.GetMessage(), diag.Severity);
+                        }
+                    }
+                    prjNode.ShowIntellisenseErrors();
+                }
+            });
+            thread.Start();
+        }
+
 
         public void BuildRegionTagsOnly()
         {

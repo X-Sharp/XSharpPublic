@@ -29,6 +29,7 @@ using System.ComponentModel.Composition;
 using XSharpModel;
 using System.Linq;
 using Microsoft.VisualStudio.TextManager.Interop;
+using LanguageService.CodeAnalysis;
 
 namespace XSharp.Project
 {
@@ -103,7 +104,6 @@ namespace XSharp.Project
 
             object errlist = ((IServiceProvider)this.package).GetService(typeof(SVsErrorList));
             errorList = (IErrorList)errlist;
-
         }
 
 
@@ -817,12 +817,25 @@ namespace XSharp.Project
             this.OleServiceProvider.AddService(typeof(DesignerContext), new OleServiceProvider.ServiceCreatorCallback(this.CreateServices), false);
 
             // Run the background Walker/Listener, to fill the Model
+            CreateErrorListManager();
+
             this.ProjectModel.Walk();
 
         }
         #endregion
 
+
         #region Private implementation
+
+        private void CreateErrorListManager()
+        {
+            if (_errorListManager == null)
+            {
+                _errorListManager = ErrorListManager.RegisterProject(errorList, this);
+            }
+        }
+
+
         private void InitializeImageList()
         {
             imageOffset = this.ImageHandler.ImageList.Images.Count;
@@ -897,6 +910,7 @@ namespace XSharp.Project
                 if (logger != null)
                 {
                     logger.Clear();
+
                 }
             }
             return base.InvokeMsBuild(target);
@@ -1050,7 +1064,8 @@ namespace XSharp.Project
             }
         }
 
-        public new void AddURL(String url, HierarchyNode node)
+
+        public override void AddURL(String url, HierarchyNode node)
         {
             //
             base.AddURL(url, node);
@@ -1062,22 +1077,33 @@ namespace XSharp.Project
 #if CODEMODEL
             if (!IsProjectFile(url))
             {
-                if (File.Exists(url) && IsCodeFile(url))
+                var xnode = node as XSharpFileNode;
+                if (xnode != null && !xnode.IsNonMemberItem)
                 {
-                    this.ProjectModel.AddFile(url);
+                    if (File.Exists(url) && IsCodeFile(url))
+                    {
+                        this.ProjectModel.AddFile(url);
+                    }
                 }
             }
 #endif
         }
 
-        public new void RemoveURL(String url)
+        public override void RemoveURL(String url)
         {
             //
-            base.RemoveURL(url);
             //
 #if CODEMODEL
-            this.ProjectModel.RemoveFile(url);
+            if (File.Exists(url) && IsCodeFile(url))
+            {
+                var node = this.FindChild(url) as XSharpFileNode;
+                if (node != null && !node.IsNonMemberItem)
+                {
+                    this.ProjectModel.RemoveFile(url);
+                }
+            }
 #endif
+            base.RemoveURL(url);
         }
 
 
@@ -1281,31 +1307,50 @@ namespace XSharp.Project
         #endregion
         #region TableManager
         //internal ITableManagerProvider tableManagerProvider { get; private set; }
-        ITableManager errorListTableManager;
-        ErrorListProvider errorlistProvider;
+        ErrorListManager _errorListManager = null;
+
         protected override void SetOutputLogger(IVsOutputWindowPane output)
         {
             base.SetOutputLogger(output);
 
         }
         XSharpIDEBuildLogger logger = null;
+
         internal override IDEBuildLogger CreateBuildLogger(IVsOutputWindowPane output, TaskProvider taskProvider, IVsHierarchy hierarchy)
         {
             logger = new XSharpIDEBuildLogger(output, this.TaskProvider, hierarchy);
             logger.ProjectNode = this;
             logger.ErrorString = ErrorString;
             logger.WarningString = WarningString;
-            if (errorlistProvider != null)
-            {
-                errorListTableManager = null;
-                errorlistProvider = null;
-            }
-
-            errorListTableManager = errorList.TableControl.Manager;
-            errorlistProvider = new ErrorListProvider(errorListTableManager);
-            logger.ErrorlistProvider = errorlistProvider;
+            CreateErrorListManager();
+            logger.ErrorListManager = _errorListManager;
             return logger;
         }
+
+        public void ClearIntellisenseErrors(string fileName)
+        {
+            _errorListManager.DeleteIntellisenseErrorsFromFile(fileName);
+        }
+        public void AddIntellisenseError(string file, int line, int column, string errCode, string message, DiagnosticSeverity sev)
+        {
+            _errorListManager.AddIntellisenseError(file, line, column, errCode, message, sev.ToMessageSeverity());
+        }
+        
+        public void ShowIntellisenseErrors()
+        {
+            _errorListManager.Refresh();
+            return;
+        }
+
+        public bool IsDocumentOpen(string documentName)
+        {
+            IVsUIHierarchy hier;
+            uint itemid;
+            IVsWindowFrame windowFrame;
+            bool open = VsShellUtilities.IsDocumentOpen(this.Site, documentName, Guid.Empty, out hier, out itemid, out windowFrame);
+            return open;
+        }
+
         public override int Close()
         {
             XSharpModel.XSolution.Remove(projectModel);
@@ -1314,10 +1359,8 @@ namespace XSharp.Project
             {
                 logger.Clear();
             }
-            if (errorlistProvider != null)
-            {
-                errorlistProvider.Clear();
-            }
+            ErrorListManager.RemoveProject(this);
+            _errorListManager = null;
             return res;
         }
 

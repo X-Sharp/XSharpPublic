@@ -1,20 +1,24 @@
 ﻿using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
+using System;
 using System.Collections.Generic;
 
 
 namespace XSharp.Project
 {
-    internal class OutputErrorSnapshot : WpfTableEntriesSnapshotBase
+    internal class ErrorSnapshot : WpfTableEntriesSnapshotBase
     {
         private const int UndefinedLineOrColumn = -1;
         private readonly int _versionNumber;
         public readonly List<IErrorListItem> Errors;
-
-        internal OutputErrorSnapshot(int versionNumber, IList<IErrorListItem> errors)
+        private Guid _projectGuid;
+        protected const string ProjectNames = StandardTableKeyNames.ProjectName + "s";
+        protected const string ProjectGuids = StandardTableKeyNames.ProjectGuid + "s";
+        internal ErrorSnapshot(int versionNumber, IList<IErrorListItem> errors, Guid projectGuid)
         {
             _versionNumber = versionNumber;
+            _projectGuid = projectGuid;
             Errors = new List<IErrorListItem>(errors);
         }
 
@@ -47,14 +51,17 @@ namespace XSharp.Project
                 var error = Errors[index];
                 switch (columnName)
                 {
+                    case StandardTableKeyNames.ErrorSource:
+                        content = error.ErrorSource;
+                        return true;
+                    case StandardTableKeyNames.ErrorCode:
+                        content = error.ErrorCode;
+                        return true;
                     case StandardTableKeyNames.Text:
                         content = error.Message;
                         return true;
                     case StandardTableKeyNames.ProjectName:
                         content = error.ProjectName;
-                        return true;
-                    case StandardTableKeyNames.ProjectGuid:
-                        content = "";
                         return true;
                     case StandardTableKeyNames.DocumentName:
                         content = error.Filename;
@@ -66,23 +73,43 @@ namespace XSharp.Project
                         content = GetErrorListAdjustedLineOrColumn(error.Column);
                         return true;
                     case StandardTableKeyNames.ErrorSeverity:
-                        content = ErrorMessageUtil.ToVSERRORCATEGORY(error.Severity);
+                        content = error.Severity.ToVSERRORCATEGORY();
                         return true;
                     case StandardTableKeyNames.ErrorCategory:
                         content = error.ErrorCategory;
                         return true;
                     case StandardTableKeyNames.TaskCategory:
-                        content = VSTASKCATEGORY.CAT_BUILDCOMPILE;
-                        return true;
-                    case StandardTableKeyNames.ErrorSource:
-                        content = ErrorSource.Build;
-                        return true;
-                    case StandardTableKeyNames.ErrorCode:
-                        content = error.ErrorCode;
+                        if (error.ErrorSource == ErrorSource.Build)
+                            content = VSTASKCATEGORY.CAT_BUILDCOMPILE;
+                        else
+                            content = VSTASKCATEGORY.CAT_CODESENSE; ;
                         return true;
                     case StandardTableKeyNames.BuildTool:
-                        content = Constants.Product;
+                        content = error.BuildTool;
                         return true;
+                    case StandardTableKeyNames.ErrorRank:
+                        content = ErrorRank.Lexical;
+                        return true;
+                    case StandardTableKeyNames.ProjectGuid:
+                        content = _projectGuid;
+                        return false;
+                    case StandardTableKeyNames.HelpKeyword:
+                        content = "";
+                        return true;
+                    case StandardTableKeyNames.HelpLink:
+                        content = "https://www.xsharp.info/help/"+error.ErrorCode.ToLower()+".html";
+                        return true;
+                    case StandardTableKeyNames.ErrorCodeToolTip:
+                        content = "Get help for '"+error.ErrorCode+"' from the XSharp website";
+                        return true;
+
+                    case ProjectNames:
+                        content = new string[] {  };
+                        return true;
+                    case ProjectGuids:
+                        content = new Guid[] {  };
+                        return true;
+
                 }
             }
 

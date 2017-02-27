@@ -172,7 +172,7 @@ namespace XSharp.Project
 
         }
 
-        public void RemoveURL(String url)
+        public virtual void RemoveURL(String url)
         {
             url = CleanURL(url);
             if (URLNodes.ContainsKey(url))
@@ -180,7 +180,7 @@ namespace XSharp.Project
 
         }
 
-        public void AddURL(String url, HierarchyNode node)
+        public virtual void AddURL(String url, HierarchyNode node)
         {
             url = this.CleanURL(url);
             if (URLNodes.ContainsKey(url))

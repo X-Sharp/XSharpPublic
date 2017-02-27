@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell.TableManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,15 +10,16 @@ namespace XSharp.Project
     /// Manages the errors collection and updates the CurrentSnapshot by
     ///  generating new OutputErrorSnapshot upon errors collection changes
     /// </summary>
-    internal class OutputErrorsFactory : TableEntriesSnapshotFactoryBase
+    internal class ErrorsFactory : TableEntriesSnapshotFactoryBase
     {
         private readonly IErrorListProvider _errorProvider;
         private List<IErrorListItem> _currentErrors = new List<IErrorListItem>();
-
-        internal OutputErrorsFactory(IErrorListProvider errorProvider)
+        private Guid _projectGuid = Guid.Empty;
+        internal ErrorsFactory(IErrorListProvider errorProvider, Guid projectGuid)
         {
             _errorProvider = errorProvider;
-            CurrentSnapshot = new OutputErrorSnapshot(0, _currentErrors);
+            _projectGuid = projectGuid;
+            CurrentSnapshot = new ErrorSnapshot(0, _currentErrors, _projectGuid);
         }
 
         /// <summary>
@@ -25,56 +27,50 @@ namespace XSharp.Project
         /// </summary>
         internal TableEntriesSnapshotBase CurrentSnapshot { get; private set; }
 
-        /// <summary>
-        /// Removes all errors and updates the CurrentSnapshot
-        /// </summary>
-        internal void ClearErrors()
+        private ErrorSnapshot NewSnapShot()
         {
-            _currentErrors.Clear();
-            UpdateErrors(new OutputErrorSnapshot(CurrentSnapshot.VersionNumber + 1, _currentErrors));
+            return new ErrorSnapshot(CurrentSnapshot.VersionNumber + 1, _currentErrors, _projectGuid);
         }
 
-        /// <summary>
-        /// Removes all errors for a given task and updates the CurrentSnapshot
-        /// </summary>
-        internal void ClearErrors(XSharpProjectNode project)
-        {
-            List<IErrorListItem> taskErrors=  _currentErrors.Where(e => e.ProjectName == project.Caption).ToList();
-
-            if (taskErrors.Any())
-            {
-                _currentErrors = _currentErrors.Except(taskErrors).ToList();
-                UpdateErrors(new OutputErrorSnapshot(CurrentSnapshot.VersionNumber + 1, _currentErrors));
-            }
-        }
-
-        /// <summary>
+         /// <summary>
         /// Adds a new error to the Factory and updates the CurrentSnapshot
         /// </summary>
         /// <param name="newError"></param>
         internal void AddErrorItem(IErrorListItem newError)
         {
             _currentErrors.Add(newError);
-            UpdateErrors(new OutputErrorSnapshot(CurrentSnapshot.VersionNumber + 1, _currentErrors));
+            UpdateErrors();
         }
 
         /// <summary>
         /// Adds a new errors to the Factory and updates the CurrentSnapshot
         /// </summary>
         /// <param name="newErrors"></param>
-        internal void AddErrorItems(List<IErrorListItem> newErrors)
+        internal void AddErrorItems(IList<IErrorListItem> newErrors)
         {
             _currentErrors.AddRange(newErrors);
-            UpdateErrors(new OutputErrorSnapshot(this.CurrentSnapshot.VersionNumber + 1, _currentErrors));
+            UpdateErrors();
+        }
+
+        /// <summary>
+        /// Changes the errors collection for the Factory
+        /// </summary>
+        /// <param name="newErrors"></param>
+        internal void SetErrorItems(IList<IErrorListItem> newErrors)
+        {
+            _currentErrors.Clear();
+            _currentErrors.AddRange(newErrors);
+            UpdateErrors();
         }
 
         /// <summary>
         /// Updates the factory errors snapshot
         /// </summary>
         /// <param name="errorsList"></param>
-        internal void UpdateErrors(OutputErrorSnapshot errorsList)
+        internal void UpdateErrors()
         {
-            CurrentSnapshot = errorsList;
+            CurrentSnapshot = NewSnapShot();
+            _errorProvider.UpdateAllSinks(this);
         }
 
         #region ITableEntriesSnapshotFactory members
@@ -98,24 +94,7 @@ namespace XSharp.Project
             return (versionNumber == snapshot.VersionNumber) ? snapshot : null;
         }
 
-        public override void Dispose()
-        {
-
-        }
-
-        //private bool IsSameCommand(ITaskRunnerCommand command1, ITaskRunnerCommand command2)
-        //{
-        //    if (command1.Args == command2.Args &&
-        //        command1.Executable == command2.Executable &&
-        //        command1.Options == command2.Options &&
-        //        command1.WorkingDirectory == command2.WorkingDirectory)
-        //    {
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
         #endregion
     }
+
 }

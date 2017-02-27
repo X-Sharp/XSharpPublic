@@ -76,12 +76,11 @@ DYNAMIC,
 // Vulcan UDCs
 WAIT, ACCEPT, CANCEL, QUIT,
 
+// UDC Tokens that should be shown in the keyword color
+
+UDC_KEYWORD,
+
 LAST_KEYWORD,
-
-// UDC Keyword, can be any word. The PP sets this type to tokens that are matched with keywords inside an UDC
-// So they can get a special color in the editor
-PP_UDC,
-
 
 // Null values
 FIRST_NULL,
@@ -183,7 +182,7 @@ SYMBOL_CONST    : NUMSIGN IDStartChar (IDChar)* ;
 NEQ2			: NUMSIGN ;			// Alternatine NEQ but also use in _DLL rule for the DLL Hint
 
 
-// Char_Const is lexer and parsed as char but then converted to string later
+// Char_Const is lexed and parsed as char but then converted to string later
 CHAR_CONST		: '\'' ESCAPED_CHARACTER '\'';
 
 STRING_CONST	: '"'  NOT_DOUBLE '"'			// Double quoted string

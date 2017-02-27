@@ -9,23 +9,23 @@ using System.Threading.Tasks;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    internal class XSharpPPTokenFactory : ITokenFactory
+    internal class XSharpTokenFactory : ITokenFactory
     {
 
         protected internal readonly bool copyText;
-        internal static readonly ITokenFactory Default = new XSharpPPTokenFactory(false);
-        internal XSharpPPTokenFactory() : this(false)
+        internal static readonly ITokenFactory Default = new XSharpTokenFactory(false);
+        internal XSharpTokenFactory() : this(false)
         {
 
         }
-        internal XSharpPPTokenFactory(bool copyText) 
+        internal XSharpTokenFactory(bool copyText) 
         {
             this.copyText = copyText;
         }
 
-        public virtual PPToken Create(Tuple<ITokenSource, ICharStream> source, int type, string text, int channel, int start, int stop, int line, int charPositionInLine)
+        public virtual XSharpToken Create(Tuple<ITokenSource, ICharStream> source, int type, string text, int channel, int start, int stop, int line, int charPositionInLine)
         {
-            PPToken t = new PPToken(source, type, channel, start, stop);
+            XSharpToken t = new XSharpToken(source, type, channel, start, stop);
             t.Line = line;
             t.Column = charPositionInLine;
             if (text != null)
@@ -47,9 +47,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return Create(source, type, text, channel, start, stop, line, charPositionInLine);
         }
 
-        public virtual PPToken Create(int type, string text)
+        public virtual XSharpToken Create(int type, string text)
         {
-            return new PPToken(type, text);
+            return new XSharpToken(type, text);
         }
 
         IToken ITokenFactory.Create(int type, string text)

@@ -140,7 +140,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var stream = new AntlrInputStream(_text.ToString());
             stream.name = _fileName;
             var lexer = new XSharpLexer(stream);
-            lexer.TokenFactory = XSharpPPTokenFactory.Default;
+            lexer.TokenFactory = XSharpTokenFactory.Default;
             if(_options.Dialect == XSharpDialect.VO) {
                 lexer.AllowFourLetterAbbreviations = true;
                 lexer.AllowOldStyleComments = true;
@@ -377,7 +377,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             builder.Add(textNode);
             foreach (var inc in incNodes)
             {
-                var t = new PPToken(XSharpLexer.WS);
+                var t = new XSharpToken(XSharpLexer.WS);
                 t.SourceFileName = inc.Key;
                 inc.Value.XNode = new ErrorNodeImpl(t);
                 builder.Add(inc.Value);

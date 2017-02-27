@@ -23,7 +23,7 @@ using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
-    internal static class PPTokenExtensions
+    internal static class XSharpPPTokenExtensions
     {
         internal static string TrailingWs(this IToken token)
         {
@@ -51,7 +51,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
-        internal static string AsString(this IList<PPToken> tokens)
+        internal static string AsString(this IList<XSharpToken> tokens)
         {
             string result = "";
             if (tokens != null)
@@ -64,20 +64,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             return result;
         }
-        internal static IList<IToken> ToIListIToken(this IList<PPToken> tokens) 
+        internal static IList<IToken> ToIListIToken(this IList<XSharpToken> tokens) 
         {
             var clone = new IToken[tokens.Count];
             int i = 0;
             foreach (var t in tokens)
             {
-                clone[i] = new PPToken(t);
+                clone[i] = new XSharpToken(t);
                 i++;
             }
             return clone;
         }
-        internal static PPToken[] ToArrayPPToken(this IList<IToken> tokens)
+        internal static XSharpToken[] ToArrayXSharpToken(this IList<IToken> tokens)
         {
-            var clone = new PPToken[tokens.Count];
+            var clone = new XSharpToken[tokens.Count];
             tokens.CopyTo(clone, 0);
             return clone;
         }

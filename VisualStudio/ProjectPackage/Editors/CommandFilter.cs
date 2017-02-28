@@ -190,7 +190,6 @@ namespace XSharp.Project
         {
             if (_currentSession == null)
                 return;
-
             _currentSession.SelectedCompletionSet.Filter();
             _currentSession.SelectedCompletionSet.SelectBestMatch();
             //_currentSession.SelectedCompletionSet.Recalculate();

@@ -50,35 +50,42 @@ namespace XSharpModel
 
         public void RegionExitEveryRule([NotNull] ParserRuleContext context)
         {
-            if ((context is XSharpParser.Namespace_Context) ||
-                (context is XSharpParser.Class_Context) ||
-                (context is XSharpParser.PropertyContext) ||
-                (context is XSharpParser.PropertyAccessorContext))
+            try
             {
-                // already done
-                // BEGIN         NAMESPACE .... END NAMESPACE 
-                //
-                TagRegion(context, context.ChildCount - 2);
-            }
-            else if ((context is XSharpParser.FunctionContext) ||
-                    (context is XSharpParser.ProcedureContext) ||
-                    (context is XSharpParser.MethodContext) ||
-                    (context is XSharpParser.ClsctorContext) ||
-                    (context is XSharpParser.ClsdtorContext))
-            {
-                // Put a region up to the end of the Entity
-                TagRegion(context, context.ChildCount - 1);
-            }
-            else if (context is XSharpParser.IdentifierContext)
-            {
-                LanguageService.SyntaxTree.IToken sym = context.Start;
-                // Add tag for Keyword that is used as Identifier
-                if (XSharpLexer.IsKeyword(sym.Type))
+                if ((context is XSharpParser.Namespace_Context) ||
+                    (context is XSharpParser.Class_Context) ||
+                    (context is XSharpParser.PropertyContext) ||
+                    (context is XSharpParser.PropertyAccessorContext))
                 {
-                    TextSpan tokenSpan;
-                    tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
-                    tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpIdentifierType));
+                    // already done
+                    // BEGIN         NAMESPACE .... END NAMESPACE 
+                    //
+                    TagRegion(context, context.ChildCount - 2);
                 }
+                else if ((context is XSharpParser.FunctionContext) ||
+                        (context is XSharpParser.ProcedureContext) ||
+                        (context is XSharpParser.MethodContext) ||
+                        (context is XSharpParser.ClsctorContext) ||
+                        (context is XSharpParser.ClsdtorContext))
+                {
+                    // Put a region up to the end of the Entity
+                    TagRegion(context, context.ChildCount - 1);
+                }
+                else if (context is XSharpParser.IdentifierContext)
+                {
+                    LanguageService.SyntaxTree.IToken sym = context.Start;
+                    // Add tag for Keyword that is used as Identifier
+                    if (XSharpLexer.IsKeyword(sym.Type))
+                    {
+                        TextSpan tokenSpan;
+                        tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
+                        tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpIdentifierType));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("RegionExitEveryRule : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
             }
         }
 

@@ -178,8 +178,8 @@ namespace XSharpLanguage
             // TODO: Based on the Project.Settings, we should add the Vulcan.VO namespace
 
             // LookUp for the BaseType, reading the TokenList (From left to right)
-            XElement dummy;
-            cType = XSharpTokenTools.RetrieveType(tokenList, member, out dummy);
+            XElement foundElement;
+            cType = XSharpTokenTools.RetrieveType(tokenList, member, out foundElement);
             switch (typedChar)
             {
                 case '.':
@@ -251,7 +251,19 @@ namespace XSharpLanguage
                     if (cType != null)
                     {
                         Modifiers visibleAs = Modifiers.Public;
-                        if (member.ParentName == cType.FullName)
+                        if ( foundElement != null)
+                        {
+                            if ( String.Compare( foundElement.Name, "self", true )==0)
+                            {
+                                visibleAs = Modifiers.Private;
+                            }
+                            else if (String.Compare(foundElement.Name, "super", true) == 0)
+                            {
+                                visibleAs = Modifiers.Protected;
+                            }
+
+                        }
+                        else if (member.ParentName == cType.FullName)
                         {
                             visibleAs = Modifiers.Private;
                         }
@@ -2111,13 +2123,13 @@ namespace XSharpLanguage
                 if (nextToken.Type == XSharpLexer.Eof) // End Of File
                     break;
                 // Move after the TriggerPoint
-                if (nextToken.StartIndex > triggerPointPosition)
+                if (nextToken.StartIndex >= triggerPointPosition)
                     break;
 
                 tokens.Consume();
             }
-            if (!fromGotoDefn)
-                nextToken = tokens.Lt(-1);
+            //if (!fromGotoDefn)
+            //    nextToken = tokens.Lt(-1);
             if (nextToken == null)
             {
                 return tokenList;

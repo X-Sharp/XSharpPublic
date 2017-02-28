@@ -225,7 +225,7 @@ namespace XSharpModel
                     {
                         XSharpParser.Using_Context use = (XSharpParser.Using_Context)context;
                         //if (use.Name != null)
-                            this._file.Usings.AddUnique(use.Name.GetText());
+                        this._file.Usings.AddUnique(use.Name.GetText());
                     }
                     else if (context is XSharpParser.Namespace_Context)
                     {
@@ -265,125 +265,139 @@ namespace XSharpModel
                     }
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine( "Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
+                System.Diagnostics.Debug.WriteLine("EnterEveryRule : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
             }
         }
 
         public override void EnterLocalvar([NotNull] XSharpParser.LocalvarContext context)
         {
-            if (this.BuildModel)
+            try
             {
-                if (this._currentMethod != null)
+                if (this.BuildModel)
                 {
-                    if (context.DataType != null)
+                    if (this._currentMethod != null)
                     {
-                        XVariable local;
-                        String localType = context.DataType.GetText();
-                        String localName;
-                        // Any previous Local ?
-                        while (_localDecls.Count > 0)
+                        if (context.DataType != null)
                         {
-                            XSharpParser.LocalvarContext tmpContext = _localDecls.Pop();
+                            XVariable local;
+                            String localType = context.DataType.GetText();
+                            String localName;
+                            // Any previous Local ?
+                            while (_localDecls.Count > 0)
+                            {
+                                XSharpParser.LocalvarContext tmpContext = _localDecls.Pop();
+                                localName = context.Id.GetText();
+                                //
+                                local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
+                                    new TextRange(tmpContext), new TextInterval(tmpContext),
+                                    localType);
+                                local.File = this._file;
+                                //
+                                this._currentMethod.Locals.Add(local);
+                            }
+                            // Now, manage the current one
                             localName = context.Id.GetText();
                             //
                             local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
-                                new TextRange(tmpContext), new TextInterval(tmpContext),
-                                localType);
+                                    new TextRange(context), new TextInterval(context),
+                                    localType);
                             local.File = this._file;
                             //
                             this._currentMethod.Locals.Add(local);
                         }
-                        // Now, manage the current one
-                        localName = context.Id.GetText();
-                        //
-                        local = new XVariable(this._currentMethod, localName, Kind.Local, Modifiers.Public,
-                                new TextRange(context), new TextInterval(context),
-                                localType);
-                        local.File = this._file;
-                        //
-                        this._currentMethod.Locals.Add(local);
-                    }
-                    else
-                    {
-                        // We may have something like
-                        // LOCAL x,y as STRING
-                        // for x, we don't have a DataType, so save it
-                        _localDecls.Push(context);
+                        else
+                        {
+                            // We may have something like
+                            // LOCAL x,y as STRING
+                            // for x, we don't have a DataType, so save it
+                            _localDecls.Push(context);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("EnterLocalvar : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
             }
         }
 
         public override void ExitEveryRule([NotNull] ParserRuleContext context)
         {
-            if ( this.BuildRegionTags )
+            if (this.BuildRegionTags)
             {
                 this.RegionExitEveryRule(context);
             }
-            if (this.BuildModel)
+            try
             {
-                if (context is XSharpParser.IEntityContext)
+                if (this.BuildModel)
                 {
-                    if (context is XSharpParser.Class_Context)
+                    if (context is XSharpParser.IEntityContext)
                     {
-                        //XSharpParser.Class_Context current = (XSharpParser.Class_Context)context;
-                        if (_currentTypes.Count > 0)
+                        if (context is XSharpParser.Class_Context)
                         {
-                            this._currentTypes.Pop();
-                        }
-                        //else
-                        //    if (System.Diagnostics.Debugger.IsAttached)
-                        //        System.Diagnostics.Debugger.Break();
-                    }
-                    else if ((context is XSharpParser.ClsctorContext) ||
-                                (context is XSharpParser.MethodContext) ||
-                                (context is XSharpParser.PropertyContext) ||
-                                (context is XSharpParser.FunctionContext) ||
-                                (context is XSharpParser.ProcedureContext))
-                    {
-                        // Don't forget to add Self and Super as Local vars
-                        if ((context is XSharpParser.ClsctorContext) ||
-                                (context is XSharpParser.MethodContext) ||
-                                (context is XSharpParser.PropertyContext))
-                        {
-                            XVariable local;
-                            //
-                            local = new XVariable(this._currentMethod, "Self", Kind.Local, Modifiers.Public,
-                                new TextRange(context), new TextInterval(context),
-                                this._currentMethod.ParentName);
-                            //
-                            local.File = this._file;
-                            this._currentMethod.Locals.Add(local);
-                            //
-                            if (!String.IsNullOrEmpty(_currentMethod.Parent.ParentName))
+                            //XSharpParser.Class_Context current = (XSharpParser.Class_Context)context;
+                            if (_currentTypes.Count > 0)
                             {
-                                local = new XVariable(this._currentMethod, "Super", Kind.Local, Modifiers.Public,
-                                new TextRange(context), new TextInterval(context),
-                                this._currentMethod.Parent.ParentName);
+                                this._currentTypes.Pop();
+                            }
+                            //else
+                            //    if (System.Diagnostics.Debugger.IsAttached)
+                            //        System.Diagnostics.Debugger.Break();
+                        }
+                        else if ((context is XSharpParser.ClsctorContext) ||
+                                    (context is XSharpParser.MethodContext) ||
+                                    (context is XSharpParser.PropertyContext) ||
+                                    (context is XSharpParser.FunctionContext) ||
+                                    (context is XSharpParser.ProcedureContext))
+                        {
+                            // Don't forget to add Self and Super as Local vars
+                            if ((context is XSharpParser.ClsctorContext) ||
+                                    (context is XSharpParser.MethodContext) ||
+                                    (context is XSharpParser.PropertyContext))
+                            {
+                                XVariable local;
+                                //
+                                local = new XVariable(this._currentMethod, "Self", Kind.Local, Modifiers.Public,
+                                    new TextRange(context), new TextInterval(context),
+                                    this._currentMethod.ParentName);
+                                //
                                 local.File = this._file;
                                 this._currentMethod.Locals.Add(local);
-                            }
-                            //
+                                //
+                                if (!String.IsNullOrEmpty(_currentMethod.Parent.ParentName))
+                                {
+                                    local = new XVariable(this._currentMethod, "Super", Kind.Local, Modifiers.Public,
+                                    new TextRange(context), new TextInterval(context),
+                                    this._currentMethod.Parent.ParentName);
+                                    local.File = this._file;
+                                    this._currentMethod.Locals.Add(local);
+                                }
+                                //
 
+                            }
+                            // Reset the current Method/Function/Procedure element
+                            this._currentMethod = null;
                         }
-                        // Reset the current Method/Function/Procedure element
-                        this._currentMethod = null;
+                        //entities.Add((XSharpParser.IEntityContext)context);
                     }
-                    //entities.Add((XSharpParser.IEntityContext)context);
-                }
-                else if (context is XSharpParser.Namespace_Context)
-                {
-                    if (this._currentNSpaces.Count > 0)
+                    else if (context is XSharpParser.Namespace_Context)
                     {
-                        XType cNS = this._currentNSpaces.Peek();
-                        // Is it necessary to Add the NameSpace in the TypeList ??
-                        this._file.TypeList.AddUnique(cNS.Name, cNS);
-                        // Pop to support nested NameSpaces
-                        this._currentNSpaces.Pop();
+                        if (this._currentNSpaces.Count > 0)
+                        {
+                            XType cNS = this._currentNSpaces.Peek();
+                            // Is it necessary to Add the NameSpace in the TypeList ??
+                            this._file.TypeList.AddUnique(cNS.Name, cNS);
+                            // Pop to support nested NameSpaces
+                            this._currentNSpaces.Pop();
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("ExitEveryRule : Error Walking {0}, at {1}/{2} : " + ex.Message, this.File.Name, context.Start.Line, context.Start.Column);
             }
         }
 
@@ -416,8 +430,14 @@ namespace XSharpModel
         {
             //
             Kind kind = Kind.Property;
+            String name = "";
             //
-            XTypeMember newMethod = new XTypeMember(context.Id.GetText(),
+            if (context.Id != null)
+                name = context.Id.GetText();
+            if (context.SELF() != null)
+                name = context.SELF()?.GetText();
+
+            XTypeMember newMethod = new XTypeMember(name,
                 kind,
                 decodeModifiers(context.Modifiers?._Tokens),
                 decodeVisibility(context.Modifiers?._Tokens),

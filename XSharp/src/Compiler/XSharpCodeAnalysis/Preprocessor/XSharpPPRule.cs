@@ -940,11 +940,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     matchInfo[iRule] = PPMatchRange.Optional();
                     iRule++;
                 }
-            } 
+            }
+            // #command and #xcommand should match all tokens on the input line
+            if (iSource < tokens.Count && (this.Type == PPUDCType.Command || this.Type == PPUDCType.XCommand))
+            {
+                if (tokens[iSource].Type != XSharpLexer.EOS)
+                    return false;
+            }
+            // check to see if the remaining tokens are optional, when not, then there is no match
             while (iRule < _matchtokens.Length)
             {
-                // check to see if the remaining tokens are optional
-                // when not, then there is no match
                 if (!_matchtokens[iRule].IsOptional)
                 {
                     return false;
@@ -952,6 +957,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 matchInfo[iRule] = PPMatchRange.Optional();
                 iRule++;
             }
+
+
             // Now mark the tokens that were matched with tokens in the UDC with the keyword color
             foreach (var token in matchedWithToken)
             {
@@ -1019,10 +1026,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             if (rule.MatchMarker != null)
             {
-                var block = Replace(rule.OptionalElements, tokens, matchInfo);
-                foreach (var e in block)
+                var mm = matchInfo[rule.MatchMarker.Index];
+                if (!mm.IsSkipped)
                 {
-                    result.Add(e);
+                    var block = Replace(rule.OptionalElements, tokens, matchInfo);
+                    foreach (var e in block)
+                    {
+                        result.Add(e);
+                    }
                 }
             }
             return;
@@ -1180,12 +1191,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // #command SET CENTURY <x:ON,OFF,&>      => __SetCentury( <(x)> )
                     // the contents of x must be converted to a string
 
-                    bool addStringDelimiters = true;
                     if (!range.Empty )
                     {
-                        for (int i = start; i <= end; i++)
+                        if (start == end)
                         {
-                            var token = tokens[i];
+                            // single token
+                            var token = tokens[start];
                             switch (token.Type)
                             {
                                 case XSharpLexer.CHAR_CONST:
@@ -1194,22 +1205,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 case XSharpLexer.INTERPOLATED_STRING_CONST:
                                     result.Add(token);
                                     break;
-                                case XSharpLexer.AMP:
-                                    addStringDelimiters = false;
-                                    break;
                                 default:
-                                    if (addStringDelimiters)
-                                    {
-                                        newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text);
-                                        newToken.Text = "\"" + token.Text + "\"";
-                                    }
-                                    else
-                                    {
-                                        newToken = new XSharpToken(token, XSharpLexer.ID, token.Text);
-                                    }
+                                    newToken = new XSharpToken(token, XSharpLexer.STRING_CONST, token.Text);
+                                    newToken.Text = "\"" + token.Text + "\"";
                                     result.Add(newToken);
                                     break;
                             }
+                        }
+                        else
+                        {
+                            bool addDelimiters = true;
+                            if (tokens[start].Type == XSharpLexer.LPAREN &&
+                                tokens[end].Type == XSharpLexer.RPAREN)
+                                addDelimiters = false;
+                            var literal = new System.Text.StringBuilder();
+                            if (addDelimiters)
+                                literal.Append( "\"");
+                            for (int i = start; i <= end; i++)
+                            {
+                                var token = tokens[i];
+                                literal.Append(token.Text);
+                            }
+                            if (addDelimiters)
+                                literal.Append("\"");
+                            newToken = new XSharpToken(tokens[start], XSharpLexer.STRING_CONST, literal.ToString());
+                            result.Add(newToken);
                         }
                     }
                     break;

@@ -137,6 +137,23 @@ namespace XSharpColorizer
                         switch (token.Channel)
                         {
                             case XSharpLexer.PREPROCESSOR:          // #define, #ifdef etc
+                                newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
+                                switch (token.Type)
+                                {
+                                    case XSharpLexer.PP_REGION:
+                                    case XSharpLexer.PP_IFDEF:
+                                    case XSharpLexer.PP_IFNDEF:
+                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
+                                        break;
+                                    case XSharpLexer.PP_ENDREGION:
+                                    case XSharpLexer.PP_ENDIF:
+                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+                                        break;
+                                    default:
+                                        break;
+
+                                }
+                                break;
                             case XSharpLexer.PRAGMACHANNEL:         // #pragma
                                 newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpPPType));
                                 break;
@@ -148,7 +165,19 @@ namespace XSharpColorizer
                                 if (XSharpLexer.IsComment(token.Type))
                                 {
                                     newtags.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpCommentType));
+                                    if (token.Type == XSharpLexer.ML_COMMENT)
+                                    {
+                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
+                                        tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+                                    }
                                 }
+                                //
+                                // add code to create a region for a group of
+                                // SL_COMMENT and/or DOC_COMMENT lines
+                                // detect when we are on the last line of a comment block and then
+                                // find the first line of the block by scanning backwards
+                                // and when the line numbers are different then create region
+
                                 else if (token.Type == XSharpLexer.LINE_CONT ||
                                         token.Type == XSharpLexer.LINE_CONT_OLD)
                                 {
@@ -345,3 +374,4 @@ namespace XSharpColorizer
         #endregion
     }
 }
+

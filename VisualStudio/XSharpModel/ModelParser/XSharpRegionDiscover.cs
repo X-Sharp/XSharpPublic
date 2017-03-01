@@ -54,22 +54,23 @@ namespace XSharpModel
             {
                 if ((context is XSharpParser.Namespace_Context) ||
                     (context is XSharpParser.Class_Context) ||
+                    (context is XSharpParser.Interface_Context) ||
+                    (context is XSharpParser.Structure_Context) ||
+                    (context is XSharpParser.Enum_Context) ||
                     (context is XSharpParser.PropertyContext) ||
-                    (context is XSharpParser.PropertyAccessorContext))
+                    (context is XSharpParser.PropertyAccessorContext) ||
+                    (context is XSharpParser.Event_Context) ||
+                    (context is XSharpParser.EventAccessorContext) )
                 {
                     // already done
                     // BEGIN         NAMESPACE .... END NAMESPACE 
-                    //
-                    TagRegion(context, context.ChildCount - 2);
+                    // use -2 because these rules all end with "END <something>"
+                    TagRegion(context, context.ChildCount - 2);     
                 }
-                else if ((context is XSharpParser.FunctionContext) ||
-                        (context is XSharpParser.ProcedureContext) ||
-                        (context is XSharpParser.MethodContext) ||
-                        (context is XSharpParser.ClsctorContext) ||
-                        (context is XSharpParser.ClsdtorContext))
+                else if ((context is XSharpParser.VostructContext) ||
+                    (context is XSharpParser.VounionContext) )
                 {
-                    // Put a region up to the end of the Entity
-                    TagRegion(context, context.ChildCount - 1);
+                    TagRegion(context, context.ChildCount-1);
                 }
                 else if (context is XSharpParser.IdentifierContext)
                 {
@@ -80,6 +81,49 @@ namespace XSharpModel
                         TextSpan tokenSpan;
                         tokenSpan = new TextSpan(sym.StartIndex, sym.StopIndex - sym.StartIndex + 1);
                         tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpIdentifierType));
+                    }
+                }
+                else if (context is XSharpParser.StatementBlockContext)
+                {
+                    TagRegion((ParserRuleContext) context.Parent, context.Parent.ChildCount-1);
+                }
+                else if (context is XSharpParser.Using_Context)
+                {
+                    // if we are the first in a list of usings then mark the whole list
+                    // parent of using is Entity
+                    // parent above that is namespace or source
+                    var parent = context.Parent.Parent as ParserRuleContext;
+                    var index = parent.children.IndexOf(context.Parent);
+                    if (index > 0
+                        && parent.children[index - 1].ChildCount > 0
+                        && parent.children[index - 1].GetChild(0)  is XSharpParser.Using_Context)
+                    {
+                        ; // do nothing
+                    }
+                    else
+                    {
+                        index += 1;
+                        var last = context as XSharpParser.Using_Context;
+                        while (index < parent.children.Count)
+                        {
+                            var ent = parent.children[index];
+                            if (ent is XSharpParser.EntityContext && ent.ChildCount > 0 && ent.GetChild(0) is XSharpParser.Using_Context)
+                            {
+                                last = ent.GetChild(0) as XSharpParser.Using_Context;
+                                index += 1;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        if (last != context)
+                        {
+                            var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                            tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
+                            tokenSpan = new TextSpan(last.Stop.StartIndex - 1, 1);
+                            tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
+                        }
                     }
                 }
             }
@@ -103,6 +147,14 @@ namespace XSharpModel
             else if (endToken is LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext)
             {
                 XSharpParser.StatementBlockContext lastTokenInContext = endToken as LanguageService.CodeAnalysis.XSharp.SyntaxParser.XSharpParser.StatementBlockContext;
+                var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
+                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
+                tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);
+                tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStopType));
+            }
+            else if (endToken is ParserRuleContext)
+            {
+                var  lastTokenInContext = endToken as ParserRuleContext;
                 var tokenSpan = new TextSpan(context.Start.StartIndex, 1);
                 tags.Add(tokenSpan.ToClassificationSpan(Snapshot, xsharpRegionStartType));
                 tokenSpan = new TextSpan(lastTokenInContext.Stop.StartIndex - 1, 1);

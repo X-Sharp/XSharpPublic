@@ -22,7 +22,7 @@ namespace XSharpModel
             this._xtype = xType;
         }
 
-        public CompletionType( Type sType)
+        public CompletionType(Type sType)
         {
             this._stype = sType;
         }
@@ -34,11 +34,21 @@ namespace XSharpModel
         public CompletionType(XElement element)
         {
             //throw new NotImplementedException();
+            XTypeMember member = element.Parent as XTypeMember;
+            if (member != null)
+            {
+                CheckProjectType(member.TypeName, member.File, member.Parent.NameSpace);
+            }
         }
 
         public CompletionType(XTypeMember element)
         {
             //throw new NotImplementedException();
+            XType xType = element.Parent as XType;
+            if (xType != null)
+            {
+                this._xtype = xType;
+            }
         }
 
         public CompletionType(XVariable var)
@@ -52,7 +62,7 @@ namespace XSharpModel
             XTypeMember member = var.Parent as XTypeMember;
             if (member != null)
             {
-                CheckProjectType(var.TypeName, member.File);
+                CheckProjectType(var.TypeName, member.File, member.Parent.NameSpace);
             }
         }
 
@@ -61,28 +71,40 @@ namespace XSharpModel
             CheckSystemType(typeName, usings);
         }
 
-        public CompletionType(String typeName, XFile xFile )
+        //public CompletionType(String typeName, XFile xFile)
+        //{
+        //    CheckProjectType(typeName, xFile, "");
+        //    if (!this.IsInitialized)
+        //    {
+        //        CheckSystemType(typeName, xFile.Usings);
+        //    }
+        //}
+
+        public CompletionType(String typeName, XFile xFile, string defaultNS)
         {
-            CheckProjectType(typeName, xFile);
-            if ( !this.IsInitialized )
+            CheckProjectType(typeName, xFile, defaultNS);
+            if (!this.IsInitialized)
             {
                 CheckSystemType(typeName, xFile.Usings);
             }
         }
 
 
-        private void CheckProjectType(string typeName, XFile xFile )
+        private void CheckProjectType(string typeName, XFile xFile, string defaultNS )
         {
             // First, easy way..Use the simple name
-            XType xType = xFile.Project.Lookup( typeName, true);
+            XType xType = xFile.Project.Lookup(typeName, true);
             if (xType == null)
             {
                 // ?? Fullname maybe ?
                 xType = xFile.Project.LookupFullName(typeName, true);
                 if (xType == null)
                 {
+                    List<String> usings = new List<String>(xFile.Usings);
+                    if (!String.IsNullOrEmpty(defaultNS))
+                        usings.Add(defaultNS);
                     // Search using the USING statements in the File that contains the var
-                    foreach (string usingStatement in xFile.Usings)
+                    foreach (string usingStatement in usings)
                     {
                         String fqn = usingStatement + "." + typeName;
                         xType = xFile.Project.LookupFullName(fqn, true);
@@ -92,7 +114,7 @@ namespace XSharpModel
                     if (xType == null)
                     {
                         // Ok, none of our own Type; can be a System/Referenced Type
-                        CheckSystemType(typeName, xFile.Usings);
+                        CheckSystemType(typeName, usings);
                     }
                 }
             }

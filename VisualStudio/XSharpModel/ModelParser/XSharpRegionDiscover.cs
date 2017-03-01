@@ -87,6 +87,15 @@ namespace XSharpModel
                 {
                     TagRegion((ParserRuleContext) context.Parent, context.Parent.ChildCount-1);
                 }
+                else if (context is XSharpParser.SwitchStmtContext)
+                {
+                    TagRegion((ParserRuleContext)context, context.ChildCount - 2);
+                }
+                else if (context is XSharpParser.CaseStmtContext)
+                {
+                    TagRegion((ParserRuleContext)context, context.ChildCount - 2);
+                }
+
                 else if (context is XSharpParser.Using_Context)
                 {
                     // if we are the first in a list of usings then mark the whole list

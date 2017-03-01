@@ -54,6 +54,9 @@ namespace XSharpModel
             {
                 if ((context is XSharpParser.Namespace_Context) ||
                     (context is XSharpParser.Class_Context) ||
+                    (context is XSharpParser.Structure_Context) ||
+                    (context is XSharpParser.Interface_Context) ||
+                    (context is XSharpParser.Enum_Context) ||
                     (context is XSharpParser.PropertyContext) ||
                     (context is XSharpParser.PropertyAccessorContext))
                 {

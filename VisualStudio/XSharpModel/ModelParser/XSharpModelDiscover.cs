@@ -227,6 +227,32 @@ namespace XSharpModel
                         //if (use.Name != null)
                         this._file.Usings.AddUnique(use.Name.GetText());
                     }
+                    else if (context is XSharpParser.Enum_Context)
+                    {
+                        XType newIf = this.FromEnum((XSharpParser.Enum_Context)context);
+                        newIf.File = this._file;
+                        //
+                        newIf = this._file.TypeList.AddUnique(newIf.FullName, newIf);
+                        // Set as Current working Interface
+                        this._currentTypes.Push(newIf);
+                    }
+                    else if (context is XSharpParser.EnummemberContext)
+                    {
+                        XSharpParser.EnummemberContext current = (XSharpParser.EnummemberContext)context;
+                        XTypeMember newMember = this.FromMember((XSharpParser.EnummemberContext)context);
+                        newMember.File = this._file;
+                        if (this._currentTypes.Count > 0)
+                        {
+                            newMember.Parent = this._currentTypes.Peek();
+                            this._currentTypes.Peek().Members.Add(newMember);
+                        }
+                        //else
+                        //{
+                        //    if (System.Diagnostics.Debugger.IsAttached)
+                        //        System.Diagnostics.Debugger.Break();
+                        //}
+                        this._currentMethod = null;
+                    }
                     else if (context is XSharpParser.Namespace_Context)
                     {
                         XSharpParser.Namespace_Context current = (XSharpParser.Namespace_Context)context;
@@ -253,7 +279,9 @@ namespace XSharpModel
                                 //
                                 XTypeMember newClassVar = new XTypeMember(varContext.Id.GetText(),
                                     kind, Modifiers.None, this._currentVarVisibility,
-                                    new TextRange(varContext), new TextInterval(varContext), current.DataType.GetText());
+                                    new TextRange(varContext.Start.Line, varContext.Start.Column, varContext.Start.Line, varContext.Start.Column+(context.Start.StopIndex - context.Stop.StartIndex)), 
+                                    new TextInterval(varContext), current.DataType.GetText());
+                                newClassVar.File = this._file;
                                 //
                                 if (this._currentTypes != null && _currentTypes.Count > 0)
                                 {
@@ -426,6 +454,21 @@ namespace XSharpModel
             return newMethod;
         }
 
+        private XTypeMember FromMember(XSharpParser.EnummemberContext context)
+        {
+            //
+            Kind kind = Kind.EnumMember;
+            //
+            XTypeMember newMember = new XTypeMember(context.Id.GetText(),
+                kind,
+                Modifiers.None,
+                Modifiers.None,
+                new TextRange(context), new TextInterval(context),
+                "");
+            //
+            return newMember;
+        }
+
         private XTypeMember FromProperty(XSharpParser.PropertyContext context)
         {
             //
@@ -540,6 +583,7 @@ namespace XSharpModel
             //
             return newStruct;
         }
+
         private XType FromInterface(XSharpParser.Interface_Context context)
         {
             //
@@ -559,6 +603,20 @@ namespace XSharpModel
             // IMPLEMENTS ?
             //
             return newIf;
+        }
+
+        private XType FromEnum(XSharpParser.Enum_Context context)
+        {
+            //
+            XType newEn = new XType(context.Id.GetText(),
+                Kind.Enum,
+                decodeModifiers(context.Modifiers?._Tokens),
+                decodeVisibility(context.Modifiers?._Tokens),
+                new TextRange(context), new TextInterval(context));
+            //
+            newEn.NameSpace = this.CurrentNamespace;
+            //
+            return newEn;
         }
 
         private XTypeMember FromFunction(XSharpParser.FunctionContext context)

@@ -16,6 +16,20 @@ namespace XSharp.LanguageService
     {
         XSharpLanguageService langservice = null;
 
+
+        internal class sortXElement : IComparer
+        {
+            // Calls CaseInsensitiveComparer.Compare with the parameters reversed.
+            int IComparer.Compare(Object x, Object y)
+            {
+                XElement elt1 = x as XElement;
+                XElement elt2 = y as XElement;
+                //
+                return elt1.Name.CompareTo(elt2.Name);
+            }
+
+        }
+
         public XSharpTypeAndMemberDropDownBars(
             XSharpLanguageService lang,
             IVsTextView view)
@@ -50,7 +64,7 @@ namespace XSharp.LanguageService
             // we may have to wait for the file to be parsed at least once...
             // is it really necessary to parse ????
             //file.Parse(src.GetText() );
-            List<XType> typeAtPos = new List<XType>();
+            XType typeAtPos = null;
             //
             dropDownTypes.Clear();
             //dropDownTypes.Capacity = file.TypeList.Count;
@@ -60,20 +74,29 @@ namespace XSharp.LanguageService
             bool bInSel;
             int nTemp;
             int distance = int.MaxValue;
-            int distanceM = int.MaxValue;
-            int nCount = 0;
+            //int distanceM = int.MaxValue;
+            DROPDOWNFONTATTR ft;
             //
             if (file.TypeList.Count > 0)
                 nSelType = 0;
-            foreach (XType eltType in file.TypeList.Values)
+            //
+            List<XType> xList = file.TypeList.Values.ToList<XType>();
+            xList.Sort(delegate (XType elt1, XType elt2)
+            {
+                return elt1.Name.CompareTo(elt2.Name);
+            });
+            foreach (XType eltType in xList)
             {
                 //
-                if (eltType.Kind != Kind.Class)
+                if ((eltType.Kind != Kind.Class) &&
+                    (eltType.Kind != Kind.Structure) &&
+                    (eltType.Kind != Kind.Interface) &&
+                    (eltType.Kind != Kind.Enum))
                     continue;
                 //
                 TextSpan sp = this.TextRangeToTextSpan(eltType.Range);
                 //
-                DROPDOWNFONTATTR ft;
+                
                 bModification = true;
                 bInSel = false;
                 //
@@ -99,32 +122,42 @@ namespace XSharp.LanguageService
                 if (bInSel)
                 {
                     nSelType = nTemp;
+                    typeAtPos = eltType;
                 }
-                //
-                dropDownMembers.Clear();
-                if (nSelType == nCount)
+            }
+            //
+            dropDownMembers.Clear();
+            if (typeAtPos != null)
+            {
+                if (typeAtPos.Members.Count > 0)
+                    nSelMbr = 0;
+                typeAtPos.Members.Sort(delegate (XTypeMember elt1, XTypeMember elt2)
                 {
-                    if (eltType.Members.Count > 0)
-                        nSelMbr = 0;
-                    foreach (XTypeMember member in eltType.Members)
+                    return elt1.Name.CompareTo(elt2.Name);
+                });
+                foreach (XTypeMember member in typeAtPos.Members)
+                {
+                    TextSpan spM = this.TextRangeToTextSpan(member.Range);
+                    //
+                    if (TextSpanHelper.ContainsInclusive(spM, line, col))
                     {
-                        TextSpan spM = this.TextRangeToTextSpan(member.Range);
-                        //
-                        DropDownMember eltM = new DropDownMember(member.Prototype, spM, member.Glyph, ft);
-                        nTemp = dropDownMembers.Add(eltM);
-                        //
-                        if (TextSpanHelper.ContainsInclusive(spM, line, col))
-                        {
-                            //
-                            if (line - sp.iStartLine < distanceM)
-                            {
-                                distanceM = line - sp.iStartLine;
-                                nSelMbr = nTemp;
-                            }
-                        }
+                        ft = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+                        bInSel = true;
+                    }
+                    else
+                    {
+                        ft = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                        bInSel = false;
+                    }
+                    //
+                    DropDownMember eltM = new DropDownMember(member.Prototype, spM, member.Glyph, ft);
+                    nTemp = dropDownMembers.Add(eltM);
+                    //
+                    if( bInSel )
+                    {
+                        nSelMbr = nTemp;
                     }
                 }
-                nCount++;
             }
             //
             if (nSelType > -1)
@@ -145,10 +178,10 @@ namespace XSharp.LanguageService
             // where our TextRange is One-Based.
             // --> Make the move
             TextSpan ts = new TextSpan();
-            ts.iStartLine = tr.StartLine-1;
-            ts.iStartIndex = tr.StartColumn-1;
-            ts.iEndLine = tr.EndLine-1;
-            ts.iEndIndex = tr.EndColumn-1;
+            ts.iStartLine = tr.StartLine - 1;
+            ts.iStartIndex = tr.StartColumn - 1;
+            ts.iEndLine = tr.EndLine - 1;
+            ts.iEndIndex = tr.EndColumn - 1;
             return ts;
         }
 

@@ -235,6 +235,13 @@ namespace XSharpLanguage
                     }
                     else
                     {
+                        // It can be a namespace 
+                        AddNamespaces(compList, file.Project, filterText);
+                        // It can be Type, FullyQualified
+                        // we should also walk all the USINGs, and the current Namespace if any, to search Types
+                        AddTypeNames(compList, file.Project, filterText, Usings);
+                        //
+                        AddXSharpTypeNames(compList, filterText);
                         // it can be a static Method/Property/Enum
                         if (cType != null)
                         {
@@ -513,7 +520,7 @@ namespace XSharpLanguage
                 if (dotPos > -1)
                 {
                     String startToken = currentToken.Substring(0, dotPos);
-                    cType = new CompletionType(startToken, currentMember.File);
+                    cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
                     currentToken = currentToken.Substring(dotPos + 1);
                     currentPos++;
                     if (String.IsNullOrEmpty(currentToken))
@@ -526,7 +533,7 @@ namespace XSharpLanguage
                 {
                     // this a Constructor call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
-                    cType = new CompletionType(currentToken, currentMember.File);
+                    cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
                 }
                 else if (currentToken.EndsWith("()"))
                 {
@@ -2128,8 +2135,6 @@ namespace XSharpLanguage
 
                 tokens.Consume();
             }
-            //if (!fromGotoDefn)
-            //    nextToken = tokens.Lt(-1);
             if (nextToken == null)
             {
                 return tokenList;
@@ -2146,10 +2151,22 @@ namespace XSharpLanguage
             }
             // Now, let's build the Token chain, so we can guess what to add in the CompletionList
             IToken triggerToken = null;
-            if (!fromGotoDefn)
-                triggerToken = GetPreviousToken(tokens, nextToken);
-            else
-                triggerToken = nextToken;
+            token = "";
+            switch (nextToken.Type)
+            {
+                case XSharpLexer.LPAREN:
+                    token = "()";
+                    break;
+                case XSharpLexer.LCURLY:
+                    token = "{}";
+                    break;
+                case XSharpLexer.LBRKT:
+                    token = "[]";
+                    break;
+            }
+            if ( ! String.IsNullOrEmpty(token) )
+                tokenList.Add(token);
+            triggerToken = GetPreviousToken(tokens, nextToken);
             //
             while (triggerToken != null)
             {
@@ -2221,6 +2238,21 @@ namespace XSharpLanguage
                         }
                         else
                             triggerToken = null;
+                        break;
+                    case XSharpLexer.DOT:
+                    case XSharpLexer.COLON:
+                    case XSharpLexer.COLONCOLON:
+                    case XSharpLexer.SELF:
+                    case XSharpLexer.SUPER:
+                        break;
+                    default:
+                        if ( XSharpLexer.IsKeyword(triggerToken.Type) ||
+                            XSharpLexer.IsOperator(triggerToken.Type)
+                            )
+                        {
+                            token = null;
+                            triggerToken = null;
+                        }
                         break;
                 }
                 //
@@ -2377,6 +2409,7 @@ namespace XSharpLanguage
             String currentToken = "";
             XElement element = null;
             CompletionType cType = null;
+            CompletionType cTemp = null;
             if (tokenList.Count == 0)
                 return null;
             // Context Type....
@@ -2391,7 +2424,7 @@ namespace XSharpLanguage
                 if (dotPos > -1)
                 {
                     String startToken = currentToken.Substring(0, dotPos);
-                    cType = new CompletionType(startToken, currentMember.File);
+                    cType = new CompletionType(startToken, currentMember.File, currentMember.Parent.NameSpace);
                     currentToken = currentToken.Substring(dotPos + 1);
                     currentPos++;
                     if (String.IsNullOrEmpty(currentToken))
@@ -2404,7 +2437,7 @@ namespace XSharpLanguage
                 {
                     // this a Constructor call
                     currentToken = currentToken.Substring(0, currentToken.Length - 2);
-                    cType = new CompletionType(currentToken, currentMember.File);
+                    cType = new CompletionType(currentToken, currentMember.File, currentMember.Parent.NameSpace);
                     if ((cType != null) && (cType.IsInitialized) && (cType.XType != null))
                     {
                         foundElement = cType.XType;
@@ -2441,11 +2474,13 @@ namespace XSharpLanguage
                                 // We can have a Property/Field of the current CompletionType
                                 if (cType != null)
                                 {
-                                    cType = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
-                                    if ((cType != null) && (!cType.IsInitialized))
+                                    cTemp = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
+                                    if ((cTemp != null) && (!cTemp.IsInitialized))
                                     {
                                         cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
                                     }
+                                    else
+                                        cTemp = cType;
                                 }
                             }
                         }
@@ -2460,11 +2495,13 @@ namespace XSharpLanguage
                         // We can have a Property/Field of the current CompletionType
                         if (cType != null)
                         {
-                            cType = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
-                            if ((cType != null) && (!cType.IsInitialized))
+                            cTemp = SearchPropertyTypeIn(cType, currentToken, visibility, out foundElement);
+                            if ((cTemp != null) && (!cTemp.IsInitialized))
                             {
                                 cType = SearchFieldTypeIn(cType, currentToken, visibility, out foundElement);
                             }
+                            else
+                                cTemp = cType;
                         }
                     }
                 }
@@ -2481,6 +2518,17 @@ namespace XSharpLanguage
                 }
                 //
                 visibility = Modifiers.Public;
+                if (foundElement != null)
+                {
+                    if (String.Compare(foundElement.Name, "self", true) == 0)
+                    {
+                        visibility = Modifiers.Private;
+                    }
+                    else if (String.Compare(foundElement.Name, "super", true) == 0)
+                    {
+                        visibility = Modifiers.Protected;
+                    }
+                }
             }
             return cType;
         }
@@ -2534,6 +2582,7 @@ namespace XSharpLanguage
                 {
                     cType = new CompletionType((XTypeMember)element);
                     foundElement = element;
+                    return cType;
                 }
             }
             else if (cType.SType != null)
@@ -2625,6 +2674,7 @@ namespace XSharpLanguage
                 {
                     cType = new CompletionType((XTypeMember)element);
                     foundElement = element;
+                    return cType;
                 }
             }
             else if (cType.SType != null)

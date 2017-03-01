@@ -170,7 +170,7 @@ namespace Microsoft.VisualStudio.Project
 						continue;
 				}
 
-				//Skip this project if it is an umodeled project (unloaded)
+				//Skip this project if it is an unmodeled project (unloaded)
 				if (string.Compare(EnvDTE.Constants.vsProjectKindUnmodeled, prj.Kind, StringComparison.OrdinalIgnoreCase) == 0)
 				{
 					continue;
@@ -419,8 +419,13 @@ namespace Microsoft.VisualStudio.Project
             Debug.Assert(!String.IsNullOrEmpty(this.referencedProjectRelativePath), "Could not retrive referenced project path form project file");
 
             string guidString = this.ItemNode.GetMetadata(ProjectFileConstants.Project);
+            this.ReferencedProjectName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
+            if (guidString == String.Empty)
+            {
+                // find guid in solution ?
+            }
 
-            // Continue even if project setttings cannot be read.
+            // Continue even if project settings cannot be read.
             try
             {
                 this.referencedProjectGuid = new Guid(guidString);
@@ -430,11 +435,11 @@ namespace Microsoft.VisualStudio.Project
             }
             finally
             {
-                Debug.Assert(this.referencedProjectGuid != Guid.Empty, "Could not retrive referenced project guidproject file");
+                //Debug.Assert(this.referencedProjectGuid != Guid.Empty, "Could not retrieve referenced project guidproject file");
 
 				this.ReferencedProjectName = this.ItemNode.GetMetadata(ProjectFileConstants.Name);
 
-                Debug.Assert(!String.IsNullOrEmpty(this.referencedProjectName), "Could not retrive referenced project name form project file");
+                //Debug.Assert(!String.IsNullOrEmpty(this.referencedProjectName), "Could not retrieve referenced project name form project file");
             }
 
             Uri uri = new Uri(this.ProjectMgr.BaseURI.Uri, this.referencedProjectRelativePath);

@@ -135,7 +135,11 @@ namespace XSharpModel
         {
             get
             {
-                if ( (this.Kind == Kind.Property) || (this.Kind == Kind.Access) || (this.Kind == Kind.ClassVar) || (this.Kind == Kind.Event))
+                if ( (this.Kind == Kind.Property) || 
+                    (this.Kind == Kind.Access) || 
+                    (this.Kind == Kind.ClassVar) ||
+                    (this.Kind == Kind.EnumMember) ||
+                    (this.Kind == Kind.Event))
                     return this.Name;
                 //
                 String vars = "";

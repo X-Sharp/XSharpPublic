@@ -454,6 +454,7 @@ namespace XSharpModel
         VODLL,
         VOStruct,
         Union,
+        EnumMember
     }
 
     /// <summary>

@@ -219,3 +219,5 @@ XSharp/docs/Help/
 *.exe
 /Tests/Applications/C386/NativeResources.RES
 /Tests/Applications/C386/NativeResources.rc
+/Tests/Applications/C439/Prg/C439.ppo
+/Tests/Applications/C438/Prg/C438.ppo

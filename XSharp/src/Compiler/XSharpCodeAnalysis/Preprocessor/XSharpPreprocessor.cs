@@ -509,6 +509,24 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return token;
         }
 
+        IList<XSharpToken> PeekPPCommand()
+        {
+            IList<XSharpToken> res = new List<XSharpToken>();
+            int i = inputs.Index;
+            var t = (XSharpToken) inputs.Tokens.Get(i);
+            while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
+            {
+                if (t.IsEOS() && t.Text != ";")
+                    break;
+                if (t.Channel == XSharpLexer.PREPROCESSOR)
+                {
+                     res.Add(t);
+                }
+                i += 1;
+                t = (XSharpToken) inputs.Tokens.Get(i);
+            }
+            return res;
+        }
         IList<XSharpToken> ReadPPCommand()
         {
             IList<XSharpToken> res = new List<XSharpToken>();
@@ -663,14 +681,39 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return (t.Type == XSharpLexer.MACRO) ? macroDefines.ContainsKey(t.Text) : false;
         }
 
-        void addDefine(XSharpToken def)
+        void addDefine(int type)
         {
-            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+            // Check to see if the define contains a LPAREN, and there is no space in between them. 
+            // Then it is a pseudo function that we will store as a #xtranslate UDC
+            var newtokens = PeekPPCommand();
+            // this returns a list that includes #define and the ID
+            if (newtokens.Count < 2)
             {
                 Consume();
-                writeToPPO(def, PPOPrefix+"#define " + def.Text + " ");
-                var newtokens = ReadPPCommand();
-                writeToPPO(newtokens, false, true);
+                _parseErrors.Add(new ParseErrorData(newtokens[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                return;
+
+            }
+            XSharpToken def = newtokens[1];
+            if (newtokens.Count > 2)
+            {
+                // token 1 is the Identifier
+                def = newtokens[1];
+                var first = newtokens[2];
+                if (first.Type == XSharpLexer.LPAREN
+                    && first.StartIndex == def.StopIndex + 1)
+                {
+                    addRule(type);
+                    return;
+                }
+            }
+
+            if (XSharpLexer.IsIdentifier(def.Type) || XSharpLexer.IsKeyword(def.Type))
+            {
+                writeToPPO(newtokens, true, true);
+                newtokens = ReadPPCommand();
+                newtokens.RemoveAt(0);  // remove #define
+                newtokens.RemoveAt(0);  // remove ID
                 if (symbolDefines.ContainsKey(def.Text))
                 {
                     // check to see if this is a new definition or a duplicate definition
@@ -685,7 +728,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 symbolDefines[def.Text] = newtokens;
                 if (_options.ShowDefs)
                 {
-                    DebugOutput("{0}:{1}, add define {2} => {3}", def.FileName(), def.Line, def.Text, newtokens.AsString() );
+                    DebugOutput("{0}:{1} add DEFINE {2} => {3}", def.FileName(), def.Line, def.Text, newtokens.AsString() );
                 }
             }
             else
@@ -719,7 +762,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         void addRule(int token)
         {
             var cmd = Lt();
-            //cmd = FixToken(cmd);
             Consume();
             writeToPPO(cmd, PPOPrefix + cmd.Text+" ");
             var udc = ReadPPCommand();
@@ -753,10 +795,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // TRANSLATE and XTRANSLATE can also match from beginning of line
                     cmdRules.Add(rule);
                     transRules.Add(rule);
+                    if (token == XSharpLexer.PP_DEFINE)
+                    {
+                        rule.CaseInsensitive = _options.VOPreprocessorBehaviour;
+                    }
                 }
                 if (_options.ShowDefs)
                 {
-                    DebugOutput("{0}:{1} add UDC {2}", cmd.FileName(), cmd.Line, udc.AsString());
+                    DebugOutput("{0}:{1} add {2} {3}", cmd.FileName(), cmd.Line, token == XSharpLexer.PP_DEFINE ? "DEFINE" : "UDC" ,rule.Name);
                 }
                 _hasrules = true;
             }
@@ -985,16 +1031,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                             _parseErrors.Add(new ParseErrorData(Lt(), ErrorCode.ERR_PreProcessorError, "'#endif' expected"));
                         }
                         return Lt();
-                    case XSharpLexer.PP_DEFINE:
-                        if (IsActiveElseSkip())
-                        {
-                            Consume();
-                            SkipHidden();
-                            var def = Lt();
-                            addDefine(def);
-                            SkipToEol();
-                        }
-                        break;
                     case XSharpLexer.PP_UNDEF:
                         if (IsActiveElseSkip())
                         {
@@ -1199,6 +1235,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_COMMAND:
                     case XSharpLexer.PP_TRANSLATE:
                         addRule(nextType);
+                        break;
+                    case XSharpLexer.PP_DEFINE:
+                        if (IsActiveElseSkip())
+                        {
+                            addDefine(nextType);
+                        }
                         break;
                     case XSharpLexer.PP_ENDREGION:
                     case XSharpLexer.PP_REGION:

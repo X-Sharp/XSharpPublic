@@ -30,6 +30,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         PPMatchToken[] _matchtokens;                    
         PPResultToken[] _resulttokens;
         PPErrorMessages _errorMessages;
+        internal bool CaseInsensitive = false;
         internal PPUDCType Type { get { return _type; } }
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages)
         {
@@ -47,35 +48,163 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                         _type = PPUDCType.XTranslate;
                     break;
-                default:
+                case XSharpLexer.PP_DEFINE:
+                    // define in the form of #define FOO(x) x + 1
                     _type = PPUDCType.Define;
+                    break;
+                default:
+                    _type = PPUDCType.None;
                     break;
             }
             var ltokens = new XSharpToken[tokens.Count];
             tokens.CopyTo(ltokens, 0);
             _errorMessages = new PPErrorMessages();
             errorMessages = null;
-            if (!parseRuleTokens(udc, ltokens))
+            if (_type == PPUDCType.Define)
             {
-                _type = PPUDCType.None;
-                errorMessages = _errorMessages;
+                if (!parseDefineTokens(udc, ltokens))
+                {
+                    _type = PPUDCType.None;
+                    errorMessages = _errorMessages;
+
+                }
+            }
+            else
+            {
+                if (!parseRuleTokens(udc, ltokens))
+                {
+                    _type = PPUDCType.None;
+                    errorMessages = _errorMessages;
+                }
             }
 
         }
-        bool parseRuleTokens(XSharpToken udc, XSharpToken[] _tokens)
+        bool parseDefineTokens(XSharpToken udc, XSharpToken[] tokens)
+        {
+            // scan for the end paren
+            int iSeperatorPos = -1;
+            int iParenLevel = 0;
+            for (int i = 0; i < tokens.Length - 1; i++)
+            {
+                // Look for RPAREN
+                switch (tokens[i].Type)
+                {
+                    case XSharpLexer.LPAREN:
+                        iParenLevel += 1;
+                        break;
+                    case XSharpLexer.RPAREN:
+                        iParenLevel -= 1;
+                        if (iParenLevel <= 0)
+                        {
+                            iSeperatorPos = i;
+                            break;
+                        }
+                        break;
+                }
+                if (iSeperatorPos != -1)
+                    break;
+            }
+            if (iSeperatorPos < 0)
+            {
+                addErrorMessage(udc, "token ')' not found in #DEFINE");
+                return false;
+            }
+            if (iParenLevel != 0)
+            {
+                addErrorMessage(udc, "Unmatched number of Open and Close parentheses in UDC");
+                return false;
+            }
+            XSharpToken[] left = new XSharpToken[iSeperatorPos+1];
+            XSharpToken[] right = new XSharpToken[tokens.Length - iSeperatorPos -1];
+            Array.Copy(tokens, left, iSeperatorPos+1);
+            Array.Copy(tokens, iSeperatorPos + 1, right, 0, right.Length);
+            // Now create a list of match tokens and result tokens.
+            // This is done inline since it is much simpler then for a UDC
+            var matchTokens = new List<PPMatchToken>();
+            var resultTokens = new List<PPResultToken>();
+            var markers = new Dictionary<string, PPMatchToken>(StringComparer.OrdinalIgnoreCase);
+            bool hasSeenLParen = false;
+            bool hasErrors = false;
+            for (int i = 0; i < left.Length && ! hasErrors; i++)
+            {
+                var token = left[i];
+                if (token.IsName())
+                {
+                    if (hasSeenLParen)
+                    {
+                        var mtoken = new PPMatchToken(token, PPTokenType.MatchRegular);
+                        matchTokens.Add(mtoken);
+                        markers.Add(token.Text, mtoken);
+                    }
+                    else
+                    {
+                        matchTokens.Add(new PPMatchToken(token, PPTokenType.Token));
+                    }
+                }
+                else
+                {
+                    switch (token.Type)
+                    {
+                        case XSharpLexer.LPAREN:
+                            matchTokens.Add(new PPMatchToken(token, PPTokenType.Token));
+                            hasSeenLParen = true;
+                            break;
+                        case XSharpLexer.COMMA:
+                        case XSharpLexer.RPAREN:
+                            matchTokens.Add(new PPMatchToken(token, PPTokenType.Token));
+                            break;
+                        default:
+                            addErrorMessage(udc, $"unexpected token '{token.Text}' found in #DEFINE");
+                            hasErrors = true;
+                            break;
+                    }
+
+                }
+            }
+            for (int i = 0; i < right.Length && !hasErrors; i++)
+            {
+                var token = right[i];
+                if (token.IsName())
+                {
+                    if (markers.ContainsKey(token.Text))
+                    {
+                        var mtoken = markers[token.Text];
+                        var rtoken = new PPResultToken(token, PPTokenType.ResultRegular);
+                        rtoken.MatchMarker = mtoken;
+                        resultTokens.Add(rtoken);
+                    }
+                    else
+                    {
+                        var rtoken = new PPResultToken(token, PPTokenType.Token);
+                        resultTokens.Add(rtoken);
+                    }
+                }
+                else
+                {
+                    var rtoken = new PPResultToken(token, PPTokenType.Token);
+                    resultTokens.Add(rtoken);
+                }
+            }
+            _matchtokens = matchTokens.ToArray();
+            _resulttokens = resultTokens.ToArray();
+            checkMatchingTokens(_resulttokens, markers);
+            return _errorMessages == null || _errorMessages.Count == 0;
+        }
+
+        bool parseRuleTokens(XSharpToken udc, XSharpToken[] tokens)
         {
             int iSeperatorPos = -1;
             var markers = new Dictionary<string, PPMatchToken>(StringComparer.OrdinalIgnoreCase);
 
-            if (_tokens?.Length == 0)
+            if (tokens?.Length == 0)
             {
                 addErrorMessage(udc, "UDC is empty");
                 return false;
             }
-            for (int i = 0; i < _tokens.Length - 1; i++)
+            for (int i = 0; i < tokens.Length - 1; i++)
             {
                 // Must be => without whitespace
-                if (_tokens[i].Type == XSharpLexer.UDCSEP)
+                if (tokens[i].Type == XSharpLexer.UDCSEP)
                 {
                     iSeperatorPos = i;
                     break;
@@ -86,18 +215,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 addErrorMessage(udc, "token '=>' not found in UDC ");
                 return false;
             }
-            XSharpToken[] _left = new XSharpToken[iSeperatorPos];
-            XSharpToken[] _right = new XSharpToken[_tokens.Length - iSeperatorPos - 1];
-            Array.Copy(_tokens, _left, iSeperatorPos);
-            Array.Copy(_tokens, iSeperatorPos + 1, _right, 0, _right.Length);
-            _matchtokens = analyzeMatchTokens(_left, markers);
-            _resulttokens = analyzeResultTokens(_right,0);
+            XSharpToken[] left = new XSharpToken[iSeperatorPos];
+            XSharpToken[] right = new XSharpToken[tokens.Length - iSeperatorPos - 1];
+            Array.Copy(tokens, left, iSeperatorPos);
+            Array.Copy(tokens, iSeperatorPos + 1, right, 0, right.Length);
+            _matchtokens = analyzeMatchTokens(left, markers);
+            _resulttokens = analyzeResultTokens(right,0);
             if (!checkMatchingTokens(_resulttokens, markers))
             {
                 // Check to see if all result tokens have been matched
                 // Unmatched Match tokens is fine (they may be deleted from the output)
 
-                string unmatched = String.Empty;
                 foreach (var r in _resulttokens)
                 {
                     if (r.IsMarker&& r.MatchMarker == null)
@@ -698,17 +826,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         bool stringEquals (string lhs, string rhs)
         {
+            var mode = StringComparison.OrdinalIgnoreCase;
+            if (this.Type == PPUDCType.Define && !CaseInsensitive)
+            {
+                mode = StringComparison.Ordinal;    // case sensitive
+            }
             if (lhs?.Length <= 4)
-                return String.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase);
+            {
+                return String.Equals(lhs, rhs, mode);
+            }
             switch (this.Type)
             {
                 case PPUDCType.Command:
                 case PPUDCType.Translate:
                     // dBase/Clipper syntax 4 characters is enough
-                    return String.Compare(lhs, 0, rhs, 0, rhs.Length, StringComparison.OrdinalIgnoreCase) == 0;
+                    return String.Compare(lhs, 0, rhs, 0, rhs.Length, mode) == 0;
                 case PPUDCType.XCommand:
                 case PPUDCType.XTranslate:
-                    return String.Equals(lhs, rhs, StringComparison.OrdinalIgnoreCase);
+                case PPUDCType.Define:
+                    return String.Equals(lhs, rhs, mode);
             }
             return false;
         }

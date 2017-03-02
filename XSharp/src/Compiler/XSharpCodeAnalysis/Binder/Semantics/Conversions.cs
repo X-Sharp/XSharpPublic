@@ -357,6 +357,8 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (source == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
             {
                 // Usual -> Decimal. Get the object out of the Usual and let the rest be done by Roslyn
+                if (destination == Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual))
+                    return Conversion.NoConversion;
                 if (dstType == SpecialType.System_Decimal)
                     return Conversion.Boxing;
                 // Usual -> OBJECT. Get the object out of the Usual 

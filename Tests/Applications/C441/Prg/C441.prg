@@ -18,6 +18,8 @@ MEMBER m2 AS LOGIC
 
 CLASS TestClass
 	PROTECT vostr AS _MyVOSTR
+CONSTRUCTOR 
+	vostr := MemAlloc(_sizeof(_MyVoStr))	
 METHOD Test() AS VOID
 	LOCAL s IS _MyVOSTR
 	s:m1 := 123

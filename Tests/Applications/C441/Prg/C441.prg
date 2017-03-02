@@ -4,10 +4,16 @@ FUNCTION Start() AS VOID
 	LOCAL s IS _MyVOSTR
 	s:m1 := 456
 	s.m1 := 456 // OK
+	s.m2 := TRUE
+	xAssert(s.m1 == 456)
+	xAssert(s.m2)
 	
     LOCAL DIM ddd[1] IS _MyVOSTR
     ddd[1]:m1 := 123
-    ddd[1].m1 := 123 // error
+	xAssert(ddd[1].m1 == 123)
+    
+    ddd[1].m1 := 1234 // error
+	xAssert(ddd[1].m1 == 1234)
 
 	TestClass{}:Test()
 RETURN
@@ -28,7 +34,17 @@ METHOD Test() AS VOID
 	? s:m1
 	
 	SELF:vostr:m1 := 5
-	SELF:vostr.m1 := 5 // Error
+	xAssert(SELF:vostr.m1 == 5)
+	SELF:vostr.m1 := 15 // Error
+	xAssert(SELF:vostr:m1 == 15)
+	
 RETURN
 
 END CLASS
+
+PROC xAssert(l AS LOGIC)
+IF .not. l
+	THROW Exception{"Incorrect result in line " + System.Diagnostics.StackTrace{TRUE}:GetFrame(1):GetFileLineNumber():ToString()}
+END IF
+? "Assertion passed"
+

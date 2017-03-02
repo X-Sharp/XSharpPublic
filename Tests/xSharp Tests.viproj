@@ -35908,7 +35908,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C364 - Various issues with defining classs members outside of PARTIAL CLASS..END CLASS
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C365 - VO incompatibility wirh RETURN values in Init()/Axit() *************
 Application = C365 - VO incompatibility wirh RETURN values in Init()/Axit()
 IDEVersion = 1.06
@@ -36007,7 +36007,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C365 - VO incompatibility wirh RETURN values in Init()/Axit()
 
-ApplicationGroup = 6817B77E-0C9E-4118-914A-96AC0093E8C8
+ApplicationGroup = CB2E170B-0122-4D3B-8692-FF0130BAE231
 ; ************** APPLICATION C366 - DEFINEs need type specified *************
 Application = C366 - DEFINEs need type specified
 IDEVersion = 1.06
@@ -38981,7 +38981,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C393 - Cannot define STATIC _INT PROC
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 277C4CD0-A49F-40CE-9680-36717155B0A2
 ; ************** APPLICATION C394 - (Ignore for now) Problem with same named GLOBAL and STATIC GLOBAL *************
 Application = C394 - (Ignore for now) Problem with same named GLOBAL and STATIC GLOBAL
 IDEVersion = 1.06
@@ -40274,7 +40274,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C406 - Cannot convert USUAL to DateTime
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = 84D6F36B-73F2-4D6B-9105-4A55EA68E829
 ; ************** APPLICATION C407 - Name conflict between assembly name and class name *************
 Application = C407 - Name conflict between assembly name and class name
 IDEVersion = 1.06
@@ -42454,7 +42454,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C425 - No error reported when implicitly converting from PTR to VOSTRUCT without /vo7
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C426 - InvalidCastException when assigning (LOGIC in) USUAL to LOGIC VOSTRUCT member *************
 Application = C426 - InvalidCastException when assigning (LOGIC in) USUAL to LOGIC VOSTRUCT member
 IDEVersion = 1.06
@@ -42753,8 +42753,8 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
 ENDApplication = C428 - Problem declaring local/member AS Type
 
 ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
-; ************** APPLICATION C429 - compiler crash with STATIC LOCAL in CODEBLOCK *************
-Application = C429 - compiler crash with STATIC LOCAL in CODEBLOCK
+; ************** APPLICATION C429 - Cannot use STATIC LOCAL in CODEBLOCK *************
+Application = C429 - Cannot use STATIC LOCAL in CODEBLOCK
 IDEVersion = 1.06
 GalleryName = 
 GalleryPage = 
@@ -42785,19 +42785,19 @@ KeyFile =
 [ExportOptions]
 ExportResources = 0
 ExportImages = 0
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK FileGroups]
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK Files]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK FileGroups]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK Files]
 File = %AppPath%\Prg\C429.prg
 FileGUID = 77CEA173-D659-4B95-900E-DF7DEDFD95C8
 FileType = Code
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK References]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK References]
 ReferenceGAC = CLR4,System,1,0,4.0.0.0
 ReferenceGAC = CLR4,VulcanRT,1,0,4.0.401.0
 ReferenceGAC = CLR4,VulcanRTFuncs,1,0,4.0.401.0
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK Resources]
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK Native Resources]
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK License files]
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK General Options]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK Resources]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK Native Resources]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK License files]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK General Options]
 Switches=
 ZeroArrays=0
 CaseSensitive=0
@@ -42822,7 +42822,7 @@ IgnoreStdDefs=0
 Ovf=0
 FOvf=0
 ResponseOnly=0
-[C429 - compiler crash with STATIC LOCAL in CODEBLOCK Configurations]
+[C429 - Cannot use STATIC LOCAL in CODEBLOCK Configurations]
 AppConfig = Debug,11111111-1111-1111-1111-111111111111
   Switches=
   SwitchesCF=
@@ -42849,7 +42849,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   WarningsErrors=0
   ForceConsole=0
   ForceX86=0
-ENDApplication = C429 - compiler crash with STATIC LOCAL in CODEBLOCK
+ENDApplication = C429 - Cannot use STATIC LOCAL in CODEBLOCK
 
 ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C430 - Compiler crash with ASTYPE (is this the correct syntax?) *************
@@ -43443,7 +43443,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C435 - Problem with 1 char long literral strings delimited with single quotes
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C437 - Parser problem wirt escaped char literals ('\t') *************
 Application = C437 - Parser problem wirt escaped char literals ('\t')
 IDEVersion = 1.06
@@ -43542,7 +43542,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C437 - Parser problem wirt escaped char literals ('\t')
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C438 - Some #command issues *************
 Application = C438 - Some #command issues
 IDEVersion = 1.06
@@ -43641,7 +43641,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C438 - Some #command issues
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C439 - more complex #xcommand directives *************
 Application = C439 - more complex #xcommand directives
 IDEVersion = 1.06
@@ -43740,7 +43740,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C439 - more complex #xcommand directives
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C440 - Cannot use DEFINE := PTR(_CAST) *************
 Application = C440 - Cannot use DEFINE := PTR(_CAST)
 IDEVersion = 1.06
@@ -43839,7 +43839,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C440 - Cannot use DEFINE := PTR(_CAST)
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C441 - Cannot use "." on VOSTRUCT members for class member and DIMs *************
 Application = C441 - Cannot use "." on VOSTRUCT members for class member and DIMs
 IDEVersion = 1.06
@@ -43938,7 +43938,7 @@ AppConfig = Release,22222222-2222-2222-2222-222222222222
   ForceX86=0
 ENDApplication = C441 - Cannot use "." on VOSTRUCT members for class member and DIMs
 
-ApplicationGroup = B9CFE839-D401-428D-94E9-E9D21E9F772D
+ApplicationGroup = C8A205F1-7289-4E5A-A714-71E5A29AFFCE
 ; ************** APPLICATION C442 - Very strange error with DEFINEs *************
 Application = C442 - Very strange error with DEFINEs
 IDEVersion = 1.06

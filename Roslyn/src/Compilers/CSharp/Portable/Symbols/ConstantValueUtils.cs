@@ -91,6 +91,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                     // If we have already computed the unconverted constant value, then this call is cheap
                     // because BoundConversions store their constant values (i.e. not recomputing anything).
                     var constantValue = boundValue.ConstantValue;
+#if XSHARP
+                    // Make sure the boundValue is Completely processed
+                    // this may happen for DIM arrays inside VOSTRUCT where the dimension is a VO Define
+                    // such as 
+                    /*
+                        DEFINE CNLEN       := 1
+                        DEFINE DNLEN       := CNLEN
+                        VOSTRUCT _winRASDIALPARAMS
+                           MEMBER dwSize AS DWORD
+                           MEMBER DIM szEntryName[ RAS_MaxEntryName + 1 ] AS BYTE
+                           MEMBER DIM szPhoneNumber[ RAS_MaxPhoneNumber + 1 ] AS BYTE
+                           MEMBER DIM szUserName[ UNLEN + 1 ] AS BYTE
+                           MEMBER DIM szPassword[ PWLEN + 1 ] AS BYTE
+                           MEMBER DIM szDomain[ DNLEN + 1 ] AS BYTE
+
+                     * 
+                     * The Parser could not determine that DNLEN is a const because it was the result of an expression
+                     * so it has created a readonly field. The binder may be able to detect that it is a const so it will
+                     * change the type from readonly field to a const
+                     */
+
+                    if (boundValue.Syntax is ExpressionSyntax &&
+                        (constantValue == null || constantValue == ConstantValue.Bad))
+                    {
+                        var es = boundValue.Syntax as ExpressionSyntax;
+                        var compilation = thisSymbol.DeclaringCompilation;
+                        var binderFactory = compilation.GetBinderFactory((SyntaxTree)thisSymbol.Locations[0].SourceTree);
+                        var binder = binderFactory.GetBinder(boundValue.Syntax);
+                        boundValue = binder.BindValue(es, diagnostics, Binder.BindValueKind.RValue);
+                        constantValue = boundValue.ConstantValue;
+                    }
+#endif
 
                     var unconvertedConstantValue = unconvertedBoundValue.ConstantValue;
                     if (unconvertedConstantValue != null &&

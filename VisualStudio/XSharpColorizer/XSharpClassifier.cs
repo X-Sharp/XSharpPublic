@@ -125,10 +125,15 @@ namespace XSharpColorizer
             TokenStream = xsWalker.TokenStream;
             if (TokenStream != null)
             {
+                IToken token = null;
+                int iLastInclude = -1;
+                int iLastDefine = -1;
+                int iLastSLComment = -1;
+                int iLastDocComment = -1;
                 List<ClassificationSpan> newtags = new List<ClassificationSpan>();
                 for (var iToken = 0; iToken < TokenStream.Size; iToken++)
                 {
-                    var token = TokenStream.Get(iToken);
+                    token = TokenStream.Get(iToken);
                     var tokenType = token.Type;
                     TextSpan tokenSpan = new TextSpan(token.StartIndex, token.StopIndex - token.StartIndex + 1);
                     //
@@ -149,9 +154,36 @@ namespace XSharpColorizer
                                     case XSharpLexer.PP_ENDIF:
                                         tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
                                         break;
+                                    case XSharpLexer.PP_INCLUDE:
+                                        // scan for list of #includes and create a block
+                                        if (iToken > iLastInclude)
+                                        {
+                                            var lastToken = ScanForLastToken(XSharpLexer.PP_INCLUDE, iToken, TokenStream, out iLastInclude);
+                                            if (token != lastToken)
+                                            {
+                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
+                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
+                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+
+                                            }
+                                        }
+                                        break;
+                                    case XSharpLexer.PP_DEFINE:
+                                        // scan for list of #includes and create a block
+                                        if (iToken > iLastDefine)
+                                        {
+                                            var lastToken = ScanForLastToken(XSharpLexer.PP_DEFINE, iToken, TokenStream, out iLastDefine);
+                                            if (token != lastToken)
+                                            {
+                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
+                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
+                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+
+                                            }
+                                        }
+                                        break;
                                     default:
                                         break;
-
                                 }
                                 break;
                             case XSharpLexer.PRAGMACHANNEL:         // #pragma
@@ -169,6 +201,35 @@ namespace XSharpColorizer
                                     {
                                         tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
                                         tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+                                    }
+                                    else if (token.Type == XSharpLexer.SL_COMMENT)
+                                    {
+                                        if (iToken > iLastSLComment)
+                                        {
+                                            var lastToken = ScanForLastToken(XSharpLexer.SL_COMMENT, iToken, TokenStream, out iLastSLComment);
+                                            if (token != lastToken)
+                                            {
+                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
+                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
+                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+
+                                            }
+                                        }
+                                    }
+                                    else if (token.Type == XSharpLexer.DOC_COMMENT)
+                                    {
+                                        if (iToken > iLastDocComment)
+                                        {
+                                            var lastToken = ScanForLastToken(XSharpLexer.DOC_COMMENT, iToken, TokenStream, out iLastDocComment);
+                                            if (token != lastToken)
+                                            {
+                                                tagsRegion.Add(tokenSpan.ToClassificationSpan(snapshot, xsharpRegionStart));
+                                                var endSpan = new TextSpan(lastToken.StartIndex, lastToken.StopIndex - lastToken.StartIndex + 1);
+                                                tagsRegion.Add(endSpan.ToClassificationSpan(snapshot, xsharpRegionStop));
+
+                                            }
+                                        }
+
                                     }
                                 }
                                 //
@@ -257,19 +318,56 @@ namespace XSharpColorizer
                 }
             }
         }
+        IToken ScanForLastToken(int type, int start, ITokenStream TokenStream, out int iLast)
+        {
+            var lastFound = TokenStream.Get(start);
+            int iLine = lastFound.Line;
+            iLast = start;
+            IToken nextToken = lastFound; 
+            for (int i = start + 1; i < TokenStream.Size; i++)
+            {
+                nextToken = TokenStream.Get(i);
+                if (nextToken.Line > iLine)
+                {
+                    if (nextToken.Type == type)
+                    {
+                        lastFound = nextToken;
+                        iLine = nextToken.Line;
+                        iLast = i;
+                    }
+                    else if (nextToken.Type != XSharpLexer.WS)
+                    {
+                        break;
+                    }
+                }
+            }
+            nextToken = lastFound;
+            for (int i = iLast; i < TokenStream.Size; i++)
+            {
+                nextToken = TokenStream.Get(i);
+                if (nextToken.Line == lastFound.Line 
+                    && nextToken.Type != XSharpLexer.NL
+                    && nextToken.Type != XSharpLexer.EOS)
+                    lastFound = nextToken;
+                else
+                    break;
+            }
+            return lastFound;
+        }
+
 
         #region IClassifier
 
 #pragma warning disable 67
 
-            /// <summary>
-            /// An event that occurs when the classification of a span of text has changed.
-            /// </summary>
-            /// <remarks>
-            /// This event gets raised if a non-text change would affect the classification in some way,
-            /// for example typing /* would cause the classification to change in C# without directly
-            /// affecting the span.
-            /// </remarks>
+        /// <summary>
+        /// An event that occurs when the classification of a span of text has changed.
+        /// </summary>
+        /// <remarks>
+        /// This event gets raised if a non-text change would affect the classification in some way,
+        /// for example typing /* would cause the classification to change in C# without directly
+        /// affecting the span.
+        /// </remarks>
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
 
 #pragma warning restore 67

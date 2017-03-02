@@ -1473,23 +1473,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         }
         public override void ExitJumpStmt([NotNull] XP.JumpStmtContext context)
         {
-			if (context.Key.Type == XP.BREAK)
-			{
-	            ArgumentListSyntax args;
-	            context.SetSequencePoint(context.end);
-	            if (context.Expr != null)
-	                args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
-	            else
-	                args = MakeArgumentList(MakeArgument(GenerateNIL()));
-	            var expr = CreateObject(GenerateQualifiedName(VulcanQualifiedTypeNames.WrappedException), args);
-	            context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
-	                expr,
-	                    SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
-			}
-			else
-			{
-				base.ExitJumpStmt(context);
-			}
+            if (context.Key.Type == XP.BREAK)
+            {
+                ArgumentListSyntax args;
+                context.SetSequencePoint(context.end);
+                if (context.Expr != null)
+                    args = MakeArgumentList(MakeArgument(context.Expr.Get<ExpressionSyntax>()));
+                else
+                    args = MakeArgumentList(MakeArgument(GenerateNIL()));
+                var expr = CreateObject(GenerateQualifiedName(VulcanQualifiedTypeNames.WrappedException), args);
+                context.Put(_syntaxFactory.ThrowStatement(SyntaxFactory.MakeToken(SyntaxKind.ThrowKeyword),
+                    expr,
+                        SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
+            }
+            else
+            {
+                base.ExitJumpStmt(context);
+            }
         }
 
 
@@ -1952,14 +1952,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         context.Name.Get<SimpleNameSyntax>()));
                     return;
                 }
-                else
+                else // if (context.Expr is XP.ArrayAccessContext)
                 {
                     context.Put(MakeSimpleMemberAccess(
                         context.Expr.Get<ExpressionSyntax>(),
-                        (SimpleNameSyntax) NotInDialect(context.Name.Get<SimpleNameSyntax>(),"equivalency of : and . member access operators"))
-                        );
-                    return;
+                        context.Name.Get<SimpleNameSyntax>()));
                 }
+                //else
+                //{
+                //    context.Put(MakeSimpleMemberAccess(
+                //        context.Expr.Get<ExpressionSyntax>(),
+                //        (SimpleNameSyntax) NotInDialect(context.Name.Get<SimpleNameSyntax>(),"equivalency of : and . member access operators"))
+                //        );
+                //    return;
+                //}
             }
             context.Put(MakeSimpleMemberAccess(
                 context.Expr.Get<ExpressionSyntax>(),

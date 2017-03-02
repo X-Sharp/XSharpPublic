@@ -78,14 +78,24 @@ namespace Microsoft.CodeAnalysis.CSharp
             if (_compilation.Options.IsDialectVO)
             {
                 var usualType = _compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
-                var floatType = _compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
                 if (nts != null)
                 {
                     nts = nts.ConstructedFrom;
                 }
-                // Convert single character literal strings to a character constant
+
+
                 if (nts == usualType)
                 {
+                    // USUAL -> WINBOOL, use LOGIC as intermediate type
+                    if (rewrittenType== _compilation.GetWellKnownType(WellKnownType.Vulcan___WinBool))
+                    {
+                        MethodSymbol m = null;
+                        m = getImplicitOperator(usualType, _compilation.GetSpecialType(SpecialType.System_Boolean));
+                        rewrittenOperand = _factory.StaticCall(rewrittenType, m, rewrittenOperand);
+                        rewrittenOperand.WasCompilerGenerated = true;
+                        return ConversionKind.Identity;
+                    }
+
                     if (rewrittenType.IsPointerType())
                     {
                         // Pointer types are not really boxed
@@ -114,7 +124,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                         conversionKind = rewrittenType.IsObjectType() ? ConversionKind.Identity : rewrittenType.IsReferenceType ? ConversionKind.ImplicitReference : ConversionKind.Unboxing;
                     }
                 }
-                else if (nts == floatType && rewrittenType is NamedTypeSymbol)
+                var floatType = _compilation.GetWellKnownType(WellKnownType.Vulcan___VOFloat);
+                if (nts == floatType && rewrittenType is NamedTypeSymbol)
                 {
                     MethodSymbol m = getExplicitOperator(floatType, rewrittenType as NamedTypeSymbol);
                     if (m != null)

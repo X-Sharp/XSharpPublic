@@ -213,6 +213,46 @@ namespace XSharp.Project
             }
         }
 
+        internal List<Tuple<int, int>> GetIntellisenseErrorPos( string fileName )
+        {
+            // dedupe errors based on filename, row, column, 
+            List<Tuple<int, int>> errorPos = new List<Tuple<int, int>>();
+            Dictionary<string, string> keys = new Dictionary<string, string>();
+
+            if (_errorList.AreOtherErrorSourceEntriesShown)
+            {
+                var intellisenseErrors = IntellisenseErrors;
+                Dictionary<string, bool> filenames = new Dictionary<string, bool>();
+                fileName = fileName.ToLower();
+
+                foreach (var item in intellisenseErrors)
+                {
+                    string key = item.Key;
+                    string file = item.Filename.ToLower();
+                    bool isOpen;
+                    if (filenames.ContainsKey(file))
+                    {
+                        isOpen = filenames[file];
+                    }
+                    else
+                    {
+                        isOpen = Project.IsDocumentOpen(file);
+                        filenames.Add(file, isOpen);
+                    }
+                    if (isOpen && !keys.ContainsKey(key) && (file==fileName))
+                    {
+                        errorPos.Add(new Tuple<int, int>(item.Line, item.Column));
+                        keys.Add(key, key);
+                    }
+                    else
+                    {
+                        ; // duplicate item or file is closed
+                    }
+                }
+            }
+            return errorPos;
+        }
+
         public static bool RemoveProject(XSharpProjectNode project)
         {
             if (!_projects.ContainsKey(project.ProjectIDGuid))

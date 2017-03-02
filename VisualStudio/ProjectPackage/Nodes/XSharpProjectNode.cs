@@ -1335,7 +1335,13 @@ namespace XSharp.Project
         {
             _errorListManager.AddIntellisenseError(file, line, column, errCode, message, sev.ToMessageSeverity());
         }
-        
+
+        public List<Tuple<int, int>> GetIntellisenseErrorPos(string fileName)
+        {
+            return _errorListManager.GetIntellisenseErrorPos(fileName);
+        }
+
+
         public void ShowIntellisenseErrors()
         {
             _errorListManager.Refresh();
@@ -1562,6 +1568,7 @@ namespace XSharp.Project
             }
             return VSConstants.S_OK;
         }
+
 
 
 

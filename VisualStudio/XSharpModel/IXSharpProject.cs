@@ -21,5 +21,6 @@ namespace XSharpModel
         void AddIntellisenseError(string file, int line, int column, string errCode, string message, DiagnosticSeverity sev);
         void ShowIntellisenseErrors();
         bool IsDocumentOpen(string file);
+        List<Tuple<int, int>> GetIntellisenseErrorPos(string fileName);
     }
 }

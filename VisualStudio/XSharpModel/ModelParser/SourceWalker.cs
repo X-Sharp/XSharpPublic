@@ -231,14 +231,13 @@ namespace XSharpModel
             }
             if (errors == null)
                 return;
-            var thread = new System.Threading.Thread(delegate ()
-            {
+            //var thread = new System.Threading.Thread(delegate ()
+            //{
                 // wait 2 seconds to allow continuous typing. The error may have disappeared in 2 seconds
-                System.Threading.Thread.Sleep(2000);
+                //System.Threading.Thread.Sleep(2000);
                 IEnumerable<LanguageService.CodeAnalysis.Diagnostic> current;
                 lock (_gate)
                 {
-
                     current = errors;
                     string path = File.FullPath;
                     prjNode.ClearIntellisenseErrors(path);
@@ -252,8 +251,8 @@ namespace XSharpModel
                     }
                     prjNode.ShowIntellisenseErrors();
                 }
-            });
-            thread.Start();
+            //});
+            //thread.Start();
         }
 
 
@@ -316,7 +315,7 @@ namespace XSharpModel
             discover.File = this._file;
             discover.BuildRegionTags = (_snapshot != null);
             discover.BuildModel = false;
-            if (_file != null)
+            if (this._file != null)
             {
                 if ( _file.Project.Loaded )
                 {

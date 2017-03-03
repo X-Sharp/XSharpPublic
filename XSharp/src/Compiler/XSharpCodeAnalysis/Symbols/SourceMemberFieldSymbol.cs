@@ -54,37 +54,40 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                 }
             }
             TypeSymbol type = null;
-            if (xNode is XP.VodefineContext)
+            if (xNode is XP.VodefineContext && ! this.IsConst)
             {
-                DiagnosticBag diagnostics  = DiagnosticBag.GetInstance();
-                type = binder.BindType(typeSyntax, diagnostics);
-                // no datatype specified and parser could not determine the type
                 var vodef = xNode as XP.VodefineContext;
-                //if (type.SpecialType == SpecialType.System_Object && vodef.DataType == null)
+                DiagnosticBag diagnostics = DiagnosticBag.GetInstance();
+                type = binder.BindType(typeSyntax, diagnostics);
+                // parser could not determine the type
+                fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
+                var declarator = VariableDeclaratorNode;
+                var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
+                var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, declarator.Initializer, declarator);
+                if (initializerOpt != null)
                 {
-                    fieldsBeingBound = new ConsList<FieldSymbol>(this, fieldsBeingBound);
-                    var declarator = VariableDeclaratorNode;
-                    var initializerBinder = new ImplicitlyTypedFieldBinder(binder, fieldsBeingBound);
-                    var initializerOpt = initializerBinder.BindInferredVariableInitializer(diagnostics, declarator.Initializer, declarator);
-                    if (initializerOpt != null)
+                    if ((object)initializerOpt.Type != null && !initializerOpt.Type.IsErrorType())
                     {
-                        if ((object)initializerOpt.Type != null && !initializerOpt.Type.IsErrorType())
+                        type = initializerOpt.Type;
+
+                        if (!type.IsVoidPointer() && initializerOpt.ConstantValue != null && !this.IsConst)
                         {
-                            type = initializerOpt.Type;
-                            
-                            if (! type.IsVoidPointer() && initializerOpt.ConstantValue != null && !this.IsConst)
-                            {
-                                this._modifiers |= DeclarationModifiers.Const;
-                                this._modifiers |= DeclarationModifiers.Static;
-                                this._modifiers &= ~DeclarationModifiers.ReadOnly;
-                            }
-                            if (type.IsEnumType())
-                            {
-                                type = type.GetEnumUnderlyingType();
-                            }
+                            this._modifiers |= DeclarationModifiers.Const;
+                            this._modifiers |= DeclarationModifiers.Static;
+                            this._modifiers &= ~DeclarationModifiers.ReadOnly;
+                        }
+                        if (type.IsEnumType())
+                        {
+                            type = type.GetEnumUnderlyingType();
                         }
                     }
                 }
+                if (type == null)
+                {
+                    type = compilation.GetSpecialType(SpecialType.System_Object);
+                }
+                //System.Diagnostics.Debug.WriteLine($"Looking for type of define {vodef.Name.ToString()}, found {type.ToString()}, const: {IsConst}");
+
                 return type;
             }
             return null;

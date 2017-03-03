@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using LanguageService.SyntaxTree;
 using LanguageService.CodeAnalysis.XSharp.SyntaxParser;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace XSharp.Project
 {
@@ -164,7 +165,8 @@ namespace XSharp.Project
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, out gotoElement);
+            MemberInfo dummyElement;
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, out gotoElement, out dummyElement );
             //
             if (gotoElement != null )
             {

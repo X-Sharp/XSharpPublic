@@ -179,7 +179,8 @@ namespace XSharpLanguage
 
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XElement foundElement;
-            cType = XSharpTokenTools.RetrieveType(tokenList, member, out foundElement);
+            MemberInfo dummyElement;
+            cType = XSharpTokenTools.RetrieveType(tokenList, member, out foundElement, out dummyElement);
             switch (typedChar)
             {
                 case '.':
@@ -2395,9 +2396,10 @@ namespace XSharpLanguage
             return null;
         }
 
-        public static CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember, out XElement foundElement)
+        public static CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember, out XElement foundElement, out MemberInfo sysFoundElement)
         {
             foundElement = null;
+            sysFoundElement = null;
             if (currentMember == null)
             {
                 System.Diagnostics.Debug.WriteLine(String.Format("Retrieve current Type : Member cannot be null."));
@@ -2451,7 +2453,7 @@ namespace XSharpLanguage
                     if (cType != null)
                     {
                         // Now, search for a Method
-                        cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement);
+                        cType = SearchMethodTypeIn(cType, currentToken, visibility, out foundElement, out sysFoundElement);
                     }
                     if ((cType != null) && (!cType.IsInitialized))
                     {
@@ -2729,9 +2731,10 @@ namespace XSharpLanguage
         /// <returns>The CompletionType that the Method will return (If found).
         /// If not found, the CompletionType.IsInitialized is false
         /// </returns>
-        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement)
+        private static CompletionType SearchMethodTypeIn(CompletionType cType, string currentToken, Modifiers minVisibility, out XElement foundElement, out MemberInfo systemElement )
         {
             foundElement = null;
+            systemElement = null;
             if (cType.XType != null)
             {
                 // 
@@ -2756,12 +2759,12 @@ namespace XSharpLanguage
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement, out systemElement);
                     }
                     else if (cType.XType.ParentName != null)
                     {
                         // Parent has just a Name, so one of the System Types
-                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.File.Usings), currentToken, Modifiers.Public, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.XType.ParentName, cType.XType.File.Usings), currentToken, Modifiers.Public, out foundElement, out systemElement);
                     }
                 }
                 else
@@ -2795,13 +2798,14 @@ namespace XSharpLanguage
                 }
                 //
                 Type declType = null;
+                MethodInfo method = null;
                 foreach (var member in members)
                 {
                     if (member.MemberType == MemberTypes.Method)
                     {
                         if (member.Name.ToLower() == currentToken.ToLower())
                         {
-                            MethodInfo method = member as MethodInfo;
+                            method = member as MethodInfo;
                             declType = method.ReturnType;
                             break;
                         }
@@ -2812,11 +2816,12 @@ namespace XSharpLanguage
                     // In the parent ?
                     if (cType.SType.BaseType != null)
                     {
-                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement);
+                        return SearchMethodTypeIn(new CompletionType(cType.SType.BaseType), currentToken, Modifiers.Public, out foundElement, out systemElement);
                     }
                 }
                 else
                 {
+                    systemElement = method;
                     return new CompletionType(declType);
                 }
             }

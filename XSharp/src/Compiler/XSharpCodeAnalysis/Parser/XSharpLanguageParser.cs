@@ -41,8 +41,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private readonly ContextAwareSyntax _syntaxFactory; // Has context, the fields of which are resettable.
 
         private ITokenStream _lexerTokenStream;
+        private ITokenStream _preprocessorTokenStream;
 
-//#if DEBUG
+        //#if DEBUG
         internal class XSharpErrorListener : IAntlrErrorListener<IToken>
         {
 
@@ -150,6 +151,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
 
             var tokenstream = new CommonTokenStream(lexer);
+            _lexerTokenStream = tokenstream;
 #if DEBUG && DUMP_TIMES
                         DateTime t = DateTime.Now;
 #endif
@@ -164,6 +166,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var parseErrors = ParseErrorData.NewBag();
             var pp = new XSharpPreprocessor(lexer, tokenstream, _options, _fileName, _text.Encoding, _text.ChecksumAlgorithm, parseErrors);
             var pp_tokens = new CommonTokenStream(pp);
+            _preprocessorTokenStream = pp_tokens;
             var parser = new XSharpParser(pp_tokens);
             parser.AllowFunctionInsideClass = false;     // 
             if (_options.Dialect == XSharpDialect.VO)
@@ -192,7 +195,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Debug.WriteLine("Preprocessing completed in {0}",ts);
             }
 #endif
-            _lexerTokenStream = pp_tokens;
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
             // When parsing in Sll mode we do not record any parser errors.
             // When this fails, then we try again with LL mode and then we record errors
@@ -235,50 +237,37 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             //#if DEBUG
 
-            /* Temporary solution to prevent crashes with invalid syntax */
-            if (parser.NumberOfSyntaxErrors != 0 || (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
+            XSharpTreeTransformation treeTransform;
+            if (_options.IsDialectVO)
             {
-                XSharpTreeTransformation failedTreeTransform = null;
-                if (_options.IsDialectVO) {
-                    failedTreeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-                } else {
-                    failedTreeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-                }
+                treeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
+            }
+            else
+            {
+                treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
+            }
+
+            if (parser.NumberOfSyntaxErrors != 0 || 
+                (parseErrors.Count != 0 && parseErrors.Contains(p => !ErrorFacts.IsWarning(p.Code))))
+            {
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                 eof.XNode = new ErrorNodeImpl(tree.Stop);
                 var result = _syntaxFactory.CompilationUnit(
-                    failedTreeTransform.GlobalEntities.Externs,
-                    failedTreeTransform.GlobalEntities.Usings,
-                    failedTreeTransform.GlobalEntities.Attributes,
-                    failedTreeTransform.GlobalEntities.Members,
+                    treeTransform.GlobalEntities.Externs,
+                    treeTransform.GlobalEntities.Usings,
+                    treeTransform.GlobalEntities.Attributes,
+                    treeTransform.GlobalEntities.Members,
                     eof);
                 result.XNode = (XSharpParser.SourceContext)tree;
-                result.XTokens = tokenstream;
+                result.XTokens = _lexerTokenStream;
+                result.XPPTokens = _preprocessorTokenStream;
                 result.IncludedFiles = pp.IncludedFiles;
                 return result;
             }
 //#endif
-
-            if (parser.NumberOfSyntaxErrors != 0)
+            try
             {
-                var errorAnalyzer = new XSharpParseErrorAnalysis(parser);
-                walker.Walk(errorAnalyzer, tree);
-#if DEBUG && DUMP_TIMES
-                {
-                    var ts = DateTime.Now - t;
-                    t += ts;
-                    Debug.WriteLine("Error analysis completed in {0}",ts);
-                }
-#endif
-            }
-            XSharpTreeTransformation treeTransform;
-            if (_options.IsDialectVO) {
-                treeTransform = new XSharpVOTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-            } else {
-                treeTransform = new XSharpTreeTransformation(parser, _options, _pool, _syntaxFactory, _fileName);
-            }
-            try {
                 walker.Walk(treeTransform, tree);
                 var eof = SyntaxFactory.Token(SyntaxKind.EndOfFileToken);
                 if (!parseErrors.IsEmpty())
@@ -286,11 +275,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     eof = AddLeadingSkippedSyntax(eof, ParserErrorsAsTrivia(parseErrors, pp.IncludedFiles));
                 }
                 var result = _syntaxFactory.CompilationUnit(
-                    treeTransform.GlobalEntities.Externs, treeTransform.GlobalEntities.Usings,
-                    treeTransform.GlobalEntities.Attributes, treeTransform.GlobalEntities.Members, eof);
+                    treeTransform.GlobalEntities.Externs, 
+                    treeTransform.GlobalEntities.Usings,
+                    treeTransform.GlobalEntities.Attributes, 
+                    treeTransform.GlobalEntities.Members, eof);
                 // TODO nvk: add parser warnings to tree diagnostic info
                 result.XNode = (XSharpParser.SourceContext)tree;
-                result.XTokens = tokenstream;
+                result.XTokens = _lexerTokenStream;
+                result.XPPTokens = _preprocessorTokenStream;
                 result.InitProcedures = treeTransform.GlobalEntities.InitProcedures;
                 result.Globals = treeTransform.GlobalEntities.Globals;
                 result.IncludedFiles = pp.IncludedFiles;

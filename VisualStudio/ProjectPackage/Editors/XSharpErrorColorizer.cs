@@ -53,12 +53,26 @@ namespace XSharp.Project
             //
             layer = view.GetAdornmentLayer("XSharpErrorColorizer");
             // Disable the Adorment painting
-            //this.view.LayoutChanged += OnLayoutChanged;
+            this.view.LayoutChanged += OnLayoutChanged;
+            //this.view.TextBuffer.ChangedLowPriority += TextBuffer_ChangedLowPriority;
+            this.view.Closed += View_Closed;
+        }
+
+        private void View_Closed(object sender, EventArgs e)
+        {
+            this.view.LayoutChanged -= OnLayoutChanged;
+            //this.view.TextBuffer.ChangedLowPriority -= TextBuffer_ChangedLowPriority;
+            this.view.Closed -= View_Closed;
+        }
+
+        private void TextBuffer_ChangedLowPriority(object sender, TextContentChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         private void OnLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
-            //layer.RemoveAllAdornments();
+            layer.RemoveAllAdornments();
             // Retrieve the current list of Intellisense Error for the file
             List<Tuple<int, int>> errors = file.Project.ProjectNode.GetIntellisenseErrorPos(file.FullPath);
             if ((errors == null) || (errors.Count == 0))
@@ -66,15 +80,16 @@ namespace XSharp.Project
                 return;
             }
             //
-            foreach (ITextViewLine line in e.NewOrReformattedLines)
+            foreach( var line in view.TextViewLines)
             {
                 var fullSpan = new SnapshotSpan(line.Snapshot, Span.FromBounds(line.Start, line.End));
                 var snapLine = fullSpan.Start.GetContainingLine();
-                int lineNumber = fullSpan.Start.GetContainingLine().LineNumber+1;
+                int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
                 Tuple<int, int> error = errors.Find(t => t.Item1 == lineNumber);
                 if (error != null)
                     this.CreateVisuals(line, error.Item2);
             }
+
         }
 
         private void CreateVisuals(ITextViewLine line, int errorColumn)
@@ -102,9 +117,7 @@ namespace XSharp.Project
                 Canvas.SetLeft(border, g.Bounds.Left);
                 Canvas.SetTop(border, g.Bounds.Bottom - g.Bounds.Height / 8);
                 //
-                //layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, null, border, null);
-                ErrorTag eTag = new ErrorTag("err", "text");
-                layer.AddAdornment( span, eTag, border);
+                layer.AddAdornment( span, null, border);
             }
         }
 

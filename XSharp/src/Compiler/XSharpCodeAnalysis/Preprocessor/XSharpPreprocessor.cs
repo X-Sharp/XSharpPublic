@@ -512,8 +512,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         IList<XSharpToken> PeekPPCommand()
         {
             IList<XSharpToken> res = new List<XSharpToken>();
-            int i = inputs.Index;
-            var t = (XSharpToken) inputs.Tokens.Get(i);
+            var input = inputs;
+            if (input.Eof())
+                input = input.parent;
+            int i = input.Index;
+            var t = (XSharpToken) input.Tokens.Get(i);
             while (t.Type != IntStreamConstants.Eof && t.Channel != TokenConstants.DefaultChannel)
             {
                 if (t.IsEOS() && t.Text != ";")
@@ -523,7 +526,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                      res.Add(t);
                 }
                 i += 1;
-                t = (XSharpToken) inputs.Tokens.Get(i);
+                t = (XSharpToken) input.Tokens.Get(i);
             }
             return res;
         }
@@ -567,8 +570,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         IList<XSharpToken> PeekLine()
         {
             var res = new List<XSharpToken>(); ;
-            int i = inputs.Index;
-            IToken t = inputs.Tokens.Get(i);
+            var input = inputs;
+            if (input.Eof())
+                input = input.parent;
+            int i = input.Index;
+            IToken t = input.Tokens.Get(i);
             while (t.Type != IntStreamConstants.Eof)
             {
                 if (t.IsEOS()&& t.Text != ";")
@@ -576,11 +582,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (t.Channel == XSharpLexer.DefaultTokenChannel)
                 {
                     var nt = FixToken(new XSharpToken(t));
-                    nt.Channel = TokenConstants.DefaultChannel;
                     res.Add(nt);
                 }
                 i += 1;
-                t = inputs.Tokens.Get(i);
+                t = input.Tokens.Get(i);
             }
             return res;
         }
@@ -1255,7 +1260,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var done = false;
                         if (IsActive())
                         {
-                            IList<XSharpToken> tl;
 
                             // Now see if this matches a UDC rule.
                             // When it does we read the whole line and check if we can find a matching rule
@@ -1267,12 +1271,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 {
                                     PPMatchRange[] matchInfo;
                                     PPRule rule = null;
-                                    bool bCmd = false; ;
                                     if (lastToken != null && (lastToken.Type == XSharpLexer.EOS ||
                                         lastToken.Type == XSharpLexer.NL))
                                     {
                                         rule = cmdRules.FindMatchingRule(line, out matchInfo);
-                                        bCmd = true;
                                     }
                                     else
                                     {
@@ -1281,49 +1283,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     if (rule != null)
                                     {
                                         var result = rule.Replace(line, matchInfo);
-                                        if (bCmd && result.Count > 0 && result[0].Type == XSharpLexer.SYMBOL_CONST)
-                                        {
-                                            // adjust when needed
-                                            CommonToken ct = result[0] as CommonToken;
-                                            if (ct != null)
-                                            {
-                                                int newType;
-                                                if (_lexer.SymIds.TryGetValue(ct.Text, out newType))
-                                                {
-                                                    ct.Type = newType;
-                                                }
-                                            }
-
-                                        }
                                         line = ReadLine();
-                                        // insert whitespace from start of line into result
-                                        var ws = new List<IToken>();
-                                        XSharpToken first = null;
-                                        for (int i = 0; i < line.Count; i++)
+                                        if (result.Count > 0)
                                         {
-                                            if (line[i].Type == XSharpLexer.WS)
-                                                ws.Add(line[i]);
-                                            else
+                                            var first = line[0];
+                                            // insert whitespace from start of line into result
+                                            if (line[0].Type == XSharpLexer.WS)
                                             {
-                                                first = line[i];
-                                                break;
+                                                result.Insert(0, new XSharpToken(line[0]));
+                                                first = line[1];
                                             }
+                                            var ts = new CommonTokenStream(new ListTokenSource(result.ToIListIToken()));
+                                            ts.Fill();
+                                            if (result[0].Type >= XSharpLexer.PP_FIRST
+                                                && result[0].Type <= XSharpLexer.PP_LAST)
+                                            {
+                                                // we do want to pass a symbol if a UDC generates another PP command
+                                                first = null;
+                                            }
+                                            InsertStream("UDC " + rule.Key, ts, first);
                                         }
-                                        // insert in reverse order
-                                        for (int i = ws.Count -1; i >= 0; i--)
-                                        {
-                                            var token = new XSharpToken(ws[i]);
-                                            token.Channel = XSharpLexer.Hidden;
-                                            result.Insert(0, token);
-                                        }
-                                        var ts = new CommonTokenStream(new ListTokenSource( result.ToIListIToken()));
-                                        ts.Fill();
-                                        InsertStream("UDC "+rule.Key, ts,first);
                                         done = true;
                                     }
                                 }
 
                             }
+                            IList<XSharpToken> tl;
                             if (! done && (XSharpLexer.IsIdentifier(t.Type) || XSharpLexer.IsKeyword(t.Type)))
                             {
                                 if ( symbolDefines.TryGetValue(t.Text, out tl) && isDefineAllowed())

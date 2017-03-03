@@ -201,7 +201,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 addErrorMessage(udc, "UDC is empty");
                 return false;
             }
-            for (int i = 0; i < tokens.Length - 1; i++)
+            for (int i = 0; i < tokens.Length ; i++)
             {
                 // Must be => without whitespace
                 if (tokens[i].Type == XSharpLexer.UDCSEP)
@@ -234,16 +234,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            bool result= false;
-            if (_errorMessages == null || _errorMessages.Count == 0)
-            {
-                result = true;
-            }
-            else
-            {
-                result = false;
-            }
-            return result;
+            return _errorMessages == null || _errorMessages.Count == 0;
         }
         void addErrorMessage(XSharpToken token, string message)
         {
@@ -1010,6 +1001,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     break;
                 case PPTokenType.MatchWild:
                     matchInfo[mToken.Index] = PPMatchRange.Create(iSource, tokens.Count-1);
+                    iSource = tokens.Count;
+                    iRule += 1;
                     found = true;                    // matches anything until the end of the list
                     break;
                 case PPTokenType.MatchExtended:
@@ -1096,10 +1089,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
 
             // Now mark the tokens that were matched with tokens in the UDC with the keyword color
+            // Since our token may be a clone, we change the Type of the source token
             foreach (var token in matchedWithToken)
             {
                 if (token.Type == XSharpLexer.ID)
-                    token.Type = XSharpLexer.UDC_KEYWORD;
+                {
+                    token.Original.Type = XSharpLexer.UDC_KEYWORD;
+                }
             }
 
             return true;

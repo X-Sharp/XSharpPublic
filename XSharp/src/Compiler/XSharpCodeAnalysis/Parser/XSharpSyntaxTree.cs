@@ -407,15 +407,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax
 {
     public sealed partial class CompilationUnitSyntax
     {
-        public XSharpParser.SourceContext XSource { get { return (XSharpParser.SourceContext)(((InternalSyntax.CompilationUnitSyntax)(this.Green)).XNode); } }
-        public ITokenStream XTokenStream { get { return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).XTokens); } }
-        internal Dictionary<string, SourceText> IncludedFiles
-        {
-            get
-            {
-                return (((InternalSyntax.CompilationUnitSyntax)(this.Green)).IncludedFiles);
-            }
-        }
+		private InternalSyntax.CompilationUnitSyntax internalUnit => (InternalSyntax.CompilationUnitSyntax) this.Green;
+        public XSharpParser.SourceContext XSource => internalUnit.XNode as XSharpParser.SourceContext; 
+        public ITokenStream XTokenStream => internalUnit.XTokens; 
+		public ITokenStream XPPTokenStream => internalUnit.XPPTokens; 
+        public Dictionary<string, SourceText> IncludedFiles => internalUnit.IncludedFiles;
     }
 }
 

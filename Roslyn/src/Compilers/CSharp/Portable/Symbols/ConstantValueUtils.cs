@@ -111,10 +111,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
                      * so it has created a readonly field. The binder may be able to detect that it is a const so it will
                      * change the type from readonly field to a const
                      */
-
                     if (boundValue.Syntax is ExpressionSyntax &&
                         (constantValue == null || constantValue == ConstantValue.Bad))
                     {
+                        //System.Diagnostics.Debug.WriteLine($" Bind field {thisSymbol.Name}");
                         var es = boundValue.Syntax as ExpressionSyntax;
                         var compilation = thisSymbol.DeclaringCompilation;
                         var binderFactory = compilation.GetBinderFactory((SyntaxTree)thisSymbol.Locations[0].SourceTree);

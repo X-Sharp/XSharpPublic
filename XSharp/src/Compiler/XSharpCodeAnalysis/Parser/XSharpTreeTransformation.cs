@@ -1834,10 +1834,33 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 semicolonToken: SyntaxFactory.MakeToken(SyntaxKind.SemicolonToken)));
         }
 
+        static TypeSyntax intType = null;
+        static TypeSyntax uintType = null;
+        static TypeSyntax floatType = null;
+        static TypeSyntax decimalType = null;
+        static TypeSyntax doubleType = null;
+        static TypeSyntax stringType = null;
+        static object oGate = new object();
+
         protected TypeSyntax GetExpressionType(XP.ExpressionContext expr, ref bool isConst)
         {
 
             TypeSyntax type = null;
+            if (intType == null)
+            {
+                lock (oGate)
+                {
+                    if (intType == null)
+                    {
+                        intType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+                        uintType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
+                        floatType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
+                        doubleType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
+                        decimalType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
+                        stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+                    }
+                }
+            }
             var token = expr.GetLiteralToken();
             isConst = false;
             if (token != null)
@@ -1852,9 +1875,9 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.INT_CONST:
                     case XP.HEX_CONST:
                         if (text.EndsWith("U", StringComparison.OrdinalIgnoreCase))
-                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.UIntKeyword));
+                            type = uintType;
                         else
-                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+                            type = intType;
                         isConst = true;
                         break;
                     case XP.REAL_CONST:
@@ -1866,15 +1889,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         }
                         else if (text.EndsWith("S", StringComparison.OrdinalIgnoreCase))
                         {
-                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.FloatKeyword));
+                            type = floatType;
                         }
                         else if (text.EndsWith("M", StringComparison.OrdinalIgnoreCase))
                         {
-                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
+                            type = decimalType;
                         }
                         else
                         {
-                            type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
+                            type = doubleType;
                         }
                         break;
                     case XP.NULL_ARRAY:
@@ -1892,7 +1915,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                     case XP.STRING_CONST:
                     case XP.ESCAPED_STRING_CONST:
-                        type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+                    case XP.INTERPOLATED_STRING_CONST:
+                        type = stringType;
                         isConst = true;
                         break;
                 }
@@ -1953,7 +1977,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 }
                 else if (prim.Expr is XP.VoTypeNameExpressionContext)
                 {
-                    type = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.IntKeyword));
+                    type = intType;
                     isConst = true;
                 }
                 else if (prim.Expr is XP.TypeExpressionContext)
@@ -1998,10 +2022,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type = GetExpressionType(e.Left, ref leftIsConst);
                 var type2 = GetExpressionType(e.Right, ref rightIsConst);
                 isConst = leftIsConst && rightIsConst;
-                if (type.ToFullString() != type2.ToFullString())
+                if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
-                    type = null;
-                    isConst = false;
+                    if (type == _objectType )
+                    {
+                        type = type2;
+                    }
                 }
             }
             else if (expr is XP.AssignmentExpressionContext)
@@ -2012,10 +2038,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 type = GetExpressionType(e.Left, ref leftIsConst);
                 var type2 = GetExpressionType(e.Right, ref rightIsConst);
                 isConst = leftIsConst && rightIsConst;
-                if (type.ToFullString() != type2.ToFullString())
+                if (type != type2 && type.ToFullString() != type2.ToFullString())
                 {
-                    type = null;
-                    isConst = false;
+                    if (type == _objectType)
+                    {
+                        type = type2;
+                    }
                 }
             }
             else if (expr is XP.PrefixExpressionContext)
@@ -2030,9 +2058,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (type == null)
             {
                 type = _objectType;
-                isConst = false;
             }
-            else if (type is PointerTypeSyntax)
+            if (type is PredefinedTypeSyntax)
+            {
+                var pdt = type as PredefinedTypeSyntax;
+                switch (pdt.Keyword.Kind)
+                {
+                    case SyntaxKind.IntKeyword:
+                    case SyntaxKind.UIntKeyword:
+                    case SyntaxKind.BoolKeyword:
+                    case SyntaxKind.FloatKeyword:
+                    case SyntaxKind.DecimalKeyword:
+                    case SyntaxKind.DoubleKeyword:
+                    case SyntaxKind.StringKeyword:
+                    case SyntaxKind.CharKeyword:
+                    case SyntaxKind.ByteKeyword:
+                    case SyntaxKind.ShortKeyword:
+                    case SyntaxKind.UShortKeyword:
+                        isConst = true;
+                        break;
+                    default:
+                        isConst = false;
+                        break;
+
+                }
+            }
+            else
             {
                 isConst = false;
             }
@@ -2044,7 +2095,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             var variables = _pool.AllocateSeparated<VariableDeclaratorSyntax>();
             variables.Add(GenerateVariable(context.Id.Get<SyntaxToken>(),
                 context.Expr.Get<ExpressionSyntax>()));
-            var isConst = false; 
+            var isConst = false;
             // always process the expression to determine if it is a const
             var type = GetExpressionType(context.Expr, ref isConst);
             if (context.DataType != null)

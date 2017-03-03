@@ -1287,18 +1287,29 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                         if (result.Count > 0)
                                         {
                                             var first = line[0];
+                                            var resultIsPPCommand = result[0].Type >= XSharpLexer.PP_FIRST
+                                                && result[0].Type <= XSharpLexer.PP_LAST;
                                             // insert whitespace from start of line into result
                                             if (line[0].Type == XSharpLexer.WS)
                                             {
-                                                result.Insert(0, new XSharpToken(line[0]));
+                                                var ws = new XSharpToken(line[0]);
+                                                ws.Channel = XSharpLexer.Hidden;
+                                                result.Insert(0, ws);
                                                 first = line[1];
                                             }
                                             var ts = new CommonTokenStream(new ListTokenSource(result.ToIListIToken()));
                                             ts.Fill();
-                                            if (result[0].Type >= XSharpLexer.PP_FIRST
-                                                && result[0].Type <= XSharpLexer.PP_LAST)
+                                            if (resultIsPPCommand)
                                             {
                                                 // we do want to pass a symbol if a UDC generates another PP command
+                                                // set the channel for the tokens and clear first
+                                                foreach (var r in result)
+                                                {
+                                                    if (r.Channel == XSharpLexer.DefaultTokenChannel)
+                                                    {
+                                                        r.Channel = XSharpLexer.PREPROCESSOR;
+                                                    }
+                                                }
                                                 first = null;
                                             }
                                             InsertStream("UDC " + rule.Key, ts, first);
@@ -1364,9 +1375,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                                 FixToken(t);
                                 Consume();
-                                if (lastToken != null && lastToken.Type == XSharpLexer.EOS && t.Type == XSharpLexer.EOS)
+                                if (lastToken != null && t.Type == XSharpLexer.EOS)
                                 {
-                                   t.Channel = XSharpLexer.Hidden;
+                                    if (lastToken.Type == XSharpLexer.EOS
+                                        || lastToken.Type == XSharpLexer.NL
+                                        || lastToken.Type == XSharpLexer.WS)
+                                   {
+                                        t.Channel = XSharpLexer.Hidden;
+                                   }
                                 }
                                 lastToken = t;
                                 writeToPPO(t);

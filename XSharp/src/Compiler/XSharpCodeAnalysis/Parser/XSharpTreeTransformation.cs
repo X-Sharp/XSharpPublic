@@ -2128,6 +2128,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (context.DataType != null)
             {
                 type = context.DataType?.Get<TypeSyntax>();
+                isConst = false;
             }
             var list = _pool.Allocate();
             SyntaxList<SyntaxToken> modifiers = null;

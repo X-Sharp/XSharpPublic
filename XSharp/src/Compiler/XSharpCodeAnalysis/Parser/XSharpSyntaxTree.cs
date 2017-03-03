@@ -367,6 +367,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
     {
         public Dictionary<string, SourceText> IncludedFiles { get; internal set; }
         public ITokenStream XTokens { get; internal set; }
+        public ITokenStream XPPTokens { get; internal set; }
         public IList<Tuple<int, string>> InitProcedures { get; internal set; }
         public IList<FieldDeclarationSyntax> Globals { get; internal set; }
         public bool HasPCall { get; internal set; }
@@ -422,6 +423,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
 
 
     public partial class XSharpParser : Parser {
+
+        public interface IGlobalEntityContext : IEntityContext
+        {
+            FuncprocModifiersContext FuncProcModifiers { get; }
+        }
         public interface ILoopStmtContext
         {
             StatementBlockContext Statements { get; }
@@ -540,22 +546,26 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public StatementBlockContext Statements { get { return StmtBlk; } }
         }
 
-        public partial class ProcedureContext : ParserRuleContext, IEntityContext {
+        public partial class ProcedureContext : ParserRuleContext, IEntityContext, IGlobalEntityContext
+        {
             EntityData data = new EntityData();
             public EntityData Data => data;
             public IList<ParameterContext> Params => this.ParamList?._Params;
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
+            public FuncprocModifiersContext FuncProcModifiers => Modifiers;
         }
 
-        public partial class FunctionContext : ParserRuleContext, IEntityContext {
+        public partial class FunctionContext : ParserRuleContext, IEntityContext, IGlobalEntityContext {
             EntityData data = new EntityData();
             public EntityData Data => data;
             public IList<ParameterContext> Params => this.ParamList?._Params;
             public DatatypeContext ReturnType => this.Type;
             public String Name => ParentName + ShortName;
             public String ShortName => this.Id.GetText();
+            public FuncprocModifiersContext FuncProcModifiers => Modifiers;
+
         }
 
         public partial class MethodContext : ParserRuleContext, IEntityContext {
@@ -624,7 +634,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
         }
-        public partial class VodefineContext : ParserRuleContext, IEntityContext
+        public partial class VodefineContext : ParserRuleContext, IEntityContext, IGlobalEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -632,7 +642,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public DatatypeContext ReturnType => null;
             public String Name => ParentName + ShortName;
             public String ShortName => Id.GetText();
-        }
+            public FuncprocModifiersContext FuncProcModifiers => Modifiers;
+
+         }
         public partial class PropertyContext : ParserRuleContext, IEntityContext {
             EntityData data = new EntityData();
             public EntityData Data { get { return data; } }
@@ -699,16 +711,18 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public String ShortName => Id.GetText();
             public IList<ClassmemberContext> Members => this._Members;
         }
-        public partial class VodllContext : ParserRuleContext, IEntityContext {
+        public partial class VodllContext : ParserRuleContext, IEntityContext, IGlobalEntityContext
+        {
             EntityData data = new EntityData();
             public EntityData Data => data;
             public IList<ParameterContext> Params => this.ParamList?._Params;
             public DatatypeContext ReturnType => this.Type;
             public String Name => this.Id.GetText();
             public String ShortName => this.Id.GetText();
+            public FuncprocModifiersContext FuncProcModifiers => Modifiers;
         }
 
-        public partial class VoglobalContext : ParserRuleContext, IEntityContext
+        public partial class VoglobalContext : ParserRuleContext, IEntityContext, IGlobalEntityContext
         {
             EntityData data = new EntityData();
             public EntityData Data => data;
@@ -716,6 +730,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser {
             public DatatypeContext ReturnType => this.Vars.DataType;
             public String Name => this.Vars._Var.FirstOrDefault().Id.GetText();
             public String ShortName => this.Vars._Var.FirstOrDefault().Id.GetText();
+            public FuncprocModifiersContext FuncProcModifiers => Modifiers;
         }
         public partial class FuncprocModifiersContext: ParserRuleContext {
             public bool IsStaticVisible { get; set; }

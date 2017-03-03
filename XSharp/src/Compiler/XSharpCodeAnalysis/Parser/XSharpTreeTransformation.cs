@@ -38,6 +38,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             public SyntaxListBuilder<UsingDirectiveSyntax> Usings;
             public SyntaxListBuilder<AttributeListSyntax> Attributes;
             public SyntaxListBuilder<MemberDeclarationSyntax> Members;
+            public SyntaxListBuilder<MemberDeclarationSyntax> GlobalClassMembers;
+            public SyntaxListBuilder<MemberDeclarationSyntax> StaticGlobalClassMembers;
+            public object LastMember;
+            public bool LastIsStatic;
             public List<Tuple<int, String>> InitProcedures;
             public List<FieldDeclarationSyntax> Globals;
             public bool HasPCall;
@@ -48,10 +52,15 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 Usings = pool.Allocate<UsingDirectiveSyntax>();
                 Attributes = pool.Allocate<AttributeListSyntax>();
                 Members = pool.Allocate<MemberDeclarationSyntax>();
+                GlobalClassMembers = pool.Allocate<MemberDeclarationSyntax>();
+                StaticGlobalClassMembers = pool.Allocate<MemberDeclarationSyntax>();
+                Members = pool.Allocate<MemberDeclarationSyntax>();
                 InitProcedures = new List<Tuple<int, String>>();
                 Globals = new List<FieldDeclarationSyntax>();
                 _pool = pool;
                 HasPCall = false;
+                LastIsStatic = false;
+                LastMember = null;
             }
 
             internal void Free()
@@ -1640,12 +1649,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void EnterSource([NotNull] XP.SourceContext context)
         {
+            //System.Diagnostics.Debug.WriteLine("Enter Source " + _fileName);
             GlobalClassEntities = CreateClassEntities();
             ClassEntities.Push(GlobalClassEntities);
         }
 
         public override void ExitSource([NotNull] XP.SourceContext context)
         {
+            // globaltypes are the types that are not embedded in a namespace
+            // they will be embedded in the default namespace when the 
+            // compiler option to do so is selected
+            // GlobalEntities.Members will be added to the output without extra
+            // namespace
             var globalTypes = _pool.Allocate<MemberDeclarationSyntax>();
             foreach (var entityCtx in context._Entities)
             {
@@ -1665,6 +1680,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 else if (s is ExternAliasDirectiveSyntax)
                     GlobalEntities.Externs.Add(s as ExternAliasDirectiveSyntax);
             }
+
+            FinalizeGlobalEntities();
 
             var generated = ClassEntities.Pop();
             if (generated.Members.Count > 0)
@@ -1696,6 +1713,31 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
             // Add: using System
             AddUsingWhenMissing(GlobalEntities.Usings, "System", false);
+            //System.Diagnostics.Debug.WriteLine("Exit Source " + _fileName);
+        }
+
+
+        public void FinalizeGlobalEntities()
+        {
+            string className = GlobalClassName;
+            if (GlobalEntities.GlobalClassMembers.Count > 0)
+            {
+                AddUsingWhenMissing(GlobalEntities.Usings, className, true);
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.GlobalClassMembers));
+                GlobalEntities.GlobalClassMembers.Clear();
+
+            }
+            if (GlobalEntities.StaticGlobalClassMembers.Count > 0)
+            {
+                string filename = PathUtilities.GetFileName(_fileName);
+                filename = PathUtilities.RemoveExtension(filename);
+                filename = RemoveUnwantedCharacters(filename);
+                className = className + "$" + filename + "$";
+                AddUsingWhenMissing(GlobalEntities.Usings, className, true);
+                GlobalEntities.Members.Add(GenerateGlobalClass(className, false, false, GlobalEntities.StaticGlobalClassMembers));
+                GlobalEntities.StaticGlobalClassMembers.Clear();
+            }
+
         }
 
         public override void ExitNamespace_([NotNull] XP.Namespace_Context context)
@@ -1747,67 +1789,53 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         public override void ExitEntity([NotNull] XP.EntityContext context)
         {
-            var ch = context.children[0];
-            bool bProcess = false, bStaticVisibility = false;
-            if (ch is XP.FunctionContext)
+            var entity = context.children[0];
+            if (entity is XP.IGlobalEntityContext)
             {
-                bProcess = true;
-                var modifiers = ((XP.FunctionContext)ch).Modifiers;
-                if (modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
-            }
-            else if (ch is XP.ProcedureContext)
-            {
-                bProcess = true;
-                var modifiers = ((XP.ProcedureContext)ch).Modifiers;
-                if (modifiers != null)
+                var modifiers = ((XP.IGlobalEntityContext)entity).FuncProcModifiers;
+                if (entity is XP.ProcedureContext)
                 {
-                    var proc = (XP.ProcedureContext)ch;
-                    bStaticVisibility = modifiers.IsStaticVisible;
-                    if (bStaticVisibility && proc.Init != null)
+                    var proc = (XP.ProcedureContext)entity;
+                    if (proc.InitExit != null)  // Init & Exit procedures are never static
                     {
-                        // init procedures should not be moved to the static functions namespace
-                        bStaticVisibility = false;
+                        modifiers = null;
                     }
                 }
-            }
-            else if (ch is XP.VoglobalContext)
-            {
-                bProcess = true;
-                var modifiers = ((XP.VoglobalContext)ch).Modifiers;
+                var bStaticVisibility = false;
                 if (modifiers != null)
                     bStaticVisibility = modifiers.IsStaticVisible;
-            }
-            else if (ch is XP.VodefineContext)
-            {
-                bProcess = true;
-                var modifiers = ((XP.VodefineContext)ch).Modifiers;
-                if (modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
-            }
-            else if (ch is XP.VodllContext)
-            {
-                bProcess = true;
-                var modifiers = ((XP.VodllContext)ch).Modifiers;
-                if (modifiers != null)
-                    bStaticVisibility = modifiers.IsStaticVisible;
-            }
-            if (bProcess)
-            {
-                string className = GlobalClassName;
+
+                var m = entity.Get<MemberDeclarationSyntax>();
                 if (bStaticVisibility)
                 {
-                    string filename = PathUtilities.GetFileName(_fileName);
-                    filename = PathUtilities.RemoveExtension(filename);
-                    filename = RemoveUnwantedCharacters(filename);
-                    className = className + "$" + filename + "$";
+                    // When last entity did not go to the functions class or wasn't a static member
+                    if (GlobalEntities.LastMember is XP.IGlobalEntityContext && ! GlobalEntities.LastIsStatic)
+                    {
+                        FinalizeGlobalEntities();
+                    }
+                    GlobalEntities.StaticGlobalClassMembers.Add(m);
                 }
-                AddUsingWhenMissing(GlobalEntities.Usings, className, true);
-                GlobalEntities.Members.Add(GenerateGlobalClass(className, bStaticVisibility, false, ch.Get<MemberDeclarationSyntax>()));
+                else
+                {
+                    // When last entity did not go to the functions class or was a static member
+                    if (GlobalEntities.LastMember is XP.IGlobalEntityContext && GlobalEntities.LastIsStatic)
+                    {
+                        FinalizeGlobalEntities();
+                    }
+                    GlobalEntities.GlobalClassMembers.Add(m);
+                }
+                GlobalEntities.LastMember = entity;
+                GlobalEntities.LastIsStatic = bStaticVisibility;
             }
             else
             {
-                context.Put(ch.Get<CSharpSyntaxNode>());
+                // When last entity has to go to the functions class 
+                if (GlobalEntities.LastMember is XP.IGlobalEntityContext)
+                {
+                    FinalizeGlobalEntities();
+                }
+                context.Put(entity.Get<CSharpSyntaxNode>());
+                GlobalEntities.LastMember = entity;
             }
         }
 
@@ -1839,6 +1867,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         static TypeSyntax floatType = null;
         static TypeSyntax decimalType = null;
         static TypeSyntax doubleType = null;
+        static TypeSyntax ulongType = null;
+        static TypeSyntax longType = null;
         static TypeSyntax stringType = null;
         static object oGate = new object();
 
@@ -1858,6 +1888,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         doubleType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DoubleKeyword));
                         decimalType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.DecimalKeyword));
                         stringType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.StringKeyword));
+                        ulongType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.ULongKeyword));
+                        longType = _syntaxFactory.PredefinedType(SyntaxFactory.MakeToken(SyntaxKind.LongKeyword));
                     }
                 }
             }
@@ -1869,37 +1901,38 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 string text = token.Text;
                 switch (token.Type)
                 {
+                    case XP.INT_CONST:
+                    case XP.HEX_CONST:
+                    case XP.REAL_CONST:
+                        // call SyntaxLiteralValue because it inspects the size of the number
+                        SyntaxToken val = token.SyntaxLiteralValue(_options);
+                        if (val.Value is int)
+                            type = intType;
+                        else if (val.Value is uint)
+                            type = uintType;
+                        else if (val.Value is double)
+                            type = doubleType;
+                        else if (val.Value is float)
+                            type = floatType;
+                        else if (val.Value is decimal)
+                            type = decimalType;
+                        else if (val.Value is ulong)
+                            type = ulongType;
+                        else if (val.Value is long)
+                            type = longType;
+                        else
+                            type = _objectType;
+                        break;
+
+                    case XP.STRING_CONST:
+                    case XP.ESCAPED_STRING_CONST:
+                    case XP.INTERPOLATED_STRING_CONST:
+                        type = stringType;
+                        break;
                     case XP.NIL:
                         type = GenerateQualifiedName(VulcanQualifiedTypeNames.Usual);
                         break;
-                    case XP.INT_CONST:
-                    case XP.HEX_CONST:
-                        if (text.EndsWith("U", StringComparison.OrdinalIgnoreCase))
-                            type = uintType;
-                        else
-                            type = intType;
-                        isConst = true;
-                        break;
-                    case XP.REAL_CONST:
-                        isConst = true;
-                        if (_options.VOFloatConstants)
-                        {
-                            type = GenerateQualifiedName(VulcanQualifiedTypeNames.Float);
-                            isConst = false;
-                        }
-                        else if (text.EndsWith("S", StringComparison.OrdinalIgnoreCase))
-                        {
-                            type = floatType;
-                        }
-                        else if (text.EndsWith("M", StringComparison.OrdinalIgnoreCase))
-                        {
-                            type = decimalType;
-                        }
-                        else
-                        {
-                            type = doubleType;
-                        }
-                        break;
+
                     case XP.NULL_ARRAY:
                         type = GenerateQualifiedName(VulcanQualifiedTypeNames.Array);
                         break;
@@ -1912,12 +1945,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XP.SYMBOL_CONST:
                         type = GenerateQualifiedName(VulcanQualifiedTypeNames.Symbol);
                         isConst = false;
-                        break;
-                    case XP.STRING_CONST:
-                    case XP.ESCAPED_STRING_CONST:
-                    case XP.INTERPOLATED_STRING_CONST:
-                        type = stringType;
-                        isConst = true;
                         break;
                 }
             }
@@ -4018,7 +4045,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 context.AddError(new ParseErrorData(context.Id, ErrorCode.ERR_InterfaceMemberHasBody));
             }
-            if (context.Init != null)
+            if (context.InitExit != null)
             {
                 if (_options.IsDialectVO)
                 {
@@ -4029,7 +4056,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     else
                     {
                         int level = 0;
-                        switch (context.Init.Type)
+                        switch (context.InitExit.Type)
                         {
                             case XP.INIT1:
                                 level = 1;

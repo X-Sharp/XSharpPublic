@@ -690,7 +690,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             if (newtokens.Count < 2)
             {
                 Consume();
-                _parseErrors.Add(new ParseErrorData(newtokens[0], ErrorCode.ERR_PreProcessorError, "Identifier expected"));
+                var token = Lt();
+                if (newtokens.Count > 0)
+                    token = newtokens[0];
+                _parseErrors.Add(new ParseErrorData(token, ErrorCode.ERR_PreProcessorError, "Identifier expected"));
                 return;
 
             }

@@ -1378,8 +1378,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 if (lastToken != null && t.Type == XSharpLexer.EOS)
                                 {
                                     if (lastToken.Type == XSharpLexer.EOS
-                                        || lastToken.Type == XSharpLexer.NL
-                                        || lastToken.Type == XSharpLexer.WS)
+                                        || lastToken.Type == XSharpLexer.NL)
                                    {
                                         t.Channel = XSharpLexer.Hidden;
                                    }

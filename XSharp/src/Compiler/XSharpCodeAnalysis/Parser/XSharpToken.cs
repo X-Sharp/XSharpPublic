@@ -13,9 +13,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal string MappedFileName;
         internal int MappedLine = -1;
         internal XSharpToken SourceSymbol;
+        private XSharpToken _original = null;
 
         internal XSharpToken(IToken t) : base(t)
         {
+            if (t is XSharpToken && t != this)
+            {
+                _original = ((XSharpToken)t).Original;
+            }
         }
         internal XSharpToken(IToken t, int type, string text) : base(t)
         {
@@ -32,6 +37,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             base(source, type, channel, start, stop)
         {
 
+        }
+
+        internal XSharpToken Original
+        {
+            get
+            {
+                if (_original != null)
+                    return _original;
+                return this;
+            }
         }
 
     }

@@ -731,7 +731,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             /*else if (type == KWID) {
                 t.Type = ID;
             }*/
-            else if (type == SYMBOL_CONST && LastToken == NL)
+            else if (type == SYMBOL_CONST && (LastToken == NL || LastToken == UDCSEP))
             {
                 int symtype;
                 if (SymIds.TryGetValue(t.Text, out symtype))

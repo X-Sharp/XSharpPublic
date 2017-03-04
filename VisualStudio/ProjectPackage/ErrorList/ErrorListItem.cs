@@ -4,18 +4,8 @@ using XSharp.Project;
 
 namespace XSharp.Project
 {
-    internal interface IErrorListItem
+    internal interface IErrorListItem: XSharpModel.IXErrorPosition
     {
-        /// <summary>
-        /// Line of code on the error item
-        /// </summary>
-        int Line { get; set; }
-
-        /// <summary>
-        /// Column of code on the error item
-        /// </summary>
-        int Column { get; set; }
-
         /// <summary>
         /// Error message
         /// </summary>
@@ -58,7 +48,7 @@ namespace XSharp.Project
 
         string Key { get; }
     }
-    internal class ErrorListItem : IErrorListItem
+    internal class ErrorListItem : IErrorListItem,  XSharpModel.IXErrorPosition
     {
 
         internal ErrorListItem()
@@ -67,6 +57,7 @@ namespace XSharp.Project
 
         }
         public int Column { get; set; }
+        public int Length { get; set; }
 
         public string ErrorCode { get; set; }
 

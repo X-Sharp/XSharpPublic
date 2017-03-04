@@ -74,7 +74,7 @@ namespace XSharp.Project
         {
             layer.RemoveAllAdornments();
             // Retrieve the current list of Intellisense Error for the file
-            List<Tuple<int, int>> errors = file.Project.ProjectNode.GetIntellisenseErrorPos(file.FullPath);
+            List<IXErrorPosition> errors = file.Project.ProjectNode.GetIntellisenseErrorPos(file.FullPath);
             if ((errors == null) || (errors.Count == 0))
             {
                 return;
@@ -85,14 +85,14 @@ namespace XSharp.Project
                 var fullSpan = new SnapshotSpan(line.Snapshot, Span.FromBounds(line.Start, line.End));
                 var snapLine = fullSpan.Start.GetContainingLine();
                 int lineNumber = fullSpan.Start.GetContainingLine().LineNumber + 1;
-                Tuple<int, int> error = errors.Find(t => t.Item1 == lineNumber);
+                IXErrorPosition error = errors.Find(t => t.Line == lineNumber);
                 if (error != null)
-                    this.CreateVisuals(line, error.Item2);
+                    this.CreateVisuals(line, error.Column, error.Length);
             }
 
         }
 
-        private void CreateVisuals(ITextViewLine line, int errorColumn)
+        private void CreateVisuals(ITextViewLine line, int errorColumn, int Length)
         {
             IWpfTextViewLineCollection textViewLines = view.TextViewLines;
             int tabSize = this.view.Options.GetTabSize();
@@ -100,9 +100,9 @@ namespace XSharp.Project
             var snapLine = fullSpan.Start.GetContainingLine();
             string text = snapLine.GetText();
             int lineNumber = fullSpan.Start.GetContainingLine().LineNumber;
-            int offset = this.GetLineOffsetFromColumn(text, errorColumn, tabSize);
+            int offset = this.GetLineOffsetFromColumn(text, errorColumn-1, tabSize);
             //
-            var span = new SnapshotSpan(line.Snapshot, Span.FromBounds(line.Start+offset, line.Start+offset + 1));
+            var span = new SnapshotSpan(line.Snapshot, Span.FromBounds(line.Start+offset, line.Start+offset + Length-1));
             //
             Geometry g = textViewLines.GetMarkerGeometry(span);
             if (g != null)

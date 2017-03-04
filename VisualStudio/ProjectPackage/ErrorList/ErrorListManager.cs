@@ -106,13 +106,13 @@ namespace XSharp.Project
         internal void AddBuildError(string file, int line, int column, string errCode, 
             string message, MessageSeverity sev)
         {
-            this.AddError(BuildErrors, file, line, column, errCode, message, Project.Caption, sev, ErrorSource.Build);
+            this.AddError(BuildErrors, file, line, column, 1, errCode, message, Project.Caption, sev, ErrorSource.Build);
         }
 
-        internal void AddIntellisenseError(string file, int line, int column, string errCode, 
+        internal void AddIntellisenseError(string file, int line, int column, int length, string errCode, 
             string message,  MessageSeverity sev)
         {
-            this.AddError(IntellisenseErrors, file, line, column, errCode, message, Project.Caption, sev, ErrorSource.Other);
+            this.AddError(IntellisenseErrors, file, line, column, length,  errCode, message, Project.Caption, sev, ErrorSource.Other);
         }
 
         internal void ClearBuildErrors()
@@ -129,7 +129,7 @@ namespace XSharp.Project
             }
         }
 
-        private void AddError(IList<IErrorListItem> errors, string file, int line, int column, string errCode, string message, 
+        private void AddError(IList<IErrorListItem> errors, string file, int line, int column, int length, string errCode, string message, 
             string projectName, MessageSeverity sev, ErrorSource errorSource)
         {
             var item = new ErrorListItem()
@@ -137,6 +137,7 @@ namespace XSharp.Project
                 Filename = file,
                 Line = line,
                 Column = column,
+                Length = length, 
                 ErrorCode = errCode,
                 Message = message,
                 ProjectName = projectName,
@@ -213,10 +214,10 @@ namespace XSharp.Project
             }
         }
 
-        internal List<Tuple<int, int>> GetIntellisenseErrorPos( string fileName )
+        internal List<XSharpModel.IXErrorPosition> GetIntellisenseErrorPos( string fileName )
         {
             // dedupe errors based on filename, row, column, 
-            List<Tuple<int, int>> errorPos = new List<Tuple<int, int>>();
+            List<XSharpModel.IXErrorPosition> errorPos = new List<XSharpModel.IXErrorPosition>();
             Dictionary<string, string> keys = new Dictionary<string, string>();
 
             if (_errorList.AreOtherErrorSourceEntriesShown)
@@ -241,7 +242,7 @@ namespace XSharp.Project
                     }
                     if (isOpen && !keys.ContainsKey(key) && (file==fileName))
                     {
-                        errorPos.Add(new Tuple<int, int>(item.Line, item.Column));
+                        errorPos.Add(item);
                         keys.Add(key, key);
                     }
                     else

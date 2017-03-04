@@ -245,8 +245,10 @@ namespace XSharpModel
                     {
                         foreach (var diag in current)
                         {
-                            var loc = diag.Location.GetLineSpan().StartLinePosition;
-                            prjNode.AddIntellisenseError(path, loc.Line + 1, loc.Character + 1, diag.Id, diag.GetMessage(), diag.Severity);
+                            var span = diag.Location.GetLineSpan();
+                            var loc = span.StartLinePosition;
+                            var length = span.Span.End.Character - span.Span.Start.Character + 1;
+                            prjNode.AddIntellisenseError(path, loc.Line + 1, loc.Character + 1,length ,diag.Id, diag.GetMessage(), diag.Severity);
                         }
                     }
                     prjNode.ShowIntellisenseErrors();

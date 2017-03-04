@@ -18,9 +18,17 @@ namespace XSharpModel
         void OpenElement(string file, int line, int column);
 
         void ClearIntellisenseErrors(string file);
-        void AddIntellisenseError(string file, int line, int column, string errCode, string message, DiagnosticSeverity sev);
+        void AddIntellisenseError(string file, int line, int column, int Length, string errCode, string message, DiagnosticSeverity sev);
         void ShowIntellisenseErrors();
         bool IsDocumentOpen(string file);
-        List<Tuple<int, int>> GetIntellisenseErrorPos(string fileName);
+        List<IXErrorPosition> GetIntellisenseErrorPos(string fileName);
     }
+
+    public interface IXErrorPosition
+    {
+        int Line { get; }
+        int Column { get; }
+        int Length { get; }
+    }
+
 }

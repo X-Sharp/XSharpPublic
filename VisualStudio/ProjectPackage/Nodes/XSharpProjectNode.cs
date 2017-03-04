@@ -1331,12 +1331,12 @@ namespace XSharp.Project
         {
             _errorListManager.DeleteIntellisenseErrorsFromFile(fileName);
         }
-        public void AddIntellisenseError(string file, int line, int column, string errCode, string message, DiagnosticSeverity sev)
+        public void AddIntellisenseError(string file, int line, int column, int length, string errCode, string message, DiagnosticSeverity sev)
         {
-            _errorListManager.AddIntellisenseError(file, line, column, errCode, message, sev.ToMessageSeverity());
+            _errorListManager.AddIntellisenseError(file, line, column, length, errCode, message, sev.ToMessageSeverity());
         }
 
-        public List<Tuple<int, int>> GetIntellisenseErrorPos(string fileName)
+        public List<IXErrorPosition> GetIntellisenseErrorPos(string fileName)
         {
             return _errorListManager.GetIntellisenseErrorPos(fileName);
         }

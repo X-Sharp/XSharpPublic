@@ -492,7 +492,7 @@ namespace Microsoft.VisualStudio.Project
 
         private Guid projectIdGuid;
 
-        private ProjectOptions options;
+        protected ProjectOptions options;
 
         private bool isClosed;
 

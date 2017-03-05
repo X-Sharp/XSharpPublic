@@ -300,6 +300,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="ReadMeCodeGen.txt" />
+    <Content Include="Snippets\SnippetsIndex.xml" />
     <Content Include="Template.ico" />
     <ZipProject Include="Templates\Projects\WinFormApp\Form1.designer.prg" />
     <ZipItem Include="Templates\ProjectItems\Forms\UserControl\UserControl.designer.prg" />
@@ -347,6 +348,7 @@
     </Compile>
     <Compile Include="Wix\XVsConstants.cs" />
     <Compile Include="XSharpIDEBuildLogger.cs" />
+    <Compile Include="XSharpProjectOptions.cs" />
     <Compile Include="XSharpSingleFileGenerator.cs" />
     <Compile Include="Nodes\XSharpFolderNode.cs" />
     <Compile Include="WPF\XSharpEventBindingProvider.cs" />
@@ -398,6 +400,33 @@
     <ZipProject Include="Templates\Projects\VulcanApp\Program.prg" />
     <ZipProject Include="Templates\Projects\VulcanApp\VulcanApplication.xsproj" />
     <None Include="packages.config" />
+    <None Include="Snippets\Snippets\case.snippet" />
+    <None Include="Snippets\Snippets\class.snippet" />
+    <None Include="Snippets\Snippets\classinherited.snippet" />
+    <None Include="Snippets\Snippets\equals.snippet" />
+    <None Include="Snippets\Snippets\exception.snippet" />
+    <None Include="Snippets\Snippets\fileheader.snippet" />
+    <None Include="Snippets\Snippets\for.snippet" />
+    <None Include="Snippets\Snippets\foreach.snippet" />
+    <None Include="Snippets\Snippets\for_down.snippet" />
+    <None Include="Snippets\Snippets\for_up.snippet" />
+    <None Include="Snippets\Snippets\if.snippet" />
+    <None Include="Snippets\Snippets\ifdef.snippet" />
+    <None Include="Snippets\Snippets\initproc.snippet" />
+    <None Include="Snippets\Snippets\mbox.snippet" />
+    <None Include="Snippets\Snippets\nunittestclass.snippet" />
+    <None Include="Snippets\Snippets\property.snippet" />
+    <None Include="Snippets\Snippets\region.snippet" />
+    <None Include="Snippets\Snippets\repeat.snippet" />
+    <None Include="Snippets\Snippets\sequence.snippet" />
+    <None Include="Snippets\Snippets\start.snippet" />
+    <None Include="Snippets\Snippets\struct.snippet" />
+    <None Include="Snippets\Snippets\switch.snippet" />
+    <None Include="Snippets\Snippets\tryc.snippet" />
+    <None Include="Snippets\Snippets\trycf.snippet" />
+    <None Include="Snippets\Snippets\tryf.snippet" />
+    <None Include="Snippets\Snippets\vostruct.snippet" />
+    <None Include="Snippets\Snippets\while.snippet" />
     <None Include="XSharp.snk" />
   </ItemGroup>
   <ItemGroup>

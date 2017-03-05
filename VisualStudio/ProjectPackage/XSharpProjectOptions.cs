@@ -21,7 +21,7 @@ using LanguageService.CodeAnalysis.XSharp;
 namespace XSharp.Project
 {
     /// <summary>
-    /// This class extends the ConfigProvider
+    /// This class adds X# specific project options and builds a command line for use in the intellisense
     /// </summary>
     /// 
     public class XSharpProjectOptions : ProjectOptions

@@ -207,7 +207,7 @@ namespace XSharp.CodeDom
                 {
                     // Copy all source code to User_Data
                     // --> See XSharpCodeGenerator.GenerateMethod for writing
-                    FillCodeSource(newMethod, context.end, context);
+                    FillCodeSource(newMethod, context.end.Stop, context);
 
                     // The designer will need to locate the code in the file, so we must add the location
                     if ( context.StmtBlk.ChildCount > 0 )
@@ -281,7 +281,7 @@ namespace XSharp.CodeDom
             {
                 // Copy all source code to User_Data
                 // --> See XSharpCodeGenerator.GenerateMethod for writing
-                FillCodeSource(ctor, context.end, context);
+                FillCodeSource(ctor, context.end.Stop, context);
             }
             //
             this.CurrentClass.Members.Add(ctor);

@@ -219,10 +219,13 @@ namespace Antlr4.Runtime {
 
         public void SetSequencePoint(ParserRuleContext context)
         {
-            if (context.Stop != null)
-                SetSequencePoint(context.Start, context.Stop);
-            else
-                SetSequencePoint(context.Start, context.Start);
+            if (context != null)
+            {
+                if (context.Stop != null)
+                    SetSequencePoint(context.Start, context.Stop);
+                else
+                    SetSequencePoint(context.Start, context.Start);
+            }
         }
         internal string ParentName
         {

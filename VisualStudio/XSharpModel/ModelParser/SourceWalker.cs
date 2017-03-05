@@ -7,60 +7,19 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using LanguageService.SyntaxTree;
-using Microsoft.Win32;
 
 namespace XSharpModel
 {
     public class SourceWalker
     {
-        #region Context Init
-        internal static string REG_KEY = @"HKEY_LOCAL_MACHINE\" + XSharp.Constants.RegistryKey;
 
-        static string _includedirs = null;
+        static XSharpCommandLineParser xsCmdLineparser;
 
-        static XSharpCommandLineParser xsparser;
-        static XSharpParseOptions xsparseoptions;
 
-        static string Includedirs
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_includedirs))
-                {
-                    _includedirs = "";
-                    var path = (string)Registry.GetValue(REG_KEY, XSharp.Constants.RegistryValue, "");
-                    if (!string.IsNullOrEmpty(path))
-                    {
-                        if (!path.EndsWith("\\"))
-                            path += @"\";
-                        path += @"Include\";
-                        _includedirs += path;
-                    }
-                    // Check for Vulcan path
-                    var key = @"HKEY_LOCAL_MACHINE\SOFTWARE\Grafx\Vulcan.NET";
-                    path = (string)Registry.GetValue(key, "InstallPath", "");
-                    if (!string.IsNullOrEmpty(path))
-                    {
-                        if (!path.EndsWith("\\"))
-                            path += @"\";
-                        path += @"Include\";
-                        _includedirs += ";" + path;
-                    }
-                }
-                return _includedirs;
-            }
-        }
         static SourceWalker()
         {
-            XSharpSpecificCompilationOptions.SetDefaultIncludeDir(Includedirs);
-            XSharpSpecificCompilationOptions.SetWinDir(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
-            XSharpSpecificCompilationOptions.SetSysDir(Environment.GetFolderPath(Environment.SpecialFolder.System));
-            xsparser = XSharpCommandLineParser.Default;
-            var args = new List<string>();
-            var cmdlineopts = xsparser.Parse(args, "", "", "");
-            xsparseoptions = cmdlineopts.ParseOptions;
+            xsCmdLineparser = XSharpCommandLineParser.Default;
         }
-        #endregion
 
         private IClassificationType _xsharpIdentifierType;
         private IClassificationType _xsharpBraceOpenType;
@@ -71,6 +30,8 @@ namespace XSharpModel
         private string _source;
         private string _fullPath;
         private List<ClassificationSpan> _tags;
+        private string[] _args;
+        private XSharpParseOptions xsparseoptions;
 
         private XFile _file;
 
@@ -193,7 +154,14 @@ namespace XSharpModel
             {
                 // this gets at least the default include path     
                 // so we can process Vulcan and XSharp include files           
-
+                // get command line args and compare with old args
+                var args = this.File.Project.ProjectNode.CommandLineArgs;
+                if (args != _args || xsparseoptions == null)
+                {
+                    _args = args;
+                    var cmdlineopts = xsCmdLineparser.Parse(args, "", "", "");
+                    xsparseoptions = cmdlineopts.ParseOptions;
+                }
                 LanguageService.CodeAnalysis.SyntaxTree tree = XSharpSyntaxTree.ParseText(_source, xsparseoptions, _fullPath);
                 if ( this.File != null )
                 {

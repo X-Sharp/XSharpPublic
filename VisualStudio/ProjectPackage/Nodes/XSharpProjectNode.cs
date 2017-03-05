@@ -243,6 +243,38 @@ namespace XSharp.Project
                 return this.VSProject;
             }
         }
+
+        /// <summary>
+        /// Override this method if you have your own project specific
+        /// subclass of ProjectOptions
+        /// </summary>
+        /// <returns>This method returns a new instance of the ProjectOptions base class.</returns>
+        public override ProjectOptions CreateProjectOptions()
+        {
+            base.
+            options = new XSharpProjectOptions(this);
+            return options;
+        }
+
+        public override ProjectOptions GetProjectOptions(ConfigCanonicalName configCanonicalName)
+        {
+            if (options != null)
+            {
+                var xoptions = options as XSharpProjectOptions;
+                if (xoptions.ConfigCanonicalName != configCanonicalName)
+                {
+                    options = null;
+                }
+            }
+            if (options == null)
+            {
+                options = base.GetProjectOptions(configCanonicalName);
+                var xoptions = options as XSharpProjectOptions;
+                xoptions.ConfigCanonicalName = configCanonicalName;
+                xoptions.BuildCommandLine();
+            }
+            return options;
+        }
         public override string GetProjectProperty(string propertyName, bool resetCache)
         {
             if (BuildProject != null)
@@ -1357,6 +1389,14 @@ namespace XSharp.Project
             return open;
         }
 
+        public string[] CommandLineArgs
+        {
+            get
+            {
+                var xoptions = GetProjectOptions(this.CurrentConfig.ConfigCanonicalName) as XSharpProjectOptions;
+                return xoptions.CommandLineArgs;
+            }
+        }
         public override int Close()
         {
             XSharpModel.XSolution.Remove(projectModel);

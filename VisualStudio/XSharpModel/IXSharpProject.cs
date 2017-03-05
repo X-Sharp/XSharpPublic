@@ -22,6 +22,7 @@ namespace XSharpModel
         void ShowIntellisenseErrors();
         bool IsDocumentOpen(string file);
         List<IXErrorPosition> GetIntellisenseErrorPos(string fileName);
+        string[] CommandLineArgs { get; }
     }
 
     public interface IXErrorPosition

@@ -60,14 +60,9 @@ namespace Microsoft.VisualStudio.Project
         /// It will be set in OnBeforeUnloadProject then the nopde is invalidated then it is reset to false.
         /// </summary>
 		private bool isNodeValid = false;
+#endregion
 
-		private static Assembly vcProjectEngine;
-
-		private static bool vcProjectEngineLoaded = false;
-
-        #endregion
-
-        #region properties
+#region properties
 
         public override string Url
         {
@@ -182,76 +177,8 @@ namespace Microsoft.VisualStudio.Project
 					continue;
 				}
 
-				// do things differently for C++
-				try
-				{
-					if (!vcProjectEngineLoaded)
-					{
-						vcProjectEngine = Assembly.Load("Microsoft.VisualStudio.VCProjectEngine, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
-						vcProjectEngineLoaded = true;
-					}
-				}
-				catch (FileNotFoundException)
-				{
-					// Couldn't load C++ assembly because it doesn't exist.
-					// Continue trying as normal project.
-					vcProjectEngine = null;
-					vcProjectEngineLoaded = true;
-				}
-				if (vcProjectEngine != null)
-				{
-					Type vcProjectType = vcProjectEngine.GetType("Microsoft.VisualStudio.VCProjectEngine.VCProject", false);
-					if (vcProjectType != null)
-					{
-						if (vcProjectType.IsInstanceOfType(prj.Object))
-						{
-							PropertyInfo vcProjectFileProperty = vcProjectType.GetProperty("ProjectFile", typeof(string));
-							string projectFilePath = (string)vcProjectFileProperty.GetValue(prj.Object, null);
-							if (NativeMethods.IsSamePath(projectFilePath, this.referencedProjectFullPath))
-							{
-								this.referencedProject = prj;
-								return true;
-							}
-							continue;
-						}
-					}
-				}
-
-
-				// Get the full path of the current project.
-				EnvDTE.Property pathProperty = null;
-				try
-				{
-					pathProperty = prj.Properties.Item("FullPath");
-					if (null == pathProperty)
-					{
-						// The full path should alway be availabe, but if this is not the
-						// case then we have to skip it.
-						continue;
-					}
-				}
-				catch (ArgumentException)
-				{
-					continue;
-				}
-				string prjPath = pathProperty.Value.ToString();
-				EnvDTE.Property fileNameProperty = null;
-				// Get the name of the project file.
-				try
-				{
-					fileNameProperty = prj.Properties.Item("FileName");
-					if (null == fileNameProperty)
-					{
-						// Again, this should never be the case, but we handle it anyway.
-						continue;
-					}
-				}
-				catch (ArgumentException)
-				{
-					continue;
-				}
-				prjPath = System.IO.Path.Combine(prjPath, fileNameProperty.Value.ToString());
-
+                string prjPath = prj.FullName;
+				
 				// If the full path of this project is the same as the one of this
 				// reference, then we have found the right project.
 				if (NativeMethods.IsSamePath(prjPath, referencedProjectFullPath))
@@ -405,9 +332,9 @@ namespace Microsoft.VisualStudio.Project
                 return projectReference;
             }
         }
-        #endregion
+#endregion
 
-        #region ctors
+#region ctors
         /// <summary>
         /// Constructor for the ReferenceNode. It is called when the project is reloaded, when the project element representing the refernce exists.
         /// </summary>
@@ -509,9 +436,9 @@ namespace Microsoft.VisualStudio.Project
             this.buildDependency = new BuildDependency(this.ProjectMgr, this.referencedProjectGuid);
 
         }
-        #endregion
+#endregion
 
-        #region methods
+#region methods
         protected override NodeProperties CreatePropertiesObject()
         {
             return new ProjectReferencesProperties(this);
@@ -702,7 +629,7 @@ namespace Microsoft.VisualStudio.Project
 
 			return VSConstants.S_OK;
 		}
-        #endregion
+#endregion
     }
 
 }

@@ -1174,7 +1174,10 @@ namespace XSharp.Project
                 //
                 textView.SetCaretPos(span.iStartLine, span.iStartIndex);
                 textView.EnsureSpanVisible(span);
-                textView.SetTopLine(span.iStartLine);
+                if (span.iStartLine > 5)
+                    textView.SetTopLine(span.iStartLine-5);
+                else
+                    textView.SetTopLine(0);
             }
         }
 

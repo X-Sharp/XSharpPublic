@@ -83,16 +83,16 @@ namespace XSharp.Project
             if (String.IsNullOrEmpty(fileName))
                 return;
             // Then, the corresponding Type/Element if possible
-            IToken dummy;
+            IToken stopToken;
             //ITokenStream tokenStream;
-            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out dummy, true);
+            List<String> tokenList = XSharpLanguage.XSharpTokenTools.GetTokenList(caretPos, lineNumber, currentText, out stopToken, true);
             // Check if we can get the member where we are
             XSharpModel.XTypeMember member = XSharpLanguage.XSharpTokenTools.FindMember(caretPos, fileName);
             XSharpModel.XType currentNamespace = XSharpLanguage.XSharpTokenTools.FindNamespace(caretPos, fileName);
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XSharpModel.XElement gotoElement;
             MemberInfo systemElement;
-            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, out gotoElement, out systemElement);
+            XSharpModel.CompletionType cType = XSharpLanguage.XSharpTokenTools.RetrieveType(tokenList, member, stopToken, out gotoElement, out systemElement);
             //
             //
             if ( (gotoElement != null) || (systemElement != null) )

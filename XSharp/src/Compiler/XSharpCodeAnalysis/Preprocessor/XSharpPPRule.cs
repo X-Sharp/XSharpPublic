@@ -1116,7 +1116,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 switch (resultToken.RuleTokenType)
                 {
                     case PPTokenType.Token:
-                        result.Add(resultToken.Token);
+                        TokenResult(resultToken, tokens, matchInfo, result);
                         break;
                     case PPTokenType.ResultLogify:
                         // check to see if the token was matched.
@@ -1154,6 +1154,14 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return result;
         }
 
+        void TokenResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result)
+        {
+
+            var newToken = new XSharpToken(rule.Token);
+            newToken.SourceSymbol = tokens[0];
+            result.Add(newToken);
+
+        }
         void optionalResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result)
         {
             if (rule.MatchMarker != null)

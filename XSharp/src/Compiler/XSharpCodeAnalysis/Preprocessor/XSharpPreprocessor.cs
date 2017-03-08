@@ -558,7 +558,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             {
                 if (t.IsEOS() && t.Text != ";")
                     break;
-                var nt = FixToken(new XSharpToken(t));
+                var nt = FixToken(t);
                 nt.Channel = TokenConstants.DefaultChannel;
                 res.Add(nt);
                 Consume();
@@ -1182,30 +1182,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case XSharpLexer.PP_WARNING:
                         if (IsActiveElseSkip())
                         {
-                            int iStart = Lt().StopIndex + 1;
-                            int iEnd;
                             var tokens = ReadLine();
                             string text;
-                            XSharpToken ln;          
+                            XSharpToken ln;
+                            writeToPPO(tokens[0], PPOPrefix + tokens[0].Text);
+                            ln = tokens[0];
                             if (tokens.Count > 1)
                             {
-                                ln = tokens[1];
-                                iStart = ln.StartIndex;
-                                iEnd = tokens[tokens.Count - 1].StopIndex;
-                                text = tokens[0].TokenSource.InputStream.GetText(new Interval(iStart, iEnd ));
+                                text = "";
+                                for (int i = 1; i < tokens.Count; i++)
+                                {
+                                    text += tokens[i].Text + " ";
+                                    writeToPPO(tokens[i]);
+                                }
                                 text = text.Trim();
-                                ln = tokens[0];
                             }
                             else
                             {
-                                ln = tokens[0];
                                 text = "Empty warning clause";
                             }
-                            writeToPPO(tokens,true);
+                            if (ln.SourceSymbol != null)
+                                ln = ln.SourceSymbol;
                             if (nextType == XSharpLexer.PP_WARNING)
                                 _parseErrors.Add(new ParseErrorData(ln, ErrorCode.WRN_UserWarning, text));
                             else
                                 _parseErrors.Add(new ParseErrorData(ln, ErrorCode.ERR_UserError, text));
+                            lastToken = ln;
                         }
                         break;
                     case XSharpLexer.PP_INCLUDE:
@@ -1375,14 +1377,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                                 FixToken(t);
                                 Consume();
-                                if (lastToken != null && t.Type == XSharpLexer.EOS)
-                                {
-                                    if (lastToken.Type == XSharpLexer.EOS
-                                        || lastToken.Type == XSharpLexer.NL)
-                                   {
-                                        t.Channel = XSharpLexer.Hidden;
-                                   }
-                                }
                                 lastToken = t;
                                 writeToPPO(t);
                                 return t;

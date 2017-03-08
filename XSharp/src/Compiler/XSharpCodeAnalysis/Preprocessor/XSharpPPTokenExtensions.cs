@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             int i = 0;
             foreach (var t in tokens)
             {
-                clone[i] = new XSharpToken(t);
+                clone[i] =t;
                 i++;
             }
             return clone;

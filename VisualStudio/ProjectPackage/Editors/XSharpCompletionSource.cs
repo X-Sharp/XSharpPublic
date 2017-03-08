@@ -185,7 +185,7 @@ namespace XSharpLanguage
             // LookUp for the BaseType, reading the TokenList (From left to right)
             XElement foundElement;
             MemberInfo dummyElement;
-            cType = XSharpTokenTools.RetrieveType(tokenList, member, out foundElement, out dummyElement);
+            cType = XSharpTokenTools.RetrieveType(tokenList, member, null, out foundElement, out dummyElement);
             switch (typedChar)
             {
                 case '.':
@@ -2113,6 +2113,17 @@ namespace XSharpLanguage
 
     public static class XSharpTokenTools
     {
+
+        /// <summary>
+        /// Retrieve a List of Token, based on a position in buffer. 
+        /// Moving back in the buffer, all tokens are retrieved and stored.
+        /// </summary>
+        /// <param name="triggerPointPosition">The position in the buffer </param>
+        /// <param name="triggerPointLineNumber"></param>
+        /// <param name="bufferText"></param>
+        /// <param name="stopToken">The IToken that stops the move backwards</param>
+        /// <param name="fromGotoDefn">Indicate if the call is due to Goto Definition</param>
+        /// <returns></returns>
         public static List<String> GetTokenList(int triggerPointPosition, int triggerPointLineNumber, string bufferText, out IToken stopToken, bool fromGotoDefn) // out LanguageService.SyntaxTree.ITokenStream tokenStream)
         {
             List<String> tokenList = new List<string>();
@@ -2401,7 +2412,18 @@ namespace XSharpLanguage
             return null;
         }
 
-        public static CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember, out XElement foundElement, out MemberInfo sysFoundElement)
+        /// <summary>
+        /// Retrieve the CompletionType based on :
+        ///  The Token list returned by GetTokenList()
+        ///  The Token that stops the building of the Token List.
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="currentMember"></param>
+        /// <param name="stopToken"></param>
+        /// <param name="foundElement"></param>
+        /// <param name="sysFoundElement"></param>
+        /// <returns></returns>
+        public static CompletionType RetrieveType(List<string> tokenList, XTypeMember currentMember, IToken stopToken, out XElement foundElement, out MemberInfo sysFoundElement)
         {
             foundElement = null;
             sysFoundElement = null;
@@ -2440,6 +2462,30 @@ namespace XSharpLanguage
                     }
                 }
                 //
+                if ( stopToken != null)
+                {
+                    switch (stopToken.Type)
+                    {
+                        case XSharpLexer.AS:
+                        case XSharpLexer.IS:
+                        case XSharpLexer.REF:
+                        case XSharpLexer.IMPLEMENTS:
+                        case XSharpLexer.INHERIT:
+                            if (tokenList.Count == 1)
+                            {
+                                // One Token, after such keyword, this is a type
+                                // So we are looking for a Type, and we must end with a {}
+                                if (!currentToken.EndsWith("{}"))
+                                {
+                                    currentToken += "{}";
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                //
                 if (currentToken.EndsWith("{}"))
                 {
                     // this a Constructor call
@@ -2465,6 +2511,9 @@ namespace XSharpLanguage
                         cType = null;
                     }
                 }
+                //else if (currentToken.EndsWith("[]"))
+                //{
+                //}
                 else
                 {
                     // First token, so it could be a parameter or a local var
@@ -2884,7 +2933,7 @@ namespace XSharpLanguage
                     {
                         prev = null;
                     }
-                } while ((prev != null) && (prev.Type == XSharpLexer.WS));
+                } while ((prev != null) && ( String.IsNullOrWhiteSpace( prev.Text)));
             }
             return prev;
         }

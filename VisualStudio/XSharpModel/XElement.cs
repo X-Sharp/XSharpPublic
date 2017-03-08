@@ -74,12 +74,36 @@ namespace XSharpModel
 
         }
 
+        public void ForceComplete()
+        {
+            if (_parent == null && ! String.IsNullOrEmpty(ParentName))
+            {
+                string parentName = this.ParentName;
+                string thisName = this.FullName;
+                if (parentName.IndexOf(".") ==-1 && thisName.IndexOf(".")>0)
+                {
+                    parentName = thisName.Substring(0, thisName.LastIndexOf(".")+1) + parentName;
+                }
+                var tmp = File.Project.LookupFullName(parentName, true);
+                if (tmp == null)
+                {
+                    tmp = File.Project.Lookup(parentName, true);
+                }
+                if (tmp != null)
+                {
+                    _parent = tmp;
+                }
+            }
+        }
 
         public XElement Parent
         {
             get
             {
+
+                // An internal type that has not been resolved yet ?
                 return _parent;
+
             }
 
             set
@@ -88,7 +112,7 @@ namespace XSharpModel
             }
         }
 
-        public String ParentName
+        public virtual String ParentName
         {
             get
             {
@@ -97,6 +121,10 @@ namespace XSharpModel
                     return this._parent.FullName;
                 }
                 return null;
+            }
+            set
+            {
+                ;
             }
         }
 

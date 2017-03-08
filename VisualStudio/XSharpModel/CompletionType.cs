@@ -39,10 +39,17 @@ namespace XSharpModel
         public CompletionType(XElement element)
         {
             //throw new NotImplementedException();
-            XTypeMember member = element.Parent as XTypeMember;
-            if (member != null)
+            if (element is XType)
             {
-                CheckProjectType(member.TypeName, member.File, member.Parent.NameSpace);
+                this._xtype = (XType)element;
+            }
+            else
+            {
+                XTypeMember member = element.Parent as XTypeMember;
+                if (member != null)
+                {
+                    CheckProjectType(member.TypeName, member.File, member.Parent.NameSpace);
+                }
             }
         }
 

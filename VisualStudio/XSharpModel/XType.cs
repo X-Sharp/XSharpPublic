@@ -31,6 +31,7 @@ namespace XSharpModel
             : base(name, kind, modifiers, visibility, span, position)
         {
             _members = new XTypeMemberList();
+            _parentName = "System.Object";
             _nameSpace = "";
             if (modifiers.HasFlag(Modifiers.Static))
             {
@@ -113,13 +114,12 @@ namespace XSharpModel
         public XType Duplicate()
         {
             XType temp = new XType(this.Name, this.Kind, this.Modifiers, this.Visibility, this.Range, this.Interval);
+            temp.Parent = this.Parent;
+            temp.ParentName = this.ParentName;
             temp.IsPartial = this.IsPartial;
             temp.IsStatic = this.IsStatic;
             temp.File = this.File;
-            foreach (XTypeMember mbr in this.Members)
-            {
-                temp.Members.Add(mbr);
-            }
+            temp.Members.AddRange(this.Members);
             //
             return temp;
         }
@@ -143,29 +143,27 @@ namespace XSharpModel
         /// Merge two XType Objects : Used to create the resulting  XType from partial classes
         /// </summary>
         /// <param name="otherType"></param>
-        public void Merge(XType otherType)
+        public XType Merge(XType otherType)
         {
+            var clone = this.Duplicate();
             this.IsPartial = true;
             if (otherType != null)
             {
-                foreach (XTypeMember mbr in otherType.Members)
+                clone.Members.AddRange(otherType.Members);
+                if ((clone.Parent == null) && (otherType.Parent != null))
                 {
-                    this.Members.Add(mbr);
+                    clone.Parent = otherType.Parent;
                 }
-                if ((this.Parent == null) && (otherType.Parent != null))
+                else if ((clone.ParentName == null) && (otherType.ParentName != null))
                 {
-                    this.Parent = otherType.Parent;
-                }
-                else if ((this.ParentName == null) && (otherType.ParentName != null))
-                {
-                    this.ParentName = otherType.ParentName;
+                    clone.ParentName = otherType.ParentName;
                 }
             }
             //
-            return;
+            return clone;
         }
 
-        new public String ParentName
+        public override String ParentName
         {
             get
             {

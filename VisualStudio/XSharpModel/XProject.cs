@@ -167,7 +167,7 @@ namespace XSharpModel
                         // Do we have the other parts ?
                         if (xType != null)
                         {
-                            xType.Merge(xTemp);
+                            xType = xType.Merge(xTemp);
                         }
                         else
                         {
@@ -219,7 +219,7 @@ namespace XSharpModel
                         // Do we have the other parts ?
                         if (xType != null)
                         {
-                            xType.Merge(xTemp);
+                            xType = xType.Merge(xTemp);
                         }
                         else
                         {

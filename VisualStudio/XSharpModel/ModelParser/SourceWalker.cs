@@ -20,7 +20,6 @@ namespace XSharpModel
 
         static XSharpCommandLineParser xsCmdLineparser;
 
-
         static SourceWalker()
         {
             xsCmdLineparser = XSharpCommandLineParser.Default;
@@ -52,23 +51,6 @@ namespace XSharpModel
                 _source = _snapshot.GetText();
             }
         }
-
-        /*
-        public string GetFileName(ITextBuffer buffer)
-        {
-            Microsoft.VisualStudio.TextManager.Interop.IVsTextBuffer bufferAdapter;
-            buffer.Properties.TryGetProperty(typeof(Microsoft.VisualStudio.TextManager.Interop.IVsTextBuffer), out bufferAdapter);
-            if (bufferAdapter != null)
-            {
-                var persistFileFormat = bufferAdapter as IPersistFileFormat;
-                string ppzsFilename = null;
-                uint iii;
-                if (persistFileFormat != null) persistFileFormat.GetCurFile(out ppzsFilename, out iii);
-                return ppzsFilename;
-            }
-            else return null;
-            return null;
-        }*/
 
 
         public string FullPath
@@ -155,6 +137,9 @@ namespace XSharpModel
         {
             _treeInit = false;
             //
+            if (this.File == null || this.File.Project == null || this.File.Project.ProjectNode == null)
+                return;
+
             try
             {
                 // this gets at least the default include path     

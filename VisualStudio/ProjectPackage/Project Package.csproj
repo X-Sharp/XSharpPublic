@@ -156,8 +156,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="XSharp.CodeAnalysis, Version=0.2.9.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="XSharp.CodeAnalysis, Version=0.2.10.0, Culture=neutral, PublicKeyToken=ed555a0467764586, processorArchitecture=MSIL">
       <HintPath>..\..\External\Release\XSharp.CodeAnalysis.dll</HintPath>
     </Reference>
   </ItemGroup>

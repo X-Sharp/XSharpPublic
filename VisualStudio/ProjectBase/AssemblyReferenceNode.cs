@@ -492,11 +492,11 @@ namespace Microsoft.VisualStudio.Project
                 return;
             }
 
-            // We only care about file deletes, so check for one before enumerating references.
-            if((e.FileChangeFlag & _VSFILECHANGEFLAGS.VSFILECHG_Del) == 0)
-            {
-                return;
-            }
+            //// We only care about file deletes, so check for one before enumerating references.
+            //if((e.FileChangeFlag & _VSFILECHANGEFLAGS.VSFILECHG_Del) == 0)
+            //{
+            //    return;
+            //}
 
 
             if(NativeMethods.IsSamePath(e.FileName, this.assemblyPath))

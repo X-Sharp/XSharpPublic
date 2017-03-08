@@ -647,10 +647,11 @@ namespace XSharpLanguage
                 if (element == null)
                 {
                     // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchPropertyTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public);
+                        return SearchPropertyTypeIn(new CompletionType( cType.XType.Parent), currentToken, Modifiers.Public);
                     }
                     else if (cType.XType.ParentName != null)
                     {
@@ -736,6 +737,7 @@ namespace XSharpLanguage
                 if (element == null)
                 {
                     // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
@@ -827,6 +829,7 @@ namespace XSharpLanguage
                 if (xMethod == null)
                 {
                     // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
@@ -974,6 +977,7 @@ namespace XSharpLanguage
                 }
             }
             // Hummm, we should call for Owner of the Owner.. Super !
+            Owner.ForceComplete();
             if (Owner.Parent != null)
             {
                 BuildCompletionList(compList, parent, Modifiers.Protected, staticOnly, startWith);
@@ -992,10 +996,11 @@ namespace XSharpLanguage
             {
                 FillMembers(compList, cType.XType, minVisibility, staticOnly, startWith);
                 // Hummm, we should call for Owner of the Owner.. Super !
+                cType.XType.ForceComplete();
                 if (cType.XType.Parent != null)
                 {
                     // Parent is a XElement, so one of our Types
-                    BuildCompletionList(compList, new CompletionType(cType.XType.Parent), Modifiers.Protected, staticOnly, startWith);
+                    BuildCompletionList(compList, new CompletionType((XType) cType.XType.Parent), Modifiers.Protected, staticOnly, startWith);
                 }
                 else if (cType.XType.ParentName != null)
                 {
@@ -1476,11 +1481,11 @@ namespace XSharpLanguage
                     {
                         this._visibility = Modifiers.Private;
                     }
-                    if (constInfo.IsAssembly)
+                    else if (constInfo.IsAssembly)
                     {
                         this._visibility = Modifiers.Internal;
                     }
-                    if (constInfo.IsFamily)
+                    else if (constInfo.IsFamily)
                     {
                         this._visibility = Modifiers.Protected;
                     }
@@ -1508,11 +1513,11 @@ namespace XSharpLanguage
                     {
                         this._visibility = Modifiers.Private;
                     }
-                    if (methodInfo.IsAssembly)
+                    else if (methodInfo.IsAssembly)
                     {
                         this._visibility = Modifiers.Internal;
                     }
-                    if (methodInfo.IsFamily)
+                    else if (methodInfo.IsFamily)
                     {
                         this._visibility = Modifiers.Protected;
                     }
@@ -1532,11 +1537,11 @@ namespace XSharpLanguage
                     {
                         this._visibility = Modifiers.Private;
                     }
-                    if (field.IsAssembly)
+                    else if (field.IsAssembly)
                     {
                         this._visibility = Modifiers.Internal;
                     }
-                    if (field.IsFamily)
+                    else if (field.IsFamily)
                     {
                         this._visibility = Modifiers.Protected;
                     }
@@ -1560,11 +1565,11 @@ namespace XSharpLanguage
                     {
                         this._visibility = Modifiers.Private;
                     }
-                    if (method.IsAssembly)
+                    else if (method.IsAssembly)
                     {
                         this._visibility = Modifiers.Internal;
                     }
-                    if (method.IsFamily)
+                    else if (method.IsFamily)
                     {
                         this._visibility = Modifiers.Protected;
                     }
@@ -1593,11 +1598,11 @@ namespace XSharpLanguage
                     {
                         this._visibility = Modifiers.Private;
                     }
-                    if (propInfo.IsAssembly)
+                    else if (propInfo.IsAssembly)
                     {
                         this._visibility = Modifiers.Internal;
                     }
-                    if (propInfo.IsFamily)
+                    else if (propInfo.IsFamily)
                     {
                         this._visibility = Modifiers.Protected;
                     }
@@ -1683,13 +1688,10 @@ namespace XSharpLanguage
         {
             get
             {
-                StandardGlyphGroup imgG = StandardGlyphGroup.GlyphGroupClass;
+                StandardGlyphGroup imgG;
                 //
                 switch (this.Kind)
                 {
-                    case Kind.Class:
-                        imgG = StandardGlyphGroup.GlyphGroupClass;
-                        break;
                     case Kind.Namespace:
                         imgG = StandardGlyphGroup.GlyphGroupNamespace;
                         break;
@@ -1701,6 +1703,7 @@ namespace XSharpLanguage
                         imgG = StandardGlyphGroup.GlyphGroupMethod;
                         break;
                     case Kind.Structure:
+                    case Kind.Union:
                         imgG = StandardGlyphGroup.GlyphGroupStruct;
                         break;
                     case Kind.Access:
@@ -1709,13 +1712,30 @@ namespace XSharpLanguage
                         imgG = StandardGlyphGroup.GlyphGroupProperty;
                         break;
                     case Kind.Local:
-                        imgG = StandardGlyphGroup.GlyphGroupProperty;
+                        imgG = StandardGlyphGroup.GlyphGroupVariable;
                         break;
                     case Kind.Enum:
                         imgG = StandardGlyphGroup.GlyphGroupEnumMember;
                         break;
+                    case Kind.VOGlobal:
                     case Kind.ClassVar:
                         imgG = StandardGlyphGroup.GlyphGroupField;
+                        break;
+                    case Kind.Delegate:
+                        imgG = StandardGlyphGroup.GlyphGroupDelegate;
+                        break;
+                    case Kind.Event:
+                        imgG = StandardGlyphGroup.GlyphGroupEvent;
+                        break;
+                    case Kind.Interface:
+                        imgG = StandardGlyphGroup.GlyphGroupInterface;
+                        break;
+                    case Kind.VODefine:
+                        imgG = StandardGlyphGroup.GlyphGroupConstant;
+                        break;
+                    case Kind.Class:
+                    default:
+                        imgG = StandardGlyphGroup.GlyphGroupClass;
                         break;
                 }
                 return imgG;
@@ -1731,13 +1751,10 @@ namespace XSharpLanguage
         {
             get
             {
-                StandardGlyphItem imgI = StandardGlyphItem.GlyphItemPublic;
+                StandardGlyphItem imgI;
                 //
                 switch (this.Visibility)
                 {
-                    case Modifiers.Public:
-                        imgI = StandardGlyphItem.GlyphItemPublic;
-                        break;
                     case Modifiers.Protected:
                         imgI = StandardGlyphItem.GlyphItemProtected;
                         break;
@@ -1748,9 +1765,12 @@ namespace XSharpLanguage
                         imgI = StandardGlyphItem.GlyphItemInternal;
                         break;
                     case Modifiers.ProtectedInternal:
-                        imgI = StandardGlyphItem.GlyphItemProtected;
+                        imgI = StandardGlyphItem.GlyphItemFriend;
                         break;
-
+                    case Modifiers.Public:
+                    default:
+                        imgI = StandardGlyphItem.GlyphItemPublic;
+                        break;
                 }
                 //
                 return imgI;
@@ -1930,11 +1950,12 @@ namespace XSharpLanguage
         {
             get
             {
-                StandardGlyphGroup imgG = StandardGlyphGroup.GlyphGroupClass;
+                StandardGlyphGroup imgG ;
                 //
                 switch (this.Kind)
                 {
                     case Kind.Class:
+                    default:
                         imgG = StandardGlyphGroup.GlyphGroupClass;
                         break;
                     case Kind.Interface:
@@ -1958,11 +1979,12 @@ namespace XSharpLanguage
         {
             get
             {
-                StandardGlyphItem imgI = StandardGlyphItem.GlyphItemPublic;
+                StandardGlyphItem imgI ;
                 //
                 switch (this.Visibility)
                 {
                     case Modifiers.Public:
+                    default:
                         imgI = StandardGlyphItem.GlyphItemPublic;
                         break;
                     case Modifiers.Protected:
@@ -1975,7 +1997,7 @@ namespace XSharpLanguage
                         imgI = StandardGlyphItem.GlyphItemInternal;
                         break;
                     case Modifiers.ProtectedInternal:
-                        imgI = StandardGlyphItem.GlyphItemProtected;
+                        imgI = StandardGlyphItem.GlyphItemFriend;
                         break;
 
                 }
@@ -2623,10 +2645,11 @@ namespace XSharpLanguage
                 if (element == null)
                 {
                     // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
-                        return SearchPropertyTypeIn(new CompletionType(cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
+                        return SearchPropertyTypeIn(new CompletionType( cType.XType.Parent), currentToken, Modifiers.Public, out foundElement);
                     }
                     else if (cType.XType.ParentName != null)
                     {
@@ -2715,6 +2738,7 @@ namespace XSharpLanguage
                 if (element == null)
                 {
                     // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types
@@ -2810,6 +2834,7 @@ namespace XSharpLanguage
                 if (xMethod == null)
                 {
                     // Hummm, we should look inside the Owner
+                    cType.XType.ForceComplete();
                     if (cType.XType.Parent != null)
                     {
                         // Parent is a XElement, so one of our Types

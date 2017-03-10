@@ -2620,7 +2620,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 expr = CreateObject(_symbolType, MakeArgumentList(arg0));
                 break;
             case XP.REAL_CONST:
-                if (_options.VOFloatConstants)
+                if (_options.VOFloatConstants && !(CurrentEntity is XP.VodefineContext))
                 {
                     // check to see if the token contains an 'S', 'D' or 'M'. In that case leave as is, since the user has specified
                     // single, double or decimal

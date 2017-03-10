@@ -342,7 +342,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             return null;
         }
 
-        private VOOperatorType NeedsVOOperator(BinaryExpressionSyntax node, BoundExpression left, BoundExpression right)
+        private VOOperatorType NeedsVOOperator(BinaryExpressionSyntax node, ref BoundExpression left, ref BoundExpression right)
         {
             // Check if a special XSharp binary operation is needed. This is needed when:
             //
@@ -357,19 +357,46 @@ namespace Microsoft.CodeAnalysis.CSharp
             var xnode = node.XNode as XSharpParser.BinaryExpressionContext;
             if (xnode == null)  // this may happen for example for nodes generated in the transformation phase
                 return opType;
+
+            TypeSymbol leftType = left.Type;
+            TypeSymbol rightType = right.Type;
+            // check for string - char comparison
+            if ((leftType?.SpecialType == SpecialType.System_String) && left.Kind == BoundKind.Literal && rightType?.SpecialType == SpecialType.System_Char)
+            {
+                BoundLiteral lit = left as BoundLiteral;
+                var value = lit.ConstantValue;
+                if (value.IsString && value.StringValue.Length == 1)
+                {
+                    value = ConstantValue.Create(value.StringValue[0]);
+                    left = lit.Update(value, rightType);
+                    return opType;
+                }
+            }
+            else if ((rightType?.SpecialType == SpecialType.System_String) && right.Kind == BoundKind.Literal && leftType?.SpecialType == SpecialType.System_Char)
+            {
+                BoundLiteral lit = right as BoundLiteral;
+                var value = lit.ConstantValue;
+                if (value.IsString && value.StringValue.Length == 1)
+                {
+                    value = ConstantValue.Create(value.StringValue[0]);
+                    right = lit.Update(value, leftType);
+                    return opType;
+                }
+            }
+
             if (Compilation.Options.IsDialectVO)
             {
                 var typeUsual = Compilation.GetWellKnownType(WellKnownType.Vulcan___Usual);
                 var typePSZ = Compilation.GetWellKnownType(WellKnownType.Vulcan___Psz);
                 var typeSym = Compilation.GetWellKnownType(WellKnownType.Vulcan___Symbol);
                 NamedTypeSymbol typeDate;
-                TypeSymbol leftType = left.Type;
-                TypeSymbol rightType = right.Type;
+
+
                 switch (xnode.Op.Type)
                 {
                     case XSharpParser.EQ:
-                        if (left.Type?.SpecialType == SpecialType.System_String &&
-                            (right.Type?.SpecialType == SpecialType.System_String || right.Type == typeUsual))
+                        if (leftType?.SpecialType == SpecialType.System_String &&
+                            (rightType?.SpecialType == SpecialType.System_String || rightType == typeUsual))
                         {
                             opType = VOOperatorType.SingleEqualsString;
                         }
@@ -417,45 +444,48 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case XSharpParser.GTE:
                     case XSharpParser.LT:
                     case XSharpParser.LTE:
-                        if (left.Type == typeUsual || right.Type == typeUsual)
+                        if (leftType == typeUsual || rightType == typeUsual)
                         {
                             // when LHS or RHS == USUAL then do not compare with CompareString
                             // but let the operator methods inside USUAL handle it.
                             opType = VOOperatorType.None;
                         }
-                        else if (left.Type?.SpecialType == SpecialType.System_String || right.Type?.SpecialType == SpecialType.System_String)
+                        else if (leftType?.SpecialType == SpecialType.System_String || rightType?.SpecialType == SpecialType.System_String)
                         {
-                            // Convert to String.Compare or __StringCompare. Decide later
-                            opType = VOOperatorType.CompareString;
+                            if (leftType?.SpecialType != SpecialType.System_Char && rightType?.SpecialType != SpecialType.System_Char)
+                            {
+                                // Convert to String.Compare or __StringCompare. Decide later
+                                opType = VOOperatorType.CompareString;
+                            }
                         }
                         break;
                     case XSharpParser.MINUS:
-                        if (left.Type?.SpecialType == SpecialType.System_String)
+                        if (leftType?.SpecialType == SpecialType.System_String)
                         {
-                            if (right.Type?.SpecialType == SpecialType.System_String || rightType == typeUsual)
+                            if (rightType?.SpecialType == SpecialType.System_String || rightType == typeUsual)
                             {
                                 opType = VOOperatorType.SubtractString;
                             }
                         }
-                        if (leftType == typeUsual && right.Type?.SpecialType == SpecialType.System_String)
+                        if (leftType == typeUsual && rightType?.SpecialType == SpecialType.System_String)
                         {
                             opType = VOOperatorType.SubtractString;
                         }
                         // usual - date
                         // date - usual
                         typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
-                        if (leftType == typeUsual && right.Type == typeDate)
+                        if (leftType == typeUsual && rightType == typeDate)
                             opType = VOOperatorType.UsualDate;
-                        if (leftType == typeDate && right.Type == typeUsual)
+                        if (leftType == typeDate && rightType == typeUsual)
                             opType = VOOperatorType.UsualDate;
                         break;
                     case XSharpParser.ADD:
                         // usual + date
                         // date + usual
                         typeDate = Compilation.GetWellKnownType(WellKnownType.Vulcan___VODate);
-                        if (leftType == typeUsual && right.Type == typeDate)
+                        if (leftType == typeUsual && rightType == typeDate)
                             opType = VOOperatorType.UsualDate;
-                        if (leftType == typeDate && right.Type == typeUsual)
+                        if (leftType == typeDate && rightType == typeUsual)
                             opType = VOOperatorType.UsualDate;
                         break;
                     default:
@@ -482,7 +512,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                     case SyntaxKind.GreaterThanOrEqualExpression:
                     case SyntaxKind.LessThanExpression:
                     case SyntaxKind.LessThanOrEqualExpression:
-                        if (left.Type?.SpecialType == SpecialType.System_String || right.Type?.SpecialType == SpecialType.System_String)
+                        if (leftType?.SpecialType == SpecialType.System_String || rightType?.SpecialType == SpecialType.System_String)
                         {
                             // Make to String.Compare or __StringCompare. Decide later
                             opType = VOOperatorType.CompareString;
@@ -538,9 +568,10 @@ namespace Microsoft.CodeAnalysis.CSharp
                 var left = index;
                 var right = new BoundLiteral(index.Syntax, ConstantValue.Create(1), index.Type) { WasCompilerGenerated = true };
                 int compoundStringLength = 0;
-                var opKind = left.Type.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
-                    : left.Type.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
-                    : left.Type.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
+                var leftType = left.Type;
+                var opKind = leftType.SpecialType == SpecialType.System_Int32 ? BinaryOperatorKind.IntSubtraction
+                    : leftType.SpecialType == SpecialType.System_Int64 ? BinaryOperatorKind.LongSubtraction
+                    : leftType.SpecialType == SpecialType.System_UInt32 ? BinaryOperatorKind.UIntSubtraction
                     : BinaryOperatorKind.ULongSubtraction;
                 var resultConstant = FoldBinaryOperator(index.Syntax, opKind, left, right, left.Type.SpecialType, diagnostics, ref compoundStringLength);
                 var sig = this.Compilation.builtInOperators.GetSignature(opKind);

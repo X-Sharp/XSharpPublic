@@ -491,7 +491,10 @@ namespace Microsoft.CodeAnalysis.CSharp
             // that being bound as !x.HasValue.
             //
 #if XSHARP
-            VOOperatorType opType = NeedsVOOperator(node, left, right);
+            VOOperatorType opType = NeedsVOOperator(node, ref left, ref right);
+            leftType = left.Type;
+            rightType = right.Type;
+
             if (opType != VOOperatorType.None)
             {
                 var res =  BindVOBinaryOperator(node, diagnostics, ref left, ref right, ref compoundStringLength,opType);

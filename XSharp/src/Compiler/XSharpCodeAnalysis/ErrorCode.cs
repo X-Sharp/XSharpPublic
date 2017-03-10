@@ -1412,6 +1412,6 @@ namespace Microsoft.CodeAnalysis.CSharp
         WRN_VulcanAmbiguous = 9043,
         ERR_ImplicitlyTypedVariableCannotBeStatic = 9044,
         ERR_StaticLocalInCodeBlock=9045,
-
+        ERR_CannotAssignToMethod=9046,
     }
 }

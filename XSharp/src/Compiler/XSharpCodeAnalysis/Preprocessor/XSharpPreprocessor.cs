@@ -186,7 +186,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         HashSet<string> activeSymbols = new HashSet<string>(/*CaseInsensitiveComparison.Comparer*/);
 
-        System.IO.Stream ppoStream;
+        bool _preprocessorOutput = false;
+        System.IO.Stream _ppoStream;
 
         internal Dictionary<string, SourceText> IncludedFiles = new Dictionary<string, SourceText>();
 
@@ -258,13 +259,16 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         private void _writeToPPO(String text)
         {
             // do not call t.Text when not needed.
-            var buffer = _encoding.GetBytes(text);
-            ppoStream.Write(buffer, 0, buffer.Length);
+            if (_preprocessorOutput)
+            {
+                var buffer = _encoding.GetBytes(text);
+                _ppoStream.Write(buffer, 0, buffer.Length);
+            }
         }
 
         private bool mustWriteToPPO(XSharpToken t)
         {
-            return ppoStream != null && t != null && (t?.TokenSource?.SourceName == _fileName || inputs.isSymbol);
+            return _preprocessorOutput && _ppoStream != null && t != null && (t?.TokenSource?.SourceName == _fileName || inputs.isSymbol);
         }
 
         private void writeToPPO(XSharpToken t)
@@ -315,12 +319,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal void Close()
         {
-            if (ppoStream != null)
+            if (_ppoStream != null)
             {
-                ppoStream.Flush();
-                ppoStream.Dispose();
+                _ppoStream.Flush();
+                _ppoStream.Dispose();
             }
-            ppoStream = null;
+            _ppoStream = null;
         }
 
         internal XSharpPreprocessor(XSharpLexer lexer, CommonTokenStream input, CSharpParseOptions options, string fileName, Encoding encoding, SourceHashAlgorithm checksumAlgorithm, IList<ParseErrorData> parseErrors)
@@ -344,14 +348,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 var ppoFile = FileNameUtilities.ChangeExtension(fileName, ".ppo");
                 try
                 {
-                    ppoStream = null;
-                    if (_options.PreprocessorOutput)
+                    _ppoStream = null;
+                    _preprocessorOutput = _options.PreprocessorOutput;
+                    if (FileNameUtilities.GetExtension(fileName).ToLower() == ".ppo")
                     {
-                        ppoStream = FileUtilities.CreateFileStreamChecked(PortableShim.File.Create, ppoFile, "PPO file");
+                        _preprocessorOutput = false;
                     }
-                    else if (PortableShim.File.Exists(ppoFile))
+                    else 
                     {
-                        PortableShim.File.Delete(ppoFile);
+                        if (_preprocessorOutput)
+                        {
+                            _ppoStream = FileUtilities.CreateFileStreamChecked(PortableShim.File.Create, ppoFile, "PPO file");
+                        }
+                        else if (PortableShim.File.Exists(ppoFile))
+                        {
+                            PortableShim.File.Delete(ppoFile);
+                        }
                     }
                 }
                 catch (Exception e)

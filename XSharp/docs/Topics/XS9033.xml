@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS9033</title>
   <keywords>
     <keyword translate="true">XS9033</keyword>
@@ -10,5 +10,10 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS9033</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Init and Exit procedures cannot define parameters.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Init procedures and exit procedures are called by the runtime system and will not receive any parameters.</text></para>
+    <para styleclass="Code Example"><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#0000ff;" translate="true">PROCEDURE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">RunAtStartup</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">(</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">a</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">,</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">b</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">,</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">c</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#0000ff;" translate="true">_INIT1</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#0000ff;" translate="true">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160; </text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Code Example"></para>
   </body>
 </topic>

@@ -2276,6 +2276,15 @@ namespace LanguageService.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot assign to &apos;{0}&apos; because it is a &apos;{1}&apos;.
+        /// </summary>
+        internal static string ERR_CannotAssignToMethod {
+            get {
+                return ResourceManager.GetString("ERR_CannotAssignToMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot pass null for friend assembly name.
         /// </summary>
         internal static string ERR_CannotPassNullForFriendAssembly {

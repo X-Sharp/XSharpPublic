@@ -1271,7 +1271,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         errorCode = ErrorCode.ERR_InvalidAddrOp;
                         break;
                     default:
-                        errorCode = ErrorCode.ERR_AssgReadonlyLocalCause;
+                        errorCode = ErrorCode.ERR_CannotAssignToMethod;
                         break;
                 }
                 Error(diagnostics, errorCode, node, methodGroup.Name, MessageID.IDS_MethodGroup.Localize());

@@ -5438,19 +5438,61 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return true;
         }
 
+        private bool GenerateChr(XP.MethodCallContext context)
+        {
+            // Pseudo function _GetInst()
+            ArgumentListSyntax argList;
+            ExpressionSyntax expr;
+            int count = 0;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+                count = argList.Arguments.Count;
+            }
+            else
+            {
+                argList = null;
+            }
+            if (count != 1)
+            {
+                expr = context.Expr.Get<ExpressionSyntax>();
+                string name = String.Empty;
+                if (expr is IdentifierNameSyntax)
+                {
+                    name = ((IdentifierNameSyntax)expr).Identifier.Text;
+                }
+                else if (expr is GenericNameSyntax)
+                {
+                    name = ((GenericNameSyntax)expr).Identifier.Text;
+                }
+
+                context.Put(GenerateLiteral(0).WithAdditionalDiagnostics(new SyntaxDiagnosticInfo(ErrorCode.ERR_BadArgCount, name, count)));
+                return true;
+            }
+            var arg = argList.Arguments[0];
+            var exp = arg.Expression;
+            var lit = exp.XNode.GetLiteralToken();
+            if (lit != null && lit.Type == XP.INT_CONST)
+            {
+                // get number and create a string literal value
+                var value = lit.SyntaxLiteralValue(_options);
+                int number = (int)value.Value;
+                char ch = (char)number;
+                var literal = GenerateLiteral(ch.ToString());
+                context.Put(literal);
+                return true;
+            }
+            if (_options.IsDialectVO)
+            {
+                context.Put(GenerateMethodCall(VulcanQualifiedFunctionNames.Chr, argList));
+            }
+            return true;
+        }
+
 
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
-            ArgumentListSyntax argList;
-            if (context.ArgList != null)
-            {
-                argList = context.ArgList.Get<ArgumentListSyntax>();
-            }
-            else
-            {
-                argList = EmptyArgumentList();
-            }
             string name = String.Empty;
             if (expr is IdentifierNameSyntax)
             {
@@ -5470,12 +5512,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (GenerateGetInst(context))
                         return;
                     break;
+                case "_CHR":
+                case "CHR":
+                    if (GenerateChr(context))
+                        return;
+                    break;
                     //case "PCALL":
                     //case "CCALL":
                     //case "PCALLNATIVE":
                     //case "CCALLNATIVE":
                     //    expr = (ExpressionSyntax)NotInDialect(expr, name + " pseudo function");
                     //    break;
+            }
+            ArgumentListSyntax argList;
+            if (context.ArgList != null)
+            {
+                argList = context.ArgList.Get<ArgumentListSyntax>();
+            }
+            else
+            {
+                argList = EmptyArgumentList();
             }
             context.Put(_syntaxFactory.InvocationExpression(expr, argList));
 

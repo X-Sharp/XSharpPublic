@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="Liset" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" lasteditedby="robert" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">XS9028</title>
   <keywords>
     <keyword translate="true">XS9028</keyword>
@@ -10,5 +10,11 @@
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">XS9028</text></para>
     </header>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Unknown Literal Typename {0} found in VOTypeNameExpression</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In the VO and Vulcan language you can use type names a literal values, for example in an expression like:</text></para>
+    <para styleclass="Code Example"><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#0000ff;" translate="true">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">UsualType</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">(</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#000000;" translate="true">uExpr</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true">) == </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#0000ff;" translate="true">LONG</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;" translate="true"> &#160;..</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#0000ff;" translate="true">ENDIF</text></para>
+    <para styleclass="Code Example"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you see error 9028 then you have a literal typename in an expression that is not properly handled by the compiler. If you see this error, then please submit a code example to </text><link displaytype="text" defaultstyle="true" type="weblink" href="mailto:&lt;%LINK_CAPTION%&gt;" styleclass="Normal" translate="true">bugreports@xsharp.eu</link></para>
+    <para styleclass="Normal"></para>
   </body>
 </topic>

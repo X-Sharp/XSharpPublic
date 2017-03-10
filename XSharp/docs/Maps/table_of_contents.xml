@@ -1308,6 +1308,9 @@
         <topicref type="topic" id="427446392484318" build="ALL" modified="2017-01-09T16:19:31.605Z" icon="0" href="XS9042">
           <caption translate="true">XS9042</caption>
         </topicref>
+        <topicref type="topic" id="428006109987785" build="ALL" modified="2017-03-06T15:06:54.190Z" icon="0" href="XS9045">
+          <caption translate="true">XS9045</caption>
+        </topicref>
       </topicref>
       <topicref type="topic" id="427607830537848" build="ALL" modified="2017-01-25T18:02:45.792Z" icon="0" href="X-Compiler-Warnings">
         <caption translate="true">X# Compiler Warnings</caption>

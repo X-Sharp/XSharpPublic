@@ -31,6 +31,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         PPResultToken[] _resulttokens;
         PPErrorMessages _errorMessages;
         internal bool CaseInsensitive = false;
+        internal bool hasRepeats = false;
         internal PPUDCType Type { get { return _type; } }
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages)
         {
@@ -234,6 +235,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
+            if (hasRepeats)
+            {
+                addErrorMessage(udc, "repeated match/result markers are not (yet) supported ");
+            }
             return _errorMessages == null || _errorMessages.Count == 0;
         }
         void addErrorMessage(XSharpToken token, string message)
@@ -266,30 +271,22 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (markers.ContainsKey(name))
                     {
                         restoken.MatchMarker = markers[name];
+                        if (restoken.RuleTokenType == PPTokenType.ResultRepeated)
+                        {
+                            restoken.IsRepeat = true;
+                            restoken.MatchMarker.IsRepeat = true;
+                        }
                     }
                     else
                     {
                         allOk = false;
                     }
                 }
-                if (restoken.RuleTokenType == PPTokenType.ResultOptional)
+                if (restoken.RuleTokenType == PPTokenType.ResultRepeated)
                 {
-                    // not nested !
-                    foreach (var e in restoken.OptionalElements)
+                    if (restoken.OptionalElements != null) 
                     {
-                        if (e.IsMarker)
-                        {
-                            var token = e.Token;
-                            var name2 = e.Key;
-                            if (markers.ContainsKey(name2))
-                            {
-                                e.MatchMarker = markers[name2];
-                            }
-                            else
-                            {
-                                allOk = false;
-                            }
-                        }
+                        allOk = allOk && checkMatchingTokens(restoken.OptionalElements, markers);
                     }
                 }
             }
@@ -441,11 +438,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                     element = new PPMatchToken(token, PPTokenType.MatchOptional, marker.Key);
                                     element.Children = nested;
                                     result.Add(element);
-                                    // now walk back in the result list find the previous match marker
-                                    if (element.Key.ToLower().EndsWith("n"))
-                                    {
-                                        findRepeats(element, result.ToArray());
-                                    }
                                 }
                             }
                         }
@@ -494,8 +486,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 for (int i = 0; i < mt.Length; i++)
                 {
                     var marker = mt[i];
-                    if (marker.RuleTokenType == PPTokenType.MatchList ||
-                        marker.IsRepeat)
+                    if (marker.RuleTokenType == PPTokenType.MatchList || marker.IsRepeat)
                     {
                         var stopTokens = new List<XSharpToken>();
                         findStopTokens(mt, i+1, stopTokens);
@@ -544,27 +535,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         break;
                 }
             }
-        }
-
-        void findRepeats( PPRuleToken token, IList<PPRuleToken> tokens)
-        {
-            // If that match marker is named abc1 and this marker ends with  n and has the name abcn 
-            // then this is a repeat clause
-            // repeat clauses must be optional and can appear in the source (and result) 0 .. n times
-            var thisKey = token.Key.Substring(0, token.Key.Length - 1);
-            for (int j = tokens.Count - 2; j > 0; j--)
-            {
-                var prev = tokens[j];
-                if (prev.IsMarker)
-                {
-                    if (String.Compare(thisKey, 0, prev.Key, 0, thisKey.Length, StringComparison.OrdinalIgnoreCase) == 0
-                        && prev.Key.EndsWith("1"))
-                    {
-                        token.IsRepeat = true;
-                    }
-                }
-            }
-
         }
 
         List<XSharpToken> getNestedTokens(int start, int max, XSharpToken[] tokens)
@@ -724,22 +694,26 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 foreach (var e in nested)
                                 {
                                     if (e.IsMarker)
+                                    {
                                         marker = e;
+                                        break;
+                                    }
                                 }
                                 if (marker == null)
                                 {
-                                    _errorMessages.Add(new PPErrorMessage(token, "Optional block does not contain a match marker"));
+                                    _errorMessages.Add(new PPErrorMessage(token, "Repeated result block does not contain a match marker"));
                                 }
                                 else
                                 {
-                                    var element = new PPResultToken(token, PPTokenType.ResultOptional, marker.Key);
+                                    var element = new PPResultToken(token, PPTokenType.ResultRepeated, marker.Key);
                                     element.OptionalElements = nested;
-                                    result.Add(element);
-                                    // now walk back in the result list find the previous match marker
-                                    if (element.Key.ToLower().EndsWith("n"))
+                                    element.IsRepeat = true;
+                                    foreach (var e in nested)
                                     {
-                                        findRepeats(element, result.ToArray());
+                                        e.IsRepeat = true;
                                     }
+                                    result.Add(element);
+                                    hasRepeats = true;
 
                                 }
 
@@ -1133,8 +1107,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.ResultDumbStringify:
                         stringifyResult(resultToken, tokens, matchInfo, result);
                         break;
-                    case PPTokenType.ResultOptional:
-                        optionalResult(resultToken, tokens, matchInfo, result);
+                    case PPTokenType.ResultRepeated:
+                        repeatedResult(resultToken, tokens, matchInfo, result);
                         break;
                 }
             }
@@ -1162,7 +1136,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             result.Add(newToken);
 
         }
-        void optionalResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result)
+        void repeatedResult(PPResultToken rule, IList<XSharpToken> tokens, PPMatchRange[] matchInfo, IList<XSharpToken> result)
         {
             if (rule.MatchMarker != null)
             {

@@ -235,10 +235,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            if (hasRepeats)
-            {
-                addErrorMessage(udc, "repeated match/result markers are not (yet) supported ");
-            }
+            //if (hasRepeats)
+            //{
+            //    addErrorMessage(udc, "repeated match/result markers are not (yet) supported ");
+            //}
             return _errorMessages == null || _errorMessages.Count == 0;
         }
         void addErrorMessage(XSharpToken token, string message)

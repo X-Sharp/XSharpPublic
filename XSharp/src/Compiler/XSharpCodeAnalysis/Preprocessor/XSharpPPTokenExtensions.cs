@@ -99,7 +99,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 
         internal static bool IsOptional(this PPTokenType type)
         {
-            return type == PPTokenType.MatchOptional ;
+            return type == PPTokenType.MatchOptional ||
+                type == PPTokenType.ResultOptional;
         }
 
         internal static PPTokenType GetTokenType(this PPTokenType type)

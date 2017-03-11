@@ -32,6 +32,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         PPErrorMessages _errorMessages;
         internal bool CaseInsensitive = false;
         internal bool hasRepeats = false;
+        internal bool hasOptionalResult = false;
         internal PPUDCType Type { get { return _type; } }
         internal PPRule(XSharpToken udc, IList<XSharpToken> tokens, out PPErrorMessages errorMessages)
         {
@@ -235,11 +236,73 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     }
                 }
             }
-            //if (hasRepeats)
-            //{
-            //    addErrorMessage(udc, "repeated match/result markers are not (yet) supported ");
-            //}
+            if (hasOptionalResult)
+            {
+                checkForRepeat(udc);
+            }
             return _errorMessages == null || _errorMessages.Count == 0;
+        }
+        void checkForRepeat(XSharpToken udc)
+        {
+            var keys = new List<string>();
+            var flattened = new List<PPResultToken>();
+            foreach (var restoken in _resulttokens)
+            {
+                if (restoken.OptionalElements != null)
+                {
+                    foreach (var child in restoken.OptionalElements)
+                    {
+                        if (!child.IsToken && !child.IsOptional)
+                        {
+                            flattened.Add(child);
+                            if (!keys.Contains(child.Token.Text.ToLower()))
+                            {
+                                keys.Add(child.Token.Text.ToLower());
+                            }
+                        }
+                    }
+                }
+                if (!restoken.IsToken && ! restoken.IsOptional)
+                {
+                    flattened.Add(restoken);
+                    if (!keys.Contains(restoken.Token.Text.ToLower()))
+                        keys.Add(restoken.Token.Text.ToLower());
+                }
+            }
+            foreach (var restoken in flattened)
+            {
+                var tokenName = restoken.Token.Text.ToLower();
+                foreach (string name in keys)
+                {
+
+                    if (tokenName != name && isRepeatToken(tokenName, name))
+                    {
+                        if (tokenName.EndsWith("n", StringComparison.OrdinalIgnoreCase))
+                        {
+                            restoken.IsRepeat = true;
+                        }
+                        hasRepeats = true;
+                    }
+                }
+            }
+            if (hasRepeats)
+            {
+                addErrorMessage(udc, "repeated match/result markers are not (yet) supported ");
+            }
+        }
+        bool isRepeatToken(string left, string right)
+        {
+            if (left.EndsWith("n", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Compare(left, 0, right, 0, left.Length - 1, StringComparison.OrdinalIgnoreCase) == 0 )
+                    return true;
+            }
+            if (right.EndsWith("n", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Compare(left, 0, right, 0, right.Length - 1, StringComparison.OrdinalIgnoreCase) == 0 )
+                    return true;
+            }
+            return false;
         }
         void addErrorMessage(XSharpToken token, string message)
         {
@@ -271,18 +334,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     if (markers.ContainsKey(name))
                     {
                         restoken.MatchMarker = markers[name];
-                        if (restoken.RuleTokenType == PPTokenType.ResultRepeated)
-                        {
-                            restoken.IsRepeat = true;
-                            restoken.MatchMarker.IsRepeat = true;
-                        }
                     }
                     else
                     {
                         allOk = false;
                     }
                 }
-                if (restoken.RuleTokenType == PPTokenType.ResultRepeated)
+                if (restoken.RuleTokenType == PPTokenType.ResultOptional)
                 {
                     if (restoken.OptionalElements != null) 
                     {
@@ -705,15 +763,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                                 }
                                 else
                                 {
-                                    var element = new PPResultToken(token, PPTokenType.ResultRepeated, marker.Key);
+                                    var element = new PPResultToken(token, PPTokenType.ResultOptional, marker.Key);
                                     element.OptionalElements = nested;
-                                    element.IsRepeat = true;
-                                    foreach (var e in nested)
-                                    {
-                                        e.IsRepeat = true;
-                                    }
                                     result.Add(element);
-                                    hasRepeats = true;
+                                    hasOptionalResult = true;
 
                                 }
 
@@ -1107,7 +1160,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     case PPTokenType.ResultDumbStringify:
                         stringifyResult(resultToken, tokens, matchInfo, result);
                         break;
-                    case PPTokenType.ResultRepeated:
+                    case PPTokenType.ResultOptional:
                         repeatedResult(resultToken, tokens, matchInfo, result);
                         break;
                 }

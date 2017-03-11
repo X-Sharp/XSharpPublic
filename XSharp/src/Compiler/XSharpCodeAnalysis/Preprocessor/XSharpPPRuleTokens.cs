@@ -40,6 +40,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         internal int Index { get; set; }
         internal bool IsMarker { get { return (PPTokenType)((int)_type & 0x0F) != PPTokenType.Token; } }
         internal bool IsOptional { get { return _type.IsOptional(); } }
+        internal bool IsToken { get { return _type == PPTokenType.Token; } }
         internal bool IsRepeat { get; set; }
         internal PPTokenType RuleTokenType { get { return _type.GetTokenType(); } set { _type = value; } }
 

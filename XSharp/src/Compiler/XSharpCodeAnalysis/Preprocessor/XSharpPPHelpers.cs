@@ -50,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         ResultSmartStringify = 12,         // <(idMarker)>         0000 1100
         ResultBlockify = 13,               // <{idMarker}>         0000 1101
         ResultLogify = 14,                 // <.idMarker.>         0000 1110
-        ResultRepeated = 15,               // [....]               0000 1111
+        ResultOptional = 15,               // [....]               0000 1111
 
     }
     internal class PPErrorMessages : List<PPErrorMessage>
